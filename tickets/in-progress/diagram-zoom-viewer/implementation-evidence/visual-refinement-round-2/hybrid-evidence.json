@@ -1,0 +1,237 @@
+{
+  "inspectedAt": "2026-07-20T08:10:37.414Z",
+  "purpose": "CR-002 combined fine-primary + coarse-secondary cascade evidence",
+  "method": "Installed Chrome runs its real fine-primary media state. Because CDP exposes touch as a coarse primary rather than a simultaneous secondary pointer, the emitted any-pointer:coarse declarations are extracted from CSSOM and cloned behind a test-only document class. This activates the exact emitted coarse-secondary declarations while the real fine-primary query remains active, exercising the combined cascade without changing product source or the retained fixture.",
+  "conditions": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "route": "disposable implementation fixture",
+    "browserPrimary": "real hover:hover and pointer:fine",
+    "coarseSecondary": "deterministic emitted-CSS cascade activation"
+  },
+  "source": {
+    "inline": {
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/MermaidDiagram.vue",
+      "anyPointerOccurrences": 1,
+      "hasFinePrimaryRule": true,
+      "hasVisible44Override": true
+    },
+    "viewer": {
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/MermaidDiagramViewer.vue",
+      "anyPointerOccurrences": 1,
+      "hasFinePrimaryRule": false,
+      "hasVisible44Override": true
+    }
+  },
+  "browser": {
+    "before": {
+      "media": {
+        "(hover: hover)": true,
+        "(pointer: fine)": true,
+        "(any-pointer: coarse)": false
+      },
+      "button": {
+        "opacity": "0",
+        "pointerEvents": "none",
+        "width": 32.64013671875,
+        "height": 32.6400146484375
+      }
+    },
+    "emittedAnyCoarseRules": [
+      {
+        "condition": "(hover: none), (pointer: coarse), (any-pointer: coarse), (max-width: 480px)",
+        "selector": ".mermaid-viewer-action[data-v-5d462ee6]",
+        "declarations": "flex-basis: 44px; height: 44px; width: 44px;"
+      },
+      {
+        "condition": "(any-pointer: coarse)",
+        "selector": ".mermaid-expand-button",
+        "declarations": "height: 44px; opacity: 1; pointer-events: auto; transform: none; width: 44px;"
+      },
+      {
+        "condition": "(any-pointer: coarse)",
+        "selector": ".mermaid-expand-button::before",
+        "declarations": "inset: 5px;"
+      }
+    ],
+    "hybridInline": {
+      "opacity": "1",
+      "pointerEvents": "auto",
+      "width": 44,
+      "height": 44,
+      "rightGap": 4,
+      "topGap": 4,
+      "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+      "surfaceInset": "5px"
+    },
+    "hybridToolbar": [
+      {
+        "width": 44,
+        "height": 44,
+        "text": "",
+        "ariaLabel": "Zoom out"
+      },
+      {
+        "width": 44,
+        "height": 44,
+        "text": "",
+        "ariaLabel": "Fit diagram"
+      },
+      {
+        "width": 44,
+        "height": 44,
+        "text": "",
+        "ariaLabel": "Zoom in"
+      },
+      {
+        "width": 44,
+        "height": 44,
+        "text": "",
+        "ariaLabel": "Close diagram viewer"
+      }
+    ]
+  },
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/09-hybrid-wide-inline-rest.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/10-hybrid-wide-viewer.png"
+  ],
+  "assertions": [
+    {
+      "id": "inline-source-has-any-coarse-fallback",
+      "pass": true,
+      "details": {
+        "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/MermaidDiagram.vue",
+        "anyPointerOccurrences": 1,
+        "hasFinePrimaryRule": true,
+        "hasVisible44Override": true
+      }
+    },
+    {
+      "id": "viewer-source-has-any-coarse-fallback",
+      "pass": true,
+      "details": {
+        "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/MermaidDiagramViewer.vue",
+        "anyPointerOccurrences": 1,
+        "hasFinePrimaryRule": false,
+        "hasVisible44Override": true
+      }
+    },
+    {
+      "id": "real-fine-primary-active",
+      "pass": true,
+      "details": {
+        "media": {
+          "(hover: hover)": true,
+          "(pointer: fine)": true,
+          "(any-pointer: coarse)": false
+        },
+        "button": {
+          "opacity": "0",
+          "pointerEvents": "none",
+          "width": 32.64013671875,
+          "height": 32.6400146484375
+        }
+      }
+    },
+    {
+      "id": "fine-primary-resting-rule-active-before-hybrid-override",
+      "pass": true,
+      "details": {
+        "opacity": "0",
+        "pointerEvents": "none",
+        "width": 32.64013671875,
+        "height": 32.6400146484375
+      }
+    },
+    {
+      "id": "emitted-inline-any-coarse-rule-present",
+      "pass": true,
+      "details": [
+        {
+          "condition": "(hover: none), (pointer: coarse), (any-pointer: coarse), (max-width: 480px)",
+          "selector": ".mermaid-viewer-action[data-v-5d462ee6]",
+          "declarations": "flex-basis: 44px; height: 44px; width: 44px;"
+        },
+        {
+          "condition": "(any-pointer: coarse)",
+          "selector": ".mermaid-expand-button",
+          "declarations": "height: 44px; opacity: 1; pointer-events: auto; transform: none; width: 44px;"
+        },
+        {
+          "condition": "(any-pointer: coarse)",
+          "selector": ".mermaid-expand-button::before",
+          "declarations": "inset: 5px;"
+        }
+      ]
+    },
+    {
+      "id": "emitted-viewer-any-coarse-rule-present",
+      "pass": true,
+      "details": [
+        {
+          "condition": "(hover: none), (pointer: coarse), (any-pointer: coarse), (max-width: 480px)",
+          "selector": ".mermaid-viewer-action[data-v-5d462ee6]",
+          "declarations": "flex-basis: 44px; height: 44px; width: 44px;"
+        },
+        {
+          "condition": "(any-pointer: coarse)",
+          "selector": ".mermaid-expand-button",
+          "declarations": "height: 44px; opacity: 1; pointer-events: auto; transform: none; width: 44px;"
+        },
+        {
+          "condition": "(any-pointer: coarse)",
+          "selector": ".mermaid-expand-button::before",
+          "declarations": "inset: 5px;"
+        }
+      ]
+    },
+    {
+      "id": "hybrid-inline-visible-44-at-wide-rest",
+      "pass": true,
+      "details": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "width": 44,
+        "height": 44,
+        "rightGap": 4,
+        "topGap": 4,
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceInset": "5px"
+      }
+    },
+    {
+      "id": "hybrid-viewer-four-uniform-icon-only-44-actions",
+      "pass": true,
+      "details": [
+        {
+          "width": 44,
+          "height": 44,
+          "text": "",
+          "ariaLabel": "Zoom out"
+        },
+        {
+          "width": 44,
+          "height": 44,
+          "text": "",
+          "ariaLabel": "Fit diagram"
+        },
+        {
+          "width": 44,
+          "height": 44,
+          "text": "",
+          "ariaLabel": "Zoom in"
+        },
+        {
+          "width": 44,
+          "height": 44,
+          "text": "",
+          "ariaLabel": "Close diagram viewer"
+        }
+      ]
+    }
+  ],
+  "status": "Pass",
+  "completedAt": "2026-07-20T08:10:39.339Z"
+}

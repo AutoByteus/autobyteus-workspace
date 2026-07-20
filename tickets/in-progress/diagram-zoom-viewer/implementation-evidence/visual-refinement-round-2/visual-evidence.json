@@ -1,6 +1,6 @@
 {
-  "inspectedAt": "2026-07-20T07:50:00.798Z",
-  "surface": "http://127.0.0.1:3417/implementation-diagram-visual-review",
+  "inspectedAt": "2026-07-20T08:10:56.006Z",
+  "surface": "http://127.0.0.1:3418/implementation-diagram-hybrid-review",
   "browser": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "desktop": {
     "viewport": {
@@ -70,9 +70,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       }
     },
     {
@@ -91,9 +91,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       }
     },
     {
@@ -131,9 +131,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       }
     },
     {
@@ -177,14 +177,14 @@
           "left": 484.5
         },
         "button": {
-          "x": 1234.5,
-          "y": 381.984375,
-          "width": 36,
-          "height": 36,
-          "top": 381.984375,
-          "right": 1270.5,
-          "bottom": 417.984375,
-          "left": 1234.5
+          "x": 1240.5,
+          "y": 377.984375,
+          "width": 34,
+          "height": 34,
+          "top": 377.984375,
+          "right": 1274.5,
+          "bottom": 411.984375,
+          "left": 1240.5
         },
         "svg": {
           "x": 492.5,
@@ -202,9 +202,9 @@
           "color": "rgb(51, 65, 85)",
           "outlineStyle": "solid",
           "outlineWidth": "2px",
-          "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-          "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-          "surfaceInset": "1px"
+          "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+          "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+          "surfaceInset": "2px"
         },
         "tabIndex": 0,
         "active": true,
@@ -224,9 +224,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "solid",
         "outlineWidth": "2px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       }
     },
     {
@@ -384,9 +384,9 @@
         "color": "rgb(226, 232, 240)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(30, 41, 59, 0.9)",
-        "surfaceBorder": "rgba(100, 116, 139, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(30, 41, 59, 0.68)",
+        "surfaceBorder": "rgba(100, 116, 139, 0.7)",
+        "surfaceInset": "2px"
       }
     },
     {
@@ -407,8 +407,8 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
         "surfaceInset": "5px"
       }
     },
@@ -416,14 +416,14 @@
       "id": "coarse-inline-target-size",
       "pass": true,
       "details": {
-        "x": 242,
-        "y": 351.953125,
+        "x": 250,
+        "y": 343.953125,
         "width": 44,
         "height": 44,
-        "top": 351.953125,
-        "right": 286,
-        "bottom": 395.953125,
-        "left": 242
+        "top": 343.953125,
+        "right": 294,
+        "bottom": 387.953125,
+        "left": 250
       }
     },
     {
@@ -492,14 +492,14 @@
         "left": 484.5
       },
       "button": {
-        "x": 1235.219970703125,
-        "y": 380.7043762207031,
-        "width": 34.56005859375,
-        "height": 34.55999755859375,
-        "top": 380.7043762207031,
-        "right": 1269.780029296875,
-        "bottom": 415.2643737792969,
-        "left": 1235.219970703125
+        "x": 1241.179931640625,
+        "y": 376.66436767578125,
+        "width": 32.64013671875,
+        "height": 32.6400146484375,
+        "top": 376.66436767578125,
+        "right": 1273.820068359375,
+        "bottom": 409.30438232421875,
+        "left": 1241.179931640625
       },
       "svg": {
         "x": 492.5,
@@ -517,9 +517,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       },
       "tabIndex": 0,
       "active": false,
@@ -541,14 +541,14 @@
         "left": 484.5
       },
       "button": {
-        "x": 1234.5,
-        "y": 381.984375,
-        "width": 36,
-        "height": 36,
-        "top": 381.984375,
-        "right": 1270.5,
-        "bottom": 417.984375,
-        "left": 1234.5
+        "x": 1240.5,
+        "y": 377.984375,
+        "width": 34,
+        "height": 34,
+        "top": 377.984375,
+        "right": 1274.5,
+        "bottom": 411.984375,
+        "left": 1240.5
       },
       "svg": {
         "x": 492.5,
@@ -566,9 +566,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       },
       "tabIndex": 0,
       "active": false,
@@ -590,14 +590,14 @@
         "left": 484.5
       },
       "button": {
-        "x": 1235.219970703125,
-        "y": 380.7043762207031,
-        "width": 34.56005859375,
-        "height": 34.55999755859375,
-        "top": 380.7043762207031,
-        "right": 1269.780029296875,
-        "bottom": 415.2643737792969,
-        "left": 1235.219970703125
+        "x": 1241.179931640625,
+        "y": 376.66436767578125,
+        "width": 32.64013671875,
+        "height": 32.6400146484375,
+        "top": 376.66436767578125,
+        "right": 1273.820068359375,
+        "bottom": 409.30438232421875,
+        "left": 1241.179931640625
       },
       "svg": {
         "x": 492.5,
@@ -615,9 +615,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       },
       "tabIndex": 0,
       "active": false,
@@ -639,14 +639,14 @@
         "left": 484.5
       },
       "button": {
-        "x": 1234.5,
-        "y": 381.984375,
-        "width": 36,
-        "height": 36,
-        "top": 381.984375,
-        "right": 1270.5,
-        "bottom": 417.984375,
-        "left": 1234.5
+        "x": 1240.5,
+        "y": 377.984375,
+        "width": 34,
+        "height": 34,
+        "top": 377.984375,
+        "right": 1274.5,
+        "bottom": 411.984375,
+        "left": 1240.5
       },
       "svg": {
         "x": 492.5,
@@ -664,9 +664,9 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "solid",
         "outlineWidth": "2px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
       },
       "tabIndex": 0,
       "active": true,
@@ -722,14 +722,14 @@
         "left": 484.5
       },
       "button": {
-        "x": 1234.5,
-        "y": 381.984375,
-        "width": 36,
-        "height": 36,
-        "top": 381.984375,
-        "right": 1270.5,
-        "bottom": 417.984375,
-        "left": 1234.5
+        "x": 1240.5,
+        "y": 377.984375,
+        "width": 34,
+        "height": 34,
+        "top": 377.984375,
+        "right": 1274.5,
+        "bottom": 411.984375,
+        "left": 1240.5
       },
       "svg": {
         "x": 492.5,
@@ -747,9 +747,9 @@
         "color": "rgb(226, 232, 240)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(30, 41, 59, 0.9)",
-        "surfaceBorder": "rgba(100, 116, 139, 0.9)",
-        "surfaceInset": "1px"
+        "surfaceBackground": "rgba(30, 41, 59, 0.68)",
+        "surfaceBorder": "rgba(100, 116, 139, 0.7)",
+        "surfaceInset": "2px"
       },
       "tabIndex": 0,
       "active": true,
@@ -776,14 +776,14 @@
         "left": 108
       },
       "button": {
-        "x": 242,
-        "y": 351.953125,
+        "x": 250,
+        "y": 343.953125,
         "width": 44,
         "height": 44,
-        "top": 351.953125,
-        "right": 286,
-        "bottom": 395.953125,
-        "left": 242
+        "top": 343.953125,
+        "right": 294,
+        "bottom": 387.953125,
+        "left": 250
       },
       "svg": {
         "x": 124,
@@ -801,8 +801,8 @@
         "color": "rgb(51, 65, 85)",
         "outlineStyle": "none",
         "outlineWidth": "3px",
-        "surfaceBackground": "rgba(255, 255, 255, 0.88)",
-        "surfaceBorder": "rgba(203, 213, 225, 0.9)",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
         "surfaceInset": "5px"
       },
       "tabIndex": 0,
@@ -855,6 +855,6 @@
       "canvasHeight": 573
     }
   },
-  "completedAt": "2026-07-20T07:50:05.174Z",
+  "completedAt": "2026-07-20T08:11:00.264Z",
   "status": "Pass"
 }

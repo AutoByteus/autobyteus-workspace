@@ -452,7 +452,8 @@ onBeforeUnmount(() => {
   width: 100% !important;
 }
 
-@media (hover: none), (pointer: coarse), (max-width: 480px) {
+/* Keep every action touch-sized when any coarse pointer is available. */
+@media (hover: none), (pointer: coarse), (any-pointer: coarse), (max-width: 480px) {
   .mermaid-viewer-action {
     flex-basis: 44px;
     height: 44px;

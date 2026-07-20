@@ -35,12 +35,12 @@
       <button
         ref="expandButtonRef"
         type="button"
-        class="mermaid-expand-button absolute right-2 top-2 z-10 inline-flex items-center justify-center"
+        class="mermaid-expand-button absolute right-1 top-1 z-10 inline-flex items-center justify-center"
         :aria-label="$t('workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram')"
         :title="$t('workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram')"
         @click.stop="openViewer"
       >
-        <Icon icon="heroicons:arrows-pointing-out-20-solid" class="relative z-10 h-[18px] w-[18px]" aria-hidden="true" />
+        <Icon icon="heroicons:arrows-pointing-out-20-solid" class="relative z-10 h-[17px] w-[17px]" aria-hidden="true" />
       </button>
 
       <div
@@ -195,10 +195,10 @@ onBeforeUnmount(() => {
 
 .mermaid-expand-button::before {
   backdrop-filter: blur(6px);
-  background: rgb(255 255 255 / 88%);
-  border: 1px solid rgb(203 213 225 / 90%);
+  background: rgb(255 255 255 / 68%);
+  border: 1px solid rgb(203 213 225 / 65%);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgb(15 23 42 / 14%);
+  box-shadow: 0 1px 5px rgb(15 23 42 / 12%);
   content: '';
   inset: 5px;
   position: absolute;
@@ -210,9 +210,9 @@ onBeforeUnmount(() => {
 }
 
 .mermaid-expand-button:hover::before {
-  background: rgb(238 242 255 / 96%);
+  background: rgb(238 242 255 / 88%);
   border-color: rgb(129 140 248);
-  box-shadow: 0 4px 12px rgb(79 70 229 / 18%);
+  box-shadow: 0 2px 8px rgb(79 70 229 / 16%);
 }
 
 .mermaid-expand-button:active::before {
@@ -226,15 +226,15 @@ onBeforeUnmount(() => {
 
 @media (hover: hover) and (pointer: fine) {
   .mermaid-expand-button {
-    height: 36px;
+    height: 34px;
     opacity: 0;
     pointer-events: none;
     transform: translateY(-2px) scale(0.96);
-    width: 36px;
+    width: 34px;
   }
 
   .mermaid-expand-button::before {
-    inset: 1px;
+    inset: 2px;
   }
 
   .diagram-content:hover .mermaid-expand-button,
@@ -246,15 +246,30 @@ onBeforeUnmount(() => {
   }
 }
 
+/* A coarse secondary pointer must win over the fine-primary resting state. */
+@media (any-pointer: coarse) {
+  .mermaid-expand-button {
+    height: 44px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    width: 44px;
+  }
+
+  .mermaid-expand-button::before {
+    inset: 5px;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .mermaid-expand-button {
     color: rgb(226 232 240);
   }
 
   .mermaid-expand-button::before {
-    background: rgb(30 41 59 / 90%);
-    border-color: rgb(100 116 139 / 90%);
-    box-shadow: 0 2px 8px rgb(0 0 0 / 32%);
+    background: rgb(30 41 59 / 68%);
+    border-color: rgb(100 116 139 / 70%);
+    box-shadow: 0 1px 5px rgb(0 0 0 / 28%);
   }
 
   .mermaid-expand-button:hover {
@@ -262,7 +277,7 @@ onBeforeUnmount(() => {
   }
 
   .mermaid-expand-button:hover::before {
-    background: rgb(49 46 129 / 96%);
+    background: rgb(49 46 129 / 86%);
     border-color: rgb(129 140 248);
   }
 }
