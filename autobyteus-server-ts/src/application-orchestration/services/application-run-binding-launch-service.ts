@@ -59,13 +59,28 @@ const toSkillAccessMode = (
   throw new Error(`Unsupported skillAccessMode '${value}'.`);
 };
 
-const requireLaunchKind = (
-  resource: ResolvedApplicationExecutionResource,
+type ExplicitStartMethod = "startAgent" | "startAgentTeam";
+
+const requireMethodLaunchKind = (
+  method: ExplicitStartMethod,
+  expectedKind: ResolvedApplicationExecutionResource["kind"],
   launch: ApplicationAgentRunLaunch | ApplicationTeamRunLaunch,
 ): void => {
-  if (resource.kind !== launch.kind) {
+  if (launch.kind !== expectedKind) {
     throw new Error(
-      `Runtime launch kind '${launch.kind}' does not match execution resource kind '${resource.kind}'.`,
+      `${method} requires launch.kind '${expectedKind}'; received '${launch.kind}'.`,
+    );
+  }
+};
+
+const requireMethodResourceKind = (
+  method: ExplicitStartMethod,
+  expectedKind: ResolvedApplicationExecutionResource["kind"],
+  resource: ResolvedApplicationExecutionResource,
+): void => {
+  if (resource.kind !== expectedKind) {
+    throw new Error(
+      `${method} requires an '${expectedKind}' execution resource; resolved '${resource.kind}'.`,
     );
   }
 };
@@ -123,8 +138,9 @@ export class ApplicationRunBindingLaunchService {
     applicationId: string,
     input: ApplicationStartAgentInput,
   ): Promise<ApplicationRunBindingSummary> {
+    requireMethodLaunchKind("startAgent", "AGENT", input.launch);
     const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
-    requireLaunchKind(resource, input.launch);
+    requireMethodResourceKind("startAgent", "AGENT", resource);
 
     const bindingSeed = {
       applicationId,
@@ -139,8 +155,9 @@ export class ApplicationRunBindingLaunchService {
     applicationId: string,
     input: ApplicationStartAgentTeamInput,
   ): Promise<ApplicationRunBindingSummary> {
+    requireMethodLaunchKind("startAgentTeam", "AGENT_TEAM", input.launch);
     const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
-    requireLaunchKind(resource, input.launch);
+    requireMethodResourceKind("startAgentTeam", "AGENT_TEAM", resource);
 
     const bindingSeed = {
       applicationId,

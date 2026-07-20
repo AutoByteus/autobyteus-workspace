@@ -10,10 +10,17 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/framework-understanding.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-review-report.md`
 
+## Implementation Review Local Fix
+
+- Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/code-review-report.md`
+- Round-1 finding `CR-001` is resolved. `startAgentRunBinding` now requires both an `AGENT` launch payload and resolved `AGENT` resource; `startAgentTeamRunBinding` independently requires `AGENT_TEAM` for both. Payload-kind rejection occurs before resource resolution, and resolved-resource rejection occurs before run creation, persistence, observer attachment, or initial input.
+- Added six focused launch-boundary tests: valid standalone-agent routing, valid team routing, both opposite launch-kind calls, and both wrong resolved-resource kinds. Negative cases assert no run creation or binding persistence side effect.
+
 ## What Changed
 
 - Replaced the public application-backend `runtimeControl` surface with the exact v3-only `agentExecution`, `agentResources`, and `publishedArtifacts` capability contract.
 - Split launch into typed `startAgent` and `startAgentTeam` paths, renamed the durable correlation to `launchRequestId`, and added application-scoped `findByLaunchRequestId` lookup while retaining the existing orchestration authorities.
+- Enforced each explicit start method's own subject kind at the runtime launch boundary for both its payload and resolved execution resource.
 - Replaced the worker/host reverse call with a discriminated `{ capability, operation, input }` protocol and strict host dispatch.
 - Advanced backend definition/manifest/template validation from v2 to v3 and added explicit early v2 rejection coverage.
 - Extracted and exported the exact nine-field `ApplicationPublishedArtifactSummary`, re-exported it through the backend SDK, and regenerated checked-in declarations.
@@ -27,7 +34,7 @@
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | `BEH-001` | Exact three-capability handler context; preserve request/storage/notification members | Contract and backend SDK exports; `application-worker-runtime.ts`; worker/host protocol | Implemented v3-only context; old public type/property removed. |
-| `BEH-002` | Explicit standalone-agent/team starts and unchanged shared lifecycle operations | `application-worker-runtime.ts` -> `application-engine-host-service.ts` -> `application-orchestration-host-service.ts` -> `application-run-binding-launch-service.ts` | Separate typed launch paths reach existing agent/team authorities; input/observer/termination behavior retained. |
+| `BEH-002` | Explicit standalone-agent/team starts and unchanged shared lifecycle operations | `application-worker-runtime.ts` -> `application-engine-host-service.ts` -> `application-orchestration-host-service.ts` -> `application-run-binding-launch-service.ts` | Separate typed launch paths reach existing agent/team authorities; runtime payload/resource subject guards reject cross-method kinds before side effects; input/observer/termination behavior retained. |
 | `BEH-003` | Move resource discovery/configuration under `agentResources` | Worker capability adapter and host dispatcher delegate to existing orchestration resource resolver/configuration service | Implemented without changing resource filters, slot resolution, or authority. |
 | `BEH-004` | Move durable artifact reads under `publishedArtifacts` and export the exact item type | Contract/backend SDK; worker adapter; orchestration host; existing published-artifact projection service | Implemented exact nine-field summary and existing list/revision behavior. |
 | `BEH-005` | Rename cross-database correlation to launch request and preserve recovery | Binding contract/store/journal; both built-in pending-launch-request repositories and correlation services | Non-empty unique launch ID is persisted, echoed, app-scoped, and nullable lookup drives interrupted-handoff reconciliation; no idempotent launch promise added. |
@@ -104,6 +111,8 @@
 - `pnpm exec tsc -p tsconfig.build.json --noEmit` in `autobyteus-server-ts` — passed after final source changes.
 - `pnpm run build:full` in `autobyteus-server-ts` — passed after final source changes, including built-in agent bootstrap smoke check.
 - Focused server unit run across 13 changed application bundle/engine/orchestration/app-owned/storage files — passed, 13 files and 80 tests. The final orchestration-host refactor was additionally rerun separately: 1 file and 6 tests passed.
+- `CR-001` focused rework check: build-config TypeScript compilation plus launch-service, orchestration-host, and engine-host unit tests — passed, 3 files and 16 tests. This includes 6 new launch-service tests covering both valid routes and all method/payload/resource kind mismatches.
+- `pnpm run build:full` after `CR-001` rework — passed, including the built-in agent bootstrap smoke check.
 - `git diff --check` — passed.
 - Repository inventory for removed public/current tokens — clean outside ticket history; prohibited migration service and appended rename SQL files are absent; storage lifecycle/migration service production files have no ticket diff; platform schema metadata remains version `1`.
 - `pnpm typecheck` in `autobyteus-server-ts` — failed on the pre-existing TS6059 configuration issue (`rootDir` is `src` while `tests` is included). Its prerequisite shared builds passed, and `tsconfig.build.json` compilation/full build passed.
