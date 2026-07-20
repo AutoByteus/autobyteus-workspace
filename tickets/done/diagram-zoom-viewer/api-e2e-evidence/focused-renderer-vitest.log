@@ -1,0 +1,73 @@
+
+> autobyteus@1.4.19 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > fits wide and tall diagrams without changing their aspect ratios 1ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > returns safe finite empty geometry for invalid dimensions 0ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > clamps zoom and creates real centered or overflow plane extents 0ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > keeps the anchored diagram point stable while zooming from a centered fit 0ms
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts > mermaidDiagramViewport > clamps anchored scroll at every real plane edge 0ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > mounts a named modal with exactly four persistent actions and restores body overflow 19ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > fits from the SVG viewBox, creates real zoom extents, and resets with Fit 19ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > zooms around the wheel interaction point and supports keyboard controls 9ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > traps focus, dismisses conventionally, and reports backdrop or Escape closes 5ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts > MermaidDiagramViewer > returns Mermaid xlink HTTP anchors while preserving other interactive descendants 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > preserves loading and error states without exposing an empty viewer action 10ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > renders a full-width intrinsic-capped preview with no duplicate wrapper id 9ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > moves the one SVG copy into the viewer from the button or non-interactive preview 26ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > preserves interactive descendants instead of treating them as expand actions 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > forwards expanded links to the owning Markdown boundary 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts > MermaidDiagram > commits only the newest async render generation and invalidates an open viewer 8ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > should render markdown content correctly 15ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps the generic renderer inert and enables scoped file actions only when opted in 15ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > emits the raw-token action on explicit click without classifying anchor.href 5ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > decodes encoded POSIX and Windows link destinations while retaining source text 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps fenced code text unchanged while exposing complete space-containing paths 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > renders supported paths as compact inline links while preserving labels and source text 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps inline file links keyboard accessible for Enter and Space 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps unsupported archive, installer, and binary paths source-faithful without actions 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > renders supported Lua code paths as Event Monitor actions 4ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > keeps incomplete absolute paths unchanged across links, prose, inline code, and fences 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > should render MermaidDiagram component for mermaid blocks 2ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > routes a teleported Mermaid external-link event through the existing link authority 12ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > routes ordinary HTML href and inline Mermaid xlink anchors through one authority 3ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > binds a managed image only after authorized resolution completes 3ms
+
+ Test Files  4 passed (4)
+      Tests  30 passed (30)
+   Start at  10:33:45
+   Duration  5.06s (transform 2.63s, setup 17.44s, collect 167ms, tests 197ms, environment 838ms, prepare 514ms)
+

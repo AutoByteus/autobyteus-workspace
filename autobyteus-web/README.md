@@ -384,6 +384,16 @@ pnpm test:e2e:workspace-responsive -- --base-url http://127.0.0.1:3000 --output-
 
 The probe uses Chrome/Chromium through Playwright Core. If automatic discovery does not find a browser, pass `--browser-executable <path>` or set `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
+### Diagram Zoom Viewer Browser Probe
+
+The shared Markdown Mermaid viewer has a self-starting browser probe covering inline sizing; fine-pointer rest/hover/focus chrome; no-hover, coarse-pointer, and hybrid fine-primary/coarse-secondary fallbacks; the four uniform icon-only viewer actions; open/fit/zoom/pan; keyboard and touch input; link routing; render lifecycle; localization; focus containment; and narrow/200%-text layouts. It installs a temporary Nuxt fixture route, starts an owned development server, runs Chrome through Playwright Core, and removes owned resources before returning:
+
+```bash
+pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer
+```
+
+The probe chooses a free local port by default. Use `--port <port>` to pin it. If automatic browser discovery does not find Chrome/Chromium, pass `--browser-executable <path>` or set `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
+
 ## GraphQL Codegen
 
 Generate TypeScript types from GraphQL schema:
@@ -398,6 +408,7 @@ pnpm codegen
 - `pnpm build`: Build for web production
 - `pnpm test`: Run tests
 - `pnpm test:e2e:workspace-responsive`: Run the standard workspace responsive browser probe against a running frontend/backend target
+- `pnpm test:e2e:diagram-zoom-viewer`: Run the self-starting shared Markdown Mermaid viewer browser probe
 - `pnpm preview`: Preview web production build
 - `pnpm prepare-server`: Prepare the backend server for packaging with Electron
 - `pnpm build:electron:linux`: Build desktop application for Linux host architecture

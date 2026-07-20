@@ -1,0 +1,5 @@
+exit=1
+summary=4 failed | 376 passed | 1 skipped (381)
+tests=4 failed | 2051 passed | 1 skipped (2056)
+failed_files=tests/integration/workspace-history-draft-send.integration.test.ts,components/memory/__tests__/MemoryHome.spec.ts,components/settings/__tests__/CodexFullAccessCard.spec.ts,localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+changed_task_paths_in_failures=none

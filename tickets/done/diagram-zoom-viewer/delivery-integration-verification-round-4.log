@@ -1,0 +1,31 @@
+Authoritative refined delivery refresh: 2026-07-20T09:11:35Z
+$ git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+
+$ git rev-parse HEAD origin/personal
+c92d5ee6182cb18efbb062aa0d9e742c94c7d600
+8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+
+$ git rev-list --left-right --count HEAD...origin/personal
+4	0
+
+$ git diff --check
+PASS
+
+$ node --check autobyteus-web/tests/e2e/diagram-zoom-viewer-probe.mjs
+PASS
+
+$ test ! -e autobyteus-web/pages/api-e2e-diagram-zoom-viewer.vue
+PASS
+
+$ node structured round-4 evidence check
+PASS result=Pass scenarios=8 failures=0 pageErrors=0 temporaryPage=removed
+
+$ verify refined Electron build and checksums
+f4d204fa5ace3c5931be23dfd8d4f1fd22a3714f3bc4860329d0ddc4486b2913  /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.19.dmg
+c5f626271e823691ae6b02df619d6c2ade0e1c64c2cc9d3d8e981c558cbfa651  /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.19.zip
+PASS
+
+$ verify authoritative delivery artifacts and stale round-2 summary absence
+PASS

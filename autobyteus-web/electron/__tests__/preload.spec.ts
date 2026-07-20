@@ -7,8 +7,12 @@ describe('electron preload', () => {
     vi.restoreAllMocks();
   });
 
-  it('exposes getAppLocale and invokes the main-process locale bridge', async () => {
-    const invoke = vi.fn().mockResolvedValue('zh-CN');
+  it('exposes locale and external-link methods through their main-process bridges', async () => {
+    const invoke = vi.fn().mockImplementation((channel: string) => {
+      if (channel === 'get-app-locale') return Promise.resolve('zh-CN');
+      if (channel === 'open-external-link') return Promise.resolve({ success: true });
+      return Promise.resolve(undefined);
+    });
     const exposeInMainWorld = vi.fn();
 
     vi.doMock('electron', () => ({
@@ -33,5 +37,10 @@ describe('electron preload', () => {
 
     await expect(electronApi.getAppLocale()).resolves.toBe('zh-CN');
     expect(invoke).toHaveBeenCalledWith('get-app-locale');
+
+    await expect(electronApi.openExternalLink('https://example.com/diagram-docs')).resolves.toEqual({
+      success: true,
+    });
+    expect(invoke).toHaveBeenCalledWith('open-external-link', 'https://example.com/diagram-docs');
   });
 });
