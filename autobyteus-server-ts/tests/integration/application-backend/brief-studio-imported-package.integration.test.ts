@@ -62,7 +62,7 @@ vi.mock("../../../src/application-backend-api-gateway/services/application-backe
     ...actual,
     getApplicationBackendApiGatewayService: () => {
       if (!applicationBackendState.apiGatewayService) {
-        throw new Error("Integration test gateway service was not initialized.");
+        throw new Error("Integration test API gateway service was not initialized.");
       }
       return applicationBackendState.apiGatewayService;
     },

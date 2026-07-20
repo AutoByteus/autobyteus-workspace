@@ -199,7 +199,7 @@ The v3 bootstrap payload contains:
 
 The payload intentionally does **not** contain a platform-owned execution id, session id, app instance id, or prelaunched runtime summary. The iframe launch id is only an ephemeral bootstrap correlation id.
 
-## Backend Gateway And SDK Boundary
+## Backend API Gateway And SDK Boundary
 
 Bundled UIs should usually sit on top of `@autobyteus/application-frontend-sdk`, not on raw `postMessage` payloads alone.
 
