@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/user-verification-file-uri-display-preservation-report.md`; final user verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/user-verification-final-test-report.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/user-verification-file-uri-display-preservation-report.md`; final user verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/user-verification-final-test-report.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/api-e2e-coverage-investigation.md`
 - Current Execution Round: 2
 - Trigger: user supplied explicit successful final-test approval after round 1 external-runtime block
 - Prior Round Reviewed: round 1 blocked result; predecessor absolute-path execution artifacts remain context
@@ -103,7 +103,7 @@ Round 2 user verification supersedes the round 1 external-runtime block for work
 - Decision and selected execution mode: `Required` and completed through Browser + Live API attempts plus explicit user final verification
 - Material deviation: the team browser could only reach public bootstrap routes; the user supplied the missing final runtime verification externally
 - Confidence gap addressed: Nuxt renderer startup, desktop/mobile public bootstrap, live server health, relative workspace content, server containment refusal, and the user-owned final runtime test
-- User verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/user-verification-final-test-report.md`; the user explicitly reports successful final testing and approves continuation. Exact manual scenario/device/package details were not supplied.
+- User verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/user-verification-final-test-report.md`; the user explicitly reports successful final testing and approves continuation. Exact manual scenario/device/package details were not supplied.
 - Startup order, commands, and readiness: clean install -> server build -> server on 3328 -> curl health -> Nuxt on 3327 -> browser `/` and `/mobile` -> close/stop/cleanup
 - Environment choices: task-owned temp workspace fixture, server internal URL 3328, inherited public URL logged as 29695; startup also logged Prisma datasource `/Users/normy/.autobyteus/server-data/db/production.db` with no pending migrations, so DB isolation is a residual
 - Seed data, fixtures, identities: one relative text fixture; no authentication or paired phone identity

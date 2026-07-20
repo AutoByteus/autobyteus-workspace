@@ -144,6 +144,17 @@ audio, video, PDF, CSV, and Excel content. Failure states stay in the normal
 Files/viewer status surface and do not navigate the application or rewrite the
 original Event Monitor content.
 
+Event Monitor raw Markdown `file:` destinations use the same scoped capability
+as absolute-path candidates. Only empty-authority absolute URIs with valid
+paths and supported preview types become actions. Authorities, query/fragment
+decorations, malformed or relative URIs, empty paths, and unsupported types
+remain literal and inert; they do not fall through to generic browser
+navigation. Raw URI provenance is transient and never enters DOM attributes,
+persisted File Explorer state, references/artifacts, workspace requests, or API
+payloads. A valid URI that cannot map in the active browser/remote workspace
+remains an action with the localized host-only/unavailable result before any
+Files/mobile/content access.
+
 Incomplete placeholder components (`.`, `..`, `...`, and `…`) are rejected
 before a preview action is created, including on POSIX and Windows paths.
 Complete dotted filenames remain valid. Supported actions use compact inline

@@ -62,7 +62,7 @@ The shared `personal` worktree was not used because it contains unrelated local 
 
 | Canonical path | Purpose | Scope | Status | Approval applicability | Related IDs |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/in-progress/event-monitor-file-uri-internal-preview/user-verification-file-uri-display-preservation-report.md` | Preserve screenshot evidence and the user's final display/activation decision | Valid/invalid standard Markdown `file:///` links plus the distinct remote-unmapped activation result | Current | Applicable for visual/lexical-invalid behavior; runtime mapping outcome is an architecture boundary decision | BEH-URI-003/004/009; REQ-URI-003/004/010; AC-URI-005/006/009 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/tickets/done/event-monitor-file-uri-internal-preview/user-verification-file-uri-display-preservation-report.md` | Preserve screenshot evidence and the user's final display/activation decision | Valid/invalid standard Markdown `file:///` links plus the distinct remote-unmapped activation result | Current | Applicable for visual/lexical-invalid behavior; runtime mapping outcome is an architecture boundary decision | BEH-URI-003/004/009; REQ-URI-003/004/010; AC-URI-005/006/009 |
 
 The supplement is linked from `task.md`, `requirements.md`, and `design-spec.md`. No image copy is needed: the original user-provided absolute paths are retained as evidence references.
 

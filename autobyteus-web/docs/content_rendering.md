@@ -108,6 +108,17 @@ scoped action ID, so browser-resolved `href` values are never treated as file
 authorization. HTTP(S), relative paths, and ordinary non-Event-Monitor Markdown
 behavior retain their existing handling.
 
+The same Event Monitor-only capability recognizes valid `file:` URI tokens from
+raw Markdown destinations without trusting the browser-resolved anchor URL.
+Valid local URIs preserve their raw destination transiently for the activation
+contract, while the rendered DOM contains only the render-scoped action ID and
+display label. Empty-authority absolute URIs such as `file:///tmp/report.md`
+can become actions; authorities, query strings, fragments, malformed escapes,
+relative/empty paths, and unsupported file types remain inert. A valid URI may
+still be unavailable in a browser/remote runtime, in which case the existing
+localized host-only/unavailable state is shown before Files, mobile, workspace,
+or filesystem access.
+
 Path recognition rejects incomplete or placeholder components such as `.`, `..`,
 `...`, and the Unicode ellipsis `…` before action/type classification. Complete
 dotted filenames such as `release...notes.md` remain eligible. This keeps
@@ -135,6 +146,12 @@ Runtime access remains environment-specific: embedded Electron may use the
 trusted local boundary, while browser/remote/mobile clients must map the host
 path inside the active workspace to a workspace-relative locator. Unmapped
 paths remain copyable and show a localized host-only/unavailable state.
+
+For embedded Electron binary previews, the action path uses the shared
+`local-file://local/<encoded-absolute-path>` codec and trusted default-session
+protocol gate described in the Electron packaging documentation. The original
+`file:` URI is never used as an authorization URL, persisted locator, DOM
+attribute, artifact/reference record, or API request.
 
 Action eligibility and File Explorer type routing share the pure
 `utils/fileExplorer/fileTypePolicy.ts` policy. Supported text/code/Markdown/HTML

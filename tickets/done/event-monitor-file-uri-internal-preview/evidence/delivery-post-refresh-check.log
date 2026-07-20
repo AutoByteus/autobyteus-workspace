@@ -1,0 +1,39 @@
+Delivery post-refresh integrated-state check
+2026-07-20T13:26:03Z
+HEAD=9e18eb8f2e50eeae51f6c63f154d70d0ba3be3b8
+BASE=29912db3b40d0563150d22a4a17e20448e70c997
+BASE_REFRESH=already current after git fetch origin personal; no base commits integrated
+COMMAND=pnpm --dir autobyteus-web exec vitest run utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts composables/__tests__/useMarkdownSegments.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts --reporter=dot
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/autobyteus-web
+
+stderr | composables/__tests__/useMarkdownSegments.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useMarkdownSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··························································
+
+ Test Files  3 passed (3)
+      Tests  58 passed (58)
+   Start at  15:26:06
+   Duration  5.10s (transform 2.51s, setup 13.02s, collect 139ms, tests 120ms, environment 694ms, prepare 376ms)
+
