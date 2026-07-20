@@ -11,6 +11,7 @@
         v-else-if="segment.type === 'mermaid'"
         :content="segment.content"
         class="mermaid-segment-container"
+        @external-link="openExternalLink"
       />
     </template>
   </div>
