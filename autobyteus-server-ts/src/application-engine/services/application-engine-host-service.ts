@@ -24,7 +24,7 @@ import {
   APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
   APPLICATION_ENGINE_METHOD_LOAD_DEFINITION,
   APPLICATION_ENGINE_METHOD_ROUTE_REQUEST,
-  APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL,
+  APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
   APPLICATION_ENGINE_METHOD_STOP,
   type ApplicationExecutionEventDispatchResult,
   type ApplicationWorkerExecuteGraphqlInput,
@@ -34,7 +34,7 @@ import {
   type ApplicationWorkerInvokeQueryInput,
   type ApplicationWorkerLoadDefinitionResult,
   type ApplicationWorkerRouteRequestInput,
-  type ApplicationWorkerRuntimeControlInput,
+  type ApplicationWorkerContextCapabilityInput,
 } from "../runtime/protocol.js";
 
 const createBaseStatus = (applicationId: string): ApplicationEngineStatus => ({
@@ -222,8 +222,8 @@ export class ApplicationEngineHostService {
     const client = new ApplicationEngineClient();
     client.attach(childProcess);
     client.registerRequestHandler(
-      APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL,
-      async (params) => this.handleRuntimeControl(applicationId, params as ApplicationWorkerRuntimeControlInput),
+      APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
+      async (params) => this.handleContextCapability(applicationId, params as unknown as ApplicationWorkerContextCapabilityInput),
     );
 
     client.onNotification((message) => {
@@ -303,52 +303,66 @@ export class ApplicationEngineHostService {
     }
   }
 
-  private async handleRuntimeControl(
+  private async handleContextCapability(
     applicationId: string,
-    input: ApplicationWorkerRuntimeControlInput,
+    input: ApplicationWorkerContextCapabilityInput,
   ): Promise<unknown> {
-    switch (input.action) {
-      case "listAvailableExecutionResources":
-        return this.orchestrationHostService.listAvailableExecutionResources(applicationId, input.input as never);
-      case "getConfiguredExecutionResource":
-        return this.orchestrationHostService.getConfiguredExecutionResource(
-          applicationId,
-          (input.input as { slotKey?: string }).slotKey ?? "",
-        );
-      case "startRun":
-        return this.orchestrationHostService.startRun(applicationId, input.input as never);
-      case "getRunBinding":
-        return this.orchestrationHostService.getRunBinding(
-          applicationId,
-          (input.input as { bindingId?: string }).bindingId ?? "",
-        );
-      case "getRunBindingByIntentId":
-        return this.orchestrationHostService.getRunBindingByIntentId(
-          applicationId,
-          (input.input as { bindingIntentId?: string }).bindingIntentId ?? "",
-        );
-      case "listRunBindings":
-        return this.orchestrationHostService.listRunBindings(applicationId, input.input as never);
-      case "getRunPublishedArtifacts":
-        return this.orchestrationHostService.getRunPublishedArtifacts(
-          applicationId,
-          (input.input as { runId?: string }).runId ?? "",
-        );
-      case "getPublishedArtifactRevisionText":
-        return this.orchestrationHostService.getPublishedArtifactRevisionText(
-          applicationId,
-          input.input as never,
-        );
-      case "postRunInput":
-        return this.orchestrationHostService.postRunInput(applicationId, input.input as never);
-      case "terminateRunBinding":
-        return this.orchestrationHostService.terminateRunBinding(
-          applicationId,
-          (input.input as { bindingId?: string }).bindingId ?? "",
-        );
-      default:
-        throw new Error(`Unsupported application runtimeControl action '${String(input.action)}'.`);
+    switch (input.capability) {
+      case "agentExecution":
+        switch (input.operation) {
+          case "startAgent":
+            return this.orchestrationHostService.startAgent(applicationId, input.input);
+          case "startAgentTeam":
+            return this.orchestrationHostService.startAgentTeam(applicationId, input.input);
+          case "get":
+            return this.orchestrationHostService.getRunBinding(
+              applicationId,
+              input.input.bindingId,
+            );
+          case "findByLaunchRequestId":
+            return this.orchestrationHostService.findRunBindingByLaunchRequestId(
+              applicationId,
+              input.input.launchRequestId,
+            );
+          case "list":
+            return this.orchestrationHostService.listRunBindings(applicationId, input.input);
+          case "sendInput":
+            return this.orchestrationHostService.sendRunInput(applicationId, input.input);
+          case "terminate":
+            return this.orchestrationHostService.terminateRunBinding(
+              applicationId,
+              input.input.bindingId,
+            );
+        }
+        break;
+      case "agentResources":
+        switch (input.operation) {
+          case "listAvailable":
+            return this.orchestrationHostService.listAvailableExecutionResources(applicationId, input.input);
+          case "getConfigured":
+            return this.orchestrationHostService.getConfiguredExecutionResource(
+              applicationId,
+              input.input.slotKey,
+            );
+        }
+        break;
+      case "publishedArtifacts":
+        switch (input.operation) {
+          case "list":
+            return this.orchestrationHostService.listRunPublishedArtifacts(
+              applicationId,
+              input.input.runId,
+            );
+          case "readRevision":
+            return this.orchestrationHostService.readPublishedArtifactRevision(
+              applicationId,
+              input.input,
+            );
+        }
+        break;
     }
+
+    throw new Error("Unsupported application context capability request.");
   }
 
   private requireRuntimeHandle(applicationId: string): ApplicationEngineRuntimeHandle {

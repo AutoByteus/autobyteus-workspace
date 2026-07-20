@@ -1,0 +1,54 @@
+# Final Inventory — Execution Round 2 (Authoritative)
+
+- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework`
+- Revision under test: `ef1e083678e8966c5a30936000442d679dd14191` plus the uncommitted API/E2E durable integration/report artifacts listed by `git status`.
+- Prior round: `INV-001 / AC-005` failed on three current-documentation references at `5b65df098f39e5fa20aefdadd6a68e391151f47c`.
+
+== Prior failure exact recheck ==
+command: rg -n -i 'runtime[- ]control|pending[- ]binding[- ]intent' autobyteus-web/docs/applications.md autobyteus-server-ts/docs/modules/application_backend_gateway.md
+PASS: no matches; the three prior stale current-documentation references are resolved.
+NOTE: autobyteus-web/docs/agent_teams.md retains an unrelated "runtime-control route key" phrase for UI command focus and is unchanged from the recorded base.
+
+== Active/current removed-token inventory ==
+PASS: no exact removed app-context/correlation token found.
+
+== Explicit v2 references (must be rejection-only) ==
+autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts:280:        definitionContractVersion: '2',
+autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts:303:    ).rejects.toThrow("Unsupported application backend definitionContractVersion '2'.");
+autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts:307:      lastFailure: "Unsupported application backend definitionContractVersion '2'.",
+autobyteus-application-devkit/tests/application-devkit.test.mjs:94:  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '2';
+autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts:462:    manifest.sdkCompatibility.backendDefinitionContractVersion = "2";
+PASS: reviewed v2 references are confined to explicit rejection coverage/current rejection documentation.
+
+== Generated backend/output removed-token inventory ==
+PASS: generated output contains no removed token.
+PASS: regenerated built-in output remains diff-clean against tracked state.
+
+== Current manifests ==
+applications/brief-studio/backend/bundle.json: 3
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/bundle.json: 3
+applications/socratic-math-teacher/backend/bundle.json: 3
+applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/backend/bundle.json: 3
+PASS: all discovered current built-in manifests declare backend definition contract v3.
+
+== Prohibited migration/version/checkpoint inventory ==
+PASS: no prohibited platform schema migration or appended rename migration file found.
+PASS: no prohibited migration/checkpoint implementation token found.
+PASS: generic application migration/lifecycle production services have no ticket diff.
+248:         VALUES ('schema_version', '1', ?)`,
+PASS: platform storage metadata remains schema version 1.
+Brief migrations:
+applications/brief-studio/backend-src/migrations/001_create_brief_tables.sql
+applications/brief-studio/backend-src/migrations/002_artifact_publication_model.sql
+applications/brief-studio/backend-src/migrations/003_application_owned_orchestration.sql
+applications/brief-studio/backend-src/migrations/004_pending_launch_requests.sql
+applications/brief-studio/backend-src/migrations/005_published_artifact_reconciliation.sql
+Socratic migrations:
+applications/socratic-math-teacher/backend-src/migrations/001_create_lessons.sql
+applications/socratic-math-teacher/backend-src/migrations/002_pending_launch_requests.sql
+applications/socratic-math-teacher/backend-src/migrations/003_published_artifact_reconciliation.sql
+
+== Final diff hygiene ==
+PASS: git diff --check.
+
+FINAL_INVENTORY_RESULT=PASS

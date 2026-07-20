@@ -112,7 +112,7 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     moduleFormat: "esm",
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
-    sdkCompatibility: { backendDefinitionContractVersion: "2", frontendSdkContractVersion: "3" },
+    sdkCompatibility: { backendDefinitionContractVersion: "3", frontendSdkContractVersion: "3" },
     supportedExposures: { queries: true, commands: true, routes: true, graphql: true, notifications: true, eventHandlers: true },
     migrationsDir: "backend/migrations",
     assetsDir: "backend/assets",

@@ -55,7 +55,7 @@ const requireRevisionText = async (
   context: ApplicationHandlerContext,
   input: { runId: string; revisionId: string },
 ): Promise<string> => {
-  const text = await context.runtimeControl.getPublishedArtifactRevisionText(input);
+  const text = await context.publishedArtifacts.readRevision(input);
   if (typeof text !== "string") {
     throw new Error(
       `Brief Studio could not read published artifact revision '${input.revisionId}' for run '${input.runId}'.`,
@@ -93,7 +93,7 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
   },
 
   async reconcilePublishedArtifacts(): Promise<void> {
-    const bindings = await context.runtimeControl.listRunBindings(null);
+    const bindings = await context.agentExecution.list(null);
     for (const binding of bindings) {
       const correlationService = createRunBindingCorrelationService(context);
       correlationService.resolveBriefIdForBinding(binding);
@@ -112,7 +112,7 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
           continue;
         }
         const publishedArtifacts = sortArtifacts(
-          await context.runtimeControl.getRunPublishedArtifacts(runId),
+          await context.publishedArtifacts.list(runId),
         );
         for (const artifact of publishedArtifacts) {
           await this.projectArtifactRevision({

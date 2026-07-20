@@ -16,7 +16,7 @@ import { createLessonArtifactReconciliationService } from "../../../../applicati
 import { projectLessonExecutionEvent } from "../../../../applications/socratic-math-teacher/backend-src/services/lesson-projection-service.ts";
 
 const tempRoots: string[] = [];
-type StartRunRequest = Parameters<ApplicationHandlerContext["runtimeControl"]["startRun"]>[0];
+type StartAgentTeamRequest = Parameters<ApplicationHandlerContext["agentExecution"]["startAgentTeam"]>[0];
 
 const BRIEF_MIGRATIONS_DIR = path.resolve(
   process.cwd(),
@@ -36,11 +36,37 @@ const SOCRATIC_MIGRATIONS_DIR = path.resolve(
   "migrations",
 );
 
-const buildRuntimeControl = (
-  overrides: Partial<ApplicationHandlerContext["runtimeControl"]> = {},
-): ApplicationHandlerContext["runtimeControl"] => ({
-  listAvailableExecutionResources: vi.fn(async () => []),
-  getConfiguredExecutionResource: vi.fn(async (slotKey: string) => {
+type CapabilityOverrides = {
+  startAgentTeam?: ApplicationHandlerContext["agentExecution"]["startAgentTeam"];
+  get?: ApplicationHandlerContext["agentExecution"]["get"];
+  findByLaunchRequestId?: ApplicationHandlerContext["agentExecution"]["findByLaunchRequestId"];
+  listBindings?: ApplicationHandlerContext["agentExecution"]["list"];
+  sendInput?: ApplicationHandlerContext["agentExecution"]["sendInput"];
+  terminate?: ApplicationHandlerContext["agentExecution"]["terminate"];
+  getConfigured?: ApplicationHandlerContext["agentResources"]["getConfigured"];
+  listArtifacts?: ApplicationHandlerContext["publishedArtifacts"]["list"];
+  readRevision?: ApplicationHandlerContext["publishedArtifacts"]["readRevision"];
+};
+
+const buildCapabilities = (overrides: CapabilityOverrides = {}) => ({
+  agentExecution: {
+    startAgent: vi.fn(async () => {
+      throw new Error("agentExecution.startAgent was not mocked for this test.");
+    }),
+    startAgentTeam: overrides.startAgentTeam ?? vi.fn(async () => {
+      throw new Error("agentExecution.startAgentTeam was not mocked for this test.");
+    }),
+    get: overrides.get ?? vi.fn(async () => null),
+    findByLaunchRequestId: overrides.findByLaunchRequestId ?? vi.fn(async () => null),
+    list: overrides.listBindings ?? vi.fn(async () => []),
+    sendInput: overrides.sendInput ?? vi.fn(async () => {
+      throw new Error("agentExecution.sendInput was not mocked for this test.");
+    }),
+    terminate: overrides.terminate ?? vi.fn(async () => null),
+  },
+  agentResources: {
+    listAvailable: vi.fn(async () => []),
+    getConfigured: overrides.getConfigured ?? vi.fn(async (slotKey: string) => {
     if (slotKey === "lessonTutorTeam") {
       return {
         slotKey,
@@ -64,25 +90,17 @@ const buildRuntimeControl = (
       };
     }
     return null;
-  }),
-  startRun: vi.fn(async () => {
-    throw new Error("runtimeControl.startRun was not mocked for this test.");
-  }),
-  getRunBinding: vi.fn(async () => null),
-  getRunBindingByIntentId: vi.fn(async () => null),
-  listRunBindings: vi.fn(async () => []),
-  getRunPublishedArtifacts: vi.fn(async () => []),
-  getPublishedArtifactRevisionText: vi.fn(async () => null),
-  postRunInput: vi.fn(async () => {
-    throw new Error("runtimeControl.postRunInput was not mocked for this test.");
-  }),
-  terminateRunBinding: vi.fn(async () => null),
-  ...overrides,
+    }),
+  },
+  publishedArtifacts: {
+    list: overrides.listArtifacts ?? vi.fn(async () => []),
+    readRevision: overrides.readRevision ?? vi.fn(async () => null),
+  },
 });
 
 const createHandlerContext = (input: {
   appDatabasePath: string;
-  runtimeControl?: Partial<ApplicationHandlerContext["runtimeControl"]>;
+  capabilities?: ReturnType<typeof buildCapabilities>;
   publishNotification?: ApplicationHandlerContext["publishNotification"];
 }): ApplicationHandlerContext => ({
   requestContext: {
@@ -97,7 +115,7 @@ const createHandlerContext = (input: {
     assetsPath: path.join(path.dirname(input.appDatabasePath), "assets"),
   },
   publishNotification: input.publishNotification ?? vi.fn(async () => undefined),
-  runtimeControl: buildRuntimeControl(input.runtimeControl),
+  ...(input.capabilities ?? buildCapabilities()),
 });
 
 const applyMigrations = async (dbPath: string, migrationsDir: string): Promise<void> => {
@@ -122,10 +140,10 @@ const createTempDatabase = async (prefix: string, migrationsDir: string): Promis
   return dbPath;
 };
 
-const buildBriefBinding = (bindingIntentId: string): ApplicationRunBindingSummary => ({
+const buildBriefBinding = (launchRequestId: string): ApplicationRunBindingSummary => ({
   bindingId: "binding-brief-1",
   applicationId: "brief-studio",
-  bindingIntentId,
+  launchRequestId,
   status: "ATTACHED",
   executionResourceRef: {
     source: "bundle",
@@ -162,12 +180,12 @@ const buildBriefBinding = (bindingIntentId: string): ApplicationRunBindingSummar
 });
 
 const buildLessonBinding = (
-  bindingIntentId: string,
+  launchRequestId: string,
   overrides: Partial<Pick<ApplicationRunBindingSummary, "status" | "updatedAt" | "terminatedAt" | "lastErrorMessage">> = {},
 ): ApplicationRunBindingSummary => ({
   bindingId: "binding-lesson-1",
   applicationId: "socratic-math-teacher",
-  bindingIntentId,
+  launchRequestId,
   status: overrides.status ?? "ATTACHED",
   executionResourceRef: {
     source: "bundle",
@@ -195,8 +213,8 @@ const buildLessonBinding = (
   lastErrorMessage: overrides.lastErrorMessage ?? null,
 });
 
-const buildRevisionTextRuntimeControl = (entries: Record<string, string>) => ({
-  getPublishedArtifactRevisionText: vi.fn(async ({ revisionId }: { revisionId: string }) =>
+const buildRevisionReader = (entries: Record<string, string>) => ({
+  readRevision: vi.fn(async ({ revisionId }: { revisionId: string }) =>
     entries[revisionId] ?? null),
 });
 
@@ -309,20 +327,20 @@ afterEach(async () => {
   await Promise.all(tempRoots.splice(0).map((tempRoot) => fs.rm(tempRoot, { recursive: true, force: true })));
 });
 
-describe("App-owned bindingIntentId correlation", () => {
-  it("fails Brief Studio launch before startRun when configured-resource readback rejects an invalid slot selection", async () => {
+describe("App-owned launchRequestId correlation", () => {
+  it("fails Brief Studio launch before startAgentTeam when configured-resource readback rejects an invalid slot selection", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-invalid-slot-", BRIEF_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      getConfiguredExecutionResource: vi.fn(async () => {
+    const capabilities = buildCapabilities({
+      getConfigured: vi.fn(async () => {
         throw new Error(
           "Application execution resource slot 'draftingTeam' has invalid persisted override: Application execution resource slot 'draftingTeam' does not allow resource kind 'AGENT'.",
         );
       }),
-      startRun: vi.fn(async () => buildBriefBinding("unused-binding-intent")),
+      startAgentTeam: vi.fn(async () => buildBriefBinding("unused-launch-request")),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     const service = createBriefRunLaunchService(context);
@@ -335,20 +353,20 @@ describe("App-owned bindingIntentId correlation", () => {
       }),
     ).rejects.toThrow("Application execution resource slot 'draftingTeam' has invalid persisted override");
 
-    expect(runtimeControl.startRun).not.toHaveBeenCalled();
+    expect(capabilities.agentExecution.startAgentTeam).not.toHaveBeenCalled();
   });
 
-  it("reconciles Brief Studio launch failures through getRunBindingByIntentId", async () => {
-    const appDatabasePath = await createTempDatabase("autobyteus-brief-binding-intent-", BRIEF_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      startRun: vi.fn(async () => {
-        throw new Error("startRun failed after binding creation");
+  it("reconciles Brief Studio launch failures through findByLaunchRequestId", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-brief-launch-request-", BRIEF_MIGRATIONS_DIR);
+    const capabilities = buildCapabilities({
+      startAgentTeam: vi.fn(async () => {
+        throw new Error("startAgentTeam failed after binding creation");
       }),
-      getRunBindingByIntentId: vi.fn(async (bindingIntentId: string) => buildBriefBinding(bindingIntentId)),
+      findByLaunchRequestId: vi.fn(async (launchRequestId: string) => buildBriefBinding(launchRequestId)),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     const service = createBriefRunLaunchService(context);
@@ -359,9 +377,9 @@ describe("App-owned bindingIntentId correlation", () => {
         briefId: createdBrief.briefId,
         llmModelIdentifier: "gpt-test",
       }),
-    ).rejects.toThrow("startRun failed after binding creation");
+    ).rejects.toThrow("startAgentTeam failed after binding creation");
 
-    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "preset",
@@ -389,16 +407,16 @@ describe("App-owned bindingIntentId correlation", () => {
         `SELECT brief_id, binding_id, run_id FROM brief_bindings LIMIT 1`,
       ).get() as { brief_id: string; binding_id: string; run_id: string };
       const pendingIntentRow = db.prepare(
-        `SELECT status, binding_id, committed_at FROM pending_binding_intents LIMIT 1`,
+        `SELECT status, binding_id, committed_at FROM pending_launch_requests LIMIT 1`,
       ).get() as { status: string; binding_id: string | null; committed_at: string | null };
 
-      expect(runtimeControl.getRunBindingByIntentId).toHaveBeenCalledOnce();
+      expect(capabilities.agentExecution.findByLaunchRequestId).toHaveBeenCalledOnce();
       expect(briefRow).toEqual({
         status: "blocked",
         latest_binding_id: "binding-brief-1",
         latest_run_id: "team-run-brief-1",
         latest_binding_status: "ATTACHED",
-        last_error_message: "startRun failed after binding creation",
+        last_error_message: "startAgentTeam failed after binding creation",
       });
       expect(briefBindingRow).toEqual({
         brief_id: createdBrief.briefId,
@@ -417,8 +435,8 @@ describe("App-owned bindingIntentId correlation", () => {
 
   it("launches Brief Studio from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-launch-defaults-", BRIEF_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      getConfiguredExecutionResource: vi.fn(async () => ({
+    const capabilities = buildCapabilities({
+      getConfigured: vi.fn(async () => ({
         slotKey: "draftingTeam",
         executionResourceRef: {
           source: "shared",
@@ -448,11 +466,11 @@ describe("App-owned bindingIntentId correlation", () => {
           ],
         },
       })),
-      startRun: vi.fn(async (input: StartRunRequest) => buildBriefBinding(input.bindingIntentId)),
+      startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildBriefBinding(input.launchRequestId)),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     const service = createBriefRunLaunchService(context);
@@ -461,7 +479,7 @@ describe("App-owned bindingIntentId correlation", () => {
       briefId: createdBrief.briefId,
     });
 
-    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       executionResourceRef: {
         source: "shared",
         kind: "AGENT_TEAM",
@@ -492,8 +510,8 @@ describe("App-owned bindingIntentId correlation", () => {
 
   it("launches Brief Studio from explicit per-member team profiles when defaults are null", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-member-launch-configs-", BRIEF_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      getConfiguredExecutionResource: vi.fn(async () => ({
+    const capabilities = buildCapabilities({
+      getConfigured: vi.fn(async () => ({
         slotKey: "draftingTeam",
         executionResourceRef: {
           source: "shared",
@@ -521,11 +539,11 @@ describe("App-owned bindingIntentId correlation", () => {
           ],
         },
       })),
-      startRun: vi.fn(async (input: StartRunRequest) => buildBriefBinding(input.bindingIntentId)),
+      startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildBriefBinding(input.launchRequestId)),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     const service = createBriefRunLaunchService(context);
@@ -534,7 +552,7 @@ describe("App-owned bindingIntentId correlation", () => {
       briefId: createdBrief.briefId,
     });
 
-    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       executionResourceRef: {
         source: "shared",
         kind: "AGENT_TEAM",
@@ -563,14 +581,14 @@ describe("App-owned bindingIntentId correlation", () => {
     }));
   });
 
-  it("reconciles Brief Studio early events through bindingIntentId without event.executionRef", async () => {
-    const appDatabasePath = await createTempDatabase("autobyteus-brief-event-intent-", BRIEF_MIGRATIONS_DIR);
-    const artifactEvent = buildBriefArtifactEvent(buildBriefBinding("brief-pending-intent-1"));
+  it("reconciles Brief Studio early events through launchRequestId without event.executionRef", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-brief-event-launch-request-", BRIEF_MIGRATIONS_DIR);
+    const artifactEvent = buildBriefArtifactEvent(buildBriefBinding("brief-pending-launch-request-1"));
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl: buildRevisionTextRuntimeControl({
+      capabilities: buildCapabilities(buildRevisionReader({
         [artifactEvent.revisionId]: "Research summary",
-      }),
+      })),
     });
     const launchService = createBriefRunLaunchService(context);
     const createdBrief = await launchService.createBrief({ title: "Strategy Brief" });
@@ -578,11 +596,11 @@ describe("App-owned bindingIntentId correlation", () => {
     const db = new DatabaseSync(appDatabasePath);
     try {
       db.prepare(
-        `INSERT INTO pending_binding_intents (
-           binding_intent_id, brief_id, status, binding_id, created_at, updated_at, committed_at
+        `INSERT INTO pending_launch_requests (
+           launch_request_id, brief_id, status, binding_id, created_at, updated_at, committed_at
          ) VALUES (?, ?, 'PENDING_START', NULL, ?, ?, NULL)`,
       ).run(
-        "brief-pending-intent-1",
+        "brief-pending-launch-request-1",
         createdBrief.briefId,
         "2026-04-19T12:14:00.000Z",
         "2026-04-19T12:14:00.000Z",
@@ -615,7 +633,7 @@ describe("App-owned bindingIntentId correlation", () => {
         (verifiedDb.prepare(`SELECT COUNT(*) AS count FROM brief_bindings`).get() as { count: number }).count,
       );
       const pendingIntentRow = verifiedDb.prepare(
-        `SELECT status, binding_id FROM pending_binding_intents LIMIT 1`,
+        `SELECT status, binding_id FROM pending_launch_requests LIMIT 1`,
       ).get() as { status: string; binding_id: string | null };
 
       expect(briefRow).toEqual({
@@ -639,13 +657,13 @@ describe("App-owned bindingIntentId correlation", () => {
     }
   });
 
-  it("preserves Brief Studio early same-binding final artifacts when startRun succeeds after projection", async () => {
+  it("preserves Brief Studio early same-binding final artifacts when startAgentTeam succeeds after projection", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-launch-race-", BRIEF_MIGRATIONS_DIR);
     let context!: ApplicationHandlerContext;
-    const artifactEvent = buildBriefFinalArtifactEvent(buildBriefBinding("brief-pending-intent-1"));
-    const runtimeControl = buildRuntimeControl({
-      startRun: vi.fn(async (startRunInput: StartRunRequest) => {
-        const binding = buildBriefBinding(startRunInput.bindingIntentId);
+    const artifactEvent = buildBriefFinalArtifactEvent(buildBriefBinding("brief-pending-launch-request-1"));
+    const capabilities = buildCapabilities({
+      startAgentTeam: vi.fn(async (startAgentTeamInput: StartAgentTeamRequest) => {
+        const binding = buildBriefBinding(startAgentTeamInput.launchRequestId);
         await createBriefArtifactReconciliationService(context).handlePersistedArtifact({
           ...artifactEvent,
           binding,
@@ -654,13 +672,13 @@ describe("App-owned bindingIntentId correlation", () => {
         });
         return binding;
       }),
-      ...buildRevisionTextRuntimeControl({
+      ...buildRevisionReader({
         [artifactEvent.revisionId]: "Final review-ready brief body.",
       }),
     });
     context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     const service = createBriefRunLaunchService(context);
@@ -702,17 +720,17 @@ describe("App-owned bindingIntentId correlation", () => {
     }
   });
 
-  it("reconciles Socratic startLesson failures through getRunBindingByIntentId", async () => {
-    const appDatabasePath = await createTempDatabase("autobyteus-lesson-binding-intent-", SOCRATIC_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      startRun: vi.fn(async () => {
+  it("reconciles Socratic startLesson failures through findByLaunchRequestId", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-request-", SOCRATIC_MIGRATIONS_DIR);
+    const capabilities = buildCapabilities({
+      startAgentTeam: vi.fn(async () => {
         throw new Error("lesson start failed after binding creation");
       }),
-      getRunBindingByIntentId: vi.fn(async (bindingIntentId: string) => buildLessonBinding(bindingIntentId)),
+      findByLaunchRequestId: vi.fn(async (launchRequestId: string) => buildLessonBinding(launchRequestId)),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     await expect(
@@ -722,7 +740,7 @@ describe("App-owned bindingIntentId correlation", () => {
       }),
     ).rejects.toThrow("lesson start failed after binding creation");
 
-    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "preset",
@@ -747,10 +765,10 @@ describe("App-owned bindingIntentId correlation", () => {
         last_error_message: string | null;
       };
       const pendingIntentRow = db.prepare(
-        `SELECT status, binding_id, committed_at FROM pending_binding_intents LIMIT 1`,
+        `SELECT status, binding_id, committed_at FROM pending_launch_requests LIMIT 1`,
       ).get() as { status: string; binding_id: string | null; committed_at: string | null };
 
-      expect(runtimeControl.getRunBindingByIntentId).toHaveBeenCalledOnce();
+      expect(capabilities.agentExecution.findByLaunchRequestId).toHaveBeenCalledOnce();
       expect(lessonRow).toEqual({
         status: "blocked",
         latest_binding_id: "binding-lesson-1",
@@ -770,8 +788,8 @@ describe("App-owned bindingIntentId correlation", () => {
 
   it("launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-defaults-", SOCRATIC_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      getConfiguredExecutionResource: vi.fn(async () => ({
+    const capabilities = buildCapabilities({
+      getConfigured: vi.fn(async () => ({
         slotKey: "lessonTutorTeam",
         executionResourceRef: {
           source: "bundle",
@@ -794,18 +812,18 @@ describe("App-owned bindingIntentId correlation", () => {
           ],
         },
       })),
-      startRun: vi.fn(async (input: StartRunRequest) => buildLessonBinding(input.bindingIntentId)),
+      startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildLessonBinding(input.launchRequestId)),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     await createLessonRuntimeService(context).startLesson({
       prompt: "Solve 2x + 3 = 11",
     });
 
-    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
@@ -824,8 +842,8 @@ describe("App-owned bindingIntentId correlation", () => {
 
   it("launches Socratic lessons from explicit per-member team profiles when defaults are null", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-member-launch-configs-", SOCRATIC_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      getConfiguredExecutionResource: vi.fn(async () => ({
+    const capabilities = buildCapabilities({
+      getConfigured: vi.fn(async () => ({
         slotKey: "lessonTutorTeam",
         executionResourceRef: {
           source: "bundle",
@@ -846,18 +864,18 @@ describe("App-owned bindingIntentId correlation", () => {
           ],
         },
       })),
-      startRun: vi.fn(async (input: StartRunRequest) => buildLessonBinding(input.bindingIntentId)),
+      startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildLessonBinding(input.launchRequestId)),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     await createLessonRuntimeService(context).startLesson({
       prompt: "Solve 2x + 3 = 11",
     });
 
-    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
@@ -874,19 +892,19 @@ describe("App-owned bindingIntentId correlation", () => {
     }));
   });
 
-  it("reconciles Socratic early tutor events through bindingIntentId without event.executionRef", async () => {
-    const appDatabasePath = await createTempDatabase("autobyteus-lesson-event-intent-", SOCRATIC_MIGRATIONS_DIR);
-    const binding = buildLessonBinding("lesson-pending-intent-1");
+  it("reconciles Socratic early tutor events through launchRequestId without event.executionRef", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-event-launch-request-", SOCRATIC_MIGRATIONS_DIR);
+    const binding = buildLessonBinding("lesson-pending-launch-request-1");
     const artifactEvent = buildLessonArtifactEvent(binding);
     const hintArtifactEvent = buildLessonHintArtifactEvent(binding);
     const publishNotification = vi.fn(async () => undefined);
     const context = createHandlerContext({
       appDatabasePath,
       publishNotification,
-      runtimeControl: buildRevisionTextRuntimeControl({
+      capabilities: buildCapabilities(buildRevisionReader({
         [artifactEvent.revisionId]: "Try isolating x first.",
         [hintArtifactEvent.revisionId]: "Think about dividing both sides by 3.",
-      }),
+      })),
     });
 
     const db = new DatabaseSync(appDatabasePath);
@@ -912,11 +930,11 @@ describe("App-owned bindingIntentId correlation", () => {
         "2026-04-19T12:20:00.000Z",
       );
       db.prepare(
-        `INSERT INTO pending_binding_intents (
-           binding_intent_id, lesson_id, status, binding_id, created_at, updated_at, committed_at
+        `INSERT INTO pending_launch_requests (
+           launch_request_id, lesson_id, status, binding_id, created_at, updated_at, committed_at
          ) VALUES (?, ?, 'PENDING_START', NULL, ?, ?, NULL)`,
       ).run(
-        "lesson-pending-intent-1",
+        "lesson-pending-launch-request-1",
         "lesson-1",
         "2026-04-19T12:21:00.000Z",
         "2026-04-19T12:21:00.000Z",
@@ -954,7 +972,7 @@ describe("App-owned bindingIntentId correlation", () => {
         source_revision_id: string | null;
       }>;
       const pendingIntentRow = verifiedDb.prepare(
-        `SELECT status, binding_id FROM pending_binding_intents LIMIT 1`,
+        `SELECT status, binding_id FROM pending_launch_requests LIMIT 1`,
       ).get() as { status: string; binding_id: string | null };
 
       expect(lessonRow).toEqual({
@@ -1003,11 +1021,11 @@ describe("App-owned bindingIntentId correlation", () => {
   it("preserves Socratic early same-binding failure state when startLesson succeeds after projection", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-race-", SOCRATIC_MIGRATIONS_DIR);
     let context!: ApplicationHandlerContext;
-    const runtimeControl = buildRuntimeControl({
-      startRun: vi.fn(async (startRunInput: StartRunRequest) => {
+    const capabilities = buildCapabilities({
+      startAgentTeam: vi.fn(async (startAgentTeamInput: StartAgentTeamRequest) => {
         await projectLessonExecutionEvent(
           buildLessonLifecycleEnvelope(
-            buildLessonBinding(startRunInput.bindingIntentId, {
+            buildLessonBinding(startAgentTeamInput.launchRequestId, {
               status: "FAILED",
               updatedAt: "2026-04-19T12:26:00.000Z",
               lastErrorMessage: "Tutor session failed before launch completion.",
@@ -1017,12 +1035,12 @@ describe("App-owned bindingIntentId correlation", () => {
           context,
         );
 
-        return buildLessonBinding(startRunInput.bindingIntentId);
+        return buildLessonBinding(startAgentTeamInput.launchRequestId);
       }),
     });
     context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     const lesson = await createLessonRuntimeService(context).startLesson({
@@ -1039,19 +1057,19 @@ describe("App-owned bindingIntentId correlation", () => {
     });
   });
 
-  it("fails Socratic startLesson before startRun when configured-resource readback rejects an invalid slot selection", async () => {
+  it("fails Socratic startLesson before startAgentTeam when configured-resource readback rejects an invalid slot selection", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-invalid-slot-", SOCRATIC_MIGRATIONS_DIR);
-    const runtimeControl = buildRuntimeControl({
-      getConfiguredExecutionResource: vi.fn(async () => {
+    const capabilities = buildCapabilities({
+      getConfigured: vi.fn(async () => {
         throw new Error(
           "Application execution resource slot 'lessonTutorTeam' has invalid manifest default: Application execution resource could not be resolved for application 'test-app'.",
         );
       }),
-      startRun: vi.fn(async () => buildLessonBinding("unused-binding-intent")),
+      startAgentTeam: vi.fn(async () => buildLessonBinding("unused-launch-request")),
     });
     const context = createHandlerContext({
       appDatabasePath,
-      runtimeControl,
+      capabilities,
     });
 
     await expect(
@@ -1061,6 +1079,6 @@ describe("App-owned bindingIntentId correlation", () => {
       }),
     ).rejects.toThrow("Application execution resource slot 'lessonTutorTeam' has invalid manifest default");
 
-    expect(runtimeControl.startRun).not.toHaveBeenCalled();
+    expect(capabilities.agentExecution.startAgentTeam).not.toHaveBeenCalled();
   });
 });

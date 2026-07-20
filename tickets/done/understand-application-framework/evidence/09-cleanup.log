@@ -1,0 +1,19 @@
+# Cleanup Evidence — Execution Round 2
+
+- Revision: `ef1e083678e8966c5a30936000442d679dd14191`
+
+== Owned temporary paths ==
+ABSENT: autobyteus-server-ts/tests/.tmp
+ABSENT: autobyteus-server-ts/dist
+ABSENT: autobyteus-application-devkit/.tmp-tests
+ABSENT: autobyteus-application-devkit/dist
+
+== Owned validation process check ==
+PASS: no worktree-owned Node/Vitest/pnpm validation process remains.
+
+== Worktree status ==
+ M tickets/in-progress/understand-application-framework/code-review-report.md
+?? autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+?? tickets/in-progress/understand-application-framework/api-e2e-coverage-investigation.md
+?? tickets/in-progress/understand-application-framework/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/understand-application-framework/evidence/

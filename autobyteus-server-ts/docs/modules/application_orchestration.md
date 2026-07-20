@@ -2,7 +2,7 @@
 
 ## Scope
 
-Owns application-authored runtime orchestration after an application backend is running: list available execution resources, start bound runs, persist durable run bindings keyed by app-owned opaque `bindingIntentId` handoff, route live input/termination to those bindings, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose runtime-control published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
+Owns application-authored runtime orchestration after an application backend is running: list available execution resources, start bound agents and teams, persist durable run bindings keyed by app-owned `launchRequestId`, route live input/termination to those bindings, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
 
 ## TS Source
 
@@ -32,50 +32,43 @@ Owns application-authored runtime orchestration after an application backend is 
 ## Authority Boundary
 
 - The generic Applications host no longer owns platform-level `applicationSession` creation, retained session snapshots, or execution-mode orchestration.
-- Application backends own the decision to start runtime work by calling `context.runtimeControl.*` from inside the application worker.
-- `bindingIntentId` is an opaque app-supplied correlation token for direct `startRun(...)` handoff. The platform persists and echoes it, but business identity stays in app-owned state.
-- Runtime-originated artifact publication is now a runtime-wide concern owned by the shared published-artifact subsystem. Application orchestration does not validate the tool payload or persist artifact truth; it only relays bound-run `ARTIFACT_PERSISTED` events and exposes artifact reads through runtime control.
+- Application backends own the decision to start runtime work by calling `context.agentExecution.startAgent(...)` or `startAgentTeam(...)` from inside the application worker.
+- `launchRequestId` is an app-generated, non-empty correlation identifier for one launch request. The platform persists and echoes it, while business identity stays in app-owned state. It supports recovery lookup and is not an idempotent-start guarantee.
+- Runtime-originated artifact publication is a runtime-wide concern owned by the shared published-artifact subsystem. Application orchestration does not validate the tool payload or persist artifact truth; it only relays bound-run `ARTIFACT_PERSISTED` events and exposes reads through `context.publishedArtifacts`.
 - Lifecycle journals remain authoritative only for `RUN_STARTED`, `RUN_TERMINATED`, `RUN_FAILED`, and `RUN_ORPHANED`. Published artifacts do not append a second `ARTIFACT` journal family.
 - Recovery and startup gating are first-class owners. Callers should not bypass them with ad hoc resume logic.
 
-## Runtime-Control Surface
+## Named Backend Context Capabilities
 
-`ApplicationHandlerContext.runtimeControl` exposes:
+`ApplicationHandlerContext` exposes three orchestration capabilities:
 
-- `listAvailableExecutionResources(...)`
-- `getConfiguredExecutionResource(...)`
-- `startRun(...)`
-- `getRunBinding(...)`
-- `getRunBindingByIntentId(...)`
-- `listRunBindings(...)`
-- `getRunPublishedArtifacts(runId)`
-- `getPublishedArtifactRevisionText({ runId, revisionId })`
-- `postRunInput(...)`
-- `terminateRunBinding(...)`
+- `agentExecution.startAgent(...)`, `startAgentTeam(...)`, `sendInput(...)`, `terminate(...)`, `get(...)`, `list(...)`, and `findByLaunchRequestId(...)`
+- `agentResources.listAvailable(...)` and `getConfigured(...)`
+- `publishedArtifacts.list(runId)` and `readRevision({ runId, revisionId })`
 
-`listAvailableExecutionResources(...)` returns both:
+`agentResources.listAvailable(...)` returns both:
 
 - bundled application resources discovered from the owning bundle (`source = bundle`), and
 - shared agent / team definitions that remain visible to the application (`source = shared`).
 
-`getConfiguredExecutionResource(slotKey)` resolves the effective resource selection for one manifest-declared slot after validating:
+`agentResources.getConfigured(slotKey)` resolves the effective resource selection for one manifest-declared slot after validating:
 
 - the slot exists for the application,
 - the persisted override (if any) still satisfies the slot's allowed source/kind contract, and
 - the manifest default still resolves when no persisted override exists.
 
-This read-time validation is authoritative: stale persisted overrides or invalid manifest defaults fail here before app launch code can call `startRun(...)`.
+This read-time validation is authoritative: stale persisted overrides or invalid manifest defaults fail here before app launch code can call `startAgent(...)` or `startAgentTeam(...)`.
 
-`startRun(...)` requires:
+`startAgent(...)` and `startAgentTeam(...)` require:
 
-- app-owned opaque `bindingIntentId`,
+- an app-owned `launchRequestId`,
 - a concrete `executionResourceRef` (`bundle` or `shared`, `AGENT` or `AGENT_TEAM`),
 - launch configuration for the matching runtime kind, and
 - optional `initialInput`.
 
-The orchestration host validates the resource choice, launches the underlying agent/team run, persists one durable binding together with `bindingIntentId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary. Runtime skill exposure still comes from the selected agent/team definitions: agent starts and each team leaf member use configured skills only, and legacy `GLOBAL_DISCOVERY` values in app-authored inputs are rejected rather than normalized into broader access.
+The orchestration host validates the resource choice and explicit start kind, launches the underlying agent/team run, persists one durable binding together with `launchRequestId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary. Runtime skill exposure still comes from the selected agent/team definitions: agent starts and each team leaf member use configured skills only, and `GLOBAL_DISCOVERY` values in app-authored inputs are rejected rather than normalized into broader access.
 
-`getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })` provide application-owned read access to the shared published-artifact store after validating that the requested run still belongs to the calling application. These reads are for application/runtime consumers such as Brief Studio and Socratic reconciliation; the current web Artifacts tab is not a consumer of this API.
+`publishedArtifacts.list(runId)` and `readRevision({ runId, revisionId })` provide application-owned read access to the shared published-artifact store after validating that the requested run still belongs to the calling application. These reads are for application/runtime consumers such as Brief Studio and Socratic reconciliation; the current web Artifacts tab is not a consumer of this API.
 
 ## Resource Configuration And Availability
 
@@ -84,19 +77,19 @@ The orchestration boundary also owns persisted application launch setup for mani
 - per-application saved resource selections and kind-aware `launchProfile` records are stored in platform-owned state,
 - agent-backed selections can persist `runtimeKind`, `llmModelIdentifier`, and `workspaceRootPath` only when the slot declares those fields,
 - agent-team-backed selections can persist shared defaults plus current member runtime/model overrides, with `workspaceRootPath` stored on the shared defaults record,
-- old execution-resource JSON keys such as `resourceRef` or `owner` are never migrated to the new shape; stale configured-resource rows are reset/deleted so setup becomes `NOT_CONFIGURED`, and stale run-binding summaries are dropped instead of hydrated or rewritten,
+- old execution-resource configuration keys such as `resourceRef` or `owner` are not accepted as current configuration; stale configured-resource rows are reset/deleted so setup becomes `NOT_CONFIGURED`,
 - the older flat `launch_defaults_json` to `launchProfile` normalization is separate from the execution-resource rename and does not permit old execution-resource refs,
 - read-time validation is authoritative: malformed profiles, kind mismatches, unsupported fields, or stale team topology are surfaced as `INVALID_SAVED_CONFIGURATION` together with `invalidSavedConfiguration` and issue detail instead of silently launching stale state, and
 - host-managed application flows keep `autoExecuteTools` enabled for the application-owned teaching workflows.
 
-Application runtime-control launch inputs still carry a compatibility-shaped
-`skillAccessMode` field. It has a narrow value set: `PRELOADED_ONLY` is the
+Application agent-execution launch inputs carry an optional `skillAccessMode`
+field. It has a narrow value set: `PRELOADED_ONLY` is the
 host-managed default and means "use the configured skills on the target
 definition"; `NONE` suppresses AutoByteus skill exposure when an
 internal/application flow intentionally needs that. The saved setup
 `launchProfile` editors do not expose a skill-access selector, and the removed
 `GLOBAL_DISCOVERY` value is not a valid saved setup, backend SDK, or
-runtime-control input.
+`agentExecution` input.
 
 `ApplicationExecutionResourceConfigurationService` is the semantic owner for `GET /applications/:applicationId/execution-resource-configurations` and `PUT /applications/:applicationId/execution-resource-configurations/:slotKey`. It validates and normalizes current-shape writes, resets stale old execution-resource rows instead of migrating them, maps invalid write attempts to HTTP 400, and returns `READY`, `NOT_CONFIGURED`, or `INVALID_SAVED_CONFIGURATION` views for the frontend setup gate.
 
@@ -106,7 +99,7 @@ Application backends still keep business launch timing app-owned. They consume t
 
 - `ACTIVE` means the application can serve backend and orchestration traffic,
 - `QUARANTINED` means the bundle currently has diagnostics, or the application is persisted-only after package removal/temporary disappearance, and backend/orchestration entrypoints reject with availability detail, and
-- `REENTERING` means one repaired application is being resumed without restarting unrelated applications, while backend/runtime-control admission remains blocked behind retryable availability detail.
+- `REENTERING` means one repaired application is being resumed without restarting unrelated applications, while backend/context-capability admission remains blocked behind retryable availability detail.
 
 `POST /rest/applications/:applicationId/backend/reload` triggers app-scoped reload-and-reenter. A successful repair path now:
 
@@ -153,8 +146,8 @@ Runtime-visible lifecycle events use the application-owned orchestration journal
 - The shared `PublishedArtifactPublicationService` snapshots the requested workspace file, updates the durable projection, and emits runtime `ARTIFACT_PERSISTED`.
 - `ApplicationPublishedArtifactRelayService` listens for bound-run `ARTIFACT_PERSISTED` events, derives the bound application context, and invokes `artifactHandlers.persisted` through `ApplicationEngineHostService`.
 - Live artifact relay is intentionally best-effort. Relay failure logs a warning but does not roll back the published artifact or synthesize retry journal state.
-- Applications recover missed deliveries by calling `listRunBindings(...)`, `getRunPublishedArtifacts(...)`, and `getPublishedArtifactRevisionText(...)`, then applying their own idempotency keyed by `revisionId`.
-- For a full overview of how artifact relay, backend notifications, and runtime control relate to each other, see [`application_communication_model.md`](./application_communication_model.md).
+- Applications recover missed deliveries by calling `agentExecution.list(...)`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`, then applying their own idempotency keyed by `revisionId`.
+- For a full overview of how artifact relay, backend notifications, and named context capabilities relate to each other, see [`application_communication_model.md`](./application_communication_model.md).
 
 ## Startup Recovery And Gating
 
@@ -166,7 +159,7 @@ Runtime-visible lifecycle events use the application-owned orchestration journal
 4. `ApplicationExecutionEventDispatchService.resumePendingEvents()` resumes pending journal drains without eagerly starting every worker.
 5. The startup gate moves to `READY` only after recovery and dispatch resumption succeed.
 
-Live application runtime-control calls await this gate before proceeding. Startup recovery also restores the binding/observer state that later published-artifact relay depends on for bound runs.
+Live application context-capability calls await this gate before proceeding. Startup recovery also restores the binding/observer state that later published-artifact relay depends on for bound runs.
 
 ## Removed Historical Model
 

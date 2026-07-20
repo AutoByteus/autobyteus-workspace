@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS pending_binding_intents (
-  binding_intent_id TEXT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS pending_launch_requests (
+  launch_request_id TEXT PRIMARY KEY,
   brief_id TEXT NOT NULL,
   status TEXT NOT NULL,
   binding_id TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS pending_binding_intents (
 CREATE TABLE IF NOT EXISTS brief_bindings (
   binding_id TEXT PRIMARY KEY,
   brief_id TEXT NOT NULL,
-  binding_intent_id TEXT NOT NULL UNIQUE,
+  launch_request_id TEXT NOT NULL UNIQUE,
   run_id TEXT NOT NULL,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL

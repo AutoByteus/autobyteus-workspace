@@ -84,7 +84,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "2",
+      backendDefinitionContractVersion: "3",
       frontendSdkContractVersion: "3",
     },
     supportedExposures: {
@@ -218,7 +218,7 @@ const ensureTables = (storage) => {
 }
 
 export default {
-  definitionContractVersion: '2',
+  definitionContractVersion: '3',
   lifecycle: {
     onStart(ctx) {
       ensureTables(ctx.storage)

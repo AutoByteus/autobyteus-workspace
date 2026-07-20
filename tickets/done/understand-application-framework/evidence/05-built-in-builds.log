@@ -1,0 +1,22 @@
+
+> @autobyteus/application-backend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/autobyteus-application-backend-sdk
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/applications/brief-studio
+> node ./scripts/build-package.mjs
+
+Brief Studio importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/applications/brief-studio/dist/importable-package
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/applications/socratic-math-teacher
+> node ./scripts/build-package.mjs
+
+Socratic Math Teacher importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/applications/socratic-math-teacher/dist/importable-package

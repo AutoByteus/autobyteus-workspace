@@ -42,7 +42,7 @@ export const createBriefReadService = (context: ApplicationHandlerContext) => ({
     const normalizedBriefId = requireBriefId(briefId);
     const bindingIds = createRunBindingCorrelationService(context).listBindingIdsByBriefId(normalizedBriefId);
     const bindings = (
-      await Promise.all(bindingIds.map((bindingId) => context.runtimeControl.getRunBinding(bindingId)))
+      await Promise.all(bindingIds.map((bindingId) => context.agentExecution.get(bindingId)))
     ).filter((binding): binding is NonNullable<typeof binding> => Boolean(binding));
     return bindings
       .map((binding) => ({

@@ -8,7 +8,7 @@ It now demonstrates:
 - one app-owned GraphQL lesson API hosted under the platform backend mount
 - one app-owned `lessonId` business identity
 - one required manifest `executionResourceSlots[]` team slot resolved through the host-managed setup-first launch gate
-- one long-lived binding reused through `runtimeControl.postRunInput(...)`
+- one long-lived binding reused through `agentExecution.sendInput(...)`
 - host-managed saved team `launchProfile` before entry: shared runtime/model/workspace defaults plus per-member runtime/model overrides
 - post-bootstrap business UI ownership only; the bundle does not author pre-bootstrap waiting/failure/direct-open UX
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace

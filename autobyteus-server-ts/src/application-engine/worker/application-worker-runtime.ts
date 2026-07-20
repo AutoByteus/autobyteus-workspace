@@ -6,6 +6,7 @@ import type {
   ApplicationExecutionEventFamily,
   ApplicationHandlerContext,
   ApplicationPublishedArtifactEvent,
+  ApplicationPublishedArtifactSummary,
   ApplicationRunBindingSummary,
   ApplicationRouteDefinition,
   ApplicationRouteResponse,
@@ -13,7 +14,7 @@ import type {
   ApplicationExecutionResourceSummary,
 } from "@autobyteus/application-sdk-contracts";
 import {
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
 } from "@autobyteus/application-sdk-contracts";
 import type {
   ApplicationExecutionEventDispatchResult,
@@ -25,12 +26,12 @@ import type {
   ApplicationWorkerLoadDefinitionResult,
   ApplicationWorkerNotificationParams,
   ApplicationWorkerRouteRequestInput,
-  ApplicationWorkerRuntimeControlInput,
+  ApplicationWorkerContextCapabilityInput,
   ApplicationWorkerStatusResult,
 } from "../runtime/protocol.js";
 
 type NotificationPublisher = (params: ApplicationWorkerNotificationParams) => Promise<void>;
-type RuntimeControlInvoker = (input: ApplicationWorkerRuntimeControlInput) => Promise<unknown>;
+type ContextCapabilityInvoker = (input: ApplicationWorkerContextCapabilityInput) => Promise<unknown>;
 
 type LoadedApplicationDefinition = {
   definition: ApplicationBackendDefinition;
@@ -108,7 +109,7 @@ const matchRoute = (
 };
 
 const validateDefinitionContract = (definition: ApplicationBackendDefinition): void => {
-  if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2) {
+  if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3) {
     throw new Error(
       `Unsupported application backend definitionContractVersion '${String(definition.definitionContractVersion)}'.`,
     );
@@ -154,43 +155,58 @@ const buildExposureSummary = (
     .filter((value): value is ApplicationExecutionEventFamily => Boolean(value)),
 });
 
-const createRuntimeControl = (
-  invokeRuntimeControl: RuntimeControlInvoker,
-): ApplicationHandlerContext["runtimeControl"] => ({
-  listAvailableExecutionResources: async (filter) =>
-    invokeRuntimeControl({ action: "listAvailableExecutionResources", input: filter ?? null }) as Promise<ApplicationExecutionResourceSummary[]>,
-  getConfiguredExecutionResource: async (slotKey) =>
-    invokeRuntimeControl({ action: "getConfiguredExecutionResource", input: { slotKey } }) as Promise<ApplicationConfiguredExecutionResource | null>,
-  startRun: async (input) =>
-    invokeRuntimeControl({ action: "startRun", input }) as Promise<ApplicationRunBindingSummary>,
-  getRunBinding: async (bindingId) =>
-    invokeRuntimeControl({ action: "getRunBinding", input: { bindingId } }) as Promise<ApplicationRunBindingSummary | null>,
-  getRunBindingByIntentId: async (bindingIntentId) =>
-    invokeRuntimeControl({
-      action: "getRunBindingByIntentId",
-      input: { bindingIntentId },
+const createAgentExecution = (
+  invokeContextCapability: ContextCapabilityInvoker,
+): ApplicationHandlerContext["agentExecution"] => ({
+  startAgent: async (input) =>
+    invokeContextCapability({ capability: "agentExecution", operation: "startAgent", input }) as Promise<ApplicationRunBindingSummary>,
+  startAgentTeam: async (input) =>
+    invokeContextCapability({ capability: "agentExecution", operation: "startAgentTeam", input }) as Promise<ApplicationRunBindingSummary>,
+  sendInput: async (input) =>
+    invokeContextCapability({ capability: "agentExecution", operation: "sendInput", input }) as Promise<ApplicationRunBindingSummary>,
+  terminate: async (bindingId) =>
+    invokeContextCapability({ capability: "agentExecution", operation: "terminate", input: { bindingId } }) as Promise<ApplicationRunBindingSummary | null>,
+  get: async (bindingId) =>
+    invokeContextCapability({ capability: "agentExecution", operation: "get", input: { bindingId } }) as Promise<ApplicationRunBindingSummary | null>,
+  list: async (filter) =>
+    invokeContextCapability({ capability: "agentExecution", operation: "list", input: filter ?? null }) as Promise<ApplicationRunBindingSummary[]>,
+  findByLaunchRequestId: async (launchRequestId) =>
+    invokeContextCapability({
+      capability: "agentExecution",
+      operation: "findByLaunchRequestId",
+      input: { launchRequestId },
     }) as Promise<ApplicationRunBindingSummary | null>,
-  listRunBindings: async (filter) =>
-    invokeRuntimeControl({ action: "listRunBindings", input: filter ?? null }) as Promise<ApplicationRunBindingSummary[]>,
-  getRunPublishedArtifacts: async (runId) =>
-    invokeRuntimeControl({ action: "getRunPublishedArtifacts", input: { runId } }) as Promise<ApplicationHandlerContext["runtimeControl"]["getRunPublishedArtifacts"] extends (...args: never[]) => Promise<infer TResult> ? TResult : never>,
-  getPublishedArtifactRevisionText: async (input) =>
-    invokeRuntimeControl({ action: "getPublishedArtifactRevisionText", input }) as Promise<string | null>,
-  postRunInput: async (input) =>
-    invokeRuntimeControl({ action: "postRunInput", input }) as Promise<ApplicationRunBindingSummary>,
-  terminateRunBinding: async (bindingId) =>
-    invokeRuntimeControl({ action: "terminateRunBinding", input: { bindingId } }) as Promise<ApplicationRunBindingSummary | null>,
+});
+
+const createAgentResources = (
+  invokeContextCapability: ContextCapabilityInvoker,
+): ApplicationHandlerContext["agentResources"] => ({
+  listAvailable: async (filter) =>
+    invokeContextCapability({ capability: "agentResources", operation: "listAvailable", input: filter ?? null }) as Promise<ApplicationExecutionResourceSummary[]>,
+  getConfigured: async (slotKey) =>
+    invokeContextCapability({ capability: "agentResources", operation: "getConfigured", input: { slotKey } }) as Promise<ApplicationConfiguredExecutionResource | null>,
+});
+
+const createPublishedArtifacts = (
+  invokeContextCapability: ContextCapabilityInvoker,
+): ApplicationHandlerContext["publishedArtifacts"] => ({
+  list: async (runId) =>
+    invokeContextCapability({ capability: "publishedArtifacts", operation: "list", input: { runId } }) as Promise<ApplicationPublishedArtifactSummary[]>,
+  readRevision: async (input) =>
+    invokeContextCapability({ capability: "publishedArtifacts", operation: "readRevision", input }) as Promise<string | null>,
 });
 
 const createLifecycleContext = (
   storage: ApplicationStorageContext,
   supportedNotifications: boolean,
   publishNotification: NotificationPublisher,
-  invokeRuntimeControl: RuntimeControlInvoker,
+  invokeContextCapability: ContextCapabilityInvoker,
 ): Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null } => ({
   requestContext: null,
   storage,
-  runtimeControl: createRuntimeControl(invokeRuntimeControl),
+  agentExecution: createAgentExecution(invokeContextCapability),
+  agentResources: createAgentResources(invokeContextCapability),
+  publishedArtifacts: createPublishedArtifacts(invokeContextCapability),
   publishNotification: async (topic, payload) => {
     if (!supportedNotifications) {
       throw new Error("Backend manifest disables notifications for this application.");
@@ -208,11 +224,13 @@ const createHandlerContext = (
   requestContext: ApplicationHandlerContext["requestContext"],
   supportedNotifications: boolean,
   publishNotification: NotificationPublisher,
-  invokeRuntimeControl: RuntimeControlInvoker,
+  invokeContextCapability: ContextCapabilityInvoker,
 ): ApplicationHandlerContext => ({
   requestContext,
   storage,
-  runtimeControl: createRuntimeControl(invokeRuntimeControl),
+  agentExecution: createAgentExecution(invokeContextCapability),
+  agentResources: createAgentResources(invokeContextCapability),
+  publishedArtifacts: createPublishedArtifacts(invokeContextCapability),
   publishNotification: async (topic, payload) => {
     if (!supportedNotifications) {
       throw new Error("Backend manifest disables notifications for this application.");
@@ -238,7 +256,7 @@ export class ApplicationWorkerRuntime {
 
   constructor(
     private readonly publishNotification: NotificationPublisher,
-    private readonly invokeRuntimeControl: RuntimeControlInvoker,
+    private readonly invokeContextCapability: ContextCapabilityInvoker,
   ) {}
 
   async loadDefinition(input: ApplicationWorkerLoadDefinitionInput): Promise<ApplicationWorkerLoadDefinitionResult> {
@@ -260,7 +278,7 @@ export class ApplicationWorkerRuntime {
           input.storage,
           input.supportedExposures.notifications,
           this.publishNotification,
-          this.invokeRuntimeControl,
+          this.invokeContextCapability,
         ),
       );
     }
@@ -287,7 +305,7 @@ export class ApplicationWorkerRuntime {
         input.requestContext,
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
-        this.invokeRuntimeControl,
+        this.invokeContextCapability,
       ),
     );
   }
@@ -305,7 +323,7 @@ export class ApplicationWorkerRuntime {
         input.requestContext,
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
-        this.invokeRuntimeControl,
+        this.invokeContextCapability,
       ),
     );
   }
@@ -324,7 +342,7 @@ export class ApplicationWorkerRuntime {
         input.requestContext,
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
-        this.invokeRuntimeControl,
+        this.invokeContextCapability,
       ),
     );
     if (isRouteResponse(response)) {
@@ -354,7 +372,7 @@ export class ApplicationWorkerRuntime {
         input.requestContext,
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
-        this.invokeRuntimeControl,
+        this.invokeContextCapability,
       ),
     );
   }
@@ -377,7 +395,7 @@ export class ApplicationWorkerRuntime {
         },
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
-        this.invokeRuntimeControl,
+        this.invokeContextCapability,
       ),
     );
     return { status: "acknowledged" };
@@ -400,7 +418,7 @@ export class ApplicationWorkerRuntime {
         },
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
-        this.invokeRuntimeControl,
+        this.invokeContextCapability,
       ),
     );
     return { status: "acknowledged" };
@@ -413,7 +431,7 @@ export class ApplicationWorkerRuntime {
           this.loaded.storage,
           this.loaded.exposures.supportedExposures.notifications,
           this.publishNotification,
-          this.invokeRuntimeControl,
+          this.invokeContextCapability,
         ),
       );
     }

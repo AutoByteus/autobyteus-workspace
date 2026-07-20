@@ -78,6 +78,35 @@ test('validator reports actionable diagnostics for missing generated files', asy
   )), true);
 });
 
+test('validator rejects an explicit v2 backend-definition compatibility fixture', async () => {
+  const target = path.join(await createTempDirectory('backend-v2-rejection'), 'sample-app');
+  await materializeApplicationTemplate({
+    targetDirectory: target,
+    applicationId: 'sample-app',
+    applicationName: 'Sample App',
+  });
+  const result = await packApplicationProject({ projectRoot: target });
+  const backendManifestPath = path.join(
+    result.packageRoot,
+    'applications/sample-app/backend/bundle.json',
+  );
+  const backendManifest = JSON.parse(await fs.readFile(backendManifestPath, 'utf8'));
+  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '2';
+  await fs.writeFile(
+    backendManifestPath,
+    `${JSON.stringify(backendManifest, null, 2)}\n`,
+    'utf8',
+  );
+
+  const validation = await validateApplicationPackage(result.packageRoot);
+  assert.equal(validation.valid, false);
+  assert.equal(validation.diagnostics.some((diagnostic) => (
+    diagnostic.code === 'UNSUPPORTED_CONTRACT_VERSION'
+    && diagnostic.path === 'sdkCompatibility.backendDefinitionContractVersion'
+    && diagnostic.message.includes('must be "3"')
+  )), true);
+});
+
 test('pack rejects unsafe application ids before package writes', async (t) => {
   for (const unsafeId of ['../escaped', 'a/b']) {
     await t.test(unsafeId, async () => {

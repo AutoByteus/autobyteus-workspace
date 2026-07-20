@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createLessonRepository } from "../repositories/lesson-repository.js";
-import { createPendingBindingIntentRepository, } from "../repositories/pending-binding-intent-repository.js";
+import { createPendingLaunchRequestRepository, } from "../repositories/pending-launch-request-repository.js";
 const requireNonEmptyString = (value, fieldName) => {
     const normalized = value.trim();
     if (!normalized) {
@@ -9,12 +9,12 @@ const requireNonEmptyString = (value, fieldName) => {
     }
     return normalized;
 };
-const requireBindingIntentId = (binding) => requireNonEmptyString(binding.bindingIntentId, "binding.bindingIntentId");
+const requireLaunchRequestId = (binding) => requireNonEmptyString(binding.launchRequestId, "binding.launchRequestId");
 export const createRunBindingCorrelationService = (context) => ({
-    createPendingBindingIntent(lessonId) {
+    createPendingLaunchRequest(lessonId) {
         const createdAt = new Date().toISOString();
-        const pendingIntent = {
-            bindingIntentId: `lesson-binding-intent-${randomUUID()}`,
+        const pendingLaunchRequest = {
+            launchRequestId: `lesson-launch-request-${randomUUID()}`,
             lessonId: requireNonEmptyString(lessonId, "lessonId"),
             status: "PENDING_START",
             bindingId: null,
@@ -24,26 +24,26 @@ export const createRunBindingCorrelationService = (context) => ({
         };
         withAppDatabase(context.storage.appDatabasePath, (db) => {
             withTransaction(db, () => {
-                createPendingBindingIntentRepository(db).insertPendingIntent(pendingIntent);
+                createPendingLaunchRequestRepository(db).insertPendingLaunchRequest(pendingLaunchRequest);
             });
         });
-        return pendingIntent;
+        return pendingLaunchRequest;
     },
     finalizeBindingForLesson(input) {
-        const bindingIntentId = requireBindingIntentId(input.binding);
+        const launchRequestId = requireLaunchRequestId(input.binding);
         const lessonId = requireNonEmptyString(input.lessonId, "lessonId");
         const committedAt = input.committedAt ?? new Date().toISOString();
         withAppDatabase(context.storage.appDatabasePath, (db) => {
             withTransaction(db, () => {
                 const lessonRepository = createLessonRepository(db);
-                const pendingIntentRepository = createPendingBindingIntentRepository(db);
+                const pendingLaunchRequestRepository = createPendingLaunchRequestRepository(db);
                 const lesson = lessonRepository.getById(lessonId);
                 if (!lesson) {
                     throw new Error(`Lesson '${lessonId}' was not found.`);
                 }
-                const pendingIntent = pendingIntentRepository.getByBindingIntentId(bindingIntentId);
-                if (pendingIntent && pendingIntent.lessonId !== lessonId) {
-                    throw new Error(`Pending binding intent '${bindingIntentId}' belongs to lesson '${pendingIntent.lessonId}', not '${lessonId}'.`);
+                const pendingLaunchRequest = pendingLaunchRequestRepository.getByLaunchRequestId(launchRequestId);
+                if (pendingLaunchRequest && pendingLaunchRequest.lessonId !== lessonId) {
+                    throw new Error(`Pending launch request '${launchRequestId}' belongs to lesson '${pendingLaunchRequest.lessonId}', not '${lessonId}'.`);
                 }
                 lessonRepository.attachBinding({
                     lessonId,
@@ -52,9 +52,9 @@ export const createRunBindingCorrelationService = (context) => ({
                     bindingStatus: input.binding.status,
                     updatedAt: committedAt,
                 });
-                if (pendingIntent) {
-                    pendingIntentRepository.markCommitted({
-                        bindingIntentId,
+                if (pendingLaunchRequest) {
+                    pendingLaunchRequestRepository.markCommitted({
+                        launchRequestId,
                         bindingId: input.binding.bindingId,
                         committedAt,
                     });
@@ -63,49 +63,49 @@ export const createRunBindingCorrelationService = (context) => ({
         });
     },
     resolveLessonIdForBinding(binding) {
-        const bindingIntentId = requireBindingIntentId(binding);
+        const launchRequestId = requireLaunchRequestId(binding);
         return withAppDatabase(context.storage.appDatabasePath, (db) => withTransaction(db, () => {
             const lessonRepository = createLessonRepository(db);
             const existingLesson = lessonRepository.getByBindingId(binding.bindingId);
             if (existingLesson) {
                 return existingLesson.lessonId;
             }
-            const pendingIntentRepository = createPendingBindingIntentRepository(db);
-            const pendingIntent = pendingIntentRepository.getByBindingIntentId(bindingIntentId);
-            if (!pendingIntent) {
-                throw new Error(`Socratic Math Teacher could not resolve binding '${binding.bindingId}' from bindingIntentId '${bindingIntentId}'.`);
+            const pendingLaunchRequestRepository = createPendingLaunchRequestRepository(db);
+            const pendingLaunchRequest = pendingLaunchRequestRepository.getByLaunchRequestId(launchRequestId);
+            if (!pendingLaunchRequest) {
+                throw new Error(`Socratic Math Teacher could not resolve binding '${binding.bindingId}' from launchRequestId '${launchRequestId}'.`);
             }
             lessonRepository.attachBinding({
-                lessonId: pendingIntent.lessonId,
+                lessonId: pendingLaunchRequest.lessonId,
                 bindingId: binding.bindingId,
                 runId: binding.runtime.runId,
                 bindingStatus: binding.status,
                 updatedAt: new Date().toISOString(),
             });
-            pendingIntentRepository.markCommitted({
-                bindingIntentId,
+            pendingLaunchRequestRepository.markCommitted({
+                launchRequestId,
                 bindingId: binding.bindingId,
                 committedAt: new Date().toISOString(),
             });
-            return pendingIntent.lessonId;
+            return pendingLaunchRequest.lessonId;
         }));
     },
-    async reconcileBindingIntent(bindingIntentId) {
-        const normalizedBindingIntentId = requireNonEmptyString(bindingIntentId, "bindingIntentId");
-        const pendingIntent = withAppDatabase(context.storage.appDatabasePath, (db) => createPendingBindingIntentRepository(db).getByBindingIntentId(normalizedBindingIntentId));
-        if (!pendingIntent) {
+    async reconcileLaunchRequest(launchRequestId) {
+        const normalizedLaunchRequestId = requireNonEmptyString(launchRequestId, "launchRequestId");
+        const pendingLaunchRequest = withAppDatabase(context.storage.appDatabasePath, (db) => createPendingLaunchRequestRepository(db).getByLaunchRequestId(normalizedLaunchRequestId));
+        if (!pendingLaunchRequest) {
             return null;
         }
-        const binding = await context.runtimeControl.getRunBindingByIntentId(normalizedBindingIntentId);
+        const binding = await context.agentExecution.findByLaunchRequestId(normalizedLaunchRequestId);
         if (!binding) {
             return null;
         }
         this.finalizeBindingForLesson({
-            lessonId: pendingIntent.lessonId,
+            lessonId: pendingLaunchRequest.lessonId,
             binding,
         });
         return {
-            lessonId: pendingIntent.lessonId,
+            lessonId: pendingLaunchRequest.lessonId,
             binding,
         };
     },

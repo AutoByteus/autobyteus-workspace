@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {
   APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
   APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
   type ApplicationBackendBundleManifestV1,
   type ApplicationBackendSupportedExposures,
@@ -28,7 +28,7 @@ export const createBackendBundleManifest = (
     semver: input.targetRuntimeSemver,
   },
   sdkCompatibility: {
-    backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
+    backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
     frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
   },
   supportedExposures: input.supportedExposures,
