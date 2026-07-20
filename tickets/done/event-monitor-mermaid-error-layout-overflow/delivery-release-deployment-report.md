@@ -66,21 +66,32 @@ does not erase or replace those limits.
 
 ## Release / Deployment / Cleanup
 
-- Applicable now: **Yes**. The user completion signal authorizes archival,
-  repository finalization, and the next workspace release.
-- Version bump/tag/publication/deployment: pending execution after the archived
-  ticket branch is pushed and merged into the refreshed target.
-- Release notes: prepared at `release-notes.md` and will be passed from the
-  archived ticket into the release command.
-- Ticket state transition: pending; archive before the final ticket-branch
-  commit.
-- Ticket branch push and finalization-target merge/push: pending.
-- Worktree/branch cleanup: deferred to preserve the artifact and verification
-  worktree.
+- User completion signal: **Received**. The user confirmed the artifact is
+  working and authorized finalization and release.
+- Ticket archive: completed at
+  `tickets/done/event-monitor-mermaid-error-layout-overflow/`.
+- Ticket branch: pushed at
+  `origin/codex/event-monitor-mermaid-error-layout-overflow`.
+- Ticket finalization commit: `92256401e6c1395aa2529b93d30dfcb7557d55f8`.
+- Finalization-target merge: `1c1dd4b22ad5bf8809aa1664c6a66149750585b0` on
+  `personal`.
+- Release commit: `0a2d153de465be03763596bbfb027fc01ec018cf`.
+- Published tag: `v1.4.22`.
+- GitHub Actions workflow: **Success**, run `29765235848`:
+  https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29765235848
+- Published release:
+  https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.22
+- Published assets include macOS ARM64/x64 DMG and ZIP packages, Windows x64
+  installer, Linux ARM64/x64 AppImages, Android APK, updater metadata, and
+  release manifest.
+- Cleanup: ticket worktree and branch are retained for artifact traceability;
+  unrelated untracked `.article-work/` was preserved in the main worktree.
 
 ## Final Status
 
-**Finalization and release in progress.** The user verified the artifact and
-authorized completion. Documentation is synchronized, the API/E2E residuals
-remain preserved, and the next actions are ticket archival, repository
-finalization, and the documented release workflow.
+**Finalization and release complete.** The user verified the artifact,
+the ticket was archived, the package was merged into `personal`, and release
+`v1.4.22` was published successfully. The API/E2E residuals remain preserved:
+the team did not independently launch the packaged Electron artifact, run a
+Windows runtime, mount an authenticated Event Monitor feed, or exercise the
+exact production malformed payload.

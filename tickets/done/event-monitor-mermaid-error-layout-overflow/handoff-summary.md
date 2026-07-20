@@ -69,11 +69,25 @@ with workspace version `1.4.21`:
 ## Finalization / Release Execution
 
 The user explicitly confirmed that the rebuilt artifact is working and authorized
-finalization and release. Delivery will archive the ticket, push and merge the
-reviewed package, and create the next workspace release. If a packaged or
-platform defect is later found, preserve the exact scenario and route it back
-through source review and API/E2E. The independent-coverage limitation remains
-in force after release.
+finalization and release. The ticket is archived at
+`tickets/done/event-monitor-mermaid-error-layout-overflow/`, and its branch is
+pushed at `origin/codex/event-monitor-mermaid-error-layout-overflow`.
+
+- Ticket finalization commit: `92256401e6c1395aa2529b93d30dfcb7557d55f8`.
+- `personal` integration merge: `1c1dd4b22ad5bf8809aa1664c6a66149750585b0`.
+- Release commit: `0a2d153de465be03763596bbfb027fc01ec018cf`.
+- Published tag: `v1.4.22`.
+- Workflow run: **Success**,
+  https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29765235848.
+- Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.22.
+
+The release publishes macOS ARM64/x64, Windows x64, Linux ARM64/x64, and
+Android artifacts plus updater metadata and a release manifest. If a packaged
+or platform defect is later found, preserve the exact scenario and route it
+back through source review and API/E2E. The independent-coverage limitation
+remains in force after release: no packaged Electron launch, Windows runtime,
+authenticated Event Monitor feed, or exact production malformed payload was
+independently logged by the team.
 
 ## Cumulative Artifact Package
 
