@@ -10,6 +10,7 @@ export const mermaidService = {
       startOnLoad: false,
       theme: isDarkTheme ? 'dark' : 'default',
       securityLevel: 'loose',
+      suppressErrorRendering: true,
     });
   },
 
