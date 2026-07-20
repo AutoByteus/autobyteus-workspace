@@ -1,0 +1,173 @@
+autobyteus-web/components/workspace/agent/AgentConversationFeed.vue
+autobyteus-web/components/workspace/agent/AgentEventMonitor.vue
+autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts
+
+Checkpoint: 9e06eff8a28ee3c5dc0a08c8432f24470e36c7e2
+Fetched remote base: 8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+Bootstrap merge-base: 75a4c97f26d1c33152a97940938124bf271e2653
+Ahead/behind after fetch: 5	41
+
+Conflict details:
+diff --cc autobyteus-web/components/workspace/agent/AgentConversationFeed.vue
+index 6978a58d4,29796750a..000000000
+--- a/autobyteus-web/components/workspace/agent/AgentConversationFeed.vue
++++ b/autobyteus-web/components/workspace/agent/AgentConversationFeed.vue
+@@@ -69,11 -59,7 +71,15 @@@ import type { CompactionActivity } fro
+  import UserMessage from '~/components/conversation/UserMessage.vue';
+  import AIMessage from '~/components/conversation/AIMessage.vue';
+  import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';
+++<<<<<<< HEAD
+ +import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
+ +import {
+ +  getRecentEventMonitorMessageUsageText,
+ +  getRecentEventMonitorTotalUsageText,
+ +} from '~/services/eventMonitor/recentEventMonitorUsagePresentation';
+++=======
++ import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+++>>>>>>> origin/personal
+
+  const props = withDefaults(defineProps<{
+    conversation: Conversation;
+@@@ -84,14 -70,39 +90,49 @@@
+    compactionActivities?: CompactionActivity[];
+    showTokenCosts?: boolean;
+    showTotalUsage?: boolean;
+++<<<<<<< HEAD
+ +  presentationRevision?: number;
+++=======
++   enableEventMonitorFileActions?: boolean;
+++>>>>>>> origin/personal
+  }>(), {
+    compactionActivities: () => [],
+    showTokenCosts: true,
+    showTotalUsage: true,
+++<<<<<<< HEAD
+ +  presentationRevision: 0,
+ +});
+ +
+++=======
++   enableEventMonitorFileActions: false,
++ });
++
++ const emit = defineEmits<{
++   (event: 'file-path-action', action: AbsoluteFilePathAction): void;
++ }>();
++
++ type ConversationMessage = Conversation['messages'][number];
++
++ type MessageFeedItem = {
++   kind: 'message';
++   key: string;
++   message: ConversationMessage;
++   messageIndex: number;
++   timestampMs: number;
++   originalOrder: number;
++ };
++
++ type CompactionFeedItem = {
++   kind: 'compaction';
++   key: string;
++   activity: CompactionActivity;
++   timestampMs: number;
++   originalOrder: number;
++ };
++
++ type FeedItem = MessageFeedItem | CompactionFeedItem;
++
+++>>>>>>> origin/personal
+  const runId = computed(() => props.runId || props.conversation.id);
+  const instanceUid = getCurrentInstance()?.uid ?? Math.floor(Math.random() * 1_000_000);
+  const conversationScrollContainerId = computed(() => `agent-conversation-scroll-${runId.value}-${instanceUid}`);
+diff --cc autobyteus-web/components/workspace/agent/AgentEventMonitor.vue
+index afad1c165,9a6d8e59d..000000000
+--- a/autobyteus-web/components/workspace/agent/AgentEventMonitor.vue
++++ b/autobyteus-web/components/workspace/agent/AgentEventMonitor.vue
+@@@ -8,7 -8,8 +8,12 @@@
+        :agent-avatar-url="agentAvatarUrl"
+        :inter-agent-sender-name-by-id="interAgentSenderNameById"
+        :compaction-activities="compactionActivities"
+++<<<<<<< HEAD
+ +      :presentation-revision="presentationRevision"
+++=======
++       :enable-event-monitor-file-actions="true"
++       @file-path-action="handleFilePathAction"
+++>>>>>>> origin/personal
+      />
+
+      <div class="shrink-0">
+diff --cc autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts
+index ae5f4d140,93120af6a..000000000
+--- a/autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts
++++ b/autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts
+@@@ -81,9 -65,9 +82,15 @@@ export const buildUserMessageFromProjec
+  export const upsertUserMessageByIdentity = (input: {
+    context: AgentContext;
+    userMessage: UserMessage;
+++<<<<<<< HEAD
+ +  preserveExistingContextFilesWhenIncomingEmpty?: boolean;
+ +}): boolean => {
+ +  const { context, userMessage, preserveExistingContextFilesWhenIncomingEmpty = false } = input;
+++=======
++   retainExistingNonExecutableContextFiles?: boolean;
++ }): void => {
++   const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
+++>>>>>>> origin/personal
+    const existingIndex = findExistingMessageIndex(
+      context.conversation.messages,
+      userMessage.messageId ?? '',
+@@@ -93,28 -77,39 +100,48 @@@
+      const existing = context.conversation.messages[existingIndex];
+      const existingContextFilePaths = existing.type === 'user' ? existing.contextFilePaths ?? [] : [];
+      const incomingContextFilePaths = userMessage.contextFilePaths ?? [];
+-     const contextFilePaths =
+-       preserveExistingContextFilesWhenIncomingEmpty &&
+-       existingContextFilePaths.length > 0 &&
+-       incomingContextFilePaths.length === 0
+-         ? existingContextFilePaths
+-         : incomingContextFilePaths;
++     const contextFilePaths = retainExistingNonExecutableContextFiles
++       ? mergeMemberEchoContextFiles(incomingContextFilePaths, existingContextFilePaths)
++       : incomingContextFilePaths;
+
+ -    context.conversation.messages[existingIndex] = {
+ +    const nextMessage: UserMessage = {
+        ...existing,
+        ...userMessage,
+        contextFilePaths,
+      };
+ +    const changed = existing.type !== 'user'
+ +      || existing.text !== nextMessage.text
+ +      || existing.timestamp.getTime() !== nextMessage.timestamp.getTime()
+ +      || existing.messageId !== nextMessage.messageId
+ +      || existing.dedupeKey !== nextMessage.dedupeKey
+ +      || !attachmentsEqual(existingContextFilePaths, contextFilePaths);
+ +    if (changed) context.conversation.messages[existingIndex] = nextMessage;
+ +    return changed;
+    } else {
+      context.conversation.messages.push(userMessage);
+ +    return true;
+    }
+  };
++
++ const getContextAttachmentIdentity = (
++   attachment: NonNullable<UserMessage['contextFilePaths']>[number],
++ ): string => attachment.id?.trim() || `${attachment.kind}:${attachment.locator}`;
++
++ const mergeMemberEchoContextFiles = (
++   incoming: NonNullable<UserMessage['contextFilePaths']>,
++   existing: NonNullable<UserMessage['contextFilePaths']>,
++ ): NonNullable<UserMessage['contextFilePaths']> => {
++   const merged = [
++     ...incoming,
++     ...existing.filter((attachment) => !isExecutableContextAttachment(attachment)),
++   ];
++   const seen = new Set<string>();
++   return merged.filter((attachment) => {
++     const identity = getContextAttachmentIdentity(attachment);
++     if (seen.has(identity)) {
++       return false;
++     }
++     seen.add(identity);
++     return true;
++   });
++ };

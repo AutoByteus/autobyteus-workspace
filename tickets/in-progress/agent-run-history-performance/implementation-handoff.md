@@ -7,7 +7,9 @@
 - Design spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
 - Supplemental UI/UX spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
 - Design review report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 4 pass)
-- Prior code review report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (round 1 findings that triggered this reviewed rework)
+- Code review report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 2 pre-integration pass; includes the round 1 findings that triggered rework)
+- API/E2E package before latest-base integration: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and `api-e2e-test-review-report.md` in the same ticket directory
+- Delivery integration blocker package: `docs-sync-report.md`, `release-deployment-report.md`, and `evidence/delivery-initial-integration-conflicts.txt` in the same ticket directory
 
 ## What Changed
 
@@ -21,6 +23,16 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 - Reset presentation revision immediately when `teamRunOpenCoordinator` replaces a non-live member conversation; subscribed-live preservation leaves both the live conversation and revision untouched.
 - Added focused regressions for `MP-CR-001`, `MP-AR-003`, semantic replacements, true visible changes, all visual kinds/order, team replacement reset/preservation, and throwing unused/deep getters.
 - Preserved Activity capping/derived-flag repair, collapsed Thinking/tool behavior, bottom-follow/unseen jump behavior, and the clean removal of the workspace copy control/eager joined text/dead localization key.
+
+## Latest-Base Integration Local Fix
+
+- Delivery advanced `origin/personal` from task base `75a4c97f` to `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12` and checkpointed the reviewed API/E2E package at `9e06eff8a28ee3c5dc0a08c8432f24470e36c7e2`.
+- Implementation completed the conflicted merge in `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`.
+- `AgentConversationFeed.vue` keeps the ticket's shared newest-100 presentation, shared usage strings, semantic presentation revision, bottom-follow, and unseen jump action while forwarding the newly landed opt-in absolute-file-path action through retained `AIMessage` rows.
+- `AgentEventMonitor.vue` supplies both the presentation revision and the absolute-file-action capability, retaining the new explicit-activation preview/status boundary without bypassing the bounded feed.
+- `userMessageProjection.ts` uses the newly landed member-echo rule that retains and deduplicates only existing non-executable attachments. Revision authority remains the surrounding semantic pre/post witness, so the obsolete handler boolean/deep attachment comparison was not restored.
+- Added focused component assertions that the file-action capability and event forwarding remain present alongside the recent presentation path. Existing member-input tests cover retained non-executable attachments, refreshed executable attachments, deduplication, unrelated identity isolation, and historical unsupported locators.
+- Composition required no new product decision: Markdown text already belongs to the witness through segment content, and user attachment witness tuples already include the retained attachment identity/kind/locator/label/type used by the new attachment model.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -56,7 +68,7 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 
 - Reviewed residual risks remain: an individual retained event can be byte-heavy; conversation and Activity transport duplicate some tool information; a large active team can perform several bounded reads; dynamic-height content can imperfectly anchor while non-pinned; source-limited late re-entry cannot recover evicted prior content.
 - Index-derived component/disclosure keys remain a downstream observation risk when rolling eviction regroups retained AI segments.
-- The current `corepack pnpm nuxi typecheck` attempt did not complete in this resource-constrained environment and exited by timeout before emitting diagnostics. The earlier implementation typecheck reached the repository's known unrelated baseline failures without diagnostics in the changed paths; the round-4 changed paths are covered by the passing 232-test targeted Nuxt set but still require normal downstream/source-review scrutiny.
+- Post-integration `timeout 600s corepack pnpm exec nuxt typecheck` completed and exited nonzero on the repository baseline diagnostics. No diagnostic names `AgentConversationFeed`, `AgentEventMonitor`, `userMessageProjection`, or another ticket-modified production path. Exact output is retained at `evidence/implementation-post-integration-typecheck.txt`.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -91,7 +103,8 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 - Worktree: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance`
 - Branch: `codex/agent-run-history-performance`
 - Task base: `75a4c97f`
-- Implementation commits: `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a92b5`, `0b35f3c567f7411df514c5d2e5c5231bdd73e54e`
+- Latest integrated base: `origin/personal` at `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`
+- Implementation commits: `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a92b5`, `0b35f3c567f7411df514c5d2e5c5231bdd73e54e`, and integration merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`
 - Dependencies were already available from the workspace lockfile. Commands use Corepack because bare `pnpm` is not on `PATH`.
 - Vitest was restricted to `--maxWorkers=2` because the shared environment was memory constrained after the reported power interruption.
 
@@ -99,10 +112,13 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 
 - Round-4 focused mutation/handler/render suite — **pass**, 12 files / 139 tests.
 - Final expanded implementation-scoped Nuxt suite covering tool card/feed/workspace, standalone/team routing, handlers, witness/commit/window, hydration/open/submission, Activity/context stores, and tool presentation — **pass**, 23 files / 232 tests (`--maxWorkers=2`).
+- Post-integration focused composition suite covering bounded feed/Event Monitor, absolute-path Markdown actions, member attachment retention, production dispatch, semantic witness/commit, and recent-window policy — **pass**, 9 files / 79 tests.
+- Post-integration expanded implementation-scoped suite including the integrated renderer/context changes — **pass**, 29 files / 262 tests (`--maxWorkers=2`).
 - `corepack pnpm guard:web-boundary` — **pass**.
 - `corepack pnpm guard:localization-boundary` — **pass**.
 - `corepack pnpm audit:localization-literals` — **pass**, zero unresolved findings.
-- `corepack pnpm nuxi typecheck` — **inconclusive in this environment**; process exited by timeout before diagnostics. See Known Risks rather than treating this as a pass.
+- `timeout 600s corepack pnpm exec nuxt typecheck` — **repository baseline failure**; command completed with exit 1 and no diagnostic in an integration-resolved or ticket-modified production path. Evidence: `evidence/implementation-post-integration-typecheck.txt`.
+- Conflict-resolution-only `git diff --check` — **pass** for the three resolved production files and two focused test files. Whole-merge whitespace checking reports pre-existing whitespace in evidence logs introduced by the remote base; those upstream artifacts were not rewritten during this local fix.
 - `git diff --check` — **pass** before source commit.
 - Initial implementation checks remain recorded from the prior handoff/review: backend projection tests 2 files / 4 tests and server TypeScript build passed; the round-4 rework did not modify those backend files.
 
@@ -115,6 +131,8 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 - States and interactions inspected at 1280×900: initially pinned feed; manual non-pinned scroll; shared terminal card command/title before and after a semantic mutation; unchanged scroll position after revision; localized jump action visibility/focus; jump activation and clearing.
 - Result: the card changed from `printf initial-command` to `printf changed-command`; non-pinned scroll stayed `0/2000` after the revision; the action accepted focus; jump moved to `1234/2000` and hid the action; no page/console errors. No visual defect requiring another production change was observed.
 - Evidence: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-browser-interaction.txt`, `implementation-event-monitor-unseen.png`, and `implementation-event-monitor-round4.png`.
+- Post-integration composition check: rendered the full `AgentEventMonitor` at 1280×900, explicitly activated a retained absolute-path control, observed the host-only status, then exercised a non-pinned visible revision. Scroll stayed `0/1990`; the localized jump accepted focus; activation moved to `1400/1990` and cleared the action; there were no page/console errors.
+- Post-integration evidence: `evidence/implementation-post-integration-browser.txt` and `evidence/implementation-post-integration-browser.png`. Temporary preview/probe files were removed.
 - Remaining limitations: real live large-run/team timing, Simplified Chinese browser rendering, and index/disclosure behavior under realistic rolling eviction remain downstream API/E2E work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
@@ -128,4 +146,4 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. This artifact records implementation-scoped checks and frontend self-validation only. The `api_e2e_engineer` still owns broader coverage investigation, durable API/E2E changes, realistic environment execution, large-fixture performance measurement, confidence scoring, cleanup, and pass/fail classification after source review passes.
+Yes, for the newly integrated state. The pre-integration package passed API/E2E at 96.6% confidence and proportional test-code review, but the latest-base conflict resolution changed the composed source state. After source review passes, `api_e2e_engineer` must rerun proportionate integrated-state coverage and decide whether any durable tests/evidence require refresh.
