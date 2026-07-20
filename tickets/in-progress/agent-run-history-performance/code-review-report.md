@@ -4,247 +4,257 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
-- Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
-- Current Review Round: `3`
-- Trigger: Focused source review of latest-base integration Local Fix at merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657` (integrated `origin/personal` at `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`; handoff commit `336b08502`)
-- Prior Review Round Reviewed: `2`
-- Latest Authoritative Round: `3`
+- Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
+- Current Review Round: `4`
+- Trigger: Fresh full source/structural review of the architecture-round-8 active-trace-only `Load 50 earlier` refinement at `a210ad1dfd00bbf76ca6f13cbc9ee02f012ab1be` relative to reviewed checkpoint `a391b0222f1fdfa38ce26df4d239277e09b506f7`.
+- Prior Review Round Reviewed: `3`
+- Latest Authoritative Round: `4`
 - Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
-- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 4)
+- Design Review Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 8 `Pass`)
 - Implementation Handoff Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - Failing Scenario IDs: `N/A`
-- Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: `N/A`
+- Exact Failing Commands / Execution Mode: Reviewer focused server suite passed 4 files / 17 tests. Two disposable reviewer probes then exposed the findings: a server production-media-shape probe failed because `{images:[...]}` projected `[]`; a Nuxt component probe failed because prepending an older same-turn visual remounted the keyed assistant row and changed its state from `open` to `closed`. Both probes were removed; the only working-tree change is this report.
+- Failure Evidence Paths: Source and command evidence are recorded below; disposable probe files were intentionally not retained as durable tests.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Initial implementation at `d50cf2cc` | N/A | `CR-001`, `CR-002` | Fail | No | Transient mutation could falsely revise an unchanged bounded presentation; team reopen replacement omitted baseline reset. |
-| 2 | Reviewed redesign and rework at `0b35f3c5` | `CR-001`, `CR-002`; architecture `AR-003` | None | Pass | No | Net bounded pre/post witness, renderer-shared semantic derivations, and non-live replacement reset resolve all requested findings. |
-| 3 | Latest-base conflict composition at `c13ba233a` | No unresolved source findings; preservation of `CR-001`, `CR-002`, and `AR-003` rechecked | None | Pass | Yes | The bounded feed/revision path composes with explicit file actions, and latest-base attachment replacement remains inside semantic pre/post revision authority. |
+| 2 | Rework at `0b35f3c5` | `CR-001`, `CR-002`, architecture `AR-003` | None | Pass | No | Net bounded witness and lifecycle reset fixes resolved the findings. |
+| 3 | Latest-base composition at `c13ba233a` | Prior resolutions preserved | None | Pass | No | Integrated file-action/attachment work preserved the reviewed revision path. |
+| 4 | Fresh active-trace paging implementation at `a210ad1df` | `CR-001`, `CR-002`, `AR-003` | `CR-003`–`CR-006` | Fail | Yes | Paging structure is generally sound, but production images are dropped, browse attachment semantics drift, browse mode can lack an exit, and a reachable page-boundary regroup remounts retained disclosure state. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `CR-001` | High / Design Impact | Resolved | `recentEventMonitorMutationCommit.ts` captures the bounded pre-witness, enforces, captures the final witness, and bumps only on semantic inequality. `recentEventMonitorMutationCommit.spec.ts` proves exact `MP-CR-001`, retained change, classification-only eviction, Activity-only no-op, and real tool summary change. | Obsolete effect parameter, OR condition, handler snapshots, and effect propagation are removed. |
-| 1 | `CR-002` | Medium / Local Fix | Resolved | `teamRunOpenCoordinator.ts` resets immediately after non-live conversation replacement. Focused tests prove reset and subscribed-live preservation. | Live state is not reset or replaced. |
-| Architecture round 3 | `AR-003` | High / Design Impact | Resolved | `recentEventMonitorPresentationWitness.ts`, `toolCardPresentation.ts`, shared usage/compaction helpers, and their renderer consumers implement the reviewed per-kind semantic table. Tests cover all kinds, order, semantic replacement, log/result no-op, true visible change, and unused/deep getter non-traversal. | Tool result/log/raw argument identity are excluded from central revision truth. |
+| 1 | `CR-001` | High / Design Impact | Remains resolved | The new delta does not alter the bounded pre/post witness authority; `recentEventMonitorMutationCommit.ts` only adds earlier-availability on actual retention. | No effect-OR or deep snapshot path was restored. |
+| 1 | `CR-002` | Medium / Local Fix | Remains resolved | Non-live replacement still resets presentation revision and now copies earlier-availability; subscribed-live preservation remains intact. | No lifecycle regression found. |
+| Architecture round 4 | `AR-003` | High / Design Impact | Remains resolved | Page projection is separate and shallow; the existing latest-mode witness/tool derivations remain unchanged. | Result/log recursion is still excluded. |
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: focused latest-base composition from reviewed checkpoint `9e06eff8a` through merge `c13ba233a`, against integrated base `8c7e2c2aa`; the three resolved production files; their component/handler tests; and the unchanged task spines they connect to. The full task delta remains context from round 2.
-- Files / areas reviewed: `AgentConversationFeed.vue`, `AgentEventMonitor.vue`, `userMessageProjection.ts`, current file-action/Markdown/attachment owners, standalone/team feed composition, semantic witness/commit, focused component and member-input tests, production dispatch regressions, and the prior finding evidence.
-- Explicit exclusions: rerunning the complete API/E2E workflow and assigning integrated-state confidence remain owned by `api_e2e_engineer`. Pre-integration API/E2E evidence is context only until the integrated candidate is executed again.
-
-Reviewer checks executed:
-
-- Reviewer integration-focused suite: `6` files / `61` tests passed with `--maxWorkers=2`, covering feed/monitor composition, member attachment replacement, production dispatch, semantic witness, and commit behavior.
-- Implementation evidence records focused composition at `9` files / `79` tests and the expanded integrated suite at `29` files / `262` tests, both passed.
-- Pre-integration API/E2E evidence remains contextual: server `4` files / `13` tests and frontend `19` files / `174` tests passed, with live Fastify/GraphQL and Chromium evidence; the integrated state must rerun downstream.
-- Source-only `git diff --check 8c7e2c2a..c13ba233a` passed, as did the focused conflict-resolution diff and the clean-worktree check.
-- Full Nuxt typecheck now completes and reports the known repository baseline diagnostics; none names an integration-resolved or ticket-modified production path. This remains documented baseline evidence, not a task failure.
+- Changed implementation and behavior reviewed: active-trace identity construction; active snapshot/generation/cursor selection; standalone/team GraphQL page APIs; closed central DTO projection; page query adapter; isolated browse controller; 300-visual turnover; browse conversion/rendering; boundary/retry/beginning/expiry/jump behavior; stable anchor/disclosure identity; hydration/live availability propagation; preservation of latest-mode behavior.
+- Files / areas reviewed: all implementation-source files in `a391b0222..a210ad1df`, relevant focused tests, generated GraphQL shape, and the cumulative approved artifact chain.
+- Explicit exclusions: historical pre-round-8 API/E2E and delivery reports are context only; fresh API/E2E must not start until these source findings are resolved and source review passes. Tests/generated code are excluded from source-size thresholds.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Yes` — active-only/newest-100 projection, lifecycle-aware hard cap, net central-presentation revision, baseline reset on replacement except intentional subscribed-live preservation, disclosure preservation, bounded Activity, copy removal, and no migration.
-- Design-spec behavior map verified against the implementation: `Yes` — the round-4 `DS-003` begin/mutate/enforce/post/compare/bump spine and `AR-003` exact witness table match production code.
-- Design review report and round confirmed: `Yes`; round 4 is authoritative and passed.
-- Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: `None` — explicit absolute-file-path activation and member-echo attachment retention are established latest-base behaviors, not new ticket requirements; this round checks only their composition with the reviewed Event Monitor mechanisms.
-- Remaining material ambiguity, if any: `None`
+- Approved requirements basis understood: `REQ-010`–`REQ-012` and `AC-012`–`AC-015` add explicit active-only fixed paging while preserving `REQ-001`–`REQ-009` latest/live behavior.
+- Design-spec behavior map verified against the implementation: server active-source, cursor, DTO, subject, controller, and feed paths exist as mapped. Four local implementation contradictions occur after those boundaries.
+- Design review report and round confirmed: round 8 `Pass`, including resolved `AR-006`/`AR-007` and material premises `MP-AR-006`/`MP-AR-007`.
+- Behavior-basis status: `Contradicted`
+- Changed or newly discovered behavior, if any: None. Findings concern approved behavior already in the package.
+- Remaining material ambiguity, if any: None.
 
-| Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| `REQ-001` | Confirmed | Resolver/service -> local provider -> active-only memory view | None. |
-| `REQ-002` | Confirmed | Complete active normalization/replay reconstruction -> newest-100 selector -> bundle | None. |
-| `REQ-003` | Confirmed | Conversation enforcement plus compaction-aware final presentation selector keeps at most 100 visual events | None. |
-| `REQ-004` | Confirmed | Shared completion/selection preserves completed-first eviction, deterministic mutable fallback, and stable source-limited re-entry | None. |
-| `REQ-005` | Confirmed | Standalone/team/local mutation boundaries bracket work with bounded semantic witnesses; non-live replacement resets; feed consumes explicit revision. Latest-base member-echo attachment replacement remains inside the same team dispatch bracket. | None. |
-| `REQ-006` | Confirmed | Existing Thinking disclosure remains unchanged; tool renderer values are shared without adding Activity-only detail | None. |
-| `REQ-007` | Confirmed | Activity store remains capped at 100 and repairs approval/highlight derivatives | None. |
-| `REQ-008` | Confirmed | Copy control, eager full-text join, and obsolete key remain removed | None. |
-| `REQ-009` | Confirmed | No storage writer/schema/migration/compatibility path was added | None. |
+| `DS-006` | Contradicted | Active snapshot -> replay identity/lifecycle -> fixed selector -> closed central projector -> GraphQL. | The projector reads `media.image`, while the production `RawTraceMedia` contract writes `media.images`, so image visuals/attachments disappear (`CR-003`). |
+| `DS-007` | Contradicted | Explicit subject -> page fetch -> ID validation/block turnover -> presentation -> keyed feed/anchor/reset. | Attachment locator classification is replaced with `external_url` (`CR-004`); ordinary browse/beginning/error can lack Return to latest (`CR-005`); same-turn prepend changes the assistant parent key and remounts disclosure state (`CR-006`). |
+| `DS-001`–`DS-005` | Confirmed | Normal active-only latest projection, completed-first central/Activity bounds, semantic revision, scroll, and reset owners remain present and are not structurally displaced by browse state. | None. |
 
 ## Structural / Design Checks
 
-| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Missing-invariant root cause is addressed at backend source, client policy, Activity, and net-presentation boundaries. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Net visible revision, scroll/jump, disclosure, and copy-removal behavior align with the UI/UX spec. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | `DS-001`–`DS-005` remain traceable; `DS-003` now implements begin -> mutation -> enforcement -> semantic compare -> optional bump. | None. |
-| Ownership boundary preservation and clarity | Pass | Pure window, pure witness, renderer-shared derivations, and stateful commit have distinct owners. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Localization, formatting, Activity, and context replacement support named spine owners without competing orchestration. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The integrated feed forwards the latest-base typed `AbsoluteFilePathAction` into the existing `useEventMonitorFilePreview` activation boundary; attachment classification/merge uses the latest-base context-attachment owners. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Tool-card, usage, and compaction semantics are shared between renderer and witness; prior equality duplication is removed. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Witness tokens contain only ordered semantic primitives; result/log/raw object identity and recursive snapshots are excluded. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | All mapped callers use one begin/commit adapter and one window/witness implementation. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | Each new file owns pure selection, semantic witness, formatting, tool presentation, or stateful commit. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Stateful store access is isolated from pure policy/witness; renderers consume derived presentation values. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Activity-store runtime access is confined to commit; window/witness remain store-free except type-only domain imports. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Dispatchers call the commit boundary rather than recomputing selection/revision; components consume shared presentation APIs. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Event Monitor services and reusable renderer semantics are placed under their established capabilities. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Window, witness, and stateful adapter are a justified three-part split; formatting helpers prevent renderer drift. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Begin/commit accept one context/baseline; witness and selectors use explicit typed inputs and stable/ordinal semantic identities. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `retentionChanged` no longer overclaims net presentation change; witness/commit names match semantics. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Old handler equality/snapshot copies are removed; render/witness formatting is shared. | None. |
-| Patch-on-patch complexity control | Pass | Rework replaces the inadequate mechanism cleanly rather than layering an identity-survival special case. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Effect union/parameter, handler return propagation, snapshots, archive-inclusive path, and copy remnants are absent. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Exact `MP-CR-001`, `MP-AR-003`, all-kind semantics, reset/preservation, true changes, and no-op cases are durable and explicit. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Witness/commit/tool/open tests use focused builders without cross-surface fixture blobs. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Tests were updated to the clean presentation prop/effect-free contracts. | None. |
-| API/E2E readiness for the next workflow stage | Pass | The conflict composition is source-clean, focused and expanded integration evidence is green, and pre-integration API/E2E passed. The required integrated-state rerun remains downstream. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The round-8 package has explicit identity, DTO, paging, turnover, and live-validation decisions. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | UI/UX requires a browse exit and retained disclosure identity; current feed violates both. | Resolve `CR-005`, `CR-006`. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | The spine is clear, but the production raw-media key is lost at the central projector. | Resolve `CR-003`. |
+| Ownership boundary preservation and clarity | Pass | Snapshot, selection, projection, service, controller, conversion, and scroll owners are separated. | None. |
+| Off-spine concern clarity | Pass | Localization, accessibility, generation, and file actions remain explicit supporting concerns. | None. |
+| Existing capability/subsystem reuse check | Fail | Browse attachment conversion bypasses the established context-attachment classification owner. | Resolve `CR-004`. |
+| Reusable owned structures check | Fail | Raw media is represented as a loose `Record<string,string[]>` at the new projector boundary, allowing `image`/`images` contract drift. | Use the production media contract or a narrow canonical adapter and cross-boundary tests. |
+| Shared-structure/data-model tightness check | Fail | Closed DTO shape is good, but its media input boundary is not tight enough to preserve production data. | Resolve `CR-003`; keep output union closed. |
+| Repeated coordination ownership check | Pass | Page state/merge/turnover is singular in the browse controller; request routing is singular in the page service. | None. |
+| Empty indirection check | Pass | New layers own meaningful I/O, policy, conversion, or rendering work. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Network/page state stays out of the feed; DOM anchoring stays in the feed. | None. |
+| Ownership-driven dependency check | Pass | No archive/file-browser shortcut or canonical-store page merge is introduced. | None. |
+| Authoritative Boundary Rule check | Pass | Resolvers use services; feed receives prepared browse state; callers do not recompute cursor/turnover policy. | None. |
+| File placement check | Pass | Files live under run-history, GraphQL, Event Monitor, or workspace component owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | The new capability is split by real responsibilities without excessive pass-through files. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Separate standalone/team subjects, no client limit/archive/path input, opaque cursor, and closed response are explicit. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Names accurately describe active trace, page, browse, generation, and presentation roles. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Shared projector/policy/controller serve both standalone and team paths. | None. |
+| Patch-on-patch complexity control | Pass | Browse state is isolated rather than layered into canonical conversation/Activity. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No temporary probe, archive fallback, old copy path, or duplicate page owner remains. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Existing media tests use the non-production `image` key; row test mutates a child directly and misses parent-key remount; no browse-state exit test exists. | Add production-shape and feed-level regressions for `CR-003`–`CR-006`. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing builders are focused and reusable; the issue is missing/incorrect vectors rather than test organization. | Correct vectors while preserving structure. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Fail | The projector test's singular image fixture asserts behavior the production raw contract cannot produce. | Replace it with the actual `RawTraceMedia.images` shape. |
+| API/E2E readiness for the next workflow stage | Fail | Two reviewer probes fail and two additional source contradictions are direct. | Local fix, source rereview, then fresh API/E2E. |
 
-## Source File Size And Structure Audit (If Applicable)
+## Source File Size And Structure Audit
 
-Effective lines are current non-empty lines. Delta is additions plus deletions in integrated-base comparison `8c7e2c2a..c13ba233a`; `userMessageProjection.ts` is also listed because it was conflict-resolved exactly to the latest-base implementation and composes with the ticket witness. Tests and generated catalogs are excluded from source thresholds.
+Effective lines are current non-empty lines. Delta is additions plus deletions in `a391b0222..a210ad1df`. No tests or generated files are thresholded.
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts` | 49 | Pass | Pass (6) | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/run-history/projection/recent-run-projection-policy.ts` | 5 | Pass | Pass (7) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/conversation/ToolCallIndicator.vue` | 154 | Pass | Pass (55) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/conversation/segments/EditFileCommandSegment.vue` | 19 | Pass | Pass (11) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/conversation/segments/TerminalCommandSegment.vue` | 19 | Pass | Pass (16) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/conversation/segments/ToolCallSegment.vue` | 19 | Pass | Pass (11) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/conversation/segments/WriteFileCommandSegment.vue` | 19 | Pass | Pass (11) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/agent/AgentConversationFeed.vue` | 172 | Pass | Pass (182) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/agent/AgentEventMonitor.vue` | 57 | Pass | Pass (6) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue` | 143 | Pass | Pass (22) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/agent/CompactionStatusRow.vue` | 66 | Pass | Pass (17) | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/team/AgentTeamEventMonitor.vue` | 120 | Pass | Pass (1) | Pass | Pass | Pass | None. |
-| `autobyteus-web/localization/messages/en/workspace.ts` | 211 | Pass | Pass (2) | Pass | Pass | Pass | None. |
-| `autobyteus-web/localization/messages/zh-CN/workspace.ts` | 210 | Pass | Pass (2) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/AgentStreamingService.ts` | 329 | Pass | Pass (6) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` | 252 | Pass | Pass (44) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/externalUserMessageHandler.ts` | 16 | Pass | Pass (2) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/memberInputMessageHandler.ts` | 17 | Pass | Pass (2) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | 393 | Pass | Pass (35) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/segmentIdentity.ts` | 62 | Pass | Pass (11) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/systemTaskNotificationHandler.ts` | 19 | Pass | Pass (2) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts` | 85 | Pass | Pass (24) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | 370 | Pass | Pass (32) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleState.ts` | 103 | Pass | Pass (15) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts` | 105 | Pass | Pass (0 vs integrated base) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/agentStreaming/teamStreamGenericMessageDispatcher.ts` | 122 | Pass | Pass (6) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorCompletion.ts` | 33 | Pass | Pass (37) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorMutationCommit.ts` | 36 | Pass | Pass (40) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorPresentationWitness.ts` | 149 | Pass | Pass (159) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorSelection.ts` | 60 | Pass | Pass (64) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorUsagePresentation.ts` | 35 | Pass | Pass (38) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts` | 186 | Pass | Pass (202) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/runHydration/runProjectionActivityHydration.ts` | 229 | Pass | Pass (5) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/runHydration/runProjectionConversation.ts` | 303 | Pass | Pass (5) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 240 | Pass | Pass (1) | Pass | Pass | Pass | None. |
-| `autobyteus-web/services/runSubmission/localUserSubmission.ts` | 74 | Pass | Pass (10) | Pass | Pass | Pass | None. |
-| `autobyteus-web/stores/agentActivityStore.ts` | 301 | Pass | Pass (122) | Pass | Pass | Pass | None. |
-| `autobyteus-web/stores/agentContextsStore.ts` | 195 | Pass | Pass (1) | Pass | Pass | Pass | None. |
-| `autobyteus-web/stores/agentTeamRunStore.ts` | 460 | Pass | Pass (6) | Pass | Pass | Pass | None. |
-| `autobyteus-web/stores/runHistoryTeamMemberProjectionHydrator.ts` | 298 | Pass | Pass (1) | Pass | Pass | Pass | None. |
-| `autobyteus-web/types/agent/AgentRunState.ts` | 70 | Pass | Pass (9) | Pass | Pass | Pass | None. |
-| `autobyteus-web/types/segments.ts` | 114 | Pass | Pass (1) | Pass | Pass | Pass | None. |
-| `autobyteus-web/utils/compactionActivityPresentation.ts` | 63 | Pass | Pass (19) | Pass | Pass | Pass | None. |
-| `autobyteus-web/utils/toolCardPresentation.ts` | 112 | Pass | Pass (124) | Pass | Pass | Pass | None. |
+| Source File / Group | Effective Non-Empty Lines | `>500` | `>220` Delta | SoC / Placement | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- |
+| `agent-memory-service.ts` | 113 | Pass | Pass (9) | Pass | Pass | None. |
+| `memory-file-store.ts` | 184 | Pass | Pass (54) | Pass | Pass | None. |
+| `api/graphql/types/event-monitor-active-trace-page.ts` | 123 | Pass | Pass (131) | Pass | Pass | None. |
+| `api/graphql/types/{run-history,team-run-history}.ts` | 270 / 108 | Pass | Pass (12 / 14) | Pass | Pass | None. |
+| `active-trace-event-page-policy.ts` | 99 | Pass | Pass (107) | Pass | Pass | None. |
+| `event-monitor-active-trace-page-projection.ts` | 128 | Pass | Pass (138) | Fail: production media input drift | `Local Fix` | `CR-003`. |
+| `event-monitor-active-trace-page-types.ts` | 85 | Pass | Pass (91) | Pass | Pass | Keep closed DTO. |
+| `historical-replay-event-{identity,types}.ts` | 76 / 70 | Pass | Pass (87 / 10) | Pass | Pass | None. |
+| provider files: `claude`, `codex`, `local-memory` | 140 / 293 / 92 | Pass | Pass (20 / 27 / 61) | Pass | Pass | None. |
+| `run-projection-{types,utils}.ts` | 107 / 79 | Pass | Pass (1 / 1) | Pass | Pass | None. |
+| `raw-trace-to-historical-replay-events.ts` | 215 | Pass | Pass (44) | Pass | Pass | None. |
+| run-view service files: standalone / team member | 136 / 187 | Pass | Pass (59 / 32) | Pass | Pass | None. |
+| `MobileChat.vue` | 94 | Pass | Pass (3) | Pass | Pass | None. |
+| `AgentConversationFeed.vue` | 322 | Pass | Pass (171) | Fail: exit and keyed-ancestor behavior | `Local Fix` | `CR-005`, `CR-006`. |
+| `AgentEventMonitor.vue` | 78 | Pass | Pass (23) | Pass | Pass | None. |
+| `AgentWorkspaceView.vue` | 145 | Pass | Pass (2) | Pass | Pass | None. |
+| `EventMonitorBrowseAssistantRow.vue` | 62 | Pass | Pass (64) | Locally correct child keys; parent key invalidates them | `Local Fix` | Resolve with `CR-006` owner. |
+| `AgentTeamEventMonitor.vue` | 128 | Pass | Pass (9) | Pass | Pass | None. |
+| `graphql/queries/runHistoryQueries.ts` | 357 | Pass | Pass (61) | Pass | Pass | None. |
+| English / zh-CN workspace catalogs | 225 / 224 | Pass | Pass (14 / 14) | Pass | Pass | None. |
+| `eventMonitorActiveTraceBrowse.ts` | 188 | Pass | Pass (203) | Pass | Pass | None. |
+| `eventMonitorActiveTraceBrowsePresentation.ts` | 134 | Pass | Pass (142) | Fail: attachment classification and row-key policy | `Local Fix` | `CR-004`, `CR-006`. |
+| `eventMonitorActiveTracePageService.ts` | 42 | Pass | Pass (44) | Pass | Pass | None. |
+| `recentEventMonitorMutationCommit.ts` | 37 | Pass | Pass (1) | Pass | Pass | None. |
+| hydration/open/store/type propagation files | max 300 | Pass | Pass (max 4) | Pass | Pass | None. |
+| `toolCardPresentation.ts` | 134 | Pass | Pass (24) | Pass | Pass | None. |
 
-No changed implementation-source file exceeds 500 effective non-empty lines, and no integrated-base task delta exceeds 220 lines.
+No changed implementation-source file exceeds 500 effective non-empty lines, and no changed implementation-source delta exceeds 220 lines.
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Check | Result (`Pass`/`Fail`) | Notes |
+| Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No archive/full-history flag, dual contract, or compatibility wrapper exists. |
-| No legacy old-behavior retention in changed scope | Pass | Normal projection and revision have one current path. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Effect-OR machinery and copy remnants are removed. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing traces are directly usable; no migration. |
+| No backward-compatibility mechanisms in changed scope | Pass | No archive/full-history fallback or version-specific page branch. |
+| No legacy old-behavior retention in changed scope | Pass | Normal latest behavior remains one active-only path. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No dormant probe or obsolete page adapter remains. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Paging is read-only; no migration/rewrite. |
 | No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Read/display policy only; stored bytes remain untouched. |
+| Approved transition mechanics match the reviewed design | Pass | Existing traces are read directly and archive files are not used by paging. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
+## Dead / Obsolete / Legacy Items Requiring Removal
 
 None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: The durable Event Monitor architecture now has an active-only projection invariant, lifecycle-aware recent window, semantic presentation witness, stateful commit boundary, and Activity/central-presentation split that should remain discoverable after ticket artifacts leave the active workflow.
-- Files or areas likely affected: `autobyteus-web/docs/agent_execution_architecture.md` now contains the Event Monitor architecture update recorded by delivery. Delivery should re-verify the integrated documentation after the repeated API/E2E gate.
+- Why: Active-trace page APIs, identity/cursor contract, closed page DTO, and bounded browse lifecycle are durable architectural behavior.
+- Files or areas likely affected: existing Event Monitor architecture documentation and release/handoff records after implementation and fresh API/E2E pass. Delivery remains the documentation owner.
 
-## Material Premise Validation (Only When Needed)
+## Material Premise Validation
 
 ### Upstream Design-Review Material-Premise Decisions
 
-| Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
+| Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-001` | Confirmed | Completed-first and all-mutable fallback implementation remains unchanged and tested. |
-| `MP-CR-001` | Confirmed | Exact supported transient append path now produces equal witnesses and no revision. |
-| `MP-AR-003` | Confirmed | Tool log/result/equal-summary replacement remains central-witness-equal; true semantic card changes differ. |
+| `MP-001` | Confirmed | Completed-first/latest behavior remains unchanged. |
+| `MP-CR-001` | Confirmed | Net witness authority remains resolved. |
+| `MP-AR-003` | Confirmed | Result/log/deep state remains excluded. |
+| `MP-AR-006` | Reclassified | Source identity exists, but a keyed assistant ancestor changes when an older same-turn visual crosses the page boundary, so the intended disclosure guarantee is not achieved. See `MP-CR-006`. |
+| `MP-AR-007` | Confirmed | Closed result/log-free DTO remains structurally present. |
 
-No new or reclassified material premise was needed in round 3. Latest-base file actions are explicit-user activation only and attachment echoes are an established production path already bracketed by the reviewed team mutation transaction.
+### `MP-CR-004` — Production active-trace attachment locators require the existing locator classifier
 
-## Latest-Base Integration Composition Check
+- Origin: `New`
+- Related approved requirement or established contract: `REQ-010`; the central page contains fields used by retained interaction; the existing `UserMessage` attachment behavior is reused.
+- Relevant behavior ID(s): `DS-006`, `DS-007`.
+- Product-supported initiating trigger or governing contract, with evidence: `extractAcceptedMessageMedia` writes accepted user context-file URIs into `RawTraceMedia`; repository tests and media preprocessing support relative workspace locators such as `images/out.png`, while `hydrateContextAttachment` classifies workspace, upload, canonical-local, REST, data, and external locators.
+- Actual production caller/event path: accepted user message -> raw trace `media` -> replay event -> page attachment DTO -> `toAttachment` -> `UserMessage` -> `contextAttachmentPresentation.openAttachment`.
+- Lifecycle preconditions and material consequence: In browse mode `toAttachment` forces every locator to `external_url`; a relative workspace locator therefore bypasses workspace-file handling/preview and is opened as a browser-relative URL.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: `CR-004`, bounded local correction and regression coverage.
 
-| Integration Boundary | Source Evidence | Preservation Result |
-| --- | --- | --- |
-| Bounded feed + absolute-file action | `AgentConversationFeed.vue` continues to derive rows from `buildRecentEventMonitorPresentation`, usage from shared presentation helpers, and unseen state from `presentationRevision`; only retained `AIMessage` rows receive the opt-in action prop and re-emit the typed action. | Pass — newest-100/order/revision behavior remains authoritative, while explicit actions reach the latest-base owner. |
-| Event Monitor orchestration | `AgentEventMonitor.vue` supplies both `presentationRevision` and the explicit action capability; `handleFilePathAction` dynamically enters `useEventMonitorFilePreview` only after user activation and renders host-only status outside the bounded feed. | Pass — no passive message-arrival side effect or competing feed path was introduced. |
-| Member echo attachment replacement | `userMessageProjection.ts` matches the latest-base non-executable retention/deduplication rule. `teamStreamGenericMessageDispatcher` still surrounds `MEMBER_INPUT_MESSAGE` with bounded pre/post witness capture, and user witness values include semantic attachment primitives. | Pass — attachment changes revise only when the resulting central presentation changes; obsolete handler booleans/deep attachment equality remain absent. |
-| Cross-surface composition evidence | Focused specs prove action capability/forwarding and member attachment cases; reviewer suite additionally re-executed production dispatch, witness, and commit regressions; Chromium evidence covers host-only status plus non-pinned jump behavior. | Pass — no conflict marker, duplicate owner, or restored legacy path remains. |
+### `MP-CR-006` — A fixed canonical-event page boundary can split one assistant turn group
 
+- Origin: `Reclassified from MP-AR-006`
+- Related approved requirement or established contract: `REQ-011`, `REQ-012`, `AC-014` stable subvisual/disclosure identity.
+- Relevant behavior ID(s): `DS-006`, `DS-007`.
+- Product-supported initiating trigger or governing contract, with evidence: page selection slices every 50 canonical replay events without turn alignment, and a supported turn may emit more than 50 reasoning/tool/assistant events sharing one `turnGroupId`.
+- Actual production caller/event path: active raw records -> replay events with common turn ID -> fixed page slice -> controller prepend -> presentation regroup by adjacent `turnGroupId` -> feed `v-for :key="item.key"` -> assistant row/Thinking component.
+- Lifecycle preconditions and material consequence: The retained row initially uses its first retained visual ID as key; prepending an older same-turn visual changes that key. Vue replaces the keyed ancestor, so the retained Thinking/tool component is remounted and loses its explicit disclosure state. A disposable Nuxt reviewer probe observed `open -> closed` after this exact prepend.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: `CR-006`, bounded local key/grouping correction plus feed-level prepend/turnover regression.
 
-## Review Scorecard (Mandatory)
+## Review Scorecard
 
-- Overall score (`/10`): `9.6`
-- Overall score (`/100`): `96`
-- Score calculation note: simple average rounded for summary only; all categories meet the clean-pass target.
+- Overall score (`/10`): `8.9`
+- Overall score (`/100`): `89`
+- Score calculation note: simple average rounded for trend visibility; categories below `9.0` are blocking gaps.
 
-| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | All five spines are preserved; the revised mutation transaction is explicit and complete. | Realistic system execution is still downstream. | Confirm the same path under API/E2E load. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | Pure policy, semantic witness, render derivation, stateful commit, and reset ownership are clear. | Witness maintenance remains a deliberate seam. | Preserve the renderer-shared anti-drift pattern. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.5 | Begin/commit and typed witness interfaces are singular and identity-explicit. | Callers must continue bracketing every new mutation boundary. | Add future callers only through the authoritative adapter. |
-| `4` | `Separation of Concerns and File Placement` | 9.5 | Stateful and pure concerns are split without artificial fragmentation. | `agentTeamRunStore.ts` remains a large pre-existing store, though this delta is tiny. | Avoid adding unrelated responsibilities there. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | Tokens and tool presentation structures contain only semantic primitives; shared helpers remove drift/duplication. | Per-kind witness evolution requires disciplined updates. | Extend the explicit table/tests when central render semantics change. |
-| `6` | `Naming Quality and Local Readability` | 9.5 | `retentionChanged`, presentation witness, and commit names accurately distinguish responsibilities. | Some handlers retain harmless explicit `return` statements after effect removal. | Optional local cleanup only when touching those paths again. |
-| `7` | `API/E2E Readiness` | 9.3 | Focused/expanded integration checks and direct Chromium composition evidence are green; the pre-integration API/E2E package passed. | Latest-base conflict composition requires a fresh authoritative API/E2E run. | Re-execute the integrated candidate and refresh confidence/evidence. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.6 | CR-001/CR-002/AR-003 semantics remain intact, and the integrated renderer/attachment boundaries are composed without restoring obsolete revision authority. | Integrated-state broader execution is still pending. | Repeat API/E2E against `c13ba233a`. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | One clean active-only/current-semantics path; no migration or compatibility branch. | No material weakness. | Preserve the clean cut. |
-| `10` | `Cleanup Completeness` | 9.7 | Obsolete effect/snapshot, copy, and archive-inclusive normal behavior are removed. | Index-derived component/disclosure keys remain an accepted observation risk. | Observe under rolling API/E2E; change only with concrete evidence. |
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 8.5 | Owners and flow are explicit. | Production image data is dropped at the projector. | Align the page input contract and prove it through real raw normalization. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.3 | Server and web owners are well separated. | Attachment conversion bypasses one established narrow owner. | Reuse the context-attachment classifier without importing broad hydration. |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | Subject-bound fixed APIs and closed union are strong. | Media input shape is looser than the production contract. | Tighten the projector boundary type. |
+| 4 | Separation of Concerns and File Placement | 9.4 | Files have coherent responsibilities and placement. | No material structural split problem. | Preserve current allocation while fixing behavior locally. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 8.6 | Output DTO is tight and result-free. | `Record<string,string[]>` permits `image`/`images` drift; attachment classification is duplicated incorrectly. | Use canonical/narrow shared contracts. |
+| 6 | Naming Quality and Local Readability | 9.3 | Names make the paging lifecycle readable. | No significant naming defect. | Preserve naming through rework. |
+| 7 | API/E2E Readiness | 7.8 | Broad implementation checks are green. | Two reviewer probes fail and ordinary browse exit has no regression test. | Fix, add durable tests, and repeat source review before API/E2E. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 7.5 | Cursor, archive exclusion, turnover, and isolation are largely correct. | Images disappear, attachment actions drift, browse can trap the user, and disclosure state can reset. | Resolve `CR-003`–`CR-006`. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | One current active-only path; no migration or fallback. | No material weakness. | Preserve. |
+| 10 | Cleanup Completeness | 9.5 | No obsolete path or reviewer probe remains. | Durable regressions are incomplete. | Add the missing production-shape/component tests. |
 
 ## Findings
 
-None in round 3.
+### `CR-003` — High — Production image media is silently omitted from active-trace pages
 
-Round-1 findings `CR-001` and `CR-002`, plus architecture finding `AR-003`, remain resolved. The latest-base integration introduced no new source finding.
+- Affected behavior: `REQ-010`–`REQ-012`; `AC-012`, `AC-014`, `AC-015`; `DS-006`.
+- Evidence: `autobyteus-ts/src/memory/models/raw-trace-item.ts:3-7`, `autobyteus-ts/src/memory/memory-manager.ts:125-129`, and `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-payload.ts:74-83` define/write `media.images`. `event-monitor-active-trace-page-projection.ts:52-57` reads only `media.image`. The existing projector test uses the non-production singular key. A disposable focused probe passed `{images:["media://images/proof.png"]}` and received no visuals.
+- Consequence: user image attachments and assistant/reasoning/tool image visuals vanish from earlier pages; visual counts and mixed-event traversal evidence are false for the production shape.
+- Required action: consume the actual `images` input key (while emitting DTO `mediaType: image`), tighten the input contract or canonical adapter so TypeScript can catch drift, and add normalized raw-trace/provider tests for user and assistant/tool image cases with stable IDs/counts.
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+
+### `CR-004` — Medium — Browse attachment conversion changes retained open/preview semantics
+
+- Affected behavior: `REQ-010` central render/retained interaction; `DS-007`; `MP-CR-004`.
+- Evidence: `eventMonitorActiveTraceBrowsePresentation.ts:29-37` constructs every attachment as `kind: external_url`; normal presentation uses the established `hydrateContextAttachment` classifier (`runProjectionConversation.ts:143-153`). `UserMessage.vue` routes open/preview behavior from that kind.
+- Consequence: supported relative workspace media can be opened as a browser-relative URL rather than through workspace file/preview handling, and canonical/uploaded/unsupported classifications can drift between latest and browse modes.
+- Required action: reuse the narrow context-attachment classification owner (or an equivalent shared canonical adapter) while preserving the server-carried `attachmentId` as stable render identity; cover relative workspace, external/REST, canonical/uploaded, and duplicate-locator cases proportionately.
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+
+### `CR-005` — Medium — Ordinary browse, beginning, and retry states can provide no way back to latest
+
+- Affected behavior: `REQ-011`; UI/UX `UXJ-007`, `UXJ-008`, component/interaction tables; `DS-007`.
+- Evidence: `AgentConversationFeed.vue:211-212` shows the bottom return control only for unseen activity or released newer blocks. After a successful first load with no subsequent live revision/turnover, `browsing` or `beginning` has no Return/Jump action; `error` likewise only exposes Retry. The expiry state is the sole unconditional return action.
+- Consequence: a user can enter the frozen browse view and have no explicit exit until unrelated live activity occurs, despite the approved jump-to-latest exit contract.
+- Required action: expose a localized keyboard-operable Return/Jump action throughout non-latest browse states (without duplicating the expiry control), make it reset pages/cursors and restore latest, and add component tests for browsing, beginning, retry/error, expiry, click, Enter/Space, and focus visibility.
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+
+### `CR-006` — Medium — Same-turn prepend changes the keyed assistant ancestor and resets retained disclosure state
+
+- Affected behavior: `REQ-011`, `REQ-012`, `AC-014`; resolved design premise `MP-AR-006`; `MP-CR-006`.
+- Evidence: `eventMonitorActiveTraceBrowsePresentation.ts:130-137` merges adjacent same-turn visuals and assigns the row key from the first visual. `AgentConversationFeed.vue:54-68` keys the assistant-row component by that value. When an earlier page adds an older visual in the same turn, the key changes. The existing row test only changes props on an already-mounted child and does not exercise the parent key. A disposable feed-level Nuxt probe observed retained state reset from `open` to `closed`.
+- Consequence: the stable subvisual key does not protect `ThinkSegment`/tool local state because its keyed ancestor is replaced; the approved disclosure identity guarantee fails at a reachable fixed-page boundary.
+- Required action: choose a parent grouping/key strategy that remains stable across both prepend and farthest-newer turnover, or keep each stable subvisual under a stable ancestor; add a feed-level page-boundary and turnover test proving the same retained DOM/component disclosure identity survives while equal-content neighbors remain distinct.
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
 
 ## Classification
 
-N/A — passing review.
+`Local Fix` — all four findings are bounded implementation/test corrections within the reviewed architecture; no requirement or design revision is needed.
 
 ## Recommended Recipient
 
-`api_e2e_engineer`
+`implementation_engineer`
 
 ## Residual Risks
 
-- One retained event can still be byte-heavy; bounded conversation/Activity transport still duplicates tool information.
-- Large active teams can perform several bounded active-file reads.
-- Dynamic-height content can imperfectly anchor a non-pinned viewport.
-- All-mutable eviction can make later stable-identity re-entry source-limited.
-- Semantic witness maintenance is a correctness seam, constrained by renderer-shared derivations, explicit per-kind primitives, shallow/no-recursion rules, and focused tests.
-- Index-derived component/disclosure keys remain a non-blocking observation risk during rolling regroup/eviction.
-- Full Nuxt typecheck completes but retains the repository-wide baseline diagnostics; no diagnostic names an integration-resolved or ticket-modified production path.
-- The pre-integration API/E2E result is not authoritative for merge `c13ba233a`; downstream must rerun the integrated state.
+- Full active reconstruction remains O(active-source size) and still requires fresh API/E2E timing evidence after source passes.
+- A single retained markdown/media value can remain byte-heavy despite cardinality bounds.
+- Dynamic media/layout changes can still produce normal anchor tolerance after the stable-ID defects are corrected.
+- Page generation uses the approved manifest/inode/earliest evidence and should be revalidated against actual compaction in API/E2E.
+- Historical pre-refinement API/E2E/delivery reports are not authoritative for `a210ad1df` or its rework.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Fail`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `9.6/10` (`96/100`); every category is at least `9.0`.
-- Failure Origin (when applicable): `N/A`
-- Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: Round 3 is authoritative. The latest-base conflict composition preserves CR-001, CR-002, and AR-003 resolutions and passes focused source review. Proceed through API/E2E again with merge `c13ba233a` and the complete cumulative package.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Fail`
+- Score Summary: `8.9/10` (`89/100`); API/E2E readiness and runtime correctness are below the clean-pass threshold.
+- Failure Origin (when applicable): Implementation-owned source/test gaps in the new paging refinement.
+- Recommended Recipient (when applicable): `implementation_engineer`
+- Notes: Round 4 is authoritative. Resolve `CR-003`–`CR-006`, preserve the prior CR-001/CR-002/AR-003 resolutions, and return the complete cumulative package for source rereview. Fresh API/E2E remains mandatory only after source review passes.

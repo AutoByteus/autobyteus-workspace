@@ -3,6 +3,7 @@ import type { MediaSegment, ToolApprovalTarget } from '~/types/segments';
 import type { CompactionActivity, CompactionStatusPhase } from '~/stores/agentActivityStore';
 import type { ToolCardPresentation, ToolCardStatusPresentationKey } from '~/utils/toolCardPresentation';
 import { buildEventMonitorPageToolCardPresentation } from '~/utils/toolCardPresentation';
+import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 import type {
   EventMonitorActiveTracePageEventDto,
   EventMonitorActiveTracePageVisualDto,
@@ -29,11 +30,11 @@ const attachmentType = (mediaType: string): ContextAttachment['type'] => {
 const toAttachment = (
   attachment: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorUserVisual' }>['attachments'][number],
 ): ContextAttachment => ({
-  kind: 'external_url',
+  ...hydrateContextAttachment({
+    locator: attachment.locator,
+    type: attachmentType(attachment.mediaType),
+  }),
   id: attachment.attachmentId,
-  locator: attachment.locator,
-  displayName: attachment.locator.split('/').filter(Boolean).at(-1) || attachment.locator,
-  type: attachmentType(attachment.mediaType),
 });
 
 const STATUS_KEYS = new Set<ToolCardStatusPresentationKey>([
@@ -132,7 +133,7 @@ export const buildEventMonitorActiveTraceBrowsePresentation = (
         previous.visuals.push(assistantVisual);
       } else {
         items.push({
-          kind: 'assistant', key: assistantVisual.visualId,
+          kind: 'assistant', key: `browse-assistant-group:${event.turnGroupId}`,
           turnGroupId: event.turnGroupId, visuals: [assistantVisual],
         });
       }

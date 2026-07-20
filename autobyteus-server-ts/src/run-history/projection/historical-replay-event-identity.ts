@@ -1,16 +1,19 @@
 import { createHash } from "node:crypto";
 import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
+import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 const digest = (value: string): string => createHash("sha256").update(value).digest("hex");
 const normalized = (value: unknown): string => typeof value === "string" ? value.trim() : "";
 const lengthPrefixed = (value: string): string => `${Buffer.byteLength(value, "utf8")}:${value}`;
 
-const mediaIdentity = (media: Record<string, string[]> | null | undefined): string => {
+const mediaIdentity = (media: RawTraceMedia | null | undefined): string => {
   if (!media) return "";
-  return Object.keys(media).sort().flatMap((kind) => [
-    lengthPrefixed(kind),
-    ...(media[kind] ?? []).map((locator) => lengthPrefixed(String(locator))),
-  ]).join("|");
+  return (["audio", "images", "video"] as const).flatMap((kind) => {
+    const locators = media[kind];
+    return locators?.length
+      ? [lengthPrefixed(kind), ...locators.map((locator) => lengthPrefixed(locator))]
+      : [];
+  }).join("|");
 };
 
 export const buildRawReplayEventId = (rawId: string): string =>

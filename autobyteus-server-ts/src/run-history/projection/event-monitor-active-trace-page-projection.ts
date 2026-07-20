@@ -1,4 +1,5 @@
 import { Buffer } from "node:buffer";
+import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "./historical-replay-event-types.js";
 import type {
   EventMonitorActiveTraceAttachment,
@@ -49,18 +50,20 @@ const statusKey = (status: HistoricalReplayToolEvent["status"]): EventMonitorToo
   return "default";
 };
 
-const normalizedMedia = (media: Record<string, string[]> | null): Array<[EventMonitorMediaType, string[]]> => {
+const normalizedMedia = (media: RawTraceMedia | null): Array<[EventMonitorMediaType, string[]]> => {
   if (!media) return [];
-  return (["image", "audio", "video"] as const).flatMap((kind) => {
-    const urls = Array.isArray(media[kind]) ? media[kind].filter((url) => typeof url === "string") : [];
-    return urls.length ? [[kind, urls] as [EventMonitorMediaType, string[]]] : [];
+  return ([
+    ["images", "image"], ["audio", "audio"], ["video", "video"],
+  ] as const).flatMap(([sourceKey, mediaType]) => {
+    const urls = media[sourceKey]?.filter((url) => url.trim().length > 0) ?? [];
+    return urls.length ? [[mediaType, urls] as [EventMonitorMediaType, string[]]] : [];
   });
 };
 
 const appendMediaVisuals = (
   visuals: EventMonitorActiveTracePageVisual[],
   eventId: string,
-  media: Record<string, string[]> | null,
+  media: RawTraceMedia | null,
 ): void => {
   for (const [mediaType, urls] of normalizedMedia(media)) {
     visuals.push({
@@ -70,7 +73,7 @@ const appendMediaVisuals = (
   }
 };
 
-const userAttachments = (eventId: string, media: Record<string, string[]> | null): EventMonitorActiveTraceAttachment[] => {
+const userAttachments = (eventId: string, media: RawTraceMedia | null): EventMonitorActiveTraceAttachment[] => {
   const attachments: EventMonitorActiveTraceAttachment[] = [];
   for (const [mediaType, urls] of normalizedMedia(media)) {
     urls.forEach((locator, ordinal) => attachments.push({

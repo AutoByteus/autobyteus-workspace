@@ -228,6 +228,53 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     expect(page.hasEarlier).toBe(true);
   });
 
+  it("preserves production-shaped user, assistant, and tool images with stable page identities", async () => {
+    const getActiveRawTraceSnapshot = vi.fn().mockReturnValue({
+      rawTraces: [
+        {
+          id: "user-1", traceType: "user", content: "look", media: { images: ["images/user.png"] },
+          turnId: "turn-1", seq: 1, ts: 1,
+        },
+        {
+          id: "assistant-1", traceType: "assistant", content: "seen", media: { images: ["images/assistant.png"] },
+          turnId: "turn-1", seq: 2, ts: 2,
+        },
+        {
+          id: "tool-call", traceType: "tool_call", toolCallId: "call-1", toolName: "inspect",
+          media: { images: ["images/tool.png"] }, turnId: "turn-1", seq: 3, ts: 3,
+        },
+      ],
+      records: [], device: "1", inode: "2", manifestGeneration: null,
+    });
+    const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
+      getActiveRawTraceSnapshot,
+    } as never);
+    const page = await provider.buildActiveTracePage({
+      source: {
+        runId: "server-run-1", runtimeKind: RuntimeKind.AUTOBYTEUS,
+        workspaceRootPath: "/tmp/workspace", memoryDir: null, platformRunId: null,
+        metadata: createMetadata(),
+      },
+      subjectFingerprint: "subject",
+      beforeCursor: null,
+    });
+
+    expect(page.events.map(event => ({
+      eventId: event.eventId,
+      visuals: event.visuals.map(visual => visual.kind === "media"
+        ? `${visual.kind}:${visual.mediaType}:${visual.urls[0]}`
+        : visual.kind),
+    }))).toEqual([
+      { eventId: "raw:v1:6:user-1", visuals: ["user"] },
+      { eventId: "raw:v1:11:assistant-1", visuals: ["assistant_text", "media:image:images/assistant.png"] },
+      { eventId: "tool:v1:6:turn-1:6:call-1", visuals: ["tool_card", "media:image:images/tool.png"] },
+    ]);
+    expect(page.events[0]?.visuals[0]).toMatchObject({
+      kind: "user",
+      attachments: [{ locator: "images/user.png", mediaType: "image" }],
+    });
+  });
+
   it("never opens an archive segment while building an active-trace page", async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "active-trace-page-provider-"));
     tempDirs.add(root);

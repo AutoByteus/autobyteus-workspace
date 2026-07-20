@@ -4,6 +4,7 @@ import type {
   RunProjectionCompactionPhase,
   RunProjectionSourceDetailLevel,
 } from "./run-projection-types.js";
+import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 export interface HistoricalReplayMessageEvent {
   eventId: string;
@@ -11,7 +12,7 @@ export interface HistoricalReplayMessageEvent {
   kind: "message";
   role: string | null;
   content: string | null;
-  media: Record<string, string[]> | null;
+  media: RawTraceMedia | null;
   ts: number | null;
 }
 
@@ -20,7 +21,7 @@ export interface HistoricalReplayReasoningEvent {
   turnGroupId: string;
   kind: "reasoning";
   content: string | null;
-  media: Record<string, string[]> | null;
+  media: RawTraceMedia | null;
   ts: number | null;
 }
 
@@ -34,7 +35,7 @@ export interface HistoricalReplayToolEvent {
   toolResult: unknown | null;
   toolError: string | null;
   content: string | null;
-  media: Record<string, string[]> | null;
+  media: RawTraceMedia | null;
   ts: number | null;
   activityType: RunProjectionActivityType;
   status: RunProjectionActivityStatus;

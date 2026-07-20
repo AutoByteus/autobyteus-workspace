@@ -18,7 +18,7 @@ const tool = (toolResult: unknown): HistoricalReplayToolEvent => ({
   toolResult,
   toolError: null,
   content: "visible text",
-  media: { image: ["image://one"], audio: ["audio://one"] },
+  media: { images: ["image://one"], audio: ["audio://one"] },
   ts: 12,
   activityType: "tool_call",
   status: "success",
@@ -32,11 +32,11 @@ describe("event monitor active trace page projection", () => {
     const events: HistoricalReplayEvent[] = [
       {
         kind: "message", eventId: "user", turnGroupId: "turn-1", role: "user",
-        content: "ask", media: { image: ["image://attachment"] }, ts: 1,
+        content: "ask", media: { images: ["image://attachment"] }, ts: 1,
       },
       {
         kind: "message", eventId: "assistant", turnGroupId: "turn-1", role: "assistant",
-        content: "answer", media: { video: ["video://one"], image: ["image://one"] }, ts: 2,
+        content: "answer", media: { video: ["video://one"], images: ["image://one"] }, ts: 2,
       },
       {
         kind: "reasoning", eventId: "thinking", turnGroupId: "turn-1",
@@ -63,6 +63,10 @@ describe("event monitor active trace page projection", () => {
       { eventId: "tool:v1:1:t:1:c", kinds: ["tool_card", "assistant_text", "media", "media"] },
       { eventId: "compaction", kinds: ["compaction"] },
     ]);
+    expect(buildEventMonitorActiveTracePageEvents(events)[0]?.visuals[0]).toMatchObject({
+      kind: "user",
+      attachments: [{ mediaType: "image", locator: "image://attachment" }],
+    });
   });
 
   it("emits deterministic distinct visual identities for every central subvisual", () => {

@@ -38,7 +38,9 @@
           v-else-if="browseState === 'expired'"
           type="button"
           class="min-h-9 rounded-full border border-amber-200 bg-white px-4 py-1.5 text-sm font-medium text-amber-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+          data-testid="event-monitor-expired-return"
           @click="jumpToLatest"
+          @keydown="handleJumpKeydown"
         >
           {{ $t('workspace.components.workspace.agent.AgentConversationFeed.earlier_cursor_expired') }}
         </button>
@@ -126,7 +128,9 @@
       <button
         type="button"
         class="pointer-events-auto min-h-10 rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm font-medium text-indigo-700 shadow-md transition hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+        data-testid="event-monitor-jump-to-latest"
         @click="jumpToLatest"
+        @keydown="handleJumpKeydown"
       >
         <span v-if="browseState === 'latest'">
           {{ $t('workspace.components.workspace.agent.AgentConversationFeed.jump_to_latest') }}
@@ -209,7 +213,9 @@ const latestFeedItems = computed(() => buildRecentEventMonitorPresentation(
 const showBrowsePresentation = computed(() => props.browseState !== 'latest' && props.browseItems.length > 0);
 const showBoundaryControl = computed(() => props.canLoadEarlier || props.browseState !== 'latest');
 const showJumpToLatest = computed(() => hasUnseenActivity.value
-  || props.browseHasNewerLiveActivity || props.newerBrowseContentReleased);
+  || props.browseHasNewerLiveActivity
+  || props.newerBrowseContentReleased
+  || (props.browseState !== 'latest' && props.browseState !== 'expired'));
 
 type BrowseAnchor = { scrollHeight: number; scrollTop: number; visualId: string | null; offset: number };
 const pendingBrowseAnchor = ref<BrowseAnchor | null>(null);
@@ -254,6 +260,12 @@ const jumpToLatest = () => {
     scrollToBottom();
     updatePinnedStateFromScrollPosition();
   }
+};
+
+const handleJumpKeydown = (event: KeyboardEvent) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  jumpToLatest();
 };
 
 const captureBrowseAnchor = (): BrowseAnchor | null => {

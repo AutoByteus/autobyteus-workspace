@@ -2,10 +2,14 @@ import { describe, expect, it } from 'vitest';
 import type { EventMonitorActiveTracePageEventDto } from '../eventMonitorActiveTracePageService';
 import { buildEventMonitorActiveTraceBrowsePresentation } from '../eventMonitorActiveTraceBrowsePresentation';
 
-const textEvent = (eventId: string, visualId: string): EventMonitorActiveTracePageEventDto => ({
+const textEvent = (
+  eventId: string,
+  visualId: string,
+  turnGroupId = 'turn:v1:1:t',
+): EventMonitorActiveTracePageEventDto => ({
   __typename: 'EventMonitorActiveTracePageEvent',
   eventId,
-  turnGroupId: 'turn:v1:1:t',
+  turnGroupId,
   occurredAtMs: 10,
   visuals: [{
     __typename: 'EventMonitorAssistantTextVisual',
@@ -26,7 +30,7 @@ describe('event monitor active trace browse presentation', () => {
     expect(presentation).toHaveLength(1);
     expect(presentation[0]).toMatchObject({
       kind: 'assistant',
-      key: 'visual:r17',
+      key: 'browse-assistant-group:turn:v1:1:t',
       visuals: [
         { visualId: 'visual:r17', content: 'Done' },
         { visualId: 'visual:r18', content: 'Done' },
@@ -34,7 +38,7 @@ describe('event monitor active trace browse presentation', () => {
     });
   });
 
-  it('uses the first carried visual identity for every rendered row key', () => {
+  it('uses stable turn-group row keys while retaining carried visual identities', () => {
     const presentation = buildEventMonitorActiveTraceBrowsePresentation([
       textEvent('raw:r17', 'visual:r17'),
       {
@@ -45,9 +49,43 @@ describe('event monitor active trace browse presentation', () => {
           visualId: 'visual:user', kindOrdinal: 0, text: 'break', attachments: [],
         }],
       },
-      textEvent('raw:r18', 'visual:r18'),
+      textEvent('raw:r18', 'visual:r18', 'turn:v1:2:t2'),
     ]);
-    expect(presentation.map(item => item.key)).toEqual(['visual:r17', 'visual:user', 'visual:r18']);
+    expect(presentation.map(item => item.key)).toEqual([
+      'browse-assistant-group:turn:v1:1:t',
+      'visual:user',
+      'browse-assistant-group:turn:v1:2:t2',
+    ]);
+  });
+
+  it('reuses the established attachment classifier while preserving server-carried IDs', () => {
+    const event: EventMonitorActiveTracePageEventDto = {
+      __typename: 'EventMonitorActiveTracePageEvent', eventId: 'raw:user',
+      turnGroupId: 'turn:user', occurredAtMs: 11,
+      visuals: [{
+        __typename: 'EventMonitorUserVisual', kind: 'user', eventId: 'raw:user',
+        visualId: 'visual:user', kindOrdinal: 0, text: 'attachments',
+        attachments: [
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-workspace', mediaType: 'image', locator: 'images/out.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-external', mediaType: 'image', locator: 'https://cdn.example/out.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-rest', mediaType: 'image', locator: '/rest/media/render.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-upload', mediaType: 'image', locator: '/rest/runs/r1/context-files/ctx_token__proof.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-canonical', mediaType: 'image', locator: 'local-file://local/tmp/proof.png' },
+          { __typename: 'EventMonitorActiveTraceAttachment', attachmentId: 'a-duplicate', mediaType: 'image', locator: 'images/out.png' },
+        ],
+      }],
+    };
+    const [item] = buildEventMonitorActiveTraceBrowsePresentation([event]);
+    expect(item?.kind).toBe('user');
+    if (item?.kind !== 'user') throw new Error('Expected user presentation.');
+    expect(item.message.contextFilePaths).toEqual([
+      expect.objectContaining({ kind: 'workspace_path', id: 'a-workspace', locator: 'images/out.png' }),
+      expect.objectContaining({ kind: 'external_url', id: 'a-external' }),
+      expect.objectContaining({ kind: 'external_url', id: 'a-rest', locator: '/rest/media/render.png' }),
+      expect.objectContaining({ kind: 'uploaded', id: 'a-upload', storedFilename: 'ctx_token__proof.png', phase: 'final' }),
+      expect.objectContaining({ kind: 'external_url', id: 'a-canonical', locator: 'local-file://local/tmp/proof.png' }),
+      expect.objectContaining({ kind: 'workspace_path', id: 'a-duplicate', locator: 'images/out.png' }),
+    ]);
   });
 
   it('maps multi-visual tools through the closed shallow tool presentation', () => {
