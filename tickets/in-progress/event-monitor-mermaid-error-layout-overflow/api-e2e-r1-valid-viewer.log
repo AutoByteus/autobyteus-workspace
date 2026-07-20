@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.21 test:e2e:diagram-zoom-viewer /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/autobyteus-web
+> node tests/e2e/diagram-zoom-viewer-probe.mjs -- --port=3331 --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/api-e2e-r1-valid-viewer
+
+Diagram zoom viewer probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/api-e2e-r1-valid-viewer/evidence.json
