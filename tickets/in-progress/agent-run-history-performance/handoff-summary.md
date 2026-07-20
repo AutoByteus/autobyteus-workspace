@@ -8,8 +8,9 @@
 - Latest integrated base: `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`
 - Integration merge: `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`
 - Integrated validation checkpoint: `20fe710ef`
+- Host-validation publication: `487ea715bcaf9ccaa1a3fce4b415d3abc9afdcc4` pushed to `origin/codex/agent-run-history-performance` at the user's explicit request.
 - Unresolved implementation/review/API-E2E findings: None.
-- Finalization hold: Explicit user completion/verification is required before archival, push, merge, tag, release, deployment, or cleanup.
+- Finalization hold: The ticket branch is available for host testing. Explicit user completion/verification is still required before archival, merge/push to `origin/personal`, tag, release, deployment, or cleanup.
 
 ## Delivered Behavior
 

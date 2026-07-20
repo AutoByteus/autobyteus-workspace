@@ -54,8 +54,8 @@ Not started. No version or tag is selected before user verification and reposito
 
 - Bootstrap context source: `tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Ticket branch: `codex/agent-run-history-performance`
-- Ticket branch commit result: Delivery-safety checkpoints completed; final ticket commit pending verification.
-- Ticket branch push result: Not started.
+- Ticket branch commit result: Host-validation publication commit `487ea715bcaf9ccaa1a3fce4b415d3abc9afdcc4` completed at the user's explicit request; the final archival commit remains pending verification.
+- Ticket branch push result: `Pass` — published `487ea715bcaf9ccaa1a3fce4b415d3abc9afdcc4` to `origin/codex/agent-run-history-performance` for host-side Electron build and verification. This is not a merge or push to the finalization target.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: Not applicable; verification has not occurred.
@@ -64,8 +64,8 @@ Not started. No version or tag is selected before user verification and reposito
 - Target branch update result: Not started.
 - Merge into target result: Not started.
 - Push target branch result: Not started.
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): Required explicit user completion/verification has not yet been received.
+- Repository finalization status: `Blocked` after the explicitly requested ticket-branch publication.
+- Blocker (if applicable): Required explicit user completion/verification has not yet been received for ticket archival, target-branch merge/push, release, or cleanup.
 
 ## Release / Publication / Deployment
 
