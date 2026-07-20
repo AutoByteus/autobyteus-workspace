@@ -5,6 +5,7 @@ import UserMessage from '../UserMessage.vue';
 import {
   createUploadedContextAttachment,
   createWorkspaceContextAttachment,
+  hydrateContextAttachment,
 } from '~/utils/contextFiles/contextAttachmentModel';
 
 const fileExplorerStoreMock = reactive({
@@ -100,5 +101,32 @@ describe('UserMessage', () => {
       '_blank',
       'noopener,noreferrer',
     );
+  });
+
+  it('renders unsupported local-file metadata as a non-interactive label chip', async () => {
+    const unsupported = hydrateContextAttachment({
+      locator: 'local-file://opaque/image.png',
+      type: 'Image',
+      displayName: 'opaque image.png',
+    });
+    const wrapper = mount(UserMessage, {
+      props: {
+        message: {
+          type: 'user',
+          text: 'Keep the label only',
+          timestamp: new Date(),
+          contextFilePaths: [unsupported],
+        },
+      },
+      global: { mocks: { $t: (key: string) => key } },
+    });
+
+    expect(wrapper.text()).toContain('opaque image.png');
+    expect(wrapper.find('span.message-attachment-chip').exists()).toBe(true);
+    expect(wrapper.find('button.message-attachment-chip').exists()).toBe(false);
+    expect(wrapper.find('img.message-attachment-thumbnail').exists()).toBe(false);
+    expect(fileExplorerStoreMock.openFile).not.toHaveBeenCalled();
+    expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
+    expect(windowOpenMock).not.toHaveBeenCalled();
   });
 });

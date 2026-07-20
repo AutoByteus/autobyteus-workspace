@@ -1,10 +1,17 @@
 import { TreeNode } from '~/utils/fileExplorer/TreeNode'
 import { createNodeIdToNodeDictionary } from '~/utils/fileExplorer/fileUtils'
 import type { RecentStructuralChangeEcho } from '~/utils/fileExplorer/stateSync'
+import type { FileDataType } from '~/utils/fileExplorer/fileTypePolicy'
 
-export type FileDataType = 'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF' | 'Unsupported'
+export type { FileDataType } from '~/utils/fileExplorer/fileTypePolicy'
+
 
 export type FileOpenMode = 'edit' | 'preview'
+
+export type FilePreviewAccessIntent = {
+  source: 'event-monitor'
+  readOnly: true
+}
 
 export type FileRelativeResourceContext = {
   kind: 'workspace'
@@ -15,6 +22,7 @@ export interface OpenFileState {
   path: string
   type: FileDataType
   mode: FileOpenMode
+  accessIntent?: FilePreviewAccessIntent | null
   content: string | null
   url: string | null
   relativeResourceContext: FileRelativeResourceContext | null

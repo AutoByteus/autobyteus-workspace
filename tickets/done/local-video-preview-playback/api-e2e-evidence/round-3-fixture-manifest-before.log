@@ -1,0 +1,21 @@
+UTC: 2026-07-19T05:45:07Z
+FIXTURE_ROOT: /tmp/autobyteus-local-preview-round3.kLZg2q
+/tmp/autobyteus-local-preview-round3.kLZg2q/Case Sensitive Ü%#/Video 100%#1\name.mp4|13620424|-rw-r--r--
+/tmp/autobyteus-local-preview-round3.kLZg2q/Case Sensitive Ü%#/视频 100%#1\name.bin|10|-rw-r--r--
+/tmp/autobyteus-local-preview-round3.kLZg2q/probe audio.wav|264644|-rw-r--r--
+/tmp/autobyteus-local-preview-round3.kLZg2q/probe document.pdf|1352|-rw-r--r--
+/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png|77|-rw-r--r--
+/tmp/autobyteus-local-preview-round3.kLZg2q/probe notes.md|27|-rw-r--r--
+/tmp/autobyteus-local-preview-round3.kLZg2q/probe workbook.xlsx|15929|-rw-r--r--
+/tmp/autobyteus-local-preview-round3.kLZg2q/unreadable.bin|10|----------
+/tmp/autobyteus-local-preview-round3.kLZg2q/unsupported video.mp4|10|-rw-r--r--
+SHA256_EXCEPT_INTENTIONALLY_UNREADABLE:
+\613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /tmp/autobyteus-local-preview-round3.kLZg2q/Case Sensitive Ü%#/Video 100%#1\\name.mp4
+\84d89877f0d4041efb6bf91a16f0248f2fd573e6af05c19f96bedb9f882f7882  /tmp/autobyteus-local-preview-round3.kLZg2q/Case Sensitive Ü%#/视频 100%#1\\name.bin
+951273f1128e3f4022bbd2cb19018f5fa29aea7c1b72a05ddbe08295ee61fc7c  /tmp/autobyteus-local-preview-round3.kLZg2q/probe audio.wav
+be51572907ced16e1094f8cd937aeda8a313fbfde811d63f5d33411563c5cf8a  /tmp/autobyteus-local-preview-round3.kLZg2q/probe document.pdf
+dd4a40f5bf328d0c8e77a4663bd6729d7834cc96049ca9b027f80f5b97251b8d  /tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png
+820398019585886cb71a4943ae6b5a8746076d33c78ed35368649a7f718a9997  /tmp/autobyteus-local-preview-round3.kLZg2q/probe notes.md
+b073a94e0a38d318318180eb61dc799c0c80c3618fa7698716f341f72ca93dfe  /tmp/autobyteus-local-preview-round3.kLZg2q/probe workbook.xlsx
+50101439ae6b8968b56c4fc1fa1249fe715649d44c5496b7e3edf2cf6510acd0  /tmp/autobyteus-local-preview-round3.kLZg2q/unsupported video.mp4
+UNREADABLE_FIXTURE: /tmp/autobyteus-local-preview-round3.kLZg2q/unreadable.bin mode=---------- size=10

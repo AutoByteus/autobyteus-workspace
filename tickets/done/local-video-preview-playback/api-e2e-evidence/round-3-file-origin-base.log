@@ -1,0 +1,6 @@
+COMMAND: packaged-file-origin privilege differential mode=base
+PAGE_URL: file:///private/tmp/autobyteus-local-preview-file-origin.zNSB9X/index.html
+UTC_START: 2026-07-19T05:52:01Z
+API_E2E_FETCH_DIFFERENTIAL {"runtime":{"electron":"42.4.1","chrome":"148.0.7778.265","node":"24.16.0","platform":"darwin","arch":"arm64"},"mode":"base","privileges":{"standard":true,"stream":true},"pageUrl":"file:///private/tmp/autobyteus-local-preview-file-origin.zNSB9X/index.html","pdfUrl":"local-file://local/tmp/autobyteus-local-preview-file-origin.zNSB9X/probe%20document.pdf","excelUrl":"local-file://local/tmp/autobyteus-local-preview-file-origin.zNSB9X/probe%20workbook.xlsx","handlerRequests":[],"renderer":{"origin":"file://","pdfFetch":{"error":"Failed to fetch"},"pdfXhr":{"error":"xhr-error","status":0},"excelFetch":{"error":"Failed to fetch"}},"outcome":"Fail"}
+EXIT_STATUS: 0
+UTC_END: 2026-07-19T05:52:01Z

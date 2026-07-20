@@ -1,0 +1,3853 @@
+{
+  "schemaVersion": 2,
+  "startedAt": "2026-07-19T05:50:04.677Z",
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "locale": "de",
+    "pageUrl": "http://127.0.0.1:43191/api-e2e-local-preview",
+    "userData": "/tmp/autobyteus-local-preview-round3.kLZg2q/electron-user-data",
+    "home": "/tmp/autobyteus-local-preview-round3.kLZg2q/home"
+  },
+  "scenarios": [
+    {
+      "id": "E2E-PROTO-001",
+      "result": "Pass",
+      "evidence": {
+        "requests": [
+          {
+            "label": "full-get",
+            "threw": false,
+            "status": 200,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 10,
+            "bytesHex": "30313233343536373839"
+          },
+          {
+            "label": "closed-range",
+            "threw": false,
+            "status": 206,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "4",
+              "content-range": "bytes 2-5/10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 4,
+            "bytesHex": "32333435"
+          },
+          {
+            "label": "open-range",
+            "threw": false,
+            "status": 206,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "4",
+              "content-range": "bytes 6-9/10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 4,
+            "bytesHex": "36373839"
+          },
+          {
+            "label": "suffix-range",
+            "threw": false,
+            "status": 206,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "3",
+              "content-range": "bytes 7-9/10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 3,
+            "bytesHex": "373839"
+          },
+          {
+            "label": "clamped-range",
+            "threw": false,
+            "status": 206,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "2",
+              "content-range": "bytes 8-9/10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 2,
+            "bytesHex": "3839"
+          },
+          {
+            "label": "head-full",
+            "threw": false,
+            "status": 200,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "head-range",
+            "threw": false,
+            "status": 206,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "3",
+              "content-range": "bytes 1-3/10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "malformed-unit",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "empty-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "multipart-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "unsatisfiable-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "reverse-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "unsupported-method",
+            "threw": false,
+            "status": 405,
+            "headers": {
+              "allow": "GET, HEAD",
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "wrong-authority",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "legacy-empty-authority",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "query-adornment",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "fragment-adornment",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "relative-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "missing-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "directory-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "unreadable-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "malformed-encoding",
+            "threw": true,
+            "error": "Invalid URL",
+            "status": null,
+            "headers": {},
+            "byteLength": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "E2E-SEC-001",
+      "result": "Pass",
+      "evidence": {
+        "noByteFailures": [
+          {
+            "label": "malformed-unit",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "empty-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "multipart-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "unsatisfiable-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "reverse-range",
+            "threw": false,
+            "status": 416,
+            "headers": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-range": "bytes */10",
+              "content-type": "application/octet-stream"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "unsupported-method",
+            "threw": false,
+            "status": 405,
+            "headers": {
+              "allow": "GET, HEAD",
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "wrong-authority",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "legacy-empty-authority",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "query-adornment",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "fragment-adornment",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "relative-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "missing-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "directory-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "unreadable-path",
+            "threw": false,
+            "status": 404,
+            "headers": {
+              "cache-control": "no-store"
+            },
+            "byteLength": 0,
+            "bytesHex": ""
+          },
+          {
+            "label": "malformed-encoding",
+            "threw": true,
+            "error": "Invalid URL",
+            "status": null,
+            "headers": {},
+            "byteLength": 0
+          }
+        ],
+        "normalizationMatrix": {
+          "significantUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+          "results": [
+            {
+              "label": "canonical-significant",
+              "rawUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.450Z",
+                  "status": 200,
+                  "responseHeaders": {
+                    "accept-ranges": "bytes",
+                    "cache-control": "no-store",
+                    "content-length": "10",
+                    "content-type": "application/octet-stream"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "raw-port",
+              "rawUrl": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.524Z",
+                  "status": 200,
+                  "responseHeaders": {
+                    "accept-ranges": "bytes",
+                    "cache-control": "no-store",
+                    "content-length": "10",
+                    "content-type": "application/octet-stream"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "raw-credentials",
+              "rawUrl": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.577Z",
+                  "status": 200,
+                  "responseHeaders": {
+                    "accept-ranges": "bytes",
+                    "cache-control": "no-store",
+                    "content-length": "10",
+                    "content-type": "application/octet-stream"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "query",
+              "rawUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+              "renderer": {
+                "authored": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "?download=1",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.630Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "fragment",
+              "rawUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+              "renderer": {
+                "authored": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": "#fragment"
+                  },
+                  "at": "2026-07-19T05:50:05.683Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "wrong-authority",
+              "rawUrl": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "wrong",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.735Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "legacy-empty-authority",
+              "rawUrl": "local-file:///tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file:///tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "tmp",
+                    "pathname": "/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.789Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "attachmentLifecycle": {
+          "canonicalHydration": {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "legacyPosix": {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "legacyWindows": {
+            "kind": "external_url",
+            "id": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+            "locator": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+            "displayName": "My%20Video%25%231.mp4",
+            "type": "Video",
+            "isOpenable": true,
+            "previewUrl": null
+          },
+          "invalid": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://wrong/path/image.png",
+              "locator": "local-file://wrong/path/image.png",
+              "displayName": "image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file:not-absolute",
+              "locator": "local-file:not-absolute",
+              "displayName": "/",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file:///%E0%A4%A",
+              "locator": "local-file:///%E0%A4%A",
+              "displayName": "%E0%A4%A",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "nonLocal": {
+            "kind": "external_url",
+            "id": "https://cdn.example/current.png",
+            "locator": "https://cdn.example/current.png",
+            "displayName": "current.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "https://cdn.example/current.png"
+          },
+          "embeddedImage": {
+            "kind": "workspace_path",
+            "id": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+            "locator": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+            "displayName": "probe image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "plan": {
+            "retained": [
+              {
+                "kind": "workspace_path",
+                "id": "/tmp/current.md",
+                "locator": "/tmp/current.md",
+                "displayName": "current.md",
+                "type": "Markdown",
+                "isOpenable": true,
+                "previewUrl": null
+              },
+              {
+                "kind": "external_url",
+                "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+                "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+                "displayName": "probe%20image.png",
+                "type": "Image",
+                "isOpenable": true,
+                "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+              },
+              {
+                "kind": "unsupported_local_file",
+                "id": "local-file://opaque/image.png",
+                "locator": "local-file://opaque/image.png",
+                "displayName": "opaque image.png",
+                "type": "Image",
+                "isOpenable": false,
+                "previewUrl": null
+              }
+            ],
+            "executable": {
+              "contextFilePaths": [
+                "/tmp/current.md"
+              ],
+              "imageUrls": [
+                "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+              ]
+            }
+          },
+          "optimisticCurrent": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/current.md",
+              "locator": "/tmp/current.md",
+              "displayName": "current.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            }
+          ],
+          "emptyEcho": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "mixedEcho": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/refreshed.md",
+              "locator": "/tmp/refreshed.md",
+              "displayName": "refreshed.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "historicalReload": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/history.png",
+              "locator": "local-file://opaque/history.png",
+              "displayName": "history.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "freshReload": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/current.md",
+              "locator": "/tmp/current.md",
+              "displayName": "current.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            }
+          ]
+        },
+        "unsupportedProtocolRequests": []
+      }
+    },
+    {
+      "id": "E2E-VID-001",
+      "result": "Pass",
+      "evidence": {
+        "metadata": {
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "attempt": "4",
+          "authoredAttribute": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "propertySrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "src": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        "playPause": {
+          "start": 0,
+          "advanced": 1.150115,
+          "pausedAt": 1.150136,
+          "afterPause": 1.150136,
+          "paused": true,
+          "error": null
+        },
+        "seek": {
+          "target": 120,
+          "atSeek": 120,
+          "continued": 120.902114,
+          "error": null
+        },
+        "requests": [
+          {
+            "id": 731,
+            "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+            "method": "GET",
+            "range": "bytes=0-",
+            "resourceType": "media",
+            "webContentsId": 1,
+            "timestamp": 1784440206045
+          }
+        ],
+        "normalizationMatrix": {
+          "significantUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+          "results": [
+            {
+              "label": "canonical-significant",
+              "rawUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.450Z",
+                  "status": 200,
+                  "responseHeaders": {
+                    "accept-ranges": "bytes",
+                    "cache-control": "no-store",
+                    "content-length": "10",
+                    "content-type": "application/octet-stream"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "raw-port",
+              "rawUrl": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.524Z",
+                  "status": 200,
+                  "responseHeaders": {
+                    "accept-ranges": "bytes",
+                    "cache-control": "no-store",
+                    "content-length": "10",
+                    "content-type": "application/octet-stream"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "raw-credentials",
+              "rawUrl": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.577Z",
+                  "status": 200,
+                  "responseHeaders": {
+                    "accept-ranges": "bytes",
+                    "cache-control": "no-store",
+                    "content-length": "10",
+                    "content-type": "application/octet-stream"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "query",
+              "rawUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+              "renderer": {
+                "authored": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "?download=1",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.630Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "fragment",
+              "rawUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+              "renderer": {
+                "authored": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                "propertyBefore": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                "currentSrcAfter": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+                    "hostname": "local",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": "#fragment"
+                  },
+                  "at": "2026-07-19T05:50:05.683Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "wrong-authority",
+              "rawUrl": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "wrong",
+                    "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.735Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            },
+            {
+              "label": "legacy-empty-authority",
+              "rawUrl": "local-file:///tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+              "renderer": {
+                "authored": "local-file:///tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "propertyBefore": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcBefore": "",
+                "propertyAfter": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                "currentSrcAfter": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin"
+              },
+              "handlerRequests": [
+                {
+                  "url": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                  "method": "GET",
+                  "range": null,
+                  "parsed": {
+                    "href": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "hostname": "tmp",
+                    "pathname": "/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+                    "port": "",
+                    "username": "",
+                    "password": "",
+                    "search": "",
+                    "hash": ""
+                  },
+                  "at": "2026-07-19T05:50:05.789Z",
+                  "status": 404,
+                  "responseHeaders": {
+                    "cache-control": "no-store"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "E2E-VID-002",
+      "result": "Pass",
+      "evidence": {
+        "largeMetadata": {
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 2063.066667,
+          "currentTime": 0,
+          "attempt": "6",
+          "authoredAttribute": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "propertySrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "src": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+          "error": null
+        },
+        "largeSeek": {
+          "target": 1800,
+          "atSeek": 1800,
+          "continued": 1800.902149,
+          "error": null
+        },
+        "ranges": [
+          "bytes=0-",
+          "bytes=525303808-",
+          "bytes=525500416-",
+          "bytes=525631488-",
+          "bytes=525762560-",
+          "bytes=525893632-"
+        ],
+        "laterRanges": [
+          "bytes=525303808-",
+          "bytes=525500416-",
+          "bytes=525631488-",
+          "bytes=525762560-",
+          "bytes=525893632-"
+        ],
+        "fdsDuringLarge": 0,
+        "fdsAfterRelease": 0,
+        "mediaReleaseMs": 0,
+        "explicitCancellation": {
+          "status": 206,
+          "firstChunkLength": 65536,
+          "fdsDuring": 1,
+          "fdsAfter": 0,
+          "releaseMs": 174
+        },
+        "requests": [
+          {
+            "id": 736,
+            "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+            "method": "GET",
+            "range": "bytes=0-",
+            "resourceType": "media",
+            "webContentsId": 1,
+            "timestamp": 1784440209129
+          },
+          {
+            "id": 737,
+            "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+            "method": "GET",
+            "range": "bytes=525303808-",
+            "resourceType": "media",
+            "webContentsId": 1,
+            "timestamp": 1784440209260
+          },
+          {
+            "id": 738,
+            "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+            "method": "GET",
+            "range": "bytes=525500416-",
+            "resourceType": "media",
+            "webContentsId": 1,
+            "timestamp": 1784440209261
+          },
+          {
+            "id": 739,
+            "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+            "method": "GET",
+            "range": "bytes=525631488-",
+            "resourceType": "media",
+            "webContentsId": 1,
+            "timestamp": 1784440209264
+          },
+          {
+            "id": 740,
+            "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+            "method": "GET",
+            "range": "bytes=525762560-",
+            "resourceType": "media",
+            "webContentsId": 1,
+            "timestamp": 1784440209266
+          },
+          {
+            "id": 741,
+            "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+            "method": "GET",
+            "range": "bytes=525893632-",
+            "resourceType": "media",
+            "webContentsId": 1,
+            "timestamp": 1784440209267
+          }
+        ]
+      }
+    },
+    {
+      "id": "E2E-UI-001",
+      "result": "Pass",
+      "evidence": {
+        "missingAlert": {
+          "text": "This video could not be played.Retry",
+          "buttonText": "Retry",
+          "videoPresent": false
+        },
+        "retryAlert": {
+          "text": "This video could not be played.Retry",
+          "buttonText": "Retry",
+          "videoPresent": false
+        },
+        "attemptsAfterRetry": [
+          "1",
+          "2"
+        ],
+        "decodeAlert": {
+          "text": "This video could not be played.Retry",
+          "buttonText": "Retry",
+          "videoPresent": false
+        },
+        "recoveredMetadata": {
+          "readyState": 4,
+          "networkState": 1,
+          "duration": 330.533333,
+          "currentTime": 0,
+          "attempt": "4",
+          "authoredAttribute": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "propertySrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "currentSrc": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "src": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+          "error": null
+        },
+        "attachmentLifecycle": {
+          "canonicalHydration": {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "legacyPosix": {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "legacyWindows": {
+            "kind": "external_url",
+            "id": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+            "locator": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+            "displayName": "My%20Video%25%231.mp4",
+            "type": "Video",
+            "isOpenable": true,
+            "previewUrl": null
+          },
+          "invalid": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://wrong/path/image.png",
+              "locator": "local-file://wrong/path/image.png",
+              "displayName": "image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file:not-absolute",
+              "locator": "local-file:not-absolute",
+              "displayName": "/",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file:///%E0%A4%A",
+              "locator": "local-file:///%E0%A4%A",
+              "displayName": "%E0%A4%A",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "nonLocal": {
+            "kind": "external_url",
+            "id": "https://cdn.example/current.png",
+            "locator": "https://cdn.example/current.png",
+            "displayName": "current.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "https://cdn.example/current.png"
+          },
+          "embeddedImage": {
+            "kind": "workspace_path",
+            "id": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+            "locator": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+            "displayName": "probe image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "plan": {
+            "retained": [
+              {
+                "kind": "workspace_path",
+                "id": "/tmp/current.md",
+                "locator": "/tmp/current.md",
+                "displayName": "current.md",
+                "type": "Markdown",
+                "isOpenable": true,
+                "previewUrl": null
+              },
+              {
+                "kind": "external_url",
+                "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+                "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+                "displayName": "probe%20image.png",
+                "type": "Image",
+                "isOpenable": true,
+                "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+              },
+              {
+                "kind": "unsupported_local_file",
+                "id": "local-file://opaque/image.png",
+                "locator": "local-file://opaque/image.png",
+                "displayName": "opaque image.png",
+                "type": "Image",
+                "isOpenable": false,
+                "previewUrl": null
+              }
+            ],
+            "executable": {
+              "contextFilePaths": [
+                "/tmp/current.md"
+              ],
+              "imageUrls": [
+                "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+              ]
+            }
+          },
+          "optimisticCurrent": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/current.md",
+              "locator": "/tmp/current.md",
+              "displayName": "current.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            }
+          ],
+          "emptyEcho": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "mixedEcho": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/refreshed.md",
+              "locator": "/tmp/refreshed.md",
+              "displayName": "refreshed.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "historicalReload": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/history.png",
+              "locator": "local-file://opaque/history.png",
+              "displayName": "history.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "freshReload": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/current.md",
+              "locator": "/tmp/current.md",
+              "displayName": "current.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            }
+          ]
+        },
+        "messageDom": {
+          "buttonCount": 2,
+          "thumbnailSrc": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "unsupportedText": "opaque image.png",
+          "unsupportedTag": "SPAN",
+          "unsupportedInButton": false
+        },
+        "removedDom": {
+          "unsupportedVisible": false,
+          "attachmentCount": 2
+        }
+      }
+    },
+    {
+      "id": "E2E-REG-001",
+      "result": "Fail",
+      "evidence": {
+        "attachmentLifecycle": {
+          "canonicalHydration": {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "legacyPosix": {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "legacyWindows": {
+            "kind": "external_url",
+            "id": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+            "locator": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+            "displayName": "My%20Video%25%231.mp4",
+            "type": "Video",
+            "isOpenable": true,
+            "previewUrl": null
+          },
+          "invalid": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://wrong/path/image.png",
+              "locator": "local-file://wrong/path/image.png",
+              "displayName": "image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file:not-absolute",
+              "locator": "local-file:not-absolute",
+              "displayName": "/",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file:///%E0%A4%A",
+              "locator": "local-file:///%E0%A4%A",
+              "displayName": "%E0%A4%A",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "nonLocal": {
+            "kind": "external_url",
+            "id": "https://cdn.example/current.png",
+            "locator": "https://cdn.example/current.png",
+            "displayName": "current.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "https://cdn.example/current.png"
+          },
+          "embeddedImage": {
+            "kind": "workspace_path",
+            "id": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+            "locator": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+            "displayName": "probe image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          "plan": {
+            "retained": [
+              {
+                "kind": "workspace_path",
+                "id": "/tmp/current.md",
+                "locator": "/tmp/current.md",
+                "displayName": "current.md",
+                "type": "Markdown",
+                "isOpenable": true,
+                "previewUrl": null
+              },
+              {
+                "kind": "external_url",
+                "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+                "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+                "displayName": "probe%20image.png",
+                "type": "Image",
+                "isOpenable": true,
+                "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+              },
+              {
+                "kind": "unsupported_local_file",
+                "id": "local-file://opaque/image.png",
+                "locator": "local-file://opaque/image.png",
+                "displayName": "opaque image.png",
+                "type": "Image",
+                "isOpenable": false,
+                "previewUrl": null
+              }
+            ],
+            "executable": {
+              "contextFilePaths": [
+                "/tmp/current.md"
+              ],
+              "imageUrls": [
+                "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+              ]
+            }
+          },
+          "optimisticCurrent": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/current.md",
+              "locator": "/tmp/current.md",
+              "displayName": "current.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            }
+          ],
+          "emptyEcho": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "mixedEcho": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/refreshed.md",
+              "locator": "/tmp/refreshed.md",
+              "displayName": "refreshed.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "historicalReload": [
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/history.png",
+              "locator": "local-file://opaque/history.png",
+              "displayName": "history.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "freshReload": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/current.md",
+              "locator": "/tmp/current.md",
+              "displayName": "current.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            }
+          ]
+        },
+        "messageDom": {
+          "buttonCount": 2,
+          "thumbnailSrc": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "unsupportedText": "opaque image.png",
+          "unsupportedTag": "SPAN",
+          "unsupportedInButton": false
+        },
+        "removedAttachments": [
+          {
+            "kind": "workspace_path",
+            "id": "/tmp/refreshed.md",
+            "locator": "/tmp/refreshed.md",
+            "displayName": "refreshed.md",
+            "type": "Markdown",
+            "isOpenable": true,
+            "previewUrl": null
+          },
+          {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          }
+        ],
+        "removedDom": {
+          "unsupportedVisible": false,
+          "attachmentCount": 2
+        },
+        "attachmentProtocolRequests": [
+          {
+            "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "method": "GET",
+            "range": null,
+            "parsed": {
+              "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "hostname": "local",
+              "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "port": "",
+              "username": "",
+              "password": "",
+              "search": "",
+              "hash": ""
+            },
+            "at": "2026-07-19T05:50:10.553Z",
+            "status": 200,
+            "responseHeaders": {
+              "accept-ranges": "bytes",
+              "cache-control": "no-store",
+              "content-length": "77",
+              "content-type": "image/png"
+            }
+          }
+        ],
+        "image": {
+          "naturalWidth": 8,
+          "naturalHeight": 6,
+          "src": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+        },
+        "audio": {
+          "duration": 3,
+          "start": 0,
+          "advanced": 0.353046,
+          "paused": true,
+          "error": null
+        },
+        "pdf": {
+          "result": "Fail",
+          "alert": "Error loading PDF:Unexpected server response (0) while retrieving PDF \"local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf\"."
+        },
+        "excel": {
+          "result": "Fail",
+          "error": "Failed to fetch"
+        },
+        "text": {
+          "text": "Probe text OK Second line."
+        },
+        "textProtocolRequestCount": 0
+      }
+    }
+  ],
+  "protocolRequests": [
+    {
+      "id": 722,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440205450
+    },
+    {
+      "id": 723,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440205523
+    },
+    {
+      "id": 724,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440205577
+    },
+    {
+      "id": 725,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440205629
+    },
+    {
+      "id": 726,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440205682
+    },
+    {
+      "id": 727,
+      "url": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440205735
+    },
+    {
+      "id": 728,
+      "url": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440205789
+    },
+    {
+      "id": 729,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/missing%20video.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440205884
+    },
+    {
+      "id": 730,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/unsupported%20video.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440205991
+    },
+    {
+      "id": 731,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440206045
+    },
+    {
+      "id": 734,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/Video%20100%25%231%5Cname.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440208751
+    },
+    {
+      "id": 736,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440209129
+    },
+    {
+      "id": 737,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525303808-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440209260
+    },
+    {
+      "id": 738,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525500416-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440209261
+    },
+    {
+      "id": 739,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525631488-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440209264
+    },
+    {
+      "id": 740,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525762560-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440209266
+    },
+    {
+      "id": 741,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525893632-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440209267
+    },
+    {
+      "id": 742,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+      "method": "GET",
+      "range": null,
+      "resourceType": "image",
+      "webContentsId": 1,
+      "timestamp": 1784440210552
+    },
+    {
+      "id": 743,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20audio.wav",
+      "method": "GET",
+      "range": "bytes=0-",
+      "resourceType": "media",
+      "webContentsId": 1,
+      "timestamp": 1784440210560
+    },
+    {
+      "id": 744,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf",
+      "method": "GET",
+      "range": null,
+      "resourceType": "xhr",
+      "webContentsId": 1,
+      "timestamp": 1784440211285
+    }
+  ],
+  "protocolHandlerRequests": [
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.778Z",
+      "status": 200,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=2-5",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.785Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "4",
+        "content-range": "bytes 2-5/10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=6-",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.787Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "4",
+        "content-range": "bytes 6-9/10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=-3",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.788Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "3",
+        "content-range": "bytes 7-9/10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=8-99",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.789Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "2",
+        "content-range": "bytes 8-9/10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "HEAD",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.790Z",
+      "status": 200,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "HEAD",
+      "range": "bytes=1-3",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.791Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "3",
+        "content-range": "bytes 1-3/10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "items=0-1",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.792Z",
+      "status": 416,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-range": "bytes */10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.793Z",
+      "status": 416,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-range": "bytes */10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=1-2,4-5",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.795Z",
+      "status": 416,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-range": "bytes */10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=10-",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.796Z",
+      "status": 416,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-range": "bytes */10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": "bytes=7-2",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.796Z",
+      "status": 416,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-range": "bytes */10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "POST",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.797Z",
+      "status": 405,
+      "responseHeaders": {
+        "allow": "GET, HEAD",
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://wrong/absolute/video.mp4",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://wrong/absolute/video.mp4",
+        "hostname": "wrong",
+        "pathname": "/absolute/video.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.797Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "tmp",
+        "pathname": "/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.798Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "?download=1",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.798Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": "#fragment"
+      },
+      "at": "2026-07-19T05:50:04.798Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://relative/video.mp4",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://relative/video.mp4",
+        "hostname": "relative",
+        "pathname": "/video.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.799Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/missing.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/missing.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/missing.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.800Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/a-directory",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/a-directory",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/a-directory",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.800Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/unreadable.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/unreadable.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/unreadable.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:04.800Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.450Z",
+      "status": 200,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.524Z",
+      "status": 200,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.577Z",
+      "status": 200,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "10",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "?download=1",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.630Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": "#fragment"
+      },
+      "at": "2026-07-19T05:50:05.683Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "wrong",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.735Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "hostname": "tmp",
+        "pathname": "/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.789Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/missing%20video.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/missing%20video.mp4",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/missing%20video.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.884Z",
+      "status": 404,
+      "responseHeaders": {
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/unsupported%20video.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/unsupported%20video.mp4",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/unsupported%20video.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:05.991Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "10",
+        "content-range": "bytes 0-9/10",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:06.045Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "13620424",
+        "content-range": "bytes 0-13620423/13620424",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/Video%20100%25%231%5Cname.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/Video%20100%25%231%5Cname.mp4",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/Video%20100%25%231%5Cname.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:08.751Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "13620424",
+        "content-range": "bytes 0-13620423/13620424",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:08.803Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "607568129",
+        "content-range": "bytes 0-607568128/607568129",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:09.129Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "607568129",
+        "content-range": "bytes 0-607568128/607568129",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525303808-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:09.260Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "82264321",
+        "content-range": "bytes 525303808-607568128/607568129",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525500416-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:09.262Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "82067713",
+        "content-range": "bytes 525500416-607568128/607568129",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525631488-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:09.264Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "81936641",
+        "content-range": "bytes 525631488-607568128/607568129",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525762560-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:09.266Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "81805569",
+        "content-range": "bytes 525762560-607568128/607568129",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "range": "bytes=525893632-",
+      "parsed": {
+        "href": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "hostname": "local",
+        "pathname": "/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:09.267Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "81674497",
+        "content-range": "bytes 525893632-607568128/607568129",
+        "content-type": "video/mp4"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+      "method": "GET",
+      "range": null,
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:10.553Z",
+      "status": 200,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "77",
+        "content-type": "image/png"
+      }
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20audio.wav",
+      "method": "GET",
+      "range": "bytes=0-",
+      "parsed": {
+        "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20audio.wav",
+        "hostname": "local",
+        "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20audio.wav",
+        "port": "",
+        "username": "",
+        "password": "",
+        "search": "",
+        "hash": ""
+      },
+      "at": "2026-07-19T05:50:10.560Z",
+      "status": 206,
+      "responseHeaders": {
+        "accept-ranges": "bytes",
+        "cache-control": "no-store",
+        "content-length": "264644",
+        "content-range": "bytes 0-264643/264644",
+        "content-type": "audio/wav"
+      }
+    }
+  ],
+  "protocolCompletions": [
+    {
+      "id": 1,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 200,
+      "fromCache": false,
+      "timestamp": 1784440204784,
+      "outcome": "completed"
+    },
+    {
+      "id": 2,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 206,
+      "fromCache": false,
+      "timestamp": 1784440204786,
+      "outcome": "completed"
+    },
+    {
+      "id": 3,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 206,
+      "fromCache": false,
+      "timestamp": 1784440204788,
+      "outcome": "completed"
+    },
+    {
+      "id": 4,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 206,
+      "fromCache": false,
+      "timestamp": 1784440204789,
+      "outcome": "completed"
+    },
+    {
+      "id": 5,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 206,
+      "fromCache": false,
+      "timestamp": 1784440204790,
+      "outcome": "completed"
+    },
+    {
+      "id": 6,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "HEAD",
+      "statusCode": 200,
+      "fromCache": false,
+      "timestamp": 1784440204791,
+      "outcome": "completed"
+    },
+    {
+      "id": 7,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "HEAD",
+      "statusCode": 206,
+      "fromCache": false,
+      "timestamp": 1784440204792,
+      "outcome": "completed"
+    },
+    {
+      "id": 8,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 416,
+      "fromCache": false,
+      "timestamp": 1784440204793,
+      "outcome": "completed"
+    },
+    {
+      "id": 9,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 416,
+      "fromCache": false,
+      "timestamp": 1784440204794,
+      "outcome": "completed"
+    },
+    {
+      "id": 10,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 416,
+      "fromCache": false,
+      "timestamp": 1784440204795,
+      "outcome": "completed"
+    },
+    {
+      "id": 11,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 416,
+      "fromCache": false,
+      "timestamp": 1784440204796,
+      "outcome": "completed"
+    },
+    {
+      "id": 12,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 416,
+      "fromCache": false,
+      "timestamp": 1784440204797,
+      "outcome": "completed"
+    },
+    {
+      "id": 13,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "POST",
+      "statusCode": 405,
+      "fromCache": false,
+      "timestamp": 1784440204797,
+      "outcome": "completed"
+    },
+    {
+      "id": 14,
+      "url": "local-file://wrong/absolute/video.mp4",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204798,
+      "outcome": "completed"
+    },
+    {
+      "id": 15,
+      "url": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204798,
+      "outcome": "completed"
+    },
+    {
+      "id": 16,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204798,
+      "outcome": "completed"
+    },
+    {
+      "id": 17,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204799,
+      "outcome": "completed"
+    },
+    {
+      "id": 18,
+      "url": "local-file://relative/video.mp4",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204799,
+      "outcome": "completed"
+    },
+    {
+      "id": 19,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/missing.bin",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204800,
+      "outcome": "completed"
+    },
+    {
+      "id": 20,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/a-directory",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204800,
+      "outcome": "completed"
+    },
+    {
+      "id": 21,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/unreadable.bin",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440204801,
+      "outcome": "completed"
+    },
+    {
+      "id": 722,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 200,
+      "fromCache": false,
+      "timestamp": 1784440205451,
+      "outcome": "completed"
+    },
+    {
+      "id": 723,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 200,
+      "fromCache": false,
+      "timestamp": 1784440205525,
+      "outcome": "completed"
+    },
+    {
+      "id": 724,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 200,
+      "fromCache": false,
+      "timestamp": 1784440205578,
+      "outcome": "completed"
+    },
+    {
+      "id": 725,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin?download=1",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440205630,
+      "outcome": "completed"
+    },
+    {
+      "id": 726,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin#fragment",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440205683,
+      "outcome": "completed"
+    },
+    {
+      "id": 727,
+      "url": "local-file://wrong/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440205735,
+      "outcome": "completed"
+    },
+    {
+      "id": 728,
+      "url": "local-file://tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/%E8%A7%86%E9%A2%91%20100%25%231%5Cname.bin",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440205790,
+      "outcome": "completed"
+    },
+    {
+      "id": 729,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/missing%20video.mp4",
+      "method": "GET",
+      "statusCode": 404,
+      "fromCache": false,
+      "timestamp": 1784440205884,
+      "outcome": "completed"
+    },
+    {
+      "id": 730,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/unsupported%20video.mp4",
+      "method": "GET",
+      "statusCode": 206,
+      "fromCache": false,
+      "timestamp": 1784440205994,
+      "outcome": "completed"
+    },
+    {
+      "id": 731,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440207847,
+      "outcome": "error"
+    },
+    {
+      "id": 734,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/Case%20Sensitive%20%C3%9C%25%23/Video%20100%25%231%5Cname.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440208764,
+      "outcome": "error"
+    },
+    {
+      "id": 735,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440208954,
+      "outcome": "error"
+    },
+    {
+      "id": 736,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "error": "net::ERR_FAILED",
+      "timestamp": 1784440209151,
+      "outcome": "error"
+    },
+    {
+      "id": 737,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440209261,
+      "outcome": "error"
+    },
+    {
+      "id": 738,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440209263,
+      "outcome": "error"
+    },
+    {
+      "id": 739,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440209265,
+      "outcome": "error"
+    },
+    {
+      "id": 740,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440209267,
+      "outcome": "error"
+    },
+    {
+      "id": 741,
+      "url": "local-file://local/Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4",
+      "method": "GET",
+      "error": "net::ERR_ABORTED",
+      "timestamp": 1784440210473,
+      "outcome": "error"
+    },
+    {
+      "id": 742,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+      "method": "GET",
+      "statusCode": 200,
+      "fromCache": false,
+      "timestamp": 1784440210553,
+      "outcome": "completed"
+    },
+    {
+      "id": 743,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20audio.wav",
+      "method": "GET",
+      "statusCode": 206,
+      "fromCache": false,
+      "timestamp": 1784440210564,
+      "outcome": "completed"
+    },
+    {
+      "id": 744,
+      "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf",
+      "method": "GET",
+      "error": "net::ERR_FAILED",
+      "timestamp": 1784440211285,
+      "outcome": "error"
+    }
+  ],
+  "rendererConsoleErrors": [
+    {
+      "level": 2,
+      "message": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged."
+    },
+    {
+      "level": 3,
+      "message": "Access to XMLHttpRequest at 'local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf' from origin 'http://127.0.0.1:43191' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: chrome, chrome-extension, chrome-untrusted, data, http, https."
+    },
+    {
+      "level": 3,
+      "message": "PDF load error: [object Object]"
+    },
+    {
+      "level": 3,
+      "message": "Fetch API cannot load local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20workbook.xlsx. URL scheme \"local-file\" is not supported."
+    },
+    {
+      "level": 3,
+      "message": "[ExcelViewer] Error loading Excel file: TypeError: Failed to fetch"
+    }
+  ],
+  "cleanup": {},
+  "result": "Fail",
+  "finishedAt": "2026-07-19T05:50:11.341Z",
+  "failure": {
+    "message": "Representative shared viewer regression failed",
+    "stack": "Error: Representative shared viewer regression failed\n    at fail (/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/api-e2e-evidence/round-3-electron-probe.cjs:47:17)\n    at assert (/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/api-e2e-evidence/round-3-electron-probe.cjs:53:19)\n    at runVideoAndViewerJourneys (/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/api-e2e-evidence/round-3-electron-probe.cjs:645:3)\n    at async main (/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/api-e2e-evidence/round-3-electron-probe.cjs:720:3)",
+    "detail": {
+      "attachmentLifecycle": {
+        "canonicalHydration": {
+          "kind": "external_url",
+          "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "displayName": "probe%20image.png",
+          "type": "Image",
+          "isOpenable": true,
+          "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+        },
+        "legacyPosix": {
+          "kind": "external_url",
+          "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "displayName": "probe%20image.png",
+          "type": "Image",
+          "isOpenable": true,
+          "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+        },
+        "legacyWindows": {
+          "kind": "external_url",
+          "id": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+          "locator": "local-file://local/C:/Media/My%20Video%25%231.mp4",
+          "displayName": "My%20Video%25%231.mp4",
+          "type": "Video",
+          "isOpenable": true,
+          "previewUrl": null
+        },
+        "invalid": [
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://user:pass@local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local:99/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png?download=1",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png#fragment",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://wrong/path/image.png",
+            "locator": "local-file://wrong/path/image.png",
+            "displayName": "image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://opaque/image.png",
+            "locator": "local-file://opaque/image.png",
+            "displayName": "image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file:not-absolute",
+            "locator": "local-file:not-absolute",
+            "displayName": "/",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file:///%E0%A4%A",
+            "locator": "local-file:///%E0%A4%A",
+            "displayName": "%E0%A4%A",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          }
+        ],
+        "nonLocal": {
+          "kind": "external_url",
+          "id": "https://cdn.example/current.png",
+          "locator": "https://cdn.example/current.png",
+          "displayName": "current.png",
+          "type": "Image",
+          "isOpenable": true,
+          "previewUrl": "https://cdn.example/current.png"
+        },
+        "embeddedImage": {
+          "kind": "workspace_path",
+          "id": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+          "locator": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe image.png",
+          "displayName": "probe image.png",
+          "type": "Image",
+          "isOpenable": true,
+          "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+        },
+        "plan": {
+          "retained": [
+            {
+              "kind": "workspace_path",
+              "id": "/tmp/current.md",
+              "locator": "/tmp/current.md",
+              "displayName": "current.md",
+              "type": "Markdown",
+              "isOpenable": true,
+              "previewUrl": null
+            },
+            {
+              "kind": "external_url",
+              "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+              "displayName": "probe%20image.png",
+              "type": "Image",
+              "isOpenable": true,
+              "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            },
+            {
+              "kind": "unsupported_local_file",
+              "id": "local-file://opaque/image.png",
+              "locator": "local-file://opaque/image.png",
+              "displayName": "opaque image.png",
+              "type": "Image",
+              "isOpenable": false,
+              "previewUrl": null
+            }
+          ],
+          "executable": {
+            "contextFilePaths": [
+              "/tmp/current.md"
+            ],
+            "imageUrls": [
+              "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+            ]
+          }
+        },
+        "optimisticCurrent": [
+          {
+            "kind": "workspace_path",
+            "id": "/tmp/current.md",
+            "locator": "/tmp/current.md",
+            "displayName": "current.md",
+            "type": "Markdown",
+            "isOpenable": true,
+            "previewUrl": null
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://opaque/image.png",
+            "locator": "local-file://opaque/image.png",
+            "displayName": "opaque image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          },
+          {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          }
+        ],
+        "emptyEcho": [
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://opaque/image.png",
+            "locator": "local-file://opaque/image.png",
+            "displayName": "opaque image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          }
+        ],
+        "mixedEcho": [
+          {
+            "kind": "workspace_path",
+            "id": "/tmp/refreshed.md",
+            "locator": "/tmp/refreshed.md",
+            "displayName": "refreshed.md",
+            "type": "Markdown",
+            "isOpenable": true,
+            "previewUrl": null
+          },
+          {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          },
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://opaque/image.png",
+            "locator": "local-file://opaque/image.png",
+            "displayName": "opaque image.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          }
+        ],
+        "historicalReload": [
+          {
+            "kind": "unsupported_local_file",
+            "id": "local-file://opaque/history.png",
+            "locator": "local-file://opaque/history.png",
+            "displayName": "history.png",
+            "type": "Image",
+            "isOpenable": false,
+            "previewUrl": null
+          }
+        ],
+        "freshReload": [
+          {
+            "kind": "workspace_path",
+            "id": "/tmp/current.md",
+            "locator": "/tmp/current.md",
+            "displayName": "current.md",
+            "type": "Markdown",
+            "isOpenable": true,
+            "previewUrl": null
+          },
+          {
+            "kind": "external_url",
+            "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "displayName": "probe%20image.png",
+            "type": "Image",
+            "isOpenable": true,
+            "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+          }
+        ]
+      },
+      "messageDom": {
+        "buttonCount": 2,
+        "thumbnailSrc": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+        "unsupportedText": "opaque image.png",
+        "unsupportedTag": "SPAN",
+        "unsupportedInButton": false
+      },
+      "removedAttachments": [
+        {
+          "kind": "workspace_path",
+          "id": "/tmp/refreshed.md",
+          "locator": "/tmp/refreshed.md",
+          "displayName": "refreshed.md",
+          "type": "Markdown",
+          "isOpenable": true,
+          "previewUrl": null
+        },
+        {
+          "kind": "external_url",
+          "id": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "locator": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "displayName": "probe%20image.png",
+          "type": "Image",
+          "isOpenable": true,
+          "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+        }
+      ],
+      "removedDom": {
+        "unsupportedVisible": false,
+        "attachmentCount": 2
+      },
+      "attachmentProtocolRequests": [
+        {
+          "url": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+          "method": "GET",
+          "range": null,
+          "parsed": {
+            "href": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "hostname": "local",
+            "pathname": "/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png",
+            "port": "",
+            "username": "",
+            "password": "",
+            "search": "",
+            "hash": ""
+          },
+          "at": "2026-07-19T05:50:10.553Z",
+          "status": 200,
+          "responseHeaders": {
+            "accept-ranges": "bytes",
+            "cache-control": "no-store",
+            "content-length": "77",
+            "content-type": "image/png"
+          }
+        }
+      ],
+      "image": {
+        "naturalWidth": 8,
+        "naturalHeight": 6,
+        "src": "local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20image.png"
+      },
+      "audio": {
+        "duration": 3,
+        "start": 0,
+        "advanced": 0.353046,
+        "paused": true,
+        "error": null
+      },
+      "pdf": {
+        "result": "Fail",
+        "alert": "Error loading PDF:Unexpected server response (0) while retrieving PDF \"local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf\"."
+      },
+      "excel": {
+        "result": "Fail",
+        "error": "Failed to fetch"
+      },
+      "text": {
+        "text": "Probe text OK Second line."
+      },
+      "textProtocolRequestCount": 0
+    }
+  }
+}

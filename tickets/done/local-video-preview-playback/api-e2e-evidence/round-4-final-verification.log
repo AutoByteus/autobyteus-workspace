@@ -1,0 +1,28 @@
+timestamp=2026-07-19T07:31:00Z
+branch=codex/local-video-preview-playback
+head=99b8e465de6e6369fc101262db1af9b22f8c92a1
+reviewed_implementation_is_ancestor=true
+canonical_result=Pass
+scenario_order=E2E-REG-001,E2E-PROTO-001,E2E-SEC-001,E2E-VID-001,E2E-VID-002,E2E-UI-001
+scenario_results=E2E-REG-001:Pass,E2E-PROTO-001:Pass,E2E-SEC-001:Pass,E2E-VID-001:Pass,E2E-VID-002:Pass,E2E-UI-001:Pass
+gate_summary=[{"decision":"allow","count":49},{"decision":"cancel","count":5}]
+handler_summary=[{"status":200,"count":12},{"status":206,"count":19},{"status":404,"count":12},{"status":405,"count":1},{"status":416,"count":5}]
+port_43192_listeners=
+temporary_source_page_exists=false
+product_worktree_diff_paths:
+source_video_hashes:
+613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4
+5051a147ae47073072ee9d75092a4f1fd3df0cc510f58cd75b682b505cf549b3  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4
+user_autobyteus_main_process:
+ 3405     1 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+git_diff_check:
+report_latest_markers:
+## Latest Authoritative Result
+
+- Result values: `Pass` / `Fail` / `Blocked`
+- Result: `Pass`
+- Final validation confidence: `98.1%`
+- Default `95%` confidence target met: `Yes`
+- Any final applicable confidence category below `90%`: `No`
+- Broader validation decision: `Required — completed successfully through Project Desktop Validation and focused executable lifecycle coverage.`
+- Critical acceptance criteria lacking direct proof: `None for the reviewed macOS/Electron 42.4.1 scope.`

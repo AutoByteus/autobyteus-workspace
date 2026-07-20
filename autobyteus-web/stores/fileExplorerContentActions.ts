@@ -15,8 +15,15 @@ import {
   remapOpenFolderPaths,
   remapPrefixedPath,
 } from '~/utils/fileExplorer/stateSync'
-import type { FileOpenMode, OpenFileState } from '~/stores/fileExplorerState'
+import type {
+  FileOpenMode,
+  FilePreviewAccessIntent,
+  OpenFileState,
+} from '~/stores/fileExplorerState'
 import { buildWorkspaceContentUrl } from '~/utils/fileExplorer/workspaceResourceUrl'
+import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability'
+import { localFilePreviewError } from '~/utils/fileExplorer/localFileError'
+import { buildLocalFileUrl } from '~/shared/localFileUrl'
 
 function isAbsoluteLocalPath(path: string): boolean {
   if (path.startsWith('/')) {
@@ -41,11 +48,22 @@ export const fileExplorerContentActions = {
     return this._openFileWithMode(filePath, 'edit', workspaceId)
   },
 
-  async openFilePreview(this: any, filePath: string, workspaceId: string) {
-    return this._openFileWithMode(filePath, 'preview', workspaceId)
+  async openFilePreview(
+    this: any,
+    filePath: string,
+    workspaceId: string,
+    options?: { accessIntent?: FilePreviewAccessIntent },
+  ) {
+    return this._openFileWithMode(filePath, 'preview', workspaceId, options)
   },
 
-  async _openFileWithMode(this: any, filePath: string, mode: FileOpenMode, workspaceId: string) {
+  async _openFileWithMode(
+    this: any,
+    filePath: string,
+    mode: FileOpenMode,
+    workspaceId: string,
+    options?: { accessIntent?: FilePreviewAccessIntent },
+  ) {
     console.log(`[FileExplorer] Opening file: ${filePath}`)
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     const windowNodeContextStore = useWindowNodeContextStore()
@@ -57,7 +75,8 @@ export const fileExplorerContentActions = {
       const newFileState: OpenFileState = {
         path: filePath,
         type: fileType,
-        mode,
+        mode: options?.accessIntent ? 'preview' : mode,
+        accessIntent: options?.accessIntent ?? null,
         content: null,
         url: null,
         relativeResourceContext: null,
@@ -67,13 +86,18 @@ export const fileExplorerContentActions = {
       wsState.openFiles.push(newFileState)
       console.log('[FileExplorer] Pushed new initial file state:', JSON.parse(JSON.stringify(newFileState)))
 
-      if (windowNodeContextStore.isEmbeddedWindow && isAbsoluteLocalPath(filePath) && window.electronAPI) {
+      if (
+        windowNodeContextStore.isEmbeddedWindow
+        && isAbsoluteLocalPath(filePath)
+        && hasTrustedElectronLocalFileCapability()
+      ) {
         await this._loadLocalFile(newFileState, filePath)
       } else {
         this._loadWorkspaceOrExternalFile(newFileState, filePath, workspaceId, windowNodeContextStore)
       }
     } else {
-      existingFile.mode = mode
+      existingFile.accessIntent = options?.accessIntent ?? null
+      existingFile.mode = options?.accessIntent ? 'preview' : mode
     }
 
     wsState.activeFile = filePath
@@ -85,16 +109,18 @@ export const fileExplorerContentActions = {
       try {
         const result = await window.electronAPI.readLocalTextFile(filePath)
         fileState.content = result.success ? result.content ?? '' : null
-        fileState.error = result.success ? null : result.error || 'Failed to read local file.'
+        fileState.error = result.success
+          ? null
+          : localFilePreviewError(result.errorCode || 'unavailable')
       } catch (error) {
-        fileState.error = error instanceof Error ? error.message : String(error)
+        fileState.error = localFilePreviewError('unavailable')
       }
     } else if (['Image', 'Audio', 'Video', 'Excel', 'PDF'].includes(fileState.type)) {
-      fileState.url = `local-file://${filePath}`
+      fileState.url = buildLocalFileUrl(filePath)
       console.log(`[FileExplorer] Constructed local media URL: ${fileState.url}`)
     } else {
       console.warn(`[FileExplorer] Unsupported local file type "${fileState.type}" for "${filePath}".`)
-      fileState.error = 'Unsupported file type for local preview.'
+      fileState.error = localFilePreviewError('unsupported-type')
     }
     fileState.isLoading = false
   },
@@ -144,7 +170,7 @@ export const fileExplorerContentActions = {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     const file = wsState.openFiles.find((entry: OpenFileState) => entry.path === filePath)
     if (file) {
-      file.mode = mode
+      file.mode = file.accessIntent?.readOnly ? 'preview' : mode
     }
   },
 
@@ -228,7 +254,7 @@ export const fileExplorerContentActions = {
         variables: { workspaceId, filePath },
         fetchPolicy: 'network-only',
       })
-      if (errors?.length) throw new Error(errors.map((error) => error.message).join(', '))
+      if (errors?.length) throw new Error(errors.map((error: { message: string }) => error.message).join(', '))
       const content = data?.fileContent ?? ''
       file.content = content
       file.isLoading = false
@@ -272,7 +298,7 @@ export const fileExplorerContentActions = {
       })
       if (errors?.length) {
         wsState.filesToIgnoreNextModify.delete(filePath)
-        throw new Error(errors.map((error) => error.message).join(', '))
+        throw new Error(errors.map((error: { message: string }) => error.message).join(', '))
       }
       if (!data?.writeFileContent) {
         wsState.filesToIgnoreNextModify.delete(filePath)

@@ -1,0 +1,13 @@
+WebSocket server settings:
+  - Listen on :6081
+  - Web server. Web root: /usr/local/lib/python3.13/dist-packages/websockify
+  - No SSL/TLS support (no cert file)
+  - proxying from :6081 to localhost:5901
+172.17.0.1 - - [18/Jul/2026 09:07:14] 172.17.0.1: Plain non-SSL (ws://) WebSocket connection
+172.17.0.1 - - [18/Jul/2026 09:07:14] connecting to: localhost:5901
+172.17.0.1 - - [18/Jul/2026 09:07:14] 172.17.0.1: Plain non-SSL (ws://) WebSocket connection
+172.17.0.1 - - [18/Jul/2026 09:07:14] connecting to: localhost:5901
+172.17.0.1 - - [18/Jul/2026 09:07:18] 172.17.0.1: Plain non-SSL (ws://) WebSocket connection
+172.17.0.1 - - [18/Jul/2026 09:07:18] connecting to: localhost:5901
+172.17.0.1 - - [18/Jul/2026 09:07:22] 172.17.0.1: Plain non-SSL (ws://) WebSocket connection
+172.17.0.1 - - [18/Jul/2026 09:07:22] connecting to: localhost:5901

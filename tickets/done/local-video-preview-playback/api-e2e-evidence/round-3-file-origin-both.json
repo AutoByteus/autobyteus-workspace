@@ -1,0 +1,54 @@
+{
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "mode": "both",
+  "privileges": {
+    "standard": true,
+    "stream": true,
+    "supportFetchAPI": true,
+    "corsEnabled": true
+  },
+  "pageUrl": "file:///private/tmp/autobyteus-local-preview-file-origin.zNSB9X/index.html",
+  "pdfUrl": "local-file://local/tmp/autobyteus-local-preview-file-origin.zNSB9X/probe%20document.pdf",
+  "excelUrl": "local-file://local/tmp/autobyteus-local-preview-file-origin.zNSB9X/probe%20workbook.xlsx",
+  "handlerRequests": [
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-file-origin.zNSB9X/probe%20document.pdf",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-file-origin.zNSB9X/probe%20document.pdf",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "local-file://local/tmp/autobyteus-local-preview-file-origin.zNSB9X/probe%20workbook.xlsx",
+      "method": "GET",
+      "status": 200
+    }
+  ],
+  "renderer": {
+    "origin": "file://",
+    "pdfFetch": {
+      "ok": true,
+      "status": 200,
+      "byteLength": 17
+    },
+    "pdfXhr": {
+      "status": 200,
+      "byteLength": 17
+    },
+    "excelFetch": {
+      "ok": true,
+      "status": 200,
+      "byteLength": 16
+    }
+  },
+  "outcome": "Pass"
+}

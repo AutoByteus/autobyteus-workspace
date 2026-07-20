@@ -1,0 +1,184 @@
+{
+  "startedAt": "2026-07-18T09:08:28.377Z",
+  "baseUrl": "http://127.0.0.1:65520",
+  "origin": "http://127.0.0.1:65520",
+  "vncContainer": "codex-replace-vendored-novnc-1784365696-49026",
+  "vncDisplay": ":100",
+  "expectedHost": "127.0.0.1:65519",
+  "expectedOwnerLabel": "replace-vendored-novnc",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "platform": "darwin-arm64",
+  "scenarios": {},
+  "browserEvents": [
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65520/_nuxt/?token=RicLg7l1PwXI",
+      "framesSent": 2,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:65518/ws/terminal/b248a868-0b3a-4806-83ac-8f6a67402fcb"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65518/ws/terminal/b248a868-0b3a-4806-83ac-8f6a67402fcb",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Viewer] hosts resolved [Object]"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] container set {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Tile] mounted 127.0.0.1:65519 {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] connecting {url: ws://127.0.0.1:65519, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65519/",
+      "framesSent": 13,
+      "framesReceived": 7,
+      "closed": true
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] desktop name {name: vncuser@f5c9f36789c6}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] status -> disconnected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] connecting {url: ws://127.0.0.1:65519, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65519/",
+      "framesSent": 20,
+      "framesReceived": 9,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] desktop name {name: vncuser@f5c9f36789c6}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65519] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "failures": [
+    {
+      "message": "Timed out waiting for VNC-LIVE-001-003 restored remote resize; lastValue=null",
+      "stack": "Error: Timed out waiting for VNC-LIVE-001-003 restored remote resize; lastValue=null\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:100:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:250:28"
+    }
+  ],
+  "finishedAt": "2026-07-18T09:09:32.419Z",
+  "result": "Fail"
+}

@@ -1,0 +1,136 @@
+COMMAND: focused recheck of four full-Nuxt baseline failures
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+UTC_START: 2026-07-19T04:53:28Z
+
+> autobyteus@1.4.17 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tests/integration/workspace-history-draft-send.integration.test.ts components/memory/__tests__/MemoryHome.spec.ts components/settings/__tests__/CodexFullAccessCard.spec.ts localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+
+stderr | tests/integration/workspace-history-draft-send.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/memory/__tests__/MemoryHome.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CodexFullAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/CodexFullAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/workspace-history-draft-send.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/memory/__tests__/MemoryHome.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests | 1 failed) 42ms
+   ✓ zh-CN glossary consistency > keeps shared agent and team terminology aligned with the approved glossary 1ms
+   × zh-CN glossary consistency > does not retain deprecated glossary in the swept shared-product catalogs 41ms
+     → expected 'settings:settings.components.settings…' not to contain '代理'
+ ❯ components/memory/__tests__/MemoryHome.spec.ts (2 tests | 1 failed) 32ms
+   × MemoryHome > renders concise agent catalog copy and emits selection 27ms
+     → expected 'Memory sourceLocal MemoryLocal runnab…' not to contain 'Memory'
+   ✓ MemoryHome > switches to concise Agent Teams tab copy 4ms
+ ❯ tests/integration/workspace-history-draft-send.integration.test.ts (1 test | 1 failed) 5ms
+   × workspace history + draft send integration > supports tree-plus draft creation and first send promotion with a resolved model 4ms
+     → Workspace '/tmp/workspace-a' reference could not be resolved.
+ ❯ components/settings/__tests__/CodexFullAccessCard.spec.ts (10 tests | 1 failed) 53ms
+   × CodexFullAccessCard > renders one full-access toggle without exposing the three runtime modes as Basic choices 14ms
+     → expected 'Codex full accessControl whether non-…' to contain 'Applies to new sessions.'
+   ✓ CodexFullAccessCard > initializes checked state for absent setting 4ms
+   ✓ CodexFullAccessCard > initializes checked state for invalid setting 4ms
+   ✓ CodexFullAccessCard > initializes checked state for workspace-write setting 4ms
+   ✓ CodexFullAccessCard > initializes checked state for read-only setting 3ms
+   ✓ CodexFullAccessCard > initializes checked state for danger-full-access setting 3ms
+   ✓ CodexFullAccessCard > initializes checked state for trimmed danger-full-access setting 3ms
+   ✓ CodexFullAccessCard > preserves an in-flight local toggle when settings refresh from the store 8ms
+   ✓ CodexFullAccessCard > auto-saves danger-full-access when the toggle is turned on 6ms
+   ✓ CodexFullAccessCard > auto-saves workspace-write when the toggle is turned off 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/workspace-history-draft-send.integration.test.ts > workspace history + draft send integration > supports tree-plus draft creation and first send promotion with a resolved model
+Error: Workspace '/tmp/workspace-a' reference could not be resolved.
+ ❯ Proxy.createDraftRun stores/runHistoryStore.ts:136:15
+    134|       const workspaceMetadata = await this.resolveWorkspaceMetadataByR…
+    135|       if (!workspaceMetadata) {
+    136|         throw new Error(`Workspace '${options.workspaceRootPath}' refe…
+       |               ^
+    137|       }
+    138|
+ ❯ tests/integration/workspace-history-draft-send.integration.test.ts:128:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  components/memory/__tests__/MemoryHome.spec.ts > MemoryHome > renders concise agent catalog copy and emits selection
+AssertionError: expected 'Memory sourceLocal MemoryLocal runnab…' not to contain 'Memory'
+
+Expected: "Memory"
+Received: "Memory sourceLocal MemoryLocal runnable memoryAgentsAgent teamsSearchCodexcodex2 runsUpdated 6/19/2026, 12:06:04 PMWorkingPrevPage 1 / 1Next"
+
+ ❯ components/memory/__tests__/MemoryHome.spec.ts:27:32
+     25|     expect(tabLabels).toEqual(['Agents', 'Agent teams']);
+     26|     expect(wrapper.find('h1').exists()).toBe(false);
+     27|     expect(wrapper.text()).not.toContain('Memory');
+       |                                ^
+     28|     expect(wrapper.text()).not.toMatch(/inspect stored agent and team …
+     29|     expect(wrapper.text()).not.toMatch(/agents with memory/i);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  components/settings/__tests__/CodexFullAccessCard.spec.ts > CodexFullAccessCard > renders one full-access toggle without exposing the three runtime modes as Basic choices
+AssertionError: expected 'Codex full accessControl whether non-…' to contain 'Applies to new sessions.'
+
+Expected: "Applies to new sessions."
+Received: "Codex full accessControl whether non-auto-approved Codex sessions run without filesystem sandboxing.Allow full filesystem accessWarning: Runs with danger-full-access. Use only when you trust the task.Allow full filesystem accessApplies to new non-auto-approved sessions. Auto approve tools is high-trust and grants effective full access for that run."
+
+ ❯ components/settings/__tests__/CodexFullAccessCard.spec.ts:66:28
+     64|     expect(wrapper.text()).toContain('Allow full filesystem access')
+     65|     expect(wrapper.text()).toContain('danger-full-access')
+     66|     expect(wrapper.text()).toContain('Applies to new sessions.')
+       |                            ^
+     67|     expect(wrapper.find('[data-testid="codex-full-access-toggle"]').at…
+     68|     expect(wrapper.find('[data-testid="codex-full-access-save"]').exis…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts > zh-CN glossary consistency > does not retain deprecated glossary in the swept shared-product catalogs
+AssertionError: expected 'settings:settings.components.settings…' not to contain '代理'
+
+Expected: "代理"
+Received: "settings:settings.components.settings.TokenUsageStatistics.noTaskUsage:该日期范围内没有找到代理或团队用量。"
+
+ ❯ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts:48:56
+     46|       for (const [key, value] of Object.entries(catalog)) {
+     47|         for (const term of deprecatedGlossary) {
+     48|           expect(`${catalogName}:${key}:${value}`).not.toContain(term);
+       |                                                        ^
+     49|         }
+     50|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  4 failed | 11 passed (15)
+   Start at  06:53:31
+   Duration  5.03s (transform 2.77s, setup 17.09s, collect 345ms, tests 132ms, environment 690ms, prepare 632ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+EXIT_STATUS: 1 (expected historical baseline failures; changed-scope suites passed separately)
+UTC_END: 2026-07-19T04:53:36Z

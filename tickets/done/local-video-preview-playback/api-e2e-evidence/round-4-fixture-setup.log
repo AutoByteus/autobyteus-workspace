@@ -1,0 +1,25 @@
+timestamp=2026-07-19T07:18:57Z
+fixture_root=/tmp/autobyteus-local-preview-round4.GU45fx
+electron_version=
+fixture_manifest:
+-rw-r--r-- 13620424 /tmp/autobyteus-local-preview-round4.GU45fx/Case Sensitive Ü%#/Video 100%#1\name.mp4
+-rw-r--r-- 10 /tmp/autobyteus-local-preview-round4.GU45fx/Case Sensitive Ü%#/视频 100%#1\name.bin
+-rw-r--r-- 264678 /tmp/autobyteus-local-preview-round4.GU45fx/probe audio.wav
+-rw-r--r-- 1369 /tmp/autobyteus-local-preview-round4.GU45fx/probe document.pdf
+-rw-r--r-- 77 /tmp/autobyteus-local-preview-round4.GU45fx/probe image.png
+-rw-r--r-- 59 /tmp/autobyteus-local-preview-round4.GU45fx/probe notes.md
+-rw-r--r-- 4857 /tmp/autobyteus-local-preview-round4.GU45fx/probe workbook.xlsx
+---------- 10 /tmp/autobyteus-local-preview-round4.GU45fx/unreadable.bin
+-rw-r--r-- 9 /tmp/autobyteus-local-preview-round4.GU45fx/unsupported video.mp4
+fixture_hashes:
+\613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /tmp/autobyteus-local-preview-round4.GU45fx/Case Sensitive Ü%#/Video 100%#1\\name.mp4
+\84d89877f0d4041efb6bf91a16f0248f2fd573e6af05c19f96bedb9f882f7882  /tmp/autobyteus-local-preview-round4.GU45fx/Case Sensitive Ü%#/视频 100%#1\\name.bin
+72ec9529b2ed67375cf341610a7bf0215b1ddcee0aceeedb7920a2122573ebf9  /tmp/autobyteus-local-preview-round4.GU45fx/probe audio.wav
+91cfdb950be1a627b3b7f4b2e65681eade197e0e4d4c21521d7f7b25ee61776b  /tmp/autobyteus-local-preview-round4.GU45fx/probe document.pdf
+e55c286b648cab80a1aa01dfae6d7ee62fc6d97b3e0254183066571fd619301b  /tmp/autobyteus-local-preview-round4.GU45fx/probe image.png
+6b933e34765a97e27e042e5c0f1ce00f3c6e72d706d10604c5ad08c8306cf06e  /tmp/autobyteus-local-preview-round4.GU45fx/probe notes.md
+727b51410e33ac4354e99caaee2c45d89ae2e6abc566698dba9b5c56047cb561  /tmp/autobyteus-local-preview-round4.GU45fx/probe workbook.xlsx
+614e08547495746a8c89b6982f2219f085c61b0dfc0f79bd78fc1f49053ae3e8  /tmp/autobyteus-local-preview-round4.GU45fx/unsupported video.mp4
+
+corrected_electron_version=42.4.1
+unreadable_fixture_sha256=84d89877f0d4041efb6bf91a16f0248f2fd573e6af05c19f96bedb9f882f7882

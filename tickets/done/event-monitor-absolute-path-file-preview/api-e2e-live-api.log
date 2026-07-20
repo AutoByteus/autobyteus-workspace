@@ -1,0 +1,31 @@
+GET /rest/workspaces/temp_ws_default/content?path=api-e2e.txt
+HTTP/1.1 200 OK
+vary: Origin
+content-type: text/plain
+Date: Fri, 17 Jul 2026 10:10:28 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+Transfer-Encoding: chunked
+
+event-monitor-live-fixture
+
+GET with absolute path
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 73
+Date: Fri, 17 Jul 2026 10:10:28 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"Access denied: Path resolves outside the workspace boundary."}
+GET with traversal
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 73
+Date: Fri, 17 Jul 2026 10:10:28 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"Access denied: Path resolves outside the workspace boundary."}

@@ -75,9 +75,19 @@ describe('fileUtils', () => {
       expect(fileType).toBe('Image')
     })
 
-    it('should default to Text for unknown extensions', async () => {
-        const fileType = await determineFileType('archive.zip');
-        expect(fileType).toBe('Text');
+    it('should classify unsupported archives and binaries as Unsupported', async () => {
+        expect(await determineFileType('archive.zip')).toBe('Unsupported');
+        expect(await determineFileType('installer.dmg')).toBe('Unsupported');
+        expect(await determineFileType('setup.pkg')).toBe('Unsupported');
+        expect(await determineFileType('bundle.app')).toBe('Unsupported');
+        expect(await determineFileType('payload.bin')).toBe('Unsupported');
+    });
+
+    it('should classify recognized text and extensionless text files as Text', async () => {
+        expect(await determineFileType('src/component.ts')).toBe('Text');
+        expect(await determineFileType('docs/index.html')).toBe('Text');
+        expect(await determineFileType('scripts/preview.lua')).toBe('Text');
+        expect(await determineFileType('README')).toBe('Text');
     });
   })
 

@@ -1,0 +1,246 @@
+{
+  "startedAt": "2026-07-18T09:06:41.141Z",
+  "baseUrl": "http://127.0.0.1:65321",
+  "origin": "http://127.0.0.1:65321",
+  "vncContainer": "codex-replace-vendored-novnc-1784365588-46760",
+  "vncDisplay": ":100",
+  "expectedHost": "127.0.0.1:65320",
+  "expectedOwnerLabel": "replace-vendored-novnc",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "platform": "darwin-arm64",
+  "scenarios": {
+    "VNC-LIVE-001-003": {
+      "result": "Pass",
+      "permissionStates": {
+        "read": "granted",
+        "write": "granted"
+      },
+      "initialCanvas": {
+        "x": 1047,
+        "y": 112.5,
+        "width": 336,
+        "height": 252
+      },
+      "initialRemote": {
+        "width": 1024,
+        "height": 768,
+        "text": "1024x768"
+      },
+      "maximizedRemote": {
+        "width": 1438,
+        "height": 898,
+        "text": "1438x898"
+      },
+      "localToRemoteText": "autobyteus-local-to-remote-1784365605617",
+      "observedRemoteClipboard": "autobyteus-local-to-remote-1784365605617",
+      "remoteToLocalText": "autobyteus-remote-to-local-1784365605714",
+      "observedBrowserClipboard": "autobyteus-remote-to-local-1784365605714",
+      "webSockets": [
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65321/_nuxt/?token=dXAHigy6gkBz",
+          "framesSent": 0,
+          "framesReceived": 1,
+          "closed": false
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65319/ws/terminal/8a2cf510-4eb8-4eb7-9334-ba00b6860812",
+          "framesSent": 0,
+          "framesReceived": 1,
+          "closed": false
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65320/",
+          "framesSent": 13,
+          "framesReceived": 7,
+          "closed": true
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65320/",
+          "framesSent": 23,
+          "framesReceived": 12,
+          "closed": false
+        }
+      ]
+    }
+  },
+  "browserEvents": [
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65321/_nuxt/?token=dXAHigy6gkBz",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:65319/ws/terminal/8a2cf510-4eb8-4eb7-9334-ba00b6860812"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65319/ws/terminal/8a2cf510-4eb8-4eb7-9334-ba00b6860812",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Viewer] hosts resolved [Object]"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] container set {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Tile] mounted 127.0.0.1:65320 {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] connecting {url: ws://127.0.0.1:65320, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65320/",
+      "framesSent": 13,
+      "framesReceived": 7,
+      "closed": true
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] desktop name {name: vncuser@3b9039478032}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] status -> disconnected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] connecting {url: ws://127.0.0.1:65320, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65320/",
+      "framesSent": 23,
+      "framesReceived": 12,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] desktop name {name: vncuser@3b9039478032}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65320] status -> disconnected"
+    }
+  ],
+  "failures": [
+    {
+      "message": "cdpSession.send: Protocol error (Browser.setPermission): Invalid PermissionDescriptor name: clipboardReadWrite",
+      "stack": "cdpSession.send: Protocol error (Browser.setPermission): Invalid PermissionDescriptor name: clipboardReadWrite\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web/tests/e2e/vnc-live-probe.mjs:297:17"
+    }
+  ],
+  "finishedAt": "2026-07-18T09:06:48.017Z",
+  "result": "Fail"
+}

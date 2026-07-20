@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { useVncSession } from '../useVncSession';
+import RFB from '@novnc/novnc';
 
 interface MockRfbInstance {
   viewOnly: boolean;
@@ -12,7 +13,7 @@ interface MockRfbInstance {
   emit: (event: string, detail?: any) => void;
 }
 
-vi.mock('~/lib/novnc/core/rfb', () => {
+vi.mock('@novnc/novnc', () => {
   class MockRFB {
     viewOnly = true;
     resizeSession = false;
@@ -26,16 +27,11 @@ vi.mock('~/lib/novnc/core/rfb', () => {
       _target: HTMLElement,
       _url: string,
       options: {
-        viewOnly?: boolean;
-        resizeSession?: boolean;
-        scaleViewport?: boolean;
-        clipViewport?: boolean;
+        credentials?: { password?: string };
+        shared?: boolean;
       }
     ) {
-      this.viewOnly = options.viewOnly ?? true;
-      this.resizeSession = options.resizeSession ?? false;
-      this.scaleViewport = options.scaleViewport ?? true;
-      this.clipViewport = options.clipViewport ?? false;
+      void options;
     }
 
     addEventListener(event: string, listener: (payload?: any) => void) {
@@ -125,5 +121,64 @@ describe('useVncSession', () => {
     expect(session.viewOnly.value).toBe(false);
     expect(rfb.viewOnly).toBe(false);
     expect(rfb.resizeSession).toBe(true);
+  });
+
+  it('constructs the public RFB boundary with configured credentials and shared-session behavior', () => {
+    const container = createContainer();
+    const session = useVncSession({
+      url: 'ws://localhost:6080',
+      password: 'configured-secret',
+    });
+
+    session.setContainer(container);
+    session.connect();
+
+    expect(RFB).toHaveBeenCalledTimes(1);
+    expect(RFB).toHaveBeenCalledWith(container, 'ws://localhost:6080', {
+      credentials: { password: 'configured-secret' },
+      shared: true,
+    });
+    expect(session.connectionStatus.value).toBe('connecting');
+  });
+
+  it('handles credentials and current-session lifecycle events without accepting stale events', () => {
+    const infoSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const session = useVncSession({
+      url: 'ws://localhost:6080',
+      password: 'configured-secret',
+      label: 'fixture',
+    });
+
+    session.setContainer(createContainer());
+    session.connect();
+
+    const [rfb] = getMockRfbInstances();
+    rfb.emit('credentialsrequired');
+    expect(rfb.sendCredentials).toHaveBeenCalledWith({ password: 'configured-secret' });
+
+    rfb.emit('securityfailure', { reason: 'Rejected for probe' });
+    expect(errorSpy).toHaveBeenCalledWith(
+      '[vncSession fixture] security failure:',
+      'Rejected for probe',
+      { reason: 'Rejected for probe' },
+    );
+
+    rfb.emit('desktopname', { name: 'Owned fixture desktop' });
+    expect(infoSpy).toHaveBeenCalledWith(
+      '[vncSession fixture] desktop name',
+      { name: 'Owned fixture desktop' },
+    );
+
+    rfb.emit('connect');
+    expect(session.connectionStatus.value).toBe('connected');
+    expect(session.statusMessage.value).toBe('Connected to VNC server');
+
+    rfb.emit('disconnect', { clean: true });
+    expect(session.connectionStatus.value).toBe('disconnected');
+    expect(session.statusMessage.value).toBe('Disconnected.');
+
+    rfb.emit('connect');
+    expect(session.connectionStatus.value).toBe('disconnected');
   });
 });

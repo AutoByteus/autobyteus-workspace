@@ -1,0 +1,30 @@
+Updating autobyteus-web/package.json: 1.4.18 -> 1.4.19
+Updating autobyteus-message-gateway/package.json: 1.4.18 -> 1.4.19
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.19
+Synced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/release-local-video-preview-playback-v1.4.19/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+Release tag: v1.4.19
+Server version: 0.1.1
+[release/local-video-preview-playback-v1.4.19 3aa3cae87] chore(release): bump workspace release version to 1.4.19
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 19 insertions(+), 19 deletions(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin release/local-video-preview-playback-v1.4.19
+  git push origin v1.4.19
+
+[2026-07-20T03:59:51Z] Diagnose iOS release attempt 1: no iOS/workflow diff between v1.4.18 and v1.4.19; failed existing UI smoke test testFakeNodeOpensAndRestoresWithFakeMobileMarker while 21 core tests and the second UI smoke passed. Retrying failed jobs once as a likely runner/smoke flake.
+[2026-07-20T03:59:52Z] Requested one failed-job rerun for iOS release run 29681267510.
+[2026-07-20T04:12:57Z] iOS release rerun completed successfully: build/tests passed, secrets validated, signed IPA archived/exported, and upload to App Store Connect/TestFlight passed. All five expected v1.4.19 release workflows are now completed/success.

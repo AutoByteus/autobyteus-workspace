@@ -27,6 +27,8 @@
               :agent-avatar-url="agentAvatarUrl"
               :inter-agent-sender-name-by-id="interAgentSenderNameById"
               :message-index="item.messageIndex"
+              :enable-event-monitor-file-actions="enableEventMonitorFileActions"
+              @file-path-action="emit('file-path-action', $event)"
             />
           </div>
 
@@ -74,6 +76,7 @@ import {
   getRecentEventMonitorMessageUsageText,
   getRecentEventMonitorTotalUsageText,
 } from '~/services/eventMonitor/recentEventMonitorUsagePresentation';
+import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 const props = withDefaults(defineProps<{
   conversation: Conversation;
@@ -85,12 +88,18 @@ const props = withDefaults(defineProps<{
   showTokenCosts?: boolean;
   showTotalUsage?: boolean;
   presentationRevision?: number;
+  enableEventMonitorFileActions?: boolean;
 }>(), {
   compactionActivities: () => [],
   showTokenCosts: true,
   showTotalUsage: true,
   presentationRevision: 0,
+  enableEventMonitorFileActions: false,
 });
+
+const emit = defineEmits<{
+  (event: 'file-path-action', action: AbsoluteFilePathAction): void;
+}>();
 
 const runId = computed(() => props.runId || props.conversation.id);
 const instanceUid = getCurrentInstance()?.uid ?? Math.floor(Math.random() * 1_000_000);

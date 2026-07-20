@@ -426,7 +426,7 @@ describe('runProjectionConversation', () => {
 
   it('hydrates user projection media into context file attachments from canonical media keys', () => {
     const imageLocator = '/rest/team-runs/team-1/members/solution_designer/context-files/ctx_abc__image.png';
-    const audioLocator = 'local-file://opaque-audio-context';
+    const audioLocator = 'local-file:///Users/Normy/audio%20100%25%231.mp3';
     const videoLocator = 'local-file://opaque-video-context';
 
     const conversation = buildConversationFromProjection(
@@ -456,12 +456,17 @@ describe('runProjectionConversation', () => {
       throw new Error('expected user message');
     }
     expect(conversation.messages[0].contextFilePaths?.map((attachment) => ({
+      kind: attachment.kind,
       locator: attachment.locator,
       type: attachment.type,
     }))).toEqual([
-      { locator: imageLocator, type: 'Image' },
-      { locator: audioLocator, type: 'Audio' },
-      { locator: videoLocator, type: 'Video' },
+      { kind: 'uploaded', locator: imageLocator, type: 'Image' },
+      {
+        kind: 'external_url',
+        locator: 'local-file://local/Users/Normy/audio%20100%25%231.mp3',
+        type: 'Audio',
+      },
+      { kind: 'unsupported_local_file', locator: videoLocator, type: 'Video' },
     ]);
   });
 

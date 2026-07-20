@@ -1,0 +1,144 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-absolute-path-file-preview/autobyteus-web
+
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerNodeRouting.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/mobileWorkStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | electron/__tests__/localFileValidation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/mobileWorkStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | electron/__tests__/localFileValidation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/fileExplorer/__tests__/absoluteWorkspacePathMapping.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+···········stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Opening file: /tmp/screenshot.png
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses bound REST URL for absolute local-looking media paths in remote windows
+[FileExplorer] Determined file type for "/tmp/screenshot.png": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/screenshot.png',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/screenshot.png": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fscreenshot.png
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Opening file: /tmp/screenshot.png
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses local-file protocol for embedded window local media paths
+[FileExplorer] Determined file type for "/tmp/screenshot.png": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/screenshot.png',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a local absolute path in Electron.
+[FileExplorer] Constructed local media URL: local-file:///tmp/screenshot.png
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Opening file: /tmp/notes.md
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for an embedded sentinel without Electron
+[FileExplorer] Determined file type for "/tmp/notes.md": Text
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/notes.md',
+  type: 'Text',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Fetching text content for "/tmp/notes.md" via GraphQL.
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Opening file: /tmp/screenshot.png
+
+stdout | stores/__tests__/fileExplorerNodeRouting.spec.ts > fileExplorerStore node routing behavior > uses the bound workspace route for embedded-sentinel media without Electron
+[FileExplorer] Determined file type for "/tmp/screenshot.png": Image
+[FileExplorer] Pushed new initial file state: {
+  path: '/tmp/screenshot.png',
+  type: 'Image',
+  mode: 'edit',
+  accessIntent: null,
+  content: null,
+  url: null,
+  relativeResourceContext: null,
+  isLoading: true,
+  error: null
+}
+[FileExplorer] Handling as a workspace path.
+[FileExplorer] Constructed absolute media URL for "/tmp/screenshot.png": https://node.example/rest/workspaces/ws-1/content?path=%2Ftmp%2Fscreenshot.png
+
+···························
+
+ Test Files  8 passed (8)
+      Tests  38 passed (38)
+   Start at  12:03:09
+   Duration  6.34s (transform 2.85s, setup 41.87s, collect 803ms, tests 243ms, environment 2.56s, prepare 1.50s)
+

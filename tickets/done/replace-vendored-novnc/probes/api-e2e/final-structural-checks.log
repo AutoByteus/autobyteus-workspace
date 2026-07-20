@@ -1,0 +1,19 @@
+head=4ae4733637bc3d471051783b29894dad0d0e3c28
+branch=codex/replace-vendored-novnc
+{
+  "manifestVersion": "1.7.0-g7c36fab",
+  "installedVersion": "1.7.0-g7c36fab",
+  "resolved": "/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/node_modules/.pnpm/@novnc+novnc@1.7.0-g7c36fab/node_modules/@novnc/novnc/core/rfb.js",
+  "exports": "./core/rfb.js",
+  "license": "MPL-2.0",
+  "integrity": "sha512-MAG6tCn4LA7QfxlEHv0+EQiQCFfS/7tIT8y4A+/GgXxsLzz2chIRRzvRGQddr9o30d/A7lhljOPNwCBsszzlwA=="
+}
+vendored_tree=absent
+production_root_imports:
+autobyteus-web/composables/useVncSession.ts:2:import RFB from '@novnc/novnc';
+autobyteus-web/composables/__tests__/useVncSession.spec.ts:3:import RFB from '@novnc/novnc';
+production_deep_imports=absent
+production_vendored_or_fallback_references=absent
+package_root_mock_count=2
+live_probe_syntax=pass
+git_diff_check=pass

@@ -1,0 +1,25 @@
+
+> autobyteus@1.4.17 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/integration/novnc-package-contract.integration.test.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/autobyteus-web
+
+stderr | tests/integration/novnc-package-contract.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/novnc-package-contract.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/integration/novnc-package-contract.integration.test.ts > noVNC package integration contract > pins the exact official package-root build and registry integrity 2ms
+ ✓ tests/integration/novnc-package-contract.integration.test.ts > noVNC package integration contract > retains the selected build automatic async clipboard owner 1ms
+ ✓ tests/integration/novnc-package-contract.integration.test.ts > noVNC package integration contract > keeps application resolution at the root and the vendored tree absent 0ms
+ ✓ tests/integration/novnc-package-contract.integration.test.ts > noVNC package integration contract > ships the exact dependency notice through web and desktop packaging 2ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  12:41:01
+   Duration  4.01s (transform 2.21s, setup 3.52s, collect 14ms, tests 6ms, environment 160ms, prepare 120ms)

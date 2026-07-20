@@ -44,4 +44,51 @@ describe('mobileWorkStore', () => {
 
     expect(store.activeTab).toBe('chat');
   });
+
+  it('hands off one revisioned Event Monitor preview request to Mobile Files', () => {
+    const store = useMobileWorkStore();
+    store.selectContext(agentRunContext);
+
+    const request = store.requestFilePreview({
+      contextKey: 'agent-run:run-1',
+      workspaceId: 'workspace-1',
+      relativePath: 'docs/report.md',
+      source: 'event-monitor',
+      readOnly: true,
+      presentation: 'inline',
+    });
+
+    expect(store.activeTab).toBe('files');
+    expect(store.pendingFilePreviewRequest).toEqual(request);
+    store.consumeFilePreviewRequest(request.revision);
+    expect(store.pendingFilePreviewRequest).toBeNull();
+  });
+
+  it('clears a pending preview when team focus changes', () => {
+    const store = useMobileWorkStore();
+    const teamContext: MobileWorkContext = {
+      kind: 'team-run',
+      teamRunId: 'team-1',
+      teamDefinitionId: 'team-definition-1',
+      title: 'Team',
+      summary: 'Running team',
+      workspaceRootPath: '/Users/normy/project',
+      focusedMemberRouteKey: 'builder',
+      isActive: true,
+      lastActivityAt: '2026-05-18T16:00:00.000Z',
+      statusLabel: 'Running',
+    };
+    store.selectContext(teamContext);
+    store.requestFilePreview({
+      contextKey: 'team-run:team-1:builder',
+      workspaceId: 'workspace-1',
+      relativePath: 'stale.md',
+      source: 'event-monitor',
+      readOnly: true,
+      presentation: 'inline',
+    });
+
+    expect(store.updateFocusedTeamMember('team-1', 'reviewer')).toBe(true);
+    expect(store.pendingFilePreviewRequest).toBeNull();
+  });
 });

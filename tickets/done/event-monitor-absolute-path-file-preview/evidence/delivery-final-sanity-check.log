@@ -1,0 +1,32 @@
+Delivery final sanity check (pre-verification hold)
+UTC 2026-07-17T10:36:34Z
+HEAD a7a7b8b6e1ad0360f0240dd580938bef3a8c434b
+origin/personal 894edc01d93844bcaeb01dda96c369c899c92c85
+merge-base 894edc01d93844bcaeb01dda96c369c899c92c85
+
+$ git diff --check
+
+$ test -s Electron artifacts
+Electron artifacts are non-empty.
+
+Artifact checksums:
+118fed3143041b1e683c8892fb9392e630735aa8fb2b10180660b53e8c9cf1a6  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.dmg
+0971ea8f5b54ea1ac698231b14e4f529c5a6bf497fec7fc995a0ac33f9b28c8c  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.zip
+
+$ grep docs behavior anchors
+autobyteus-web/docs/content_rendering.md:91:### Event Monitor Absolute-Path Previews
+autobyteus-web/docs/content_rendering.md:93:The central Event Monitor can opt into a scoped filesystem-path action capability
+autobyteus-web/docs/content_rendering.md:96:consumers. The Event Monitor feed passes typed action events through the segment
+autobyteus-web/docs/content_rendering.md:109:On explicit click, Enter, or Space, the Event Monitor launcher opens the normal
+autobyteus-web/docs/file_explorer.md:120:### Event Monitor Preview Requests
+autobyteus-web/docs/file_explorer.md:122:Incidental absolute paths in the central Event Monitor use the existing Files
+autobyteus-web/docs/file_explorer.md:140:Path recognition is opt-in to the Event Monitor Markdown renderer and passive
+autobyteus-web/docs/file_explorer.md:145:original Event Monitor content.
+autobyteus-web/docs/electron_packaging.md:157:#### Trusted Local File Preview Boundary
+autobyteus-web/docs/electron_packaging.md:159:Event Monitor absolute-path previews may use local Electron access only after
+
+Working tree delivery-owned state:
+ M autobyteus-web/docs/content_rendering.md
+ M autobyteus-web/docs/electron_packaging.md
+ M autobyteus-web/docs/file_explorer.md
+?? tickets/event-monitor-absolute-path-file-preview/evidence/

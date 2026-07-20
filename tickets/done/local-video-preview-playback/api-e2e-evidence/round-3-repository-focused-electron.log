@@ -1,0 +1,21 @@
+COMMAND: pnpm test:electron --run electron/local-file-protocol/__tests__/local-file-protocol.spec.ts electron/local-file-protocol/__tests__/local-file-response.spec.ts electron/__tests__/localFileValidation.spec.ts
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+UTC_START: 2026-07-19T05:38:29Z
+
+> autobyteus@1.4.17 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/local-file-protocol/__tests__/local-file-protocol.spec.ts electron/local-file-protocol/__tests__/local-file-response.spec.ts electron/__tests__/localFileValidation.spec.ts
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web/electron
+
+ ✓ __tests__/localFileValidation.spec.ts (1 test) 9ms
+ ✓ local-file-protocol/__tests__/local-file-protocol.spec.ts (3 tests) 5ms
+ ✓ local-file-protocol/__tests__/local-file-response.spec.ts (11 tests) 69ms
+
+ Test Files  3 passed (3)
+      Tests  15 passed (15)
+   Start at  07:38:30
+   Duration  417ms (transform 75ms, setup 0ms, collect 137ms, tests 83ms, environment 0ms, prepare 179ms)
+
+EXIT_STATUS: 0
+UTC_END: 2026-07-19T05:38:30Z

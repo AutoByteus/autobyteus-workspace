@@ -1,0 +1,35 @@
+head=ba703f842d79dfab03f4c15add73396acdc247a9
+branch=codex/replace-vendored-novnc
+correction_diff:
+M	autobyteus-web/build/scripts/build.ts
+M	autobyteus-web/build/scripts/noVncThirdPartyNotice.ts
+M	autobyteus-web/tests/integration/novnc-package-contract.integration.test.ts
+M	tickets/in-progress/replace-vendored-novnc/implementation-handoff.md
+correction_scope=pass
+package_version=1.7.0-g7c36fab
+package_license=MPL-2.0
+canonical_bytes=26305
+renderer_bytes=26305
+notice_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+renderer_notice=byte-identical
+generic_notice_after_electron=absent
+vendored_tree=absent
+production_package_root_imports:
+autobyteus-web/composables/useVncSession.ts:2:import RFB from '@novnc/novnc';
+production_deep_imports=absent
+production_vendored_alias_fallback_patch_refs=absent
+git_diff_check=pass
+task_owned_containers=0
+negative_temp_fixtures=0
+active_packaging_harness_processes=0
+status_short:
+ M autobyteus-web/composables/__tests__/useVncSession.spec.ts
+ M autobyteus-web/package.json
+?? autobyteus-web/tests/e2e/vnc-live-probe.mjs
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-coverage-investigation.md
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/replace-vendored-novnc/api-e2e-test-review-report.md
+?? tickets/in-progress/replace-vendored-novnc/code-review-report.md
+?? tickets/in-progress/replace-vendored-novnc/delivery-reroute-report.md
+?? tickets/in-progress/replace-vendored-novnc/probes/
+final_integrity=pass

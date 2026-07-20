@@ -7,6 +7,7 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { RestoreAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
 import { resolveTeamStreamMemberContext } from '~/services/agentStreaming/teamStreamMemberContextResolver';
 import type { ServerMessage } from '~/services/agentStreaming/protocol';
+import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
 const {
   mockConnect,
@@ -494,7 +495,11 @@ describe('agentTeamRunStore', () => {
       },
       isSending: false,
     };
-    const attachment = { type: 'File', locator: '/tmp/spec.md' } as any;
+    const attachment = hydrateContextAttachment({ locator: '/tmp/spec.md', type: 'Markdown' });
+    const unsupportedAttachment = hydrateContextAttachment({
+      locator: 'local-file://opaque/image.png',
+      type: 'Image',
+    });
     const teamContext = buildTeamContext({
       teamRunId: 'temp-team-focused',
       focusedMemberRouteKey: 'code_reviewer',
@@ -544,7 +549,10 @@ describe('agentTeamRunStore', () => {
     });
 
     const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('please review this implementation', [attachment]);
+    await store.sendMessageToFocusedMember(
+      'please review this implementation',
+      [attachment, unsupportedAttachment],
+    );
 
     expect(codeReviewer.state.conversation.messages).toHaveLength(1);
     expect(solutionDesigner.state.conversation.messages).toHaveLength(0);
@@ -559,8 +567,12 @@ describe('agentTeamRunStore', () => {
         teamRunId: 'team-focused-real',
         memberRouteKey: 'code_reviewer',
       },
-      attachments: [attachment],
+      attachments: [attachment, unsupportedAttachment],
     });
+    expect(codeReviewer.state.conversation.messages[0].contextFilePaths).toEqual([
+      attachment,
+      unsupportedAttachment,
+    ]);
     expect(mockSendMessage).toHaveBeenCalledWith(
       'please review this implementation',
       { segments: [{ kind: 'member', memberRouteKey: 'code_reviewer' }] },

@@ -1,0 +1,41 @@
+
+> autobyteus@1.4.17 dev /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 43189
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+ 
+              █▀▀▀▀▀▀▀████▀▀▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▄▄█▀█▀█▀█ █▀▀▀█ █
+              █ █   █ █ ▀██▄▄ ▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀█▀▄ █▀█▀█ ▀▀▀▀▀ █
+              █▀▀███▀▀▀█▀▄ ▀▀▄  ███▀▀████
+              █▄▄    ▀█▄▄▀█▄▀█ ▄▄▀▀▄ ▄ ▀█
+              █▀██▀  ▀ ▄ █▄▀█▀▄ ▀▀█▄▄██ █
+              █ ▄▀▄ █▀ ▀ ▀▄▄ ▄ █▀█▀█▀█ ▀█
+              █ █▀▄██▀█▀▀ ▀▄▀▄█ ▀▀▀ █ █▄█
+              █▀▀▀▀▀▀▀█ █▀  ▀▄▄ █▀█ ▀▄█▀█
+              █ █▀▀▀█ █▄▀▀▀▄▀█▀ ▀▀▀ ▀▀▄██
+              █ █   █ ██▄█▄▄▀███▀▄▄█▄▀▄ █
+              █ ▀▀▀▀▀ █   ▀▄█   █ ▄▄▀██ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Local:    http://0.0.0.0:43189/
+  ➜ Network:  http://192.168.6.112:43189/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 46ms
+✔ Vite server built in 667ms
+[nitro] ✔ Nuxt Nitro server built in 666ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @monaco-editor/loader, vue-pdf-embed, xlsx, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+
+ ERROR  http proxy error: /rest/health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1135:18)
+    at afterConnectMultiple (node:net:1716:7)
+    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+

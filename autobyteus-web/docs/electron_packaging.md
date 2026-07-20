@@ -152,7 +152,84 @@ Methods:
 
 - Creates a secure `BrowserWindow` with sandbox enabled
 - Blocks unintended navigations and new windows for security
-- Registers custom `local-file://` protocol for secure local media access
+- Registers the privileged `local-file://` scheme before Electron becomes
+  ready, then installs its request gate and response handler on the default
+  session after readiness
+
+#### Trusted Local File Preview Boundary
+
+Event Monitor absolute-path previews may use local Electron access only after
+explicit user activation and only when the trusted `electronAPI` bridge is
+present. The renderer does not read the filesystem directly. Both the
+`read-local-text-file` IPC handler and the `local-file://` protocol call the
+shared `electron/localFileValidation.ts` boundary, which rejects malformed or
+non-absolute paths and revalidates existence, regular-file status, and read
+access immediately before text or media bytes are returned. Validation failures
+are returned as stable local-preview error codes so the renderer can show a
+localized, non-destructive Files state rather than native OS error text.
+
+Binary local previews use one process-neutral URL contract owned by
+`shared/localFileUrl.ts`: `local-file://local/<encoded-absolute-path>`. The
+fixed lowercase `local` authority prevents Electron's standard-scheme parser
+from reinterpreting the first POSIX path segment as a host. The full path stays
+in the pathname so case, spaces, Unicode, `%`, `#`, Windows drive letters, and
+other URL-significant characters survive a renderer/main round trip. Raw
+context-locator ingress rejects a wrong authority, credentials, port, query,
+fragment, malformed encoding, null byte, or noncanonical path before viewer
+assignment. The main handler rechecks the canonical attributes still observable
+on the request Electron delivers and requires the path to round-trip through
+the shared builder. Electron's standard-scheme normalization can erase authored
+credentials and ports before handler delivery, so handler parsing must not be
+described as proof of the raw authored URL; the exact-frame gate and filesystem
+validation remain authoritative. Do not add a second inline serializer or
+response-local path decoder.
+
+The scheme has exactly four Electron privileges:
+
+- `standard: true` for stable URL parsing and relative-resolution semantics;
+- `stream: true` for native audio/video streaming and later-byte seeks;
+- `supportFetchAPI: true` for the established Excel Fetch path; and
+- `corsEnabled: true` for the established PDF.js XHR path and cross-protocol
+  main-frame document requests.
+
+Those capabilities are coupled to a fail-closed default-session
+`webRequest.onBeforeRequest` gate. A request may reach `protocol.handle` only
+when its `webContentsId` identifies a live registered `WorkspaceShellWindow`
+and its exact `WebFrameMain` object is that window's current main frame.
+Missing, destroyed, stale, unregistered, child-frame, and main-process
+identities are canceled before any handler or filesystem access. Browser-tab
+content remains in its separate Browser-owned session and does not acquire this
+default-session capability. Never enable the four privileges without the gate,
+replace exact frame identity with origin/header checks, or install the handler
+in an ordinary browser session.
+
+After authorization, `local-file-response.ts` owns the complete response
+contract. It permits `GET` and `HEAD` only, revalidates and opens the file, sets
+MIME type, `Accept-Ranges: bytes`, `Cache-Control: no-store`, and exact content
+length, and returns:
+
+- `200` for a full response;
+- `206` with `Content-Range` for one valid closed, open-ended, or suffix byte
+  range;
+- `416` with `Content-Range: bytes */<size>` and no body for malformed,
+  multi-range, empty-file-range, or unsatisfiable requests;
+- `405` with `Allow: GET, HEAD` for another method; or
+- `404` with no body when URL parsing, validation, open/stat, or response setup
+  fails.
+
+`HEAD` returns the same selected full/range status and headers without a body.
+`file-byte-stream.ts` reads only the selected window in bounded chunks and
+closes its file handle on completion, cancellation, and error. PDF.js XHR,
+Excel Fetch, images, audio, and video all use this same authorized response
+owner; do not add viewer-specific filesystem, IPC, Blob, or full-buffer
+fallbacks.
+
+This boundary is separate from browser/remote workspace access. A browser or
+Phone Access client must first map a recognized host path into the active
+workspace and use the existing authorized relative content route; it must not
+send an arbitrary absolute path to the server. The `local-file://` protocol is
+not an authorization mechanism for remote clients and must not be exposed as an
+unvalidated renderer URL path.
 
 ### IPC Handlers
 
@@ -264,6 +341,7 @@ const options: Configuration = {
   extraResources: [
     { from: "resources/server", to: "server" },
     { from: "build/icons", to: "icons" },
+    NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
   ],
   // Platform-specific configurations...
 };
@@ -305,6 +383,56 @@ When the Electron baseline changes:
 - rebuild native modules for the target Electron ABI before packaging;
 - run focused Electron tests plus at least one desktop package smoke build before
   claiming release readiness.
+
+### noVNC Runtime and Third-Party Notice Packaging
+
+The VNC viewer uses the official package-root `@novnc/novnc` export rather than a
+checked-in provider source tree. The dependency is intentionally pinned to exact
+development build `1.7.0-g7c36fab` because that build preserves the approved
+automatic asynchronous clipboard behavior. Do not replace it with stable
+`1.7.0`, a floating tag/range, a deep import, or a local fallback without a
+separate behavior review.
+
+`public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` is the canonical
+distributable notice for this exact provider build. It contains the upstream
+notice, authorship and embedded-component attribution, the MPL-2.0 text, and
+links to the exact corresponding source commit and archive.
+
+The notice has three packaging projections owned by
+`build/scripts/noVncThirdPartyNotice.ts`:
+
+- normal Nuxt generation copies it to
+  `dist/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt`;
+- Electron generation copies it to
+  `dist/renderer/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt`;
+- electron-builder copies the canonical source into the packaged application's
+  `THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt` resource path.
+
+The desktop build preflight requires both the canonical source and the generated
+Electron renderer copy before invoking electron-builder. The `extraResources`
+mapping deliberately uses the canonical source, so the application resource is
+not coupled to a Nuxt output directory while the preflight still proves that the
+Electron renderer distribution contains the same notice.
+
+Treat every noVNC provider upgrade as one atomic change. Update and verify all of
+the following together:
+
+1. the exact dependency version and root workspace lockfile integrity;
+2. the package-root import contract and the narrow ambient declaration in
+   `types/novnc.d.ts` (remove the local declaration if upstream eventually ships
+   sufficient root types; never keep two type authorities);
+3. required clipboard behavior and the absence of a vendored/deep/fallback
+   provider path;
+4. the versioned notice filename, package/commit provenance, corresponding-source
+   links, upstream license contents, and helper constants;
+5. generic web, Electron renderer, and packaged application notice outputs; and
+6. `tests/integration/novnc-package-contract.integration.test.ts`, focused VNC
+   lifecycle coverage, Nuxt generation, and a desktop package smoke build.
+
+Do not move to a future stable noVNC release merely because its version is newer.
+First prove that it contains the automatic clipboard path represented by the
+currently selected upstream build, or explicitly redesign and approve clipboard
+ownership before changing the pin.
 
 ### Build Commands
 

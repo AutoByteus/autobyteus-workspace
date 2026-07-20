@@ -1,0 +1,9 @@
+63a6371e3a6c71a40e2eb0426d1c3cc2e0c5a5c024a6e3cd9bcb991afcb66962  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-fixed-authority-matrix-probe.cjs
+72f08326c3d730662a514c0ebc140ea942bfc026e79c4b52dfeef15e58c6778d  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-fixed-authority-matrix-result.json
+2ee3a77dcece534d2cb16c13f44197ac89ab03358b745576383f80315c34af25  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-fixed-authority-result.json
+7f418ee005e2a8042c47f729947d65e3100a919fea947324e81360ebdb2c3d4e  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-standard-old-url-result.json
+1e0254c3e413a43cb27edf033ca10145a837d56f51ef3c443b64595df0925f8d  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-stream-only-result.json
+31a5d4b418238ef6851e9c93675bfad475ce6b0f8aba3acf7c718ffdbbb9821c  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-url-identity-probe.cjs
+20e6d24fee5d30141f9d7ea56648309b150275d3454b468a6c2c03c4b77bdef6  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-authored-url-normalization-probe.cjs
+f96bb1c00af6ee115223253bdf2d77ffb876ec50e2554785c1d7d928385f4ae0  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-authored-url-normalization-result.json
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  tickets/in-progress/local-video-preview-playback/api-e2e-evidence/solution-design-authored-url-normalization-probe.log

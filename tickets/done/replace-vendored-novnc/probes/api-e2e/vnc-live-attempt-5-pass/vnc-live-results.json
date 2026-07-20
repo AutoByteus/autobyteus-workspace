@@ -1,0 +1,481 @@
+{
+  "startedAt": "2026-07-18T09:07:10.748Z",
+  "baseUrl": "http://127.0.0.1:65399",
+  "origin": "http://127.0.0.1:65399",
+  "vncContainer": "codex-replace-vendored-novnc-1784365619-47573",
+  "vncDisplay": ":100",
+  "expectedHost": "127.0.0.1:65398",
+  "expectedOwnerLabel": "replace-vendored-novnc",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "platform": "darwin-arm64",
+  "scenarios": {
+    "VNC-LIVE-001-003": {
+      "result": "Pass",
+      "permissionStates": {
+        "read": "granted",
+        "write": "granted"
+      },
+      "initialCanvas": {
+        "x": 1047,
+        "y": 112.5,
+        "width": 336,
+        "height": 252
+      },
+      "initialRemote": {
+        "width": 1024,
+        "height": 768,
+        "text": "1024x768"
+      },
+      "maximizedRemote": {
+        "width": 1438,
+        "height": 898,
+        "text": "1438x898"
+      },
+      "localToRemoteText": "autobyteus-local-to-remote-1784365635208",
+      "observedRemoteClipboard": "autobyteus-local-to-remote-1784365635208",
+      "remoteToLocalText": "autobyteus-remote-to-local-1784365635279",
+      "observedBrowserClipboard": "autobyteus-remote-to-local-1784365635279",
+      "webSockets": [
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65399/_nuxt/?token=HXxScpItSkp_",
+          "framesSent": 0,
+          "framesReceived": 1,
+          "closed": false
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65397/ws/terminal/f3c4ad11-aaa2-4432-9b9f-795c90a10e76",
+          "framesSent": 0,
+          "framesReceived": 1,
+          "closed": false
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65398/",
+          "framesSent": 13,
+          "framesReceived": 7,
+          "closed": true
+        },
+        {
+          "scenarioId": "VNC-LIVE-001-003",
+          "type": "websocket",
+          "url": "ws://127.0.0.1:65398/",
+          "framesSent": 23,
+          "framesReceived": 12,
+          "closed": false
+        }
+      ]
+    },
+    "VNC-LIVE-004-denied": {
+      "result": "Pass",
+      "permissionStates": {
+        "read": "denied",
+        "write": "denied"
+      },
+      "readAttempt": "NotAllowedError: Failed to execute 'readText' on 'Clipboard': Read permission denied."
+    },
+    "VNC-LIVE-004-unsupported": {
+      "result": "Pass",
+      "clipboardType": "undefined"
+    }
+  },
+  "browserEvents": [
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65399/_nuxt/?token=HXxScpItSkp_",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:65397/ws/terminal/f3c4ad11-aaa2-4432-9b9f-795c90a10e76"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65397/ws/terminal/f3c4ad11-aaa2-4432-9b9f-795c90a10e76",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Viewer] hosts resolved [Object]"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] container set {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[VNC Tile] mounted 127.0.0.1:65398 {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connecting {url: ws://127.0.0.1:65398, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65398/",
+      "framesSent": 13,
+      "framesReceived": 7,
+      "closed": true
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] desktop name {name: vncuser@c6418f0d4802}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> disconnected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connecting {url: ws://127.0.0.1:65398, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65398/",
+      "framesSent": 23,
+      "framesReceived": 12,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] desktop name {name: vncuser@c6418f0d4802}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:warning",
+      "text": "Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "scenarioId": "VNC-LIVE-001-003",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> disconnected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65399/_nuxt/?token=HXxScpItSkp_",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:65397/ws/terminal/9bfc0d88-4a68-4f3a-a2a9-5e337e0fde45"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65397/ws/terminal/9bfc0d88-4a68-4f3a-a2a9-5e337e0fde45",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[VNC Viewer] hosts resolved [Object]"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] container set {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[VNC Tile] mounted 127.0.0.1:65398 {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connecting {url: ws://127.0.0.1:65398, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65398/",
+      "framesSent": 14,
+      "framesReceived": 10,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] desktop name {name: vncuser@c6418f0d4802}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-denied",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65399/_nuxt/?token=HXxScpItSkp_",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connecting to: ws://127.0.0.1:65397/ws/terminal/80905400-0c1d-4c8f-a606-cf45818039b9"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65397/ws/terminal/80905400-0c1d-4c8f-a606-cf45818039b9",
+      "framesSent": 0,
+      "framesReceived": 1,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[useTerminalSession] Connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[VNC Viewer] hosts resolved [Object]"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] container set {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[VNC Tile] mounted 127.0.0.1:65398 {width: 448, height: 252}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connecting {url: ws://127.0.0.1:65398, container: Object}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connecting"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "websocket",
+      "url": "ws://127.0.0.1:65398/",
+      "framesSent": 14,
+      "framesReceived": 10,
+      "closed": false
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] desktop name {name: vncuser@c6418f0d4802}"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "[vncSession 127.0.0.1:65398] status -> connected"
+    },
+    {
+      "scenarioId": "VNC-LIVE-004-unsupported",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ],
+  "failures": [],
+  "finishedAt": "2026-07-18T09:07:25.140Z",
+  "result": "Pass"
+}

@@ -1,0 +1,7 @@
+COMMAND: Electron fetch privilege differential mode=both
+UTC_START: 2026-07-19T05:48:28Z
+API_E2E_FETCH_DIFFERENTIAL {"runtime":{"electron":"42.4.1","chrome":"148.0.7778.265","node":"24.16.0","platform":"darwin","arch":"arm64"},"mode":"both","privileges":{"standard":true,"stream":true,"supportFetchAPI":true,"corsEnabled":true},"pageUrl":"http://127.0.0.1:43191/api-e2e-local-preview","pdfUrl":"local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf","excelUrl":"local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20workbook.xlsx","handlerRequests":[{"url":"local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf","method":"GET","status":200},{"url":"local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20document.pdf","method":"GET","status":200},{"url":"local-file://local/tmp/autobyteus-local-preview-round3.kLZg2q/probe%20workbook.xlsx","method":"GET","status":200}],"renderer":{"origin":"http://127.0.0.1:43191","pdfFetch":{"ok":true,"status":200,"byteLength":1352},"pdfXhr":{"status":200,"byteLength":1352},"excelFetch":{"ok":true,"status":200,"byteLength":15929}},"outcome":"Pass"}
+[63270:0719/074830.238769:ERROR:base/process/process_mac.cc:53] task_policy_set TASK_CATEGORY_POLICY: (os/kern) invalid argument (4)
+[63270:0719/074830.238786:ERROR:base/process/process_mac.cc:98] task_policy_set TASK_SUPPRESSION_POLICY: (os/kern) invalid argument (4)
+EXIT_STATUS: 0
+UTC_END: 2026-07-19T05:48:30Z

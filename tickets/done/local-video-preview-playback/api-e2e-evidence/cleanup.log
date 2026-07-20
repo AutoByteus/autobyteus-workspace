@@ -1,0 +1,17 @@
+cleanup_started=2026-07-18T08:20:35Z
+owned_processes_before:
+52457 37499 /bin/bash -lc set -o pipefail; pnpm dev --port 43189 2>&1 | tee /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/in-progress/local-video-preview-playback/api-e2e-evidence/nuxt-probe.log
+52760 52457 node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm dev --port 43189
+52777 52760 node /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/autobyteus-web/node_modules/.bin/../../../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/bin/nuxt.mjs dev --host 0.0.0.0 --port 43189
+52784 52777 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --port 43189
+52785 52777 /Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --port 43189
+source_hashes_after:
+613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4
+5051a147ae47073072ee9d75092a4f1fd3df0cc510f58cd75b682b505cf549b3  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4
+user_app_before_cleanup:
+  PID  PPID COMMAND
+owned_processes_after_stop:
+listener_after_stop:
+user_app_after_cleanup:
+  PID  PPID COMMAND
+fixture_root_removed=true

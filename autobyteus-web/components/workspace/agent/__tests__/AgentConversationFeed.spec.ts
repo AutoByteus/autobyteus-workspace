@@ -92,6 +92,44 @@ describe('AgentConversationFeed', () => {
     expect(wrapper.get('[data-test="ai-message"]').text()).toBe('member-run-1');
   });
 
+  it('forwards explicit Event Monitor file actions without bypassing the recent presentation feed', async () => {
+    const wrapper = mount(AgentConversationFeed, {
+      props: {
+        enableEventMonitorFileActions: true,
+        conversation: {
+          id: 'run-file-action',
+          createdAt: '2026-03-07T00:00:00.000Z',
+          updatedAt: '2026-03-07T00:00:01.000Z',
+          messages: [{
+            type: 'ai',
+            text: '',
+            timestamp: new Date('2026-03-07T00:00:01.000Z'),
+            isComplete: true,
+            segments: [{ type: 'text', content: 'Open /tmp/report.md' }],
+          }],
+        } as any,
+      },
+      global: {
+        stubs: {
+          AIMessage: {
+            name: 'AIMessage',
+            props: ['enableEventMonitorFileActions'],
+            emits: ['file-path-action'],
+            template: '<div data-test="ai-message" />',
+          },
+        },
+      },
+    });
+    const aiMessage = wrapper.findComponent({ name: 'AIMessage' });
+    const action = { normalizedCandidate: '/tmp/report.md' } as any;
+
+    expect(aiMessage.props('enableEventMonitorFileActions')).toBe(true);
+    aiMessage.vm.$emit('file-path-action', action);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('file-path-action')).toEqual([[action]]);
+  });
+
   it('can hide token-cost and total-usage metadata for smaller tiles', () => {
     const wrapper = mount(AgentConversationFeed, {
       props: {

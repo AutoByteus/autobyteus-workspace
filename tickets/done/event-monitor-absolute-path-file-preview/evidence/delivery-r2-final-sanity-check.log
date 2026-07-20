@@ -1,0 +1,69 @@
+Delivery Round 2 final sanity check (pre-verification hold)
+UTC 2026-07-17T11:58:27Z
+HEAD ce9303994c2e23e912b2a427053e1ab67053a76c
+origin/personal 894edc01d93844bcaeb01dda96c369c899c92c85
+merge-base 894edc01d93844bcaeb01dda96c369c899c92c85
+
+$ git diff --check
+
+$ current Electron artifacts
+-rw-r--r--@ 1 normy  staff   383M Jul 17 13:53 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.dmg
+-rw-r--r--@ 1 normy  staff   409K Jul 17 13:53 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   379M Jul 17 13:55 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.zip
+-rw-r--r--@ 1 normy  staff   399K Jul 17 13:55 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.zip.blockmap
+854c0c8ae05cd55bfa025e2711181d03d0057104bb87e333695a3863f8b4c6aa  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.dmg
+fce6115605bd9850862bc217ce03dc16bd5cb8992f46f9c88d5b8da40909fffc  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.15.zip
+
+$ delivery reports and user-verification supplement
+OK tickets/event-monitor-absolute-path-file-preview/user-verification-unsupported-file-preview-report.md
+OK tickets/event-monitor-absolute-path-file-preview/docs-sync-report.md
+OK tickets/event-monitor-absolute-path-file-preview/handoff-summary.md
+OK tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md
+OK tickets/event-monitor-absolute-path-file-preview/evidence/delivery-r2-post-refresh-check.log
+OK tickets/event-monitor-absolute-path-file-preview/evidence/delivery-r2-electron-build.log
+
+$ current blocked status anchors
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:15:- Prior Round Reviewed: Round 1 execution for source `2a342a3fb`, result `Blocked` at 83%, with no authenticated Event Monitor run, paired mobile session, packaged Electron/media, or Windows host.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:24:| 1 | Prior source review pass for `2a342a3fb` | N/A | N/A | Blocked | No | Initial repository/live/browser refresh; critical auth/mobile/package/platform dependencies unavailable. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:25:| 2 | Source review round 4 pass for `7140696c8b78c6bfbba2035aaa8868a68e1e05aa` | EVM-BROWSER-003 Event Monitor journey, EVM-BROWSER-004 phone-first request, EVM-DESKTOP-001 packaged/platform proof rechecked; still unavailable after safe setup. | None observed | Blocked | Yes | Current `.lua` policy and all changed-chain regressions rerun; live API and browser shell refreshed. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:59:| EVM-BROWSER-003 | BEH-001/003/004/009; AC-001–009/019 | Authenticated Event Monitor action, click/Enter/Space, passive, viewer/dedupe/focus/no-read | Browser bridge | Browser | Blocked | No deterministic authenticated Event Monitor run/session was available; alternatives are durable component tests and live route probes. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:60:| EVM-BROWSER-004 | BEH-005; AC-017/018 | Phone-first matching/stale/context/inline/no-Attach | Paired mobile browser/device | Browser | Blocked | No paired mobile identity/session or project fixture was available. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:61:| EVM-DESKTOP-001 | BEH-006; AC-011 | Packaged Electron text/media and Windows host behavior | Project desktop/package | Desktop | Blocked | Current-source packaged build was not relaunched by API/E2E; existing 29695 app is not owned; Windows host unavailable. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:81:| Requirement and acceptance-criteria proof | 82% | 82% | 0 | Current-source pure policy/action/renderer/no-read tests, route negatives, and native validator passed; browser/live shell did not reach Event Monitor. | Live actions/passive/viewers, phone-first, packaged Electron/media, and Windows remain unproven. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:86:| User-surface, browser, and desktop-shell confidence | 78% | 78% | 0 | `/agents` and `/mobile` shell DOM/screenshot bootstrap, native validator, and TS compile passed. | Event Monitor/Files, focus, inline mobile viewer, package, and Windows remain unproven. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:89:- Overall post-repository confidence: `84%`.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:90:- Overall final confidence: `84%`.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:91:- Calculation method: Simple average of 82, 86, 82, 78, 89, 78, and 95 = 84.29%, rounded down to 84%.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:96:- Confidence-limiting residual risks: authenticated Event Monitor action/passive/viewer/focus/dedupe; paired mobile; full visual inspection; packaged Electron current-source text/media; Windows parsing/host; clean isolated server env/database fidelity.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:100:- Decision and selected execution mode from the coverage investigation: `Blocked` after targeted Live API + Browser + repository Electron validation.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:104:- If `Blocked`, exact unavailable dependency or access and attempted alternatives: A safe deterministic authenticated Event Monitor run with seeded files, a paired mobile session, a current-source packaged Electron launch path, and a Windows host/runner were unavailable. Attempted alternatives: focused/broad current-source tests, server route tests, native validator/TypeScript, server build, live curl routes, Nuxt browser `/agents`/`/mobile`, DOM assertions, screenshots, and cleanup. No model/tool activity or unauthorized existing process was started/reused to fabricate coverage.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:118:| Activate Event Monitor path | Correct action/Files/viewer/read-only/focus behavior | No authenticated Event Monitor run/session was available | Missing dependency; durable tests remain indirect | Blocked |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:119:| Consume phone-first request | Matching request presents inline/no Attach and stale requests are ignored | No paired mobile session/fixture available | Missing dependency; mobile durable tests remain indirect | Blocked |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:120:| Launch current-source packaged Electron | Trusted text/media protocol works in package | Current-source package was not launched by this stage; prior artifact is from an earlier integrated revision and is not current-source signoff | Existing 29695 process not owned; Delivery owns rebuild/package | Blocked |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:121:| Validate Windows host | Windows URL/filesystem behavior works | No Windows host/runner | POSIX mapping/validator tests only | Blocked |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:127:- Shell-specific or lifecycle behavior and evidence: `localFileValidation.spec.ts` 1/1 and Electron TypeScript compile passed; packaged preload/IPC/media was not exercised. Windows remained unavailable.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:129:- Behavior not directly proven and confidence consequence: packaged text/media, Windows parsing, and actual Event Monitor launch remain blocked; desktop/user-surface confidence is 78%.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:198:| Windows filesystem/URL host | POSIX-host mapping and validator tests | Current host is macOS; no Windows runner. | Windows-native protocol/platform behavior remains blocked. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:206:| 1 | EVM-BROWSER-003: authenticated Event Monitor action/passive/viewer journey unavailable | Blocked dependency | Still blocked; no safe deterministic authenticated run was available in round 2. | `api-e2e-browser-observations.md`; current durable tests/logs | Not an implementation failure. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:207:| 1 | EVM-BROWSER-004: paired mobile request unavailable | Blocked dependency | Still blocked; pairing shell reached but no paired session existed. | `api-e2e-browser-observations.md` and mobile suites | Not an implementation failure. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:208:| 1 | EVM-DESKTOP-001: packaged Electron/media/Windows unavailable | Blocked dependency | Still blocked; current-source package not relaunched and Windows host unavailable. | `api-e2e-r2-electron.log`, `api-e2e-r2-electron-tsc.log`, delivery artifact history | Existing 29695 process not owned/reused. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:216:| Blocked | EVM-BROWSER-003, EVM-BROWSER-004, EVM-DESKTOP-001 | Critical authenticated Event Monitor, paired mobile, packaged current-source Electron/media, and Windows evidence unavailable after safe setup and emulation. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:217:| Not Tested | Live supported viewer matrix, live passive arrival, click/Enter/Space in mounted Event Monitor, repeat-open/dedupe/focus/collapsed panel, live mobile inline/no-Attach, packaged Electron media, Windows host | Not reachable without blocked runtime dependencies. |
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:233:`Blocked` — the current-source implementation and all safely executable repository/live/bootstrap checks passed, but critical API/E2E acceptance proof cannot be completed without unavailable authenticated Event Monitor, paired mobile, packaged current-source Electron, and Windows dependencies. No implementation failure was observed and no code reroute is requested.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:237:User — provide a project-supported authenticated Event Monitor run/fixture, paired mobile session/fixture, and (for complete signoff) current-source packaged Electron launch plus Windows evidence. Per the API/E2E workflow, a blocked result is not sent to `code_reviewer` or `delivery_engineer`; the proportional durable-test review remains not applicable because API/E2E changed no durable tests.
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:255:- Result: `Blocked`
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:256:- Final validation confidence: `84%`
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:259:- Broader validation decision: `Blocked`
+tickets/event-monitor-absolute-path-file-preview/api-e2e-execution-coverage-report.md:260:- Critical acceptance criteria lacking direct proof: live AC-001–009/018/019 Event Monitor action/viewer/dedupe/focus/no-read journey; AC-011 packaged trusted text/media boundary; AC-012/013 authenticated client/server mapping/authorization; AC-017 phone-first inline request; Windows platform behavior. Durable indirect coverage exists for portions of these criteria.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:6:- API/E2E Round 2 remains **Blocked at 84%**. No API/E2E Pass or proportional durable-test review Pass is claimed.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:7:- Repository finalization, release, publication, deployment, and cleanup remain held until explicit user verification.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:53:- The artifact uses the existing workspace version `1.4.15`; this is not a release sign-off.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:62:- Target merge/push/finalization: Not started.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:63:- Status: `Blocked` pending explicit verification and the unresolved API/E2E residuals.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:76:- Worktree cleanup: `Blocked`; preserve the current artifact and ticket worktree.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:77:- Ticket branch cleanup: `Blocked`; preserve until finalization.
+tickets/event-monitor-absolute-path-file-preview/delivery-release-deployment-report.md:83:- Required residual verification: authenticated Event Monitor -> Files journeys; paired mobile session; current packaged Electron text/media; Windows host; and full Event Monitor/Files browser visual inspection.
+
+No unmerged paths: OK
+
+Finalization hold: no archive/push/merge/tag/deploy performed.

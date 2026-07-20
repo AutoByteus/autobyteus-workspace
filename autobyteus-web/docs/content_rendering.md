@@ -88,6 +88,68 @@ transport/object-URL helpers so the paired mobile bearer credential is attached.
 Do not introduce unauthenticated static/iframe preview paths for protected
 workspace or team-reference content without a separate security design.
 
+### Event Monitor Absolute-Path Previews
+
+The central Event Monitor can opt into a scoped filesystem-path action capability
+through `MarkdownRenderer.vue`. This capability is intentionally not enabled for
+generic conversation, file-preview, task, team-reference, or other Markdown
+consumers. The Event Monitor feed passes typed action events through the segment
+chain to `useEventMonitorFilePreview`; rendering a message never opens a panel,
+checks filesystem state, or fetches bytes.
+
+The action policy recognizes POSIX and Windows drive-absolute paths in prose,
+raw Markdown link destinations, inline code, and fenced code. Sentence
+punctuation is excluded from prose candidates. Inline and fenced code remain
+literal and copyable; any action affordance is adjacent to the code text. Raw
+link destinations are retained before sanitization and resolved by a render-
+scoped action ID, so browser-resolved `href` values are never treated as file
+authorization. HTTP(S), relative paths, and ordinary non-Event-Monitor Markdown
+behavior retain their existing handling.
+
+Path recognition rejects incomplete or placeholder components such as `.`, `..`,
+`...`, and the Unicode ellipsis `…` before action/type classification. Complete
+dotted filenames such as `release...notes.md` remain eligible. This keeps
+truncated examples source-faithful and inert without rejecting legitimate
+filenames.
+
+Supported Event Monitor actions render as compact inline native links rather
+than bordered buttons. Generated links show the file's display label/basename;
+authored Markdown link labels remain authored. The render-scoped action ID,
+delegated click/Enter/Space activation, localized accessibility metadata, focus
+visibility, and fenced-code copy/source boundaries remain unchanged. Fenced-code
+actions are rendered beside, not inside, the copied code text.
+
+On explicit click, Enter, or Space, the Event Monitor launcher opens the normal
+Files surface idempotently and requests the existing `FileViewer` path with an
+explicit `source: 'event-monitor'` and `readOnly: true` intent. Existing file
+tabs are reused by the File Explorer store, and no artifact/reference row or
+persisted record is created. Desktop previews preserve the center feed and
+focus the active file tab when a stable target is available. Phone-first
+previews are delivered as a typed pending request to `MobileFiles`, where the
+matching workspace/context request is rendered inline without Attach controls,
+an overlay, or automatic full-screen presentation.
+
+Runtime access remains environment-specific: embedded Electron may use the
+trusted local boundary, while browser/remote/mobile clients must map the host
+path inside the active workspace to a workspace-relative locator. Unmapped
+paths remain copyable and show a localized host-only/unavailable state.
+
+Action eligibility and File Explorer type routing share the pure
+`utils/fileExplorer/fileTypePolicy.ts` policy. Supported text/code/Markdown/HTML
+families (including `.lua`) and the established image, audio, video, PDF, CSV,
+and Excel families may produce an Event Monitor action. ZIP/DMG/PKG/application
+bundles, archives, generic binaries, and unknown extensions remain literal
+source-faithful content with no Files affordance, filesystem read, media URL,
+workspace fetch, or panel switch. A supported-looking path that is missing,
+unreadable, a directory, or otherwise invalid follows the normal localized
+viewer failure state instead; type ineligibility and runtime failure are
+separate outcomes.
+
+The compact left navigation strip keeps the capability-gated Nodes entry and
+`/nodes` route. In strip mode it renders the existing visible nodes-network SVG
+shape directly, matching the expanded navigation icon instead of relying on an
+unregistered icon name.
+
 ## App-Wide Readability / Display Settings
 
 File explorer and artifact viewers intentionally follow the shared **Settings -> Display -> App font size** preference instead of maintaining a separate viewer-only font control.

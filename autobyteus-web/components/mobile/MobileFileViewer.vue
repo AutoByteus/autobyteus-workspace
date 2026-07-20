@@ -1,5 +1,9 @@
 <template>
-  <div class="fixed inset-0 z-50 flex flex-col bg-white" data-testid="mobile-file-viewer">
+  <div
+    class="flex flex-col bg-white"
+    :class="resolvedPresentation === 'fullscreen' ? 'fixed inset-0 z-50' : 'relative min-h-0 flex-1 border-t border-slate-200'"
+    data-testid="mobile-file-viewer"
+  >
     <header class="flex shrink-0 items-center gap-3 border-b border-slate-200 px-5 py-4">
       <button type="button" class="rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700" @click="$emit('close')">
         Back
@@ -9,6 +13,7 @@
         <p class="truncate text-xs text-slate-500">{{ node.path }}</p>
       </div>
       <button
+        v-if="shouldAllowAttach"
         type="button"
         class="rounded-xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
         :disabled="!canAttach"
@@ -24,7 +29,7 @@
         <p class="font-bold">Could not load preview</p>
         <p class="mt-2 text-sm">{{ viewerError }}</p>
       </div>
-      <div v-else-if="isLoading" class="h-full rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-600" data-testid="mobile-file-preview-loading">
+      <div v-else-if="isLoading" class="h-full rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-600" data-testid="mobile-file-preview-loading" role="status" aria-live="polite">
         Loading file content through the authorized workspace file API…
       </div>
       <div v-else-if="isUnsupported" class="h-full overflow-y-auto rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-900" data-testid="mobile-file-preview-unsupported">
@@ -68,19 +73,26 @@ type MobileFileNode = {
   is_file: boolean;
 };
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   node: MobileFileNode;
   workspaceId: string;
   context: MobileWorkContext | null;
   fileState: OpenFileState | null;
   openError?: string | null;
-}>();
+  presentation?: 'fullscreen' | 'inline';
+  allowAttach?: boolean;
+}>(), {
+  presentation: 'fullscreen',
+  allowAttach: true,
+});
 
 defineEmits<{
   close: [];
 }>();
 
 const coordinator = useMobileFileContextCoordinator();
+const resolvedPresentation = computed(() => props.presentation ?? 'fullscreen');
+const shouldAllowAttach = computed(() => props.allowAttach ?? true);
 const attachNotice = ref<string | null>(null);
 const maxCharsLabel = MOBILE_FILE_VIEW_MAX_CHARS.toLocaleString();
 const viewerError = computed(() => props.openError || props.fileState?.error || null);

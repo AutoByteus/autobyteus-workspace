@@ -1,0 +1,47 @@
+{
+  "runtime": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "node": "24.16.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "sourceIdentity": {
+    "imagePath": "/tmp/autobyteus-local-preview-round2.mN3euH/probe image.png",
+    "canonical": "local-file://local/tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png",
+    "legacy": "local-file:///tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png"
+  },
+  "nodeMainUrlParse": {
+    "href": "local-file:///tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png",
+    "hostname": "",
+    "pathname": "/tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png"
+  },
+  "electronRendererUrlParse": {
+    "href": "local-file://tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png",
+    "hostname": "tmp",
+    "pathname": "/autobyteus-local-preview-round2.mN3euH/probe%20image.png"
+  },
+  "actualHydration": {
+    "kind": "unsupported_local_file",
+    "id": "local-file:///tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png",
+    "locator": "local-file:///tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png",
+    "displayName": "probe%20image.png",
+    "type": "Image",
+    "isOpenable": false,
+    "previewUrl": null
+  },
+  "expectedHydration": {
+    "kind": "external_url",
+    "locator": "local-file://local/tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png"
+  },
+  "outcome": "Fail",
+  "canonicalControl": {
+    "kind": "external_url",
+    "id": "local-file://local/tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png",
+    "locator": "local-file://local/tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png",
+    "displayName": "probe%20image.png",
+    "type": "Image",
+    "isOpenable": true,
+    "previewUrl": "local-file://local/tmp/autobyteus-local-preview-round2.mN3euH/probe%20image.png"
+  }
+}

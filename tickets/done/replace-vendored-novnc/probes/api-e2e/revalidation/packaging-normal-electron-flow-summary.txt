@@ -1,0 +1,5 @@
+normal_electron_flow_exit=1
+renderer_notice_present=true
+public_notice_absent=true
+electron_builder_called=false
+scenario_result=Fail

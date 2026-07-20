@@ -1,5 +1,15 @@
 export type MobileTaskTab = 'chat' | 'runs' | 'files' | 'artifacts' | 'activity';
 
+export type MobileFilePreviewRequest = {
+  contextKey: string;
+  workspaceId: string;
+  relativePath: string;
+  revision: number;
+  source: 'event-monitor';
+  readOnly: true;
+  presentation: 'inline';
+};
+
 export type MobileCatalogSegmentId = 'recent' | 'agents' | 'teams' | 'workspaces';
 
 export type MobileCatalogSegmentStatus = 'idle' | 'loading' | 'success' | 'error';

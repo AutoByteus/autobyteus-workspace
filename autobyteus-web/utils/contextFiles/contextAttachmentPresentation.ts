@@ -1,8 +1,20 @@
 import type { ContextAttachment } from '~/types/conversation';
 import { getServerBaseUrl, getServerUrls } from '~/utils/serverConfig';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { buildLocalFileUrl, LOCAL_FILE_SCHEME, parseLocalFileUrl } from '~/shared/localFileUrl';
+import { isBrowserOpenableContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
 const isAbsoluteLocalPath = (value: string): boolean => value.startsWith('/') || /^[a-zA-Z]:[\\/]/.test(value);
+
+const isCanonicalLocalFileLocator = (locator: string): boolean => {
+  try {
+    const parsedUrl = new URL(locator);
+    const platform = /^\/[A-Za-z]:\//.test(parsedUrl.pathname) ? 'win32' : 'posix';
+    return parseLocalFileUrl(locator, platform) !== null;
+  } catch {
+    return false;
+  }
+};
 
 const normalizeBrowserUrl = (locator: string): string => {
   if (
@@ -34,7 +46,7 @@ const resolveWorkspacePreviewUrl = (input: {
   isEmbeddedElectronRuntime?: boolean;
 }): string | null => {
   if (input.isEmbeddedElectronRuntime && isAbsoluteLocalPath(input.locator)) {
-    return `local-file://${input.locator}`;
+    return buildLocalFileUrl(input.locator);
   }
 
   if (!input.workspaceId) {
@@ -78,6 +90,19 @@ export const contextAttachmentPresentation = {
     return attachment.displayName;
   },
 
+  isOpenable(attachment: ContextAttachment): boolean {
+    if (!isBrowserOpenableContextAttachment(attachment)) {
+      return false;
+    }
+    if (
+      attachment.kind === 'external_url'
+      && attachment.locator.toLowerCase().startsWith(`${LOCAL_FILE_SCHEME}:`)
+    ) {
+      return isCanonicalLocalFileLocator(attachment.locator);
+    }
+    return true;
+  },
+
   resolveImagePreviewUrl(
     attachment: ContextAttachment,
     options: {
@@ -87,6 +112,9 @@ export const contextAttachmentPresentation = {
     } = {},
   ): string | null {
     if (attachment.type !== 'Image') {
+      return null;
+    }
+    if (!this.isOpenable(attachment)) {
       return null;
     }
     if (options.failedKeys?.has(attachment.id)) {
@@ -116,6 +144,10 @@ export const contextAttachmentPresentation = {
       openBrowserUrl?: (url: string) => void;
     } = {},
   ): void {
+    if (!this.isOpenable(attachment)) {
+      return;
+    }
+
     if (attachment.kind === 'workspace_path' && options.workspaceId && options.openWorkspaceFile) {
       options.openWorkspaceFile(attachment.locator, options.workspaceId);
       return;

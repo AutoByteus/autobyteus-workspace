@@ -2,6 +2,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { UserMessage } from '~/types/conversation';
 import type { UserMessageProjectionPayload } from '../protocol/messageTypes';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { isExecutableContextAttachment } from '~/utils/contextFiles/contextAttachmentSend';
 
 const toTimestamp = (value?: string | null): Date => {
   if (!value) {
@@ -16,23 +17,6 @@ const toTimestamp = (value?: string | null): Date => {
 };
 
 const normalizeIdentity = (value?: string | null): string => value?.trim() || '';
-
-const attachmentsEqual = (
-  left: UserMessage['contextFilePaths'],
-  right: UserMessage['contextFilePaths'],
-): boolean => {
-  const leftAttachments = left ?? [];
-  const rightAttachments = right ?? [];
-  if (leftAttachments.length !== rightAttachments.length) return false;
-  return leftAttachments.every((attachment, index) => {
-    const next = rightAttachments[index];
-    if (!next) return false;
-    const keys = new Set([...Object.keys(attachment), ...Object.keys(next)]);
-    return [...keys].every((key) =>
-      (attachment as unknown as Record<string, unknown>)[key]
-        === (next as unknown as Record<string, unknown>)[key]);
-  });
-};
 
 const findExistingMessageIndex = (
   messages: AgentContext['conversation']['messages'],
@@ -81,9 +65,9 @@ export const buildUserMessageFromProjectionPayload = (
 export const upsertUserMessageByIdentity = (input: {
   context: AgentContext;
   userMessage: UserMessage;
-  preserveExistingContextFilesWhenIncomingEmpty?: boolean;
-}): boolean => {
-  const { context, userMessage, preserveExistingContextFilesWhenIncomingEmpty = false } = input;
+  retainExistingNonExecutableContextFiles?: boolean;
+}): void => {
+  const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
   const existingIndex = findExistingMessageIndex(
     context.conversation.messages,
     userMessage.messageId ?? '',
@@ -93,28 +77,39 @@ export const upsertUserMessageByIdentity = (input: {
     const existing = context.conversation.messages[existingIndex];
     const existingContextFilePaths = existing.type === 'user' ? existing.contextFilePaths ?? [] : [];
     const incomingContextFilePaths = userMessage.contextFilePaths ?? [];
-    const contextFilePaths =
-      preserveExistingContextFilesWhenIncomingEmpty &&
-      existingContextFilePaths.length > 0 &&
-      incomingContextFilePaths.length === 0
-        ? existingContextFilePaths
-        : incomingContextFilePaths;
+    const contextFilePaths = retainExistingNonExecutableContextFiles
+      ? mergeMemberEchoContextFiles(incomingContextFilePaths, existingContextFilePaths)
+      : incomingContextFilePaths;
 
-    const nextMessage: UserMessage = {
+    context.conversation.messages[existingIndex] = {
       ...existing,
       ...userMessage,
       contextFilePaths,
     };
-    const changed = existing.type !== 'user'
-      || existing.text !== nextMessage.text
-      || existing.timestamp.getTime() !== nextMessage.timestamp.getTime()
-      || existing.messageId !== nextMessage.messageId
-      || existing.dedupeKey !== nextMessage.dedupeKey
-      || !attachmentsEqual(existingContextFilePaths, contextFilePaths);
-    if (changed) context.conversation.messages[existingIndex] = nextMessage;
-    return changed;
   } else {
     context.conversation.messages.push(userMessage);
-    return true;
   }
+};
+
+const getContextAttachmentIdentity = (
+  attachment: NonNullable<UserMessage['contextFilePaths']>[number],
+): string => attachment.id?.trim() || `${attachment.kind}:${attachment.locator}`;
+
+const mergeMemberEchoContextFiles = (
+  incoming: NonNullable<UserMessage['contextFilePaths']>,
+  existing: NonNullable<UserMessage['contextFilePaths']>,
+): NonNullable<UserMessage['contextFilePaths']> => {
+  const merged = [
+    ...incoming,
+    ...existing.filter((attachment) => !isExecutableContextAttachment(attachment)),
+  ];
+  const seen = new Set<string>();
+  return merged.filter((attachment) => {
+    const identity = getContextAttachmentIdentity(attachment);
+    if (seen.has(identity)) {
+      return false;
+    }
+    seen.add(identity);
+    return true;
+  });
 };

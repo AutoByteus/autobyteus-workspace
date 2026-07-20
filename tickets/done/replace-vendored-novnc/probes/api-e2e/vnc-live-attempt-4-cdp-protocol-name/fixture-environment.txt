@@ -1,0 +1,7 @@
+container=codex-replace-vendored-novnc-1784365588-46760
+owner_label=com.autobyteus.api-e2e-owner=replace-vendored-novnc
+backend_url=http://127.0.0.1:65319
+vnc_websocket_url=ws://127.0.0.1:65320
+frontend_url=http://127.0.0.1:65321
+vnc_display=:100
+image=autobyteus/autobyteus-server:latest

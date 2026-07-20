@@ -12,7 +12,7 @@ export const handleMemberInputMessage = (
   upsertUserMessageByIdentity({
     context,
     userMessage: buildUserMessageFromProjectionPayload(payload),
-    preserveExistingContextFilesWhenIncomingEmpty: true,
+    retainExistingNonExecutableContextFiles: true,
   });
   context.isSending = true;
 };

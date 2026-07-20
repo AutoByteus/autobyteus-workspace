@@ -1,0 +1,22 @@
+head=7fe03f83e869d5badbf10a35d2898a185c190116
+runtime_base=4ae4733637bc3d471051783b29894dad0d0e3c28
+branch=codex/replace-vendored-novnc
+delivery_fix_files:
+M	autobyteus-web/build/scripts/build.ts
+A	autobyteus-web/build/scripts/noVncThirdPartyNotice.ts
+A	autobyteus-web/public/THIRD_PARTY_NOTICES/noVNC-1.7.0-g7c36fab.txt
+A	autobyteus-web/tests/integration/novnc-package-contract.integration.test.ts
+M	tickets/in-progress/replace-vendored-novnc/implementation-handoff.md
+runtime_provider_session_diff=absent
+canonical_bytes=26305
+generated_bytes=26305
+canonical_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+generated_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+canonical_generated_cmp=identical
+installed_version=1.7.0-g7c36fab
+installed_license=MPL-2.0
+installed_author=Joel Martin <github@martintribe.org> (https://github.com/kanaka)
+installed_repository=git+https://github.com/novnc/noVNC.git
+resolved_root_export=/Users/normy/autobyteus_org/autobyteus-worktrees/replace-vendored-novnc/node_modules/.pnpm/@novnc+novnc@1.7.0-g7c36fab/node_modules/@novnc/novnc/core/rfb.js
+forbidden_provider_references=absent
+git_diff_check=pass

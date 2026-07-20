@@ -1,9 +1,9 @@
-import { app, BrowserWindow, dialog, ipcMain, net, protocol, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import * as fsSync from 'fs';
 import * as fs from 'fs/promises';
 import isDev from 'electron-is-dev';
 import * as path from 'path';
-import { pathToFileURL, URL } from 'url';
+import { pathToFileURL } from 'url';
 import type {
   NodeProfile,
   NodeRegistryChange,
@@ -32,6 +32,13 @@ import { registerBrowserShellIpcHandlers } from './browser/register-browser-shel
 import { BrowserBridgeAuthRegistry } from './browser/browser-bridge-auth-registry';
 import { WorkspaceShellWindow } from './shell/workspace-shell-window';
 import { WorkspaceShellWindowRegistry } from './shell/workspace-shell-window-registry';
+import { validateReadableRegularFile } from './localFileValidation';
+import {
+  installLocalFileProtocol,
+  registerLocalFileProtocolScheme,
+} from './local-file-protocol/local-file-protocol';
+
+registerLocalFileProtocolScheme();
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
@@ -387,15 +394,16 @@ function installIpcHandlers(): void {
 
   ipcMain.handle('read-local-text-file', async (_event, filePath: string) => {
     try {
-      if (!fsSync.existsSync(filePath)) {
-        return { success: false, error: 'File does not exist' };
+      const validation = await validateReadableRegularFile(filePath);
+      if (!validation.ok) {
+        return { success: false, errorCode: validation.code };
       }
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await fs.readFile(validation.filePath, 'utf-8');
       return { success: true, content };
-    } catch (error) {
+    } catch {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error reading file',
+        errorCode: 'unavailable',
       };
     }
   });
@@ -468,19 +476,6 @@ function installAppLifecycleHandlers(): void {
   });
 }
 
-function installProtocols(): void {
-  protocol.handle('local-file', (request) => {
-    try {
-      const requestUrl = new URL(request.url);
-      const filePath = path.normalize(decodeURIComponent(requestUrl.pathname));
-      return net.fetch(pathToFileURL(filePath).toString());
-    } catch (error) {
-      logger.error(`[local-file protocol] Error handling request ${request.url}:`, error);
-      return new Response(null, { status: 404 });
-    }
-  });
-}
-
 async function bootstrap(): Promise<void> {
   nodeRegistrySnapshot = loadNodeRegistrySnapshot(app.getPath('userData'));
   saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot);
@@ -502,7 +497,9 @@ async function bootstrap(): Promise<void> {
   installServerStatusFanout();
   installAppLifecycleHandlers();
 
-  installProtocols();
+  installLocalFileProtocol({
+    isOwnedMainFrame: shellWindowRegistry.isOwnedMainFrame.bind(shellWindowRegistry),
+  });
 
   openNodeWindow(EMBEDDED_NODE_ID);
   appUpdater.startAutoCheck();

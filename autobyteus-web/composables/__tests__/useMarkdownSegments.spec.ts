@@ -30,4 +30,28 @@ describe('useMarkdownSegments image resources', () => {
     expect(html).toContain('alt="Secret"')
     expect(managedImageSources.value).toEqual(['/rest/workspaces/ws/content?path=card.png'])
   })
+
+  it('renders opt-in supported file actions as compact inline anchors', () => {
+    const { parsedSegments } = useMarkdownSegments(
+      '[report.md](/tmp/report.md)\n\n/tmp/prose.md\n\n`/tmp/inline.txt`\n\n```text\n/tmp/fenced.csv\n```',
+      undefined,
+      {
+        enableEventMonitorFileActions: true,
+        fileActionLabel: (action) => action.displayLabel,
+      },
+    )
+
+    const html = parsedSegments.value[0]?.content ?? ''
+    expect(html).toContain('>report.md</a>')
+    expect(html).toContain('>/tmp/prose.md</a>')
+    expect(html).toContain('>/tmp/inline.txt</a>')
+    expect(html).toContain('>fenced.csv</a>')
+    expect(html).not.toContain('>Open ')
+    expect(html).not.toContain(' in Files</a>')
+    expect(html).not.toContain('event-monitor-file-action"')
+    expect(html).not.toContain('<button')
+    expect(html).toContain('<code><a')
+    expect(html).toContain('<pre')
+    expect(html).toContain('/tmp/fenced.csv')
+  })
 })

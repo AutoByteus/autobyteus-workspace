@@ -19,7 +19,7 @@ import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
-import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
+import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
 import {
   buildTeamMemberDraftContextFileOwner,
   buildTeamMemberFinalContextFileOwner,
@@ -426,17 +426,18 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
         const messageId = buildClientMessageId();
         const dedupeKey = buildConversationTargetInputDedupeKey(finalTeamRunId, conversationTargetKey, messageId);
+        const submissionPlan = planContextAttachmentSubmission(finalizedAttachments);
         if (localSubmission) {
           localSubmission.message.messageId = messageId;
           localSubmission.message.dedupeKey = dedupeKey;
-          finalizeLocalSubmissionAttachments(localSubmission, finalizedAttachments);
+          finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
         } else if (finalFocusedMember) {
           const presentationBaseline = beginRecentEventMonitorMutation(finalFocusedMember);
           finalFocusedMember.state.conversation.messages.push({
             type: 'user',
             text,
             timestamp: new Date(),
-            contextFilePaths: finalizedAttachments,
+            contextFilePaths: submissionPlan.retainedMessageAttachments,
             messageId,
             dedupeKey,
           });
@@ -445,12 +446,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         }
 
         const service = await this.ensureTeamStreamConnected(finalTeamRunId);
-        const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
         service.sendMessage(
           text,
           messageTarget.address,
-          streamPayload.contextFilePaths,
-          streamPayload.imageUrls,
+          submissionPlan.executable.contextFilePaths,
+          submissionPlan.executable.imageUrls,
           { messageId, dedupeKey },
         );
       } catch (error: any) {

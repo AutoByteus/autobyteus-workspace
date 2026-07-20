@@ -1,0 +1,60 @@
+--- health ---
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 45
+Date: Fri, 17 Jul 2026 11:28:33 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"status":"ok","message":"Server is running"}
+--- relative workspace content ---
+HTTP/1.1 404 Not Found
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 40
+Date: Fri, 17 Jul 2026 11:28:33 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"File not found in workspace"}
+--- absolute outside workspace ---
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 73
+Date: Fri, 17 Jul 2026 11:28:33 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"Access denied: Path resolves outside the workspace boundary."}
+--- traversal ---
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 73
+Date: Fri, 17 Jul 2026 11:28:33 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"Access denied: Path resolves outside the workspace boundary."}--- relative workspace content retry ---
+HTTP/1.1 200 OK
+vary: Origin
+content-type: text/plain
+Date: Fri, 17 Jul 2026 11:29:08 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+Transfer-Encoding: chunked
+
+event-monitor-live-fixture-r2
+
+--- directory path ---
+HTTP/1.1 404 Not Found
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 40
+Date: Fri, 17 Jul 2026 11:29:08 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"File not found in workspace"}

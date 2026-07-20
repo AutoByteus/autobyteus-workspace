@@ -104,6 +104,21 @@ describe('LeftSidebarStrip Component', () => {
     expect(routerMock.push).toHaveBeenCalledWith('/nodes')
   })
 
+  it('renders the visible nodes-network icon in strip mode', () => {
+    const wrapper = mount(LeftSidebarStrip, {
+      props: { stripActivation: 'redock-panel' },
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+    })
+
+    const nodesButton = wrapper.get('button[title="Nodes"]')
+    expect(nodesButton.find('[data-testid="nodes-network-icon"]').exists()).toBe(true)
+    expect(nodesButton.find('svg').exists()).toBe(true)
+  })
+
   it('opens the transient navigation drawer instead of toggling the hidden preference', async () => {
     const wrapper = mount(LeftSidebarStrip, {
       props: { stripActivation: 'open-drawer' },

@@ -1,0 +1,11 @@
+UTC: 2026-07-19T05:44:22Z
+WORKTREE_HEAD: 33b05a81b95ce38a8d60f5f4ce4fa8613ac00551
+IMPLEMENTATION: b658f16b53e494a5649e3a72cc136fdf039ff8df
+CHECK: existing AutoByteus application processes before owned launch
+ 3405 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+ 4013 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+CHECK: port 43191 before launch
+CHECK: owned API/E2E processes before launch
+CHECK: exact source hashes before execution
+613f4d1d30ec233044e32eb752619f20a2c211319131cd4030cf3d813b76938c  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/multi-nodes-part-2_youtube_smaller.mp4
+5051a147ae47073072ee9d75092a4f1fd3df0cc510f58cd75b682b505cf549b3  /Users/normy/autobyteus_org/autobyteus-tutorial-videos/autobyteus_software_engineering_team_combined_no_audio.mp4
