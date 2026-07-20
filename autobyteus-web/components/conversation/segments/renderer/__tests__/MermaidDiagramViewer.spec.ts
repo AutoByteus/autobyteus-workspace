@@ -98,6 +98,14 @@ describe('MermaidDiagramViewer', () => {
     expect(actions.map((action) => action.attributes('aria-label'))).toEqual([
       'Zoom out', 'Fit diagram', 'Zoom in', 'Close diagram viewer',
     ]);
+    expect(actions.map((action) => action.attributes('class'))).toEqual([
+      'mermaid-viewer-action',
+      'mermaid-viewer-action',
+      'mermaid-viewer-action',
+      'mermaid-viewer-action',
+    ]);
+    expect(actions.map((action) => action.text())).toEqual(['', '', '', '']);
+    expect(document.body.querySelectorAll('.mermaid-viewer-action span')).toHaveLength(0);
     expect(document.activeElement).toBe(actions[3].element);
     expect(document.body.style.overflow).toBe('hidden');
 

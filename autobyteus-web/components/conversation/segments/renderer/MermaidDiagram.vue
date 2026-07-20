@@ -35,12 +35,12 @@
       <button
         ref="expandButtonRef"
         type="button"
-        class="mermaid-expand-button mb-2 inline-flex min-h-11 min-w-11 shrink-0 self-end items-center justify-center rounded-lg border border-slate-300 bg-white/95 p-2 text-slate-700 shadow-sm transition hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-600 dark:bg-slate-800/95 dark:text-slate-100 dark:hover:border-indigo-400 dark:hover:bg-indigo-950"
+        class="mermaid-expand-button absolute right-2 top-2 z-10 inline-flex items-center justify-center"
         :aria-label="$t('workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram')"
         :title="$t('workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram')"
         @click.stop="openViewer"
       >
-        <Icon icon="heroicons:arrows-pointing-out-20-solid" class="h-5 w-5" aria-hidden="true" />
+        <Icon icon="heroicons:arrows-pointing-out-20-solid" class="relative z-10 h-[18px] w-[18px]" aria-hidden="true" />
       </button>
 
       <div
@@ -180,5 +180,97 @@ onBeforeUnmount(() => {
   display: block;
   height: auto;
   max-width: 100%;
+}
+
+.mermaid-expand-button {
+  background: transparent;
+  border: 0;
+  border-radius: 0.5rem;
+  color: rgb(51 65 85);
+  height: 44px;
+  padding: 0;
+  transition: color 140ms ease, opacity 140ms ease, transform 140ms ease;
+  width: 44px;
+}
+
+.mermaid-expand-button::before {
+  backdrop-filter: blur(6px);
+  background: rgb(255 255 255 / 88%);
+  border: 1px solid rgb(203 213 225 / 90%);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 14%);
+  content: '';
+  inset: 5px;
+  position: absolute;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.mermaid-expand-button:hover {
+  color: rgb(67 56 202);
+}
+
+.mermaid-expand-button:hover::before {
+  background: rgb(238 242 255 / 96%);
+  border-color: rgb(129 140 248);
+  box-shadow: 0 4px 12px rgb(79 70 229 / 18%);
+}
+
+.mermaid-expand-button:active::before {
+  transform: scale(0.94);
+}
+
+.mermaid-expand-button:focus-visible {
+  outline: 2px solid rgb(79 70 229);
+  outline-offset: 1px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mermaid-expand-button {
+    height: 36px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-2px) scale(0.96);
+    width: 36px;
+  }
+
+  .mermaid-expand-button::before {
+    inset: 1px;
+  }
+
+  .diagram-content:hover .mermaid-expand-button,
+  .diagram-content:focus-within .mermaid-expand-button,
+  .mermaid-expand-button:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .mermaid-expand-button {
+    color: rgb(226 232 240);
+  }
+
+  .mermaid-expand-button::before {
+    background: rgb(30 41 59 / 90%);
+    border-color: rgb(100 116 139 / 90%);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 32%);
+  }
+
+  .mermaid-expand-button:hover {
+    color: rgb(238 242 255);
+  }
+
+  .mermaid-expand-button:hover::before {
+    background: rgb(49 46 129 / 96%);
+    border-color: rgb(129 140 248);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mermaid-expand-button,
+  .mermaid-expand-button::before {
+    transition-duration: 0.01ms;
+  }
 }
 </style>

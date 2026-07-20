@@ -26,17 +26,16 @@
               :title="labels.zoomOut"
               @click="zoomOut"
             >
-              <Icon icon="heroicons:minus-20-solid" class="h-5 w-5" aria-hidden="true" />
+              <Icon icon="heroicons:minus-20-solid" class="mermaid-viewer-action-icon" aria-hidden="true" />
             </button>
             <button
               type="button"
-              class="mermaid-viewer-action min-w-fit gap-1.5 px-3"
+              class="mermaid-viewer-action"
               :aria-label="labels.fit"
               :title="labels.fit"
               @click="fitDiagram"
             >
-              <Icon icon="heroicons:arrows-pointing-in-20-solid" class="h-4 w-4" aria-hidden="true" />
-              <span>{{ labels.fit }}</span>
+              <Icon icon="heroicons:arrows-pointing-in-20-solid" class="mermaid-viewer-action-icon" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -46,7 +45,7 @@
               :title="labels.zoomIn"
               @click="zoomIn"
             >
-              <Icon icon="heroicons:plus-20-solid" class="h-5 w-5" aria-hidden="true" />
+              <Icon icon="heroicons:plus-20-solid" class="mermaid-viewer-action-icon" aria-hidden="true" />
             </button>
             <button
               ref="closeButtonRef"
@@ -56,7 +55,7 @@
               :title="labels.close"
               @click="requestClose"
             >
-              <Icon icon="heroicons:x-mark-20-solid" class="h-5 w-5" aria-hidden="true" />
+              <Icon icon="heroicons:x-mark-20-solid" class="mermaid-viewer-action-icon" aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -410,12 +409,17 @@ onBeforeUnmount(() => {
   border-radius: 0.5rem;
   color: rgb(51 65 85);
   display: inline-flex;
-  font-size: 0.875rem;
-  font-weight: 500;
+  flex: 0 0 36px;
+  height: 36px;
   justify-content: center;
-  min-height: 44px;
-  min-width: 44px;
+  padding: 0;
   transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  width: 36px;
+}
+
+.mermaid-viewer-action-icon {
+  height: 18px;
+  width: 18px;
 }
 
 .mermaid-viewer-action:hover:not(:disabled) {
@@ -448,15 +452,25 @@ onBeforeUnmount(() => {
   width: 100% !important;
 }
 
-:global(.dark) .mermaid-viewer-action {
-  background: rgb(30 41 59);
-  border-color: rgb(71 85 105);
-  color: rgb(226 232 240);
+@media (hover: none), (pointer: coarse), (max-width: 480px) {
+  .mermaid-viewer-action {
+    flex-basis: 44px;
+    height: 44px;
+    width: 44px;
+  }
 }
 
-:global(.dark) .mermaid-viewer-action:hover:not(:disabled) {
-  background: rgb(49 46 129);
-  border-color: rgb(129 140 248);
-  color: rgb(238 242 255);
+@media (prefers-color-scheme: dark) {
+  .mermaid-viewer-action {
+    background: rgb(30 41 59);
+    border-color: rgb(71 85 105);
+    color: rgb(226 232 240);
+  }
+
+  .mermaid-viewer-action:hover:not(:disabled) {
+    background: rgb(49 46 129);
+    border-color: rgb(129 140 248);
+    color: rgb(238 242 255);
+  }
 }
 </style>

@@ -2,72 +2,73 @@
 
 ## Current-State Read
 
-The approved behavior basis is [requirements.md](./requirements.md), supported by [investigation-notes.md](./investigation-notes.md) and the approved [ui-ux-spec.md](./ui-ux-spec.md).
+The revised behavior basis is [requirements.md](./requirements.md), supported by [investigation-notes.md](./investigation-notes.md) and the user-directed [ui-ux-spec.md](./ui-ux-spec.md). This round follows live Electron verification of the already-implemented candidate, not the original pre-implementation state.
 
 The relevant current production path is centralized rather than fragmented:
 
 `Markdown consumer -> MarkdownRenderer -> useMarkdownSegments -> MermaidDiagram -> mermaidService -> inline SVG`
 
-`useMarkdownSegments.ts` classifies fenced `mermaid` and `mmd` blocks. `MarkdownRenderer.vue` is the shared Markdown boundary and delegates each Mermaid segment to `MermaidDiagram.vue`. `MermaidDiagram.vue` owns loading, error, and successful SVG state and calls `mermaidService.ts`, which wraps Mermaid 11.12.3.
+`Inline expand/non-interactive activation -> MermaidDiagramViewer -> mermaidDiagramViewport -> zoom/pan/fit -> close/link return`
 
-The ownership is healthy for this scope. The problem is a missing inspectability invariant inside the existing Mermaid owner:
+`useMarkdownSegments.ts` classifies fenced `mermaid` and `mmd` blocks. `MarkdownRenderer.vue` is the shared Markdown/link boundary and delegates to `MermaidDiagram.vue`. The candidate `MermaidDiagram.vue` now owns current-render generation, inline/expanded coordination, height lock, focus return, and current SVG state. `MermaidDiagramViewer.vue` owns the teleported open session, while `mermaidDiagramViewport.ts` owns validated fit/plane/anchor calculations.
 
-- the successful SVG's immediate flex child does not explicitly occupy the available inline width;
-- detailed or high-aspect-ratio diagrams can remain unreadable even when correctly fitted;
-- no expand, zoom, pan, or fit path exists;
-- `MermaidDiagram.vue` contains unused hover state and a container ref but no completed interaction;
-- the existing success wrapper and generated root SVG use the same ID, creating unnecessary duplicate DOM IDs;
-- when SVG is teleported into a future dialog, native anchor clicks will no longer bubble to `MarkdownRenderer`, so preserved external-link routing needs an explicit return event.
+The ownership and functional structure are healthy. Live Electron evidence isolates a presentation defect:
+
+- the candidate success shell is `flex-col`, and the 44×44 expand button is a normal-flow child with bottom margin; this creates a permanent blank strip above the diagram;
+- the candidate viewer gives Fit visible localized text and extra horizontal padding, while zoom out/in/close are square icon-only actions; the result is a uniquely wide pill and inconsistent hierarchy;
+- the initial UX contract conflated discoverability/touch target with a large persistent painted surface and did not prohibit inline chrome from consuming layout space;
+- all zoom geometry, pan, link routing, render-generation, one-copy, focus, body-lock, localization, and dismissal paths already passed prior review/execution and should be preserved.
 
 The existing `FullScreenImageModal.vue` is not a reusable owning boundary for this change. It is tied to image URLs, download/copy/gallery semantics, and an `<img>` element. Converting Mermaid SVG into an image URL would discard live SVG interactions and mix unrelated subjects.
 
-Constraints:
+Rework constraints:
 
 - keep all existing Markdown consumers behind the shared `MarkdownRenderer` boundary;
 - keep Mermaid source rendering in `MermaidDiagram`/`mermaidService`;
-- keep the visible interaction minimal: `−`, `Fit`, `+`, and close only;
+- keep the viewer interaction minimal: four persistent icon-only controls for `−`, fit-to-view, `+`, and close;
+- reveal the inline expand overlay on fine-pointer preview hover or keyboard focus; keep it visible for coarse/no-hover input;
+- separate compact painted surface from operable target sizing; do not reintroduce a permanent row;
 - `Escape` closes the modal; `Fit` restores the overview;
 - preserve Mermaid links, loading/error behavior, source changes, vector output, and message/file content;
 - avoid simultaneous duplicate mounting of the same SVG markup because Mermaid emits internal IDs;
-- require rendered-browser evidence for focal zoom, pan extents, responsive toolbar, and focus/background behavior.
+- require new rendered evidence for desktop resting/hover/focus states, icon-only toolbar, no-hover fallback, narrow layout, and representative surface contrast.
 
 ## Intended Change
 
-Extend the existing Mermaid rendering capability with two coordinated views owned by `MermaidDiagram.vue`:
+Refine the implemented two-view capability without changing its structure:
 
-1. **Inline overview:** make the SVG host full-width up to Mermaid's intrinsic maximum, add a persistent expand button, and let a non-interactive preview click open the viewer.
-2. **Expanded inspection:** mount a new internal `MermaidDiagramViewer.vue` through `Teleport`, move the current successful SVG markup from the inline host into that viewer while open, and provide fitted vector rendering, click-first zoom controls, pointer-centered wheel zoom, pointer/touch pan, reset/fit, accessible modal focus, and conventional dismissal.
+1. **Inline overview:** keep the full-width intrinsic-capped SVG host and non-interactive click path; move the expand action from its normal-flow row to a compact absolute top-right overlay. Use capability-aware CSS so fine-pointer desktop shows it on preview hover/focus, while coarse/no-hover devices keep it visible.
+2. **Expanded inspection:** preserve all session behavior; remove the visible Fit `<span>` and its one-off width/padding so the existing inward-corners fit icon uses the same compact square action treatment as minus, plus, and close.
+3. **Quality evidence:** update component/durable browser coverage and visually inspect desktop rest/hover/focus, no-hover/narrow, and viewer-toolbar states in production-rendered frontend output.
 
-A small pure geometry file, `mermaidDiagramViewport.ts`, owns fit/plane/anchored-scroll calculations so the viewer component does not bury critical numeric policy in DOM event handlers and the calculations can be tested without browser-layout fakes.
-
-No parent above `MarkdownRenderer` changes. No new dependency, API, backend path, store, persistence, image conversion, or compatibility branch is introduced.
+No parent, geometry, service, API, backend, store, persistence, image conversion, or compatibility branch changes.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | REQ-001–REQ-002; AC-001–AC-004 | Shared Markdown surface receives a closed Mermaid fence and render succeeds | Investigation “Relevant Existing Behavior” BEH-001; screenshots; current renderer/component files | Inline host uses available width up to intrinsic cap; persistent expand and non-interactive preview activation open the viewer | Consumer -> MarkdownRenderer -> parser -> MermaidDiagram render owner -> inline success shell -> expand; DS-001, DS-002 |
+| BEH-001 | User | REQ-001–REQ-002, REQ-010; AC-001–AC-004, AC-015–AC-016, AC-018 | Shared Markdown surface renders a successful Mermaid SVG; input capability and hover/focus state govern chrome | Investigation BEH-001; four screenshots; candidate source/reports | Preserve full-width host/open behavior; replace permanent control row with zero-flow top-right overlay revealed on fine-pointer hover/focus and visible for no-hover/coarse input | Consumer -> MarkdownRenderer -> parser -> MermaidDiagram current render -> inline preview + adaptive overlay -> expand; DS-001, DS-002 |
 | BEH-002 | User | REQ-006; AC-011 | User activates an HTTP(S) Mermaid anchor or other interactive SVG descendant | Investigation BEH-002; `MarkdownRenderer.handleLinkClick` | Interactive descendants are never treated as expand/pan/dismiss; expanded HTTP(S) anchors explicitly return to MarkdownRenderer's existing external-link owner | Inline anchor -> MarkdownRenderer DOM route, or viewer anchor -> custom event -> MermaidDiagram -> MarkdownRenderer -> Electron/window; DS-006 |
 | BEH-003 | System | REQ-007; AC-012 | Mermaid component mounts or source prop changes | Investigation BEH-003; `MermaidDiagram.vue` lifecycle | Loading/error remain; every render generation invalidates the viewer and only the latest async render may commit current SVG | Source -> generation token -> service -> current-generation gate -> success/error; DS-004 |
 | BEH-004 | Contract | REQ-008; AC-013 | Any production consumer uses `MarkdownRenderer` | Investigation BEH-004 and consumer inventory | All consumers receive behavior through shared boundaries; no consumer-specific viewer state or props | Consumer -> MarkdownRenderer -> MermaidDiagram -> viewer; DS-001, DS-002 |
-| BEH-005 | User | REQ-003–REQ-005, REQ-009; AC-005–AC-010, AC-014 | User expands a current successful SVG | Investigation BEH-005: no current path | Open fitted viewer; visible `− Fit + ×`; optional wheel/keyboard accelerators; pan overflow; fit/reset; close and restore context | Expand -> MermaidDiagram state -> viewer -> measured fit -> zoom/pan -> fit or close -> inline/focus restored; DS-002, DS-003, DS-005 |
+| BEH-005 | User | REQ-003–REQ-005, REQ-009–REQ-010; AC-005–AC-010, AC-014, AC-017–AC-018 | User expands a current successful SVG | Investigation BEH-005; live viewer screenshot; candidate viewer source and passed reports | Preserve fitted zoom/pan/reset/close lifecycle; normalize toolbar to four compact icon-only actions with inward-corners Fit and accessible labels/titles | Expand -> MermaidDiagram state -> existing viewer/geometry -> icon action or input -> fit/close -> inline/focus restored; DS-002, DS-003, DS-005 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md` | Defines user journeys, four-control toolbar, loading/error behavior, responsive layout, input modes, and accessibility | REQ-001–REQ-009; AC-001–AC-014 | Authoritative user-visible interaction contract used to shape component state and validation | `Refined`; approval required and approved by user 2026-07-20 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md` | Defines adaptive inline chrome, icon-only toolbar, user journeys, responsive/input states, accessibility, and rendered-quality evidence | REQ-001–REQ-010; AC-001–AC-018 | Authoritative user-visible interaction contract for the bounded presentation rework | `Refined`; user-directed revision approved 2026-07-20; requires architecture re-review |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Feature` / `Behavior Change`
+- Change posture: `Behavior Change` / `UI Quality Rework`
 - Current design issue found: `Yes`, bounded to Mermaid presentation.
-- Root cause classification: `Missing Invariant`
+- Root cause classification: `Local Implementation Defect` from a previously incomplete visual invariant
 - Refactor needed now: `No`
-- Evidence: The shared parser, Markdown boundary, Mermaid owner, and service already form a coherent path used by all relevant production surfaces. Missing behavior is local: the success view lacks a coherent width and inspectable-detail path. Adjacent image viewing is not the same subject.
-- Design response: Extend the existing Mermaid owner, add one internal viewer and one testable geometry module, and preserve Markdown external-link authority via an explicit return event from teleported SVG content.
-- Refactor rationale: No owner, API subject, persistence model, or folder boundary must change. The new viewer is an internal capability of the correct owner. Extracting or redesigning the image modal would enlarge risk without improving the Mermaid boundary.
-- Intentional deferrals and residual risk: Generic zoom/pan reuse with `FullScreenImageModal` is deliberately deferred because the image modal has different data and actions. Residual duplication is conceptual only; no shared stable interaction contract presently exists. If another live-vector viewer is added later, the geometry module can be evaluated for broader ownership then, rather than generalized speculatively now.
+- Evidence: The candidate has passed source review and realistic browser execution for rendering, zoom/pan, link routing, focus, body lock, responsive fit, and one-copy lifecycle. Live Electron screenshots map the remaining problem directly to normal-flow button classes and the Fit text span.
+- Design response: Retain existing owners/interfaces and perform a clean-cut presentation correction in the two Vue templates/styles, plus proportional test/docs/evidence updates.
+- Refactor rationale: No owner, API subject, persistence model, folder, or calculation boundary is unhealthy. Refactoring validated geometry or link handling would enlarge risk without serving the user's feedback.
+- Intentional deferrals and residual risk: Generic media-viewer reuse remains rejected. Pixel-level visual tuning remains a local implementation choice within the UI/UX contract, but the required state model, zero-layout-space invariant, icon-only toolbar, and evidence states are not optional.
 
 ## Terminology
 
@@ -77,6 +78,9 @@ No parent above `MarkdownRenderer` changes. No new dependency, API, backend path
 - **Zoom factor:** A clamped multiplier relative to fitted size; `1` is Fit and `4` is the approved maximum.
 - **Diagram plane:** The real scroll-extent element sized to contain either the canvas or the scaled SVG, whichever is larger.
 - **Interactive descendant:** An SVG descendant representing a link/control/clickable Mermaid node and therefore excluded from expand or pan-start behavior.
+- **Painted surface:** The visible background/border/icon footprint of a control; intentionally separable from its larger operable hit target.
+- **Fine-pointer state:** `(hover: hover) and (pointer: fine)`, where contextual inline reveal is appropriate.
+- **No-hover/coarse fallback:** Default/capability state in which the inline affordance stays visibly available because hover cannot be relied upon.
 
 ## Design Reading Order
 
@@ -85,12 +89,12 @@ This design follows current state -> approved behavior -> spines/owners -> inter
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: `No backward compatibility; remove legacy code paths.`
-- Obsolete in-scope items:
-  - unused `isHovering` state and root mouseenter/mouseleave assignments in `MermaidDiagram.vue`;
-  - unused `containerRef` in `MermaidDiagram.vue`;
-  - duplicate `:id="uniqueDiagramId"` on the SVG host wrapper when the generated root SVG already owns that Mermaid render ID;
-  - current auto-width success-host shape, replaced directly by the full-width inline host.
-- No compatibility prop, legacy no-viewer branch, alternative image conversion, or dual rendering path remains after the change.
+- Obsolete in-scope candidate presentation:
+  - normal-flow `mermaid-expand-button` row (`mb-2`, `self-end`, 44×44 painted box) in `MermaidDiagram.vue`;
+  - one-off Fit width/padding and visible text `<span>` in `MermaidDiagramViewer.vue`;
+  - documentation/tests that assert a permanent visible desktop inline control or visible Fit word.
+- Replace these directly. Do not keep a second legacy toolbar, CSS compatibility class, feature flag, or consumer-selectable presentation.
+- Previously removed unused hover/ref/duplicate-ID/auto-width code remains removed. The new capability-aware presentation should be CSS state, not a restoration of manual reactive mouseenter/mouseleave bookkeeping.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
@@ -111,8 +115,8 @@ N/A — persisted data is not affected.
 
 | Spine ID | Scope | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-001, BEH-004 | Supported Mermaid fence reaches a Markdown consumer | Successful full-width inline overview and expand affordance | `MermaidDiagram.vue` behind `MarkdownRenderer.vue` | Preserves the real render path and central reuse. |
-| DS-002 | Primary End-to-End | BEH-001, BEH-004, BEH-005 | User activates expand/non-interactive preview | Expanded fitted SVG and usable four-action toolbar | `MermaidDiagram.vue` owns opening/current SVG; viewer owns open-session interaction | Delivers the core user value. |
+| DS-001 | Primary End-to-End | BEH-001, BEH-004 | Supported Mermaid fence reaches a Markdown consumer | Successful full-width inline overview with adaptive zero-flow expand affordance | `MermaidDiagram.vue` behind `MarkdownRenderer.vue` | Preserves shared rendering while keeping content visually primary. |
+| DS-002 | Primary End-to-End | BEH-001, BEH-004, BEH-005 | User activates adaptive expand/non-interactive preview | Expanded fitted SVG and compact icon-only four-action toolbar | `MermaidDiagram.vue` owns opening/current SVG; viewer owns open-session interaction | Delivers the core value with refined entry and chrome. |
 | DS-003 | Return-Event | BEH-005 | User closes via ×, Escape, or backdrop | Viewer unmounted, inline SVG remounted, source layout/focus restored | `MermaidDiagram.vue` | Makes exit conventional and preserves reading context. |
 | DS-004 | Bounded Local | BEH-003 | Mount/source update starts Mermaid render | Only latest generation commits success/error and controls | `MermaidDiagram.vue` | Prevents a stale SVG from becoming inspectable. |
 | DS-005 | Bounded Local | BEH-005 | Viewer mounts/resizes or receives zoom/pan input | Clamped zoom, real scroll extents, anchored scroll, or fitted reset | `MermaidDiagramViewer.vue` with pure geometry module | Makes every vector region reachable while keeping UI simple. |
@@ -126,7 +130,7 @@ N/A — persisted data is not affected.
 
 ### DS-002 — Inspect a diagram
 
-`Inline expand/non-interactive click -> MermaidDiagram open state + preview height lock -> MermaidDiagramViewer Teleport -> fitted SVG canvas -> visible zoom/fit controls or pointer pan -> readable detail`
+`Adaptive inline expand/non-interactive click -> MermaidDiagram open state + preview height lock -> MermaidDiagramViewer Teleport -> fitted SVG canvas -> persistent icon-only zoom/fit controls or pointer pan -> readable detail`
 
 ### DS-006 — Preserve diagram links
 
@@ -136,8 +140,8 @@ N/A — persisted data is not affected.
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The existing shared Markdown path isolates Mermaid source, renders one current SVG, and presents it inside a width-owning success shell with one visible expand affordance. | Markdown boundary, Mermaid render owner, current SVG, inline overview | `MermaidDiagram.vue` | Mermaid adapter, localization |
-| DS-002 | A successful preview records its height, unmounts its SVG copy, and mounts the same SVG markup once inside a body-teleported viewer. The viewer measures vector aspect ratio and exposes only `− Fit + ×`. | Expand trigger, current SVG, viewer session, viewport | `MermaidDiagram.vue` then `MermaidDiagramViewer.vue` | Geometry calculations, Iconify, ResizeObserver |
+| DS-001 | The shared path renders one current SVG in a width-owning shell. A compact absolute expand control overlays the safe top-right corner; fine-pointer CSS reveals it on preview hover/focus, while the default/no-hover path keeps it visible. No control state changes the SVG's layout box. | Markdown boundary, current SVG, preview state, input capability | `MermaidDiagram.vue` | Mermaid adapter, localization, CSS media capabilities |
+| DS-002 | A successful preview records its height, unmounts its SVG copy, and mounts the same SVG once in the teleported viewer. The existing viewer measures vector aspect ratio and exposes four uniform icon-only actions. | Expand trigger, current SVG, viewer session, viewport | `MermaidDiagram.vue` then `MermaidDiagramViewer.vue` | Existing geometry, Iconify, ResizeObserver |
 | DS-003 | Any accepted dismissal emits close; the parent removes the viewer, remounts inline SVG inside its locked-height shell, clears the height lock after layout, and returns focus when the opener remains. | Close request, viewer session, inline overview, opener | `MermaidDiagram.vue` | Body scroll restoration, next-tick focus |
 | DS-004 | Every render obtains a monotonically increasing generation. Opening is invalidated immediately on source change; only the matching generation may write SVG/error/loading state. | Source generation, render request, current result | `MermaidDiagram.vue` | Mermaid service/logging |
 | DS-005 | Viewer mount/resize reads the root SVG viewBox, computes fitted dimensions, makes a plane with real scaled extents, and updates scroll around a pointer or canvas-center anchor. Pointer drag changes scroll, and Fit restores factor 1/origin. | Canvas, fitted size, zoom factor, plane, scroll | `MermaidDiagramViewer.vue` | Pure geometry module, Pointer Events, ResizeObserver |
@@ -174,10 +178,9 @@ N/A — persisted data is not affected.
 
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope | Notes |
 | --- | --- | --- | --- | --- |
-| `isHovering` and mouseenter/mouseleave wiring | State has no current effect; persistent control replaces speculative hover-only UI | Inline success state in `MermaidDiagram.vue` | In This Change | Do not leave dead compatibility state. |
-| `containerRef` on current diagram content | Unused; target uses explicit inline shell ref and viewer-owned canvas refs | `inlinePreviewRef` and viewer refs with defined responsibilities | In This Change | Rename rather than reuse vague ref. |
-| Wrapper `:id="uniqueDiagramId"` | Duplicates generated root SVG ID | Generated SVG root remains sole owner of Mermaid render ID | In This Change | Viewer wrapper uses data-test/class, not Mermaid ID. |
-| Auto-width SVG host shape | Can underuse available width | Full-width, intrinsic-capped inline host | In This Change | Clean-cut CSS replacement. |
+| Permanent normal-flow expand row | Live Electron shows the row creates excess whitespace and dominates the diagram | Inline success template/classes in `MermaidDiagram.vue` | In This Rework | Replace with one absolute capability-adaptive control; no parallel layout branch. |
+| Fit visible text/pill width | Live viewer shows inconsistent sizing; localized semantic label already exists in aria/title | Toolbar template/classes in `MermaidDiagramViewer.vue` | In This Rework | Remove visible span and one-off width; keep existing localization keys. |
+| Previously removed `containerRef`, duplicate wrapper ID, and auto-width host | Their original responsibilities were unused/incorrect | Candidate `inlinePreviewRef`, generated SVG ID ownership, and full-width host | Already Removed; Preserve Removal | Do not reintroduce these while adding adaptive styling. |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -262,7 +265,7 @@ Forbidden:
 | --- | --- | --- | --- | --- |
 | `MermaidDiagram` prop `content: string` | Mermaid source | Current source to render | Mermaid definition text | Existing public interface preserved. |
 | `MermaidDiagram` prop `diagramId?: string` | Render identity | Optional explicit Mermaid render identity | Single string | Existing interface preserved; generated root SVG remains sole DOM owner. |
-| `MermaidDiagram` event `external-link(url)` | Expanded diagram link request | Forward teleported HTTP(S) link to MarkdownRenderer | Absolute URL string | New return event; no viewer state payload. |
+| `MermaidDiagram` event `external-link(url)` | Expanded diagram link request | Forward teleported HTTP(S) link to MarkdownRenderer | Absolute URL string | Existing candidate return event; preserve unchanged. |
 | `MermaidDiagramViewer` prop `svgContent: string` | Current rendered vector | Display exactly one already-successful SVG | Non-empty SVG string from owner | Internal component contract; no source or ID prop. |
 | `MermaidDiagramViewer` event `close` | Viewer session | Request conventional dismissal | No payload | Parent owns open state/focus return. |
 | `MermaidDiagramViewer` event `external-link(url)` | Expanded vector link | Request Markdown link-owner handling | Absolute HTTP(S) URL string | Viewer filters interaction and prevents local navigation. |
@@ -295,34 +298,34 @@ Forbidden:
 | Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
 | --- | --- | --- | --- | --- |
 | Markdown parsing/delegation | Shared Markdown renderer | Reuse | Already owns supported Mermaid segmentation. | N/A |
-| Mermaid rendering | MermaidDiagram + mermaidService | Extend | Correct source/result owner. | N/A |
+| Mermaid rendering | MermaidDiagram + mermaidService | Reuse/Refine Presentation | Correct source/result owner and candidate lifecycle. | N/A |
 | Icons | Iconify | Reuse | Existing dependency and visual convention. | N/A |
-| Localization | Hand-authored workspace catalogs | Extend | Correct current semantic label owner. | N/A |
-| Image zoom modal | FullScreenImageModal | Reuse rejected | Different subject, URL/gallery actions, `<img>`, and no live SVG semantics. | New specialized viewer is required by subject and one-copy/link invariants. |
+| Localization | Hand-authored workspace catalogs | Reuse Unchanged | Existing semantic labels remain necessary for aria/title despite icon-only chrome. | N/A |
+| Image zoom modal | FullScreenImageModal | Reuse rejected | Different subject, URL/gallery actions, `<img>`, and no live SVG semantics. | Existing specialized Mermaid viewer remains correct. |
 | Drawer accessibility stack | useAccessibleDrawer | Reuse rejected | It owns independent shell drawer stacking and return-to-strip behavior, not a child modal. | Viewer-local modal lifecycle is narrower and avoids mixed overlay authority. |
-| Viewport geometry | No coherent shared capability | Create New | Nontrivial vector fit/scroll math is new and Mermaid-specific. | Generic extraction would be speculative; image modal uses different transform behavior. |
+| Viewport geometry | Existing `mermaidDiagramViewport.ts` | Reuse Unchanged | Candidate fit/scroll math is specialized, tested, and unaffected by feedback. | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Shared Markdown rendering | Segment classification/delegation and external-link policy | DS-001, DS-006 | MarkdownRenderer | Reuse/Extend | One new custom event binding only. |
-| Mermaid presentation | Render lifecycle, inline overview, open state, viewer session | DS-001–DS-005 | MermaidDiagram | Extend | Primary task subsystem. |
-| Mermaid viewport geometry | Fit, scaled plane, anchor-preserving scroll | DS-005 | MermaidDiagramViewer | Create New | Internal pure file, not global utility. |
-| Workspace localization | New control/title labels | DS-001–DS-005 | Mermaid UI owners | Extend | English + zh-CN. |
+| Shared Markdown rendering | Segment classification/delegation and external-link policy | DS-001, DS-006 | MarkdownRenderer | Reuse Unchanged | Existing candidate binding remains authoritative. |
+| Mermaid presentation | Render lifecycle, inline overview, open state, viewer session | DS-001–DS-005 | MermaidDiagram | Refine | Only inline/toolbar presentation changes. |
+| Mermaid viewport geometry | Fit, scaled plane, anchor-preserving scroll | DS-005 | MermaidDiagramViewer | Reuse Unchanged | Internal pure file remains correct. |
+| Workspace localization | Existing control/title labels | DS-001–DS-005 | Mermaid UI owners | Reuse Unchanged | English + zh-CN labels remain semantic names. |
 | Content rendering documentation | Durable behavior description | All | Delivery/documentation owner | Extend | Delivery stage owns final docs sync. |
 
 ## Draft File Responsibility Mapping
 
 | Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `MermaidDiagram.vue` | Mermaid presentation | Governing owner | Render generation/current SVG, inline shell, viewer open/close, preview lock, focus return, event forwarding | One component owns the source-to-two-views lifecycle | Uses service/viewer |
-| `MermaidDiagramViewer.vue` | Mermaid presentation | Internal viewer owner | Modal/toolbar/focus/body lock/DOM measurement/pointer orchestration | One open viewer session is one cohesive UI owner | Uses pure geometry |
+| `MermaidDiagram.vue` | Mermaid presentation | Governing owner | Existing render/open lifecycle plus adaptive zero-flow inline affordance state via template/CSS | One component owns source-to-two-views lifecycle and its inline chrome | Uses service/viewer |
+| `MermaidDiagramViewer.vue` | Mermaid presentation | Internal viewer owner | Existing session lifecycle plus uniform icon-only toolbar presentation | One open viewer session is one cohesive UI owner | Uses pure geometry |
 | `mermaidDiagramViewport.ts` | Mermaid viewport geometry | Internal calculation boundary | Pure numeric fit/plane/anchor math and constants/types | Separates critical math from DOM/event lifecycle | N/A |
-| `MermaidDiagram.spec.ts` | Mermaid presentation tests | Owner coverage | Render lifecycle, entry, interaction filtering, one-copy, focus return, event forwarding | Tests parent component contract | Mocks service/viewer as appropriate |
-| `MermaidDiagramViewer.spec.ts` | Viewer tests | Owner coverage | Modal semantics, four controls, keyboard/focus/body cleanup, pointer hooks | Tests UI lifecycle | Stubs geometry/layout |
+| `MermaidDiagram.spec.ts` | Mermaid presentation tests | Owner coverage | Preserve lifecycle/open contract; assert overlay structure/class/state hooks and no normal-flow action row | Tests parent component contract | Mocks service/viewer as appropriate |
+| `MermaidDiagramViewer.spec.ts` | Viewer tests | Owner coverage | Preserve session contract; assert exactly four icon-only actions and no visible Fit text | Tests UI lifecycle | Stubs geometry/layout |
 | `mermaidDiagramViewport.spec.ts` | Geometry tests | Calculation coverage | Aspect ratios, clamping, plane extents, anchored scroll | Pure deterministic coverage | Tests module directly |
-| Locale catalogs | Localization | Locale owner | New labels | Existing language boundaries | N/A |
+| Locale catalogs | Localization | Locale owner | Preserve existing labels for icon aria/title and visible title | Existing language boundaries | N/A |
 
 ## Reusable Owned Structures Check
 
@@ -344,16 +347,16 @@ Forbidden:
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue` | Shared Markdown rendering | Public Markdown boundary | Bind forwarded expanded-link event to existing `openExternalLink` policy | Small extension of existing authority | Existing handler |
-| `autobyteus-web/components/conversation/segments/renderer/MermaidDiagram.vue` | Mermaid presentation | Governing Mermaid owner | Current render, inline success/open coordination, one-copy/layout/focus invariant, viewer event forwarding | Cohesive source/result lifecycle | Viewer + service |
-| `autobyteus-web/components/conversation/segments/renderer/MermaidDiagramViewer.vue` | Mermaid presentation | Internal viewer owner | Teleported modal and open-session interaction | Cohesive session lifecycle; math extracted | Geometry module |
+| `autobyteus-web/components/conversation/segments/renderer/MermaidDiagram.vue` | Mermaid presentation | Governing Mermaid owner | Current render/open coordination plus compact capability-adaptive absolute affordance | Cohesive source/result lifecycle and inline presentation | Viewer + service |
+| `autobyteus-web/components/conversation/segments/renderer/MermaidDiagramViewer.vue` | Mermaid presentation | Internal viewer owner | Existing teleported session plus compact uniform icon-only toolbar | Cohesive session lifecycle; math extracted | Geometry module |
 | `autobyteus-web/components/conversation/segments/renderer/mermaidDiagramViewport.ts` | Mermaid viewport geometry | Internal calculation boundary | Pure fit/plane/anchor calculations | Critical deterministic policy | N/A |
 | `.../renderer/__tests__/MarkdownRenderer.spec.ts` | Shared Markdown tests | Boundary coverage | Verify forwarded expanded HTTP(S) link uses existing external-link route | Protects return spine | Existing mocks |
-| `.../renderer/__tests__/MermaidDiagram.spec.ts` | Mermaid presentation tests | Owner coverage | Render/open/current-result/interaction/focus/event behavior | Direct missing coverage | Service mock |
-| `.../renderer/__tests__/MermaidDiagramViewer.spec.ts` | Viewer tests | Owner coverage | Minimal toolbar/modal/keyboard/body/pointer lifecycle | Direct viewer contract | Geometry/layout fixtures |
+| `.../renderer/__tests__/MermaidDiagram.spec.ts` | Mermaid presentation tests | Owner coverage | Render/open/current-result/interaction/focus/event behavior plus adaptive-overlay structure | Direct owner and revised presentation contract | Service mock |
+| `.../renderer/__tests__/MermaidDiagramViewer.spec.ts` | Viewer tests | Owner coverage | Existing lifecycle plus four icon-only uniform-action contract | Direct viewer contract | Geometry/layout fixtures |
 | `.../renderer/__tests__/mermaidDiagramViewport.spec.ts` | Geometry tests | Calculation coverage | Numeric edge/aspect/anchor cases | Direct pure coverage | N/A |
 | `autobyteus-web/localization/messages/en/workspace.ts` | Localization | English catalog | Semantic viewer labels | Existing catalog | N/A |
 | `autobyteus-web/localization/messages/zh-CN/workspace.ts` | Localization | zh-CN catalog | Matching translations | Existing catalog | N/A |
-| `autobyteus-web/docs/content_rendering.md` | Durable docs | Content-rendering documentation | Document inline expand and four-control viewer behavior | Existing architecture chapter | Delivery stage |
+| `autobyteus-web/docs/content_rendering.md` | Durable docs | Content-rendering documentation | Replace persistent-row/text-Fit wording with adaptive expand and icon-only viewer behavior | Existing architecture chapter | Delivery stage |
 
 ## Applied Patterns (If Any)
 
@@ -362,6 +365,8 @@ Forbidden:
 - **Pure geometry boundary:** Numeric viewport calculations are extracted from DOM orchestration without generalizing to unrelated media.
 - **Return event across Teleport:** Expanded native DOM events that cannot bubble to MarkdownRenderer are translated into a narrow Vue custom event back to the existing link owner.
 - **Generation gate:** Latest render generation is the only result allowed to become current.
+- **Capability-adaptive progressive disclosure:** The same native control remains present; CSS changes only its visual/pointer presentation for confirmed fine-pointer hover capability, with focus and no-hover fallbacks.
+- **Uniform icon toolbar:** All four actions reuse one base visual treatment; semantic text remains in accessible labels/titles rather than one visible exception.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -373,7 +378,7 @@ Forbidden:
 | `.../MermaidDiagramViewer.vue` | File | Viewer owner | Modal interaction session | Direct child concern | Mermaid parsing/rendering, storage |
 | `.../mermaidDiagramViewport.ts` | File | Geometry boundary | Pure calculations | Same subsystem, specialized name, testable | DOM/Vue/Electron |
 | `.../renderer/__tests__/` | Folder | Colocated test boundary | Direct component and geometry coverage | Repository convention | E2E-only environment logic |
-| `autobyteus-web/localization/messages/{en,zh-CN}/workspace.ts` | File | Locale owners | New labels | Current semantic override catalogs | Hard-coded component labels |
+| `autobyteus-web/localization/messages/{en,zh-CN}/workspace.ts` | File | Locale owners | Preserve semantic labels for aria/title and title | Current semantic override catalogs | Hard-coded component labels |
 | `autobyteus-web/docs/content_rendering.md` | File | Durable docs | Describe supported viewer | Existing content rendering chapter | Implementation logs |
 
 The renderer folder remains flat because there is one existing Mermaid owner, one internal view, and one math file; adding a nested module or moving existing service/files would create artificial structural depth for a bounded feature.
@@ -390,7 +395,10 @@ The renderer folder remains flat because there is one existing Mermaid owner, on
 
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
-| Normal UX | `open -> + -> + -> drag if needed -> Fit -> Escape` | Hover-only toolbar, percentage dropdown, minimap, mode switcher | Matches user-approved familiar journey. |
+| Normal UX | `hover/focus/touch-visible expand -> + -> drag if needed -> fit icon -> Escape` | Permanent blank inline toolbar row, percentage dropdown, minimap, mode switcher | Matches the live-refined familiar journey without removing access. |
+| Adaptive affordance | Absolute control; default visible fallback; fine-pointer media query makes resting state transparent/non-hit-testing; preview hover or focus-within reveals | `display:none` until hover, manual UA detection, or invisible focus | Keeps keyboard/no-hover access and prevents layout/pointer traps. |
+| Visual vs operable size | Compact 30–36px painted desktop surface inside a larger touch-safe hit target where needed | Make every painted control permanently 44px because touch guidance says target 44px | Preserves usability without heavy visual chrome. |
+| Toolbar consistency | Four equal icon boxes; Fit retains aria/title but no visible span | Three square icons plus one localized text pill | Produces a coherent viewer control set and resists text-zoom wrapping. |
 | Ownership | `MarkdownRenderer -> MermaidDiagram -> MermaidDiagramViewer` | Every conversation/file consumer imports viewer | Keeps shared behavior consistent. |
 | One-copy invariant | `inline SVG v-if !open; locked-height placeholder; viewer SVG v-if open` | Keep inline SVG hidden while cloning same IDs into Teleport | Prevents ID collisions without scroll jump. |
 | Teleported links | `viewer emits URL -> MermaidDiagram forwards -> MarkdownRenderer opens` | Viewer directly calls Electron API or lets expanded anchor bypass existing policy | Preserves authoritative link boundary. |
@@ -414,36 +422,33 @@ N/A as a primary design device. The meaningful structure is ownership-led: share
 
 ## Change / Refactor Sequence
 
-1. Add pure `mermaidDiagramViewport.ts` types/constants/calculations and deterministic tests for fit, max/min clamping, plane extents, and anchored scroll.
-2. Add English and Simplified Chinese labels for expand, viewer title/canvas, zoom out, fit, zoom in, and close.
-3. Implement `MermaidDiagramViewer.vue` against the geometry boundary:
-   - Teleport to body and mount only for a non-empty successful SVG;
-   - render title and exactly four persistent action buttons (`− Fit + ×`);
-   - read SVG viewBox, compute fitted size, size real diagram plane/stage, observe canvas resize;
-   - implement button/keyboard zoom, pointer-centered wheel zoom, pointer/touch drag, Fit, disabled bounds;
-   - implement interactive-descendant filtering and expanded HTTP(S) link event;
-   - implement focus entry/trap, Escape close, backdrop close, prior body-overflow restoration, and unmount cleanup.
-4. Modify `MermaidDiagram.vue`:
-   - add render-generation gate and invalidate/close inspection on source change;
-   - replace current success host with a full-width intrinsic-capped shell and persistent expand button;
-   - filter non-interactive preview activation;
-   - capture/lock preview height on open, mount only one SVG copy, restore height/focus on close;
-   - forward viewer external-link event;
-   - remove unused hover/ref wiring and duplicate wrapper ID.
-5. Modify `MarkdownRenderer.vue` to bind the forwarded event to its existing external-link policy; leave consumer API unchanged.
-6. Add/update direct component tests for all parent/viewer/link/lifecycle contracts. Run targeted Nuxt tests and implementation-scoped static/type checks.
-7. Leave realistic browser scenarios to `api_e2e_engineer`: complex flowchart, wide sequence diagram, narrow viewport, 200% text zoom, wheel focal stability, pointer/touch-equivalent pan, focus containment/return, body scroll, and external link routing.
-8. Delivery stage updates `docs/content_rendering.md` with the approved behavior after integrated-state validation.
+1. Preserve the current candidate and its passing viewport/link/lifecycle coverage; inspect existing assertions for wording or selectors that assume the superseded permanent row/text Fit presentation.
+2. Rework `MermaidDiagram.vue` success presentation only:
+   - keep the full-width shell, SVG host, current-render lifecycle, preview height lock, click filter, one-copy invariant, and focus return;
+   - remove the button's normal-flow row/margin and position it absolutely in the top-right safe area;
+   - make the safe default/no-hover state visible;
+   - under `(hover: hover) and (pointer: fine)`, use a quiet resting state and reveal on preview hover and focus-within/focus-visible;
+   - coordinate pointer-events with hidden/revealed state, preserve tab focus, provide reduced-motion behavior, and keep a compact painted surface distinct from coarse-pointer hit size.
+3. Rework `MermaidDiagramViewer.vue` toolbar presentation only:
+   - remove Fit's visible text span, `min-w-fit`, and unique padding;
+   - retain the existing inward-corners Iconify glyph, localization-backed aria-label/title, `fitDiagram` handler, focus order, and exactly four persistent actions;
+   - normalize button dimensions/icon weight/gap and keep the header/canvas hierarchy compact across wide/narrow states.
+4. Update component tests for overlay structure/reveal hooks, focus accessibility, and icon-only Fit; retain all existing geometry, link, lifecycle, and modal assertions.
+5. Update durable browser coverage/fixture assertions where the prior visible-control-row/text-Fit contract is stale. Add execution for desktop rest -> hover -> leave, keyboard focus reveal, coarse/no-hover visibility, zero layout shift, four uniform icon buttons, narrow 200% text scale, and regression of opening/zoom/fit/close/link behavior.
+6. Implementation engineer performs and records the UI/UX spec's rendered quality verification in Electron or production-equivalent browser before handoff. API/E2E repeats authoritative browser/live coverage and retains screenshots/evidence.
+7. Delivery updates durable content-rendering documentation from “persistent expand”/visible Fit wording to the approved adaptive/icon-only behavior, then performs the normal integrated-state check.
 
-There is no temporary compatibility seam; each step builds toward the one target path.
+There is no temporary compatibility seam. This sequence replaces only the rejected presentation while preserving the validated functional path.
 
 ## Key Tradeoffs
 
 - **Specialized viewer vs generic media modal:** Specialized wins because Mermaid is live SVG with internal IDs/links; generic reuse would mix unrelated download/gallery semantics.
-- **Four visible controls vs feature-rich toolbar:** Four controls win because the user explicitly prefers simple, familiar clicking. Gestures/shortcuts remain accelerators without added chrome.
+- **Adaptive inline chrome vs permanent discoverability:** Adaptive wins on fine-pointer desktop because the preview itself is clickable and the user explicitly rejected permanent chrome. Focus reveal and visible no-hover fallback prevent an accessibility regression.
+- **Compact painted surface vs large touch target:** Treat them separately. Desktop appearance stays compact; coarse-pointer target padding can remain comfortable without painting a heavy 44px card.
+- **Four icon-only controls vs visible Fit text:** Icon-only wins because the inward-corners glyph is conventional, aria/title retain meaning, and uniform controls reduce visual weight and narrow/text-zoom pressure.
 - **Pure geometry file vs all-in-one component:** A small specialized math file adds one boundary but materially improves correctness and testability of fitted/anchored scrolling.
 - **One SVG copy vs seamless hidden duplicate:** One copy avoids ID collisions. The parent-owned height lock preserves page layout during the modal.
-- **Escape close vs Escape fit:** Close follows modal convention and the user's broader request for familiar behavior. The visible `Fit` button provides an unambiguous reset.
+- **Escape close vs Escape fit:** Close follows modal convention. The persistent inward-corners Fit icon provides reset with a localized accessible name/title.
 - **No generic accessibility composable:** Viewer-local logic avoids misusing the drawer stack. Generalization should wait for a real second modal contract.
 
 ## Risks
@@ -456,11 +461,19 @@ There is no temporary compatibility seam; each step builds toward the one target
 - If inline height lock clears before SVG remount layout, page scroll may jump. Clear it only after the inline SVG has returned on a post-render tick.
 - Body overflow must restore its exact previous inline value, including empty string; do not always set `auto`.
 - Focus return must not target a removed opener during source invalidation.
+- An opacity-hidden control can remain an invisible pointer target. Disable pointer hit testing in the fine-pointer resting state and re-enable it when the preview is hovered or the control is focus-revealed.
+- `display:none`/`visibility:hidden` can remove the button from keyboard discovery. Keep the successful control in tab order and ensure focus-visible/focus-within overrides the resting visual state.
+- A hover selector attached only to the button would make a tiny acquisition target. Reveal from the whole preview hover region.
+- A large transparent hit area may still overlay interactive SVG content. Keep it in the existing preview safe padding and validate representative top-right diagram density.
+- Media-query emulation and Electron engines may differ on hybrid devices. Default toward visible/no-hover usability and scope contextual hiding narrowly to confirmed fine-pointer hover capability.
 
 ## Guidance For Implementation
 
-- Keep the primary visible journey obvious: expand -> click `−`/`+` -> optional drag -> Fit -> Escape/×. Do not add percentage text, menus, minimap, download, or tooltip-only actions.
-- Use native `<button type="button">` controls with at least approximately 44×44 CSS-pixel touch targets, localized `aria-label`/title, visible focus rings, and native `disabled` at zoom bounds.
+- Keep the journey obvious: hover/focus/touch-visible expand -> `−`/`+` -> optional drag -> inward-corners Fit -> Escape/×. Do not add percentage text, menus, minimap, download, or visible action words.
+- Use native `<button type="button">` controls with localized `aria-label`/title, visible focus rings, and native `disabled`. Do not equate target size with painted surface: approximately 30–36px visual boxes are appropriate for fine-pointer chrome; coarse-pointer targets should remain comfortably tappable.
+- Prefer CSS capability/state selectors over new reactive hover refs: safe visible default, fine-pointer resting quiet state, preview `:hover` reveal, and `:focus-within`/button `:focus-visible` reveal. Honor `prefers-reduced-motion`.
+- Inline expand must be `position:absolute` within the existing relative success shell and must contribute no margin/row height. The SVG host's top position/size must remain identical across resting, hover, focus, and pointer-leave states.
+- The Fit button must contain only the existing semantic icon in visible DOM. Retain localized aria-label/title and the same base action class as zoom/close; remove unique width/padding.
 - Use `role="dialog"`, `aria-modal="true"`, a localized title referenced by `aria-labelledby`, and a labeled canvas region.
 - Use Pointer Events and pointer capture for mouse/touch panning; ignore non-primary activation and interactive descendants.
 - Treat links, `[role=link]`, buttons, form controls, tabbable descendants, Mermaid `.clickable` nodes, and explicit click handlers as interactive. Do not open or start pan from them.
@@ -471,3 +484,5 @@ There is no temporary compatibility seam; each step builds toward the one target
 - In tests, mock DOM rect/client sizes explicitly. Component tests should assert observable state and delegated math, while pure tests own numeric precision.
 - Preserve existing console error behavior and localized loading/error output.
 - Do not alter `mermaidService.initialize`, security level, theme TODO, parser fence support, or `FullScreenImageModal` in this change.
+- Preserve current `mermaidDiagramViewport.ts`, `externalHttpLink.ts`, modal lifecycle, and MarkdownRenderer wiring unless a regression test proves a separate defect.
+- Implementation handoff must attach rendered evidence for all seven verification states in `ui-ux-spec.md`; class snapshots alone do not satisfy AC-018.

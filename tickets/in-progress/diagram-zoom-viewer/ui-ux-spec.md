@@ -2,116 +2,142 @@
 
 ## Status
 
-`Refined` — approved by the user on 2026-07-20 with a click-first, minimal-control emphasis.
+`Refined` — original journey approved on 2026-07-20; inline and toolbar chrome revised from the user's live Electron verification on 2026-07-20.
 
 ## UX Goal
 
-Make detailed Mermaid diagrams easy to discover, enlarge, navigate, and dismiss while keeping the inline conversation or Markdown document compact and preserving any links embedded in the diagram.
+Make detailed Mermaid diagrams easy to enlarge, navigate, reset, and dismiss without making the controls feel heavier than the diagram. The experience should look like familiar modern viewer chrome: quiet at rest, present when needed, consistent, and usable by mouse, keyboard, or touch.
 
-This specification supports [requirements.md](./requirements.md), especially REQ-001–REQ-009 and AC-001–AC-014.
+This specification supports [requirements.md](./requirements.md), especially REQ-001–REQ-010 and AC-001–AC-018. It is the authoritative visual/interaction supplement; requirements remain authoritative for acceptance.
+
+## UX Principles For This Surface
+
+1. **Content first:** the inline diagram owns the layout; entry chrome floats above it and never creates a toolbar row.
+2. **Progressive disclosure on desktop:** a fine-pointer user sees the expand affordance when the pointer enters the diagram region, not permanently while reading.
+3. **No hover trap:** keyboard focus reveals the affordance, and touch/no-hover layouts keep it visible.
+4. **Consistency over words:** the modal's four familiar actions use equal icon-button treatment. Text remains in accessible names/tooltips, not in one oversized toolbar pill.
+5. **Simple normal journey:** open -> zoom in/out -> drag if needed -> fit -> Escape/close. No mode switching.
+6. **Rendered quality is part of correctness:** spacing, hierarchy, state transitions, and light/dark contrast must be visually inspected in the running frontend.
 
 ## Related Requirements And Acceptance Criteria
 
-- Requirements: REQ-001–REQ-009
-- Acceptance criteria: AC-001–AC-014
+- Requirements: REQ-001–REQ-010
+- Acceptance criteria: AC-001–AC-018
 
 ## Users / Personas / Contexts
 
-- Desktop web/Electron user reading a wide architecture or sequence diagram inside an agent response.
-- User inspecting Mermaid diagrams in team/task messages or Markdown file previews.
+- Desktop Electron/browser user reading a wide architecture or sequence diagram.
+- Mouse/trackpad user who expects contextual controls to appear on diagram hover.
 - Keyboard user who cannot depend on pointer hover.
-- Narrow-screen/Phone Access user who needs persistent touch-sized controls and drag navigation.
+- Touch/coarse-pointer user who cannot generate a durable hover state.
+- User inspecting diagrams in team/task messages or Markdown file previews.
 - Low-vision user operating at increased browser/application text scale.
 
 ## User-Journey Inventory
 
-| Journey ID | User / Context | Starting State | User Goal | Completion State | Related Requirement / Acceptance-Criteria IDs |
+| Journey ID | User / Context | Starting State | User Goal | Completion State | Related IDs |
 | --- | --- | --- | --- | --- | --- |
-| UXJ-001 | Any Markdown reader | Mermaid diagram rendered successfully inline | Notice and open the inspection experience | Large viewer open in fitted state | REQ-001–REQ-003; AC-001–AC-005 |
-| UXJ-002 | Mouse/trackpad user | Viewer open | Enlarge a region and navigate to detail | Desired labels are readable and reachable | REQ-004–REQ-005; AC-006–AC-009 |
-| UXJ-003 | Touch/narrow-screen user | Viewer open on a small viewport | Zoom with persistent controls and pan by touch | Desired region is readable without losing controls | REQ-004, REQ-005, REQ-009; AC-006, AC-008, AC-014 |
-| UXJ-004 | Keyboard user | Focus on inline expand control | Inspect, adjust, reset, and close without a pointer | Focus returns to source control | REQ-009; AC-003–AC-006, AC-009–AC-010, AC-014 |
-| UXJ-005 | User following a diagram link | Inline or expanded diagram contains a link | Activate the link rather than trigger viewer chrome | Existing external-link action occurs | REQ-006; AC-011 |
+| UXJ-001 | Fine-pointer reader | Diagram rendered inline; pointer outside preview | Open without permanent visual clutter | Viewer open and fitted | REQ-001–REQ-003, REQ-010; AC-001–AC-005, AC-015, AC-017 |
+| UXJ-002 | Mouse/trackpad user | Viewer open | Enlarge and navigate detail | Desired labels readable/reachable | REQ-004–REQ-005; AC-006–AC-009 |
+| UXJ-003 | Touch/narrow user | Inline diagram or viewer on small viewport | Discover, open, zoom, and pan without hover | Desired region readable; controls reachable | REQ-002, REQ-004–REQ-005, REQ-009–REQ-010; AC-004, AC-006, AC-008, AC-014, AC-016–AC-018 |
+| UXJ-004 | Keyboard user | Focus approaches inline preview | Open, adjust, reset, and close without pointer | Focus returns to expand control | REQ-009–REQ-010; AC-003–AC-006, AC-009–AC-010, AC-018 |
+| UXJ-005 | Diagram-link user | Inline/expanded SVG contains link | Follow link, not viewer chrome | Existing external-link action occurs | REQ-006; AC-011 |
 
 ## Journey Details
 
-### UXJ-001 — Open a diagram
+### UXJ-001 — Fine-pointer open
 
-1. A successful Mermaid preview appears inline in normal Markdown flow.
-2. A compact expand button is persistently visible in the preview's top-right corner; it has sufficient contrast on light and dark diagram backgrounds.
-3. The user activates the button, or clicks/taps a non-interactive diagram area.
-4. A near-full-viewport modal opens above the whole workspace.
-5. The complete diagram is fitted inside the remaining canvas below/alongside the persistent toolbar.
-6. Focus moves into the dialog, preferably to the close control or the first toolbar control according to the final toolbar order.
+1. At rest, the successful inline diagram appears without a visible toolbar or blank control strip.
+2. The pointer enters any non-loading/non-error part of the preview. A compact expand icon fades into the top-right safe area without shifting the SVG.
+3. The user may click the icon or any non-interactive diagram/background area. Both open the same viewer.
+4. The near-full-viewport modal opens above the workspace with the whole diagram fitted.
+5. Four persistent icon-only actions appear in a compact aligned toolbar: zoom out, fit-to-view, zoom in, close.
 
-### UXJ-002 / UXJ-003 — Inspect detail
+### UXJ-002 — Inspect detail
 
-1. The user activates zoom-in, uses the wheel/trackpad over the canvas, or uses another supported zoom shortcut.
-2. The diagram grows while remaining clamped to a safe range; pointer-centered zoom keeps the inspected region stable.
-3. When content exceeds the canvas, the cursor communicates panning availability and the user drags or scrolls to another region. Touch drag has the same navigation meaning.
-4. The user can activate fit/reset at any time to return to the full overview.
+1. The user clicks zoom-in or uses wheel/trackpad over the canvas.
+2. The diagram grows within the existing clamped range; pointer-centered zoom keeps the inspected region stable.
+3. If content overflows, the user drags or scrolls. Cursor/state feedback communicates pan availability.
+4. The user clicks the inward-corners fit icon to restore the whole overview.
+5. The user presses `Escape` or activates close to return to the original reading context.
 
-### UXJ-004 — Keyboard-only inspection
+### UXJ-003 — Touch/no-hover
 
-1. The user tabs to the inline “Expand diagram” control and presses Enter or Space.
-2. Focus enters the named modal and remains within its toolbar/canvas controls while open.
-3. The user tabs among close, zoom-out, zoom-in, and fit/reset; visible focus styling remains clear.
-4. Supported shortcuts: `+`/`=` zoom in, `-` zoom out, `0` fit/reset, `Escape` close. Shortcuts do not fire while an interactive descendant is handling the same keystroke.
-5. Closing restores focus to the initiating expand control and leaves the source scroll position unchanged.
+1. Because hover is unavailable, the compact expand affordance is visible by default in the inline top-right safe area.
+2. The visible icon surface stays visually compact, but its button remains comfortably tappable; tapping non-interactive diagram space is an equivalent shortcut.
+3. The viewer provides the same persistent icon-only controls. Touch drag pans overflow content.
+4. Controls never require hover to reveal their meaning: accessible names and native/platform tooltip/title behavior remain available where supported.
+
+### UXJ-004 — Keyboard-only
+
+1. Tabbing reaches the native expand button even though desktop pointer-resting chrome is visually quiet.
+2. `:focus-visible`/`:focus-within` immediately reveals the control with a clear focus ring; it must never remain an invisible focused target.
+3. Enter/Space opens the named modal. Focus enters and stays within the open dialog.
+4. The user tabs among the four icon controls and canvas. Localized accessible names communicate each icon.
+5. `+`/`=` zooms in, `-` zooms out, `0` fits, and `Escape` closes, except when an interactive descendant owns the keystroke.
+6. Close returns focus to the inline expand button and leaves source scroll unchanged; the button remains visible while focused.
 
 ### UXJ-005 — Follow a diagram link
 
-1. The user activates a Mermaid-generated anchor or other interactive descendant.
-2. The component does not reinterpret that event as an expand, pan-start, backdrop-close, or reset action.
+1. The user activates a Mermaid anchor or other interactive descendant.
+2. The component does not reinterpret it as expand, pan-start, backdrop-close, or reset.
 3. Existing Markdown/Electron external-link routing proceeds unchanged.
 
-## Screen / Surface / Component Inventory
+## Surface And State Inventory
 
-| Surface / Component | Purpose | Entry Conditions | Important States | Exit / Next Action |
+| Surface / Component | Purpose | Important States | Required Visual Behavior |
+| --- | --- | --- | --- |
+| Inline preview | Present diagram in content flow | Rest, hover, focus-within, touch/no-hover, viewer-open placeholder | No permanent toolbar row; no diagram movement across control transitions |
+| Inline expand control | Viewer entry | Hidden-resting desktop, revealed-hover, focus-visible, pressed, visible-touch | Compact floating outward-corners icon; subtle neutral surface; clear focus/hover feedback |
+| Viewer shell | Isolate inspection | Opening, fitted, zoomed, panned, narrow | Near-full viewport; chrome subordinate to canvas |
+| Viewer toolbar | Four actions | Default, hover, focus, pressed, disabled | Uniform icon-only controls; no one-off text pill; stable alignment |
+| Viewer canvas | Render/navigate SVG | Fitted, overflow, dragging, focused | Diagram remains primary; pan/focus cursors/rings legible |
+| Loading/error | Existing render lifecycle | Loading, failed | No expand affordance or empty viewer |
+
+## Interaction And State Transitions
+
+| State | Trigger | Immediate Feedback | Result | Notes |
 | --- | --- | --- | --- | --- |
-| Inline Mermaid preview | Keep diagram visible in content flow and provide inspection entry | Mermaid render succeeds | Fitted/simple, fitted/detailed, hover, focus-within | Expand or continue reading |
-| Inline expand control | Persistent entry action | Successful SVG available | Default, hover, focus-visible, pressed | Open viewer |
-| Diagram viewer backdrop/dialog | Isolate large inspection task | User expands current SVG | Opening, fitted, zoomed, panned, narrow toolbar layout | Close or continue inspecting |
-| Viewer toolbar | Persistent controls | Viewer open | Fit, zoomed, min/max zoom disabled states | Zoom, fit/reset, close |
-| Viewer canvas | Display and navigate SVG | Viewer open with current SVG | Fitted/centered, overflow/pannable, dragging | Pan, zoom, link activation |
-| Loading state | Communicate Mermaid render progress | Render in flight | Existing spinner/text | Success or error |
-| Error state | Communicate render failure | Mermaid render rejects | Existing error presentation | Source changes/retry by current lifecycle |
-
-## Interaction And State-Transition Specification
-
-| Scenario / State | User Action Or Trigger | Immediate Feedback | Resulting UI State | Data / Side Effect | Next Available Actions |
-| --- | --- | --- | --- | --- | --- |
-| Successful inline preview | Activate expand button | Button pressed/focus feedback; overlay appears | Viewer open, fitted | Ephemeral viewer state only | Zoom, pan, fit, close |
-| Successful inline preview | Click/tap non-interactive SVG/background | Cursor/press feedback; overlay appears | Viewer open, fitted | None | Same as above |
-| Inline interactive descendant | Activate link/control | Existing interactive feedback | Viewer remains as-is | Existing link/action side effect | Continue reading/inspection |
-| Fitted viewer | Zoom in | Scale indicator/state updates; diagram grows | Zoomed, possibly pannable | None | Zoom, pan, fit, close |
-| Zoomed viewer | Wheel/trackpad zoom | Scale changes around pointer | Zoomed around inspected region | None | Zoom, pan, fit, close |
-| Zoomed/overflow viewer | Drag canvas | Grab/grabbing cursor; content follows drag | Panned | None | Continue pan/zoom or fit |
-| Any open viewer state | Activate fit/reset or press `0` | Diagram animates minimally or updates immediately | Complete diagram centered/fitted | None | Zoom or close |
-| Any open viewer state | Close, `Escape`, or backdrop click | Overlay disappears | Inline source context restored | Viewer state discarded; focus restored | Continue reading/reopen |
-| Loading/error | Attempt to find expansion | No misleading enabled control exists | Loading/error remains | None | Wait or inspect error |
-| Source changes while open | Current successful SVG becomes unavailable/re-renders | Viewer no longer presents stale SVG | Viewer closes or is withheld until current success | Ephemeral state discarded | Reopen current successful diagram |
+| Inline, fine-pointer rest | Pointer outside | No visible expand chrome | Diagram-only overview | Button remains in DOM/tab order if successful |
+| Inline, fine-pointer hover | Pointer enters preview | Compact icon fades/settles in; preview does not reflow | Entry affordance visible | Entire preview hover, not only tiny icon, reveals it |
+| Inline, keyboard focus | Button receives focus | Icon and focus ring appear immediately | Keyboard entry visible | Overrides pointer-resting hidden state |
+| Inline, pointer leave | Pointer leaves and button lacks focus | Icon fades out | Diagram-only rest | No layout change |
+| Inline, coarse/no-hover | Successful SVG | Compact icon visible | Touch entry available | Capability-based CSS, not UA detection |
+| Successful inline | Activate icon/non-interactive preview | Press feedback; overlay opens | Viewer fitted | Interactive descendants excluded |
+| Viewer fitted | Zoom in | Scale grows; minimum/maximum states update | Zoomed/pannable | Icon controls persistent |
+| Viewer zoomed | Fit icon/`0` | Immediate/minimal transition | Fitted origin | Fit icon remains semantically clear through label/title |
+| Viewer open | Close/Escape/backdrop | Overlay disappears | Source restored | Focus/body-scroll restoration preserved |
+| Loading/error | Any attempted entry | No misleading action | Existing state remains | No blank modal |
 
 ## Markdown Wireframes / Visual Structure
 
-### Inline
+### Inline — fine-pointer rest
 
 ```text
 ┌──────────────── Mermaid preview ────────────────┐
-│                                      [ Expand ] │
 │                                                 │
 │              rendered SVG overview              │
 │                                                 │
 └─────────────────────────────────────────────────┘
 ```
 
-The control remains visible without hover. Hover/focus may strengthen the border/background, but must not be the only discoverability mechanism.
+### Inline — hover, focus, or no-hover/touch
+
+```text
+┌──────────────── Mermaid preview ────────────────┐
+│                                        [ ↗↙ ]   │  compact overlay
+│              rendered SVG overview              │  zero layout height
+│                                                 │
+└─────────────────────────────────────────────────┘
+```
+
+The icon is conventional four-corners/outward expansion, not literal arrow text. It may cover only a small padded corner. It must not sit in a separate row or push the SVG downward.
 
 ### Expanded viewer — wide
 
 ```text
 ┌──────────────────────────────────────────────────────────────┐
-│ Diagram viewer        [ − ] [ Fit ] [ + ]              [ × ]│
+│ Diagram viewer                         [ − ][ fit ][ + ] [ × ]│
 ├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │                 zoomable / pannable canvas                   │
@@ -120,12 +146,13 @@ The control remains visible without hover. Hover/focus may strengthen the border
 └──────────────────────────────────────────────────────────────┘
 ```
 
+`fit` represents an inward-corners icon, not visible text. All four buttons share the same visual box, icon weight, corner radius, border/background model, and interaction states. A small grouping gap may separate close from zoom/fit controls, but close must not become visually oversized.
+
 ### Expanded viewer — narrow
 
 ```text
 ┌─────────────────────────────┐
-│ Diagram viewer      [Close] │
-│ [ − ]   [ Fit ]   [ + ]     │
+│ Diagram viewer [−][fit][+][×]│
 ├─────────────────────────────┤
 │                             │
 │     zoomable canvas         │
@@ -133,91 +160,124 @@ The control remains visible without hover. Hover/focus may strengthen the border
 └─────────────────────────────┘
 ```
 
-The toolbar may wrap into two rows, but controls must not overlay the diagram or move off-screen. These four actions are the complete persistent control set; do not add zoom percentages, menus, minimaps, or modes.
+At extreme text scaling the title may truncate or yield space before controls wrap. Controls must stay as one coherent set where possible and may wrap only when required to remain reachable; removing visible action words should substantially reduce wrapping pressure.
+
+## Visual Design Contract
+
+### Inline affordance
+
+- Position: absolute, top-right, inside preview padding/safe area; z-index only high enough to sit above SVG.
+- Layout: contributes zero width/height to normal flow and no bottom margin.
+- Visible surface on desktop: approximately 30–36 CSS pixels square; icon approximately 16–18 pixels. Exact values may align with local tokens if the screenshot outcome remains compact.
+- Operable touch target: comfortably tappable (target approximately 40–44 CSS pixels) without requiring the painted background to look 44 pixels heavy. Padding/transparent hit area may provide the distinction.
+- Resting fine-pointer state: opacity/scale/translation may be subtly reduced to hidden; it does not intercept pointer input until the preview is hovered. Do not use `display:none` for the keyboard-focusable successful control.
+- Revealed state: quick, restrained transition (roughly 120–180 ms); no bounce or large movement. Honor reduced-motion preferences.
+- Surface: neutral/translucent background, subtle border or shadow, optional backdrop blur, and enough contrast over light or dark SVG fills. Avoid a large opaque card.
+- State hierarchy: default revealed < hover/pressed emphasis < clear focus ring. Disabled is not applicable to expand.
+
+### Viewer toolbar
+
+- Exactly four visible actions: zoom out, fit-to-view, zoom in, close.
+- Every action is icon-only. No visible zoom percentage, `Fit diagram` label, menu, or text pill.
+- Visual dimensions: uniform compact square surfaces, approximately 34–38 CSS pixels on fine-pointer desktop; coarse-pointer/narrow styling may increase target size without making Fit unique.
+- Icon family: minus, inward-corners/fit-to-view, plus, close. Expand and Fit should read as an outward/inward semantic pair.
+- Grouping: zoom out/fit/zoom in may form a compact group; close may be separated by one small gap/divider. All use the same base button component/class treatment.
+- Header: keep title and controls vertically centered; reduce unused chrome while preserving readable title and dismissal.
+- Tooltips/labels: localized `aria-label` and `title` remain on every button. Visible text is not needed for comprehension in this familiar four-action set.
+- Disabled zoom bound: native disabled semantics plus restrained visual state; still recognizable as the same control.
 
 ## Non-Happy-Path States
 
 ### Loading
 
-Preserve the current localized spinner and “Rendering diagram…” feedback. Do not render the expand control until a current SVG exists.
+Preserve current localized spinner/text. No overlay affordance until a current SVG exists.
 
 ### Empty
 
-A Mermaid segment with no successfully rendered SVG has no viewer entry. No blank modal is allowed.
+No successful SVG means no viewer entry and no blank modal.
 
 ### Error And Recovery
 
-Preserve the existing error presentation and message. Do not hide the error behind a disabled control. If a later source change renders successfully, the inline action becomes available for that current SVG.
+Preserve the existing error presentation. A later successful render enables the adaptive affordance for the current SVG.
 
 ### Disabled / Unavailable
 
-- Zoom-in is disabled at the upper bound.
-- Zoom-out is disabled at the lower bound.
-- Fit/reset may remain enabled or be visibly disabled when already fitted, but its meaning must remain clear.
-- All disabled controls expose native disabled semantics, not only reduced opacity.
+- Zoom-in disabled at upper bound; zoom-out disabled at fitted lower bound.
+- Fit may stay enabled or be disabled while already fitted, but its icon, label, and state must remain unambiguous.
+- Native disabled semantics are required; opacity alone is insufficient.
 
 ### Permission / Authentication
 
-Not applicable. Diagram inspection is client-side and adds no request or permission path.
+Not applicable.
 
 ## Responsive And Platform Behavior
 
-- Desktop browser and Electron use the same component and interactions.
-- The overlay is teleported to the document body so conversation panes, drawers, and overflow containers cannot clip it.
-- The dialog uses nearly all viewport width/height while retaining a small safe-area margin on wide screens; on narrow screens it may use the full viewport.
-- Controls have touch-friendly targets (approximately 44×44 CSS pixels where layout allows) and wrap rather than overlap.
-- The canvas shrinks after toolbar wrapping and remains scrollable/pannable.
-- Touch users can zoom through persistent controls and pan through pointer/touch drag; pinch zoom is desirable but not required for this scope.
-- Browser/application text scaling to 200% must not hide controls or make dismissal impossible.
+- Browser and Electron share the same component and behavior.
+- Desktop fine-pointer: contextual inline affordance appears on preview hover or focus.
+- Touch/coarse/no-hover: affordance visible by default; no hover requirement.
+- Hybrid devices: capability-query fallback must err toward a visible usable control rather than an unreachable hidden action.
+- Modal remains body-teleported and near-full viewport.
+- Icon-only toolbar reduces wrapping; if wrapping is still required at 360 CSS pixels/200% text zoom, controls remain grouped, reachable, and non-overlapping.
+- Canvas shrinks to available space and remains scrollable/pannable.
+- Pinch zoom remains desirable but out of scope.
 
 ## Accessibility And Keyboard Behavior
 
-- Inline expand control: native button, localized accessible name “Expand diagram,” visible focus ring, Enter/Space activation.
-- Viewer: `role="dialog"`, `aria-modal="true"`, localized accessible name “Diagram viewer,” and descriptive shortcut help available through title/accessible description if concise.
-- Toolbar controls: native buttons with localized accessible names; decorative icons are hidden from assistive technology.
-- Focus enters the dialog on open, cycles within it on Tab/Shift+Tab, and returns to the opener on close when the opener still exists.
-- `Escape` closes; `+`/`=` zooms in; `-` zooms out; `0` fits/resets. These are supplemental to visible controls.
-- Background content is not focusable/operable through the modal and document scrolling is locked while open.
-- The diagram canvas must not be announced as a generic unlabeled clickable `div`; opening is represented by the explicit button.
+- Expand: native button; localized “Expand diagram”; Enter/Space; visible focus ring; focus always reveals it.
+- Hover hiding never removes the button from successful-state tab order and never produces an invisible focus indicator.
+- Viewer: named `role="dialog"`, `aria-modal="true"`; focus enters, traps, and returns on close.
+- Toolbar: native icon buttons with localized names and titles; decorative icons hidden from assistive technology.
+- `Escape` closes; `+`/`=` zooms in; `-` zooms out; `0` fits.
+- Background content/scroll remains blocked while open.
+- Diagram canvas retains its labeled region semantics and is not the sole representation of the open action.
+- Reduced-motion users receive immediate or near-immediate opacity/state changes without transform flourish.
 
 ## Content, Labels, And Validation Messages
 
-English labels:
+The following semantic labels remain localized even where only icons are visible:
 
-- Expand diagram
-- Diagram viewer
-- Zoom out
-- Zoom in
-- Fit diagram
-- Close diagram viewer
+| Action | English | Simplified Chinese | Visible In Chrome? |
+| --- | --- | --- | --- |
+| Expand | Expand diagram | 放大图表 | No; icon only |
+| Viewer title | Diagram viewer | 图表查看器 | Yes |
+| Zoom out | Zoom out | 缩小 | No; icon only |
+| Fit | Fit diagram | 适应窗口 | No; icon only |
+| Zoom in | Zoom in | 放大 | No; icon only |
+| Close | Close diagram viewer | 关闭图表查看器 | No; icon only |
 
-Simplified Chinese labels:
+No new error copy is required.
 
-- 放大图表
-- 图表查看器
-- 缩小
-- 放大
-- 适应窗口
-- 关闭图表查看器
+## Rendered Quality Verification Contract
 
-No new error copy is required; preserve the existing Mermaid rendering error.
+Before implementation handoff, the implementation engineer must inspect and record:
+
+1. Desktop Electron or equivalent production-rendered browser, pointer outside preview: no visible expand chrome and no blank control row.
+2. Same surface on preview hover: compact top-right affordance appears without SVG movement.
+3. Keyboard Tab/focus: affordance and focus ring appear even without hover.
+4. Wide viewer: exactly four uniform icon-only buttons; Fit has no visible text and no unique pill width.
+5. Narrow 360 CSS-pixel / 200% text-scale viewer: all actions reachable and aligned; useful canvas remains.
+6. Coarse/no-hover emulation or real touch-capable environment: inline expand remains visible/tappable.
+7. Representative light and dark application surfaces: icon, button surface, focus ring, and SVG remain legible without visually overpowering the diagram.
+
+Evidence must include screenshots or equivalent retained rendered-state artifacts and the viewport/input conditions. Passing component tests alone is insufficient for AC-018.
 
 ## Data And API Dependencies
 
-- Input: current Mermaid source and the successful SVG string already owned by the Mermaid component.
-- No network call, store, route, persistence, GraphQL, REST, or Electron IPC dependency.
-- The viewer must not create an image URL or download representation.
+- Input: current Mermaid source and already-rendered SVG.
+- No network, store, route, persistence, GraphQL, REST, or Electron IPC change.
+- Viewer must not create image/download representations.
 
 ## Out Of Scope
 
-- Source editing, export/download/copy, minimap, search, slide mode, remembered zoom, global app zoom, Mermaid theme correction, or non-Mermaid diagrams.
+- Source editing, export/download/copy, minimap, search, slide mode, remembered zoom, percentage display, global app zoom, Mermaid theme correction, or non-Mermaid diagrams.
 
 ## Open Decisions / Risks
 
-- Internal zoom math must account for scaled scroll extents rather than relying on a transform that visually grows content without making all edges reachable.
-- Only one copy of SVG markup should be mounted at a time, or IDs must be safely unique; duplicate Mermaid IDs can break markers, labels, or links.
-- Exact icon glyphs and neutral colors may follow existing workspace visual tokens, but toolbar persistence, contrast, and target size are not optional.
+- Exact compact pixel values may align with existing Tailwind/workspace tokens, but the rendered hierarchy and zero-layout-space invariants are mandatory.
+- Top-right overlays can obscure content if oversized; use the smallest readable painted surface and existing preview padding.
+- CSS hidden/revealed behavior must coordinate `pointer-events`, hover, and focus so there is neither an invisible pointer trap nor an unreachable keyboard target.
+- Existing screenshot evidence for the first implementation is now negative UX evidence, not target styling.
 
 ## Approval Status
 
-Approved by the user on 2026-07-20. Approval emphasizes the minimal normal journey: open, use visible zoom buttons, optionally pan, use `Fit` to restore the overview, and use `Escape`/close to exit.
+The original functional journey was approved on 2026-07-20. During live Electron verification, the user explicitly rejected the permanent oversized inline row and wide Fit text button and directed a typical refined pattern: hover-revealed inline expand on desktop and a fit icon consistent with the other controls. That direction approves this revised intent. Architecture re-review remains required before source changes.

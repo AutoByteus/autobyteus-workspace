@@ -93,7 +93,14 @@ describe('MermaidDiagram', () => {
     expect(wrapper.get('.mermaid-svg-container').classes()).toContain('w-full');
     expect(wrapper.get('.mermaid-svg-container').attributes('id')).toBeUndefined();
     expect(wrapper.findAll('.mermaid-svg-container svg')).toHaveLength(1);
-    expect(wrapper.get('.mermaid-expand-button').attributes('aria-label')).toBe('Expand diagram');
+    const expandButton = wrapper.get('.mermaid-expand-button');
+    expect(expandButton.attributes('aria-label')).toBe('Expand diagram');
+    expect(expandButton.classes()).toEqual(expect.arrayContaining(['absolute', 'right-2', 'top-2', 'z-10']));
+    expect(expandButton.classes()).not.toContain('mb-2');
+    expect(expandButton.attributes('tabindex')).toBeUndefined();
+
+    (expandButton.element as HTMLButtonElement).focus();
+    expect(document.activeElement).toBe(expandButton.element);
   });
 
   it('moves the one SVG copy into the viewer from the button or non-interactive preview', async () => {
