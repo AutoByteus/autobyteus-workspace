@@ -20,7 +20,7 @@ The prior `understand-application-framework` ticket was already finalized. Its a
 
 - Project Type: `Git` super-repository.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams`.
 - Current Branch: `codex/application-framework-architecture-diagrams`.
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams`.
 - Bootstrap Base Branch: `origin/personal`.
@@ -35,7 +35,7 @@ The prior `understand-application-framework` ticket was already finalized. Its a
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/architecture-data-flow-spines.md` | Mermaid architecture/data-flow guide | Browser/server/worker/orchestration/storage boundaries, request/return/event/artifact flows, and the approved target API-gateway label | `requirements.md`; `design-spec.md` | `REQ-001`..`REQ-005`; `AC-001`..`AC-005` | In-progress approved-target visualization; ten diagrams retained | `N/A` — explanatory visualization, no new intended behavior | Keep synchronized with the pending target source paths/names and validate every Mermaid block. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/architecture-data-flow-spines.md` | Mermaid architecture/data-flow guide | Browser/server/worker/orchestration/storage boundaries, request/return/event/artifact flows, and the approved target API-gateway label | `requirements.md`; `design-spec.md` | `REQ-001`..`REQ-005`; `AC-001`..`AC-005` | In-progress approved-target visualization; ten diagrams retained | `N/A` — explanatory visualization, no new intended behavior | Keep synchronized with the pending target source paths/names and validate every Mermaid block. |
 
 ## Source Log
 

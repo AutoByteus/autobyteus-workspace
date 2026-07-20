@@ -2,15 +2,15 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/design-spec.md`
-- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/design-spec.md`
+- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/design-review-report.md`
 
 ## Implementation Review Local Fix
 
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/code-review-report.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/code-review-report.md`
 - Round-1 finding `CR-001` is resolved at exactly the four reported active owner-facing labels: the web guide heading now says `Backend API Gateway And SDK Boundary`, and all three integration-fixture initialization errors now say `Integration test API gateway service was not initialized.`
 - The fix changes documentation/test wording only. It does not change production source, test behavior, public paths, contracts, or runtime semantics.
 
@@ -40,7 +40,7 @@
 - REST/WS adapters: `autobyteus-server-ts/src/api/rest/application-backends.ts`; `autobyteus-server-ts/src/api/websocket/application-backend-notifications.ts`
 - Focused and broader regression tests: `autobyteus-server-ts/tests/unit/application-backend-api-gateway/**`, selected REST/package unit tests, and existing `tests/integration/application-backend/**` consumers
 - Long-lived docs: `autobyteus-server-ts/docs/modules/application_backend_api_gateway.md` and its active cross-links, `autobyteus-application-sdk-contracts/README.md`, `autobyteus-web/docs/applications.md`
-- Mermaid guide: `tickets/in-progress/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
+- Mermaid guide: `tickets/done/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
 
 ## Important Assumptions
 

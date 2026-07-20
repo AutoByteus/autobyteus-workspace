@@ -3,17 +3,17 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/requirements.md`
 - Supplemental Task Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
 - Current Review Round: `2`
 - Trigger: Re-review of `CR-001` local-fix commit `ee410779955b234e4678c3c076bde728ff901f52` on top of `365750c9d1a0663f20c51fb86c7a1361eab2639c`.
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/design-review-report.md` (authoritative round 2, Pass)
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/design-review-report.md` (authoritative round 2, Pass)
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/implementation-handoff.md`
 - Coverage Investigation Reviewed: `N/A — downstream after implementation-source pass.`
 - Execution Coverage Report Reviewed: `N/A — downstream after implementation-source pass.`
 - Failing Scenario IDs: `N/A`

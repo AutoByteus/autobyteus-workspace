@@ -2,11 +2,11 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/design-spec.md`
 - Supplemental Task Artifacts Reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/in-progress/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-framework-architecture-diagrams/tickets/done/application-framework-architecture-diagrams/architecture-data-flow-spines.md`
 - Current Review Round: `2`
 - Trigger: Focused re-review after `solution_designer` corrected `DR-001` and `DR-002` across the cumulative package.
 - Prior Review Round Reviewed: `1`
