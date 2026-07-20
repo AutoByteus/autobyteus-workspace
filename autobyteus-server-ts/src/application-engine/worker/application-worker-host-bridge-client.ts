@@ -1,6 +1,6 @@
 import {
-  APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL,
-  type ApplicationWorkerRuntimeControlInput,
+  APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
+  type ApplicationWorkerContextCapabilityInput,
 } from "../runtime/protocol.js";
 
 type JsonRpcId = string;
@@ -19,8 +19,8 @@ export class ApplicationWorkerHostBridgeClient {
     private readonly writeFrame: (frame: Record<string, unknown>) => void,
   ) {}
 
-  async invokeRuntimeControl(input: ApplicationWorkerRuntimeControlInput): Promise<unknown> {
-    return this.request(APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL, input as Record<string, unknown>);
+  async invokeContextCapability(input: ApplicationWorkerContextCapabilityInput): Promise<unknown> {
+    return this.request(APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY, input as unknown as Record<string, unknown>);
   }
 
   handleResponse(payload: Record<string, unknown>): boolean {

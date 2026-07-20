@@ -31,7 +31,7 @@ describe("ApplicationPublishedArtifactRelayService", () => {
       getBinding: vi.fn().mockResolvedValue({
         bindingId: "binding-1",
         applicationId: "app-1",
-        bindingIntentId: "intent-1",
+        launchRequestId: "intent-1",
         status: "ATTACHED",
         executionResourceRef: {
           source: "bundle",
@@ -120,7 +120,7 @@ describe("ApplicationPublishedArtifactRelayService", () => {
       getBinding: vi.fn().mockResolvedValue({
         bindingId: "binding-1",
         applicationId: "app-1",
-        bindingIntentId: "intent-1",
+        launchRequestId: "intent-1",
         status: "ATTACHED",
         executionResourceRef: {
           source: "bundle",

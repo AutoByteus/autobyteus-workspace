@@ -9,7 +9,8 @@ import type {
   ApplicationRuntimeInput,
   ApplicationRuntimeInputContextFile,
   ApplicationExecutionResourceSummary,
-  ApplicationStartRunInput,
+  ApplicationStartAgentInput,
+  ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
@@ -189,20 +190,36 @@ export class ApplicationOrchestrationHostService {
     return this.executionResourceConfigurationService.getConfiguredExecutionResource(applicationId, slotKey);
   }
 
-  async startRun(
+  async startAgent(
     applicationId: string,
-    input: ApplicationStartRunInput,
+    input: ApplicationStartAgentInput,
   ): Promise<ApplicationRunBindingSummary> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
+    const binding = await this.runBindingLaunchService.startAgentRunBinding(applicationId, input);
+    return this.completeStartedBinding(binding, input.initialInput);
+  }
 
-    const binding = await this.runBindingLaunchService.startRunBinding(applicationId, input);
+  async startAgentTeam(
+    applicationId: string,
+    input: ApplicationStartAgentTeamInput,
+  ): Promise<ApplicationRunBindingSummary> {
+    await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
+    const binding = await this.runBindingLaunchService.startAgentTeamRunBinding(applicationId, input);
+    return this.completeStartedBinding(binding, input.initialInput);
+  }
+
+  private async completeStartedBinding(
+    binding: ApplicationRunBindingSummary,
+    initialInput: ApplicationRuntimeInput | null | undefined,
+  ): Promise<ApplicationRunBindingSummary> {
     const attached = await this.runObserverService.attachBinding(binding, { emitAttachedEvent: true });
     if (!attached) {
       throw new Error(`Runtime observer could not attach to application run binding '${binding.bindingId}'.`);
     }
-    if (input.initialInput) {
-      await this.postRunInputInternal(binding, input.initialInput);
+    if (initialInput) {
+      await this.postRunInputInternal(binding, initialInput);
     }
     return cloneBinding(binding);
   }
@@ -216,13 +233,13 @@ export class ApplicationOrchestrationHostService {
     return this.bindingStore.getBinding(applicationId, bindingId);
   }
 
-  async getRunBindingByIntentId(
+  async findRunBindingByLaunchRequestId(
     applicationId: string,
-    bindingIntentId: string,
+    launchRequestId: string,
   ): Promise<ApplicationRunBindingSummary | null> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.bindingStore.getBindingByIntentId(applicationId, bindingIntentId);
+    return this.bindingStore.findBindingByLaunchRequestId(applicationId, launchRequestId);
   }
 
   async listRunBindings(
@@ -234,7 +251,7 @@ export class ApplicationOrchestrationHostService {
     return this.bindingStore.listBindings(applicationId, filter);
   }
 
-  async getRunPublishedArtifacts(
+  async listRunPublishedArtifacts(
     applicationId: string,
     runId: string,
   ) {
@@ -250,7 +267,7 @@ export class ApplicationOrchestrationHostService {
     );
   }
 
-  async getPublishedArtifactRevisionText(
+  async readPublishedArtifactRevision(
     applicationId: string,
     input: { runId: string; revisionId: string },
   ): Promise<string | null> {
@@ -267,7 +284,7 @@ export class ApplicationOrchestrationHostService {
     return this.publishedArtifactProjectionService.getPublishedArtifactRevisionText(input);
   }
 
-  async postRunInput(
+  async sendRunInput(
     applicationId: string,
     input: {
       bindingId: string;

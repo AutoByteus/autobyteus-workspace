@@ -126,7 +126,7 @@ describe("ApplicationBackendGatewayService", () => {
             distribution: "self-contained",
             targetRuntime: { engine: "node", semver: ">=22 <23" },
             sdkCompatibility: {
-              backendDefinitionContractVersion: "2",
+              backendDefinitionContractVersion: "3",
               frontendSdkContractVersion: "3",
             },
             supportedExposures: {
@@ -174,7 +174,7 @@ describe("ApplicationBackendGatewayService", () => {
                 distribution: "self-contained",
                 targetRuntime: { engine: "node", semver: ">=22 <23" },
                 sdkCompatibility: {
-                  backendDefinitionContractVersion: "2",
+                  backendDefinitionContractVersion: "3",
                   frontendSdkContractVersion: "3",
                 },
                 supportedExposures: {

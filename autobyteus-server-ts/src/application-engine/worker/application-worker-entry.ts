@@ -37,7 +37,7 @@ const runtime = new ApplicationWorkerRuntime(
       params,
     });
   },
-  async (input) => hostBridgeClient.invokeRuntimeControl(input),
+  async (input) => hostBridgeClient.invokeContextCapability(input),
 );
 
 const respondSuccess = (id: string | number | null, result: unknown): void => {

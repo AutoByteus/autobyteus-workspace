@@ -34,7 +34,7 @@ const sortArtifacts = (artifacts) => [...artifacts].sort((left, right) => {
     return left.createdAt.localeCompare(right.createdAt);
 });
 const requireRevisionText = async (context, input) => {
-    const text = await context.runtimeControl.getPublishedArtifactRevisionText(input);
+    const text = await context.publishedArtifacts.readRevision(input);
     if (typeof text !== "string") {
         throw new Error(`Socratic Math Teacher could not read published artifact revision '${input.revisionId}' for run '${input.runId}'.`);
     }
@@ -52,7 +52,7 @@ export const createLessonArtifactReconciliationService = (context) => ({
         });
     },
     async reconcilePublishedArtifacts() {
-        const bindings = await context.runtimeControl.listRunBindings(null);
+        const bindings = await context.agentExecution.list(null);
         for (const binding of bindings) {
             const lessonId = createRunBindingCorrelationService(context).resolveLessonIdForBinding(binding);
             const lesson = withAppDatabase(context.storage.appDatabasePath, (db) => createLessonRepository(db).getById(lessonId));
@@ -67,7 +67,7 @@ export const createLessonArtifactReconciliationService = (context) => ({
                 if (!producer) {
                     continue;
                 }
-                const artifacts = sortArtifacts(await context.runtimeControl.getRunPublishedArtifacts(runId));
+                const artifacts = sortArtifacts(await context.publishedArtifacts.list(runId));
                 for (const artifact of artifacts) {
                     await this.projectArtifactRevision({
                         binding,

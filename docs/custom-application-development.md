@@ -130,7 +130,7 @@ Each artifact item accepts only `path` and optional `description`; blank descrip
 
 The old singular `publish_artifact` tool is not registered, exposed, allowlisted, discoverable, or mapped as an alias. Existing custom agent configs that still list only `publish_artifact` must be migrated to `publish_artifacts` before they can publish artifacts.
 
-Application backends observe durable published artifacts through `artifactHandlers.persisted`, `runtimeControl.getRunPublishedArtifacts(...)`, and `runtimeControl.getPublishedArtifactRevisionText(...)`.
+Application backends observe durable published artifacts through `artifactHandlers.persisted`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`.
 
 ## Runtime skill access
 

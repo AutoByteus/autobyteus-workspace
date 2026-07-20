@@ -61,7 +61,7 @@ The gateway bridges worker-published notifications into a per-application websoc
 - `ensure-ready`, query, command, route, GraphQL, and event-handler dispatch invocations all rely on `ApplicationEngineHostService`.
 - Status reads do not implicitly start the worker.
 - Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationBackendNotificationStreamService`.
-- For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, runtime control), see [`application_communication_model.md`](./application_communication_model.md).
+- For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, agent execution and resources), see [`application_communication_model.md`](./application_communication_model.md).
 
 ## Error Behavior
 

@@ -45,7 +45,7 @@ describe("ApplicationEngineHostService", () => {
       distribution: "self-contained",
       targetRuntime: { engine: "node", semver: ">=22 <23" },
       sdkCompatibility: {
-        backendDefinitionContractVersion: "2",
+        backendDefinitionContractVersion: "3",
         frontendSdkContractVersion: "3",
       },
       supportedExposures: {
@@ -72,7 +72,7 @@ describe("ApplicationEngineHostService", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-        definitionContractVersion: '2',
+        definitionContractVersion: '3',
         queries: {
           'tickets.get': async (input, ctx) => {
             await ctx.publishNotification('query.called', { input })
@@ -201,7 +201,7 @@ describe("ApplicationEngineHostService", () => {
           binding: {
             bindingId: "binding-1",
             applicationId: "built-in:applications__sample-app",
-            bindingIntentId: "binding-intent-1",
+            launchRequestId: "launch-request-1",
             status: "ATTACHED",
             executionResourceRef: {
               source: "bundle",
@@ -243,7 +243,7 @@ describe("ApplicationEngineHostService", () => {
         binding: {
           bindingId: "binding-1",
           applicationId: "built-in:applications__sample-app",
-          bindingIntentId: "binding-intent-1",
+          launchRequestId: "launch-request-1",
           status: "ATTACHED",
           executionResourceRef: {
             source: "bundle",
@@ -271,6 +271,41 @@ describe("ApplicationEngineHostService", () => {
 
     await service.stopApplicationEngine("built-in:applications__sample-app");
     expect(service.getApplicationEngineStatus("built-in:applications__sample-app").state).toBe("stopped");
+  });
+
+  it("rejects a v2 backend definition before invoking any handler", async () => {
+    await fs.writeFile(
+      path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
+      `export default {
+        definitionContractVersion: '2',
+        lifecycle: {
+          async onStart() {
+            throw new Error('v2 handler must not run')
+          },
+        },
+      }\n`,
+      "utf-8",
+    );
+    const bundleService = {
+      getApplicationById: vi.fn().mockResolvedValue(createBundle()),
+    };
+    const storageLifecycleService = new ApplicationStorageLifecycleService({
+      appConfig: createMockAppConfig(tempRoot) as never,
+      applicationBundleService: bundleService as never,
+    });
+    const service = new ApplicationEngineHostService({
+      applicationBundleService: bundleService as never,
+      storageLifecycleService,
+    });
+
+    await expect(
+      service.ensureApplicationEngine("built-in:applications__sample-app"),
+    ).rejects.toThrow("Unsupported application backend definitionContractVersion '2'.");
+    expect(service.getApplicationEngineStatus("built-in:applications__sample-app")).toMatchObject({
+      state: "failed",
+      ready: false,
+      lastFailure: "Unsupported application backend definitionContractVersion '2'.",
+    });
   });
 
   it("repairs empty app storage before reusing an already-ready runtime handle", async () => {

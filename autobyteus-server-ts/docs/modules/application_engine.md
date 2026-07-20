@@ -2,7 +2,7 @@
 
 ## Scope
 
-Owns the platform-run worker lifecycle for one installed application: prepare storage, apply migrations, spawn the worker, load the backend definition, surface engine status, forward backend invocations, bridge worker `runtimeControl` requests back to the host, and stop the worker cleanly.
+Owns the platform-run worker lifecycle for one installed application: prepare storage, apply migrations, spawn the worker, load the backend definition, surface engine status, forward backend invocations, bridge worker context-capability requests back to the host, and stop the worker cleanly.
 
 ## TS Source
 
@@ -49,11 +49,11 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 ## Worker Contract
 
 - The worker loads a self-contained ESM backend module.
-- The backend definition contract version must be `"2"`.
+- The backend definition contract version must be `"3"`; v2 is rejected before any handler or lifecycle hook runs.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Lifecycle hooks (`onStart`, `onStop`) run inside the worker with the same storage context shape used by query/command/route/event handlers.
 - Worker notifications flow back to the host over the engine protocol and are re-published by the backend gateway.
-- Worker-side `context.runtimeControl` calls are bridged back to `ApplicationOrchestrationHostService` through the engine protocol; application backends do not launch agent/team runs directly inside the worker process.
+- Worker-side `context.agentExecution`, `context.agentResources`, and `context.publishedArtifacts` calls are bridged back to `ApplicationOrchestrationHostService` through one discriminated engine protocol; application backends do not launch agent/team runs directly inside the worker process.
 
 ## Invocation Boundary
 
@@ -64,7 +64,7 @@ Once ready, the engine is the only owner used to invoke:
 - application routes,
 - application GraphQL execution,
 - application event handlers, and
-- worker-originated runtime-control requests.
+- worker-originated context-capability requests.
 
 The gateway and orchestration owners both depend on this boundary instead of reaching into worker details directly.
 

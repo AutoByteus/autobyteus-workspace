@@ -7,7 +7,7 @@ import {
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createLessonMessageRepository } from "../repositories/lesson-message-repository.js";
 import { createLessonRepository } from "../repositories/lesson-repository.js";
-import { createPendingBindingIntentRepository } from "../repositories/pending-binding-intent-repository.js";
+import { createPendingLaunchRequestRepository } from "../repositories/pending-launch-request-repository.js";
 import { createLessonReadService } from "./lesson-read-service.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
@@ -89,7 +89,7 @@ const resolveStartLessonProjection = (input: {
 
 const resolveLessonTutorTeamConfiguration = async (context: ApplicationHandlerContext) => {
   return resolveConfiguredTeamLaunchProfile({
-    configuredResource: await context.runtimeControl.getConfiguredExecutionResource(LESSON_TUTOR_TEAM_SLOT_KEY),
+    configuredResource: await context.agentResources.getConfigured(LESSON_TUTOR_TEAM_SLOT_KEY),
     fallbackExecutionResourceRef: SOCRATIC_TEAM_RESOURCE,
   });
 };
@@ -125,13 +125,13 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
         });
       });
     });
-    const pendingIntent = correlationService.createPendingBindingIntent(lessonId);
+    const pendingLaunchRequest = correlationService.createPendingLaunchRequest(lessonId);
     const tutorTeam = await resolveLessonTutorTeamConfiguration(context);
     const workspaceRootPath = tutorTeam.launchProfile?.defaults?.workspaceRootPath ?? context.storage.runtimePath;
 
     try {
-      const binding = await context.runtimeControl.startRun({
-        bindingIntentId: pendingIntent.bindingIntentId,
+      const binding = await context.agentExecution.startAgentTeam({
+        launchRequestId: pendingLaunchRequest.launchRequestId,
         executionResourceRef: tutorTeam.executionResourceRef,
         launch: buildConfiguredTeamRunLaunch({
           launchProfile: tutorTeam.launchProfile,
@@ -147,8 +147,8 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
       withAppDatabase(context.storage.appDatabasePath, (db) => {
         withTransaction(db, () => {
           const lessonRepository = createLessonRepository(db);
-          createPendingBindingIntentRepository(db).markCommitted({
-            bindingIntentId: binding.bindingIntentId,
+          createPendingLaunchRequestRepository(db).markCommitted({
+            launchRequestId: binding.launchRequestId,
             bindingId: binding.bindingId,
             committedAt: createdAt,
           });
@@ -182,7 +182,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
       return createLessonReadService(context).getLesson(lessonId);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      const reconciled = await correlationService.reconcileBindingIntent(pendingIntent.bindingIntentId);
+      const reconciled = await correlationService.reconcileLaunchRequest(pendingLaunchRequest.launchRequestId);
       withAppDatabase(context.storage.appDatabasePath, (db) => {
         withTransaction(db, () => {
           createLessonRepository(db).upsertLesson({
@@ -235,7 +235,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
       });
     });
 
-    await context.runtimeControl.postRunInput({
+    await context.agentExecution.sendInput({
       bindingId,
       text,
       metadata: { lessonId },
@@ -278,7 +278,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
       });
     });
 
-    await context.runtimeControl.postRunInput({
+    await context.agentExecution.sendInput({
       bindingId,
       text: `The student requests a hint. ${detail}`,
       metadata: { lessonId, requestKind: "hint" },
@@ -293,7 +293,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
     const closedAt = new Date().toISOString();
 
     if (lesson.latestBindingId && !(lesson.latestBindingStatus && ["TERMINATED", "FAILED", "ORPHANED"].includes(lesson.latestBindingStatus))) {
-      await context.runtimeControl.terminateRunBinding(lesson.latestBindingId);
+      await context.agentExecution.terminate(lesson.latestBindingId);
     }
 
     withAppDatabase(context.storage.appDatabasePath, (db) => {

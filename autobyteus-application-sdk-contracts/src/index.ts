@@ -12,7 +12,7 @@ export * from "./execution-resources.js";
 export * from "./application-iframe-contract.js";
 
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2 = "2" as const;
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3 = "3" as const;
 export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3 = "3" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
@@ -45,7 +45,7 @@ export type ApplicationBackendBundleManifestV1 = {
     semver: string;
   };
   sdkCompatibility: {
-    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2;
+    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3;
     frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3;
   };
   supportedExposures: ApplicationBackendSupportedExposures;
@@ -133,10 +133,17 @@ export type ApplicationTeamRunLaunch =
       memberConfigs: ApplicationTeamMemberLaunchConfig[];
     };
 
-export type ApplicationStartRunInput = {
-  bindingIntentId: string;
+export type ApplicationStartAgentInput = {
+  launchRequestId: string;
   executionResourceRef: ApplicationExecutionResourceRef;
-  launch: ApplicationAgentRunLaunch | ApplicationTeamRunLaunch;
+  launch: ApplicationAgentRunLaunch;
+  initialInput?: ApplicationRuntimeInput | null;
+};
+
+export type ApplicationStartAgentTeamInput = {
+  launchRequestId: string;
+  executionResourceRef: ApplicationExecutionResourceRef;
+  launch: ApplicationTeamRunLaunch;
   initialInput?: ApplicationRuntimeInput | null;
 };
 
@@ -162,7 +169,7 @@ export type ApplicationRunBindingMemberSummary = {
 export type ApplicationRunBindingSummary = {
   bindingId: string;
   applicationId: string;
-  bindingIntentId: string;
+  launchRequestId: string;
   status: ApplicationRunBindingStatus;
   executionResourceRef: ApplicationExecutionResourceRef;
   runtime: {
@@ -238,32 +245,10 @@ export type ApplicationExecutionEventEnvelope<TPayload = unknown> = {
   };
 };
 
-export type ApplicationRuntimeControl = {
-  listAvailableExecutionResources: (filter?: {
-    source?: ApplicationExecutionResourceSource | null;
-    kind?: ApplicationExecutionResourceKind | null;
-  } | null) => Promise<ApplicationExecutionResourceSummary[]>;
-  getConfiguredExecutionResource: (slotKey: string) => Promise<ApplicationConfiguredExecutionResource | null>;
-  startRun: (input: ApplicationStartRunInput) => Promise<ApplicationRunBindingSummary>;
-  getRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
-  getRunBindingByIntentId: (bindingIntentId: string) => Promise<ApplicationRunBindingSummary | null>;
-  listRunBindings: (filter?: ApplicationRunBindingListFilter | null) => Promise<ApplicationRunBindingSummary[]>;
-  getRunPublishedArtifacts: (runId: string) => Promise<Array<{
-    id: string;
-    runId: string;
-    path: string;
-    type: ApplicationPublishedArtifactFileKind;
-    status: "available";
-    description: string | null;
-    revisionId: string;
-    createdAt: string;
-    updatedAt: string;
-  }>>;
-  getPublishedArtifactRevisionText: (input: {
-    runId: string;
-    revisionId: string;
-  }) => Promise<string | null>;
-  postRunInput: (input: {
+export type ApplicationAgentExecution = {
+  startAgent: (input: ApplicationStartAgentInput) => Promise<ApplicationRunBindingSummary>;
+  startAgentTeam: (input: ApplicationStartAgentTeamInput) => Promise<ApplicationRunBindingSummary>;
+  sendInput: (input: {
     bindingId: string;
     text: string;
     targetMemberRouteKey?: string | null;
@@ -271,14 +256,47 @@ export type ApplicationRuntimeControl = {
     contextFiles?: ApplicationRuntimeInputContextFile[] | null;
     metadata?: Record<string, unknown> | null;
   }) => Promise<ApplicationRunBindingSummary>;
-  terminateRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
+  terminate: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
+  get: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
+  list: (filter?: ApplicationRunBindingListFilter | null) => Promise<ApplicationRunBindingSummary[]>;
+  findByLaunchRequestId: (launchRequestId: string) => Promise<ApplicationRunBindingSummary | null>;
+};
+
+export type ApplicationAgentResources = {
+  listAvailable: (filter?: {
+    source?: ApplicationExecutionResourceSource | null;
+    kind?: ApplicationExecutionResourceKind | null;
+  } | null) => Promise<ApplicationExecutionResourceSummary[]>;
+  getConfigured: (slotKey: string) => Promise<ApplicationConfiguredExecutionResource | null>;
+};
+
+export type ApplicationPublishedArtifactSummary = {
+  id: string;
+  runId: string;
+  path: string;
+  type: ApplicationPublishedArtifactFileKind;
+  status: "available";
+  description: string | null;
+  revisionId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ApplicationPublishedArtifacts = {
+  list: (runId: string) => Promise<ApplicationPublishedArtifactSummary[]>;
+  readRevision: (input: {
+    runId: string;
+    revisionId: string;
+  }) => Promise<string | null>;
 };
 
 export type ApplicationHandlerContext = {
   requestContext: ApplicationRequestContext | null;
   storage: ApplicationStorageContext;
   publishNotification: (topic: string, payload: unknown) => Promise<void>;
-  runtimeControl: ApplicationRuntimeControl;
+  agentExecution: ApplicationAgentExecution;
+  agentResources: ApplicationAgentResources;
+  publishedArtifacts: ApplicationPublishedArtifacts;
 };
 
 export type ApplicationRouteRequest = {
@@ -349,7 +367,7 @@ export type ApplicationRouteDefinition = {
 };
 
 export type ApplicationBackendDefinition = {
-  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2;
+  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3;
   lifecycle?: {
     onStart?: ApplicationLifecycleHook;
     onStop?: ApplicationLifecycleHook;

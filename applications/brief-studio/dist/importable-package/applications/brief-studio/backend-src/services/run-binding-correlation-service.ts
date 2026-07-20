@@ -9,9 +9,9 @@ import {
   type BriefBindingRecord,
 } from "../repositories/brief-binding-repository.js";
 import {
-  createPendingBindingIntentRepository,
-  type PendingBindingIntentRecord,
-} from "../repositories/pending-binding-intent-repository.js";
+  createPendingLaunchRequestRepository,
+  type PendingLaunchRequestRecord,
+} from "../repositories/pending-launch-request-repository.js";
 
 const requireNonEmptyString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -28,7 +28,7 @@ const toBindingRecord = (
 ): BriefBindingRecord => ({
   briefId,
   bindingId: binding.bindingId,
-  bindingIntentId: binding.bindingIntentId,
+  launchRequestId: binding.launchRequestId,
   runId: binding.runtime.runId,
   createdAt: binding.createdAt,
   updatedAt,
@@ -36,21 +36,21 @@ const toBindingRecord = (
 });
 
 const ensureBindingConsistency = (
-  pendingIntent: PendingBindingIntentRecord | null,
+  pendingLaunchRequest: PendingLaunchRequestRecord | null,
   existingBinding: BriefBindingRecord | null,
   input: {
     briefId: string;
     binding: ApplicationRunBindingSummary;
   },
 ): void => {
-  if (pendingIntent && pendingIntent.briefId !== input.briefId) {
+  if (pendingLaunchRequest && pendingLaunchRequest.briefId !== input.briefId) {
     throw new Error(
-      `Pending binding intent '${input.binding.bindingIntentId}' belongs to brief '${pendingIntent.briefId}', not '${input.briefId}'.`,
+      `Pending launch request '${input.binding.launchRequestId}' belongs to brief '${pendingLaunchRequest.briefId}', not '${input.briefId}'.`,
     );
   }
-  if (pendingIntent?.bindingId && pendingIntent.bindingId !== input.binding.bindingId) {
+  if (pendingLaunchRequest?.bindingId && pendingLaunchRequest.bindingId !== input.binding.bindingId) {
     throw new Error(
-      `Pending binding intent '${input.binding.bindingIntentId}' is already attached to binding '${pendingIntent.bindingId}'.`,
+      `Pending launch request '${input.binding.launchRequestId}' is already attached to binding '${pendingLaunchRequest.bindingId}'.`,
     );
   }
   if (existingBinding && existingBinding.briefId !== input.briefId) {
@@ -60,14 +60,14 @@ const ensureBindingConsistency = (
   }
 };
 
-const requireBindingIntentId = (binding: ApplicationRunBindingSummary): string =>
-  requireNonEmptyString(binding.bindingIntentId, "binding.bindingIntentId");
+const requireLaunchRequestId = (binding: ApplicationRunBindingSummary): string =>
+  requireNonEmptyString(binding.launchRequestId, "binding.launchRequestId");
 
 export const createRunBindingCorrelationService = (context: ApplicationHandlerContext) => ({
-  createPendingBindingIntent(briefId: string): PendingBindingIntentRecord {
+  createPendingLaunchRequest(briefId: string): PendingLaunchRequestRecord {
     const createdAt = new Date().toISOString();
-    const pendingIntent: PendingBindingIntentRecord = {
-      bindingIntentId: `brief-binding-intent-${randomUUID()}`,
+    const pendingLaunchRequest: PendingLaunchRequestRecord = {
+      launchRequestId: `brief-launch-request-${randomUUID()}`,
       briefId: requireNonEmptyString(briefId, "briefId"),
       status: "PENDING_START",
       bindingId: null,
@@ -78,11 +78,11 @@ export const createRunBindingCorrelationService = (context: ApplicationHandlerCo
 
     withAppDatabase(context.storage.appDatabasePath, (db) => {
       withTransaction(db, () => {
-        createPendingBindingIntentRepository(db).insertPendingIntent(pendingIntent);
+        createPendingLaunchRequestRepository(db).insertPendingLaunchRequest(pendingLaunchRequest);
       });
     });
 
-    return pendingIntent;
+    return pendingLaunchRequest;
   },
 
   finalizeBindingForBrief(input: {
@@ -90,25 +90,25 @@ export const createRunBindingCorrelationService = (context: ApplicationHandlerCo
     binding: ApplicationRunBindingSummary;
     committedAt?: string;
   }): void {
-    const bindingIntentId = requireBindingIntentId(input.binding);
+    const launchRequestId = requireLaunchRequestId(input.binding);
     const briefId = requireNonEmptyString(input.briefId, "briefId");
     const committedAt = input.committedAt ?? new Date().toISOString();
 
     withAppDatabase(context.storage.appDatabasePath, (db) => {
       withTransaction(db, () => {
-        const pendingIntentRepository = createPendingBindingIntentRepository(db);
+        const pendingLaunchRequestRepository = createPendingLaunchRequestRepository(db);
         const briefBindingRepository = createBriefBindingRepository(db);
-        const pendingIntent = pendingIntentRepository.getByBindingIntentId(bindingIntentId);
+        const pendingLaunchRequest = pendingLaunchRequestRepository.getByLaunchRequestId(launchRequestId);
         const existingBinding = briefBindingRepository.getByBindingId(input.binding.bindingId);
 
-        ensureBindingConsistency(pendingIntent, existingBinding, { briefId, binding: input.binding });
+        ensureBindingConsistency(pendingLaunchRequest, existingBinding, { briefId, binding: input.binding });
         briefBindingRepository.upsertBinding({
           ...toBindingRecord(briefId, input.binding, committedAt),
           artifactCatchupCompletedAt: existingBinding?.artifactCatchupCompletedAt ?? null,
         });
-        if (pendingIntent) {
-          pendingIntentRepository.markCommitted({
-            bindingIntentId,
+        if (pendingLaunchRequest) {
+          pendingLaunchRequestRepository.markCommitted({
+            launchRequestId,
             bindingId: input.binding.bindingId,
             committedAt,
           });
@@ -118,7 +118,7 @@ export const createRunBindingCorrelationService = (context: ApplicationHandlerCo
   },
 
   resolveBriefIdForBinding(binding: ApplicationRunBindingSummary): string {
-    const bindingIntentId = requireBindingIntentId(binding);
+    const launchRequestId = requireLaunchRequestId(binding);
 
     return withAppDatabase(context.storage.appDatabasePath, (db) =>
       withTransaction(db, () => {
@@ -128,50 +128,50 @@ export const createRunBindingCorrelationService = (context: ApplicationHandlerCo
           return existingBinding.briefId;
         }
 
-        const pendingIntentRepository = createPendingBindingIntentRepository(db);
-        const pendingIntent = pendingIntentRepository.getByBindingIntentId(bindingIntentId);
-        if (!pendingIntent) {
+        const pendingLaunchRequestRepository = createPendingLaunchRequestRepository(db);
+        const pendingLaunchRequest = pendingLaunchRequestRepository.getByLaunchRequestId(launchRequestId);
+        if (!pendingLaunchRequest) {
           throw new Error(
-            `Brief Studio could not resolve binding '${binding.bindingId}' from bindingIntentId '${bindingIntentId}'.`,
+            `Brief Studio could not resolve binding '${binding.bindingId}' from launchRequestId '${launchRequestId}'.`,
           );
         }
 
         const committedAt = new Date().toISOString();
-        briefBindingRepository.upsertBinding(toBindingRecord(pendingIntent.briefId, binding, committedAt));
-        pendingIntentRepository.markCommitted({
-          bindingIntentId,
+        briefBindingRepository.upsertBinding(toBindingRecord(pendingLaunchRequest.briefId, binding, committedAt));
+        pendingLaunchRequestRepository.markCommitted({
+          launchRequestId,
           bindingId: binding.bindingId,
           committedAt,
         });
-        return pendingIntent.briefId;
+        return pendingLaunchRequest.briefId;
       }),
     );
   },
 
-  async reconcileBindingIntent(bindingIntentId: string): Promise<{
+  async reconcileLaunchRequest(launchRequestId: string): Promise<{
     briefId: string;
     binding: ApplicationRunBindingSummary;
   } | null> {
-    const normalizedBindingIntentId = requireNonEmptyString(bindingIntentId, "bindingIntentId");
-    const pendingIntent = withAppDatabase(context.storage.appDatabasePath, (db) =>
-      createPendingBindingIntentRepository(db).getByBindingIntentId(normalizedBindingIntentId),
+    const normalizedLaunchRequestId = requireNonEmptyString(launchRequestId, "launchRequestId");
+    const pendingLaunchRequest = withAppDatabase(context.storage.appDatabasePath, (db) =>
+      createPendingLaunchRequestRepository(db).getByLaunchRequestId(normalizedLaunchRequestId),
     );
-    if (!pendingIntent) {
+    if (!pendingLaunchRequest) {
       return null;
     }
 
-    const binding = await context.runtimeControl.getRunBindingByIntentId(normalizedBindingIntentId);
+    const binding = await context.agentExecution.findByLaunchRequestId(normalizedLaunchRequestId);
     if (!binding) {
       return null;
     }
 
     this.finalizeBindingForBrief({
-      briefId: pendingIntent.briefId,
+      briefId: pendingLaunchRequest.briefId,
       binding,
     });
 
     return {
-      briefId: pendingIntent.briefId,
+      briefId: pendingLaunchRequest.briefId,
       binding,
     };
   },
