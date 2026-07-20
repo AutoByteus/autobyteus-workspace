@@ -247,6 +247,17 @@ graph TD;
 3.  **Service**: `mermaidService.ts` wraps the `mermaid` library to initialize settings (theme, security) and generate the SVG.
 4.  **Inspection**: Every successful render provides one localized expand action as an absolute top-right overlay that reserves no diagram layout space. On hover-capable fine-pointer input it stays visually quiet at rest and appears when the preview is hovered or the control receives keyboard focus. On no-hover/coarse input, including a fine-primary device with any coarse secondary pointer, it stays visible with a touch-safe target. The action, or a primary click/tap on non-interactive diagram space, opens `MermaidDiagramViewer.vue` as a teleported modal. Loading and error states cannot open the viewer.
 
+Mermaid failures are contained at the renderer boundary. `mermaidService.initialize()`
+sets `suppressErrorRendering: true`, so a rejected parse/render returns to
+`MermaidDiagram.vue` without Mermaid inserting its fallback error SVG into the
+document body. The component renders the localized, app-owned error card inside
+the Markdown segment; its `min-w-0`/`max-w-full`/horizontal containment and
+wrapping rules keep long parser messages from widening the feed or workspace.
+Error state cannot open the viewer, navigate, call backend/persistence paths, or
+be fixed by hiding global body overflow. Repeated renders and unmounts continue
+to use the existing generation invalidation, so stale failures and vendor nodes
+cannot accumulate outside the component.
+
 The viewer mounts the current live SVG only once, initially fits the complete
 diagram to its canvas, and supports toolbar, keyboard, wheel/trackpad, pointer,
 touch, and native-scroll interaction. Its persistent toolbar contains exactly

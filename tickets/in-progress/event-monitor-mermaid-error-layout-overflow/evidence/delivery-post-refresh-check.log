@@ -1,0 +1,46 @@
+Delivery post-refresh integrated-state check
+2026-07-20T16:14:32Z
+HEAD=428e3f88df2b8022a81c92f00b91d1234f8ca91e
+BASE=origin/personal@06b61a5a349d2cc8d46ecae74e53bebfdeb0ed54
+BASE_REFRESH=merged latest tracked remote base with git merge --no-edit origin/personal
+COMMAND=pnpm --dir autobyteus-web exec vitest run services/__tests__/mermaidService.spec.ts components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts --reporter=dot
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/autobyteus-web
+
+stderr | services/__tests__/mermaidService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/__tests__/mermaidService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··················
+
+ Test Files  4 passed (4)
+      Tests  18 passed (18)
+   Start at  18:14:34
+   Duration  4.98s (transform 2.45s, setup 17.26s, collect 84ms, tests 125ms, environment 828ms, prepare 603ms)
+
