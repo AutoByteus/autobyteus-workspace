@@ -1,15 +1,19 @@
 # Delivery base refresh
-checked_at_utc=2026-07-16T09:08:53Z
+checked_at_utc=2026-07-17T15:47:03Z
 ticket_branch=codex/agent-idle-status-lifecycle
-ticket_head=4b434659d9a9c12058e62055a1b98244a3b71795
-reviewed_checkpoint=4b434659d9a9c12058e62055a1b98244a3b71795
+ticket_head=af78a9307611f58c383ea5b5c9d8dd727deeb918
+pre_merge_checkpoint=d88dd1e7345a70e0f923384e5f615011e5da3ad4
 bootstrap_origin_personal=fbd7b6764bd43751956d69ffe22b943d06188444
-latest_origin_personal=fbd7b6764bd43751956d69ffe22b943d06188444
-base_advanced=no
+latest_origin_personal=dbc83fdb51c1e158b5707c219dd8574dc49fa493
+latest_origin_personal_tag=v1.4.17
+base_advanced=yes
+base_commits_integrated=79
 ticket_contains_latest_base=yes
-behind=0 ahead=7
-integration_method=already_current
-new_base_commits_integrated=none
+behind=0 ahead=9
+integration_method=merge
+merge_commit=af78a9307611f58c383ea5b5c9d8dd727deeb918
+merge_conflicts=none
+post_integration_smoke=6_files_38_tests_pass
 round5_evidence_refresh=api_e2e_pass_97.7_and_round5_test_review_pass
-electron_user_test_build=pass_macos_arm64_personal_1.4.14
+electron_user_test_build=pass_macos_arm64_personal_1.4.17
 verification_hold=active

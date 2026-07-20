@@ -5,8 +5,8 @@
 - Ticket: `agent-idle-status-lifecycle`
 - Trigger: Delivery-stage documentation synchronization after source review and the cumulative API/E2E package through round 5 passed, including live Codex, Claude, and AutoByteus lifecycle validation and successful proportional review of all eight cumulative durable test paths.
 - Bootstrap base reference: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
-- Integrated base reference used for docs sync: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`; the tracked base had not advanced, so the ticket branch was already current and no merge/rebase was required.
-- Post-integration verification reference: ticket checkpoint `4b434659d9a9c12058e62055a1b98244a3b71795` plus the delivery working tree, with the six-file lifecycle smoke passing 38/38 in `execution-evidence/31-delivery-integrated-smoke.log`; live Claude standalone/team passes in logs `31`, `35`, and `36`; and live AutoByteus + DeepSeek standalone, two-member restore/projection, and real inter-agent delivery passes in logs `40`, `41`, and `43`. Round-5 cleanup/security and package audits passed in logs `44` and `45`.
+- Integrated base reference used for final docs sync: `origin/personal` at `dbc83fdb51c1e158b5707c219dd8574dc49fa493` (`v1.4.17`). The base advanced by 79 commits; checkpoint `d88dd1e7345a70e0f923384e5f615011e5da3ad4` was protected and the base merged cleanly into ticket head `af78a9307611f58c383ea5b5c9d8dd727deeb918`.
+- Post-integration verification reference: the six-file lifecycle smoke passed 38/38 in `execution-evidence/49-post-latest-base-lifecycle-smoke.log`; the latest macOS ARM64 Electron `1.4.17` build and native-runtime verification passed in logs `50`-`52`. The merged long-lived docs still contain the boundary-owned lifecycle, additive error-field, activity-neutral, and retired-turn semantics, so the new base required no corrective lifecycle doc edit.
 
 ## Why Docs Were Updated
 
@@ -59,7 +59,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync is complete against the latest tracked `origin/personal`. Delivery smoke passed 6 files / 38 tests. Later live Claude and AutoByteus + DeepSeek rounds validate the documented shared lifecycle contract. Round 5 changed only a provider-aware E2E configuration so DeepSeek v4 disables thinking when forced tool choice is required; it does not alter production behavior or the documented lifecycle/error contract. The later user-requested Electron package build also introduced no source or documentation semantics, so no further long-lived doc edit or implementation-source review reopening was needed.
+- Notes: Docs sync is complete against `origin/personal@dbc83fdb51c1e158b5707c219dd8574dc49fa493`. The 79-commit base refresh merged without conflicts or effective lifecycle changes; delivery smoke passed 6 files / 38 tests and the rebuilt Electron `1.4.17` package passed verification. Live Claude and AutoByteus + DeepSeek rounds validate the documented shared lifecycle contract. Round 5 changed only provider-aware E2E configuration; neither it nor the new base/Electron packaging changed the documented lifecycle/error contract, so implementation-source review was not reopened.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

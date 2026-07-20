@@ -16,19 +16,20 @@
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
-- Latest tracked remote base reference checked: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444` after the post-Electron-build refresh `git fetch origin personal` at `2026-07-16T09:08:53Z`
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Completed` — `4b434659d9a9c12058e62055a1b98244a3b71795` packages the round-1 seven-path reviewed durable-test set and evidence. The reviewed round-5 test-only update and refreshed reports/evidence remain uncommitted under the user-verification hold.
-- Integration method: `Already current`
+- Latest tracked remote base reference checked: `origin/personal@dbc83fdb51c1e158b5707c219dd8574dc49fa493` (`v1.4.17`) after `git fetch origin personal` at `2026-07-17T15:47:03Z`.
+- Base advanced since bootstrap or previous refresh: `Yes`, by 79 commits.
+- New base commits integrated into the ticket branch: `Yes`.
+- Local checkpoint commit result: `Completed` — `d88dd1e7345a70e0f923384e5f615011e5da3ad4` protects the reviewed candidate and delivery package before integration.
+- Integration method: merge of latest `origin/personal` into the ticket branch.
 - Integration result: `Completed`
-- Post-integration executable checks rerun: `Yes` — voluntary delivery confirmation although no new base commits required a rerun.
+- Merge result: `af78a9307611f58c383ea5b5c9d8dd727deeb918`, no conflicts.
+- Post-integration executable checks rerun: `Yes` — required after integrating new base commits.
 - Post-integration verification result: `Passed` — 6 files / 38 tests.
 - No-rerun rationale (only if no new base commits were integrated): N/A; a focused smoke was rerun and passed.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): N/A
-- Evidence: delivery logs `31-delivery-integrated-smoke.log` through `34-delivery-handoff-audit.txt`; Claude logs `31-live-claude-lifecycle-rerun.log`, `35-live-claude-team-roundtrip.log`, and `36-live-claude-team-restore.log`; AutoByteus + DeepSeek logs `37-live-autobyteus-deepseek-lifecycle.log` through `45-round5-final-audit.log`; and Electron build/verification/checksum evidence `46` through `48`.
+- Evidence: earlier delivery/API/E2E evidence remains authoritative; latest-base smoke, Electron rebuild, verification, checksums, integration record, and final audit are logs `49` through `54`.
 - Round-2 evidence refresh: `origin/personal` remained unchanged; the existing Claude runtime test was re-executed without source changes and passed 1 / 19 skipped. No additional base integration, implementation-source review, delivery smoke, or durable-test review was required.
 - Round-3 evidence refresh: two existing Claude team scenarios were re-executed without source changes and each passed 1 / 4 skipped. No additional base integration, implementation-source review, delivery smoke, or durable-test review was required.
 - Round-4/round-5 evidence refresh: the initial invalid DeepSeek credential was historical/environmental. After refresh, live AutoByteus standalone lifecycle, two-member restore/projection, and real inter-agent delivery passed. The only round-5 durable delta was a narrow DeepSeek forced-tool E2E configuration update; proportional test-code review passed with no findings. Production source and its scorecard were not reopened.
@@ -37,14 +38,14 @@
 
 - Initial explicit user completion/verification received: `No`
 - Initial verification reference: N/A
-- Renewed verification required after later re-integration: `No` at this stage
-- Renewed verification received: `Not needed`
+- Renewed verification required after later re-integration: `Yes`
+- Renewed verification received: `No`
 - Renewed verification reference: N/A
 
 ## Local Electron User-Test Build
 
 - User-requested local build result: `Pass`, exit status `0`.
-- Target: macOS ARM64, `personal` flavor, app version `1.4.14`, Electron `42.4.1`.
+- Target: macOS ARM64, `personal` flavor, app version `1.4.17`, Electron `42.4.1`.
 - README method: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= ... pnpm build:electron:mac` from `autobyteus-web`.
 - Outputs: DMG, ZIP, updater blockmaps/metadata, and unpacked `AutoByteus.app` under `autobyteus-web/electron-dist`.
 - Verification: ZIP integrity, DMG metadata, app/version/architecture, Electron runtime, and staged/packaged `node-pty` architecture/execute-bit/real-spawn checks passed.
@@ -72,19 +73,19 @@
 
 ## Version / Tag / Release Commit
 
-No version bump, release commit, or tag has been created. Current release baseline is `v1.4.14` / package version `1.4.14`. If a new release is explicitly requested after verification, the documented root `pnpm release <version> -- --release-notes tickets/done/agent-idle-status-lifecycle/release-notes.md` path will be used only after repository finalization and ticket archival.
+No ticket-owned version bump, release commit, or tag has been created. The integrated base's current release baseline is `v1.4.17` / package version `1.4.17`. If a new release is explicitly requested after verification, the documented root `pnpm release <version> -- --release-notes tickets/done/agent-idle-status-lifecycle/release-notes.md` path will be used only after repository finalization and ticket archival.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/investigation-notes.md`
 - Ticket branch: `codex/agent-idle-status-lifecycle`
-- Ticket branch commit result: `Checkpoint only`; the reviewed round-5 test update and final delivery docs/reports/evidence await the post-verification package commit.
+- Ticket branch commit result: pre-integration checkpoint `d88dd1e7345a70e0f923384e5f615011e5da3ad4` plus allowed latest-base merge `af78a9307611f58c383ea5b5c9d8dd727deeb918`; refreshed delivery reports/evidence await post-verification finalization.
 - Ticket branch push result: `Not started — user-verification hold`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: N/A; verification not yet received.
-- Delivery-owned edits protected before re-integration: `Not needed`; target has not advanced.
-- Re-integration before final merge result: `Not needed` at current refresh.
+- Delivery-owned edits protected before re-integration: `Completed` in checkpoint `d88dd1e7345a70e0f923384e5f615011e5da3ad4`.
+- Re-integration before final merge result: latest base merged cleanly and checked; any later target advance will require another refresh and renewed verification if user-facing state changes.
 - Target branch update result: `Not started — user-verification hold`
 - Merge into target result: `Not started — user-verification hold`
 - Push target branch result: `Not started — user-verification hold`
@@ -143,7 +144,7 @@ No deployment has been performed. If release is later requested, the repository'
 - Live Claude team lifecycle: the round-3 bidirectional two-member roundtrip/status and two-member terminate/restore/continue scenarios each passed 1 / 4 skipped, exit 0. Both used the unchanged existing durable file and cleaned owned data/processes without touching the user app.
 - Live AutoByteus + DeepSeek lifecycle: the round-5 standalone scenario passed 1 / 19 skipped; two-member restore/projection and corrected `send_message_to`/reference-file scenarios each passed 1 / 4 skipped. Cleanup and credential-retention audits passed, and the user app on port 29695 remained untouched.
 - Local Electron package: macOS ARM64 build passed; DMG/ZIP integrity and staged/packaged terminal native-runtime probes passed. Interactive launch is deliberately left to the user after quitting the currently running AutoByteus instance on port 29695.
-- Base audit: branch contains latest `origin/personal`; ahead 7 / behind 0 at checkpoint; base unchanged from bootstrap.
+- Base audit: branch contains `origin/personal@dbc83fdb51c1e158b5707c219dd8574dc49fa493`; ahead 9 / behind 0 at integrated head `af78a9307611f58c383ea5b5c9d8dd727deeb918`.
 - Repository artifact hygiene: passed across 14,693 tracked paths at the 200-character checkout threshold.
 - Docs/artifact handoff audit: passed tracked/untracked whitespace checks, cumulative artifact presence, authoritative evidence markers, base containment, ticket state, and remote ticket-branch absence.
 - Provider round history/residuals: the round-1 Claude HTTP 401 and round-4 DeepSeek HTTP 401 were resolved by credential refreshes and remain history only. The round-5 forced-tool HTTP 400 was stale provider-specific test setup, corrected test-only and passed on rerun. Live Codex, Claude, and AutoByteus standalone/team journeys now pass. The only bounded material residual is production-duration retired-turn-ID retention. No Electron-specific boundary changed; the later user-requested package build passed, while interactive execution is the pending user-verification step.
@@ -162,4 +163,4 @@ Rollback or reroute if user verification or later rollout shows any of the follo
 
 ## Final Status
 
-`Ready for explicit user verification`. The reviewed candidate is preserved, `origin/personal` is unchanged/current, delivery docs are synchronized, release notes are prepared, the delivery smoke passed 38/38, and live Codex, Claude, and AutoByteus standalone/team lifecycle journeys passed. Round-5 proportional review passed and final API/E2E confidence is 97.7%. The user-requested macOS ARM64 Electron package and native runtime verification also passed and are ready for interactive testing. The only bounded material residual is production-duration retired-turn-ID retention. Ticket archival, final package commit/push, merge to `personal`, release/version/tag/publication/deployment, and cleanup remain intentionally on hold until the user verifies the behavior and states release intent.
+`Ready for explicit user verification`. The reviewed candidate is preserved, the 79-commit advance to `origin/personal@dbc83fdb51c1e158b5707c219dd8574dc49fa493` was merged without conflicts, the refreshed lifecycle smoke passed 38/38, and the macOS ARM64 Electron `1.4.17` package/native runtime verification passed. API/E2E remains `Pass` at 97.7% confidence; live Codex, Claude, and AutoByteus standalone/team journeys passed. The only bounded material residual is production-duration retired-turn-ID retention. Ticket archival, final push/merge to `personal`, release/version/tag/publication/deployment, and cleanup remain intentionally on hold until the user verifies the rebuilt app and states release intent.

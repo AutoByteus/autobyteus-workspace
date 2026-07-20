@@ -1,0 +1,99 @@
+# Latest origin/personal integration record
+requested_by_user=true
+checked_at_utc=2026-07-17T15:47:03Z
+ticket_branch=codex/agent-idle-status-lifecycle
+pre_merge_checkpoint=d88dd1e7345a70e0f923384e5f615011e5da3ad4
+previous_base=fbd7b6764bd43751956d69ffe22b943d06188444
+latest_origin_personal=dbc83fdb51c1e158b5707c219dd8574dc49fa493
+latest_origin_personal_tag=v1.4.17
+base_commits_integrated=79
+integration_method=merge
+merge_commit=af78a9307611f58c383ea5b5c9d8dd727deeb918
+merge_conflicts=none
+behind=0 ahead=9
+ticket_contains_latest_base=yes
+post_merge_lifecycle_smoke=6_files_38_tests_pass
+post_merge_electron_build=macos_arm64_personal_1.4.17_pass
+post_merge_electron_verification=pass
+lifecycle_doc_markers_preserved=yes
+verification_hold=active
+
+## Merge metadata
+commit=af78a9307611f58c383ea5b5c9d8dd727deeb918
+parents=d88dd1e7345a70e0f923384e5f615011e5da3ad4 dbc83fdb51c1e158b5707c219dd8574dc49fa493
+subject=Merge remote-tracking branch 'origin/personal' into codex/agent-idle-status-lifecycle
+committed=2026-07-17T17:17:20+02:00
+
+## New-base first-parent summary
+dbc83fdb5 chore(release): bump workspace release version to 1.4.17
+7ad6ef208 chore(delivery): record integrated finalization check
+9855e3e8d chore(ticket): archive event monitor delivery package
+b59c76686 fix: show label-only event monitor file links
+45a8c217a chore(ticket): checkpoint event monitor round4 delivery package
+46b9b8e13 fix: refine event monitor file links and nodes strip icon
+75a4c97f2 docs(delivery): record right panel release finalization
+a0d374fad fix: reject incomplete event monitor paths
+9a553feea chore(release): bump workspace release version to 1.4.16
+f023933ef chore(delivery): finalize right panel resize collapse
+ce9303994 chore(ticket): checkpoint event monitor round2 delivery package
+6cdbc5e76 ui: lighten transient drawer scrims
+3fef8ad9c fix workspace right panel compact resize precedence
+7140696c8 fix: restore lua file preview support
+66185f725 fix: gate event monitor actions by supported preview type
+e6f4cc0f0 chore(ticket): checkpoint event monitor delivery package
+894edc01d chore(delivery): finalize release records
+42afb9eea chore(delivery): record responsive ux cleanup
+53a82f00b chore(delivery): record v1.4.15 release
+a22647313 chore(release): bump workspace release version to 1.4.15
+7ec637e9b chore(delivery): record personal integration
+3aef4eb2d chore(delivery): record final target refresh
+a6d2150c7 chore(delivery): record responsive ux ticket push
+544394c02 chore(delivery): finalize responsive ux audit
+2a342a3fb fix: close event monitor preview review findings
+47fd56803 feat: preview event monitor absolute file paths
+45db1ce8e chore(delivery): checkpoint responsive ux round20 before base refresh
+078c3fffb fix: preserve opposite strip hit targets
+b47b62743 fix: remove strip stacking layer
+e6b062f75 fix: keep responsive strips in flow
+28a3bb9e7 chore(delivery): checkpoint responsive ux round18 before base refresh
+d66c9cc8e fix: share responsive left shell across routes
+7ead9cbef chore(delivery): checkpoint responsive ux round17 before base refresh
+ff98ad19e fix: restore native right-tool tab scrolling
+bc1b8368c chore(delivery): checkpoint responsive ux round16 before base refresh
+63f487580 fix: expose one modal drawer owner
+f8bbbaa55 fix: align independent drawer visual layers
+d2cb35563 fix: keep independent workspace drawers modal-safe
+604be7b73 fix: preserve independent workspace drawer focus
+2f478f8ee fix(workspace): hide strips behind transient drawers
+367ea7853 chore(delivery): checkpoint responsive ux round15 before base refresh
+7eceffbd5 fix(workspace): preserve drawer activation lifecycle
+56ee3c3b0 fix(workspace): preserve personal strip controls
+377aa1bba chore(delivery): checkpoint responsive ux round14 before base refresh
+efcc49e2a fix(workspace): remove dead left-strip event
+cc2d053fc feat(workspace): add explicit strip activation contract
+d35f029a6 fix(workspace): scope default surfaces and preserve drawer preferences
+2c4f2f003 fix(workspace): narrow responsive policy state types
+fbc33091a fix(workspace): use symmetric responsive side strips
+46206103b chore(delivery): checkpoint responsive ux round13 before base refresh
+4ca4d0153 fix(workspace): preserve adaptive right resize intent
+12779fe97 chore(delivery): checkpoint responsive ux round12 before base refresh
+648dad8a3 fix(workspace): reconcile resize handle geometry
+66600b898 fix(workspace): bound right panel resizing
+162372502 chore(delivery): checkpoint responsive ux round9 before base refresh
+e5b78e9d6 fix(workspace): keep right strip as sole reopen affordance
+31abc363e chore(delivery): checkpoint responsive ux round8 before base refresh
+3a41ebe5b fix(workspace): establish left drawer sizing context
+f37df2187 fix(workspace): close responsive review gaps
+024237c71 refactor(workspace): compose responsive shell policy
+fb18a65c7 fix(workspace): restore adaptive shell ownership
+84486c48e chore(delivery): checkpoint responsive ux round7 before base refresh
+5883ea8c3 fix(workspace): pin tab overflow controls to scrollport
+53a5a99fb docs(ticket): clarify right-tool tab rework handoff
+07048b52d fix(workspace): restore single-row scrolling tool tabs
+2db854afe chore(delivery): checkpoint responsive ux round5 before base refresh
+bb3b2fe49 fix(workspace): wrap right tool tabs in constrained panels
+2c8345545 docs(ticket): record integrated order test fix
+9a9fa78d2 test(workspace): include integrated usage tab order
+a1f12ef2f chore(delivery): checkpoint responsive ux validation before base refresh
+f614a42cb docs(ticket): refresh responsive implementation handoff
+031717407 chore(delivery): checkpoint responsive ux candidate before base refresh
