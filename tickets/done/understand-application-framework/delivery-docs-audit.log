@@ -1,0 +1,61 @@
+# Delivery docs audit
+timestamp=2026-07-20T10:32:11Z
+ticket_head=0157007bacfed70feed726f78a5b1f7e89ab8877
+integrated_base=bda6615a754c8fe913fb2650d7bdae9c4e1ed013
+
+## removed current terminology (expect no matches)
+result=PASS (no matches)
+
+## canonical capability and launch-request terminology (expect matches)
+autobyteus-application-backend-sdk/README.md:21:  definitionContractVersion: '3',
+autobyteus-application-backend-sdk/README.md:41:      const published = await appContext.publishedArtifacts.list(artifact.runId)
+autobyteus-application-backend-sdk/README.md:58:- `application.json` may declare `executionResourceSlots[]`; app backends should resolve launch resources through `context.agentResources.getConfigured(slotKey)` instead of hardcoded runtime targets.
+autobyteus-application-backend-sdk/README.md:59:- App code and manifests use `executionResourceRef` / `source` together with the `agentResources` capability.
+autobyteus-application-backend-sdk/README.md:62:- Applications that need guaranteed artifact catch-up should use `agentExecution.list(...)`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`, then apply their own idempotency keyed by `revisionId`.
+autobyteus-application-sdk-contracts/README.md:53:  - `agentExecution`, `agentResources`, and `publishedArtifacts`
+autobyteus-application-sdk-contracts/README.md:100:SDK consumers use the `ApplicationExecutionResource*` types, `source`, `executionResourceRef`, `executionResourceSlots[]`, and `agentResources.listAvailable(...)` / `agentResources.getConfigured(...)`.
+autobyteus-application-sdk-contracts/README.md:125:- application-authored `agentResources.getConfigured(...)` + `agentExecution.startAgentTeam(...)`
+autobyteus-application-sdk-contracts/README.md:126:- published-artifact reads via `publishedArtifacts.list(...)`
+autobyteus-server-ts/docs/modules/application_engine.md:56:- Worker-side `context.agentExecution`, `context.agentResources`, and `context.publishedArtifacts` calls are bridged back to `ApplicationOrchestrationHostService` through one discriminated engine protocol; application backends do not launch agent/team runs directly inside the worker process.
+autobyteus-server-ts/docs/modules/application_orchestration.md:5:Owns application-authored runtime orchestration after an application backend is running: list available execution resources, start bound agents and teams, persist durable run bindings keyed by app-owned `launchRequestId`, route live input/termination to those bindings, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
+autobyteus-server-ts/docs/modules/application_orchestration.md:35:- Application backends own the decision to start runtime work by calling `context.agentExecution.startAgent(...)` or `startAgentTeam(...)` from inside the application worker.
+autobyteus-server-ts/docs/modules/application_orchestration.md:36:- `launchRequestId` is an app-generated, non-empty correlation identifier for one launch request. The platform persists and echoes it, while business identity stays in app-owned state. It supports recovery lookup and is not an idempotent-start guarantee.
+autobyteus-server-ts/docs/modules/application_orchestration.md:37:- Runtime-originated artifact publication is a runtime-wide concern owned by the shared published-artifact subsystem. Application orchestration does not validate the tool payload or persist artifact truth; it only relays bound-run `ARTIFACT_PERSISTED` events and exposes reads through `context.publishedArtifacts`.
+autobyteus-server-ts/docs/modules/application_orchestration.md:45:- `agentExecution.startAgent(...)`, `startAgentTeam(...)`, `sendInput(...)`, `terminate(...)`, `get(...)`, `list(...)`, and `findByLaunchRequestId(...)`
+autobyteus-server-ts/docs/modules/application_orchestration.md:46:- `agentResources.listAvailable(...)` and `getConfigured(...)`
+autobyteus-server-ts/docs/modules/application_orchestration.md:47:- `publishedArtifacts.list(runId)` and `readRevision({ runId, revisionId })`
+autobyteus-server-ts/docs/modules/application_orchestration.md:49:`agentResources.listAvailable(...)` returns both:
+autobyteus-server-ts/docs/modules/application_orchestration.md:54:`agentResources.getConfigured(slotKey)` resolves the effective resource selection for one manifest-declared slot after validating:
+autobyteus-server-ts/docs/modules/application_orchestration.md:64:- an app-owned `launchRequestId`,
+autobyteus-server-ts/docs/modules/application_orchestration.md:69:The orchestration host validates the resource choice and explicit start kind, launches the underlying agent/team run, persists one durable binding together with `launchRequestId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary. Runtime skill exposure still comes from the selected agent/team definitions: agent starts and each team leaf member use configured skills only, and `GLOBAL_DISCOVERY` values in app-authored inputs are rejected rather than normalized into broader access.
+autobyteus-server-ts/docs/modules/application_orchestration.md:71:`publishedArtifacts.list(runId)` and `readRevision({ runId, revisionId })` provide application-owned read access to the shared published-artifact store after validating that the requested run still belongs to the calling application. These reads are for application/runtime consumers such as Brief Studio and Socratic reconciliation; the current web Artifacts tab is not a consumer of this API.
+autobyteus-server-ts/docs/modules/application_orchestration.md:92:`agentExecution` input.
+autobyteus-server-ts/docs/modules/application_orchestration.md:149:- Applications recover missed deliveries by calling `agentExecution.list(...)`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`, then applying their own idempotency keyed by `revisionId`.
+applications/brief-studio/README.md:11:- pending `launchRequestId` handoff before each direct draft-run launch
+autobyteus-server-ts/docs/modules/agent_team_definition.md:47:- Those defaults seed direct team launches and application-authored backend orchestration flows that decide to start a team through `context.agentExecution.startAgentTeam(...)`.
+autobyteus-web/docs/applications.md:208:- `@autobyteus/application-sdk-contracts` for shared manifest, request-context, storage, `agentExecution`, `agentResources`, and `publishedArtifacts` capability types, plus execution-event types
+autobyteus-server-ts/docs/modules/agent_definition.md:57:- application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.agentExecution.startAgent(...)`.
+applications/socratic-math-teacher/README.md:11:- one long-lived binding reused through `agentExecution.sendInput(...)`
+docs/custom-application-development.md:133:Application backends observe durable published artifacts through `artifactHandlers.persisted`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`.
+autobyteus-server-ts/docs/modules/applications.md:44:- `sdkCompatibility.backendDefinitionContractVersion` must be `"3"`; v2 bundles are rejected during discovery.
+autobyteus-server-ts/docs/modules/applications.md:95:- Bundles may expose zero or more bundled execution resources. Application backends can also choose shared agents/teams later through `context.agentResources`.
+autobyteus-server-ts/docs/modules/applications.md:118:- If the application backend later wants runtime work, it calls the named `context.agentExecution`, `context.agentResources`, or `context.publishedArtifacts` capability through the application-orchestration boundary.
+autobyteus-server-ts/docs/modules/application_sessions.md:10:- application backends decide when to start runs by calling `context.agentExecution.startAgent(...)` or `startAgentTeam(...)`,
+autobyteus-server-ts/docs/modules/application_communication_model.md:13:| **Agent Execution And Resources** | Backend → Host Server → Runtime | App backend handler | `context.agentExecution.*`, `context.agentResources.*` | **Direct.** These capabilities launch/control bound agents and teams and resolve resources. | Mixed: run bindings and lifecycle events are durable (SQLite journals); live input/termination is transient. | Application Orchestration (`ApplicationOrchestrationHostService`) |
+autobyteus-server-ts/docs/modules/application_communication_model.md:14:| **Published-Artifact Reads** | Backend → Host Server → Artifact Store | App backend handler | `context.publishedArtifacts.list(...)`, `.readRevision(...)` | **Direct.** This capability reads durable published artifacts for application-owned runs. | Durable shared artifact store. | Application Orchestration (`ApplicationOrchestrationHostService`) |
+autobyteus-server-ts/docs/modules/application_communication_model.md:15:| **Artifact Relay** | Runtime → Host Server → Backend | Runtime / published artifact subsystem | `artifactHandlers.persisted(event, context)` (app backend handler receives the event) | Indirect: the relay uses binding state managed by orchestration, but it is not a context-capability call. | Best-effort live delivery. Apps recover missed artifacts through `context.publishedArtifacts`. | Application Published Artifact Relay (`ApplicationPublishedArtifactRelayService`) |
+autobyteus-server-ts/docs/modules/application_communication_model.md:22:`context.publishNotification(topic, payload)` publishes a live, non-durable message to subscribed app frontends. It does not interact with `agentExecution`, does not start or manage runs, and does not persist anything. The handler decides which separate context capability, if any, to call.
+autobyteus-server-ts/docs/modules/application_communication_model.md:45:| Brief Studio fetches a generated document's text | Request/Response + Published-Artifact Read | App backend's command handler calls `context.publishedArtifacts.readRevision({ runId, revisionId })` and returns the result to the frontend via the normal command response. |
+autobyteus-server-ts/docs/modules/application_communication_model.md:46:| Socratic Math Teacher starts a tutoring run | Request/Response + Agent Execution | Frontend calls `client.command("startTutoring", { topic })`. Backend handler calls `context.agentExecution.startAgentTeam(...)` and returns the binding summary. |
+result=PASS
+
+## ticket/base path overlap since bootstrap base
+result=PASS (no changed-path overlap)
+
+## worktree status
+## codex/understand-application-framework...origin/personal [ahead 5]
+?? tickets/in-progress/understand-application-framework/delivery-docs-audit.log
+?? tickets/in-progress/understand-application-framework/delivery-integration-build.log
+?? tickets/in-progress/understand-application-framework/delivery-integration-verification-attempt1-missing-worker.log
+?? tickets/in-progress/understand-application-framework/delivery-integration-verification.log
+result=PASS (delivery artifacts only expected uncommitted)

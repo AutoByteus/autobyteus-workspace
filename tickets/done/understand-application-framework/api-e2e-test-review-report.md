@@ -4,13 +4,13 @@
 
 - Review Round: `1`
 - Trigger: API/E2E execution round 2 passed against `ef1e083678e8966c5a30936000442d679dd14191` and returned one added durable integration test for proportional review.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/requirements.md`
 - Supplemental Task Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/application-context-api-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/framework-understanding.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/code-review-report.md` (implementation-source review round 4, Pass)
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-execution-coverage-report.md` (execution round 2, Pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/application-context-api-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/framework-understanding.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/code-review-report.md` (implementation-source review round 4, Pass)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/api-e2e-execution-coverage-report.md` (execution round 2, Pass)
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `96.8%`
 - Prior unresolved test-review findings rechecked: `None — first proportional test-review round.`

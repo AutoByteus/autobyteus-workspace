@@ -1,0 +1,45 @@
+# Finalization precommit check
+timestamp=2026-07-20T11:23:27Z
+ticket_head_before_final_commit=0157007bacfed70feed726f78a5b1f7e89ab8877
+origin_personal=bda6615a754c8fe913fb2650d7bdae9c4e1ed013
+divergence=5 0
+
+## required archived artifacts
+PASS tickets/done/understand-application-framework/requirements.md
+PASS tickets/done/understand-application-framework/investigation-notes.md
+PASS tickets/done/understand-application-framework/design-spec.md
+PASS tickets/done/understand-application-framework/application-context-api-contract.md
+PASS tickets/done/understand-application-framework/framework-understanding.md
+PASS tickets/done/understand-application-framework/design-review-report.md
+PASS tickets/done/understand-application-framework/implementation-handoff.md
+PASS tickets/done/understand-application-framework/code-review-report.md
+PASS tickets/done/understand-application-framework/api-e2e-coverage-investigation.md
+PASS tickets/done/understand-application-framework/api-e2e-execution-coverage-report.md
+PASS tickets/done/understand-application-framework/api-e2e-test-review-report.md
+PASS tickets/done/understand-application-framework/docs-sync-report.md
+PASS tickets/done/understand-application-framework/handoff-summary.md
+PASS tickets/done/understand-application-framework/release-deployment-report.md
+PASS tickets/done/understand-application-framework/user-verification-report.md
+
+## authoritative status assertions
+tickets/done/understand-application-framework/code-review-report.md:262:- Review Decision: `Pass`
+tickets/done/understand-application-framework/design-review-report.md:253:- Review Decision: `Pass`
+217:- Result: **Pass**
+218:- Final validation confidence: `96.8%`
+14:- API/E2E Result: `Pass`
+49:- Result: `Pass`
+tickets/done/understand-application-framework/user-verification-report.md:9:- Repository finalization authorized: `Yes`
+tickets/done/understand-application-framework/handoff-summary.md:86:- Explicit user completion/verification received: `Yes`
+tickets/done/understand-application-framework/handoff-summary.md:89:- Repository finalization authorized: `Yes`
+
+## stale active-ticket path assertion
+PASS no stale active-ticket markdown references
+
+## user-tested package hash assertion
+dmg_sha256=0ac77f0a91ebb2699cde09de8eed384700a7407ed3c79ca2421841caf4171090
+zip_sha256=ad88581bd6ca21cbe29b59bb5806bca9ccdbd9b849cb05c4df7f5d2e43a22cd3
+
+## post-verification target state
+PASS target unchanged from user-tested base
+
+result=PASS

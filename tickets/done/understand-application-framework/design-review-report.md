@@ -2,12 +2,12 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-spec.md`
 - Supplemental Task Artifacts Reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/application-context-api-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/framework-understanding.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/application-context-api-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/framework-understanding.md`
 - Current Review Round: `4`
 - Trigger: Bounded re-review after `solution_designer` corrected the two active-package contradictions recorded as `DR-003` and completed a focused no-migration assertion audit.
 - Prior Review Round Reviewed: `3`

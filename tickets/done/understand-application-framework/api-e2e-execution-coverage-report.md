@@ -2,16 +2,16 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-spec.md`
 - Supplemental Task Artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/application-context-api-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/framework-understanding.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/code-review-report.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/application-context-api-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/framework-understanding.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/code-review-report.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/api-e2e-coverage-investigation.md`
 - Current Execution Round: `2`
 - Trigger: Implementation-source review round 4 passed `CR-002` at `ef1e083678e8966c5a30936000442d679dd14191` and requested re-execution of `INV-001` / `AC-005` plus relevant regressions.
 - Prior Round Reviewed: `1`

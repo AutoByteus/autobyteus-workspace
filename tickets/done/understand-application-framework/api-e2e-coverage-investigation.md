@@ -2,15 +2,15 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-spec.md`
 - Supplemental Task Artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/application-context-api-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/framework-understanding.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/application-context-api-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/framework-understanding.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/code-review-report.md`
 - Current Investigation Round: `2`
 - Trigger: Implementation-source review round 4 passed the bounded `CR-002` documentation fix at `ef1e083678e8966c5a30936000442d679dd14191`; API/E2E must recheck the prior `INV-001` / `AC-005` failure and proportionate regressions.
 - Prior Investigation Reviewed: `1`
@@ -144,8 +144,8 @@ None.
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm --filter @autobyteus/application-sdk-contracts test` | Worktree root | Public contract build/test | Pass — 4 tests | `tickets/in-progress/understand-application-framework/evidence/03-contract-devkit.log` |
-| 2 | `pnpm --filter @autobyteus/application-devkit test` | Worktree root | Template/package v3 and explicit v2 rejection | Pass — 13 tests | `tickets/in-progress/understand-application-framework/evidence/03-contract-devkit.log` |
+| 1 | `pnpm --filter @autobyteus/application-sdk-contracts test` | Worktree root | Public contract build/test | Pass — 4 tests | `tickets/done/understand-application-framework/evidence/03-contract-devkit.log` |
+| 2 | `pnpm --filter @autobyteus/application-devkit test` | Worktree root | Template/package v3 and explicit v2 rejection | Pass — 13 tests | `tickets/done/understand-application-framework/evidence/03-contract-devkit.log` |
 | 3 | Focused Vitest run for the new integration plus launch-service, engine-host, orchestration-host, app-owned correlation, bundle provider, and storage lifecycle; final current new-file rerun after recovery strengthening; same seven-file matrix rerun after `CR-002` | Worktree root, server Vitest `run --no-watch` | New scenarios and closest regression owners | Pass — round 1: 7 files / 52 tests and final current new file 1 file / 2 tests; round 2 authoritative rerun after documented server build: 7 files / 52 tests | `evidence/02-focused-boundaries.log`; `evidence/01-context-capabilities.log`; `evidence/11-round2-focused-boundaries.log`; `evidence/11b-round2-server-build.log` |
 | 4 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-backend-gateway tests/unit/application-backend tests/unit/application-bundles tests/unit/application-capability tests/unit/application-engine tests/unit/application-orchestration tests/unit/application-packages tests/unit/application-storage tests/integration/application-backend --no-watch` | Worktree root | Broader affected application unit/integration suite, including real loopback REST/GraphQL/WS and generated Brief package | Pass — final rerun 29 files / 127 tests. One prior rerun observed a non-reproducing existing Brief lifecycle-projection polling timeout; the exact file then passed three consecutive runs before the full-suite pass. | `evidence/04-affected-application-suites.log`; `evidence/04a-brief-studio-failure-reproduction.log` |
 | 5 | Backend SDK build; both built-in backend typechecks/builds; generated-output `git diff --exit-code` | Worktree root | Source/generated v3 consistency | Pass; regenerated output remained byte-clean against tracked state | `evidence/05-built-in-builds.log`; `evidence/06-generated-output-diff.log` |

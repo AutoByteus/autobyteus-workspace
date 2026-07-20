@@ -3,25 +3,25 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/requirements.md`
 - Supplemental Task Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/application-context-api-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/framework-understanding.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/application-context-api-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/framework-understanding.md`
 - Current Review Round: `4`
 - Trigger: Implementation-owned `CR-002` documentation fix commit `ef1e083678e8966c5a30936000442d679dd14191` after the focused API/E2E failure-origin review.
 - Prior Review Round Reviewed: `3`
 - Latest Authoritative Round: `4`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-review-report.md` (authoritative round 4, Pass)
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/implementation-handoff.md`
-- Coverage Investigation Reviewed As Prior Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed As Prior Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-execution-coverage-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-review-report.md` (authoritative round 4, Pass)
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/implementation-handoff.md`
+- Coverage Investigation Reviewed As Prior Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed As Prior Failure Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/api-e2e-execution-coverage-report.md`
 - Failing Scenario IDs: Prior API/E2E trigger `INV-001 / AC-005`; resolved in implementation-source review round 4, pending API/E2E re-execution.
 - Exact Failing Commands / Execution Mode: `rg -n -i 'runtime[- ]control|pending[- ]binding[- ]intent' autobyteus-web/docs/applications.md autobyteus-server-ts/docs/modules/application_backend_gateway.md`; independently rerun against `ef1e083678e8966c5a30936000442d679dd14191` with no matches.
 - Failure Evidence Paths:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/evidence/08-final-inventories.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/evidence/09-cleanup.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/evidence/08-final-inventories.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/evidence/09-cleanup.log`
 
 ## Round History
 

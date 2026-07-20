@@ -2,24 +2,24 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-spec.md`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/application-context-api-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/framework-understanding.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/application-context-api-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/framework-understanding.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/design-review-report.md`
 
 ## Implementation Review Local Fix
 
-- Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/code-review-report.md`
+- Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/code-review-report.md`
 - Round-1 finding `CR-001` is resolved. `startAgentRunBinding` now requires both an `AGENT` launch payload and resolved `AGENT` resource; `startAgentTeamRunBinding` independently requires `AGENT_TEAM` for both. Payload-kind rejection occurs before resource resolution, and resolved-resource rejection occurs before run creation, persistence, observer attachment, or initial input.
 - Added six focused launch-boundary tests: valid standalone-agent routing, valid team routing, both opposite launch-kind calls, and both wrong resolved-resource kinds. Negative cases assert no run creation or binding persistence side effect.
 
 ## API/E2E Failure Local Fix
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-execution-coverage-report.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/api-e2e-execution-coverage-report.md`
 - Focused failure-origin finding `CR-002` is resolved. The two affected public/current documents now use the approved named capability and pending-launch-request vocabulary at exactly the three reported locations.
 - The unrelated `runtime-control route key` wording in `autobyteus-web/docs/agent_teams.md` remains unchanged, as required.
 - This rework changes documentation only. No executable source, durable API/E2E test, fixture, generated package, schema, or migration file was changed by the fix.
