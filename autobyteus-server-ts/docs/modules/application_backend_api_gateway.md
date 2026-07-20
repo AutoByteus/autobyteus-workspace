@@ -1,4 +1,4 @@
-# Application Backend Gateway
+# Application Backend API Gateway
 
 ## Scope
 
@@ -6,14 +6,14 @@ Owns the platform-facing transport boundary for application backends: engine sta
 
 ## TS Source
 
-- `src/application-backend-gateway`
+- `src/application-backend-api-gateway`
 - `src/api/rest/application-backends.ts`
 - `src/api/websocket/application-backend-notifications.ts`
 
 ## Main Service And Supporting Owners
 
-- `src/application-backend-gateway/services/application-backend-gateway-service.ts`
-- `src/application-backend-gateway/streaming/application-backend-notification-stream-service.ts`
+- `src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts`
+- `src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.ts`
 - `src/application-engine/services/application-engine-host-service.ts`
 
 ## Authority Boundary

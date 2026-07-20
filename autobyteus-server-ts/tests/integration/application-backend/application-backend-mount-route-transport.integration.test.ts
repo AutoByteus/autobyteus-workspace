@@ -6,26 +6,26 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApplicationBackendMountTransport } from "../../../../autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
-import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
-import { ApplicationBackendNotificationStreamService } from "../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js";
+import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
+import { ApplicationBackendNotificationStreamService } from "../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
 
 const applicationBackendState = vi.hoisted(() => ({
-  gatewayService: null as ApplicationBackendGatewayService | null,
+  apiGatewayService: null as ApplicationBackendApiGatewayService | null,
 }));
 
-vi.mock("../../../src/application-backend-gateway/services/application-backend-gateway-service.js", async () => {
+vi.mock("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", async () => {
   const actual = await vi.importActual<
-    typeof import("../../../src/application-backend-gateway/services/application-backend-gateway-service.js")
-  >("../../../src/application-backend-gateway/services/application-backend-gateway-service.js");
+    typeof import("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js")
+  >("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js");
   return {
     ...actual,
-    getApplicationBackendGatewayService: () => {
-      if (!applicationBackendState.gatewayService) {
+    getApplicationBackendApiGatewayService: () => {
+      if (!applicationBackendState.apiGatewayService) {
         throw new Error("Integration test gateway service was not initialized.");
       }
-      return applicationBackendState.gatewayService;
+      return applicationBackendState.apiGatewayService;
     },
   };
 });
@@ -164,7 +164,7 @@ describe("Application backend mount route transport integration", () => {
       storageLifecycleService,
     });
 
-    applicationBackendState.gatewayService = new ApplicationBackendGatewayService({
+    applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       engineHostService,
       notificationStreamService: new ApplicationBackendNotificationStreamService(),
@@ -182,7 +182,7 @@ describe("Application backend mount route transport integration", () => {
     await engineHostService.stopApplicationEngine(APPLICATION_ID);
     await app.close();
     await fs.rm(tempRoot, { recursive: true, force: true });
-    applicationBackendState.gatewayService = null;
+    applicationBackendState.apiGatewayService = null;
   });
 
   it("round-trips structured JSON route bodies through /backend/routes/*", async () => {

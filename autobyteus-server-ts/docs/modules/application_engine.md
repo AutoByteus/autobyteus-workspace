@@ -52,7 +52,7 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 - The backend definition contract version must be `"3"`; v2 is rejected before any handler or lifecycle hook runs.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - Lifecycle hooks (`onStart`, `onStop`) run inside the worker with the same storage context shape used by query/command/route/event handlers.
-- Worker notifications flow back to the host over the engine protocol and are re-published by the backend gateway.
+- Worker notifications flow back to the host over the engine protocol and are re-published by the backend API gateway.
 - Worker-side `context.agentExecution`, `context.agentResources`, and `context.publishedArtifacts` calls are bridged back to `ApplicationOrchestrationHostService` through one discriminated engine protocol; application backends do not launch agent/team runs directly inside the worker process.
 
 ## Invocation Boundary
@@ -90,7 +90,7 @@ After the HTTP/WebSocket stack is listening, `server-runtime.ts` runs applicatio
 
 - [`applications.md`](./applications.md)
 - [`application_orchestration.md`](./application_orchestration.md)
-- [`application_backend_gateway.md`](./application_backend_gateway.md)
+- [`application_backend_api_gateway.md`](./application_backend_api_gateway.md)
 - [`application_storage.md`](./application_storage.md)
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-backend-sdk/README.md`

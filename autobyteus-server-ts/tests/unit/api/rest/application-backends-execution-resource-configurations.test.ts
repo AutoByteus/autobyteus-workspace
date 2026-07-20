@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../../src/api/fastify-runtime-config.js";
 import { LaunchProfileValidationError } from "../../../../src/application-orchestration/services/application-execution-resource-configuration-launch-profile.js";
 
-const applicationBackendGatewayMock = vi.hoisted(() => ({
+const applicationBackendApiGatewayMock = vi.hoisted(() => ({
   getApplicationEngineStatus: vi.fn(),
   invokeApplicationQuery: vi.fn(),
   ensureApplicationReady: vi.fn(),
@@ -22,8 +22,8 @@ const orchestrationHostMock = vi.hoisted(() => ({
   listAvailableExecutionResources: vi.fn(),
 }));
 
-vi.mock("../../../../src/application-backend-gateway/services/application-backend-gateway-service.js", () => ({
-  getApplicationBackendGatewayService: () => applicationBackendGatewayMock,
+vi.mock("../../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", () => ({
+  getApplicationBackendApiGatewayService: () => applicationBackendApiGatewayMock,
 }));
 
 vi.mock("../../../../src/application-orchestration/services/application-orchestration-host-service.js", () => ({

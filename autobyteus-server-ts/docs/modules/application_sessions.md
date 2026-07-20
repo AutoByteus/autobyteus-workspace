@@ -15,7 +15,7 @@ The current implementation replaced the old session-owned model with application
 ## Current Authoritative Docs
 
 - [`application_orchestration.md`](./application_orchestration.md)
-- [`application_backend_gateway.md`](./application_backend_gateway.md)
+- [`application_backend_api_gateway.md`](./application_backend_api_gateway.md)
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
 - [`applications.md`](./applications.md)

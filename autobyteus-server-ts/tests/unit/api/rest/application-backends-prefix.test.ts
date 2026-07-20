@@ -2,13 +2,13 @@ import fastify from "fastify";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../../src/api/fastify-runtime-config.js";
 
-const applicationBackendGatewayMock = vi.hoisted(() => ({
+const applicationBackendApiGatewayMock = vi.hoisted(() => ({
   getApplicationEngineStatus: vi.fn(),
   invokeApplicationQuery: vi.fn(),
 }));
 
-vi.mock("../../../../src/application-backend-gateway/services/application-backend-gateway-service.js", () => ({
-  getApplicationBackendGatewayService: () => applicationBackendGatewayMock,
+vi.mock("../../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", () => ({
+  getApplicationBackendApiGatewayService: () => applicationBackendApiGatewayMock,
 }));
 
 import { registerApplicationBackendRoutes } from "../../../../src/api/rest/application-backends.js";
@@ -18,12 +18,12 @@ const LONG_APPLICATION_ID =
 
 describe("application backend REST routes under /rest prefix", () => {
   beforeEach(() => {
-    applicationBackendGatewayMock.getApplicationEngineStatus.mockReset();
-    applicationBackendGatewayMock.invokeApplicationQuery.mockReset();
+    applicationBackendApiGatewayMock.getApplicationEngineStatus.mockReset();
+    applicationBackendApiGatewayMock.invokeApplicationQuery.mockReset();
   });
 
   it("serves status for long imported application ids through the parent /rest prefix", async () => {
-    applicationBackendGatewayMock.getApplicationEngineStatus.mockResolvedValue({
+    applicationBackendApiGatewayMock.getApplicationEngineStatus.mockResolvedValue({
       applicationId: LONG_APPLICATION_ID,
       state: "ready",
     });
@@ -43,11 +43,11 @@ describe("application backend REST routes under /rest prefix", () => {
       applicationId: LONG_APPLICATION_ID,
       state: "ready",
     });
-    expect(applicationBackendGatewayMock.getApplicationEngineStatus).toHaveBeenCalledWith(LONG_APPLICATION_ID);
+    expect(applicationBackendApiGatewayMock.getApplicationEngineStatus).toHaveBeenCalledWith(LONG_APPLICATION_ID);
   });
 
   it("serves query calls for long imported application ids through the parent /rest prefix", async () => {
-    applicationBackendGatewayMock.invokeApplicationQuery.mockResolvedValue({
+    applicationBackendApiGatewayMock.invokeApplicationQuery.mockResolvedValue({
       briefs: [{ briefId: "brief::session-1" }],
     });
 
@@ -73,7 +73,7 @@ describe("application backend REST routes under /rest prefix", () => {
         briefs: [{ briefId: "brief::session-1" }],
       },
     });
-    expect(applicationBackendGatewayMock.invokeApplicationQuery).toHaveBeenCalledWith(
+    expect(applicationBackendApiGatewayMock.invokeApplicationQuery).toHaveBeenCalledWith(
       LONG_APPLICATION_ID,
       "briefs.list",
       {

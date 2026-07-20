@@ -120,5 +120,5 @@ These guards keep app-authored SQL out of platform-owned state.
 - [`applications.md`](./applications.md)
 - [`application_orchestration.md`](./application_orchestration.md)
 - [`application_engine.md`](./application_engine.md)
-- [`application_backend_gateway.md`](./application_backend_gateway.md)
+- [`application_backend_api_gateway.md`](./application_backend_api_gateway.md)
 - `../../../autobyteus-application-sdk-contracts/README.md`
