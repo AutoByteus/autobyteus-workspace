@@ -1,0 +1,47 @@
+=== readiness ===
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 45
+Date: Mon, 20 Jul 2026 12:57:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"status":"ok","message":"Server is running"}=== relative fixture ===
+HTTP/1.1 200 OK
+vary: Origin
+content-type: text/plain
+Date: Mon, 20 Jul 2026 12:57:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+Transfer-Encoding: chunked
+
+event-monitor-file-uri-live-fixture-r1-clean
+=== absolute outside ===
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 73
+Date: Mon, 20 Jul 2026 12:57:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"Access denied: Path resolves outside the workspace boundary."}=== traversal ===
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 73
+Date: Mon, 20 Jul 2026 12:57:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"Access denied: Path resolves outside the workspace boundary."}=== placeholder ===
+HTTP/1.1 400 Bad Request
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 73
+Date: Mon, 20 Jul 2026 12:57:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"detail":"Access denied: Path resolves outside the workspace boundary."}
