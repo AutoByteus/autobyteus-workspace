@@ -11,6 +11,7 @@
         v-else-if="segment.type === 'mermaid'"
         :content="segment.content"
         class="mermaid-segment-container"
+        @external-link="openExternalLink"
       />
     </template>
   </div>
@@ -24,6 +25,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import type { MarkdownImageResourceResolver } from '~/utils/markdownImageResource';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import MermaidDiagram from './MermaidDiagram.vue'; 
+import { resolveExternalHttpUrl } from './externalHttpLink';
 import 'prismjs/themes/prism.css'; 
 // Import KaTeX CSS for math rendering
 import 'katex/dist/katex.min.css';
@@ -85,7 +87,7 @@ const applyPostRenderEffects = async () => {
   applyFileActionAccessibility();
 };
 
-const resolveFileAction = (target: HTMLElement): AbsoluteFilePathAction | null => {
+const resolveFileAction = (target: Element): AbsoluteFilePathAction | null => {
   const actionId = target.closest<HTMLElement>('[data-event-monitor-file-action-id]')
     ?.dataset.eventMonitorFileActionId;
   return actionId ? fileActions.value[actionId] || null : null;
@@ -108,7 +110,7 @@ const applyFileActionAccessibility = () => {
   });
 };
 
-const handleFileAction = (event: Event, target: HTMLElement) => {
+const handleFileAction = (event: Event, target: Element) => {
   if (!props.enableEventMonitorFileActions) return false;
   const action = resolveFileAction(target);
   if (!action) return false;
@@ -119,26 +121,22 @@ const handleFileAction = (event: Event, target: HTMLElement) => {
 };
 
 const handleLinkClick = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
+  const target = event.target;
+  if (!(target instanceof Element)) return;
   if (handleFileAction(event, target)) return;
   const anchor = target.closest('a');
-  
-  if (anchor && anchor.href) {
-    try {
-      const url = new URL(anchor.href);
-      if (['http:', 'https:'].includes(url.protocol)) {
-        event.preventDefault();
-        openExternalLink(anchor.href);
-      }
-    } catch (e) {
-      console.warn('Could not parse anchor href, or it is not an external link:', anchor.href, e);
-    }
-  }
+  if (!anchor) return;
+
+  const externalUrl = resolveExternalHttpUrl(anchor, window.location.href);
+  if (!externalUrl) return;
+  event.preventDefault();
+  openExternalLink(externalUrl);
 };
 
 const handleKeydown = (event: KeyboardEvent) => {
   if (event.key !== 'Enter' && event.key !== ' ') return;
-  const target = event.target as HTMLElement;
+  const target = event.target;
+  if (!(target instanceof Element)) return;
   handleFileAction(event, target);
 };
 

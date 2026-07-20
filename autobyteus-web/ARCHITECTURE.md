@@ -50,6 +50,7 @@ The application is wrapped in Electron to provide native capabilities.
 ## Detailed Architectural Documentation
 
 *   **[Agent Execution Architecture](./docs/agent_execution_architecture.md)**: Deep dive into how agents are run, events are routed, and responses are parsed.
+*   **[Content Rendering](./docs/content_rendering.md)**: Shared Markdown, Mermaid, and file-viewer ownership, including the accessible diagram inspection boundary.
 *   **[Electron Packaging](./docs/electron_packaging.md)**: Details on how the Python server is bundled and managed within the Electron app.
 *   **[Workspace Layout and Responsive Shell](./docs/workspace_layout.md)**: Ownership and policy for the adaptive standard `/workspace` shell and its `/mobile` boundary.
 

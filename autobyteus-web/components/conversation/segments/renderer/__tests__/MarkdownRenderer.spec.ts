@@ -10,8 +10,17 @@ import type { MobileNodeSession } from '~/types/remoteAccess';
 vi.mock('~/components/conversation/segments/renderer/MermaidDiagram.vue', () => ({
   default: {
     name: 'MermaidDiagram',
-    template: '<div class="mermaid-diagram-mock"></div>',
-    props: ['content']
+    template: `
+      <div class="mermaid-diagram-mock">
+        <button class="viewer-link-mock" @click="$emit('external-link', 'https://example.com/diagram')"></button>
+        <svg xmlns:xlink="http://www.w3.org/1999/xlink">
+          <a class="inline-mermaid-xlink" xlink:href="https://example.com/inline-mermaid"><text>linked node</text></a>
+          <a class="inline-native-link" href="mailto:hello@example.com"><text>email node</text></a>
+        </svg>
+      </div>
+    `,
+    props: ['content'],
+    emits: ['external-link'],
   }
 }));
 
@@ -242,6 +251,49 @@ describe('MarkdownRenderer', () => {
     const mermaidComponent = wrapper.findComponent(MermaidDiagram);
     expect(mermaidComponent.exists()).toBe(true);
     expect(mermaidComponent.props('content')).toContain('graph TD;\nA-->B;');
+  });
+
+  it('routes a teleported Mermaid external-link event through the existing link authority', async () => {
+    const openExternalLink = vi.fn();
+    const priorElectronApi = window.electronAPI;
+    window.electronAPI = {
+      ...window.electronAPI,
+      openExternalLink,
+    } as typeof window.electronAPI;
+    const wrapper = mount(MarkdownRenderer, {
+      props: { content: '```mermaid\ngraph TD;\nA-->B;\n```' },
+      global: { plugins: [pinia] },
+    });
+
+    await wrapper.get('.viewer-link-mock').trigger('click');
+
+    expect(openExternalLink).toHaveBeenCalledWith('https://example.com/diagram');
+    window.electronAPI = priorElectronApi;
+  });
+
+  it('routes ordinary HTML href and inline Mermaid xlink anchors through one authority', async () => {
+    const openExternalLink = vi.fn();
+    const priorElectronApi = window.electronAPI;
+    window.electronAPI = {
+      ...window.electronAPI,
+      openExternalLink,
+    } as typeof window.electronAPI;
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '[HTML docs](https://example.com/html)\n\n```mermaid\ngraph TD;\nA-->B;\n```',
+      },
+      global: { plugins: [pinia] },
+    });
+
+    await wrapper.get('.markdown-body a').trigger('click');
+    await wrapper.get('.inline-mermaid-xlink text').trigger('click');
+    await wrapper.get('.inline-native-link text').trigger('click');
+
+    expect(openExternalLink.mock.calls).toEqual([
+      ['https://example.com/html'],
+      ['https://example.com/inline-mermaid'],
+    ]);
+    window.electronAPI = priorElectronApi;
   });
 
   it('binds a managed image only after authorized resolution completes', async () => {
