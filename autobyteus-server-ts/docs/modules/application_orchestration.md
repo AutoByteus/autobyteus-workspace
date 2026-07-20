@@ -177,7 +177,7 @@ See [`application_sessions.md`](./application_sessions.md) only for the historic
 ## Related Docs
 
 - [`applications.md`](./applications.md)
-- [`application_backend_gateway.md`](./application_backend_gateway.md)
+- [`application_backend_api_gateway.md`](./application_backend_api_gateway.md)
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
 - [`application_sessions.md`](./application_sessions.md)

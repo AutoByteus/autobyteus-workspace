@@ -1,0 +1,49 @@
+# Delivery docs audit after latest-base integration
+timestamp=2026-07-20T14:18:26Z
+ticket_head=ac15076d6a4384a624f05db3c325baff2077eb38
+integrated_base=286a63fb41f85f37e49f3d28606870dff0934ddb
+
+## obsolete exact owner symbol/path/title inventory
+result=PASS (no matches)
+
+## target owner family
+autobyteus-application-sdk-contracts/README.md
+autobyteus-server-ts/docs/modules/README.md
+autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+autobyteus-server-ts/docs/modules/application_communication_model.md
+autobyteus-server-ts/docs/modules/application_engine.md
+autobyteus-server-ts/docs/modules/application_orchestration.md
+autobyteus-server-ts/docs/modules/application_sessions.md
+autobyteus-server-ts/docs/modules/application_storage.md
+autobyteus-server-ts/docs/modules/applications.md
+autobyteus-web/docs/applications.md
+result=PASS
+
+## clean path cutover
+result=PASS
+
+## changed long-lived documentation links
+PASS file autobyteus-application-sdk-contracts/README.md
+PASS file autobyteus-server-ts/docs/modules/README.md
+PASS file autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+PASS file autobyteus-server-ts/docs/modules/application_communication_model.md
+PASS file autobyteus-server-ts/docs/modules/application_engine.md
+PASS file autobyteus-server-ts/docs/modules/application_orchestration.md
+PASS file autobyteus-server-ts/docs/modules/application_sessions.md
+PASS file autobyteus-server-ts/docs/modules/application_storage.md
+PASS file autobyteus-server-ts/docs/modules/applications.md
+PASS file autobyteus-web/docs/applications.md
+RESULT links=86/86
+
+## architecture supplement structural assertions
+mermaid_blocks=10
+48:    GATEWAY["Application Backend API Gateway<br/>query / command / GraphQL / route / notification"]
+155:  participant GW as Application Backend API Gateway
+199:  participant GW as Application Backend API Gateway
+380:  participant GW as Application Backend API Gateway
+result=PASS (authoritative installed-parser evidence remains evidence/05-mermaid-validation.log)
+
+## ticket/base path overlap since reviewed base
+result=PASS (no changed-path overlap)
+
+result=PASS

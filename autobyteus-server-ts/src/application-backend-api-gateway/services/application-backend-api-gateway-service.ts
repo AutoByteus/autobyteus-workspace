@@ -28,20 +28,20 @@ const normalizeRequestContext = (
   return { applicationId };
 };
 
-export class ApplicationBackendGatewayService {
-  private static instance: ApplicationBackendGatewayService | null = null;
+export class ApplicationBackendApiGatewayService {
+  private static instance: ApplicationBackendApiGatewayService | null = null;
 
   static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationBackendGatewayService>[0] = {},
-  ): ApplicationBackendGatewayService {
-    if (!ApplicationBackendGatewayService.instance) {
-      ApplicationBackendGatewayService.instance = new ApplicationBackendGatewayService(dependencies);
+    dependencies: ConstructorParameters<typeof ApplicationBackendApiGatewayService>[0] = {},
+  ): ApplicationBackendApiGatewayService {
+    if (!ApplicationBackendApiGatewayService.instance) {
+      ApplicationBackendApiGatewayService.instance = new ApplicationBackendApiGatewayService(dependencies);
     }
-    return ApplicationBackendGatewayService.instance;
+    return ApplicationBackendApiGatewayService.instance;
   }
 
   static resetInstance(): void {
-    ApplicationBackendGatewayService.instance = null;
+    ApplicationBackendApiGatewayService.instance = null;
   }
 
   private subscribedToEngineNotifications = false;
@@ -162,11 +162,11 @@ export class ApplicationBackendGatewayService {
   }
 }
 
-let cachedApplicationBackendGatewayService: ApplicationBackendGatewayService | null = null;
+let cachedApplicationBackendApiGatewayService: ApplicationBackendApiGatewayService | null = null;
 
-export const getApplicationBackendGatewayService = (): ApplicationBackendGatewayService => {
-  if (!cachedApplicationBackendGatewayService) {
-    cachedApplicationBackendGatewayService = ApplicationBackendGatewayService.getInstance();
+export const getApplicationBackendApiGatewayService = (): ApplicationBackendApiGatewayService => {
+  if (!cachedApplicationBackendApiGatewayService) {
+    cachedApplicationBackendApiGatewayService = ApplicationBackendApiGatewayService.getInstance();
   }
-  return cachedApplicationBackendGatewayService;
+  return cachedApplicationBackendApiGatewayService;
 };

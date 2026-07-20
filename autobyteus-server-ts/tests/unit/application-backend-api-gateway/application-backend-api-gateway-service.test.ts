@@ -3,9 +3,9 @@ import {
   ApplicationAvailabilityService,
   ApplicationUnavailableError,
 } from "../../../src/application-orchestration/services/application-availability-service.js";
-import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
+import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 
-describe("ApplicationBackendGatewayService", () => {
+describe("ApplicationBackendApiGatewayService", () => {
   const createDeferred = <T>() => {
     let resolve!: (value: T | PromiseLike<T>) => void;
     let reject!: (reason?: unknown) => void;
@@ -16,14 +16,14 @@ describe("ApplicationBackendGatewayService", () => {
     return { promise, resolve, reject };
   };
 
-  it("keeps the backend gateway app-scoped and forwards app request context explicitly", async () => {
+  it("keeps the backend API gateway app-scoped and forwards app request context explicitly", async () => {
     const bundleService = {
       getApplicationById: vi.fn().mockResolvedValue({ id: "app-1" }),
     };
     const engineHostService = {
       invokeApplicationQuery: vi.fn().mockResolvedValue({ ok: true }),
     };
-    const service = new ApplicationBackendGatewayService({
+    const service = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       availabilityService: {
         requireApplicationActive: vi.fn(async () => undefined),
@@ -52,7 +52,7 @@ describe("ApplicationBackendGatewayService", () => {
   });
 
   it("rejects mismatched requestContext identity so callers cannot bypass the app boundary", async () => {
-    const service = new ApplicationBackendGatewayService({
+    const service = new ApplicationBackendApiGatewayService({
       applicationBundleService: {
         getApplicationById: vi.fn().mockResolvedValue({ id: "app-1" }),
       } as never,
@@ -76,7 +76,7 @@ describe("ApplicationBackendGatewayService", () => {
   });
 
   it("surfaces application availability failures before worker launch", async () => {
-    const service = new ApplicationBackendGatewayService({
+    const service = new ApplicationBackendApiGatewayService({
       applicationBundleService: {
         getApplicationById: vi.fn(),
       } as never,
@@ -216,7 +216,7 @@ describe("ApplicationBackendGatewayService", () => {
         exposures: null,
       })),
     };
-    const service = new ApplicationBackendGatewayService({
+    const service = new ApplicationBackendApiGatewayService({
       applicationBundleService: {
         getApplicationById: vi.fn(async () => ({ id: "app-1" })),
       } as never,
