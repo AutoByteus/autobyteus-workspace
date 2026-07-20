@@ -331,11 +331,16 @@ continuation. Completed/failed execution rows may be shown in the center feed;
 requested/queued rows must not.
 
 Historical run reopen uses the backend replay bundle as the display source for
-actual user, assistant, reasoning, and tool trace content. Native compaction
-projection cards are intentionally live-only center feedback in this slice:
-reopened historical conversations should replay the real work trace from active
-plus archived raw traces and should not synthesize center compaction cards from
-compaction lifecycle/status entries.
+actual user, assistant, reasoning, and tool trace content. Normal Event Monitor
+projection reads only the active raw-trace file, reconstructs its lifecycle
+evidence, and selects its newest 100 canonical replay events; it does not open
+archived raw-trace segments. Native compaction projection cards are
+intentionally live-only center feedback in this slice: reopened historical
+conversations should replay that active-file recent window and should not
+synthesize center compaction cards from compaction lifecycle/status entries.
+Archived segments and manifests remain unchanged and directly usable by their
+own storage lifecycle, but there is no archive or load-earlier path in the Event
+Monitor.
 
 ### Run Reopen Projection Hydration
 
@@ -348,6 +353,48 @@ is being preserved, because that can create right-pane-only tool entries after
 restart. For active team reopen, projected Activity hydration is limited to
 newly materialized member contexts whose projected conversation is also being
 applied.
+
+### Bounded Recent Event Monitor Window
+
+The Event Monitor is a recent operational view rather than a complete run
+archive. The backend projection keeps the existing GraphQL bundle shape, but
+`LocalMemoryRunViewProjectionProvider` reads only `raw_traces_active.jsonl`,
+normalizes the complete active-file lifecycle, and then applies
+`RECENT_RUN_PROJECTION_EVENT_LIMIT` (`100`) before building conversation and
+Activity projections. Selection must happen after lifecycle reconstruction;
+raw-record tail slicing can separate related tool-call and result evidence.
+
+The frontend defensively applies the same `100`-visual-event bound during
+historical hydration and every standalone, team, or local-submission mutation.
+A user message is one visual event, each assistant segment or tool card is one,
+and each center compaction row is one. Eviction removes the oldest completed
+candidate before a mutable candidate. If more than 100 candidates remain
+mutable, the hard-cap fallback removes the oldest mutable candidate and a later
+stable-identity update may re-enter only once at the newest edge. Per-run
+Activity state is independently capped at 100 with the same completion rules.
+
+`eventMonitorPresentationRevision` describes the final bounded center
+presentation, not transport traffic. Mutation owners capture a lightweight
+ordered witness, apply the mutation and bound, and increment the revision once
+only when the final witness differs. The witness uses shallow rendered and
+retained-interaction values such as content, attachment identity and preview
+inputs, displayed usage text, and tool name/summary/status/error/action state.
+It excludes generic timestamps, raw object identity, tool logs/results that are
+Activity-only, and recursive argument serialization. Equal retained
+member-echo attachment metadata is therefore revision-neutral, while adding,
+refreshing, or removing a rendered executable attachment revises the
+presentation. Conversation replacement resets the revision baseline; an
+already-subscribed live team context preserves both its conversation and
+revision.
+
+When pinned, a real presentation change follows the bottom. When non-pinned,
+the viewport remains in place and the localized, keyboard-operable
+`New activity · Jump to latest` action appears until the user returns to the
+bottom. Net no-op protocol traffic does not show it, and streaming tokens are
+not exposed through a feed-wide live region. Thinking and tool disclosures
+remain collapsed by default. The former conversation-copy control and its eager
+full-conversation string were removed without a replacement export action, and
+usage totals shown in this surface describe only the retained recent window.
 
 ### Workspace History Row Titles
 

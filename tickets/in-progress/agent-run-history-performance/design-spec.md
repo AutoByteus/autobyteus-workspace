@@ -2,11 +2,11 @@
 
 ## Current-State Read
 
-The normal workspace replay path is a complete-corpus pipeline:
+The pre-change normal workspace replay path that motivated this ticket is a complete-corpus pipeline:
 
 `row/member selection -> standalone/team GraphQL projection -> run-history projection service -> LocalMemoryRunViewProjectionProvider -> AgentMemoryService(includeArchive=true) -> all complete archive segments + active file -> historical replay events -> duplicated conversation/activity bundle -> frontend semantic dedupe -> conversation + Activity stores -> AgentConversationFeed/ActivityFeed full mount`
 
-The local-memory provider is shared by standalone and team-member projection services and is the correct source-policy owner. It currently opts into every archive without a caller limit. The existing GraphQL boundaries correctly distinguish standalone run ID from team run ID plus member route key; their result shape does not need to change for this task.
+The local-memory provider is shared by standalone and team-member projection services and is the correct source-policy owner. In the pre-change/old remote build it opts into every archive without a caller limit; the integrated ticket build replaces that policy with active-only/newest-100. The existing GraphQL boundaries correctly distinguish standalone run ID from team run ID plus member route key; their result shape does not need to change for this task.
 
 On the frontend, historical conversion, live stream dispatch, local user submission, Activity retention, and final feed presentation each own part of the observable Event Monitor state, but no shared recent-window invariant connects them. `AIMessage` groups multiple visible segments inside one message, so message count is not a valid UI bound. Center compaction rows are sourced from Activity state and merged by the feed, which means the final presentation must account for them as visual events too. Some events remain mutable across protocol messages: streamed text/Thinking, nonterminal tool cards, and started compactions. Bottom-pinning already belongs to `AgentConversationFeed`, but there is no unseen-activity state or jump action. Both live dispatchers also update `conversation.updatedAt` for every parsed message, including messages that do not visibly change the center feed, so that timestamp cannot serve as the unseen signal.
 
@@ -33,11 +33,28 @@ Replace the normal archive-inclusive complete projection with an active-only rec
 6. `AgentConversationFeed` receives the explicit presentation revision, uses the derived bounded presentation, keeps existing bottom-follow behavior, and adds a localized `New activity · Jump to latest` button only when a post-baseline visible revision arrives while the user is non-pinned.
 7. `AgentWorkspaceView` removes the conversation `CopyButton`, its import, and the eager `conversationText` computation. The obsolete generated localization entry is removed; no replacement copy/export action is added.
 
+## Delivery Validation Mismatch Assessment
+
+The multi-minute hands-on observation does not traverse `DS-001` of the integrated candidate. The user-added node at `http://127.0.0.1:8000` is served by the pre-existing `/app/autobyteus-server-ts` process against `/home/autobyteus/data`; its compiled provider still requests `includeArchive:true` and has no compiled recent projection policy. The packaged integrated backend on port 29695 contains `includeArchive:false` plus `selectRecentReplayEvents`, but its AppConfig/run-history data root is `/root/.autobyteus/server-data`. Therefore:
+
+`new renderer -> old remote backend -> archive-inclusive unbounded bundle -> full-input client dedupe -> final defensive cap`
+
+was observed instead of:
+
+`new renderer -> integrated backend -> active-only lifecycle build -> newest-100 bundle -> bounded client hydration/render`.
+
+The frontend bound cannot move ahead of an HTTP response or undo server archive I/O, response construction, transport, or full-input historical dedupe already incurred. This is a version-skew/validation-premise mismatch, not evidence that the integrated provider ignored its policy.
+
+The 212.893 seconds from node-window creation to eventual-success screenshot is also not a row-selection metric: exact row click, GraphQL request, hydration commit, and usable-content markers were not captured. It remains possible that remote node bootstrap/catalog/workspace work contributed, but the existing evidence cannot quantify it.
+
+**Design decision:** no production requirement, API, or ownership change is justified from this observation alone. `REQ-001`/`REQ-002` already require the missing backend behavior, and `AC-009` already requires <=2.0-second usability. Corrected same-candidate validation against a safe snapshot is the next gate. API/E2E owns that execution. Any failure first returns to code review for focused origin classification; only that review may route a bootstrap issue to focused follow-up, measured backend/team-fan-out Design Impact to solution design, an implementation defect to implementation engineering, or a validation-environment/test issue back to API/E2E.
+
 ## Supplemental Solution Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval |
 | --- | --- | --- | --- | --- |
 | `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md` | Defines exact recent-window, scroll, disclosure, label, and copy-removal behavior | `REQ-001`–`REQ-008`; `AC-001`–`AC-009`, `AC-011` | Constrains feed presentation and interaction; no archive affordance may be added | `Refined`; user-approved 2026-07-18 |
+| `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md` | Defines safe same-candidate snapshot topology, measurement schema, and failure classification | `REQ-001`–`REQ-003`, `REQ-009`; `AC-001`–`AC-003`, `AC-008`–`AC-010` | Validation supplement; separates bootstrap, backend, hydration, usability, and bound evidence without changing production UX | `Design-ready`; approval `N/A` |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -49,6 +66,7 @@ Replace the normal archive-inclusive complete projection with an active-only rec
 - Design response: Put active-only/recent selection in the shared run-history provider; keep one lifecycle-aware frontend Event Monitor window capability with completed-first eviction and a deterministic hard fallback; make the authoritative mutation boundary compare bounded pre/post presentation witnesses before revising run state; reset every conversation-replacement baseline including team reopen; cap Activity using the same completion policy; and defend the final merged presentation in the feed.
 - Refactor rationale: Scattering `slice(-100)` across resolvers, handlers, and templates would encode different meanings (raw record, message, segment, activity, feed row) and would inevitably drift. The new capability makes the user-approved visual-event meaning explicit and testable.
 - Intentional deferrals and residual risk: The bounded GraphQL bundle still duplicates tool details between conversation and Activity; one event can still be byte-heavy; active-team restore may still request several bounded member projections. These are finite after this change and do not justify a new timeline schema or focus-lazy orchestration without new evidence.
+- Delivery re-evaluation: The integrated implementation passed isolated built-server/browser evidence, while the slow hands-on attempt used the old backend. No new production design issue is established. The accepted active-team fan-out residual risk becomes a design issue only if corrected snapshot validation shows it violates `AC-009`.
 
 ## Architecture Review Finding Resolution
 
@@ -59,6 +77,8 @@ Replace the normal archive-inclusive complete projection with an active-only rec
 | `CR-001` | The implemented handler-effect OR enforcement-removal commit bumped for a transient appended event that enforcement removed, although final presentation was identical. | `beginRecentEventMonitorMutation` captures the ordered bounded witness before the handler; `commitRecentEventMonitorMutation` enforces, captures the final witness, and bumps only when `areRecentEventMonitorPresentationWitnessesEqual` is false. The old effect parameter/OR condition is removed from the authoritative commit contract. | Exact `MP-CR-001` regression plus ordinary retained update, real eviction-only, compaction, membership/order, and no-op cases. |
 | `CR-002` | Reused non-live team-member conversation replacement omitted revision reset. | `teamRunOpenCoordinator.mergeHydratedMembers` resets immediately after assigning the hydrated conversation in the `preserveLiveRuntimeState:false` branch. The live-preservation branch leaves conversation and revision untouched. | Focused same-member reopen tests for both non-live replacement and subscribed-live preservation. |
 | `AR-003` | Proposed witness tokens included non-rendered tool result/log state and raw argument reference identity, while omitting an exact per-kind central render contract. | The pure witness now follows the complete per-kind table below. Tool tokens use the same derived card input/summary helper as the wrappers/`ToolCallIndicator`, exclude result/log/raw argument identity, and compare semantic status/summary/error/action primitives. User attachments, usage rows/footer, every static/media/error/inter-agent kind, and exact compaction primitives are explicit. | `MP-AR-003` log/result no-op tests; equal-argument replacement; true tool card change; complete per-kind, membership/order, and no-recursion witness tests. |
+| `AR-004` | Static provider/response evidence and FD snapshots could miss transient archive opens; one combined source check became non-attributable after the live owner restarted. | The validation contract adds request/full-lifetime path-only open auditing and splits `COPY-001`, `OPEN-001`, `SNAPSHOT-RAW-001`, `LIVE-SOURCE-001`, and `OLD-OWNER-001`. Mode S requires live equality; Mode R treats legitimate live-owner writes as informational and requires tracing. Without tracing, only a limited Mode S run may proceed, explicitly leaving representative no-open re-proof unexecuted and citing prior durable evidence. | Path-only audit lines/counts when available; explicit not-executed state otherwise; per-mode hash/owner evidence with no conflated failure gate. |
+| `AR-005` | The validation matrix routed failures directly to presumed owners instead of mandatory API/E2E result review. | After architecture pass, API/E2E executes. Every Fail returns first to code reviewer for focused origin classification; Pass receives proportional test-code review before delivery; Blocked goes to the user with the exact dependency. | Handoff route and reports contain scenario IDs, exact context, test-change status, and preserved delivery hold. |
 
 ## Terminology
 
@@ -475,6 +495,7 @@ The equality domain is the central `AgentConversationFeed` render and the intera
 | Keep unbounded state but slice template | Minimize code changes | `Rejected` | Enforce provider, state, Activity, and presentation bounds |
 | Patch `MP-CR-001` by checking only whether the added identity survived | Small local fix | `Rejected` | Net ordered witness covers retained updates, real evictions, compactions, order/membership, and future callers uniformly |
 | New GraphQL timeline alongside old bundle | Gradual rollout | `Rejected` | Keep one bounded existing projection contract |
+| Frontend fallback that makes an old archive-inclusive remote backend fast | Support mixed-version performance without server upgrade | `Rejected` | The client cannot prevent upstream archive I/O/response construction; upgrade the remote backend and validate one candidate |
 
 ## Derived Layering (If Useful)
 
@@ -495,6 +516,42 @@ Web transport/hydration and live event boundaries
   -> explicit revision + feed scroll/disclosure components
 ```
 
+## Integrated Live Validation Topology
+
+This is a validation/evidence spine, not a new production runtime spine:
+
+`candidate fingerprint -> exclusive consistent snapshot -> isolated integrated backend -> fresh integrated node window -> bootstrap markers -> exact row click -> per-member projection timings -> hydration/usable markers -> payload/state/DOM/hash assertions -> cleanup`.
+
+### Ownership And Safety
+
+- After architecture approval, API/E2E owns execution, environment setup, cleanup, scenario IDs, and evidence. Solution design owns the topology and evidence contract in `integrated-live-validation-plan.md`; code review owns focused failure-origin classification and proportional test-code review before any downstream owner/delivery routing.
+- `/home/autobyteus/data` has one writable server owner. Because the current source is an ext4 Docker volume without a demonstrated atomic snapshot facility, a coordinated old-server stop/quiesce is required before ordinary copying. If that dependency is unavailable, realistic validation is `Blocked`; a live recursive copy is forbidden.
+- The integrated backend owns a unique disposable snapshot and isolated loopback port. It must not reuse the live directory or the normal `/root/.autobyteus/server-data` profile. The run declares Mode S (old owner remains stopped) or Mode R (old owner restarts only after quiesced copy equality).
+- The launch environment explicitly rebinds `AUTOBYTEUS_DATA_DIR`, `AUTOBYTEUS_MEMORY_DIR`, `DATABASE_URL`, `AUTOBYTEUS_LOG_DIR`, server URL/ports, and `AUTOBYTEUS_SKIP_SYNC`. Process command/environment/file-descriptor audit plus a full-lifetime path-only open audit shows no validation-process reference to `/home/autobyteus/data`. Runtime tracing is mandatory in Mode R; if unavailable, Mode R is blocked. A tracer-unavailable Mode S run may measure performance/bounds while the old owner stays stopped, but `OPEN-001` and independent `AC-001` no-open re-proof are explicitly not executed.
+- Snapshot raw traces, metadata/manifests, and DB are hash-checked against the quiesced source before any old-server restart. Snapshot target raw traces are re-hashed after validation. Live-source equality is additionally required only in Mode S; in Mode R, old-owner activity is recorded and its legitimate live-source writes are not a validation-failure gate.
+- During the exact target request, the path-only audit must observe the active trace and zero archive opens without capturing file contents. If runtime tracing is unavailable, representative execution explicitly records `AC-001` no-open re-proof as not executed and relies on prior durable instrumented evidence; response exclusion alone is not promoted into an archive-open proof.
+
+### Measurement Boundaries
+
+| Boundary | Start / end | Required result |
+| --- | --- | --- |
+| Node bootstrap | Window creation -> node health/catalog/shell selectable | Report independently; do not include it silently in row projection |
+| Row/network | Exact selection click -> all triggered projection responses complete | Per-request TTFB/total/bytes/cardinality; include active-team fan-out critical path |
+| Direct backend | Direct GraphQL request -> first byte/complete | Confirms integrated backend/transport without renderer |
+| Hydration | Projection response complete -> state commit/stable bounded render | Quantifies frontend conversion/dedupe/render work |
+| User usable | Exact row click -> recent content visible + composer focusable | Must satisfy `AC-009` <=2.0 s on the documented reference environment |
+| Bounds/integrity | Stable render / quiesced copy / before-after snapshot | Projection <=100 canonical events, Activity/DOM <=100, no archive-only event, source-to-snapshot equality, validation live-root non-access, snapshot raw-trace immutability; live-source equality only in Mode S |
+| Runtime open audit | Integrated process lifetime and exact target request | Path-only audit shows no live-root opens and, when tracer coverage exists, active-file access with zero target archive opens; otherwise `AC-001` re-proof is explicitly not executed and prior durable evidence is cited |
+
+Capture a cold run and at least two warm runs. Preserve aggregate measurements and exact commands, never raw conversation/tool bodies.
+
+### Decision Gates
+
+1. After architecture pass, `api_e2e_engineer` executes the corrected representative scenarios.
+2. Any `Fail`—bootstrap, backend/fan-out, hydration, archive-open, bound, packaging, or safety—returns first to `code_reviewer` with scenario IDs and exact execution context. Code reviewer performs focused failure-origin analysis and only then routes Design Impact to solution design, implementation-owned failure to implementation engineering, or test/environment/reporting failure back to API/E2E.
+3. A `Pass` returns to `code_reviewer` for proportional test-code review (`N/A` when no durable test changed), then the passed package goes to delivery while the explicit user-verification hold remains in force.
+4. A `Blocked` result goes to the user with preserved evidence and the exact missing dependency; safety is never weakened to obtain a result.
+
 ## Change / Refactor Sequence
 
 1. Add server recent-projection policy with pure limit/ordering tests.
@@ -507,6 +564,7 @@ Web transport/hydration and live event boundaries
 8. Remove copy control/import/computed text and stale translation entries; update workspace-view/localization tests.
 9. Run implementation-scoped server/web unit tests, typechecks, and localization guards. Implementation engineer records commands/results but does not own broader API/E2E.
 10. API/E2E engineer validates real GraphQL archive exclusion and limits, discovers executable environment, creates durable large fixture coverage if needed, and measures reference payload/timing/hydration/browser behavior.
+11. After architecture approval, API/E2E uses the `integrated-live-validation-plan.md` topology for representative existing data: fingerprint both artifacts, create an exclusive consistent snapshot in declared Mode S or Mode R, run the integrated backend on an isolated port with sanitized data-root environment and path-only open audit, measure bootstrap/row/API/hydration/usability/bounds/integrity separately, preserve aggregate evidence, and route Pass/Fail/Blocked through the mandatory review flow before delivery can resume finalization.
 
 No temporary dual path is permitted. Each stage should keep the worktree compiling; once provider policy changes, old archive-inclusive normal behavior is gone.
 
@@ -517,6 +575,7 @@ No temporary dual path is permitted. Each stage should keep the worktree compili
 - **Trim state plus presentation vs DOM virtualization:** A recent rolling window matches actual user behavior and handles dynamic-height content without a virtualization framework.
 - **Exact visual count vs message count:** Segment-aware, lifecycle-aware counting requires a small shared capability but prevents a single large assistant message from defeating the UI bound or prematurely losing an active card.
 - **No archive fallback:** Some boundary tool cards may have incomplete arguments/context, but speed and predictable recent-only behavior are the explicit user priority.
+- **Remote-node version skew:** Requiring the remote backend upgrade is the only coherent performance contract. A client capability warning could improve diagnosis but cannot provide the optimization and is outside the approved scope.
 
 ## Risks
 
@@ -528,6 +587,8 @@ No temporary dual path is permitted. Each stage should keep the worktree compili
 - Activity eviction must not leave `hasAwaitingApproval` or `highlightedActivityId` stale.
 - Localization managed/generated-file conventions must be followed so catalog guards pass.
 - Large teams still perform multiple bounded active reads during restore; re-evaluate only if API/E2E evidence shows the approved change is insufficient.
+- Mixed-version remote validation can reproduce the original archive bottleneck even with the new UI. Delivery evidence must fingerprint both client and server rather than assuming a node URL uses the packaged backend.
+- Snapshot validation requires coordinated exclusive access or an atomic storage snapshot. This is an execution dependency, not permission to let two servers share the live data root.
 
 ## Guidance For Implementation
 
@@ -548,3 +609,5 @@ No temporary dual path is permitted. Each stage should keep the worktree compili
 - Remove only the `CopyButton` use in `AgentWorkspaceView`; do not delete the shared component if it has other consumers.
 - Do not alter `ThinkSegment` or tool disclosure components unless a failing regression test reveals an incidental issue.
 - Keep evidence free of raw tool/conversation payloads. Record aggregate counts, sizes, timings, fixture construction, and exact commands.
+- Do not diagnose performance from frontend version alone. Record the backend entrypoint/provider policy and effective data root for every realistic run; an old remote backend invalidates active-only/newest-100 acceptance evidence.
+- Do not add production code in response to the mixed-version observation unless corrected isolated-snapshot evidence crosses a decision gate. In particular, do not add client-side archive filtering, a hidden legacy mode, or speculative focus-lazy hydration without measured integrated failure.

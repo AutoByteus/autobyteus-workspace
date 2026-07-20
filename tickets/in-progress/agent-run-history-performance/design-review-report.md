@@ -5,12 +5,12 @@
 - Upstream Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
 - Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
-- Supplemental Task Artifacts Reviewed: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
-- Current Review Round: `4`
-- Trigger: Revised solution package resolving architecture finding `AR-003` after implementation source-review Design Impact.
-- Prior Review Round Reviewed: `3`
-- Latest Authoritative Round: `4`
-- Current-State Evidence Basis: Revised cumulative package; implementation at `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a92b5`; canonical code-review report; current Event Monitor window/selection implementation; run-open team merge path; current central feed, user/AI/segment/tool/compaction render paths; stream handlers; and the supplied performance evidence.
+- Supplemental Task Artifacts Reviewed: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
+- Current Review Round: `6`
+- Trigger: Revised validation supplement resolving round-5 findings `AR-004` and `AR-005`.
+- Prior Review Round Reviewed: `5`
+- Latest Authoritative Round: `6`
+- Current-State Evidence Basis: Revised cumulative package; integrated base `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`; implementation merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`; checkpoint `20fe710ef86f2658bc761f5e4bff4aad8603b630`; prior source/API-E2E/test-review reports; delivery observation and Electron logs; live PID 45 command/environment; old compiled provider showing `includeArchive:true` and no recent policy; integrated artifact/log evidence; representative corpus metrics; and the new validation supplement.
 
 ## Round History
 
@@ -19,7 +19,9 @@
 | 1 | Initial architecture review | N/A | `AR-001`, `AR-002` | `Fail` | No | Completed-first eviction and truthful visible-revision semantics required correction. |
 | 2 | Revised package resolving architecture findings | `AR-001`, `AR-002` | None | `Pass` | No | Design passed and proceeded to implementation. |
 | 3 | Downstream source-review Design Impact | `AR-001`, `AR-002`, `CR-001`, `CR-002`, `MP-CR-001` | `AR-003` | `Fail` | No | The transaction/reset architecture was sound, but the proposed witness included non-central tool state and raw reference identity. |
-| 4 | Revised witness equality domain | `AR-001`, `AR-002`, `CR-001`, `CR-002`, `AR-003`, `MP-CR-001`, `MP-AR-003` | None | `Pass` | Yes | The central presentation/retained-interaction table, renderer-shared derivations, exclusions, and tests resolve `AR-003`. |
+| 4 | Revised witness equality domain | `AR-001`, `AR-002`, `CR-001`, `CR-002`, `AR-003`, `MP-CR-001`, `MP-AR-003` | None | `Pass` | No | The central presentation/retained-interaction table, renderer-shared derivations, exclusions, and tests resolve `AR-003`. |
+| 5 | Delivery validation premise investigation | All prior findings; mixed-version premise; safe snapshot and measurement gates | `AR-004`, `AR-005` | `Fail` | No | The mixed-version conclusion was supported, but the executable validation contract needed archive-access, source-attribution, and workflow-routing corrections. |
+| 6 | Revised executable validation contract | `AR-004`, `AR-005`, `MP-VAL-001` | None | `Pass` | Yes | Path-only runtime auditing, Mode S/Mode R integrity records, explicit limited-evidence fallback, and mandatory API/E2E result routing resolve both findings. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -30,14 +32,17 @@
 | Code review | `CR-001` / `MP-CR-001` | High | `Resolved` | Begin captures the bounded presentation; commit mutates/enforces, captures final presentation, compares, and bumps at most once. A transient inserted-and-evicted event yields equal witnesses and no revision. | Old effect parameter/OR authority is removed. |
 | Code review | `CR-002` | Medium | `Resolved` | `teamRunOpenCoordinator.mergeHydratedMembers` resets immediately after non-live conversation replacement and preserves both conversation and revision for subscribed-live state. | Both branches have focused tests. |
 | 3 | `AR-003` / `MP-AR-003` | High | `Resolved` | The complete per-kind table matches central render/retained interaction. Tool result/logs, raw argument identity, generic payload references, and non-rendered fields are excluded; shared semantic tool, usage, and compaction helpers prevent renderer/witness drift. | Focused equal/no-op, true-change, all-kind, order, and no-recursion tests are specified. |
+| Delivery observation | Validation-premise mismatch | N/A | `Confirmed` | The selected renderer used the old port-8000 provider (`includeArchive:true`, no recent policy) while the integrated backend with the recent policy used a different root. The 212.893-second interval lacks row/request/hydration markers. | This observation does not establish a product requirement gap or integrated implementation failure. |
+| 5 | `AR-004` / `MP-VAL-001` | High | `Resolved` | The supplement separates `COPY-001`, `OPEN-001`, `SNAPSHOT-RAW-001`, `LIVE-SOURCE-001`, and `OLD-OWNER-001`; Mode S requires live equality, while Mode R treats old-owner writes as informational and requires full-lifetime/request-bounded tracing. | Tracer-unavailable fallback is explicitly limited and cannot claim representative `AC-001` no-open proof. |
+| 5 | `AR-005` | Medium | `Resolved` | `api_e2e_engineer` owns execution; Fail returns to `code_reviewer` for focused origin analysis; Pass returns for proportional test review then delivery; Blocked goes to the user. | Delivery/user-verification hold remains explicit. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
 - Approved requirements / intended behavior understood: `Yes` — normal Event Monitor data is active-file-only and recent-only; server and client are bounded to 100 visual events; completed-first retention preserves mutable lifecycle evidence when possible; unseen/jump behavior reflects net final central presentation; current disclosures remain; Activity is bounded; and the unused copy path is removed.
-- Relevant existing behavior and evidence confirmed: `Yes` — active-file reconstruction, replay transformation, current hydration/live/team dispatch, final merged presentation, tool wrapper/indicator, usage/footer, compaction row, replacement, and scroll paths were checked against the revised mapping.
+- Relevant existing behavior and evidence confirmed: `Yes` — the old/new artifact and data-root mismatch is independently supported, prior same-candidate isolated evidence passed, and the live source can be actively owned while the disposable snapshot is separately validated.
 - Approved change, preserved behavior, and outside scope understood: `Yes` — no archive UI/load-older/export replacement, GraphQL schema change, persistence migration, or compatibility/full-history fallback is introduced.
-- Remaining material ambiguity, if any: `None`.
+- Remaining material ambiguity, if any: `None`. Availability of quiesce/snapshot and tracing privilege is an execution dependency with explicit Blocked behavior, not a design ambiguity.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -50,12 +55,16 @@
 | `REQ-007` | Activity retention | Pass | Pass | Pass | Confirmed | Activity is independently capped with shared completion policy; Activity-only detail is excluded from central revision. |
 | `REQ-008` | Copy cleanup | Pass | Pass | Pass | Confirmed | Control, import, eager derivation, and obsolete catalog output are removed without replacement. |
 | `REQ-009` | Persisted traces | Pass | Pass | Pass | Confirmed | Existing files remain directly usable; no migration. |
+| `AC-001` | Runtime archive exclusion evidence | Pass | Pass | Pass | Confirmed | Full-lifetime and request-bounded path-only audit proves active-file open, zero target archive opens, and zero live-root opens when executed; the tracer-unavailable Mode S fallback explicitly marks representative no-open re-proof not executed and cites prior durable evidence. |
+| `AC-009` | Same-candidate representative performance | Pass | Pass | Pass | Confirmed | Candidate fingerprinting, bootstrap/row/API/hydration/usability separation, cold/warm runs, and the 2.0-second gate are coherent. |
+| `REQ-009` / validation integrity records | Validation source integrity | Pass | Pass | Pass | Confirmed | Quiesced copy equality, validation-process access, snapshot raw-trace immutability, Mode-S live equality, and Mode-R old-owner attribution are separate results. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `history-window-ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None. It remains user-approved and consistent with the net-presentation revision design. |
+| `integrated-live-validation-plan.md` | Pass | Pass | Pass | Pass | Pass | None. The supplement is executable, attributable, safely blocked when dependencies are absent, and approval `N/A` remains correct. |
 
 ## Task Design Health Assessment Verdict
 
@@ -75,6 +84,7 @@
 | `DS-003` | Begin/mutate/enforce/post/compare/bump | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | `DS-004` | Bounded presentation and scroll | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | `DS-005` | Activity retention | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| Validation evidence spine | Safe snapshot, same-candidate execution, measurement, classification | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
@@ -85,6 +95,8 @@
 | Pure witness and shared presentation helpers | Pass | Pass | Pass | Pass | Exact semantic inputs are centralized; store access, deep traversal, and Activity detail are forbidden. |
 | Stateful mutation commit | Pass | Pass | Pass | Pass | Sole Activity-store adapter and revision authority. |
 | Team run-open replacement owner | Pass | Pass | Pass | Pass | Non-live reset and subscribed-live preservation are explicit. |
+| Snapshot/source-integrity owner | Pass | Pass | Pass | Pass | Mode-specific records keep copy identity, validation non-access, snapshot immutability, live equality, and restarted-owner attribution separate. |
+| Representative archive-access probe | Pass | Pass | Pass | Pass | Path-only full-lifetime/request-bounded tracing covers the server and descendants; incomplete coverage is explicitly Not Executed rather than inferred. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -93,6 +105,7 @@
 | Server projection | Pass | Pass | Pass | Pass | No raw-tail limit, archive fallback, or resolver filesystem bypass. |
 | Pure window/witness/helpers and stateful commit | Pass | Pass | Pass | Pass | Store access is confined to commit; helpers remain pure and shallow. |
 | Stream/open/feed consumers | Pass | Pass | Pass | Pass | Bracketing, reset, and explicit prop flow follow existing owners. |
+| Validation execution/result routing | Pass | Pass | Pass | Pass | Pass, Fail, and Blocked outcomes now follow the required API/E2E/code-review/delivery flow. |
 
 ## Interface Boundary Verdict
 
@@ -103,6 +116,8 @@
 | `commitRecentEventMonitorMutation(context, baseline)` | Pass | Pass | Pass | Low | Pass |
 | `buildRecentEventMonitorPresentationWitness(items)` | Pass | Pass | Pass | Low | Pass |
 | Shared tool-card/usage/compaction presentation helpers | Pass | Pass | Pass | Low | Pass |
+| Validation integrity record set | Pass | Pass | Pass | Low | Pass |
+| Runtime archive-open observation | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -113,6 +128,7 @@
 | Tool central-render semantics | Pass | Pass | Pass | Pass | Existing `getToolDisplaySummary` is composed into one renderer/witness semantic card helper. |
 | Usage and compaction formatting | Pass | Pass | Pass | Pass | Shared extraction prevents precision/presence drift. |
 | Team replacement reset | Pass | Pass | N/A | Pass | Existing merge owner is extended. |
+| Runtime file-access/process evidence | Pass | Pass | Pass | Pass | Path-only tracing is authoritative when available; configuration/FD checks are correctly labeled supporting evidence only. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -123,6 +139,7 @@
 | Conversation presentation helpers | Pass | Pass | Pass | Pass | Narrow renderer/witness anti-drift seam. |
 | Streaming/submission/open | Pass | Pass | Pass | Pass | All authoritative mutation/replacement exits are mapped. |
 | Activity and central UI | Pass | Pass | Pass | Pass | Activity state remains separate from center-presentation equality. |
+| Validation execution and review | Pass | Pass | Pass | Pass | API/E2E executes and result routing is explicit before delivery resumes. |
 
 ## Reusable Owned Structures Verdict
 
@@ -141,6 +158,7 @@
 | Tool-card presentation tuple | Pass | Pass | Pass | Pass | Pass | Excludes result/log/raw argument identity and flattens only declared action primitives. |
 | Presentation items/descriptors | Pass | Pass | Pass | Pass | Pass | Ephemeral and bounded. |
 | Conversation/Activity overlap | Pass | Pass | Pass | Pass | Pass | Existing bounded transport duplication is accepted scope; the design adds no redundant witness fields and keeps semantics separate. |
+| Validation integrity evidence records | Pass | Pass | Pass | Pass | Pass | Each record has one attributable meaning across Mode S and Mode R. |
 
 ## File Responsibility Mapping Verdict
 
@@ -153,6 +171,7 @@
 | `recentEventMonitorMutationCommit.ts` | Pass | Pass | Pass | Pass | Stateful capture/enforce/compare/bump adapter only. |
 | `teamRunOpenCoordinator.ts` | Pass | Pass | Pass | Pass | Reset at the replacement owner. |
 | Existing handlers/dispatchers/feed | Pass | Pass | Pass | Pass | Effects are removed from revision authority; boundaries remain thin. |
+| `integrated-live-validation-plan.md` | Pass | Pass | Pass | Pass | Singular validation/evidence contract with explicit execution owner and outcome routes. |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -192,6 +211,7 @@
 | Window/witness/helpers/commit extraction | Pass | Pass | Pass | Pass |
 | Dispatcher/reset/feed integration | Pass | Pass | Pass | Pass |
 | Old-effect and copy cleanup | Pass | Pass | Pass | Pass |
+| Same-candidate snapshot validation | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
@@ -202,6 +222,8 @@
 | Team reopen reset | Yes | Pass | Pass | Pass | Non-live reset and subscribed-live preservation are contrasted. |
 | `AR-003` per-kind witness | Yes | Pass | Pass | Pass | Complete table, semantic tool example, exclusions, and focused tests are present. |
 | No-recursion constraint | Yes | Pass | Pass | Pass | Throwing/deep-getter cases prove only named shallow inputs are read. |
+| Source owner restarts during validation | Yes | Pass | Pass | Pass | Mode R makes live equality N/A and uses `OLD-OWNER-001` plus mandatory validation-path tracing. |
+| Runtime archive exclusion | Yes | Pass | Pass | Pass | Request-bounded path-only audit proves active open/zero archive opens when executed; fallback truthfully records Not Executed. |
 
 ## Material Premise Validation (Only When Needed)
 
@@ -235,13 +257,23 @@
 - Reachability: `Reachable`
 - Review consequence / proportionate response: The round-4 exact table, renderer-shared tool helper, exclusions, and focused tests resolve the prior blocking false-positive case.
 
+### `MP-VAL-001` — The old live owner may restart and legitimately mutate the source during validation
+
+- Related approved requirement or established contract: `REQ-009`, `AC-010`, and the validation supplement's source-safety contract.
+- Relevant behavior ID(s): `SOURCE-001` and validation Phase 1/Phase 6.
+- Product-supported initiating trigger or governing contract, with evidence: Phase 1 explicitly permits restarting the port-8000 server after the consistent snapshot is copied so normal service can continue. That process owns writable SQLite/log descriptors and may serve ongoing activity.
+- Concrete current or approved target production caller/event path from that trigger to the claimed state: quiesce old server -> copy/hash snapshot -> restart old server on `/home/autobyteus/data` -> run isolated validation on the snapshot -> compare live-source hashes/mtimes at `SOURCE-001` end.
+- Lifecycle preconditions and material consequence at the claimed point: Any legitimate write by the restarted owner changes source hashes/mtimes without validation-process access, so a mismatch cannot prove a safety failure and an equality requirement can falsely fail.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: Resolved. Mode S keeps the owner stopped and requires live equality; Mode R restarts only after `COPY-001`, requires tracing, makes live equality N/A, records old-owner activity, and still requires snapshot raw-trace immutability.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-`Pass` — the revised cumulative solution package confirms the approved behavior basis and is ready for implementation rework. `AR-003` is resolved without weakening the accepted completed-first window, net pre/post commit, or team replacement reset design.
+`Pass` — the evidence supports “mixed-version validation premise mismatch; no product Requirement Gap or production Design Impact yet.” The revised supplement provides a safe, attributable, executable same-candidate validation contract with explicit dependency blocking and mandatory API/E2E result routing.
 
 ## Findings
 
@@ -253,7 +285,7 @@ N/A — no unresolved finding.
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
@@ -263,9 +295,11 @@ N/A — no unresolved finding.
 - The all-mutable fallback can make a later stable-identity update source-limited at the newest edge; the design forbids duplicate/archive repair and immediately restores the cap.
 - Witness maintenance remains a correctness seam, now constrained by a complete per-kind contract, renderer-shared derivations, shallow/no-recursion rules, and focused tests.
 - Index-derived component keys/disclosure instance state remains a non-blocking API/E2E observation risk from code review.
+- Corrected representative execution still requires operator permission for a brief quiesce or an atomic snapshot; absent that dependency, API/E2E must report `Blocked` rather than weaken safety.
+- A current frontend connected to an older remote backend remains version-skewed; no client fallback in this scope can remove old-server archive work.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: Round 4 is authoritative. Implementation rework may proceed from the cumulative reviewed package; source review and API/E2E gates remain required afterward.
+- Notes: Round 6 is authoritative. The corrected package is ready for `api_e2e_engineer` execution. Pass/Fail/Blocked must follow the supplement and team routing; delivery finalization remains on explicit user-verification hold.
