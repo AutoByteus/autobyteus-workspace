@@ -2,7 +2,7 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import {
   getApplicationBackendNotificationStreamService,
   type ApplicationBackendNotificationStreamConnection,
-} from "../../application-backend-gateway/streaming/application-backend-notification-stream-service.js";
+} from "../../application-backend-api-gateway/streaming/application-backend-notification-stream-service.js";
 import {
   authorizeRemoteAccessWebSocket,
   closeSocketForRemoteAccessRejection,

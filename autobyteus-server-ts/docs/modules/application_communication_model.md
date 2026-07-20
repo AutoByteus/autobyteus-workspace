@@ -8,7 +8,7 @@ Defines the canonical taxonomy of communication mechanisms between application f
 
 | Mechanism | Direction | Initiator | API Surface | Context-Capability Involvement | Durability | Owner |
 | --- | --- | --- | --- | --- | --- | --- |
-| **Request / Response** | Frontend → Backend → Frontend | App frontend | `client.query(...)`, `client.command(...)`, `client.graphql(...)`, `client.route(...)` | None implicit. A backend handler _may_ call a named context capability, but that is an app-owned decision, not an inherent part of the request path. | Transient (request/response lifecycle only) | Application Backend Gateway (`ApplicationBackendGatewayService`) |
+| **Request / Response** | Frontend → Backend → Frontend | App frontend | `client.query(...)`, `client.command(...)`, `client.graphql(...)`, `client.route(...)` | None implicit. A backend handler _may_ call a named context capability, but that is an app-owned decision, not an inherent part of the request path. | Transient (request/response lifecycle only) | Application Backend API Gateway (`ApplicationBackendApiGatewayService`) |
 | **Backend Notifications** | Backend → Frontend | App backend handler | `context.publishNotification(topic, payload)` (backend), `client.subscribeNotifications(callback)` (frontend) | None. Backend notifications fan out independently of the orchestration capabilities. | **Live, non-durable.** No queue, no replay, no persistence. If no frontend is subscribed, the notification is silently dropped. | Backend Notification Stream (`ApplicationBackendNotificationStreamService`) |
 | **Agent Execution And Resources** | Backend → Host Server → Runtime | App backend handler | `context.agentExecution.*`, `context.agentResources.*` | **Direct.** These capabilities launch/control bound agents and teams and resolve resources. | Mixed: run bindings and lifecycle events are durable (SQLite journals); live input/termination is transient. | Application Orchestration (`ApplicationOrchestrationHostService`) |
 | **Published-Artifact Reads** | Backend → Host Server → Artifact Store | App backend handler | `context.publishedArtifacts.list(...)`, `.readRevision(...)` | **Direct.** This capability reads durable published artifacts for application-owned runs. | Durable shared artifact store. | Application Orchestration (`ApplicationOrchestrationHostService`) |
@@ -31,7 +31,7 @@ When a runtime publishes an artifact, it reaches the app backend through `Applic
 
 ### 4. Frontend request/response does not imply agent execution (FR-005)
 
-When the frontend calls `client.command(name, input)`, the request flows through the backend gateway and engine host to the app backend handler. The handler receives `publishNotification` and the named orchestration capabilities, but none are invoked unless handler code explicitly calls them. Frontend request/response is a synchronous transport boundary, not an execution trigger.
+When the frontend calls `client.command(name, input)`, the request flows through the backend API gateway and engine host to the app backend handler. The handler receives `publishNotification` and the named orchestration capabilities, but none are invoked unless handler code explicitly calls them. Frontend request/response is a synchronous transport boundary, not an execution trigger.
 
 ### 5. Runtime streaming is a future, separate API (FR-010)
 
@@ -51,14 +51,14 @@ Real-time runtime data streaming (e.g., agent step-by-step progress, token strea
 
 | Internal Service | Responsibility | File |
 | --- | --- | --- |
-| `ApplicationBackendNotificationStreamService` | Backend-published frontend notification fan-out over WebSocket. Manages per-application connection registry. Owned by the backend gateway. | `src/application-backend-gateway/streaming/application-backend-notification-stream-service.ts` |
-| `ApplicationBackendGatewayService` | Transport boundary for all frontend → backend requests. Bridges engine notifications to the stream service. | `src/application-backend-gateway/services/application-backend-gateway-service.ts` |
+| `ApplicationBackendNotificationStreamService` | Backend-published frontend notification fan-out over WebSocket. Manages per-application connection registry. Owned by the backend API gateway. | `src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.ts` |
+| `ApplicationBackendApiGatewayService` | Transport boundary for all frontend → backend requests. Bridges engine notifications to the stream service. | `src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts` |
 | `ApplicationOrchestrationHostService` | Agent/team execution, resources, run bindings, journals, and published-artifact reads. | `src/application-orchestration/services/application-orchestration-host-service.ts` |
 | `ApplicationPublishedArtifactRelayService` | Best-effort live artifact event relay to bound app backends. | `src/application-orchestration/services/application-published-artifact-relay-service.ts` |
 
 ## Related Docs
 
-- [`application_backend_gateway.md`](./application_backend_gateway.md)
+- [`application_backend_api_gateway.md`](./application_backend_api_gateway.md)
 - [`application_orchestration.md`](./application_orchestration.md)
 - [`application_engine.md`](./application_engine.md)
 - [`applications.md`](./applications.md)

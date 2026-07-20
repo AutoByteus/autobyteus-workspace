@@ -195,11 +195,11 @@ The v3 bootstrap payload contains:
 - `application { applicationId, localApplicationId, packageId, name }`
 - top-level `iframeLaunchId`
 - `requestContext { applicationId }`
-- `transport` with host and app-backend gateway URLs
+- `transport` with host and app-backend API gateway URLs
 
 The payload intentionally does **not** contain a platform-owned execution id, session id, app instance id, or prelaunched runtime summary. The iframe launch id is only an ephemeral bootstrap correlation id.
 
-## Backend Gateway And SDK Boundary
+## Backend API Gateway And SDK Boundary
 
 Bundled UIs should usually sit on top of `@autobyteus/application-frontend-sdk`, not on raw `postMessage` payloads alone.
 
@@ -210,7 +210,7 @@ The public author-facing surface is:
 - `@autobyteus/application-backend-sdk` for backend definition typing
 - `application-bundle-iframe-contract-v3.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
 
-App UIs call their own backend through the platform-owned application backend gateway URLs delivered in `transport`.
+App UIs call their own backend through the platform-owned application backend API gateway URLs delivered in `transport`.
 
 ## Ownership Boundary
 
@@ -243,7 +243,7 @@ This separation is the core architectural change: the Applications page launches
 - `settings.md`
 - `../../autobyteus-server-ts/docs/modules/application_capability.md`
 - `../../autobyteus-server-ts/docs/modules/applications.md`
-- `../../autobyteus-server-ts/docs/modules/application_backend_gateway.md`
+- `../../autobyteus-server-ts/docs/modules/application_backend_api_gateway.md`
 - `../../autobyteus-server-ts/docs/modules/application_engine.md`
 - `../../autobyteus-server-ts/docs/modules/application_storage.md`
 - `../../autobyteus-application-sdk-contracts/README.md`

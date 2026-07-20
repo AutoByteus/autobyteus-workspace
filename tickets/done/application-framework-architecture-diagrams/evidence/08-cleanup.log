@@ -1,0 +1,21 @@
+# Cleanup Evidence
+
+- Revision: `ee410779955b234e4678c3c076bde728ff901f52` plus API/E2E durable-test/report changes
+
+== Owned temporary paths ==
+ABSENT: autobyteus-web/.tmp-api-e2e-architecture.mjs
+ABSENT: tickets/in-progress/application-framework-architecture-diagrams/.tmp-link-check.py
+ABSENT: autobyteus-server-ts/tests/.tmp
+ABSENT: autobyteus-server-ts/dist
+ABSENT: autobyteus-application-devkit/.tmp-tests
+ABSENT: autobyteus-application-devkit/dist
+
+== Owned validation process check ==
+PASS: no worktree-owned Node/Vitest/pnpm validation process remains.
+
+== Worktree status ==
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+?? tickets/in-progress/application-framework-architecture-diagrams/api-e2e-coverage-investigation.md
+?? tickets/in-progress/application-framework-architecture-diagrams/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/application-framework-architecture-diagrams/code-review-report.md
+?? tickets/in-progress/application-framework-architecture-diagrams/evidence/

@@ -6,13 +6,13 @@ import type {
   ApplicationRouteMethod,
   ApplicationRouteRequest,
 } from "@autobyteus/application-sdk-contracts";
-import { getApplicationBackendGatewayService } from "../../application-backend-gateway/services/application-backend-gateway-service.js";
+import { getApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import { ApplicationUnavailableError, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
 import { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
 import { LaunchProfileValidationError } from "../../application-orchestration/services/application-execution-resource-configuration-launch-profile.js";
 import { ApplicationExecutionResourceConfigurationService } from "../../application-orchestration/services/application-execution-resource-configuration-service.js";
 
-const gateway = () => getApplicationBackendGatewayService();
+const apiGateway = () => getApplicationBackendApiGatewayService();
 const orchestrationHost = () => ApplicationOrchestrationHostService.getInstance();
 const executionResourceConfigurations = () => new ApplicationExecutionResourceConfigurationService();
 const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
@@ -51,7 +51,7 @@ const toHeaderRecord = (headers: FastifyRequest["headers"]): Record<string, stri
   return result;
 };
 
-const sendGatewayError = (reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } }, error: unknown) => {
+const sendApplicationBackendRouteError = (reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } }, error: unknown) => {
   if (error instanceof ApplicationUnavailableError) {
     return reply.code(503).send({
       detail: error.message,
@@ -86,10 +86,10 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
     `${APPLICATION_BACKEND_ROUTE_BASE}/status`,
     async (request, reply) => {
       try {
-        const status = await gateway().getApplicationEngineStatus(request.params.applicationId);
+        const status = await apiGateway().getApplicationEngineStatus(request.params.applicationId);
         return reply.send(status);
       } catch (error) {
-        return sendGatewayError(reply, error);
+        return sendApplicationBackendRouteError(reply, error);
       }
     },
   );
@@ -100,7 +100,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       try {
         return reply.send(await executionResourceConfigurations().listConfigurations(request.params.applicationId));
       } catch (error) {
-        return sendGatewayError(reply, error);
+        return sendApplicationBackendRouteError(reply, error);
       }
     },
   );
@@ -111,7 +111,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       try {
         return reply.send(await orchestrationHost().listAvailableExecutionResources(request.params.applicationId));
       } catch (error) {
-        return sendGatewayError(reply, error);
+        return sendApplicationBackendRouteError(reply, error);
       }
     },
   );
@@ -134,7 +134,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
           ),
         );
       } catch (error) {
-        return sendGatewayError(reply, error);
+        return sendApplicationBackendRouteError(reply, error);
       }
     },
   );
@@ -143,10 +143,10 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
     `${APPLICATION_BACKEND_ROUTE_BASE}/ensure-ready`,
     async (request, reply) => {
       try {
-        const status = await gateway().ensureApplicationReady(request.params.applicationId);
+        const status = await apiGateway().ensureApplicationReady(request.params.applicationId);
         return reply.send(status);
       } catch (error) {
-        return sendGatewayError(reply, error);
+        return sendApplicationBackendRouteError(reply, error);
       }
     },
   );
@@ -158,7 +158,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
         const availability = await getApplicationAvailabilityService().reloadAndReenter(request.params.applicationId);
         return reply.send(availability);
       } catch (error) {
-        return sendGatewayError(reply, error);
+        return sendApplicationBackendRouteError(reply, error);
       }
     },
   );
@@ -168,7 +168,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
     Body: { requestContext?: ApplicationRequestContext | null; input?: unknown };
   }>(`${APPLICATION_BACKEND_ROUTE_BASE}/queries/:queryName`, async (request, reply) => {
     try {
-      const result = await gateway().invokeApplicationQuery(
+      const result = await apiGateway().invokeApplicationQuery(
         request.params.applicationId,
         request.params.queryName,
         readRequestContext(request.params.applicationId, request, request.body?.requestContext),
@@ -176,7 +176,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       );
       return reply.send({ result });
     } catch (error) {
-      return sendGatewayError(reply, error);
+      return sendApplicationBackendRouteError(reply, error);
     }
   });
 
@@ -185,7 +185,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
     Body: { requestContext?: ApplicationRequestContext | null; input?: unknown };
   }>(`${APPLICATION_BACKEND_ROUTE_BASE}/commands/:commandName`, async (request, reply) => {
     try {
-      const result = await gateway().invokeApplicationCommand(
+      const result = await apiGateway().invokeApplicationCommand(
         request.params.applicationId,
         request.params.commandName,
         readRequestContext(request.params.applicationId, request, request.body?.requestContext),
@@ -193,7 +193,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       );
       return reply.send({ result });
     } catch (error) {
-      return sendGatewayError(reply, error);
+      return sendApplicationBackendRouteError(reply, error);
     }
   });
 
@@ -202,14 +202,14 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
     Body: { requestContext?: ApplicationRequestContext | null; request: ApplicationGraphqlRequest };
   }>(`${APPLICATION_BACKEND_ROUTE_BASE}/graphql`, async (request, reply) => {
     try {
-      const result = await gateway().executeApplicationGraphql(
+      const result = await apiGateway().executeApplicationGraphql(
         request.params.applicationId,
         readRequestContext(request.params.applicationId, request, request.body?.requestContext),
         request.body.request,
       );
       return reply.send({ result });
     } catch (error) {
-      return sendGatewayError(reply, error);
+      return sendApplicationBackendRouteError(reply, error);
     }
   });
 
@@ -222,7 +222,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       const routePath = `/${request.params["*"] ?? ""}`.replace(/\/+/g, "/");
       const applicationId = request.params.applicationId;
       try {
-        const result = await gateway().routeApplicationRequest(
+        const result = await apiGateway().routeApplicationRequest(
           applicationId,
           readRequestContext(applicationId, request),
           {
@@ -244,7 +244,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
         reply.code(routeResponse.status ?? 200);
         return reply.send(routeResponse.body ?? null);
       } catch (error) {
-        return sendGatewayError(reply, error);
+        return sendApplicationBackendRouteError(reply, error);
       }
     },
   });

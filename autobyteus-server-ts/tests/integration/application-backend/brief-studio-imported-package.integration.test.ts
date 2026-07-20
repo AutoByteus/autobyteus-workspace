@@ -20,11 +20,11 @@ import {
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
-import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
+import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import {
   ApplicationBackendNotificationStreamService,
   type ApplicationBackendNotificationStreamMessage,
-} from "../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js";
+} from "../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js";
 import { ApplicationExecutionEventDispatchService } from "../../../src/application-orchestration/services/application-execution-event-dispatch-service.js";
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
@@ -50,29 +50,29 @@ import { PublishedArtifactSnapshotStore } from "../../../src/services/published-
 import { buildPublishedArtifactId } from "../../../src/services/published-artifacts/published-artifact-types.js";
 
 const applicationBackendState = vi.hoisted(() => ({
-  gatewayService: null as ApplicationBackendGatewayService | null,
+  apiGatewayService: null as ApplicationBackendApiGatewayService | null,
   notificationStreamService: null as ApplicationBackendNotificationStreamService | null,
 }));
 
-vi.mock("../../../src/application-backend-gateway/services/application-backend-gateway-service.js", async () => {
+vi.mock("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", async () => {
   const actual = await vi.importActual<
-    typeof import("../../../src/application-backend-gateway/services/application-backend-gateway-service.js")
-  >("../../../src/application-backend-gateway/services/application-backend-gateway-service.js");
+    typeof import("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js")
+  >("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js");
   return {
     ...actual,
-    getApplicationBackendGatewayService: () => {
-      if (!applicationBackendState.gatewayService) {
-        throw new Error("Integration test gateway service was not initialized.");
+    getApplicationBackendApiGatewayService: () => {
+      if (!applicationBackendState.apiGatewayService) {
+        throw new Error("Integration test API gateway service was not initialized.");
       }
-      return applicationBackendState.gatewayService;
+      return applicationBackendState.apiGatewayService;
     },
   };
 });
 
-vi.mock("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js", async () => {
+vi.mock("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js", async () => {
   const actual = await vi.importActual<
-    typeof import("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js")
-  >("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js");
+    typeof import("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js")
+  >("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js");
   return {
     ...actual,
     getApplicationBackendNotificationStreamService: () => {
@@ -426,7 +426,7 @@ describe("Brief Studio imported package integration", () => {
     ApplicationBundleService.resetInstance();
     ApplicationStorageLifecycleService.resetInstance();
     ApplicationEngineHostService.resetInstance();
-    ApplicationBackendGatewayService.resetInstance();
+    ApplicationBackendApiGatewayService.resetInstance();
     ApplicationAvailabilityService.resetInstance();
     ApplicationExecutionEventDispatchService.resetInstance();
     ApplicationOrchestrationHostService.resetInstance();
@@ -707,7 +707,7 @@ describe("Brief Studio imported package integration", () => {
     engineHostServiceRef = engineHostService;
 
     applicationBackendState.notificationStreamService = new ApplicationBackendNotificationStreamService();
-    applicationBackendState.gatewayService = new ApplicationBackendGatewayService({
+    applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       availabilityService,
       engineHostService,
@@ -742,7 +742,7 @@ describe("Brief Studio imported package integration", () => {
       await app.close();
     }
     await fs.rm(tempRoot, { recursive: true, force: true });
-    applicationBackendState.gatewayService = null;
+    applicationBackendState.apiGatewayService = null;
     applicationBackendState.notificationStreamService = null;
     appConfigProvider.resetForTests();
   });
@@ -1090,7 +1090,7 @@ describe("Brief Studio imported package integration", () => {
           lastErrorMessage: null,
         }),
       ]);
-    });
+    }, { timeout: 5_000 });
 
     const detail = await expectGraphqlField<{
       briefId: string;

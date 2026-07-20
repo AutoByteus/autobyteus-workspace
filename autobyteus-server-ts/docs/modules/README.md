@@ -19,7 +19,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
 | Agent Tools MCP Server | [agent_tools_mcp_server.md](./agent_tools_mcp_server.md) |
-| Application Backend Gateway | [application_backend_gateway.md](./application_backend_gateway.md) |
+| Application Backend API Gateway | [application_backend_api_gateway.md](./application_backend_api_gateway.md) |
 | Application Communication Model | [application_communication_model.md](./application_communication_model.md) |
 | Application Capability | [application_capability.md](./application_capability.md) |
 | Application Engine | [application_engine.md](./application_engine.md) |
@@ -53,7 +53,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 - Token usage is ledger-backed through `TokenUsageLedgerStore` / `token_usage_ledger_events`; legacy role-split `token_usage_records` and response-processor writes are not current accounting sources.
 - GraphQL resolvers in `src/api/graphql/types` are thin adapters over services.
 - Startup registration and background initialization run through `src/startup`.
-- Application bundles, orchestration, backend gateway, engine lifecycle, and app storage now have separate authoritative owners instead of one mixed application subsystem.
+- Application bundles, orchestration, backend API gateway, engine lifecycle, and app storage now have separate authoritative owners instead of one mixed application subsystem.
 
 ## Related Docs
 

@@ -130,7 +130,7 @@ It demonstrates:
 
 - `../autobyteus-server-ts/docs/modules/applications.md`
 - `../autobyteus-server-ts/docs/modules/application_orchestration.md`
-- `../autobyteus-server-ts/docs/modules/application_backend_gateway.md`
+- `../autobyteus-server-ts/docs/modules/application_backend_api_gateway.md`
 - `../autobyteus-server-ts/docs/modules/application_engine.md`
 - `../autobyteus-server-ts/docs/modules/application_storage.md`
 - `../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
