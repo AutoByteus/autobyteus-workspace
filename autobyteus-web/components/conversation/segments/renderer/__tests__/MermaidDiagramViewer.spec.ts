@@ -15,8 +15,8 @@ vi.mock('~/composables/useLocalization', () => ({
 }));
 
 const renderedSvg = `
-  <svg viewBox="0 0 1600 800">
-    <a href="https://example.com/diagram"><text>docs</text></a>
+  <svg viewBox="0 0 1600 800" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <a xlink:href="https://example.com/diagram"><text>docs</text></a>
     <a class="local-link" href="mailto:hello@example.com"><text>mail</text></a>
     <rect class="background" width="1600" height="800"></rect>
   </svg>
@@ -200,7 +200,7 @@ describe('MermaidDiagramViewer', () => {
     expect(mounted.emitted('close')).toHaveLength(2);
   });
 
-  it('returns expanded HTTP links while preserving other interactive descendants', async () => {
+  it('returns Mermaid xlink HTTP anchors while preserving other interactive descendants', async () => {
     const mounted = await mountViewer();
 
     await getDom('.mermaid-diagram-stage a').trigger('click');

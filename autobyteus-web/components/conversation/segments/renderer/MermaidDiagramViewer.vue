@@ -97,6 +97,7 @@
 import { Icon } from '@iconify/vue';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
+import { resolveExternalHttpUrl } from './externalHttpLink';
 import {
   DIAGRAM_WHEEL_ZOOM_STEP,
   DIAGRAM_ZOOM_STEP,
@@ -316,23 +317,18 @@ const finishPointerDrag = (event: PointerEvent) => {
 const handleCanvasClick = (event: MouseEvent) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  const anchor = target.closest('a[href]');
-  const href = anchor?.getAttribute('href') ?? anchor?.getAttribute('xlink:href');
-  if (!href) return;
+  const anchor = target.closest('a');
+  if (!anchor) return;
 
-  try {
-    const url = new URL(href, window.location.href);
-    if (!['http:', 'https:'].includes(url.protocol)) return;
-    event.preventDefault();
-    event.stopPropagation();
-    emit('external-link', url.href);
-  } catch {
-    // Preserve native handling for malformed or non-standard Mermaid links.
-  }
+  const externalUrl = resolveExternalHttpUrl(anchor, window.location.href);
+  if (!externalUrl) return;
+  event.preventDefault();
+  event.stopPropagation();
+  emit('external-link', externalUrl);
 };
 
 const focusableSelector = [
-  'button:not([disabled])', 'a[href]', 'input:not([disabled])', 'select:not([disabled])',
+  'button:not([disabled])', 'a', 'input:not([disabled])', 'select:not([disabled])',
   'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 const focusableElements = () => Array.from(

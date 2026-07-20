@@ -7,6 +7,7 @@
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/proposed-design.md`
 - Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/ui-ux-spec.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/design-review-report.md`
+- Code review report (round 1 local-fix basis): `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/code-review-report.md`
 
 ## What Changed
 
@@ -15,6 +16,7 @@
 - Added `MermaidDiagramViewer.vue`, a body-teleported, named modal with exactly four persistent actions: zoom out, Fit, zoom in, and close. It owns viewport measurement, viewBox-first bounds resolution, fitted SVG display, real plane/stage extents, anchored wheel/button/keyboard zoom, pointer/touch panning, native scrolling, focus containment, Escape/backdrop close, and exact body-overflow restoration.
 - Added the pure `mermaidDiagramViewport.ts` calculation boundary for fit, zoom clamping, real plane extents, and anchored scroll.
 - Routed expanded HTTP(S) SVG links back through `MermaidDiagram` to the existing `MarkdownRenderer.openExternalLink` authority. Inline and expanded interactive descendants are excluded from expand/pan interpretation.
+- Resolved code-review finding CR-001 by adding one shared SVG/HTML anchor normalizer. Both inline Markdown delegation and the viewer now recognize ordinary `href`, namespaced/prefixed `xlink:href`, and runtime `SVGAnimatedString` values without moving external-link execution authority out of `MarkdownRenderer`.
 - Added English and Simplified Chinese labels plus direct renderer, parent, viewer, and geometry coverage.
 
 ## Reviewed Behavior Implementation Trace
@@ -22,7 +24,7 @@
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | BEH-001 | Use available inline width up to Mermaid's intrinsic cap and expose obvious inspection entry without parent overflow. | `MarkdownRenderer.vue` -> `MermaidDiagram.vue`; success shell is `w-full`, the SVG host is full-width and centered, generated SVG keeps `max-width: 100%`, and the expand button has a reserved row. | Implemented. Inline browser probe measured an 829 px preview, 813 px SVG host/SVG, and no viewport overflow at 1280 px. |
-| BEH-002 | Preserve links and other interactive descendants; teleported HTTP(S) links return to existing external-link authority. | Inline target filter in `MermaidDiagram.vue`; expanded filter/event in `MermaidDiagramViewer.vue`; forward event in `MermaidDiagram.vue`; `@external-link="openExternalLink"` in `MarkdownRenderer.vue`. | Implemented. Direct tests cover inline non-expansion, expanded link return, non-HTTP preservation, pan exclusion, and MarkdownRenderer routing. |
+| BEH-002 | Preserve links and other interactive descendants; teleported HTTP(S) links return to existing external-link authority. | Inline target filter in `MermaidDiagram.vue`; shared `href`/`xlink:href` normalization in `externalHttpLink.ts`; expanded filter/event in `MermaidDiagramViewer.vue`; forward event in `MermaidDiagram.vue`; `@external-link="openExternalLink"` in `MarkdownRenderer.vue`. | Implemented. Representative tests cover ordinary HTML `href`, actual Mermaid-style `xlink:href` inline and expanded, non-HTTP preservation, pan exclusion, and authority routing. A real Mermaid 11.12.3 Chrome probe confirmed both inline and expanded link clicks reached the same `window.open` policy. |
 | BEH-003 | Preserve loading/error/source-change behavior and allow only the current successful result into inspection. | Generation counter and gated commits in `MermaidDiagram.vue`; viewer invalidation occurs before every new render. | Implemented. Direct tests cover loading, error, stale resolution rejection, current result commitment, and open-viewer invalidation. |
 | BEH-004 | Provide the behavior through the shared renderer without consumer-specific state. | Existing consumers remain `consumer -> MarkdownRenderer -> MermaidDiagram`; no consumer, prop, store, route, or parser changes. | Implemented once at the approved shared boundary. |
 | BEH-005 | Open fitted; provide minimal zoom/pan/Fit/close; restore context; remain usable with keyboard and narrow/text-scaled layouts. | `MermaidDiagram.vue` open/close coordination -> `MermaidDiagramViewer.vue` -> `mermaidDiagramViewport.ts`. | Implemented. Browser self-inspection covered fit, two-step zoom, reset, close/focus return, one-copy mounting, 360×740 layout at 200% root text size, and all four controls within viewport. Unit/component coverage owns numeric clamp/anchor math and pointer drag mechanics. |
@@ -32,6 +34,7 @@
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/MermaidDiagram.vue`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/MermaidDiagramViewer.vue`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/externalHttpLink.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/mermaidDiagramViewport.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts`
@@ -49,7 +52,7 @@
 ## Known Risks
 
 - Real browser behavior for SVGs that lack a valid viewBox still needs a dedicated measured-bounds fixture; the implementation path exists but the rendered probes used Mermaid outputs with viewBoxes.
-- Browser/Electron external-link dispatch, pointer/touch drag at all plane edges, background focus/scroll isolation in the complete application, and dynamic source replacement inside a realistic consumer remain downstream API/E2E evidence obligations.
+- Electron external-link dispatch, pointer/touch drag at all plane edges, background focus/scroll isolation in the complete application, and dynamic source replacement inside a realistic consumer remain downstream API/E2E evidence obligations. Browser dispatch through real Mermaid 11.12.3 `xlink:href` anchors was implementation-probed after CR-001.
 - The full repository typecheck is not green on the reviewed base: it reports 242 pre-existing TypeScript errors. A filtered review of its output found no error referencing any changed task file.
 - The production build retains the repository's existing large-chunk warnings; this task added no dependency and made no bundling-policy change.
 
@@ -60,7 +63,7 @@
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `No Refactor Needed`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: The implementation stayed within the existing shared Markdown/Mermaid ownership path, added one internal viewer and one pure specialized geometry file, and did not change parser, service, consumer, store, backend, image modal, or persistence boundaries.
+- Evidence / notes: The implementation stayed within the existing shared Markdown/Mermaid ownership path, added one internal viewer, one pure specialized geometry file, and one shared anchor-normalization boundary, and did not change parser, service, consumer, store, backend, image modal, or persistence boundaries. The CR-001 fix keeps `MarkdownRenderer` as the sole external-link execution authority.
 
 ## Legacy / Compatibility Removal Check
 
@@ -70,7 +73,7 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: Removed unused hover state/listeners, unused container ref, duplicate wrapper ID, and the old auto-width host. The new viewer is below 500 effective non-empty lines. Its new-file delta exceeds 220 lines and was assessed: geometry was extracted into the approved pure module; the remaining modal lifecycle, DOM measurement, input, and focus work is one cohesive open-session owner. Further extraction would create the explicitly rejected one-use modal/focus abstraction.
+- Notes: Removed unused hover state/listeners, unused container ref, duplicate wrapper ID, and the old auto-width host. The new viewer is below 500 effective non-empty lines. Its new-file delta exceeds 220 lines and was assessed: geometry was extracted into the approved pure module; shared HTML/SVG anchor normalization was extracted during CR-001 rather than duplicated; the remaining modal lifecycle, DOM measurement, input, and focus work is one cohesive open-session owner. Further extraction would create the explicitly rejected one-use modal/focus abstraction.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -88,6 +91,7 @@
 - Reviewed base: `origin/personal` at `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`
 - The inherited ignored `autobyteus-web/node_modules` symlink lacked the locked `@novnc/novnc` package and caused the first build attempt to stop in unchanged `useVncSession.ts`. Replacing it with a task-local lock-consistent install via `pnpm install --frozen-lockfile --filter ./autobyteus-web... --ignore-scripts` resolved the environment gap; no tracked dependency or lockfile changed.
 - The implementation-only Nuxt probe route was disposable and removed after browser inspection. Its frontend was usable without a backend; the dev proxy logged expected `/rest/health` connection refusals because no backend was started.
+- The CR-001 verification reused a disposable local route and installed Chrome with real Mermaid 11.12.3 output. The observed HTTP(S) anchor had only `xlink:href`, failed `a[href]`, and exposed an object-valued runtime `href`; the route was removed and the dev server stopped after the patched inline and expanded flows were exercised.
 
 ## Local Implementation Checks Run
 
@@ -95,9 +99,9 @@
 - `pnpm -C autobyteus-web guard:web-boundary` — passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings; only the existing package-module warning was printed.
-- `pnpm -C autobyteus-web test:nuxt components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts --run` — passed, 4 files / 29 tests.
+- `pnpm -C autobyteus-web test:nuxt components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts --run` — passed after CR-001, 4 files / 30 tests.
 - `pnpm -C autobyteus-web build` — passed after task-local locked dependency installation; Nuxt built and prerendered all 15 initial routes. Existing large-chunk warnings remain.
-- `pnpm -C autobyteus-web exec nuxi typecheck` — overall exit 1 with 242 existing repository errors; output filtered for `MermaidDiagram.vue`, `MermaidDiagramViewer.vue`, `mermaidDiagramViewport`, and the changed renderer tests contained no task-file errors after correcting one initial test-only annotation.
+- `pnpm -C autobyteus-web exec nuxi typecheck` — rerun after CR-001; overall exit 1 with the same 242 existing repository errors. Output filtered for `MarkdownRenderer.vue`, `MermaidDiagram.vue`, `MermaidDiagramViewer.vue`, `externalHttpLink`, `mermaidDiagramViewport`, and the changed renderer tests contained no task-file errors.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -105,9 +109,9 @@
 - Approved UI/UX, interaction, requirement, or design references: `requirements.md`, `ui-ux-spec.md`, `proposed-design.md`, and `design-review-report.md` from the upstream package.
 - Existing design system, shared components, and adjacent product surfaces reviewed: `MarkdownRenderer.vue`, existing Mermaid rendering, Iconify usage, localization catalogs, Teleport/dialog patterns, `FullScreenImageModal.vue` as an adjacent but intentionally unreused surface, project README, and `AGENTS.md`.
 - Project development / preview instructions and rendered surface used: `pnpm dev --port 3317` with a disposable local Nuxt page that rendered two real Mermaid fences through production `MarkdownRenderer`; headless installed Google Chrome was used only for implementation self-inspection.
-- States, layouts, viewports, and interactions inspected: flowchart plus wide sequence inline; persistent expand; 1280×900 viewer fit; two zoom-in actions with real stage/plane growth and centered scroll; Fit reset to scroll origin; close/body unlock/focus return; 360×740 viewport with 200% root text size; toolbar wrapping and four action bounds.
+- States, layouts, viewports, and interactions inspected: flowchart plus wide sequence inline; persistent expand; 1280×900 viewer fit; two zoom-in actions with real stage/plane growth and centered scroll; Fit reset to scroll origin; close/body unlock/focus return; 360×740 viewport with 200% root text size; toolbar wrapping and four action bounds; real Mermaid 11.12.3 `click` syntax inline and expanded after CR-001.
 - Visual or interaction issues found and corrected: The first rendered pass let the absolute expand button overlap a sequence participant. The final inline layout reserves a dedicated top row; the browser measured `buttonBottom=244`, `svgTop=252`, no overlap. Review also caught that the focusable canvas boundary matched the interactive-descendant selector and would suppress pointer pan; the filter now excludes the boundary itself and direct pointer-drag coverage confirms scroll movement while anchors remain excluded.
-- Supporting evidence and remaining unverified states or limitations: Final probe observed no page-level browser errors, a 1246×401.875 fitted wide sequence in a 1246×805 canvas, a 1869×602.8125 two-step zoomed stage with real horizontal scroll, four visible actions at 360 px/200% text size, exact empty-string body-overflow restore, and focus return to the first Expand diagram button. Screenshots were visually inspected as disposable implementation evidence rather than promoted to task supplements. A real backend/Electron process was intentionally not started; downstream owns broader browser/live validation.
+- Supporting evidence and remaining unverified states or limitations: Final layout probe observed no page-level browser errors, a 1246×401.875 fitted wide sequence in a 1246×805 canvas, a 1869×602.8125 two-step zoomed stage with real horizontal scroll, four visible actions at 360 px/200% text size, exact empty-string body-overflow restore, and focus return to the first Expand diagram button. The CR-001 probe observed real Mermaid output with `getAttribute('href') === null`, a populated namespaced/prefixed `xlink:href`, `matches('a[href]') === false`, and object-valued runtime `href`; patched inline and expanded clicks each invoked `window.open('https://example.com/docs', '_blank', 'noopener,noreferrer')` without opening/closing the wrong surface. Screenshots were visually inspected as disposable implementation evidence rather than promoted to task supplements. A real backend/Electron process was intentionally not started; downstream owns broader browser/live validation.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
