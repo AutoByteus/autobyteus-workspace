@@ -6,7 +6,7 @@
 - Trigger: The reviewed implementation passed implementation-source review, API/E2E round 4 at `98.1%` confidence, and the separate proportional test-code review with no unresolved findings.
 - Bootstrap base reference: `origin/personal` at `dbc83fdb51c1e158b5707c219dd8574dc49fa493` (`v1.4.17`).
 - Integrated base reference used for docs sync: Refreshed `origin/personal` at `492d94a310d0c069430b0f2340f7c95ade9894cc` (`v1.4.18` delivery record), merged conflict-free into the ticket branch as `093528650b2ebabd480c7fd21cc87325edf01405`.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/local-video-preview-playback/tickets/done/local-video-preview-playback/delivery-integration-verification.log` — integrated HEAD `093528650b2ebabd480c7fd21cc87325edf01405`; focused Nuxt `16` files / `96` tests passed, focused Electron `4` files / `21` tests passed, and `pnpm transpile-electron` passed.
+- Post-integration verification reference: `tickets/done/local-video-preview-playback/delivery-integration-verification.log` — integrated HEAD `093528650b2ebabd480c7fd21cc87325edf01405`; focused Nuxt `16` files / `96` tests passed, focused Electron `4` files / `21` tests passed, and `pnpm transpile-electron` passed.
 
 ## Why Docs Were Updated
 
