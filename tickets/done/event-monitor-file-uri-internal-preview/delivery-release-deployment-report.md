@@ -8,7 +8,7 @@
 - API/E2E Round 2: **Pass at 95% final confidence**.
 - Proportional durable-test review: **Not Applicable / accepted**; no durable API/E2E test files changed.
 - User final-test evidence: explicit successful approval is retained, with reproducibility and independent packaged/native/platform limitations preserved.
-- User verification authorization: **Received** in `user-verification-final-test-report.md`; archival, target merge/push, and release execution are now authorized.
+- User verification authorization: **Received** in `user-verification-final-test-report.md`; archival, target merge/push, and release execution were authorized.
 
 ## Integration Refresh And Check
 
@@ -61,9 +61,20 @@
 
 - Version bump, tag, publication, deployment, and release commit: pending execution after the ticket-branch commit and finalization-target merge.
 - Ticket state transition: **Completed locally**; archived at `tickets/done/event-monitor-file-uri-internal-preview` before the final ticket-branch commit.
-- Ticket branch push and finalization-target merge/push: pending.
+- Ticket branch push: **Completed** at `6d8c494e31c9c9ed11e38c2e1539fa8f50a90ac5`.
+- Finalization-target merge: **Completed** as local merge commit `75550c8ee6338b1215b221bc04706e47a8c4d262` after the final target refresh; `origin/personal` had not advanced beyond the reviewed base.
+- Finalization-target push: **Completed** by the release command; `origin/personal` now points to release commit `f4f69dd3c5d37b10b15f3e0cd5d6170344a1fb61`.
 - Worktree/branch cleanup: deferred to preserve the local verification worktree and Electron artifact.
+
+### Release 1.4.21
+
+- Method: `bash scripts/desktop-release.sh release 1.4.21 --release-notes tickets/done/event-monitor-file-uri-internal-preview/release-notes.md --branch personal`.
+- Release commit: `f4f69dd3c5d37b10b15f3e0cd5d6170344a1fb61`.
+- Annotated tag: `v1.4.21`.
+- Release workflow: **Completed successfully**, GitHub Actions run `29748032016` ([workflow](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29748032016)). All macOS ARM64/x64, Windows x64, Linux ARM64/x64 build and publish jobs passed.
+- Published release: [v1.4.21](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.21).
+- Published artifacts include macOS ARM64/x64 DMG/ZIP, Windows x64 installer, Linux ARM64/x64 AppImages, Android APK, updater metadata, and release manifest.
 
 ## Final Status
 
-**Current Electron artifact built successfully; explicit user verification authorizes finalization and release execution. API/E2E is Pass at 95% with the user-attestation reproducibility limitation preserved.**
+**Completed.** Ticket archived, reviewed source merged and pushed to `personal`, and release `v1.4.21` was published successfully. API/E2E remains Pass at 95% with the user-attestation reproducibility limitation preserved.

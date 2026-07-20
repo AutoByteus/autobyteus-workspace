@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery status: **User verification received; finalization/release in progress**.
+- Delivery status: **Completed; release v1.4.21 published**.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview`.
 - Branch: `codex/event-monitor-file-uri-internal-preview`.
 - Current source: `c489f92da4d3d3d97fb3542912a9c9b0adb42aed`.
@@ -70,7 +70,13 @@ passed.
 
 ## Finalization / Release Execution
 
-The user-attested final-test artifact explicitly approves continuation. Delivery will archive the ticket, refresh and merge into `personal`, and create the next documented workspace release. If a reproducible packaged/native or platform defect is found, preserve its exact scenario and route the fix through source review and API/E2E again. The independent-coverage limitation remains in force even after release.
+The user-attested final-test artifact explicitly approved continuation. The ticket was archived, the final delivery commit was merged into `personal`, and release `v1.4.21` was published by GitHub Actions run `29748032016`. If a reproducible packaged/native or platform defect is found after release, preserve its exact scenario and route the fix through source review and API/E2E again. The independent-coverage limitation remains in force after release.
+
+- Finalization merge: `75550c8ee6338b1215b221bc04706e47a8c4d262`.
+- Release commit: `f4f69dd3c5d37b10b15f3e0cd5d6170344a1fb61`.
+- Release tag: `v1.4.21`.
+- Published release: [v1.4.21](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.21).
+- Workflow: [Desktop Release run 29748032016](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29748032016), successful across all platform builds and publication.
 
 ## Cumulative Artifact Package
 
