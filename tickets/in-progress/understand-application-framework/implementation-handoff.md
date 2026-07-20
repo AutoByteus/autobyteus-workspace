@@ -16,6 +16,14 @@
 - Round-1 finding `CR-001` is resolved. `startAgentRunBinding` now requires both an `AGENT` launch payload and resolved `AGENT` resource; `startAgentTeamRunBinding` independently requires `AGENT_TEAM` for both. Payload-kind rejection occurs before resource resolution, and resolved-resource rejection occurs before run creation, persistence, observer attachment, or initial input.
 - Added six focused launch-boundary tests: valid standalone-agent routing, valid team routing, both opposite launch-kind calls, and both wrong resolved-resource kinds. Negative cases assert no run creation or binding persistence side effect.
 
+## API/E2E Failure Local Fix
+
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/in-progress/understand-application-framework/api-e2e-execution-coverage-report.md`
+- Focused failure-origin finding `CR-002` is resolved. The two affected public/current documents now use the approved named capability and pending-launch-request vocabulary at exactly the three reported locations.
+- The unrelated `runtime-control route key` wording in `autobyteus-web/docs/agent_teams.md` remains unchanged, as required.
+- This rework changes documentation only. No executable source, durable API/E2E test, fixture, generated package, schema, or migration file was changed by the fix.
+
 ## What Changed
 
 - Replaced the public application-backend `runtimeControl` surface with the exact v3-only `agentExecution`, `agentResources`, and `publishedArtifacts` capability contract.
@@ -27,6 +35,7 @@
 - Changed current platform binding and event-journal DDL/serialization directly to launch-request naming. Removed the old-column ALTER/stale-summary cleanup from the binding store; no schema version, transform service, compatibility reader, or reset behavior was added.
 - Renamed both built-in apps' pending correlation repositories and baseline SQL directly, updated their services to the new capabilities, and rebuilt their executable backends and importable packages.
 - Updated current documentation, focused unit/integration fixtures, and repository terminology. No frontend, iframe, HTTP, WebSocket, or output-streaming behavior was added.
+- Corrected the final three stale current-documentation references: SDK capability ownership and pending launch requests in `autobyteus-web/docs/applications.md`, plus agent execution/resources in `autobyteus-server-ts/docs/modules/application_backend_gateway.md`.
 - Removed all halted partial migration work: no `ApplicationPlatformSchemaMigrationService`, no Brief `006`/Socratic `004` rename migration, and no ticket diff in `ApplicationMigrationService` or `ApplicationStorageLifecycleService`.
 
 ## Reviewed Behavior Implementation Trace
@@ -59,7 +68,8 @@
 
 ## Known Risks
 
-- Broader API/E2E and fresh-storage matrix execution is intentionally left to `api_e2e_engineer`; the implementation checks below are not API/E2E sign-off.
+- API/E2E reported all operational executable and fresh-schema scenarios passing, but its final inventory found the now-corrected documentation gap. Source review and the API/E2E inventory/regression rerun remain required; the implementation checks below are not API/E2E sign-off.
+- The API/E2E engineer retained one non-reproducing existing lifecycle polling timing observation; the exact affected file subsequently passed three consecutive runs and the full suite passed without a code change.
 - External or locally retained v2 application packages will not load until rebuilt against v3, by design.
 - The repository-level server `pnpm typecheck` command remains unusable because baseline `tsconfig.json` sets `rootDir: src` while including `tests`; it emits TS6059 for the existing test tree. The build-specific TypeScript configuration and full server build pass.
 
@@ -115,6 +125,10 @@
 - `pnpm run build:full` after `CR-001` rework — passed, including the built-in agent bootstrap smoke check.
 - `git diff --check` — passed.
 - Repository inventory for removed public/current tokens — clean outside ticket history; prohibited migration service and appended rename SQL files are absent; storage lifecycle/migration service production files have no ticket diff; platform schema metadata remains version `1`.
+- `CR-002` exact conceptual inventory (`runtime[- ]control|pending[- ]binding[- ]intent`) across the two affected current documents — passed with no matches.
+- `CR-002` broader active removed-token inventory across SDK, devkit, server, built-in applications, web, and root docs — passed with no matches outside excluded dependency/generated caches and ticket history.
+- `CR-002` diff hygiene — passed: protected `autobyteus-web/docs/agent_teams.md` is unchanged from base; prohibited platform/appended migration artifacts remain absent; generic migration/lifecycle production services remain unchanged from base; `git diff --check` passed.
+- No build or executable test was rerun for `CR-002` because the bounded fix modifies documentation only.
 - `pnpm typecheck` in `autobyteus-server-ts` — failed on the pre-existing TS6059 configuration issue (`rootDir` is `src` while `tests` is included). Its prerequisite shared builds passed, and `tsconfig.build.json` compilation/full build passed.
 
 ## Frontend Rendered-Result Check (When Applicable)
@@ -131,6 +145,6 @@ Not Applicable — this is a backend contract, worker/host, orchestration, persi
 - Run the changed application backend HTTP/GraphQL/WebSocket integration suites to confirm external routes/transports are unchanged.
 - Repeat the old-token/generated-output inventory from the integrated execution state.
 
-## API / E2E / Executable Coverage Investigation And Execution Still Required
+## API / E2E / Executable Coverage Re-execution Still Required
 
-Yes. `api_e2e_engineer` still owns coverage investigation, fresh-storage validation, broader integration/API/E2E execution, realistic environment setup, confidence scoring, cleanup, and evidence.
+Yes. After implementation-source review passes, `api_e2e_engineer` must rerun the failed inventory and relevant regression checks, refresh its execution evidence and confidence assessment, and return successful durable test changes for proportional test-code review.
