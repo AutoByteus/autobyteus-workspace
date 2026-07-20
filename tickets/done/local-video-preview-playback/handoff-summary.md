@@ -89,6 +89,7 @@ The local user-verification package was built before release with the README's *
 - Dedicated ticket worktree: Removed.
 - Local ticket branch: Deleted.
 - Remote ticket branch: Deleted after its final commit was proven reachable from `origin/personal` and `v1.4.19`.
+- Temporary release-staging worktree and local release branch: Removed after the final evidence push.
 - The installed `/Applications/AutoByteus.app` process was not task-owned and was not stopped.
 - Live Windows execution remained unavailable on macOS arm64. Cross-platform URL/response logic and Windows drive cases have durable coverage.
 - Video codec support remains bounded by shipped Chromium; unsupported codecs use the approved failure/Retry state.

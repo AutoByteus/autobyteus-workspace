@@ -99,7 +99,7 @@ Delivery is complete. The user verified local-video playback, the archived ticke
 - Worktree prune result: `Completed`
 - Local ticket branch cleanup result: `Completed` — `codex/local-video-preview-playback` deleted
 - Remote branch cleanup result: `Completed` — `origin/codex/local-video-preview-playback` deleted only after `a2c8ffece514005341ad51b8eee19ede12f1384c` was confirmed reachable from `origin/personal` and `v1.4.19`
-- Release-staging worktree/branch: Retained only through this final evidence commit and scheduled for immediate mechanical removal afterward.
+- Release-staging worktree/branch cleanup: `Completed` — `/Users/normy/autobyteus_org/autobyteus-worktrees/release-local-video-preview-playback-v1.4.19` and local branch `release/local-video-preview-playback-v1.4.19` were removed after the evidence commit was pushed.
 - Blocker: N/A
 
 ## Escalation / Reroute
