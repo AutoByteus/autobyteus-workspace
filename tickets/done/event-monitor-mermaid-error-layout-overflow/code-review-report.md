@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/requirements.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/task.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/task.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md`
 - Current Review Round: `1`
 - Trigger: implementation handoff for commit `752937fb149196ac98f73776db5545e3a1267256`
 - Prior Review Round Reviewed: `N/A`
 - Latest Authoritative Round: `1`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/implementation-handoff.md`
 
 ## Round History
 

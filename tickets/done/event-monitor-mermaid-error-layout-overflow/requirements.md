@@ -31,7 +31,7 @@ Prevent malformed Mermaid diagrams rendered inside application Markdown from cre
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md | Retained browser-DOM probe and Mermaid vendor-behavior evidence | REQ-MER-001–005 | AC-MER-001–005 | Evidence; approval N/A | Establishes a reproducible cause for the reported outer overflow and verifies the proposed Mermaid configuration boundary. |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md | Retained browser-DOM probe and Mermaid vendor-behavior evidence | REQ-MER-001–005 | AC-MER-001–005 | Evidence; approval N/A | Establishes a reproducible cause for the reported outer overflow and verifies the proposed Mermaid configuration boundary. |
 
 ## Design Health Assessment (Mandatory)
 

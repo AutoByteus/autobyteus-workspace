@@ -11,11 +11,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/design-spec.md`
-- Supplemental evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/design-spec.md`
+- Supplemental evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/design-review-report.md`
 
 ## What Changed
 

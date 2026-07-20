@@ -29,7 +29,7 @@ The new investigation was intentionally bootstrapped from the refreshed origin/p
 
 - Project Type: Git
 - Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow
 - Current Branch: codex/event-monitor-mermaid-error-layout-overflow
 - Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow
 - Bootstrap Base Branch: origin/personal
@@ -44,7 +44,7 @@ The new investigation was intentionally bootstrapped from the refreshed origin/p
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md | Isolated Mermaid/JSDOM browser-DOM probe | Reproduces one leaked error subtree per invalid mermaid.render, verifies parse-only and suppressErrorRendering controls | Requirements, design spec | REQ-MER-001–005; AC-MER-001–005 | Retained evidence | Approval N/A | Replace disposable command with durable browser coverage during implementation/API-E2E stage |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md | Isolated Mermaid/JSDOM browser-DOM probe | Reproduces one leaked error subtree per invalid mermaid.render, verifies parse-only and suppressErrorRendering controls | Requirements, design spec | REQ-MER-001–005; AC-MER-001–005 | Retained evidence | Approval N/A | Replace disposable command with durable browser coverage during implementation/API-E2E stage |
 
 ## Source Log
 

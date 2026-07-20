@@ -10,7 +10,8 @@
 - API/E2E: **Pass at 96% final confidence**.
 - Proportional durable-test review: **Not Applicable / accepted**; no durable
   API/E2E test files changed.
-- User verification: **Not yet received for delivery finalization**.
+- User verification: **Received**; the user confirmed the rebuilt artifact is
+  working and explicitly authorized finalization and release.
 
 ## Integration Refresh And Check
 
@@ -24,12 +25,12 @@
 - Post-integration executable check: **Pass**, Mermaid focused 4 files / 18
   tests.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/evidence/delivery-post-refresh-check.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/evidence/delivery-post-refresh-check.log`.
 
 ## Docs Sync
 
 - Docs report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/docs-sync-report.md`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/docs-sync-report.md`.
 - Updated canonical doc: `autobyteus-web/docs/content_rendering.md`.
 - Reviewed without change: `autobyteus-web/ARCHITECTURE.md`,
   `autobyteus-web/docs/workspace_layout.md`, and
@@ -52,7 +53,7 @@ does not erase or replace those limits.
   for this ticket).
 - Result: **Build completed**.
 - Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/evidence/delivery-electron-build.log`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/evidence/delivery-electron-build.log`.
 - DMG:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.21.dmg`
   (SHA-256 `06b04472860fdde83faa52f0ad93a4680ecad737f6994c69e12de27374b34e3f`).
@@ -65,19 +66,21 @@ does not erase or replace those limits.
 
 ## Release / Deployment / Cleanup
 
-- Applicable now: **No**. The current work is a user-led verification handoff;
-  no explicit user completion signal has authorized archival or a new release.
-- Version bump/tag/publication/deployment: **Not performed**.
-- Release notes: **Not required yet**; create the archived release-notes
-  artifact before any later user-authorized release.
-- Ticket state: remains `tickets/in-progress/event-monitor-mermaid-error-layout-overflow`.
-- Ticket branch push and finalization-target merge/push: not performed.
+- Applicable now: **Yes**. The user completion signal authorizes archival,
+  repository finalization, and the next workspace release.
+- Version bump/tag/publication/deployment: pending execution after the archived
+  ticket branch is pushed and merged into the refreshed target.
+- Release notes: prepared at `release-notes.md` and will be passed from the
+  archived ticket into the release command.
+- Ticket state transition: pending; archive before the final ticket-branch
+  commit.
+- Ticket branch push and finalization-target merge/push: pending.
 - Worktree/branch cleanup: deferred to preserve the artifact and verification
   worktree.
 
 ## Final Status
 
-**Ready for user-led verification.** Documentation is synchronized against the
-integrated, checked state and the macOS ARM64 artifact is available. Final
-archival, repository finalization, release, deployment, and cleanup remain held
-until explicit user completion/verification.
+**Finalization and release in progress.** The user verified the artifact and
+authorized completion. Documentation is synchronized, the API/E2E residuals
+remain preserved, and the next actions are ticket archival, repository
+finalization, and the documented release workflow.

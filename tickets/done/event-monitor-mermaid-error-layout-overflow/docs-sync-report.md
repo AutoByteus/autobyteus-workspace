@@ -14,7 +14,7 @@
 - Delivery checkpoint before refresh: `21582121994a876c71d189ca0d1169dccd4682ea`.
 - Refresh: fetched `origin/personal`, found divergence `2 ahead / 1 behind`, and merged the latest tracked base with `git merge --no-edit origin/personal`.
 - Post-refresh check: **Pass**, Mermaid focused suite 4 files / 18 tests.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/evidence/delivery-post-refresh-check.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/evidence/delivery-post-refresh-check.log`.
 
 ## Why Docs Were Updated
 
@@ -59,6 +59,7 @@ runtime surfaces.
 ## Delivery Continuation
 
 - Result: `Updated`.
-- Next action: user-led verification of the rebuilt macOS ARM64 artifact and
-  explicit completion authorization before archival, branch push, target merge,
-  release, deployment, or cleanup.
+- User verification: **Received**; the user confirmed the rebuilt artifact is
+  working and explicitly authorized finalization and release.
+- Next action: archive the ticket, push the reviewed package, merge it into the
+  refreshed finalization target, and run the documented release path.

@@ -27,7 +27,7 @@ Keep the existing Mermaid service/component ownership. Configure Mermaid to supp
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md | Mermaid failure-path and DOM-leak evidence | REQ-MER-001–005; AC-MER-001–005 | Justifies the service configuration change and browser-boundary regression | Evidence; approval N/A |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md | Mermaid failure-path and DOM-leak evidence | REQ-MER-001–005; AC-MER-001–005 | Justifies the service configuration change and browser-boundary regression | Evidence; approval N/A |
 
 ## Task Design Health Assessment (Mandatory)
 

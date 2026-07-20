@@ -36,7 +36,7 @@ Ensure malformed Mermaid diagrams fail inside the existing diagram component wit
 ## Evidence
 
 The retained probe is:
- /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/in-progress/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md
+ /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/tickets/done/event-monitor-mermaid-error-layout-overflow/mermaid-body-leak-probe.md
 
 Core artifacts:
 - requirements.md
