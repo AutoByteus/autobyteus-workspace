@@ -1,0 +1,47 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/autobyteus-web/electron
+
+··stdout | __tests__/logger.spec.ts
+[2026-07-20T15:59:07.278Z] [INFO] [electron] Application started
+
+stdout | server/__tests__/serverOutputLogging.spec.ts
+[2026-07-20T15:59:07.278Z] [INFO] [electron] Application started
+
+········stdout | extensions/__tests__/managedExtensionService.spec.ts
+[2026-07-20T15:59:07.342Z] [INFO] [electron] Application started
+
+stdout | browser/__tests__/browser-tab-manager.spec.ts
+[2026-07-20T15:59:07.352Z] [INFO] [electron] Application started
+
+·····stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > aborts popup adoption when Electron provides popup webContents from a foreign session
+[2026-07-20T15:59:07.435Z] [WARN] [electron] Aborted popup browser child creation from '287376' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup webContents session does not match the Browser-owned session.
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > denies popup requests from sessions that are not attached to a shell
+[2026-07-20T15:59:07.435Z] [WARN] [electron] Blocked browser popup request from '62554a' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup requests require the opener session '62554a' to be attached to a shell.
+
+··stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > caps popup fan-out per opener session
+[2026-07-20T15:59:07.436Z] [WARN] [electron] Blocked browser popup request from 'ceedce' to 'https://accounts.google.com/o/oauth2/v2/auth?attempt=overflow': Popup request limit reached for opener session 'ceedce'.
+
+······················································stdout | browser/__tests__/browser-shell-controller.spec.ts
+[2026-07-20T15:59:07.705Z] [INFO] [electron] Application started
+
+···············stdout | __tests__/nodeRegistryStore.spec.ts
+[2026-07-20T15:59:07.826Z] [INFO] [electron] Application started
+
+·························stdout | extensions/__tests__/voiceInputRuntimeService.spec.ts
+[2026-07-20T15:59:08.170Z] [INFO] [electron] Application started
+
+····stdout | extensions/__tests__/managedExtensionService.realRelease.spec.ts
+[2026-07-20T15:59:08.328Z] [INFO] [electron] Application started
+
+-stdout | extensions/__tests__/managedExtensionService.spec.ts > ManagedExtensionService > installs disabled by default, enables explicitly, and transcribes via the worker
+[2026-07-20T15:59:08.678Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-07-20T15:59:08.678Z] [INFO] [electron] Login shell PATH: /Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:./node_modules/.bin:/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/node_modules/.bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.kimi-code/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.144.6-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0gIUTLw:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+
+···
+
+ Test Files  27 passed | 1 skipped (28)
+      Tests  118 passed | 1 skipped (119)
+   Start at  17:59:06
+   Duration  2.59s (transform 1.10s, setup 0ms, collect 2.52s, tests 2.82s, environment 5ms, prepare 2.38s)
+

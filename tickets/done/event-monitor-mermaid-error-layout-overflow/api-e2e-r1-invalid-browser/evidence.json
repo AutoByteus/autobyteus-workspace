@@ -1,0 +1,940 @@
+{
+  "startedAt": "2026-07-20T16:04:40.083Z",
+  "baseUrl": "http://127.0.0.1:3330",
+  "route": "/api-e2e-mermaid-error-layout-r1",
+  "scenarios": {
+    "MER-E2E-INVALID-001": {
+      "status": "Pass",
+      "initial": {
+        "label": "initial-invalid",
+        "href": "http://127.0.0.1:3330/api-e2e-mermaid-error-layout-r1",
+        "bodyChildCount": 5,
+        "bodyChildren": [
+          {
+            "tag": "DIV",
+            "id": "__nuxt",
+            "className": ""
+          },
+          {
+            "tag": "DIV",
+            "id": "teleports",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "__NUXT_DATA__",
+            "className": ""
+          }
+        ],
+        "mermaidGeneratedIds": [],
+        "errorCount": 3,
+        "viewerButtonCount": 0,
+        "svgCount": 0,
+        "rootRect": {
+          "x": 50,
+          "y": 0,
+          "width": 340,
+          "height": 1270,
+          "right": 390,
+          "bottom": 1270
+        },
+        "surfaceRect": {
+          "x": 66,
+          "y": 182,
+          "width": 308,
+          "height": 1072,
+          "right": 374,
+          "bottom": 1254
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "clientHeight": 640,
+          "scrollHeight": 640,
+          "bodyScrollWidth": 390,
+          "bodyScrollHeight": 640
+        },
+        "errors": [
+          {
+            "index": 0,
+            "rect": {
+              "x": 79,
+              "y": 211,
+              "width": 282,
+              "height": 594,
+              "right": 361,
+              "bottom": 805
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          {
+            "index": 1,
+            "rect": {
+              "x": 79,
+              "y": 821,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1015
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          },
+          {
+            "index": 2,
+            "rect": {
+              "x": 79,
+              "y": 1031,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1225
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          }
+        ],
+        "messages": [
+          {
+            "rect": {
+              "x": 104,
+              "y": 280,
+              "width": 232,
+              "height": 500,
+              "right": 336,
+              "bottom": 780
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 640
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 890,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 990
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 1100,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 1200
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          }
+        ]
+      }
+    },
+    "MER-E2E-INVALID-002": {
+      "status": "Pass",
+      "rerendered": {
+        "label": "rerender-invalid",
+        "href": "http://127.0.0.1:3330/api-e2e-mermaid-error-layout-r1",
+        "bodyChildCount": 5,
+        "bodyChildren": [
+          {
+            "tag": "DIV",
+            "id": "__nuxt",
+            "className": ""
+          },
+          {
+            "tag": "DIV",
+            "id": "teleports",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "__NUXT_DATA__",
+            "className": ""
+          }
+        ],
+        "mermaidGeneratedIds": [],
+        "errorCount": 3,
+        "viewerButtonCount": 0,
+        "svgCount": 0,
+        "rootRect": {
+          "x": 50,
+          "y": 0,
+          "width": 340,
+          "height": 1270,
+          "right": 390,
+          "bottom": 1270
+        },
+        "surfaceRect": {
+          "x": 66,
+          "y": 182,
+          "width": 308,
+          "height": 1072,
+          "right": 374,
+          "bottom": 1254
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "clientHeight": 640,
+          "scrollHeight": 640,
+          "bodyScrollWidth": 390,
+          "bodyScrollHeight": 640
+        },
+        "errors": [
+          {
+            "index": 0,
+            "rect": {
+              "x": 79,
+              "y": 211,
+              "width": 282,
+              "height": 594,
+              "right": 361,
+              "bottom": 805
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          {
+            "index": 1,
+            "rect": {
+              "x": 79,
+              "y": 821,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1015
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          },
+          {
+            "index": 2,
+            "rect": {
+              "x": 79,
+              "y": 1031,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1225
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          }
+        ],
+        "messages": [
+          {
+            "rect": {
+              "x": 104,
+              "y": 280,
+              "width": 232,
+              "height": 500,
+              "right": 336,
+              "bottom": 780
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 640
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 890,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 990
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 1100,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 1200
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          }
+        ]
+      },
+      "requestCountUnchanged": true
+    },
+    "MER-E2E-INVALID-003": {
+      "status": "Pass",
+      "unmounted": {
+        "label": "unmounted",
+        "href": "http://127.0.0.1:3330/api-e2e-mermaid-error-layout-r1",
+        "bodyChildCount": 5,
+        "bodyChildren": [
+          {
+            "tag": "DIV",
+            "id": "__nuxt",
+            "className": ""
+          },
+          {
+            "tag": "DIV",
+            "id": "teleports",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "__NUXT_DATA__",
+            "className": ""
+          }
+        ],
+        "mermaidGeneratedIds": [],
+        "errorCount": 0,
+        "viewerButtonCount": 0,
+        "svgCount": 0,
+        "rootRect": {
+          "x": 50,
+          "y": 0,
+          "width": 340,
+          "height": 640,
+          "right": 390,
+          "bottom": 640
+        },
+        "surfaceRect": {
+          "x": 66,
+          "y": 182,
+          "width": 308,
+          "height": 26,
+          "right": 374,
+          "bottom": 208
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "clientHeight": 640,
+          "scrollHeight": 640,
+          "bodyScrollWidth": 390,
+          "bodyScrollHeight": 640
+        },
+        "errors": [],
+        "messages": []
+      },
+      "remounted": {
+        "label": "remounted-invalid",
+        "href": "http://127.0.0.1:3330/api-e2e-mermaid-error-layout-r1",
+        "bodyChildCount": 5,
+        "bodyChildren": [
+          {
+            "tag": "DIV",
+            "id": "__nuxt",
+            "className": ""
+          },
+          {
+            "tag": "DIV",
+            "id": "teleports",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "__NUXT_DATA__",
+            "className": ""
+          }
+        ],
+        "mermaidGeneratedIds": [],
+        "errorCount": 3,
+        "viewerButtonCount": 0,
+        "svgCount": 0,
+        "rootRect": {
+          "x": 50,
+          "y": 0,
+          "width": 340,
+          "height": 1270,
+          "right": 390,
+          "bottom": 1270
+        },
+        "surfaceRect": {
+          "x": 66,
+          "y": 182,
+          "width": 308,
+          "height": 1072,
+          "right": 374,
+          "bottom": 1254
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "clientHeight": 640,
+          "scrollHeight": 640,
+          "bodyScrollWidth": 390,
+          "bodyScrollHeight": 640
+        },
+        "errors": [
+          {
+            "index": 0,
+            "rect": {
+              "x": 79,
+              "y": 211,
+              "width": 282,
+              "height": 594,
+              "right": 361,
+              "bottom": 805
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          {
+            "index": 1,
+            "rect": {
+              "x": 79,
+              "y": 821,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1015
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          },
+          {
+            "index": 2,
+            "rect": {
+              "x": 79,
+              "y": 1031,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1225
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          }
+        ],
+        "messages": [
+          {
+            "rect": {
+              "x": 104,
+              "y": 280,
+              "width": 232,
+              "height": 500,
+              "right": 336,
+              "bottom": 780
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 640
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 890,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 990
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 1100,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 1200
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          }
+        ]
+      }
+    },
+    "MER-E2E-VALID-001": {
+      "status": "Pass",
+      "valid": {
+        "label": "valid",
+        "href": "http://127.0.0.1:3330/api-e2e-mermaid-error-layout-r1",
+        "bodyChildCount": 5,
+        "bodyChildren": [
+          {
+            "tag": "DIV",
+            "id": "__nuxt",
+            "className": ""
+          },
+          {
+            "tag": "DIV",
+            "id": "teleports",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "__NUXT_DATA__",
+            "className": ""
+          }
+        ],
+        "mermaidGeneratedIds": [],
+        "errorCount": 0,
+        "viewerButtonCount": 3,
+        "svgCount": 3,
+        "rootRect": {
+          "x": 50,
+          "y": 0,
+          "width": 340,
+          "height": 858,
+          "right": 390,
+          "bottom": 858
+        },
+        "surfaceRect": {
+          "x": 66,
+          "y": 182,
+          "width": 308,
+          "height": 660,
+          "right": 374,
+          "bottom": 842
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "clientHeight": 640,
+          "scrollHeight": 640,
+          "bodyScrollWidth": 390,
+          "bodyScrollHeight": 640
+        },
+        "errors": [],
+        "messages": []
+      }
+    },
+    "MER-E2E-SAFETY-001": {
+      "status": "Pass",
+      "finalInvalid": {
+        "label": "valid-to-invalid",
+        "href": "http://127.0.0.1:3330/api-e2e-mermaid-error-layout-r1",
+        "bodyChildCount": 5,
+        "bodyChildren": [
+          {
+            "tag": "DIV",
+            "id": "__nuxt",
+            "className": ""
+          },
+          {
+            "tag": "DIV",
+            "id": "teleports",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "",
+            "className": ""
+          },
+          {
+            "tag": "SCRIPT",
+            "id": "__NUXT_DATA__",
+            "className": ""
+          }
+        ],
+        "mermaidGeneratedIds": [],
+        "errorCount": 3,
+        "viewerButtonCount": 0,
+        "svgCount": 0,
+        "rootRect": {
+          "x": 50,
+          "y": 0,
+          "width": 340,
+          "height": 1270,
+          "right": 390,
+          "bottom": 1270
+        },
+        "surfaceRect": {
+          "x": 66,
+          "y": 182,
+          "width": 308,
+          "height": 1072,
+          "right": 374,
+          "bottom": 1254
+        },
+        "document": {
+          "clientWidth": 390,
+          "scrollWidth": 390,
+          "clientHeight": 640,
+          "scrollHeight": 640,
+          "bodyScrollWidth": 390,
+          "bodyScrollHeight": 640
+        },
+        "errors": [
+          {
+            "index": 0,
+            "rect": {
+              "x": 79,
+              "y": 211,
+              "width": 282,
+              "height": 594,
+              "right": 361,
+              "bottom": 805
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          {
+            "index": 1,
+            "rect": {
+              "x": 79,
+              "y": 821,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1015
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          },
+          {
+            "index": 2,
+            "rect": {
+              "x": 79,
+              "y": 1031,
+              "width": 282,
+              "height": 194,
+              "right": 361,
+              "bottom": 1225
+            },
+            "scrollWidth": 280,
+            "clientWidth": 280,
+            "text": "No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram"
+          }
+        ],
+        "messages": [
+          {
+            "rect": {
+              "x": 104,
+              "y": 280,
+              "width": 232,
+              "height": 500,
+              "right": 336,
+              "bottom": 780
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 640
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 890,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 990
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          },
+          {
+            "rect": {
+              "x": 104,
+              "y": 1100,
+              "width": 232,
+              "height": 100,
+              "right": 336,
+              "bottom": 1200
+            },
+            "scrollWidth": 232,
+            "clientWidth": 232,
+            "computedWidth": "232px",
+            "overflowWrap": "anywhere",
+            "wordBreak": "break-word",
+            "textLength": 99
+          }
+        ]
+      },
+      "requestCountUnchanged": true,
+      "urlUnchanged": true
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    },
+    {
+      "type": "console:error",
+      "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+    }
+  ],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed"
+  },
+  "failures": [],
+  "summary": {
+    "initialBodyChildCount": 5,
+    "finalBodyChildCount": 5,
+    "requestCount": 4,
+    "url": "http://127.0.0.1:3330/api-e2e-mermaid-error-layout-r1",
+    "events": [
+      {
+        "type": "console:debug",
+        "text": "[vite] connecting..."
+      },
+      {
+        "type": "console:debug",
+        "text": "[vite] connected."
+      },
+      {
+        "type": "console:log",
+        "text": "serverStore: Initializing server config"
+      },
+      {
+        "type": "console:log",
+        "text": "serverStore: Not in Electron environment. Skipping server initialization."
+      },
+      {
+        "type": "console:info",
+        "text": "<Suspense> is an experimental feature and its API will likely change."
+      },
+      {
+        "type": "console:log",
+        "text": "ServerLoading: Component mounted with status: running"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      },
+      {
+        "type": "console:error",
+        "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      },
+      {
+        "type": "console:error",
+        "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram with a deliberately long parser context xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1599:5\n    at new Promise (<anonymous>)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1583:10)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      },
+      {
+        "type": "console:error",
+        "text": "Mermaid rendering failed: UnknownDiagramError: No diagram type detected matching given configuration for text: this is not a valid Mermaid diagram\n    at detectType (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/chunk-TL265WL2.js?v=7e30cdfb:1777:9)\n    at Diagram.fromText (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1008:18)\n    at Object.render (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1304:26)\n    at http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1585:18\n    at new Promise (<anonymous>)\n    at performCall (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1584:38)\n    at executeQueue (http://127.0.0.1:3330/_nuxt/node_modules/.cache/vite/client/deps/mermaid.js?v=7e30cdfb:1554:15)"
+      }
+    ]
+  }
+}

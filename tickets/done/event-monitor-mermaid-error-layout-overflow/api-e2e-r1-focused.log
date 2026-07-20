@@ -1,0 +1,40 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/autobyteus-web
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/__tests__/mermaidService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/__tests__/mermaidService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··················
+
+ Test Files  4 passed (4)
+      Tests  18 passed (18)
+   Start at  17:57:49
+   Duration  5.35s (transform 2.62s, setup 18.52s, collect 102ms, tests 161ms, environment 1.00s, prepare 572ms)
+
