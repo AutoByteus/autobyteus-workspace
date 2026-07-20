@@ -26,7 +26,6 @@ import {
   isTerminalStatus,
   type ToolLifecycleSegment,
 } from './toolLifecycleState';
-import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 
 /**
@@ -35,19 +34,18 @@ import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/r
 export function handleAgentStatus(
   payload: AgentStatusPayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
+) {
   applyLiveAgentStatusEvent(context, payload);
 
   // If status indicates completion, mark the current AI message as complete.
   if (payload.status === AgentStatus.Idle) {
     const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
     if (lastMessage?.type === 'ai') {
-      if (lastMessage.isComplete) return 'none';
+      if (lastMessage.isComplete) return;
       lastMessage.isComplete = true;
-      return 'changed';
+      return;
     }
   }
-  return 'none';
 }
 
 /**
@@ -57,24 +55,23 @@ export function handleAgentStatus(
 export function handleAssistantComplete(
   _payload: AssistantCompletePayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
-  return markConversationComplete(context) ? 'changed' : 'none';
+) {
+  markConversationComplete(context);
 }
 
 export function handleTurnCompleted(
   _payload: TurnLifecyclePayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
-  return markConversationComplete(context) ? 'changed' : 'none';
+) {
+  markConversationComplete(context);
 }
 
 export function handleTurnInterrupted(
   payload: TurnLifecyclePayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
-  const toolsChanged = terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
-  const completionChanged = markConversationComplete(context);
-  return toolsChanged || completionChanged ? 'changed' : 'none';
+) {
+  terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
+  markConversationComplete(context);
 }
 
 
@@ -82,7 +79,7 @@ export function handleTurnInterrupted(
 export function handleCompactionStatus(
   payload: CompactionStatusPayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
+) {
   const previousStatus = context.state.compactionStatus;
   const projection = projectCompactionStatusToActivity(payload, {
     runId: context.state.runId,
@@ -90,22 +87,12 @@ export function handleCompactionStatus(
   });
   context.state.compactionStatus = projection.status;
 
-  const conversationChanged = shouldCloseCurrentAIMessageForCenterCompaction(projection.status, previousStatus)
-    && markConversationComplete(context);
+  if (shouldCloseCurrentAIMessageForCenterCompaction(projection.status, previousStatus)) {
+    markConversationComplete(context);
+  }
 
   const activityStore = useAgentActivityStore();
-  const beforeCenterActivityIds = activityStore.getCompactionActivities(context.state.runId)
-    .filter((activity) => isCenterFeedCompactionPhase(activity.phase))
-    .map((activity) => activity.activityId);
-  const activityChanged = activityStore.upsertCompactionActivity(context.state.runId, projection.activity);
-  const afterCenterActivityIds = activityStore.getCompactionActivities(context.state.runId)
-    .filter((activity) => isCenterFeedCompactionPhase(activity.phase))
-    .map((activity) => activity.activityId);
-  const centerActivitySetChanged = beforeCenterActivityIds.length !== afterCenterActivityIds.length
-    || beforeCenterActivityIds.some((activityId, index) => activityId !== afterCenterActivityIds[index]);
-  const centerVisible = isCenterFeedCompactionPhase(projection.status.phase)
-    || Boolean(previousStatus && isCenterFeedCompactionPhase(previousStatus.phase));
-  return conversationChanged || centerActivitySetChanged || (centerVisible && activityChanged) ? 'changed' : 'none';
+  activityStore.upsertCompactionActivity(context.state.runId, projection.activity);
 }
 
 /**
@@ -114,12 +101,12 @@ export function handleCompactionStatus(
 export function handleError(
   payload: ErrorPayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
+) {
   const toolErrorInfo = parseToolExecutionError(payload.message);
   if (toolErrorInfo) {
-    const toolChanged = applyToolError(toolErrorInfo, context);
-    const completionChanged = markConversationComplete(context);
-    return toolChanged || completionChanged ? 'changed' : 'none';
+    applyToolError(toolErrorInfo, context);
+    markConversationComplete(context);
+    return;
   }
 
   terminalizeOpenToolSegmentsForError(payload, context);
@@ -134,7 +121,6 @@ export function handleError(
 
   aiMessage.segments.push(errorSegment);
   aiMessage.isComplete = true;
-  return 'changed';
 }
 
 // ============================================================================

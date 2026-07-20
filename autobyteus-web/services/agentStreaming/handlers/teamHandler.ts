@@ -20,7 +20,6 @@ import type {
 } from '../protocol/messageTypes';
 import { findOrCreateAIMessage } from './segmentHandler';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
-import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 /**
  * Handle INTER_AGENT_MESSAGE event.
@@ -28,7 +27,7 @@ import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/r
 export function handleInterAgentMessage(
   payload: InterAgentMessagePayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
+) {
   const messageId = payload.message_id?.trim() || '';
   if (messageId) {
     for (const message of context.conversation.messages) {
@@ -42,12 +41,12 @@ export function handleInterAgentMessage(
         || existing.recipientRoleName !== payload.recipient_role_name
         || existing.content !== payload.content
         || existing.messageType !== payload.message_type;
-      if (!changed) return 'none';
+      if (!changed) return;
       existing.senderAgentRunId = payload.sender_agent_id;
       existing.recipientRoleName = payload.recipient_role_name;
       existing.content = payload.content;
       existing.messageType = payload.message_type;
-      return 'changed';
+      return;
     }
   }
   const aiMessage = findOrCreateAIMessage(context);
@@ -62,7 +61,6 @@ export function handleInterAgentMessage(
   };
   
   aiMessage.segments.push(segment);
-  return 'changed';
 }
 
 /**

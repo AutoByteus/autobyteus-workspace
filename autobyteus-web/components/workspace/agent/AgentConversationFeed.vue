@@ -31,10 +31,10 @@
           </div>
 
           <span
-            v-if="showTokenCosts && formatTokenCost(item.message)"
+            v-if="showTokenCosts && getRecentEventMonitorMessageUsageText(item.message)"
             class="block mt-1 text-[0.6875rem] text-gray-400 font-medium text-right pr-8"
           >
-            {{ formatTokenCost(item.message) }}
+            {{ getRecentEventMonitorMessageUsageText(item.message) }}
           </span>
         </template>
 
@@ -43,10 +43,10 @@
       </div>
 
       <div
-        v-if="showTotalUsage && totalUsage.totalTokens > 0"
+        v-if="showTotalUsage && totalUsageText"
         class="text-xs text-gray-500 font-medium mt-2 text-right"
       >
-        Total: {{ totalUsage.totalTokens }} tokens / ${{ totalUsage.totalCost.toFixed(4) }}
+        {{ totalUsageText }}
       </div>
     </div>
 
@@ -70,6 +70,10 @@ import UserMessage from '~/components/conversation/UserMessage.vue';
 import AIMessage from '~/components/conversation/AIMessage.vue';
 import CompactionStatusRow from '~/components/workspace/agent/CompactionStatusRow.vue';
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
+import {
+  getRecentEventMonitorMessageUsageText,
+  getRecentEventMonitorTotalUsageText,
+} from '~/services/eventMonitor/recentEventMonitorUsagePresentation';
 
 const props = withDefaults(defineProps<{
   conversation: Conversation;
@@ -87,8 +91,6 @@ const props = withDefaults(defineProps<{
   showTotalUsage: true,
   presentationRevision: 0,
 });
-
-type ConversationMessage = Conversation['messages'][number];
 
 const runId = computed(() => props.runId || props.conversation.id);
 const instanceUid = getCurrentInstance()?.uid ?? Math.floor(Math.random() * 1_000_000);
@@ -178,43 +180,5 @@ watch(() => props.presentationRevision, (revision) => {
   hasUnseenActivity.value = true;
 });
 
-const formatTokenCost = (message: ConversationMessage) => {
-  if (message.type === 'user') {
-    if (message.promptTokens != null && message.promptCost != null) {
-      return `${message.promptTokens} tokens / $${message.promptCost.toFixed(4)}`;
-    }
-    return '';
-  }
-
-  if (message.completionTokens != null && message.completionCost != null) {
-    return `${message.completionTokens} tokens / $${message.completionCost.toFixed(4)}`;
-  }
-  return '';
-};
-
-const totalUsage = computed(() => {
-  let totalTokens = 0;
-  let totalCost = 0;
-  feedItems.value.forEach((item) => {
-    if (item.kind !== 'message') return;
-    const message = item.message;
-    if (message.type === 'user') {
-      if (message.promptTokens) {
-        totalTokens += message.promptTokens;
-      }
-      if (message.promptCost) {
-        totalCost += message.promptCost;
-      }
-      return;
-    }
-
-    if (message.completionTokens) {
-      totalTokens += message.completionTokens;
-    }
-    if (message.completionCost) {
-      totalCost += message.completionCost;
-    }
-  });
-  return { totalTokens, totalCost };
-});
+const totalUsageText = computed(() => getRecentEventMonitorTotalUsageText(feedItems.value));
 </script>

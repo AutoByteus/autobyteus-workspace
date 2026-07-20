@@ -2,7 +2,6 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { SystemTaskNotificationSegment } from '~/types/segments';
 import type { SystemTaskNotificationPayload } from '../protocol/messageTypes';
 import { findOrCreateAIMessage } from './segmentHandler';
-import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 /**
  * Handle SYSTEM_TASK_NOTIFICATION events for standalone and team member streams.
@@ -10,7 +9,7 @@ import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/r
 export function handleSystemTaskNotification(
   payload: SystemTaskNotificationPayload,
   context: AgentContext,
-): EventMonitorPresentationMutation {
+) {
   const aiMessage = findOrCreateAIMessage(context);
 
   const segment: SystemTaskNotificationSegment = {
@@ -20,5 +19,4 @@ export function handleSystemTaskNotification(
   };
 
   aiMessage.segments.push(segment);
-  return 'changed';
 }

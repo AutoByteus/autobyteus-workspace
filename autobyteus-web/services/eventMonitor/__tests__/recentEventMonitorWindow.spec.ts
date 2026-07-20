@@ -40,7 +40,7 @@ describe('recent Event Monitor window', () => {
 
     const result = enforceRecentConversationWindow(conversation);
 
-    expect(result).toMatchObject({ presentationChanged: true, completedEvictions: 1, forcedMutableEvictions: 0 });
+    expect(result).toMatchObject({ retentionChanged: true, completedEvictions: 1, forcedMutableEvictions: 0 });
     expect((conversation.messages[0] as AIMessage).segments[0]).toBe(mutable);
     expect(conversation.messages.some((message) => message.type === 'user' && message.messageId === 'user-1')).toBe(false);
     expect(conversation.messages).toHaveLength(100);

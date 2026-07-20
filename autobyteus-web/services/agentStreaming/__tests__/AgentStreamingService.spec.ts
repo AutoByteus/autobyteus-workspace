@@ -351,4 +351,39 @@ describe('AgentStreamingService', () => {
         }, mockAgentContext);
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
     });
+
+    it('does not revise the center presentation for supported tool log and result-only traffic', () => {
+        const tool: any = {
+            type: 'tool_call',
+            invocationId: 'tool-1',
+            toolName: 'search',
+            arguments: { query: 'weather' },
+            status: 'success',
+            approvalTarget: null,
+            logs: [],
+            result: null,
+            error: null,
+        };
+        mockConversation.messages.push({
+            type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments: [tool],
+        });
+
+        (service as any).dispatchMessage({
+            type: 'TOOL_LOG',
+            payload: {
+                tool_invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1', log_entry: 'Activity detail',
+            },
+        }, mockAgentContext);
+        (service as any).dispatchMessage({
+            type: 'TOOL_EXECUTION_SUCCEEDED',
+            payload: {
+                invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1',
+                arguments: { query: 'weather' }, result: { output: 'Activity result' },
+            },
+        }, mockAgentContext);
+
+        expect(tool.logs).toEqual(['Activity detail']);
+        expect(tool.result).toEqual({ output: 'Activity result' });
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(0);
+    });
 });

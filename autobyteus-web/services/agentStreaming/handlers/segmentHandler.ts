@@ -18,29 +18,6 @@ import {
 } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { isProjectableToolSegment, upsertActivityFromToolSegment } from './toolActivityProjection';
-import type { EventMonitorPresentationMutation } from '~/services/eventMonitor/recentEventMonitorWindow';
-
-const presentationValuesEqual = (left: unknown, right: unknown): boolean => {
-  if (Object.is(left, right)) return true;
-  if (left instanceof Date && right instanceof Date) return left.getTime() === right.getTime();
-  if (Array.isArray(left) && Array.isArray(right)) {
-    return left.length === right.length && left.every((value, index) => presentationValuesEqual(value, right[index]));
-  }
-  if (left && right && typeof left === 'object' && typeof right === 'object') {
-    const leftRecord = left as Record<string, unknown>;
-    const rightRecord = right as Record<string, unknown>;
-    const keys = new Set([...Object.keys(leftRecord), ...Object.keys(rightRecord)]);
-    return [...keys].every((key) => presentationValuesEqual(leftRecord[key], rightRecord[key]));
-  }
-  return false;
-};
-
-const captureSegmentPresentationFields = (segment: AIResponseSegment): Record<string, unknown> => {
-  const record = segment as unknown as Record<string, unknown>;
-  return Object.fromEntries(Object.entries(record)
-    .filter(([key]) => key !== '_streamSegmentIdentity')
-    .map(([key, value]) => [key, Array.isArray(value) ? [...value] : value && typeof value === 'object' ? { ...(value as Record<string, unknown>) } : value]));
-};
 
 function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): Record<string, any> {
   const parseArgumentsCandidate = (value: unknown): Record<string, any> => {
@@ -82,19 +59,18 @@ function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): R
 export function handleSegmentStart(
   payload: SegmentStartPayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
+) {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_START with invalid id', payload);
-    return 'none';
+    return;
   }
   const existingSegment = findSegmentById(context, payload.id, payload.segment_type);
   if (existingSegment) {
-    const before = captureSegmentPresentationFields(existingSegment);
     mergeSegmentStartMetadata(existingSegment, payload);
     if (isProjectableToolSegment(existingSegment)) {
       upsertActivityFromToolSegment(context, payload.id, existingSegment);
     }
-    return presentationValuesEqual(before, captureSegmentPresentationFields(existingSegment)) ? 'none' : 'changed';
+    return;
   }
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload(payload);
@@ -106,7 +82,6 @@ export function handleSegmentStart(
   if (isProjectableToolSegment(segment)) {
     upsertActivityFromToolSegment(context, payload.id, segment);
   }
-  return 'changed';
 }
 
 function mergeSegmentStartMetadata(
@@ -201,21 +176,21 @@ function mergeSegmentStartMetadata(
 export function handleSegmentContent(
   payload: SegmentContentPayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
+) {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_CONTENT with invalid id', payload);
-    return 'none';
+    return;
   }
   const delta = typeof payload.delta === 'string' ? payload.delta : '';
   if (!delta) {
-    return 'none';
+    return;
   }
   let segment = findSegmentById(context, payload.id, payload.segment_type);
   if (!segment) {
     segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type ?? 'text', context);
   }
 
-  return appendContentToSegment(segment, delta) ? 'changed' : 'none';
+  appendContentToSegment(segment, delta);
 }
 
 /**
@@ -224,24 +199,24 @@ export function handleSegmentContent(
 export function handleSegmentEnd(
   payload: SegmentEndPayload,
   context: AgentContext
-): EventMonitorPresentationMutation {
+) {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_END with invalid id', payload);
-    return 'none';
+    return;
   }
   const segment = findSegmentById(context, payload.id);
   if (!segment) {
     console.warn(`Segment not found for end event: ${payload.id}`);
-    return 'none';
+    return;
   }
 
-  const before = captureSegmentPresentationFields(segment);
-  const completionChanged = markStreamSegmentPresentationComplete(segment);
+  markStreamSegmentPresentationComplete(segment);
 
   if (segment.type === 'think') {
     const thinkSegment = segment as ThinkSegment;
     if (!thinkSegment.content.trim()) {
-      return removeSegmentById(context, payload.id) ? 'changed' : 'none';
+      removeSegmentById(context, payload.id);
+      return;
     }
   }
 
@@ -254,9 +229,6 @@ export function handleSegmentEnd(
   if (isProjectableToolSegment(segment)) {
     upsertActivityFromToolSegment(context, payload.id, segment);
   }
-  return completionChanged || !presentationValuesEqual(before, captureSegmentPresentationFields(segment))
-    ? 'changed'
-    : 'none';
 }
 
 /**

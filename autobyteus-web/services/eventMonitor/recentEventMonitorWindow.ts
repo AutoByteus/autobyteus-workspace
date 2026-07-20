@@ -1,4 +1,3 @@
-import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AIMessage, Conversation } from '~/types/conversation';
 import type { AIResponseSegment } from '~/types/segments';
 import type { CompactionActivity } from '~/stores/agentActivityStore';
@@ -15,10 +14,8 @@ import {
 
 export const RECENT_EVENT_MONITOR_VISUAL_LIMIT = 100;
 
-export type EventMonitorPresentationMutation = 'none' | 'changed';
-
 export interface RecentEventMonitorEnforcementResult {
-  presentationChanged: boolean;
+  retentionChanged: boolean;
   completedEvictions: number;
   forcedMutableEvictions: number;
 }
@@ -59,7 +56,7 @@ type CompactionDescriptor = {
 
 type VisualDescriptor = ConversationDescriptor | CompactionDescriptor;
 
-const getSegmentStableIdentity = (segment: AIResponseSegment): string | null => {
+export const getRecentEventMonitorSegmentStableIdentity = (segment: AIResponseSegment): string | null => {
   const streamIdentity = getStreamSegmentIdentity(segment);
   if (streamIdentity?.lookupKey) return `stream:${streamIdentity.lookupKey}`;
   if (streamIdentity?.id) return `stream:${streamIdentity.id}`;
@@ -87,7 +84,7 @@ const flattenConversation = (conversation: Conversation): ConversationDescriptor
         source: 'message', message, messageIndex, segment, segmentIndex,
         completed: isRecentEventMonitorSegmentComplete(segment, message.isComplete),
         timestampMs, order: messageIndex * 10_000 + segmentIndex,
-        stableIdentity: getSegmentStableIdentity(segment),
+        stableIdentity: getRecentEventMonitorSegmentStableIdentity(segment),
       });
     });
   });
@@ -102,7 +99,7 @@ export const enforceRecentConversationWindow = (
   const selection = selectRecentWindowCandidates(descriptors, limit);
   const retained = new Set(selection.selected);
   if (retained.size === descriptors.length) {
-    return { presentationChanged: false, completedEvictions: 0, forcedMutableEvictions: 0 };
+    return { retentionChanged: false, completedEvictions: 0, forcedMutableEvictions: 0 };
   }
 
   const descriptorsByMessage = new Map<Conversation['messages'][number], ConversationDescriptor[]>();
@@ -131,7 +128,7 @@ export const enforceRecentConversationWindow = (
   }
 
   return {
-    presentationChanged: true,
+    retentionChanged: true,
     completedEvictions: selection.completedEvictions,
     forcedMutableEvictions: selection.forcedMutableEvictions,
   };
@@ -202,15 +199,4 @@ export const buildRecentEventMonitorPresentation = (
     });
   }
   return items;
-};
-
-export const commitRecentEventMonitorMutation = (
-  context: AgentContext,
-  effect: EventMonitorPresentationMutation,
-): RecentEventMonitorEnforcementResult => {
-  const enforcement = enforceRecentConversationWindow(context.conversation);
-  if (effect === 'changed' || enforcement.presentationChanged) {
-    context.state.markEventMonitorPresentationChanged();
-  }
-  return enforcement;
 };
