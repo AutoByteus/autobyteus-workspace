@@ -1,22 +1,20 @@
-# AutoByteus 1.4.21
+# Mermaid renderer failure containment
 
-## Event Monitor file URI previews
+## Summary
 
-- Support scoped Event Monitor Markdown `file:` URI candidates for supported
-  text, image, audio, video, PDF, CSV, and spreadsheet previews.
-- Reject authorities, query/fragment decorations, malformed or incomplete path
-  components, relative/empty paths, and unsupported file types without generic
-  browser navigation or unintended workspace/filesystem access.
-- Keep raw URI provenance transient and route Electron binary previews through
-  the canonical trusted `local-file://local/...` protocol.
-- Preserve browser, remote, and paired-mobile workspace mapping behavior,
-  including localized unavailable results for valid host-only paths.
+- Suppress Mermaid's fallback error rendering for embedded diagrams so rejected
+  renders do not insert vendor-owned SVG nodes into `document.body`.
+- Keep rejected renders in the existing `MermaidDiagram.vue` local error card.
+- Constrain long parser messages with local width, min-width, overflow, and
+  wrapping rules so malformed Mermaid cannot widen Markdown or workspace
+  surfaces.
+- Preserve valid SVG, viewer, focus, link, generation, and unmount behavior.
 
-## Verification and delivery notes
+## Verification note
 
-- API/E2E Round 2 passed at 95% final confidence; no durable API/E2E test files
-  changed, so proportional test-code review was Not Applicable/accepted.
-- Final runtime acceptance was explicitly user-attested. The repository record
-  retains that no reproducible scenario/device/package log was supplied and
-  that packaged Electron, Windows, paired-mobile, and authenticated Event
-  Monitor browser execution were not independently logged.
+- API/E2E passed at 96% final confidence and proportional durable-test review
+  was Not Applicable / accepted because no durable API/E2E tests changed.
+- User confirmed the rebuilt artifact is working. The delivery record retains
+  the bounded residuals: no packaged Electron launch, Windows runtime,
+  authenticated Event Monitor feed, or exact production malformed payload was
+  independently exercised.
