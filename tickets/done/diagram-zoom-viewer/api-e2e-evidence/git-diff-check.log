@@ -1,0 +1,4 @@
+$ git diff --check
+$ node --check autobyteus-web/tests/e2e/diagram-zoom-viewer-probe.mjs
+$ trailing whitespace audit for added API/E2E files
+Pass

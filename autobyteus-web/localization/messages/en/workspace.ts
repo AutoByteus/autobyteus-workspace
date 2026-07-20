@@ -1,6 +1,18 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.conversation.segments.renderer.MermaidDiagram.expand_diagram":
+    "Expand diagram",
+  "workspace.components.conversation.segments.renderer.MermaidDiagram.viewer":
+    "Diagram viewer",
+  "workspace.components.conversation.segments.renderer.MermaidDiagram.zoom_out":
+    "Zoom out",
+  "workspace.components.conversation.segments.renderer.MermaidDiagram.zoom_in":
+    "Zoom in",
+  "workspace.components.conversation.segments.renderer.MermaidDiagram.fit_diagram":
+    "Fit diagram",
+  "workspace.components.conversation.segments.renderer.MermaidDiagram.close_viewer":
+    "Close diagram viewer",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.open_file":
     "Open {{file}} in Files",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host":
