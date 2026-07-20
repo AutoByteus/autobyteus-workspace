@@ -12,11 +12,22 @@ export type AbsoluteFilePathSourceKind =
 export interface AbsoluteFilePathAction {
   id: string;
   rawCandidate: string;
+  rawDestination?: string;
   normalizedCandidate: string;
   sourceKind: AbsoluteFilePathSourceKind;
   displayLabel: string;
   previewType: SupportedFileDataType;
 }
+
+export type EventMonitorMarkdownFileDestination =
+  | { kind: 'not-file' }
+  | {
+    kind: 'valid';
+    normalizedCandidate: string;
+    previewType: SupportedFileDataType;
+    rawDestination?: string;
+  }
+  | { kind: 'invalid-file'; rawDestination: string };
 
 export interface AbsoluteFilePathCandidate {
   rawCandidate: string;
@@ -91,10 +102,100 @@ export function normalizeAbsoluteFilePath(value: string): string | null {
   }
 
   const normalized = separatorNormalized;
-  if (normalized === '/') {
+  if (normalized === '/' || /^[A-Za-z]:\/$/.test(normalized)) {
     return null;
   }
   return normalized.replace(/\/+/g, '/').replace(/\/$/, '') || null;
+}
+
+const FILE_URI_SCHEME = /^file:/i;
+
+const invalidFileDestination = (rawDestination: string): EventMonitorMarkdownFileDestination => ({
+  kind: 'invalid-file',
+  rawDestination,
+});
+
+const decodeFileUriPath = (rawDestination: string): string | null => {
+  const candidate = rawDestination.trim();
+  const remainder = candidate.slice(5);
+  if (!remainder.startsWith('//')) {
+    return null;
+  }
+
+  const authorityAndPath = remainder.slice(2);
+  const pathStart = authorityAndPath.indexOf('/');
+  if (pathStart < 0 || authorityAndPath.slice(0, pathStart)) {
+    return null;
+  }
+
+  const rawPath = authorityAndPath.slice(pathStart);
+  if (rawDestination.includes('?') || rawDestination.includes('#')) {
+    return null;
+  }
+
+  let decodedPath: string;
+  try {
+    decodedPath = decodeURIComponent(rawPath);
+  } catch {
+    return null;
+  }
+
+  if (/^\/[A-Za-z]:[\\/]/.test(decodedPath)) {
+    return decodedPath.slice(1);
+  }
+  return decodedPath;
+};
+
+/**
+ * Resolves a raw Markdown link destination without consulting browser URL
+ * resolution or any runtime/file-access owner. File URI failures are distinct
+ * from ordinary non-file links so Event Monitor can neutralize them safely.
+ */
+export function resolveEventMonitorMarkdownFileDestination(
+  rawDestination: string,
+): EventMonitorMarkdownFileDestination {
+  const candidate = rawDestination.trim();
+  if (FILE_URI_SCHEME.test(candidate)) {
+    const decodedPath = decodeFileUriPath(candidate);
+    if (!decodedPath) {
+      return invalidFileDestination(rawDestination);
+    }
+
+    const normalizedCandidate = normalizeAbsoluteFilePath(decodedPath);
+    if (!normalizedCandidate) {
+      return invalidFileDestination(rawDestination);
+    }
+
+    const previewType = determineFilePreviewType(normalizedCandidate);
+    if (previewType === 'Unsupported') {
+      return invalidFileDestination(rawDestination);
+    }
+
+    return {
+      kind: 'valid',
+      normalizedCandidate,
+      previewType,
+      rawDestination,
+    };
+  }
+
+  let decodedCandidate: string;
+  try {
+    decodedCandidate = decodeURIComponent(candidate);
+  } catch {
+    return { kind: 'not-file' };
+  }
+
+  const normalizedCandidate = normalizeAbsoluteFilePath(decodedCandidate);
+  if (!normalizedCandidate || determineFilePreviewType(normalizedCandidate) === 'Unsupported') {
+    return { kind: 'not-file' };
+  }
+
+  return {
+    kind: 'valid',
+    normalizedCandidate,
+    previewType: determineFilePreviewType(normalizedCandidate),
+  };
 }
 
 export function displayNameForAbsoluteFilePath(value: string): string {
@@ -138,7 +239,7 @@ export function findAbsoluteFilePathCandidates(value: string): AbsoluteFilePathC
 
 export function createAbsoluteFilePathAction(
   id: string,
-  candidate: { rawCandidate: string; normalizedCandidate: string },
+  candidate: { rawCandidate: string; normalizedCandidate: string; rawDestination?: string },
   sourceKind: AbsoluteFilePathSourceKind,
 ): AbsoluteFilePathAction | null {
   const normalizedCandidate = normalizeAbsoluteFilePath(candidate.normalizedCandidate);
@@ -151,7 +252,7 @@ export function createAbsoluteFilePathAction(
     return null;
   }
 
-  return {
+  const action: AbsoluteFilePathAction = {
     id,
     rawCandidate: candidate.rawCandidate,
     normalizedCandidate,
@@ -159,4 +260,8 @@ export function createAbsoluteFilePathAction(
     displayLabel: displayNameForAbsoluteFilePath(normalizedCandidate),
     previewType,
   };
+  if (candidate.rawDestination !== undefined) {
+    action.rawDestination = candidate.rawDestination;
+  }
+  return action;
 }

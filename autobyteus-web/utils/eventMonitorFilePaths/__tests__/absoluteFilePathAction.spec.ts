@@ -5,6 +5,7 @@ import {
   findAbsoluteFilePathCandidates,
   isAbsoluteFilePath,
   normalizeAbsoluteFilePath,
+  resolveEventMonitorMarkdownFileDestination,
 } from '../absoluteFilePathAction';
 
 describe('absolute Event Monitor file path policy', () => {
@@ -27,6 +28,65 @@ describe('absolute Event Monitor file path policy', () => {
   it('normalizes separators without authorizing the path', () => {
     expect(normalizeAbsoluteFilePath('C:\\Users\\name\\report.md')).toBe('C:/Users/name/report.md');
     expect(normalizeAbsoluteFilePath('http://example.test/report.md')).toBeNull();
+    expect(normalizeAbsoluteFilePath('C:\\')).toBeNull();
+  });
+
+  it.each([
+    ['file:///tmp/report.md', '/tmp/report.md'],
+    ['FILE:///tmp/report.md', '/tmp/report.md'],
+    ['file:///C:/Work/report.md', 'C:/Work/report.md'],
+    ['file:///C%3A%5CWork%5Creport%20final.md', 'C:/Work/report final.md'],
+  ])('resolves supported file URI %s to %s', (rawDestination, normalizedCandidate) => {
+    expect(resolveEventMonitorMarkdownFileDestination(rawDestination)).toEqual({
+      kind: 'valid',
+      normalizedCandidate,
+      previewType: 'Text',
+      rawDestination,
+    });
+  });
+
+  it('preserves supported bare absolute-link resolution as a valid action candidate', () => {
+    expect(resolveEventMonitorMarkdownFileDestination('/tmp/report%20final.md')).toEqual({
+      kind: 'valid',
+      normalizedCandidate: '/tmp/report final.md',
+      previewType: 'Text',
+    });
+    expect(resolveEventMonitorMarkdownFileDestination('https://example.test/report.md')).toEqual({
+      kind: 'not-file',
+    });
+  });
+
+  it.each([
+    'file:///Users/normy/.../report.md',
+    'file:///tmp/../report.md',
+    'file:///tmp/./report.md',
+    'file:///tmp/…/report.md',
+    'file:///tmp/archive.zip',
+    'file://other-host/tmp/report.md',
+    'file://localhost/tmp/report.md',
+    'file:///tmp/report.md?download=1',
+    'file:///tmp/report.md#section',
+    'file:///tmp/report%ZZ.md',
+    'file:///tmp/report%00.md',
+    'file:///C:/',
+    'file:///',
+    'file:/tmp/report.md',
+  ])('classifies invalid file URI %s as inert', (rawDestination) => {
+    expect(resolveEventMonitorMarkdownFileDestination(rawDestination)).toEqual({
+      kind: 'invalid-file',
+      rawDestination,
+    });
+  });
+
+  it.each([
+    'file:///tmp/release..notes.md',
+    'file:///tmp/release...notes.md',
+  ])('keeps complete dotted file URI %s eligible', (rawDestination) => {
+    expect(resolveEventMonitorMarkdownFileDestination(rawDestination)).toEqual(expect.objectContaining({
+      kind: 'valid',
+      normalizedCandidate: expect.stringContaining('release'),
+      previewType: 'Text',
+    }));
   });
 
   it.each([
@@ -96,5 +156,17 @@ describe('absolute Event Monitor file path policy', () => {
       { rawCandidate: '/Users/normy/.../report.md', normalizedCandidate: '/Users/normy/.../report.md' },
       'markdown-link',
     )).toBeNull();
+    expect(createAbsoluteFilePathAction(
+      'uri-action',
+      {
+        rawCandidate: 'file:///tmp/report.md',
+        rawDestination: 'file:///tmp/report.md',
+        normalizedCandidate: '/tmp/report.md',
+      },
+      'markdown-link',
+    )).toEqual(expect.objectContaining({
+      rawDestination: 'file:///tmp/report.md',
+      normalizedCandidate: '/tmp/report.md',
+    }));
   });
 });

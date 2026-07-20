@@ -102,6 +102,70 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.text()).toContain('windows');
   });
 
+  it('renders valid file URIs as authored-label actions with raw provenance', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '[requirements.md](file:///tmp/requirements.md) [report.md](file:///C:/Work/report.md)',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const controls = wrapper.findAll('[data-event-monitor-file-action-id]');
+    expect(controls).toHaveLength(2);
+    expect(controls.map((control) => control.text())).toEqual(['requirements.md', 'report.md']);
+    expect(controls[0].attributes('aria-label')).toContain('Open');
+    expect(controls[0].attributes('title')).toBe('/tmp/requirements.md');
+    expect(wrapper.html()).not.toContain('file:///tmp/requirements.md');
+    expect(wrapper.html()).not.toContain('file:///C:/Work/report.md');
+
+    await controls[0].trigger('click');
+    expect(wrapper.emitted('file-path-action')?.[0]?.[0]).toEqual(expect.objectContaining({
+      rawCandidate: 'file:///tmp/requirements.md',
+      rawDestination: 'file:///tmp/requirements.md',
+      normalizedCandidate: '/tmp/requirements.md',
+      sourceKind: 'markdown-link',
+    }));
+  });
+
+  it('neutralizes invalid and unsupported file links without exposing the raw URI', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '[truncated](file:///tmp/.../report.md) [archive](file:///tmp/archive.zip) [host](file://other-host/tmp/report.md)',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const inertLinks = wrapper.findAll('[data-event-monitor-invalid-file-link="true"]');
+    expect(inertLinks).toHaveLength(3);
+    expect(wrapper.findAll('a')).toHaveLength(0);
+    expect(wrapper.findAll('[data-event-monitor-file-action-id]')).toHaveLength(0);
+    expect(wrapper.html()).not.toContain('file:///tmp/.../report.md');
+    expect(wrapper.html()).not.toContain('file:///tmp/archive.zip');
+    expect(wrapper.text()).toContain('truncated');
+    expect(wrapper.text()).toContain('archive');
+    expect(wrapper.text()).toContain('host');
+
+    await inertLinks[0].trigger('click');
+    await inertLinks[0].trigger('keydown', { key: 'Enter' });
+    await inertLinks[0].trigger('keydown', { key: ' ' });
+    expect(wrapper.emitted('file-path-action')).toBeUndefined();
+  });
+
+  it('leaves file links unchanged when Event Monitor actions are disabled', () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: { content: '[requirements.md](file:///tmp/requirements.md)' },
+      global: { plugins: [pinia] },
+    });
+
+    expect(wrapper.find('[data-event-monitor-invalid-file-link="true"]').exists()).toBe(false);
+    expect(wrapper.find('[data-event-monitor-file-action-id]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('requirements.md');
+  });
+
   it('keeps fenced code text unchanged while exposing complete space-containing paths', async () => {
     const wrapper = mount(MarkdownRenderer, {
       props: {
