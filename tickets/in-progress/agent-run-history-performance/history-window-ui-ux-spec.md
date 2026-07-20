@@ -55,10 +55,11 @@ There is no `Load earlier`, archive, export, or full-history affordance in this 
 ### `UXJ-003` — Read Within The Recent Window
 
 1. The user scrolls more than the existing near-bottom threshold away from latest.
-2. An actual visible append, retained-card/content update, center-compaction change, or eviction-only presentation change does not force-scroll the container.
+2. A net visible append, retained-card/content update, center-compaction change, or eviction-only presentation change that survives bounded enforcement does not force-scroll the container.
 3. A compact floating/sticky button appears near the lower edge of the Event Monitor: **New activity · Jump to latest**.
 4. The current viewport remains stable as closely as the browser layout permits while older retained items roll out.
-5. Connection, turn-start, token/accounting, accepted no-op command/status, and other protocol messages that do not change the center presentation do not display the button.
+5. Connection, turn-start, accepted no-op command/status, Activity-only tool log/result updates, equal tool-argument replacement whose rendered card summary is unchanged, and other protocol messages that do not change the center presentation or its retained interaction do not display the button. A message token/cost change does display the button only when it changes the rendered per-message or total-usage text.
+6. A transient new event that is synchronously removed by the 100-event policy and leaves the final ordered presentation identical also does not display the button; jumping must always correspond to a real final presentation difference.
 
 ### `UXJ-004` — Jump To Latest
 
@@ -97,8 +98,11 @@ There is no `Load earlier`, archive, export, or full-history affordance in this 
 | Live append while pinned | New logical event | New item/card appears | Bottom remains visible | Append; evict oldest if needed | Continue watching |
 | Live update while pinned | Delta/status/result for existing event | Existing segment/card updates | Visual-event count unchanged | Update by existing identity | Expand/collapse |
 | User leaves bottom | Scroll upward | No special message yet | Bottom-follow disabled | Record non-pinned state | Continue reading |
-| New activity while non-pinned | Live append/update/compaction/eviction creates an actual visible change | Jump control appears | Viewport remains non-pinned | Visible-presentation revision increments once; recent window still rolls | Jump or continue reading |
+| New activity while non-pinned | Post-enforcement bounded presentation differs from the pre-mutation presentation | Jump control appears | Viewport remains non-pinned | Visible-presentation revision increments once; recent window still rolls | Jump or continue reading |
 | Non-visible protocol message | Connection/turn/status/accounting message produces no center-feed change | No feedback in Event Monitor | Jump control remains unchanged/hidden | Visible-presentation revision does not change | Continue reading |
+| Activity-only tool detail | Tool log/result changes but the central card name, summary, status, error, and actions remain the same | No feedback in Event Monitor | Card and jump state remain unchanged | Equal pre/post semantic witness; Activity may update independently | Continue reading or open Activity |
+| Equal tool argument replacement | Handler replaces the arguments object but the shared derived command/path/text summary is unchanged | No feedback in Event Monitor | Card and jump state remain unchanged | Raw reference identity is ignored; semantic witness remains equal | Continue reading |
+| Transient append is evicted | Full 100-mutable window receives one atomic-complete event; enforcement removes that new event | No feedback in Event Monitor | Presentation and jump state remain unchanged | Equal pre/post witness; revision does not change | Continue reading |
 | Jump control activated | Click/Enter/Space | Scroll moves to bottom | Latest-pinned; control hidden | Clear unseen flag | Continue following |
 | Manual return to bottom | Scroll to near-bottom threshold | Jump control disappears | Latest-pinned | Clear unseen flag | Continue following |
 | Window overflow with completed candidates | Historical hydration or live append exceeds 100 | No modal/toast | Oldest completed visual events are absent; mutable items remain | Completed-first trim | Read recent window |
@@ -181,8 +185,9 @@ Use the existing localization source structure. No archive, load-older, show-ful
 - Existing standalone and team-member projection queries, now guaranteed by the backend to return an active-file-only latest event window.
 - A shared frontend recent-window constant/policy with maximum 100 visual events.
 - A shared completion classifier: atomic user/static events are complete on insertion; streamed text/Thinking completes at segment/message completion; tool/file/terminal cards complete only in terminal status; center compactions complete only at completed/failed.
-- Live stream/submission integration whose center-presentation-mutating handlers report an actual change and whose authoritative dispatcher commits that effect, applies completed-first rolling, and increments an ephemeral per-run visible-presentation revision once.
-- The revision resets/baselines on historical hydration or run/context replacement. The feed clears unseen on that reset/selection, on manual return to bottom, or on jump. Generic `conversation.updatedAt` is not a dependency.
+- Live stream/submission integration that captures a bounded lightweight ordered presentation witness before mutation, applies existing handlers plus completed-first rolling, captures the final witness, and increments an ephemeral per-run visible-presentation revision only when those witnesses differ.
+- The witness covers at most 100 visual descriptors and only shallow semantic values that the central feed renders or uses for retained interaction. It reuses the same tool-card summary/presentation derivation as the renderer, compares ordered attachment/media primitives, and includes derived message/total usage and compaction-row presentation. Activity-only tool logs/results, raw argument references, full payloads, and history are excluded. Handler-level transient effects alone do not drive unseen state.
+- The revision resets/baselines on historical hydration or any conversation/context replacement, including reused non-live team-member contexts. Subscribed live contexts whose conversation is preserved keep their revision. The feed clears unseen on reset/selection, manual return to bottom, or jump. Generic `conversation.updatedAt` is not a dependency.
 - Per-run Activity retention capped at 100.
 - No new GraphQL fields, cursors, archive queries, or detail endpoints.
 
@@ -200,6 +205,7 @@ Use the existing localization source structure. No archive, load-older, show-ful
 - A single visual event can be very large. The count cap prevents unbounded list length but does not truncate individual content in this change.
 - Existing token/cost totals within the Event Monitor reflect retained recent data after eviction; no new full-run accounting treatment is introduced.
 - In the exceptional all-mutable overflow fallback, content removed before a later lifecycle update may not be reconstructable from that update. The user still sees at most one source-limited current representation, and no archive is read.
+- The presentation witness and shared render-presentation helpers must evolve together when a new central render/interaction field or event kind is added; otherwise a real visual change could be missed or non-visible Activity/detail traffic could falsely show the jump action.
 
 ## Approval Status
 

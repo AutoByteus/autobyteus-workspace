@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: `Complete`
-- Current Status: `Complete — requirements refined and user-approved; architecture round-1 Design Impact findings incorporated`
+- Current Status: `Reopened after architecture review round-3 Design Impact` — `AR-003` incorporated while preserving the accepted `CR-001`/`CR-002` transaction/reset architecture for renewed architecture review.
 - Investigation Goal: Determine whether selecting an agent/team-member reconstructs all raw-trace archives, identify the measured delay sources, verify active-file rotation assumptions, and define the smallest coherent recent-activity solution.
 - Scope Classification (`Small`/`Medium`/`Large`): `Medium`
 - Scope Classification Rationale: Backend read/projection policy, historical/live frontend state, Event Monitor DOM/scroll behavior, Activity retention, and header cleanup change together; storage format and GraphQL schema do not.
@@ -15,7 +15,10 @@
   4. Does the user require archive/history navigation? `No; recent activity only.`
   5. What visible behavior is approved? `Rolling latest 100 Event Monitor events, current collapsed cards, jump-to-latest when scrolled, and copy-button removal.`
   6. How are in-flight events handled at the hard cap? `Evict oldest completed events first; if more than 100 candidates are concurrently mutable, deterministically evict the oldest mutable as the hard-cap fallback and allow at most one source-limited stable-identity re-entry on a later update.`
-  7. What triggers unseen activity? `Only an explicit actual center-presentation mutation effect/revision, never generic conversation bookkeeping timestamps.`
+  7. What triggers unseen activity? `Only inequality between bounded pre-mutation and post-enforcement presentation witnesses, recorded through the per-run revision; never generic timestamps or transient handler effects.`
+  8. Is a handler mutation effect sufficient? `No. MP-CR-001 proves a changed event can be synchronously evicted, leaving identical final presentation. The revision must compare bounded pre-mutation and post-enforcement presentation witnesses.`
+  9. Which replacement path was omitted? `teamRunOpenCoordinator.mergeHydratedMembers replaces reused non-live member conversations and must reset the revision baseline; subscribed live preservation must not reset.`
+  10. What exactly belongs in the witness? `Only semantic primitives used by the central AgentConversationFeed render or its retained card interaction. Activity-only tool result/log state and raw argument-object reference identity are excluded; shared renderer derivations define tool summary/status, usage, and compaction equality.`
 
 ## Request Context
 
@@ -62,6 +65,10 @@ Reference image: `/home/autobyteus/data/memory/agent_teams/software_engineering_
 | 2026-07-18 | Data/Probe | Largest observed active-only projection metrics and dedupe benchmark in `evidence/` | Test user's active-file assumption | Active-only file ~5.08 MB/988 records; projection 9.09 MB, 609 conversation + 379 activities; request ~0.167 s; dedupe ~906 ms | Active still requires returned/UI bound |
 | 2026-07-18 | User decision | Conversation refinement | Resolve product scope | User reads only recent activity, wants no archive UI, wants current collapsed Thinking, approves rolling recent window, requests copy removal | Reflected in requirements/UI spec |
 | 2026-07-18 | Architecture review | `design-review-report.md`, findings `AR-001`, `AR-002` | Validate target behavior before implementation | Completed-first eviction and explicit visible-change revision required; `conversation.updatedAt` is too broad | Incorporated into revised package; rerun review |
+| 2026-07-18 | Code review | `code-review-report.md`, `CR-001`, `MP-CR-001` | Review implemented source before API/E2E | `effect === changed OR enforcement removed` falsely bumps when a newly inserted completed event is itself evicted and final presentation is identical | Replace commit contract with net bounded witness comparison |
+| 2026-07-18 | Code review | `code-review-report.md`, `CR-002` | Audit replacement baselines | `teamRunOpenCoordinator.mergeHydratedMembers` replaces conversation without reset in non-live branch | Add reset and focused preserve-live/non-live tests |
+| 2026-07-18 | Architecture review round 3 | `design-review-report.md`, `AR-003`, `MP-AR-003` | Validate revised witness equality domain | Proposed result/log/raw-args-reference slots are not equivalent to central `ToolCallIndicator`; supported `TOOL_LOG` can falsely revise an unchanged card | Preserve transaction/reset architecture; replace only pure witness token contract |
+| 2026-07-18 | Code | `AgentConversationFeed.vue`; `UserMessage.vue`; `AIMessage.vue`; all `components/conversation/segments/*.vue`; `ToolCallIndicator.vue`; `CompactionStatusRow.vue`; `toolDisplaySummary.ts`; `contextAttachmentPresentation.ts`; `compactionActivityPresentation.ts`; conversation/segment/activity types | Derive complete central render/interaction field inventory for `AR-003` | Central tools render name, derived summary, semantic status, error, and approval/highlight interaction—not result/log. User attachments use `(id,kind,locator,displayName,type)`. Exact static/media/error/inter-agent, usage, and compaction inputs are now mapped | Encode table/shared-helper rule and complete tests in design |
 
 ## Current Behavior / Current Flow
 
@@ -156,7 +163,12 @@ Retained files include projection metric summaries, the standalone dedupe benchm
 9. **Copy removal is performance and cleanup.** It removes both an unused control and the only eager joined full-conversation derivation in the header component.
 10. **A blind oldest-edge trim is not lifecycle-safe.** Text/Thinking can stream, tools have nonterminal statuses, and compaction rows upsert across phases. These identities must be protected while completed candidates exist.
 11. **The hard bound and mutable protection need an explicit fallback.** More than 100 distinct segments in one incomplete turn is reachable. After completed candidates are exhausted, the only coherent hard-cap behavior is deterministic oldest-mutable eviction; later stable-identity payloads may synthesize/upsert one source-limited newest-edge representation, never a duplicate.
-12. **`conversation.updatedAt` is not a presentation revision.** It changes before message classification. A non-visible message would falsely show the jump control. Actual handler mutation effects plus trim results provide an O(1)-per-handler/constant-size signal without serializing history.
+12. **`conversation.updatedAt` is not a presentation revision.** It changes before message classification. A non-visible message would falsely show the jump control. The bounded presentation witness provides duration-independent truth without serializing history.
+13. **Transient mutation effects are also insufficient.** The implemented effect-OR-enforcement contract can report a change even when completed-first selection removes the changed new event and returns to the identical bounded presentation. Only the authoritative boundary has both the pre-mutation and post-enforcement view needed for net truth.
+14. **A bounded lightweight presentation witness is proportionate.** Because state is already capped, capturing at most 100 ordered descriptor tokens before and after is duration-independent. Tokens use stable visual/interaction identity plus shallow semantic primitives/direct primitive lists from the actual central render contract; raw reference comparison and recursive payload serialization are unnecessary and forbidden.
+15. **Conversation replacement coverage must include team reopen merge.** A reused non-live member context receives a new `state.conversation` in `teamRunOpenCoordinator.mergeHydratedMembers`; it needs `resetEventMonitorPresentationRevision()`. The subscribed-live branch intentionally preserves both conversation and revision.
+16. **The witness must model central presentation, not the broader event object.** `ToolCallIndicator` receives invocation ID, tool name, status, derived argument summary, error, and approval target. It neither receives nor renders tool `result` or `logs`; those belong to Activity/detail. Raw argument-object replacement is also non-semantic because the renderer reduces named top-level command/path/text inputs through `getToolDisplaySummary`.
+17. **The exact remaining kinds are shallow and enumerable.** User text plus ordered attachment primitives, text/Thinking content, system content, inter-agent sender/content/type/recipient, ordered media type/URLs, error message/details, formatted per-message/total usage, and compaction message/phase presentation/secondary text cover the current center templates. Timestamps matter only through final selection/order; shell props and component-local disclosure/media-load state are not live-activity revisions.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
@@ -176,7 +188,8 @@ Retained files include projection metric summaries, the standalone dedupe benchm
 - Standalone and explicit team-member identities must continue to use their existing distinct GraphQL boundaries.
 - No backward-compatibility dual path is needed: the normal Event Monitor changes cleanly from complete corpus to active-only recent projection.
 - Existing live handlers and task-agent/team projection routers have multiple mutation entrypoints; implementation must apply the rolling policy at authoritative dispatcher/router exits without scattering trims into every low-level handler.
-- Center-presentation-mutating handlers must report whether they actually appended, removed, or changed a retained visible unit. Duplicate/no-op events report no change. The dispatcher combines that result with any eviction change, increments one ephemeral `AgentRunState` presentation revision at most once per protocol dispatch, and leaves generic `conversation.updatedAt` unrelated.
+- The authoritative dispatcher/submission boundary must capture the bounded center-presentation witness before mutation, run the handler and completed-first enforcement, then compare the final witness. It increments the ephemeral `AgentRunState` revision once only when witnesses differ. Generic `conversation.updatedAt` and transient handler-effect OR logic are unrelated.
+- Witness capture must include conversation visual units and center-eligible compactions in their final selection/order. It compares only the table-defined central render/retained-interaction primitives and exact shared derived strings/keys. Ordered attachment/media/path lists are copied as direct primitive slots; raw object references, Activity-only tool result/log data, and generic reference/length/version tokens are forbidden. Tool arguments are observed only through the same `getToolDisplaySummary`-based card helper used by the renderer; no recursive payload serialization is allowed.
 - Completion policy: user/static notification/inter-agent/media/error events are atomic-complete; streamed text/Thinking completes at segment end or message completion; tool-like cards complete only at terminal status; compaction completes only at completed/failed. An absent lifecycle marker is conservatively mutable while its AI message is incomplete.
 - English and Simplified Chinese localization sources are required for the new jump label.
 
@@ -195,3 +208,5 @@ Retained files include projection metric summaries, the standalone dedupe benchm
 - Verify that live team task-projection early-return paths cannot bypass the rolling policy.
 - Verify that `AgentWorkspaceView.vue` copy control and dedicated conversation-text derivation are removed rather than hidden.
 - Recheck architecture findings `AR-001` and `AR-002`: completion classification/completed-first eviction/hard fallback and actual visible-presentation revision are now mandatory contracts, not residual risks.
+- Recheck downstream findings `CR-001` and `CR-002`: the revision is now net pre/post bounded presentation truth, and `teamRunOpenCoordinator.mergeHydratedMembers` is explicitly part of the reset map.
+- Recheck `AR-003`/`MP-AR-003` against the complete design table: tool log/result/raw-reference-only mutations are equal; renderer-shared summary/status/error/action and every other central kind remain detectable without recursive traversal.

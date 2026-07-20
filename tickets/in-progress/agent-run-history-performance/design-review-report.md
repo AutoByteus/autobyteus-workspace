@@ -6,210 +6,234 @@
 - Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
-- Current Review Round: `2`
-- Trigger: Revised solution package returned by `solution_designer` to resolve `AR-001` and `AR-002`.
-- Prior Review Round Reviewed: `1`
-- Latest Authoritative Round: `2`
-- Current-State Evidence Basis: Revised complete solution package; retained aggregate probe/benchmark evidence; current task-base source at `75a4c97f`, particularly the local-memory provider/replay transformer, standalone and team dispatchers, task-execution router, stream segment identity and mutation handlers, Activity store, run-state model, hydration/submission services, and conversation feed.
+- Current Review Round: `4`
+- Trigger: Revised solution package resolving architecture finding `AR-003` after implementation source-review Design Impact.
+- Prior Review Round Reviewed: `3`
+- Latest Authoritative Round: `4`
+- Current-State Evidence Basis: Revised cumulative package; implementation at `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a92b5`; canonical code-review report; current Event Monitor window/selection implementation; run-open team merge path; current central feed, user/AI/segment/tool/compaction render paths; stream handlers; and the supplied performance evidence.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial architecture review | N/A | `AR-001`, `AR-002` | `Fail` | No | Completed-event eviction and visible-revision semantics required design correction. |
-| 2 | Revised package resolving round-1 findings | `AR-001`, `AR-002` | None | `Pass` | Yes | Both findings are resolved; the revised design is coherent and implementation-ready. |
+| 1 | Initial architecture review | N/A | `AR-001`, `AR-002` | `Fail` | No | Completed-first eviction and truthful visible-revision semantics required correction. |
+| 2 | Revised package resolving architecture findings | `AR-001`, `AR-002` | None | `Pass` | No | Design passed and proceeded to implementation. |
+| 3 | Downstream source-review Design Impact | `AR-001`, `AR-002`, `CR-001`, `CR-002`, `MP-CR-001` | `AR-003` | `Fail` | No | The transaction/reset architecture was sound, but the proposed witness included non-central tool state and raw reference identity. |
+| 4 | Revised witness equality domain | `AR-001`, `AR-002`, `CR-001`, `CR-002`, `AR-003`, `MP-CR-001`, `MP-AR-003` | None | `Pass` | Yes | The central presentation/retained-interaction table, renderer-shared derivations, exclusions, and tests resolve `AR-003`. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `AR-001` | High | `Resolved` | `REQ-003`/`REQ-004`, `AC-003`/`AC-004`, `UXJ-002`, the revised completion/mutability terminology, `DS-003`–`DS-005`, classified descriptor spines, examples, implementation guidance, and test sequence now specify completed-first eviction, deterministic oldest-mutable fallback, stable-identity source-limited re-entry, immediate recapping, and no duplicates/archive repair. | The hard maximum remains authoritative in the explicit reachable all-mutable overflow case. |
-| 1 | `AR-002` | Medium | `Resolved` | `REQ-005`, `AC-005`, `UXJ-003`/`UXJ-004`, `AgentRunState.eventMonitorPresentationRevision`, `EventMonitorPresentationMutation`, `commitRecentEventMonitorMutation`, reset/baseline rules, dispatcher matrix, examples, and forbidden-shortcut rules replace `conversation.updatedAt` with an actual visible-change contract. | Non-visible/no-op protocol traffic cannot drive the jump action. |
+| 1 | `AR-001` | High | `Resolved` | Completion is defined for every visual kind; completed candidates are evicted first; deterministic mutable fallback and stable-identity re-entry remain bounded and tested. | No regression. |
+| 1 | `AR-002` | Medium | `Resolved` | `eventMonitorPresentationRevision` is driven by net bounded pre/post witness inequality, never `conversation.updatedAt`; hydration/replacement reset and feed-baseline behavior are explicit. | Round-4 witness semantics now complete the truthful-revision invariant. |
+| Code review | `CR-001` / `MP-CR-001` | High | `Resolved` | Begin captures the bounded presentation; commit mutates/enforces, captures final presentation, compares, and bumps at most once. A transient inserted-and-evicted event yields equal witnesses and no revision. | Old effect parameter/OR authority is removed. |
+| Code review | `CR-002` | Medium | `Resolved` | `teamRunOpenCoordinator.mergeHydratedMembers` resets immediately after non-live conversation replacement and preserves both conversation and revision for subscribed-live state. | Both branches have focused tests. |
+| 3 | `AR-003` / `MP-AR-003` | High | `Resolved` | The complete per-kind table matches central render/retained interaction. Tool result/logs, raw argument identity, generic payload references, and non-rendered fields are excluded; shared semantic tool, usage, and compaction helpers prevent renderer/witness drift. | Focused equal/no-op, true-change, all-kind, order, and no-recursion tests are specified. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
-- Approved requirements / intended behavior understood: `Yes` — normal Event Monitor projections become active-file-only and server-bounded; historical/live conversation, Activity, and combined presentation remain capped; mutable identities are protected while completed candidates exist; the hard cap has a deterministic reachable-edge fallback; bottom-follow/unseen behavior reflects actual visible changes; disclosures remain unchanged; copy is removed; stored traces are unchanged.
-- Relevant existing behavior and evidence confirmed: `Yes` — source inspection confirms archive-inclusive local projection, lifecycle reconstruction needs, current handler/dispatcher mutation paths, unbounded state and DOM, mutable segment/tool/compaction lifecycles, unconditional generic timestamp updates, and workspace copy derivation. Aggregate probes support the performance basis.
-- Approved change, preserved behavior, and outside scope understood: `Yes` — no archive navigation/fallback, alternate full-history query, migration, GraphQL replacement, disclosure/Activity redesign, or replacement copy/export action.
+- Approved requirements / intended behavior understood: `Yes` — normal Event Monitor data is active-file-only and recent-only; server and client are bounded to 100 visual events; completed-first retention preserves mutable lifecycle evidence when possible; unseen/jump behavior reflects net final central presentation; current disclosures remain; Activity is bounded; and the unused copy path is removed.
+- Relevant existing behavior and evidence confirmed: `Yes` — active-file reconstruction, replay transformation, current hydration/live/team dispatch, final merged presentation, tool wrapper/indicator, usage/footer, compaction row, replacement, and scroll paths were checked against the revised mapping.
+- Approved change, preserved behavior, and outside scope understood: `Yes` — no archive UI/load-older/export replacement, GraphQL schema change, persistence migration, or compatibility/full-history fallback is introduced.
 - Remaining material ambiguity, if any: `None`.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `REQ-001` | Backend source policy | Pass | Pass | Pass | Confirmed | None. |
-| `REQ-002` | Backend replay window | Pass | Pass | Pass | Confirmed | Preserve reconstruct-all-active, select canonical newest 100, then build bundle. |
-| `REQ-003` | Central retained/rendered bound | Pass | Pass | Pass | Confirmed | Implement the shared classified selector for conversation and final compaction-aware presentation. |
-| `REQ-004` | Live lifecycle and eviction | Pass | Pass | Pass | Confirmed | Implement and test completed-first selection, oldest-mutable fallback, stable-identity re-entry, immediate recapping, and no retained duplicate. |
-| `REQ-005` | Bottom-follow and unseen activity | Pass | Pass | Pass | Confirmed | Use only the explicit actual-effect/revision contract and reset baseline; generic timestamps/type heuristics remain forbidden. |
-| `REQ-006` | Disclosure preservation | Pass | Pass | Pass | Confirmed | None. |
-| `REQ-007` | Activity retention | Pass | Pass | Pass | Confirmed | Apply the matching lifecycle-aware cap and derived-state repair. |
-| `REQ-008` | Copy-control cleanup | Pass | Pass | Pass | Confirmed | Remove rather than hide or replace. |
-| `REQ-009` | Persisted trace preservation | Pass | Pass | Pass | Confirmed | None. |
+| `REQ-002` | Backend replay window | Pass | Pass | Pass | Confirmed | Limit is after complete active lifecycle reconstruction, not raw-record slicing. |
+| `REQ-003` | Central retained/rendered bound | Pass | Pass | Pass | Confirmed | Segment-aware counting and center compactions share the final selector. |
+| `REQ-004` | Live lifecycle and eviction | Pass | Pass | Pass | Confirmed | Completed-first selection, hard fallback, and source-limited re-entry are explicit. |
+| `REQ-005` | Net bounded-presentation revision | Pass | Pass | Pass | Confirmed | Round-4 semantic witness table and shared derivations resolve `AR-003`. |
+| `REQ-006` | Disclosure preservation | Pass | Pass | Pass | Confirmed | Current collapsed/explicit-expansion behavior remains. |
+| `REQ-007` | Activity retention | Pass | Pass | Pass | Confirmed | Activity is independently capped with shared completion policy; Activity-only detail is excluded from central revision. |
+| `REQ-008` | Copy cleanup | Pass | Pass | Pass | Confirmed | Control, import, eager derivation, and obsolete catalog output are removed without replacement. |
+| `REQ-009` | Persisted traces | Pass | Pass | Pass | Confirmed | Existing files remain directly usable; no migration. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `history-window-ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None; keep it in the cumulative package. |
-
-The investigation notes retain the canonical supplement inventory, and requirements/design both link the supplement with clear scope, related IDs, refined status, and approval applicability.
+| `history-window-ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None. It remains user-approved and consistent with the net-presentation revision design. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Assessment is present for the current task posture | Pass | Performance, Behavior Change, and Cleanup are explicit. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | `Missing Invariant` is supported by archive-inclusive projection, unbounded historical/live state, quadratic hydration, and measured response/client cost. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Provider policy, one lifecycle-aware web capability, explicit run revision, Activity cap, and copy cleanup are in scope; broader transport redesign is deferred. | None. |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | Spines, boundaries, files, interfaces, examples, sequence, tests, removals, and residual risks align. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | `Missing Invariant` is supported by unbounded source, projection, retained state, Activity, and mounted presentation evidence. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Projection policy, pure window, pure witness, shared presentation helpers, stateful commit, reset owner, and cleanup sequence are concrete. | None. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | File mapping, spines, boundaries, exclusions, transition sequence, and tests support the focused refactor. | None. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? (`Pass`/`Fail`) | Narrative Is Clear? (`Pass`/`Fail`) | Facade Vs Governing Owner Is Clear? (`Pass`/`Fail`/`N/A`) | Main Domain Subject Naming Is Clear? (`Pass`/`Fail`) | Ownership Is Clear? (`Pass`/`Fail`) | Off-Spine Concerns Stay Off Main Line? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `DS-001` | Backend recent projection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-001` | Backend projection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | `DS-002` | Historical hydration | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-003` | Live/team/submission mutation and revision | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| `DS-004` | Combined presentation and scroll | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| `DS-003` | Begin/mutate/enforce/post/compare/bump | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-004` | Bounded presentation and scroll | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | `DS-005` | Activity retention | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Local-memory projection provider | Pass | Pass | Pass | Pass | Provider governs active source/replay window; resolvers retain identity/transport only. |
-| Event Monitor recent-window capability | Pass | Pass | Pass | Pass | Owns completion classification, selection, conversation enforcement, combined presentation, and mutation commit. |
-| Stream handlers and authoritative dispatchers | Pass | Pass | Pass | Pass | Handlers report actual effects; dispatch/submission commits once after mutation. |
-| Agent run state | Pass | Pass | Pass | Pass | Owns only counter/reset, not protocol visibility classification. |
-| Activity store | Pass | Pass | Pass | Pass | Owns record lifecycle cap and derived-state repair. |
-| Agent conversation feed | Pass | Pass | Pass | Pass | Owns scroll baseline/unseen/jump and consumes explicit props only. |
+| Local-memory projection provider | Pass | Pass | Pass | Pass | Owns active-only read, complete reconstruction, replay selection, and bundle build. |
+| Pure window/presentation owner | Pass | Pass | Pass | Pass | Owns classification, selection, enforcement, and final presentation only. |
+| Pure witness and shared presentation helpers | Pass | Pass | Pass | Pass | Exact semantic inputs are centralized; store access, deep traversal, and Activity detail are forbidden. |
+| Stateful mutation commit | Pass | Pass | Pass | Pass | Sole Activity-store adapter and revision authority. |
+| Team run-open replacement owner | Pass | Pass | Pass | Pass | Non-live reset and subscribed-live preservation are explicit. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server run-history projection | Pass | Pass | Pass | Pass | Raw-record tail limiting, resolver filesystem access, and archive fallback are forbidden. |
-| Web Event Monitor capability | Pass | Pass | Pass | Pass | May use domain/run-state types but not stores, network clients, or components. |
-| Stream/feed/Activity consumers | Pass | Pass | Pass | Pass | No timestamp, protocol-type, deep-watch, serialization, direct-array, or template-slice bypass. |
+| Server projection | Pass | Pass | Pass | Pass | No raw-tail limit, archive fallback, or resolver filesystem bypass. |
+| Pure window/witness/helpers and stateful commit | Pass | Pass | Pass | Pass | Store access is confined to commit; helpers remain pure and shallow. |
+| Stream/open/feed consumers | Pass | Pass | Pass | Pass | Bracketing, reset, and explicit prop flow follow existing owners. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- |
-| `getRunProjection(runId)` | Pass | Pass | Pass | Low | Pass |
-| `getTeamMemberRunProjection(teamRunId, memberRouteKey)` | Pass | Pass | Pass | Low | Pass |
-| `selectRecentReplayEvents(events)` | Pass | Pass | Pass | Low | Pass |
-| `enforceRecentConversationWindow(conversation, limit?)` | Pass | Pass | Pass | Low | Pass |
-| `buildRecentEventMonitorPresentation(conversation, compactions, limit?)` | Pass | Pass | Pass | Low | Pass |
-| `commitRecentEventMonitorMutation(context, effect)` | Pass | Pass | Pass | Low | Pass |
+| Existing GraphQL/provider/window interfaces | Pass | Pass | Pass | Low | Pass |
+| `beginRecentEventMonitorMutation(context)` | Pass | Pass | Pass | Low | Pass |
+| `commitRecentEventMonitorMutation(context, baseline)` | Pass | Pass | Pass | Low | Pass |
+| `buildRecentEventMonitorPresentationWitness(items)` | Pass | Pass | Pass | Low | Pass |
+| Shared tool-card/usage/compaction presentation helpers | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Active-file read and replay reconstruction | Pass | Pass | N/A | Pass | Reuses current memory facade and transformer. |
-| Server event selection | Pass | Pass | N/A | Pass | Extends projection owner. |
-| Lifecycle-aware visual window | Pass | Pass | Pass | Pass | No current owner spans hydration/live/Activity-aware presentation. |
-| Actual visible-change signal | Pass | Pass | N/A | Pass | Extends current handlers/run state rather than snapshot serialization or UI heuristics. |
-| Scroll, Activity, copy cleanup | Pass | Pass | N/A | Pass | Existing local owners are extended or cleaned up. |
+| Replay lifecycle reconstruction | Pass | Pass | N/A | Pass | Existing transformer remains authoritative; limit follows reconstruction. |
+| Net presentation comparison | Pass | Pass | Pass | Pass | A bounded pre/post witness is justified by `CR-001`. |
+| Tool central-render semantics | Pass | Pass | Pass | Pass | Existing `getToolDisplaySummary` is composed into one renderer/witness semantic card helper. |
+| Usage and compaction formatting | Pass | Pass | Pass | Pass | Shared extraction prevents precision/presence drift. |
+| Team replacement reset | Pass | Pass | N/A | Pass | Existing merge owner is extended. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server run-history projection / agent memory | Pass | Pass | Pass | Pass | Correct provider/read split. |
-| Web Event Monitor window | Pass | Pass | Pass | Pass | Coherent feature capability; no second stored timeline. |
-| Web streaming/submission/run state | Pass | Pass | Pass | Pass | Actual effect, commit sequencing, and revision lifecycle are separated clearly. |
-| Web Activity/workspace components | Pass | Pass | Pass | Pass | Secondary state and observable UI remain with existing owners. |
+| Server/memory | Pass | Pass | Pass | Pass | Existing provider remains authority. |
+| Web Event Monitor window/witness/commit | Pass | Pass | Pass | Pass | Pure policy and stateful integration are separated. |
+| Conversation presentation helpers | Pass | Pass | Pass | Pass | Narrow renderer/witness anti-drift seam. |
+| Streaming/submission/open | Pass | Pass | Pass | Pass | All authoritative mutation/replacement exits are mapped. |
+| Activity and central UI | Pass | Pass | Pass | Pass | Activity state remains separate from center-presentation equality. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Frontend classification/selection/trimming | Pass | Pass | Pass | Pass | One Event Monitor policy prevents historical/live/presentation drift. |
-| `EventMonitorPresentationMutation` | Pass | Pass | Pass | Pass | Tight `'none' | 'changed'` effect with no UI command or protocol enumeration. |
-| Server replay selector | Pass | Pass | Pass | Pass | Projection-internal named limit/pure selector. |
+| Window selection/classification | Pass | Pass | Pass | Pass | Shared across hydration/live/final presentation. |
+| Ordered presentation witness | Pass | Pass | Pass | Pass | Bounded, semantic, and singular. |
+| Tool-card semantics | Pass | Pass | Pass | Pass | Shared helper is consumed by wrappers/indicator and witness. |
+| Usage/compaction strings | Pass | Pass | Pass | Pass | Renderer and witness use the same exact formatting. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `HistoricalReplayEvent[]` | Pass | Pass | Pass | N/A | Pass | Existing canonical union remains authoritative for server selection. |
-| Visual descriptors/presentation groups | Pass | Pass | Pass | Pass | Ephemeral references only; no parallel stored timeline. |
-| Presentation mutation effect/revision | Pass | Pass | Pass | Pass | Effect means actual mutation; revision means committed visible change. |
-| Existing Conversation/RunActivity overlap | Pass | Fail | Pass | Pass | Pass | Existing duplication is bounded and explicitly deferred rather than expanded. |
+| `RecentEventMonitorPresentationWitnessToken` | Pass | Pass | Pass | Pass | Pass | Stable/ordinal identity plus explicit shallow semantic primitives only. |
+| Tool-card presentation tuple | Pass | Pass | Pass | Pass | Pass | Excludes result/log/raw argument identity and flattens only declared action primitives. |
+| Presentation items/descriptors | Pass | Pass | Pass | Pass | Pass | Ephemeral and bounded. |
+| Conversation/Activity overlap | Pass | Pass | Pass | Pass | Pass | Existing bounded transport duplication is accepted scope; the design adds no redundant witness fields and keeps semantics separate. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server policy/provider files | Pass | Pass | Pass | Pass | Selector and orchestration stay separate. |
-| `recentEventMonitorWindow.ts` | Pass | Pass | Pass | Pass | Cohesive lifecycle-aware window capability. |
-| Center-mutating handlers and `segmentIdentity.ts` | Pass | Pass | Pass | Pass | Existing mutation/identity owners report effects and completion metadata only. |
-| Dispatch/hydration/submission and `AgentRunState.ts` | Pass | Pass | Pass | Pass | Commit/reset/counter responsibilities are explicit. |
-| Activity store/feed/parents/workspace/localization | Pass | Pass | N/A | Pass | Existing local responsibilities remain coherent. |
+| `recentEventMonitorWindow.ts` | Pass | Pass | Pass | Pass | Pure selection/presentation; stateful commit is removed. |
+| `recentEventMonitorPresentationWitness.ts` | Pass | Pass | Pass | Pass | Pure per-kind semantic token/equality owner. |
+| `toolCardPresentation.ts` | Pass | Pass | Pass | Pass | Shared central-card derivation only. |
+| `recentEventMonitorUsagePresentation.ts` | Pass | Pass | Pass | Pass | Exact row/footer formatting only. |
+| `recentEventMonitorMutationCommit.ts` | Pass | Pass | Pass | Pass | Stateful capture/enforce/compare/bump adapter only. |
+| `teamRunOpenCoordinator.ts` | Pass | Pass | Pass | Pass | Reset at the replacement owner. |
+| Existing handlers/dispatchers/feed | Pass | Pass | Pass | Pass | Effects are removed from revision authority; boundaries remain thin. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server `run-history/projection` | Pass | Pass | Low | Pass | Existing main-line capability. |
-| Web `services/eventMonitor` | Pass | Pass | Low | Pass | Feature-oriented lifecycle/window owner. |
-| Existing stream/hydration/submission/run-state paths | Pass | Pass | Low | Pass | Extensions match existing owners. |
-| Existing component/store/localization paths | Pass | Pass | Medium | Pass | Current physical grouping remains locally coherent. |
+| Server recent-projection policy/provider | Pass | Pass | Low | Pass | Policy stays within run history. |
+| Web `services/eventMonitor` capability | Pass | Pass | Low | Pass | Three core files split by pure policy, pure witness, and stateful adapter. |
+| Web `utils` presentation helpers | Pass | Pass | Low | Pass | Reused by components and witness without store coupling. |
+| Stream/open/component/store paths | Pass | Pass | Low | Pass | Existing owners remain appropriate. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Archive-inclusive normal projection | Pass | Pass | Pass | Pass | No alternate flag/query/fallback. |
-| Unbounded conversation/Activity/presentation | Pass | Pass | Pass | Pass | Replaced at provider, state, Activity, and final feed owners. |
-| Generic timestamp unseen trigger | Pass | Pass | Pass | Pass | Timestamp remains bookkeeping only. |
-| Workspace copy control/text and dead localization | Pass | Pass | Pass | Pass | Remove local use and globally dead key; no replacement. |
+| Effect-OR revision authority and effect parameter | Pass | Pass | Pass | Pass | Pre/post witness comparison replaces it. |
+| Stateful commit in window file | Pass | Pass | Pass | Pass | Moved to the mutation-commit adapter. |
+| Archive-inclusive/unbounded paths | Pass | Pass | Pass | Pass | Removed without fallback. |
+| Workspace conversation copy path | Pass | N/A | Pass | Pass | Control, import, eager text, and obsolete localization output are removed. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- |
-| Projection and frontend history behavior | No | Pass | Pass | One active-only bounded path. |
-| Mutable-event fallback | No | Pass | Pass | Current-state lifecycle handling, not archive/full-history compatibility. |
-| Copy action | No | Pass | Pass | Removed without hidden/disabled replacement. |
+| Projection/window/revision/copy behavior | No | Pass | Pass | No hidden archive/full-history or compatibility branch. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? (`Pass`/`Fail`) | Direct Use, Rebuild, Or Migration Choice Is Proportionate? (`Pass`/`Fail`) | Migration Safety Is Complete If Required? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Active/archive raw-trace files and manifest | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | No schema/writer/layout change; active reader already exists; projection remains read-only. |
+| Active/archive raw traces | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | Read/display policy changes only; archive bytes remain untouched. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? (`Pass`/`Fail`) | Temporary Seams Are Explicit? (`Pass`/`Fail`) | Cleanup / Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- |
-| Server policy/provider | Pass | Pass | Pass | Pass |
-| Frontend classifier/effects/revision/presentation | Pass | Pass | Pass | Pass |
-| Activity/copy/localization | Pass | Pass | Pass | Pass |
+| Server source/window update | Pass | Pass | Pass | Pass |
+| Window/witness/helpers/commit extraction | Pass | Pass | Pass | Pass |
+| Dispatcher/reset/feed integration | Pass | Pass | Pass | Pass |
+| Old-effect and copy cleanup | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Reconstruction-before-limit | Yes | Pass | Pass | Pass | Prevents raw lifecycle splitting. |
-| Segment-aware/partial-message selection | Yes | Pass | Pass | Pass | Explains visual units and regrouping. |
-| Completed-first and all-mutable fallback | Yes | Pass | Pass | Pass | Resolves `AR-001` with exact identities/counts. |
-| Visible revision and reset | Yes | Pass | Pass | Pass | Resolves `AR-002` with visible/no-op examples. |
-| Archive boundary and scroll behavior | Yes | Pass | Pass | Pass | Explicitly rejects fallback/forced scrolling. |
+| Completed-first and all-mutable fallback | Yes | Pass | Pass | Pass | Mixed and 101-all-mutable cases are concrete. |
+| `MP-CR-001` transient append | Yes | Pass | Pass | Pass | Equal pre/post witness and no jump action are explicit. |
+| Team reopen reset | Yes | Pass | Pass | Pass | Non-live reset and subscribed-live preservation are contrasted. |
+| `AR-003` per-kind witness | Yes | Pass | Pass | Pass | Complete table, semantic tool example, exclusions, and focused tests are present. |
+| No-recursion constraint | Yes | Pass | Pass | Pass | Throwing/deep-getter cases prove only named shallow inputs are read. |
 
 ## Material Premise Validation (Only When Needed)
 
-### `MP-001` — More than 100 concurrently mutable visual events can require the deterministic hard-cap fallback
+### `MP-001` — More than 100 concurrently mutable visual events
 
-- Related approved requirement or established contract: `REQ-003`, `REQ-004`, `AC-004` hard maximum and lifecycle-preserving eviction order.
-- Relevant behavior ID(s): `REQ-003`, `REQ-004`; `DS-003`, `DS-004`, `DS-005`.
-- Product-supported initiating trigger or governing contract, with evidence: A normal live agent/team-member turn may emit distinct `SEGMENT_START` events before their matching `SEGMENT_END`/message completion; current protocol and `handleSegmentStart` append identified segments without a count restriction. Tool and compaction lifecycles are likewise nonterminal across supported messages. The revised approved contract explicitly covers a 101-all-mutable scenario.
-- Concrete current or approved target production caller/event path from that trigger to the claimed state: Agent/team WebSocket -> `parseServerMessage` -> standalone/team dispatcher -> `handleSegmentStart` or nonterminal tool/compaction handler -> identified segment/card appended/upserted in one run context -> repeated supported events produce overflow before terminal markers -> authoritative mutation commit invokes completed-first enforcement.
-- Lifecycle preconditions and material consequence at the claimed point: More than 100 retained descriptors are mutable and no completed candidate remains; completed-only eviction cannot restore the approved hard bound. Deterministic oldest-mutable eviction is then necessary, and a later stable-identity update may reconstruct only current source-limited data.
+- Related approved requirement or established contract: `REQ-003`, `REQ-004`, `AC-004`.
+- Relevant behavior ID(s): `DS-002`, `DS-003`, `DS-004`, `DS-005`.
+- Product-supported initiating trigger or governing contract, with evidence: Multiple streamed text/Thinking/tool/compaction items may remain nonterminal concurrently; the approved contract explicitly records the 101-all-mutable case.
+- Concrete current or approved target production caller/event path from that trigger to the claimed state: hydration/live dispatcher -> shared completion classifier -> completed-first selector -> mutable fallback -> bounded conversation/Activity/final presentation.
+- Lifecycle preconditions and material consequence at the claimed point: completed candidates are exhausted while overflow remains; the fallback must evict the oldest mutable identity to preserve the hard cap.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: Accept the narrowly scoped fallback specified in requirements/design. It is local to the shared selector/handlers, never reads archives, retains no duplicate hidden event, immediately restores the cap, and has focused deterministic tests.
+- Review consequence / proportionate response: Deterministic oldest-mutable fallback with source-limited stable-identity re-entry is required and accepted.
+
+### `MP-CR-001` — Atomic-complete event is inserted into a full 100-mutable window and synchronously evicted
+
+- Related approved requirement or established contract: `REQ-004`, `REQ-005`, `AC-005`.
+- Relevant behavior ID(s): `DS-003`, `DS-004`.
+- Product-supported initiating trigger or governing contract, with evidence: A live atomic notification/media/error/inter-agent event may arrive while 100 retained items are mutable.
+- Concrete current or approved target production caller/event path from that trigger to the claimed state: dispatcher begin witness -> handler inserts complete event -> completed-first enforcement removes that event -> post witness equals baseline -> no revision.
+- Lifecycle preconditions and material consequence at the claimed point: the inserted event is the only completed candidate and does not survive the final bounded presentation.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: Net pre/post witness equality correctly suppresses the obsolete effect-OR false revision.
+
+### `MP-AR-003` — Supported tool-log/detail mutation leaves the central tool card unchanged
+
+- Related approved requirement or established contract: `REQ-005`, `AC-005`.
+- Relevant behavior ID(s): `DS-003`, `DS-004`.
+- Product-supported initiating trigger or governing contract, with evidence: `TOOL_LOG` and tool-result lifecycle traffic mutate retained tool/Activity detail, while `ToolCallIndicator` renders name, semantic status/summary, error, invocation navigation, and awaiting action target—not logs or result.
+- Concrete current or approved target production caller/event path from that trigger to the claimed state: standalone/team dispatcher begin witness -> tool handler mutates log/result-only state -> enforcement preserves the same card -> semantic post witness excludes those fields and equals baseline -> no revision.
+- Lifecycle preconditions and material consequence at the claimed point: central membership/order and every render/retained-interaction primitive remain equal.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: The round-4 exact table, renderer-shared tool helper, exclusions, and focused tests resolve the prior blocking false-positive case.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -217,7 +241,7 @@ None.
 
 ## Review Decision
 
-`Pass` — the upstream behavior basis is confirmed, both prior findings are resolved, the ownership/data-flow design is actionable in the current codebase, the persisted-data/removal decisions are sound, and no in-scope mechanism depends on an unsupported material premise.
+`Pass` — the revised cumulative solution package confirms the approved behavior basis and is ready for implementation rework. `AR-003` is resolved without weakening the accepted completed-first window, net pre/post commit, or team replacement reset design.
 
 ## Findings
 
@@ -225,7 +249,7 @@ None.
 
 ## Classification
 
-N/A — passing review.
+N/A — no unresolved finding.
 
 ## Recommended Recipient
 
@@ -233,16 +257,15 @@ N/A — passing review.
 
 ## Residual Risks
 
-- A single retained tool result/reasoning/media event can still be byte- or render-heavy.
-- The bounded GraphQL bundle still duplicates tool data across conversation and Activity.
-- Large active teams may still issue multiple bounded reads during restore.
-- Dynamic-height content can still cause imperfect pixel anchoring while non-pinned.
-- In the exceptional all-mutable fallback, content evicted before a later lifecycle update may be unavailable; the approved behavior limits re-entry to one source-limited representation and prohibits archive repair/duplicates.
-
-These risks are disclosed, finite within the approved scope, and do not block implementation.
+- A single retained event may still be byte-heavy, and bounded conversation/Activity transport duplication remains.
+- Large teams may perform multiple active-file reads even though each projection is bounded.
+- Dynamic-height content may imperfectly anchor the viewport while the user is scrolled upward.
+- The all-mutable fallback can make a later stable-identity update source-limited at the newest edge; the design forbids duplicate/archive repair and immediately restores the cap.
+- Witness maintenance remains a correctness seam, now constrained by a complete per-kind contract, renderer-shared derivations, shallow/no-recursion rules, and focused tests.
+- Index-derived component keys/disclosure instance state remains a non-blocking API/E2E observation risk from code review.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: Round 2 is authoritative. The complete reviewed solution package is ready for `implementation_engineer`.
+- Notes: Round 4 is authoritative. Implementation rework may proceed from the cumulative reviewed package; source review and API/E2E gates remain required afterward.
