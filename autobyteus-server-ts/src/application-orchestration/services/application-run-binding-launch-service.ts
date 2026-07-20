@@ -10,7 +10,8 @@ import type {
   ApplicationRunBindingMemberSummary,
   ApplicationRunBindingSummary,
   ApplicationExecutionResourceRef,
-  ApplicationStartRunInput,
+  ApplicationStartAgentInput,
+  ApplicationStartAgentTeamInput,
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
 } from "@autobyteus/application-sdk-contracts";
@@ -60,7 +61,7 @@ const toSkillAccessMode = (
 
 const requireLaunchKind = (
   resource: ResolvedApplicationExecutionResource,
-  launch: ApplicationStartRunInput["launch"],
+  launch: ApplicationAgentRunLaunch | ApplicationTeamRunLaunch,
 ): void => {
   if (resource.kind !== launch.kind) {
     throw new Error(
@@ -118,9 +119,9 @@ export class ApplicationRunBindingLaunchService {
     return this.dependencies.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
   }
 
-  async startRunBinding(
+  async startAgentRunBinding(
     applicationId: string,
-    input: ApplicationStartRunInput,
+    input: ApplicationStartAgentInput,
   ): Promise<ApplicationRunBindingSummary> {
     const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
     requireLaunchKind(resource, input.launch);
@@ -128,18 +129,30 @@ export class ApplicationRunBindingLaunchService {
     const bindingSeed = {
       applicationId,
       bindingId: randomUUID(),
-      bindingIntentId: requireNonEmptyString(input.bindingIntentId, "bindingIntentId"),
+      launchRequestId: requireNonEmptyString(input.launchRequestId, "launchRequestId"),
     };
 
-    if (input.launch.kind === "AGENT") {
-      return this.startAgentBinding(bindingSeed, input.executionResourceRef, resource, input.launch);
-    }
+    return this.startAgentBinding(bindingSeed, input.executionResourceRef, resource, input.launch);
+  }
+
+  async startAgentTeamRunBinding(
+    applicationId: string,
+    input: ApplicationStartAgentTeamInput,
+  ): Promise<ApplicationRunBindingSummary> {
+    const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
+    requireLaunchKind(resource, input.launch);
+
+    const bindingSeed = {
+      applicationId,
+      bindingId: randomUUID(),
+      launchRequestId: requireNonEmptyString(input.launchRequestId, "launchRequestId"),
+    };
 
     return this.startTeamBinding(bindingSeed, input.executionResourceRef, resource, input.launch);
   }
 
   private async startAgentBinding(
-    bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
+    bindingSeed: { applicationId: string; bindingId: string; launchRequestId: string },
     executionResourceRef: ApplicationExecutionResourceRef,
     resource: ResolvedApplicationExecutionResource,
     launch: ApplicationAgentRunLaunch,
@@ -163,7 +176,7 @@ export class ApplicationRunBindingLaunchService {
     const binding: ApplicationRunBindingSummary = {
       bindingId: bindingSeed.bindingId,
       applicationId: bindingSeed.applicationId,
-      bindingIntentId: bindingSeed.bindingIntentId,
+      launchRequestId: bindingSeed.launchRequestId,
       status: "ATTACHED",
       executionResourceRef: structuredClone(executionResourceRef),
       runtime: {
@@ -183,7 +196,7 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private async startTeamBinding(
-    bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
+    bindingSeed: { applicationId: string; bindingId: string; launchRequestId: string },
     executionResourceRef: ApplicationExecutionResourceRef,
     resource: ResolvedApplicationExecutionResource,
     launch: ApplicationTeamRunLaunch,
@@ -257,7 +270,7 @@ export class ApplicationRunBindingLaunchService {
     const binding: ApplicationRunBindingSummary = {
       bindingId: bindingSeed.bindingId,
       applicationId: bindingSeed.applicationId,
-      bindingIntentId: bindingSeed.bindingIntentId,
+      launchRequestId: bindingSeed.launchRequestId,
       status: "ATTACHED",
       executionResourceRef: structuredClone(executionResourceRef),
       runtime: {
@@ -306,7 +319,7 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private buildExecutionContext(
-    bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
+    bindingSeed: { applicationId: string; bindingId: string; launchRequestId: string },
     member: ApplicationRunBindingMemberSummary,
   ): ApplicationExecutionContext {
     return {

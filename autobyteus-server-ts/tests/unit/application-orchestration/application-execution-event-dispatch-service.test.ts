@@ -20,7 +20,7 @@ const buildRecord = (journalSequence: number): ApplicationExecutionEventJournalR
     binding: {
       bindingId: `binding-${journalSequence}`,
       applicationId,
-      bindingIntentId: `binding-intent-${journalSequence}`,
+      launchRequestId: `launch-request-${journalSequence}`,
       status: "ATTACHED",
       executionResourceRef: {
         source: "bundle",

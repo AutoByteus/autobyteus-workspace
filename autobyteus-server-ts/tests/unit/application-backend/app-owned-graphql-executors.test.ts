@@ -78,7 +78,9 @@ const handlerContext: ApplicationHandlerContext = {
   },
   storage: {} as never,
   publishNotification: vi.fn(async () => undefined),
-  runtimeControl: {} as never,
+  agentExecution: {} as never,
+  agentResources: {} as never,
+  publishedArtifacts: {} as never,
 };
 
 describe("App-owned GraphQL executors", () => {

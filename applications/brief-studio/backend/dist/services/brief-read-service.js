@@ -32,7 +32,7 @@ export const createBriefReadService = (context) => ({
     async listBriefExecutions(briefId) {
         const normalizedBriefId = requireBriefId(briefId);
         const bindingIds = createRunBindingCorrelationService(context).listBindingIdsByBriefId(normalizedBriefId);
-        const bindings = (await Promise.all(bindingIds.map((bindingId) => context.runtimeControl.getRunBinding(bindingId)))).filter((binding) => Boolean(binding));
+        const bindings = (await Promise.all(bindingIds.map((bindingId) => context.agentExecution.get(bindingId)))).filter((binding) => Boolean(binding));
         return bindings
             .map((binding) => ({
             bindingId: binding.bindingId,

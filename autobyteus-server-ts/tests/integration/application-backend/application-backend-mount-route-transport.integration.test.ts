@@ -63,7 +63,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "2",
+      backendDefinitionContractVersion: "3",
       frontendSdkContractVersion: "3",
     },
     supportedExposures: {
@@ -110,7 +110,7 @@ describe("Application backend mount route transport integration", () => {
         distribution: "self-contained",
         targetRuntime: { engine: "node", semver: ">=22 <23" },
         sdkCompatibility: {
-          backendDefinitionContractVersion: "2",
+          backendDefinitionContractVersion: "3",
           frontendSdkContractVersion: "3",
         },
         supportedExposures: {
@@ -128,7 +128,7 @@ describe("Application backend mount route transport integration", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-  definitionContractVersion: '2',
+  definitionContractVersion: '3',
   routes: [
     {
       method: 'POST',

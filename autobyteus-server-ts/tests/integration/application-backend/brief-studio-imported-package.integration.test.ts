@@ -1331,10 +1331,10 @@ describe("Brief Studio imported package integration", () => {
         briefBindings: Number(
           (appDb.prepare("SELECT COUNT(*) AS count FROM brief_bindings").get() as { count: number }).count,
         ),
-        pendingBindingIntentsCommitted: Number(
+        pendingLaunchRequestsCommitted: Number(
           (
             appDb.prepare(
-              "SELECT COUNT(*) AS count FROM pending_binding_intents WHERE status = 'COMMITTED'",
+              "SELECT COUNT(*) AS count FROM pending_launch_requests WHERE status = 'COMMITTED'",
             ).get() as { count: number }
           ).count,
         ),
@@ -1349,7 +1349,7 @@ describe("Brief Studio imported package integration", () => {
         processedEvents: 2,
         briefs: 1,
         briefBindings: 1,
-        pendingBindingIntentsCommitted: 1,
+        pendingLaunchRequestsCommitted: 1,
         artifacts: 2,
         reviewNotes: 1,
       });
@@ -1512,10 +1512,10 @@ describe("Brief Studio imported package integration", () => {
         briefBindings: Number(
           (appDb.prepare("SELECT COUNT(*) AS count FROM brief_bindings").get() as { count: number }).count,
         ),
-        pendingBindingIntentsCommitted: Number(
+        pendingLaunchRequestsCommitted: Number(
           (
             appDb.prepare(
-              "SELECT COUNT(*) AS count FROM pending_binding_intents WHERE status = 'COMMITTED'",
+              "SELECT COUNT(*) AS count FROM pending_launch_requests WHERE status = 'COMMITTED'",
             ).get() as { count: number }
           ).count,
         ),
@@ -1525,7 +1525,7 @@ describe("Brief Studio imported package integration", () => {
       };
       expect(counts).toEqual({
         briefBindings: 1,
-        pendingBindingIntentsCommitted: 1,
+        pendingLaunchRequestsCommitted: 1,
         artifacts: 1,
       });
     } finally {
@@ -1561,8 +1561,8 @@ describe("Brief Studio imported package integration", () => {
         "2026-04-19T10:49:00.000Z",
       );
       seededDb.prepare(
-        `INSERT INTO pending_binding_intents (
-           binding_intent_id,
+        `INSERT INTO pending_launch_requests (
+           launch_request_id,
            brief_id,
            status,
            binding_id,
@@ -1571,7 +1571,7 @@ describe("Brief Studio imported package integration", () => {
            committed_at
          ) VALUES (?, ?, 'PENDING_START', NULL, ?, ?, NULL)`,
       ).run(
-        "binding-intent-unexpected-1",
+        "launch-request-unexpected-1",
         "brief-unexpected-1",
         "2026-04-19T10:49:30.000Z",
         "2026-04-19T10:49:30.000Z",
@@ -1583,7 +1583,7 @@ describe("Brief Studio imported package integration", () => {
     const binding: ApplicationRunBindingSummary = {
       bindingId: "binding-unexpected-1",
       applicationId,
-      bindingIntentId: "binding-intent-unexpected-1",
+      launchRequestId: "launch-request-unexpected-1",
       status: "ATTACHED",
       executionResourceRef: {
         source: "bundle",

@@ -54,7 +54,7 @@ These defaults are consumed by:
 
 - the native agent create/edit/detail surfaces,
 - direct agent launch preparation, and
-- application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.runtimeControl.startRun(...)`.
+- application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.agentExecution.startAgent(...)`.
 
 The generic Applications host no longer launches embedded agents directly at page-load time.
 
