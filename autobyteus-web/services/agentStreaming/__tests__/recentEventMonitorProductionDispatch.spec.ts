@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
-import type { AIMessage, Conversation } from '~/types/conversation';
+import type { AIMessage, Conversation, UserMessage } from '~/types/conversation';
 import type { AIResponseSegment, AIResponseTextSegment } from '~/types/segments';
 import { AgentStreamingService } from '../AgentStreamingService';
 import { dispatchGenericTeamMemberMessage } from '../teamStreamGenericMessageDispatcher';
@@ -10,6 +10,7 @@ import type { ServerMessage } from '../protocol';
 import { setStreamSegmentIdentity } from '../handlers/segmentIdentity';
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
 vi.mock('../transport', () => ({
   WebSocketClient: vi.fn().mockImplementation(() => ({
@@ -155,6 +156,56 @@ describe('recent Event Monitor production dispatch coverage', () => {
     expect(delivered).toBe(1_001);
     assertBoundedUniqueState(context);
   }, 20_000);
+
+  it('revises member attachment echoes only when the retained presentation changes', () => {
+    const context = buildContext('team-member-attachment-echo');
+    const unsupported = hydrateContextAttachment({
+      locator: 'local-file://opaque/image.png',
+      type: 'image',
+    });
+    context.conversation.messages.push({
+      type: 'user',
+      text: 'inspect the attachment',
+      timestamp: new Date('2026-07-20T00:00:00.000Z'),
+      messageId: 'member-input-attachment-1',
+      dedupeKey: 'member-input:attachment-1',
+      contextFilePaths: [unsupported],
+    });
+    const attachmentMessage = () => context.conversation.messages[0] as UserMessage;
+
+    const dispatchEcho = (paths: Array<{ path: string; type: string }>) => {
+      dispatchGenericTeamMemberMessage({
+        type: 'MEMBER_INPUT_MESSAGE',
+        payload: {
+          content: 'inspect the attachment',
+          received_at: '2026-07-20T00:00:01.000Z',
+          message_id: 'member-input-attachment-1',
+          dedupe_key: 'member-input:attachment-1',
+          context_file_paths: paths,
+        },
+      } as ServerMessage, context);
+    };
+
+    dispatchEcho([]);
+    expect(context.state.eventMonitorPresentationRevision).toBe(0);
+    expect(attachmentMessage().contextFilePaths).toEqual([unsupported]);
+
+    dispatchEcho([{ path: '/tmp/current.md', type: 'markdown' }]);
+    expect(context.state.eventMonitorPresentationRevision).toBe(1);
+    expect(attachmentMessage().contextFilePaths).toMatchObject([
+      { kind: 'workspace_path', locator: '/tmp/current.md', type: 'Markdown' },
+      { kind: 'unsupported_local_file', locator: 'local-file://opaque/image.png', type: 'Image' },
+    ]);
+
+    dispatchEcho([{ path: '/tmp/refreshed.md', type: 'markdown' }]);
+    expect(context.state.eventMonitorPresentationRevision).toBe(2);
+    dispatchEcho([{ path: '/tmp/refreshed.md', type: 'markdown' }]);
+    expect(context.state.eventMonitorPresentationRevision).toBe(2);
+
+    dispatchEcho([]);
+    expect(context.state.eventMonitorPresentationRevision).toBe(3);
+    expect(attachmentMessage().contextFilePaths).toEqual([unsupported]);
+  });
 
   it.each([
     ['standalone', (message: ServerMessage, context: AgentContext) => {

@@ -8,11 +8,11 @@
 - Supplemental Task Artifacts: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
 - Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 4, Pass)
 - Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
-- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 2, Pass)
-- Current Investigation Round: `1`
-- Trigger: Source-review pass for source commit `0b35f3c567f7411df514c5d2e5c5231bdd73e54e` on branch `codex/agent-run-history-performance`; branch HEAD also contains documentation commit `ae6649e8`.
-- Prior Investigation Reviewed: `N/A`
-- Latest Authoritative Investigation: `1`
+- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 3, Pass)
+- Current Investigation Round: `2`
+- Trigger: Source-review round-3 Pass for latest-base integration merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`, reviewed-state checkpoint `9e06eff8a28ee3c5dc0a08c8432f24470e36c7e2`, integrated base `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`, and artifact HEAD `336b08502`.
+- Prior Investigation Reviewed: `Round 1` — authoritative only for the pre-integration candidate and retained as history/context.
+- Latest Authoritative Investigation: `2`
 
 ## Current Requirement And Design Basis
 
@@ -224,3 +224,75 @@ None at investigation time.
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: `N/A`
 - Notes: Full Nuxt typecheck was rerun after the container memory increase and is no longer inconclusive. It completed with a 242-diagnostic repository baseline failure; this is preserved truthfully and is not treated as a pass. Repository behavior checks and broader live/browser validation passed.
+
+---
+
+## Investigation Round 2 — Latest-Base Integrated Candidate
+
+### Round-2 Scope And Changed Boundary Delta
+
+Round 2 reopens execution because merge `c13ba233a` composes the already-reviewed newest-100/revision spine with capabilities landed on the new base. The core server projection implementation is unchanged, but its prior evidence must be rerun against the integrated dependency/lockfile state. The frontend now forwards opt-in absolute-path actions from retained Markdown through the same bounded `AgentConversationFeed` and `AgentEventMonitor`, while team member-input echoes replace attachment arrays inside the same pre/post semantic-witness transaction.
+
+| Integrated Boundary | Current Owner | Existing Durable Evidence | Validity Decision | Round-2 Action |
+| --- | --- | --- | --- | --- |
+| Active-only/newest-100 GraphQL and >=5 MB performance | Server recent projection/provider + prior API/E2E test | `recent-run-projection-graphql.e2e.test.ts` | Still Valid, but prior run not authoritative for merge | Rerun focused/expanded, live built-server HTTP, hashes and timing. |
+| Bounded feed + semantic revision + non-pinned jump | `AgentConversationFeed.vue`, witness/commit, production dispatch | Prior durable suite and browser probe | Still Valid, integration-sensitive | Rerun complete prior frontend set and composed browser journey. |
+| Explicit absolute-path Markdown action | `MarkdownRenderer` -> retained `AIMessage` -> feed -> `AgentEventMonitor` -> `useEventMonitorFilePreview` | Base tests cover parsing/opt-in/click; conflict tests cover forwarding | Still Valid; browser status/passive-arrival composition remains critical | Add to focused/expanded execution; use a temporary real-browser journey that asserts no effect/status on arrival, explicit activation only, localized host-only status. |
+| Member echo attachment retention/refresh/dedupe | `userMessageProjection.ts` within team dispatcher transaction | Handler tests cover merge cases; witness tests cover attachment primitives | Still Valid but cross-owner revision outcome is not directly asserted | Add one durable production-dispatch test covering equal resulting presentation (no revision), executable refresh/removal (revision), unsupported retention and dedupe. |
+| Non-live team replacement vs subscribed-live preservation | `teamRunOpenCoordinator` | Existing 6-test coordinator suite | Still Valid | Rerun. |
+| Static/source integration | Merged Nuxt/lockfile and resolved production files | Implementation/reviewer typecheck/diff evidence | Context only | Rerun final Nuxt typecheck; classify baseline vs changed path; server build; final diff check. |
+
+### Round-2 Durable Coverage Update
+
+| Scenario ID | Path | Planned Change | Direct Requirement / Integration Risk |
+| --- | --- | --- | --- |
+| `LIVE-002` | `autobyteus-web/services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts` | Add production team-dispatch attachment-echo transaction assertions: unchanged retained unsupported presentation is revision-neutral; executable incoming attachment refresh/removal revises; repeated equal echo does not revise; unsupported item remains deduplicated. | Integrated member-echo merge must remain subordinate to exact central attachment witness values, not handler booleans/deep equality. |
+
+No other durable test change is justified: absolute-path parsing, supported families, explicit click/keyboard emission, generic-renderer inertness, feed forwarding, and monitor capability are already directly covered by repository tests from the integrated base. The real composed status/passive-arrival behavior is better proven through targeted Chromium because it depends on dynamic import, renderer event propagation, status DOM, and scroll state.
+
+### Round-2 Repository Execution Plan
+
+1. Focused integrated frontend: feed, monitor, Markdown absolute-path policy/rendering, member handler, production dispatch, witness, commit, window, team reopen.
+2. Expanded prior 19-file Event Monitor regression plus integrated attachment/action/context-presentation suites.
+3. Server recent projection focused and expanded run-history suite.
+4. Web/localization guards, server production build, final Nuxt typecheck and changed-path diagnostic audit.
+5. `git diff --check` and preservation check confirming the reviewer-authored `code-review-report.md` remains the only upstream modification.
+
+### Round-2 Broader Validation Decision
+
+- Decision: `Required`.
+- Modes: isolated live built-server GraphQL HTTP + real Chromium/Nuxt composed Event Monitor.
+- Browser journey must prove in one mounted Event Monitor: retained Markdown absolute path is actionable; passive arrival produces no preview/status effect; explicit activation produces host-only status; non-pinned visible revision shows the same localized jump action without moving the viewport; Enter/Space activation jumps and clears; rolling presentation remains <=100.
+- Live API must reprove >=5 MB / 620 active events, newest 100/order, payload, TTFB/total <2 s, and source hash preservation against the integrated build.
+- Pre-execution round-2 confidence: `89.9%` overall; browser composition and cross-owner member-echo revision are the material gaps.
+- Expected final confidence: >=95%, no category below 90%, if every planned gate passes.
+
+### Round-2 Reroute Decision
+
+- Requirement/design ambiguity: `No`.
+- Design impact: `No`.
+- Local fix anticipated: only a bounded durable test addition; no implementation change expected.
+- Proceed to execution: `Yes`.
+
+### Round-2 Repository Execution Results And Post-Repository Score
+
+| Order | Command / Scope | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | New `LIVE-002` production-dispatch test | Pass — 1 file / 7 tests; both 1,001-message cases 500–563 ms | `evidence/api-e2e-round2/member-echo-focused.txt` |
+| 2 | Focused integrated action/attachment/revision/window/reopen suite | Pass — 12 files / 109 tests | `evidence/api-e2e-round2/web-focused-integrated.txt` |
+| 3 | Expanded integrated frontend suite | Pass — 29 files / 239 tests | `evidence/api-e2e-round2/web-expanded-integrated.txt` |
+| 4 | Server run-history projection suite | Pass — 4 files / 13 tests; >=5 MB in-process projection 36.465 ms | `evidence/api-e2e-round2/server-run-history-integrated.txt` |
+| 5 | Web/localization guards | Pass — all three, zero unresolved literals | `evidence/api-e2e-round2/web-guards-integrated.txt` |
+| 6 | Server production build | Pass | `evidence/api-e2e-round2/server-build-integrated.txt` |
+| 7 | Full Nuxt typecheck | Repository-baseline failure — 241 diagnostics; no diagnostic in the integrated/ticket production paths or updated durable test | `evidence/api-e2e-round2/nuxt-typecheck-final.txt` |
+| 8 | Server package typecheck | Existing `TS6059` rootDir/test-include baseline; production build remains authoritative for changed server source | `evidence/api-e2e-round2/server-typecheck-final.txt` |
+
+Post-repository scores: requirement proof 95%, directness 97%, integration realism 92%, fixture fidelity 96%, edge/lifecycle 97%, browser 87%, durable quality 97%; overall `94.4%`. Browser remains the only category below 90%, so the Required broader validation decision stands.
+
+### Round-2 Broader Validation Results
+
+- Live built server on owned port `31248`, isolated test SQLite/memory: 5,423,940-byte / 620-event fixture; 100 newest rows (`active-520` through `active-619`); 868,858-byte response; TTFB 30.5–61.5 ms; total 31.1–63.1 ms; active SHA-256 unchanged.
+- Chromium/Nuxt composed `AgentEventMonitor`: 100 rows; 965 ms usable wall; passive retained Markdown arrival left revision 0 and produced no status; explicit activation alone produced the English host-only status; Space after zh-CN switch produced the Chinese status; the sole `aria-live` region was this explicit-action status.
+- The same monitor retained the Markdown action and expanded Thinking disclosure through 25 rolling events; a non-pinned visible revision kept scrollTop 0 and exposed the localized jump; English Enter and zh-CN Space jumped/cleared; no copy control, console error, or page error occurred.
+- Owned backend/Nuxt/Chromium resources and temporary route/scripts/data were cleaned up.
+- Final expected score based on completed evidence: `97.0%`, with all applicable categories >=95%. Canonical final scoring and result are in the execution report.

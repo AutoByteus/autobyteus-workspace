@@ -8,18 +8,19 @@
 - Supplemental Task Artifacts: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
 - Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (round 4 Pass)
 - Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
-- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (round 2 Pass)
+- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (round 3 Pass)
 - Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-coverage-investigation.md`
-- Current Execution Round: `1`
-- Trigger: Source/architecture review Pass for implementation source commit `0b35f3c567f7411df514c5d2e5c5231bdd73e54e`.
-- Prior Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Execution Round: `2`
+- Trigger: Source-review round-3 Pass for latest-base integration merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657` at artifact HEAD `336b08502`.
+- Prior Round Reviewed: `Round 1` — pre-integration Pass, context only for the integrated candidate.
+- Latest Authoritative Round: `2`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code-review Pass | N/A | One obsolete archive-recovery test premise; corrected to approved active-only semantics | Pass | Yes | Repository, live HTTP, and Chromium validation passed. |
+| 1 | Code-review Pass | N/A | One obsolete archive-recovery test premise; corrected to approved active-only semantics | Pass | No | Pre-integration repository, live HTTP, and Chromium validation passed. |
+| 2 | Latest-base integration source-review Pass | Round-1 behavioral gates and static-baseline risks | None | Pass | Yes | Integrated action/attachment composition, all prior gates, live HTTP, and Chromium passed. |
 
 ## Investigation And Execution Basis
 
@@ -218,13 +219,114 @@ No failure requiring rework. Repository-wide typecheck failures are pre-existing
 - No user content, credentials, or raw synthetic 5 MB response was retained.
 - `git diff --check` passes at finalization.
 
+---
+
+## Execution Round 2 — Latest-Base Integrated Candidate
+
+### Round-2 Investigation And Basis
+
+- Authoritative candidate: integration merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`, integrated base `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`, reviewed-state checkpoint `9e06eff8a28ee3c5dc0a08c8432f24470e36c7e2`, artifact HEAD `336b08502`.
+- Coverage investigation was refreshed before the new durable test was added: `Yes`.
+- Prior round: reviewed and treated as non-authoritative context for this merge.
+- New integrated boundaries: opt-in absolute-path Markdown actions/status share the bounded Event Monitor feed; member-input attachment replacement runs inside the team semantic-witness transaction.
+- Requirement/design reroute: `No`. No compatibility or migration branch was added.
+
+### Round-2 Changed Boundary And Evidence Matrix
+
+| Scenario ID | Behavior / Boundary | Mode | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `API-001-R2` | Standalone/team active-only archive exclusion, newest 100/order, bytes unchanged | Durable real-files + GraphQL | Pass | `evidence/api-e2e-round2/server-run-history-integrated.txt` |
+| `PERF-001-R2` | 5,423,940-byte / 620-event built-server HTTP projection | Live | Pass | TTFB 30.5–61.5 ms; total 31.1–63.1 ms; `live-http-*.txt/json` |
+| `LIVE-001-R2` | 1,001 mixed standalone and team messages; central/Activity bounds and stable-ID uniqueness | Durable production dispatch | Pass | `web-expanded-integrated.txt` |
+| `SEM-001-R2` | MP-CR-001 and MP-AR-003 no-op; true visible changes revise | Durable production dispatch/witness | Pass | 7-test production-dispatch spec + 35-test witness suite |
+| `TEAM-001-R2` | Non-live replacement reset and subscribed-live preservation | Durable | Pass | `teamRunOpenCoordinator.spec.ts` in expanded log |
+| `LIVE-002` | Equal member echo presentation remains revision-neutral; executable refresh/removal revises; unsupported attachment retained/deduped | Durable production team dispatch | Pass | Updated production-dispatch spec; focused/expanded logs |
+| `FILE-001-R2` | Retained Markdown path passive arrival has no effect/status; explicit activation alone produces host-only status | Browser composed `AgentEventMonitor` | Pass | `browser-probe.txt`, screenshot, metrics |
+| `BROWSER-001-R2` | Same monitor <=100, rolling retention, non-pinned localized jump, focus, Enter/Space | Browser | Pass | 100 rows, 965 ms usable, no console/page errors |
+| `STATIC-001-R2` | Integrated source/package/static truth | Build/typecheck/diff | Pass with baseline caveats | Server build Pass; Nuxt 241 baseline diagnostics with no integrated/task path; server TS6059 baseline |
+
+### Round-2 Repository Execution
+
+| Scope | Result | Evidence |
+| --- | --- | --- |
+| New member-echo focused test | 1 file / 7 tests Pass | `evidence/api-e2e-round2/member-echo-focused.txt` |
+| Focused integrated action/attachment/revision suite | 12 files / 109 tests Pass | `evidence/api-e2e-round2/web-focused-integrated.txt` |
+| Expanded integrated frontend suite | 29 files / 239 tests Pass | `evidence/api-e2e-round2/web-expanded-integrated.txt` |
+| Server run-history suite | 4 files / 13 tests Pass; in-process >=5 MB projection 36.465 ms | `evidence/api-e2e-round2/server-run-history-integrated.txt` |
+| Web/localization guards | All Pass; zero unresolved literals | `evidence/api-e2e-round2/web-guards-integrated.txt` |
+| Server production build | Pass | `evidence/api-e2e-round2/server-build-integrated.txt` |
+| Nuxt typecheck | Completed with 241 repository-baseline diagnostics; none in `AgentConversationFeed.vue`, `AgentEventMonitor.vue`, `userMessageProjection.ts`, `MarkdownRenderer.vue`, `useEventMonitorFilePreview.ts`, or the updated durable test | `evidence/api-e2e-round2/nuxt-typecheck-final.txt` |
+| Server package typecheck | Existing `TS6059` rootDir/test-include failure; production build Pass | `evidence/api-e2e-round2/server-typecheck-final.txt` |
+
+### Round-2 Confidence Scorecard
+
+| Category | Post-Repository | Final | Final Evidence / Residual |
+| --- | ---: | ---: | --- |
+| Requirement and acceptance proof | 95% | 98% | All prior and integrated critical scenarios directly pass. |
+| Changed-boundary directness | 97% | 99% | Production dispatcher, real files/GraphQL, composed Event Monitor. |
+| Cross-boundary integration realism | 92% | 97% | Built server HTTP plus real Nuxt/Chromium. Backend and UI are deterministic separate journeys. |
+| Environment/configuration/fixture fidelity | 96% | 98% | Isolated temp SQLite/memory, README startup, real Chromium. |
+| Edge/lifecycle/recovery evidence | 97% | 98% | Equal/changed attachment echoes, replacement branches, rolling disclosure, semantic premises. |
+| User-surface/browser/shell confidence | 87% | 95% | Explicit/passive file action status and jump behavior in one composed monitor. Electron shell unchanged. |
+| Durable regression quality | 97% | 98% | One bounded cross-owner test added; existing direct action tests retained. |
+
+- Overall post-repository confidence: `94.4%`.
+- Overall final confidence: `97.6%` (simple average, rounded to one decimal).
+- Confidence improvement from broader validation: `+3.2 percentage points`.
+- Every critical acceptance criterion directly proven: `Yes`.
+- Any final applicable category below 90%: `No`.
+- Default 95% target met: `Yes`.
+- Residual risks: repository-wide static baselines remain red outside changed paths; one giant individual event and extreme team fan-out remain accepted/non-criterion risks; Electron shell was not rerun because its boundary is unchanged.
+
+### Round-2 Broader Validation
+
+- Live server: built `dist/app.js`, owned loopback port `31248`, explicitly unset inherited app/database/memory variables, owned temp `test.db` and memory, `/rest/health` ready, three GraphQL requests.
+- Live result: 100 rows (`active-520`..`active-619`), zero Activity rows, 868,858-byte response, active SHA-256 unchanged, total <=63.1 ms.
+- Browser: Nuxt on owned port `31174`; Chromium 149.0.7827.196, 1280x900, en-US then zh-CN.
+- Passive arrival: retained absolute Markdown control existed while presentation revision remained 0 and no preview status/live region existed.
+- Explicit activation: click produced `This file is available only on the host workspace.`; after locale switch Space produced `此文件仅在主机工作区中可用。`; the only live region was this explicit-action status.
+- Composed scroll: after 25 rolling rows, action and expanded Thinking remained; mounted rows stayed 100. Non-pinned scrollTop stayed 0 on visible revision; English Enter and zh-CN Space jumped/cleared.
+- No copy control, console error, or page error.
+
+### Round-2 Durable Coverage Change
+
+| Path | Change | Result | Review Need |
+| --- | --- | --- | --- |
+| `autobyteus-web/services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts` | Added `LIVE-002` cross-owner member attachment echo revision scenario | Pass in focused and expanded suites | Proportional test-code review required |
+
+No implementation production file changed in round 2. Round-1 API/E2E durable files remain unchanged and passed again where relevant.
+
+### Round-2 Prior Failure Resolution Check
+
+| Prior Round / Risk | Recheck | Current Resolution |
+| --- | --- | --- |
+| Round 1 candidate not authoritative after integration | Full prior behavioral gates rerun | Resolved — integrated suites/live/browser all Pass |
+| Nuxt typecheck timeout/baseline uncertainty | Full typecheck completed after temp route removal | Resolved as known baseline — 241 diagnostics, none in integrated/ticket paths |
+| Server package typecheck baseline | Rerun | Still repository configuration baseline (`TS6059`); production build Pass |
+| Source-limited archive-boundary assertion | Rerun existing GraphQL suite | Pass |
+
+### Round-2 Cleanup And Evidence
+
+- Backend 31248 and Nuxt 31174 stopped; Chromium closed.
+- Synthetic app data/SQLite/memory, raw HTTP response/query, and temporary Nuxt route/browser script removed.
+- No matching owned process remains.
+- The reviewer-authored `code-review-report.md` modification was preserved.
+- Evidence root: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round2`.
+
+### Round-2 Result And Routing
+
+- Result: `Pass`.
+- Classification: no implementation failure; static failures are repository baselines.
+- Recommended recipient: `code_reviewer` for proportional review of the one updated durable test path.
+
 ## Latest Authoritative Result
 
 - Result: `Pass`.
-- Final validation confidence: `96.6%`.
+- Latest authoritative round: `2` — integrated candidate `c13ba233a` / artifact HEAD `336b08502`.
+- Final validation confidence: `97.6%`.
 - Default `95%` confidence target met: `Yes`.
 - Any final applicable confidence category below `90%`: `No`.
-- Broader validation decision: `Required and completed` — Live API + Browser.
+- Broader validation decision: `Required and completed` — isolated live built-server HTTP + real composed Nuxt/Chromium.
 - Critical acceptance criteria lacking direct proof: `None`.
-- Required next recipient: `code_reviewer` for proportional test-code review.
-- Notes: durable test changes are ready for review; repository static baselines remain red outside the changed paths.
+- Required next recipient: `code_reviewer` for proportional test-code review of `recentEventMonitorProductionDispatch.spec.ts`.
+- Notes: all prior active-only/newest-100, semantic revision, team replacement, 1,001-message, live HTTP, and browser gates passed against the integrated candidate. Explicit/passive file-action composition and member-echo equal/changed attachment revision behavior also passed. Repository static baselines remain red outside changed paths.

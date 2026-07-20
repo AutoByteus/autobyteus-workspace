@@ -1,0 +1,113 @@
+
+> autobyteus@1.4.19 test:nuxt /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts services/eventMonitor/__tests__/recentEventMonitorMutationCommit.spec.ts services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts utils/contextFiles/__tests__/contextAttachmentModel.spec.ts utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (12 tests) 103ms
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (7 tests) 1102ms
+   ✓ recent Event Monitor production dispatch coverage > keeps standalone center and Activity state bounded and duplicate-free after 1,001 mixed live messages  585ms
+   ✓ recent Event Monitor production dispatch coverage > keeps team-member center and Activity state bounded and duplicate-free after 1,001 mixed live messages  508ms
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (7 tests) 41ms
+stderr | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts (35 tests) 12ms
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (6 tests) 11ms
+stderr | utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/contextFiles/__tests__/contextAttachmentPresentation.spec.ts (6 tests) 6ms
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/eventMonitor/__tests__/recentEventMonitorMutationCommit.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (3 tests) 22ms
+stdout | services/eventMonitor/__tests__/recentEventMonitorMutationCommit.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/recentEventMonitorMutationCommit.spec.ts (5 tests) 11ms
+stderr | services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts (3 tests) 6ms
+stdout | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts (5 tests) 6ms
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts (17 tests) 7ms
+stderr | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/contextFiles/__tests__/contextAttachmentModel.spec.ts (3 tests) 4ms
+
+ Test Files  12 passed (12)
+      Tests  109 passed (109)
+   Start at  07:02:08
+   Duration  26.59s (transform 4.72s, setup 37.75s, collect 706ms, tests 1.33s, environment 6.91s, prepare 3.38s)
+

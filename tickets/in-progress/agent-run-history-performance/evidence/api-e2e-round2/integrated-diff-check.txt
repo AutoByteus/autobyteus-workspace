@@ -1,0 +1,6 @@
+$ git diff --check
+[pass] current worktree
+$ git diff --check 8c7e2c2aa591b174a3d5c90eb0d05584538bbf12..c13ba233a435eb7c1d0cbd88556b93e77f7ad657 -- autobyteus-web autobyteus-server-ts
+[pass] integrated source/package paths
+$ git diff --check c13ba233a435eb7c1d0cbd88556b93e77f7ad657..HEAD
+[pass] post-merge committed handoff
