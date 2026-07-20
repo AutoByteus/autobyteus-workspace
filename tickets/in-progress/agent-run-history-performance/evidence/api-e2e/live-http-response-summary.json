@@ -1,0 +1,11 @@
+{
+  "runId": "recent-window-live-http",
+  "conversationRows": 100,
+  "activityRows": 0,
+  "firstContent": "active-520:xxxxxxxxxxxxx",
+  "lastContent": "active-619:xxxxxxxxxxxxx",
+  "responseBytes": 868855,
+  "activeSha256Before": "f275f685c0c2828a32e94e6e234b7b72d1d88d1321408b1712212a1a34435853",
+  "activeSha256After": "f275f685c0c2828a32e94e6e234b7b72d1d88d1321408b1712212a1a34435853",
+  "unchanged": true
+}
