@@ -2,7 +2,7 @@
 
 ## Delivery Status
 
-- Current status: `User verified; repository finalization authorized and in progress; no release requested`
+- Current status: `Completed — user verified, finalized into origin/personal, and no release performed`
 - Ticket state: Archived at `tickets/done/understand-application-framework/`
 - Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework`
 - Ticket branch: `codex/understand-application-framework`
@@ -12,7 +12,11 @@
 - Latest tracked base: `origin/personal` at `bda6615a754c8fe913fb2650d7bdae9c4e1ed013` (`v1.4.20`)
 - Initial delivery integration: merge commit `0157007bacfed70feed726f78a5b1f7e89ab8877`
 - Post-verification target refresh: `origin/personal` remained `bda6615a754c8fe913fb2650d7bdae9c4e1ed013`, so no re-integration or renewed verification was required.
-- Unresolved findings/blockers: None. Ticket-branch commit/push, target merge/push, final record update, and cleanup are in progress. Release/publication/deployment is explicitly excluded.
+- Ticket final commit: `3aa126f473dca99c511064cf3eb23cb3ffade789`, pushed successfully before merge.
+- Target merge commit: `d3b2e4e86e7083d6f6df408c5eaf47872026c729`, pushed successfully to `origin/personal`.
+- Finalization isolation: The existing local `personal` worktree contained unrelated modified and untracked files, so it was left untouched. A clean isolated branch from the exact `origin/personal` target was used for the merge and push.
+- Cleanup: Dedicated ticket worktree, local ticket branch, remote ticket branch, and stale worktree metadata were removed after the target push.
+- Unresolved findings/blockers: None. Release/publication/deployment was explicitly excluded and was not performed.
 
 ## Delivered Behavior
 
@@ -53,6 +57,7 @@
 - ZIP SHA-256: `ad88581bd6ca21cbe29b59bb5806bca9ccdbd9b849cb05c4df7f5d2e43a22cd3`
 - Artifact verification: Bundle version and identifier passed; executable is ARM64; `hdiutil verify` passed; ZIP integrity passed; the build produced no tracked source changes.
 - Packaging note: Developer ID signing, notarization, and timestamping were intentionally disabled for this local test package. The Mach-O contains only its ad-hoc linker signature. This is not a published release.
+- Cleanup note: The user completed hands-on testing before the dedicated worktree and its ignored local app/DMG/ZIP outputs were removed. Durable build evidence and hashes remain in the archived ticket.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/delivery-electron-mac-build.log`
 
 ## Documentation And Data
@@ -64,22 +69,13 @@
 - Delivery data action: No migration. Fresh isolated storage was validated; old pre-release application databases are outside the supported product contract.
 - Release notes: Not required for this pre-release forward-only refactor because no release/publication/deployment was requested. If the user separately requests a release, release scope/version and notes must be resolved after repository finalization and a fresh remote-state check.
 
-## Suggested User Verification
+## Hands-On Verification
 
-There is no changed rendered UI or desktop-shell interaction, but the local Electron package includes the integrated server and application framework. A practical verification is:
-
-1. Open the DMG above and launch the ARM64 `AutoByteus.app`. This is an intentionally unsigned/unnotarized local build, not a release artifact.
-2. Open **Applications** and exercise the available Brief Studio and Socratic Math Teacher setup/start/input flows on fresh application storage, confirming agents and teams can start and bindings continue normally.
-3. Review the intended public contract in `tickets/done/understand-application-framework/application-context-api-contract.md` and the durable usage examples in `autobyteus-application-backend-sdk/README.md`.
-4. Confirm the desired policy is still a clean forward-only v3 cutover: custom/pre-release applications rebuild against v3, and old local application databases are discarded rather than migrated. If this machine retains incompatible pre-release application databases, quit the app and back up/remove only the applicable application storage under `~/.autobyteus/server-data/applications/`; do not reset unrelated server data.
-5. Optionally rerun the authoritative focused check:
-
-   ```bash
-   pnpm -C autobyteus-server-ts run build:full
-   pnpm -C autobyteus-server-ts exec vitest run tests/integration/application-backend/application-context-capabilities.integration.test.ts --no-watch
-   ```
-
-6. Reply explicitly that the integrated candidate is verified/complete and authorize repository finalization. Mention separately if a release or deployment is desired; none is assumed.
+- The user launched and tested the local macOS ARM64 Electron candidate containing the integrated server and application framework.
+- Result: `Pass`
+- User instruction: Finalize the repository and do not release a new version.
+- The post-verification target refresh found `origin/personal` unchanged from the tested base, so no renewed build or verification was required.
+- The local unsigned app/DMG/ZIP were removed with the dedicated ticket worktree only after this successful verification was recorded.
 
 ## User Verification
 
@@ -113,3 +109,4 @@ There is no changed rendered UI or desktop-shell interaction, but the local Elec
 - Delivery docs audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/delivery-docs-audit.log`
 - Local Electron build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/delivery-electron-mac-build.log`
 - User verification report: `/Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/tickets/done/understand-application-framework/user-verification-report.md`
+- Repository finalization evidence: `tickets/done/understand-application-framework/repository-finalization.log`
