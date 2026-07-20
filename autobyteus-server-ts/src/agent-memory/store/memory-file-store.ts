@@ -7,6 +7,7 @@ import {
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+import { RAW_TRACES_MANIFEST_FILE_NAME } from "autobyteus-ts/memory/store/raw-trace-archive-manifest.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -15,6 +16,13 @@ const logger = {
 export type FileInfo = {
   exists: true;
   mtime: number;
+};
+
+export type ActiveRawTraceSnapshot = {
+  records: Array<Record<string, unknown>>;
+  device: string | null;
+  inode: string | null;
+  manifestGeneration: string | null;
 };
 
 export class MemoryFileStore {
@@ -123,6 +131,52 @@ export class MemoryFileStore {
   readRawTracesActive(runId: string, limit?: number): Array<Record<string, unknown>> {
     const filePath = path.join(this.getRunDir(runId), RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
     return this.readJsonl(filePath, limit);
+  }
+
+  readRawTracesActiveSnapshot(runId: string): ActiveRawTraceSnapshot {
+    const filePath = path.join(this.getRunDir(runId), RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
+    if (!fs.existsSync(filePath)) {
+      return { records: [], device: null, inode: null, manifestGeneration: this.readRawTraceManifestGeneration(runId) };
+    }
+    const fd = fs.openSync(filePath, "r");
+    try {
+      const stat = fs.fstatSync(fd);
+      const raw = fs.readFileSync(fd, "utf8");
+      const records: Array<Record<string, unknown>> = [];
+      for (const line of raw.split(/\r?\n/)) {
+        if (!line.trim()) continue;
+        try {
+          const record = JSON.parse(line);
+          if (record && typeof record === "object" && !Array.isArray(record)) {
+            records.push(record as Record<string, unknown>);
+          }
+        } catch (error) {
+          logger.warn(`Skipping malformed JSONL line in ${filePath}: ${String(error)}`);
+        }
+      }
+      return {
+        records,
+        device: Number.isFinite(stat.dev) ? String(stat.dev) : null,
+        inode: Number.isFinite(stat.ino) ? String(stat.ino) : null,
+        manifestGeneration: this.readRawTraceManifestGeneration(runId),
+      };
+    } finally {
+      fs.closeSync(fd);
+    }
+  }
+
+  private readRawTraceManifestGeneration(runId: string): string | null {
+    const manifest = this.readJson(path.join(this.getRunDir(runId), RAW_TRACES_MANIFEST_FILE_NAME));
+    if (!manifest || !Array.isArray(manifest.segments)) return null;
+    const completed = manifest.segments.filter((segment): segment is Record<string, unknown> => (
+      Boolean(segment) && typeof segment === "object" && !Array.isArray(segment)
+      && (segment as Record<string, unknown>).status === "complete"
+    ));
+    const latest = completed.at(-1);
+    if (!latest) return null;
+    const index = typeof latest.index === "number" ? latest.index : "";
+    const boundary = typeof latest.boundary_key === "string" ? latest.boundary_key : "";
+    return `${index}:${boundary}`;
   }
 
   readRawTracesArchive(runId: string, limit?: number): Array<Record<string, unknown>> {

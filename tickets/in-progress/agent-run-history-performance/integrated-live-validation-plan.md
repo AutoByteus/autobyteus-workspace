@@ -6,18 +6,19 @@
 
 ## Purpose And Scope
 
-Validate the already-approved Event Monitor optimization with one internally consistent candidate: the integrated frontend, the integrated backend containing the active-only/newest-100 provider, and a consistent disposable snapshot of the representative `/home/autobyteus/data` dataset.
+Validate the approved Event Monitor optimization and active-trace earlier-browsing refinement with one internally consistent candidate: the integrated frontend, the integrated backend containing the active-only/newest-100 provider and fixed-50 active-trace page boundary, and a consistent disposable snapshot of the representative `/home/autobyteus/data` dataset.
 
 This plan separates:
 
 1. remote-node/window bootstrap and catalog/workspace readiness;
 2. Event Monitor row-selection projection time;
-3. frontend hydration and usable-render time; and
-4. final payload/state/DOM bounds.
+3. frontend hydration and usable-render time;
+4. one first and one continuation active-trace earlier-page request; and
+5. final latest/browse payload, state, and DOM bounds.
 
 It must never permit two server processes to own the same writable live data directory.
 
-Related authority: `REQ-001`–`REQ-003`, `REQ-009`; `AC-001`–`AC-003`, `AC-008`–`AC-010`. The user-visible UI/UX remains defined by `history-window-ui-ux-spec.md`.
+Related authority: `REQ-001`–`REQ-003`, `REQ-009`–`REQ-012`; `AC-001`–`AC-003`, `AC-008`–`AC-010`, `AC-012`–`AC-015`. The user-visible UI/UX remains defined by `history-window-ui-ux-spec.md`.
 
 ## Verified Mismatch Behind The Reported Slow Attempt
 
@@ -163,6 +164,21 @@ Record:
 
 Use the same component/browser counting method already retained in API/E2E evidence so the value is comparable to the 100-row result and 965 ms usable time. Do not infer usability from a screenshot alone.
 
+### Phase 5A — Measure Explicit Active-Trace Earlier Paging
+
+After the latest view is stable, and only when the target active trace has at least 151 canonical replay events:
+
+1. Capture the current first-visible event key and its offset in the Event Monitor scroll container.
+2. Activate `Load 50 earlier` once. Record request operation/subject identity, TTFB, total, encoded/decoded bytes, `loadedEarlierCount`, returned event/visual counts, oldest/newest event IDs, visual-ID uniqueness, cursor status, and archive-path opens from the same request-bounded path-only audit.
+3. Require the first browse response to represent one server-consistent active generation containing the latest 100 plus at most 50 immediately preceding events. Its generated schema/body contains only the closed typed central visual variants and no `GraphQLJSON`, raw result, logs, Activity detail/context, generic arguments, or archive-only sentinel.
+4. After render, record click-to-control-ready, response-complete-to-stable-render, resident/mounted central visual count, event/visual-ID uniqueness, and first-visible `data-event-monitor-visual-key`/offset delta. Require the prior visual anchor to remain stable within documented browser/layout tolerance.
+5. Activate `Load 50 earlier` a second time. Record the same metrics and require at most the immediately preceding 50 events, no gap/duplicate at the page boundary, unchanged generation, stable source-to-DOM visual keys, and a resident/mounted central visual count no greater than 300.
+6. Require each explicit page interaction to become stable and usable within 2.0 seconds on the documented representative active source. The normal row-selection `USABLE-001` timing remains independent and must not include a speculative page request.
+7. If the real representative active source cannot supply two earlier pages, record that limitation and execute the traversal/beginning/expiry/turnover behavior against the durable generated fixture required by `AC-012`–`AC-015`; do not weaken the representative latest-selection evidence. The generated fixture must include distinct equal-content/equal-timestamp events across a page boundary and a raw tool result containing a unique multi-megabyte sentinel. Compare the latter with a result-null equivalent while holding central fields/IDs constant: serialized central `events` bytes and rendered values must be identical (cursor/generation metadata excluded), the sentinel must be absent, and page conversion must remain linear/no-recursion.
+8. During each page request, require an active-trace open and zero archive-segment/live-root opens when tracer coverage exists. Without tracer coverage, label the page archive-no-open clause not independently re-proved and cite prior durable instrumented page evidence under the same Mode S fallback; Mode R remains blocked.
+
+`Beginning of current activity`, cursor expiry after an intentional fixture-only active rewrite, `Jump to latest` reset, and >500-event resident turnover are destructive/control-flow scenarios and must use a generated disposable fixture, not mutate the representative snapshot.
+
 ### Phase 6 — Preserve Evidence And Clean Up
 
 - Retain aggregate timings, counts, byte sizes, hashes, exact commands, process topology, and screenshots.
@@ -185,6 +201,7 @@ Use the same component/browser counting method already retained in API/E2E evide
 | `HYDRATE-001` | Projection response complete | Hydration commit | Browser performance marks | Detects client conversion/dedupe cost |
 | `USABLE-001` | Exact row click | Recent content visible and composer focusable | DOM/component assertions | Governs `AC-009` <=2.0 s |
 | `BOUND-001` | Stable render | Count sampled | Payload/state/component/DOM counts | Governs newest-100 and mounted bound |
+| `PAGE-001` | Each `Load 50 earlier` activation | Control ready and stable browse render | TTFB/total/bytes/event+visual IDs/cursor status, schema exclusion, linear conversion markers, DOM visual keys, anchor delta, path-only audit | Governs fixed-50 active-only paging, source-to-DOM identity, result/log exclusion, <=2.0 s interaction, no gaps/duplicates, and <=300 resident visuals under `AC-012`–`AC-015` |
 | `COPY-001` | Quiesced source hash | Post-copy snapshot hash | Target active/archive/manifest/metadata/DB counts, bytes, hashes | Proves the snapshot started equal to the quiesced source |
 | `OPEN-001` | Integrated process start / target request start | Process stop / target response complete | Full-lifetime and request-bounded path-only open audit; command/environment/FD audit | When tracer coverage exists, proves validation did not access the live root and directly re-proves archive no-open; otherwise `Not Executed`, Mode R is blocked, and Mode S relies on separately labeled configuration/integrity plus prior `AC-001` evidence |
 | `SNAPSHOT-RAW-001` | Before integrated validation | After integrated validation | Snapshot target active/archive/manifest hashes | Proves the read-only validation did not mutate snapshot raw traces |
@@ -195,12 +212,12 @@ Use the same component/browser counting method already retained in API/E2E evide
 
 | Corrected observation | Classification | Routing |
 | --- | --- | --- |
-| All required acceptance evidence is satisfied by executed scenarios plus any explicitly cited prior durable `AC-001` evidence: integrated backend is active-only/newest-100; target row is usable within 2.0 s; bounds and applicable integrity/audit gates pass | Original slow attempt was a validation-topology mismatch; no requirement or product-design change | API/E2E engineer returns `Pass` with scenario IDs/evidence to code reviewer for proportional test-code review (`N/A` when no durable test changed), then code reviewer hands the passed package to delivery; delivery keeps the explicit user-verification hold |
-| Any executed scenario fails, including slow bootstrap, slow integrated API/fan-out, fast API plus slow hydration, archive open, bound violation, snapshot mutation, or validation live-root access | API/E2E `Fail`; likely origin is recorded as a hypothesis, not direct owner routing | Stop where safety requires; return first to code reviewer for focused failure-origin analysis with scenario IDs and exact execution context. Code reviewer classifies and routes Design Impact to solution designer, implementation-owned defects to implementation engineer, or API/E2E-owned test/environment/reporting issues to API/E2E engineer |
+| All required acceptance evidence is satisfied by executed scenarios plus any explicitly cited prior durable `AC-001` evidence: integrated backend is active-only/newest-100; target row is usable within 2.0 s; explicit pages are active-only/fixed-50 and usable within 2.0 s; latest/browse bounds and applicable integrity/audit gates pass | Original slow attempt was a validation-topology mismatch, and the refined active-trace browsing contract passes | API/E2E engineer returns `Pass` with scenario IDs/evidence to code reviewer for proportional test-code review (`N/A` when no durable test changed), then code reviewer hands the passed package to delivery; delivery keeps the explicit user-verification hold |
+| Any executed scenario fails, including slow bootstrap, slow integrated API/fan-out, fast API plus slow hydration, slow/incorrect page traversal, archive open, latest/browse bound violation, snapshot mutation, or validation live-root access | API/E2E `Fail`; likely origin is recorded as a hypothesis, not direct owner routing | Stop where safety requires; return first to code reviewer for focused failure-origin analysis with scenario IDs and exact execution context. Code reviewer classifies and routes Design Impact to solution designer, implementation-owned defects to implementation engineer, or API/E2E-owned test/environment/reporting issues to API/E2E engineer |
 | Required quiesce/atomic snapshot, runtime privilege, fixture identity, package, service, or other dependency is unavailable and safe execution cannot continue | API/E2E `Blocked` | Report to the user with preserved evidence and the exact missing dependency; do not weaken safety or infer pass/fail |
 
 ## Current Solution Decision
 
 The reported multi-minute attempt does **not** currently establish a requirement gap or a product-design failure. It did not exercise the integrated backend half of the optimization, and its 212.893-second observation lacks markers that separate window bootstrap from row projection and frontend hydration. The approved design already requires active-only/newest-100 behavior at the backend boundary and <=2.0-second usable content under `AC-009`; prior integrated isolated evidence passed those contracts.
 
-No production behavior or architecture change is proposed from this observation alone. After architecture passes this supplement, `api_e2e_engineer` owns corrected isolated-snapshot execution. Every execution `Fail` returns first to `code_reviewer` for focused failure-origin classification; a `Pass` returns for proportional test-code review and then delivery; `Blocked` goes to the user with the exact missing dependency. A product design change is reopened only after that mandatory failure-origin path classifies valid evidence as Design Impact.
+The mixed-version observation alone proposes no production fix. The subsequently approved active-trace paging feature is a separate user requirement and is now included in representative measurement rather than treated as a remedy for the old port-8000 mismatch. After architecture and implementation-source review pass, `api_e2e_engineer` owns corrected isolated-snapshot execution. Every execution `Fail` returns first to `code_reviewer` for focused failure-origin classification; a `Pass` returns for proportional test-code review and then delivery; `Blocked` goes to the user with the exact missing dependency.

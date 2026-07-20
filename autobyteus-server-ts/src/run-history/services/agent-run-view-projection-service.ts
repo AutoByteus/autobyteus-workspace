@@ -12,6 +12,8 @@ import type {
   RunProjectionSourceDescriptor,
 } from "../projection/run-projection-types.js";
 import { buildRunProjectionBundle } from "../projection/run-projection-utils.js";
+import { buildActiveTraceSubjectFingerprint } from "../projection/active-trace-event-page-policy.js";
+import type { EventMonitorActiveTracePage } from "../projection/event-monitor-active-trace-page-types.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 
@@ -29,6 +31,7 @@ const dedupeProjectionBundle = (projection: RunProjection): RunProjection => {
     ...bundle,
     summary: bundle.summary ?? projection.summary,
     lastActivityAt: bundle.lastActivityAt ?? projection.lastActivityAt,
+    hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
   };
 };
 
@@ -56,15 +59,57 @@ export class AgentRunViewProjectionService {
     });
   }
 
+  async getActiveTracePage(runId: string, beforeCursor?: string | null): Promise<EventMonitorActiveTracePage> {
+    const metadata = await this.metadataStore.readMetadata(runId);
+    return this.getActiveTracePageFromMetadata({
+      runId,
+      metadata,
+      beforeCursor,
+      canonicalSubject: `run:${runId.trim()}`,
+    });
+  }
+
+  async getActiveTracePageFromMetadata(input: {
+    runId: string;
+    metadata: AgentRunMetadata | null;
+    beforeCursor?: string | null;
+    canonicalSubject: string;
+  }): Promise<EventMonitorActiveTracePage> {
+    const source = this.buildSourceDescriptor(input.runId, input.metadata);
+    const provider = this.localProjectionProvider as RunProjectionProvider & {
+      buildActiveTracePage?: (pageInput: RunProjectionProviderInput & {
+        beforeCursor?: string | null;
+        subjectFingerprint: string;
+      }) => Promise<EventMonitorActiveTracePage>;
+    };
+    if (!provider.buildActiveTracePage) {
+      throw new Error("The local run projection provider does not support active-trace paging.");
+    }
+    return provider.buildActiveTracePage({
+      source,
+      beforeCursor: input.beforeCursor,
+      subjectFingerprint: buildActiveTraceSubjectFingerprint(input.canonicalSubject),
+    });
+  }
+
   async getProjectionFromMetadata(input: {
     runId: string;
     metadata: AgentRunMetadata | null;
   }): Promise<RunProjection> {
     const { runId, metadata } = input;
-    const runtimeKind =
-      runtimeKindFromString(metadata?.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
-      RuntimeKind.AUTOBYTEUS;
-    const source: RunProjectionSourceDescriptor = {
+    const source = this.buildSourceDescriptor(runId, metadata);
+    const providerInput: RunProjectionProviderInput = { source };
+    const localProjection = await this.tryBuildProjection(
+      this.localProjectionProvider,
+      providerInput,
+    );
+    return localProjection ?? buildRunProjectionBundle(runId, [], []);
+  }
+
+  private buildSourceDescriptor(runId: string, metadata: AgentRunMetadata | null): RunProjectionSourceDescriptor {
+    const runtimeKind = runtimeKindFromString(metadata?.runtimeKind, RuntimeKind.AUTOBYTEUS)
+      ?? RuntimeKind.AUTOBYTEUS;
+    return {
       runId,
       runtimeKind,
       workspaceRootPath: metadata?.workspaceRootPath ?? null,
@@ -72,12 +117,6 @@ export class AgentRunViewProjectionService {
       platformRunId: metadata?.platformAgentRunId ?? null,
       metadata,
     };
-    const providerInput: RunProjectionProviderInput = { source };
-    const localProjection = await this.tryBuildProjection(
-      this.localProjectionProvider,
-      providerInput,
-    );
-    return localProjection ?? buildRunProjectionBundle(runId, [], []);
   }
 
   private async tryBuildProjection(

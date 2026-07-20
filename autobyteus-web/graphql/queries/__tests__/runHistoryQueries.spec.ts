@@ -1,5 +1,26 @@
 import { describe, expect, it } from 'vitest';
-import { GetRunFileChanges, GetTaskDelegationRecords, GetTeamCommunicationMessages, ListWorkspaceRunHistory } from '../runHistoryQueries';
+import {
+  GetRunEventMonitorActiveTracePage,
+  GetRunFileChanges,
+  GetTaskDelegationRecords,
+  GetTeamCommunicationMessages,
+  GetTeamMemberEventMonitorActiveTracePage,
+  ListWorkspaceRunHistory,
+} from '../runHistoryQueries';
+
+describe('Event Monitor active-trace page queries', () => {
+  it('exposes only explicit standalone/team subject identity and an opaque cursor', () => {
+    const runSource = GetRunEventMonitorActiveTracePage.loc?.source.body ?? '';
+    const teamSource = GetTeamMemberEventMonitorActiveTracePage.loc?.source.body ?? '';
+    expect(runSource).toContain('$runId: String!');
+    expect(teamSource).toContain('$teamRunId: String!');
+    expect(teamSource).toContain('$memberRouteKey: String!');
+    for (const source of [runSource, teamSource]) {
+      expect(source).toContain('$beforeCursor: String');
+      expect(source).not.toMatch(/\$(?:limit|rawTrace|archive|fileName)\b/i);
+    }
+  });
+});
 
 describe('GetRunFileChanges query', () => {
   it('requests inline content for live buffered file-change hydration without legacy artifact ids', () => {

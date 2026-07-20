@@ -9,6 +9,12 @@ import type {
 import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
 import { buildHistoricalReplayEvents } from "../transformers/raw-trace-to-historical-replay-events.js";
 import { selectRecentReplayEvents } from "../recent-run-projection-policy.js";
+import {
+  buildActiveTraceGeneration,
+  selectActiveTraceEventPage,
+} from "../active-trace-event-page-policy.js";
+import { buildEventMonitorActiveTracePageEvents } from "../event-monitor-active-trace-page-projection.js";
+import type { EventMonitorActiveTracePage } from "../event-monitor-active-trace-page-types.js";
 
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -30,13 +36,7 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
   }
 
   async buildProjection(input: RunProjectionProviderInput): Promise<RunProjection> {
-    const explicitMemoryDir = asString(input.source.memoryDir);
-    const localRunId = explicitMemoryDir ? path.basename(explicitMemoryDir) : input.source.runId;
-    const memoryService = explicitMemoryDir
-      ? new AgentMemoryService(
-          new MemoryFileStore(path.dirname(explicitMemoryDir), { runRootSubdir: "" }),
-        )
-      : this.defaultMemoryService;
+    const { memoryService, localRunId } = this.resolveMemorySource(input);
     const view = memoryService.getRunMemoryView(localRunId, {
       includeWorkingContext: false,
       includeEpisodic: false,
@@ -45,9 +45,54 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
       includeArchive: false,
     });
     const replayEvents = buildHistoricalReplayEvents(view.rawTraces ?? []);
-    return buildRunProjectionBundleFromEvents(
+    const projection = buildRunProjectionBundleFromEvents(
       input.source.runId,
       selectRecentReplayEvents(replayEvents),
     );
+    projection.hasEarlierActiveTraceEvents = replayEvents.length > 100;
+    return projection;
+  }
+
+  async buildActiveTracePage(input: RunProjectionProviderInput & {
+    beforeCursor?: string | null;
+    subjectFingerprint: string;
+  }): Promise<EventMonitorActiveTracePage> {
+    const { memoryService, localRunId } = this.resolveMemorySource(input);
+    const snapshot = memoryService.getActiveRawTraceSnapshot(localRunId);
+    const replayEvents = buildHistoricalReplayEvents(snapshot.rawTraces);
+    const activeGeneration = buildActiveTraceGeneration({
+      device: snapshot.device,
+      inode: snapshot.inode,
+      manifestGeneration: snapshot.manifestGeneration,
+      earliestEventId: replayEvents[0]?.eventId ?? null,
+    });
+    const selection = selectActiveTraceEventPage({
+      events: replayEvents,
+      beforeCursor: input.beforeCursor,
+      subjectFingerprint: input.subjectFingerprint,
+      activeGeneration,
+    });
+    return {
+      events: buildEventMonitorActiveTracePageEvents(selection.events),
+      beforeCursor: selection.beforeCursor,
+      hasEarlier: selection.hasEarlier,
+      loadedEarlierCount: selection.loadedEarlierCount,
+      activeGeneration,
+      cursorStatus: selection.cursorStatus,
+    };
+  }
+
+  private resolveMemorySource(input: RunProjectionProviderInput): {
+    localRunId: string;
+    memoryService: AgentMemoryService;
+  } {
+    const explicitMemoryDir = asString(input.source.memoryDir);
+    const localRunId = explicitMemoryDir ? path.basename(explicitMemoryDir) : input.source.runId;
+    const memoryService = explicitMemoryDir
+      ? new AgentMemoryService(
+          new MemoryFileStore(path.dirname(explicitMemoryDir), { runRootSubdir: "" }),
+        )
+      : this.defaultMemoryService;
+    return { localRunId, memoryService };
   }
 }

@@ -109,6 +109,7 @@ export const GetRunProjection = gql`
       lastActivityAt
       conversation
       activities
+      hasEarlierActiveTraceEvents
     }
   }
 `;
@@ -130,6 +131,65 @@ export const GetRunFileChanges = gql`
   }
 `;
 
+const activeTracePageFields = gql`
+  fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
+    beforeCursor
+    hasEarlier
+    loadedEarlierCount
+    activeGeneration
+    cursorStatus
+    events {
+      eventId
+      turnGroupId
+      occurredAtMs
+      visuals {
+        ... on EventMonitorUserVisual {
+          kind visualId eventId kindOrdinal text
+          attachments { attachmentId mediaType locator }
+        }
+        ... on EventMonitorAssistantTextVisual { kind visualId eventId kindOrdinal content }
+        ... on EventMonitorThinkingVisual { kind visualId eventId kindOrdinal content }
+        ... on EventMonitorToolCardVisual {
+          kind visualId eventId kindOrdinal invocationId cardKind toolName statusKey errorMessage
+          summaryArgs {
+            path file_path filepath filename target_path command cmd script query prompt url message text title name raw
+          }
+          approvalTarget {
+            memberRouteKey memberPath sourceRouteKey sourcePath taskAgentRunId taskTeamRunId
+            teamRouteKey teamPath taskTeamRelativeMemberRouteKey taskTeamRelativeMemberPath
+          }
+        }
+        ... on EventMonitorMediaVisual { kind visualId eventId kindOrdinal mediaType urls }
+        ... on EventMonitorCompactionVisual {
+          kind visualId eventId kindOrdinal activityId phase message turnId rawTraceCount semanticFactCount provider
+        }
+      }
+    }
+  }
+`;
+
+export const GetRunEventMonitorActiveTracePage = gql`
+  query GetRunEventMonitorActiveTracePage($runId: String!, $beforeCursor: String) {
+    getRunEventMonitorActiveTracePage(runId: $runId, beforeCursor: $beforeCursor) {
+      ...EventMonitorActiveTracePageFields
+    }
+  }
+  ${activeTracePageFields}
+`;
+
+export const GetTeamMemberEventMonitorActiveTracePage = gql`
+  query GetTeamMemberEventMonitorActiveTracePage(
+    $teamRunId: String!, $memberRouteKey: String!, $beforeCursor: String
+  ) {
+    getTeamMemberEventMonitorActiveTracePage(
+      teamRunId: $teamRunId, memberRouteKey: $memberRouteKey, beforeCursor: $beforeCursor
+    ) {
+      ...EventMonitorActiveTracePageFields
+    }
+  }
+  ${activeTracePageFields}
+`;
+
 export const GetTeamRunResumeConfig = gql`
   query GetTeamRunResumeConfig($teamRunId: String!) {
     getTeamRunResumeConfig(teamRunId: $teamRunId) {
@@ -148,6 +208,7 @@ export const GetTeamMemberRunProjection = gql`
       lastActivityAt
       conversation
       activities
+      hasEarlierActiveTraceEvents
     }
   }
 `;

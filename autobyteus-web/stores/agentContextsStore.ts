@@ -163,6 +163,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       config: AgentRunConfig;
       conversation: Conversation;
       status?: AgentStatus;
+      hasEarlierActiveTraceEvents?: boolean;
     }) {
       this.upsertProjectionContext(options);
     },
@@ -176,6 +177,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       config: AgentRunConfig;
       conversation: Conversation;
       status?: AgentStatus;
+      hasEarlierActiveTraceEvents?: boolean;
     }) {
       const existing = this.runs.get(options.runId);
       const nextStatus = options.status ?? AgentStatus.Offline;
@@ -187,6 +189,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         existing.state.runId = options.runId;
         existing.state.conversation = options.conversation;
         existing.state.resetEventMonitorPresentationRevision();
+        existing.state.hasEarlierActiveTraceEvents = options.hasEarlierActiveTraceEvents === true;
         const shouldPreserveSubscribedLiveStatus = existing.isSubscribed && nextStatus === AgentStatus.Running;
         applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
           preserveLiveInterrupt: shouldPreserveSubscribedLiveStatus,
@@ -196,6 +199,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       }
 
       const state = new AgentRunState(options.runId, options.conversation);
+      state.hasEarlierActiveTraceEvents = options.hasEarlierActiveTraceEvents === true;
       initializeRuntimeStatusState(state, nextStatus);
       const runContext = new AgentContext(options.config, state);
       this.runs.set(options.runId, runContext);

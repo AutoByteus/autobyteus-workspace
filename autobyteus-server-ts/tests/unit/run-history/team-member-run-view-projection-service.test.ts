@@ -78,6 +78,33 @@ describe("TeamMemberRunViewProjectionService", () => {
     expect(result.activities).toEqual([]);
   });
 
+  it("routes an explicit member page request with member-scoped cursor identity", async () => {
+    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
+      teamRunId: "team-1",
+      metadata: buildTeamMetadata([buildAgentMember()]),
+    });
+    const page = {
+      events: [], beforeCursor: null, hasEarlier: false, loadedEarlierCount: 0,
+      activeGeneration: "generation", cursorStatus: "VALID",
+    };
+    const getActiveTracePageFromMetadata = vi.fn().mockResolvedValue(page);
+    const service = new TeamMemberRunViewProjectionService({
+      teamRunHistoryService: { getTeamRunResumeConfig } as any,
+      agentRunViewProjectionService: { getActiveTracePageFromMetadata } as any,
+    });
+
+    await expect(service.getActiveTracePage(" team-1 ", " professor ", "cursor-1")).resolves.toBe(page);
+    expect(getActiveTracePageFromMetadata).toHaveBeenCalledWith({
+      runId: "member-1",
+      metadata: expect.objectContaining({
+        runId: "member-1",
+        memoryDir: getExpectedMemberMemoryDir("team-1", "member-1"),
+      }),
+      beforeCursor: "cursor-1",
+      canonicalSubject: "team:team-1:member:professor",
+    });
+  });
+
   it("resolves nested leaf route keys from recursive memberTree", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",

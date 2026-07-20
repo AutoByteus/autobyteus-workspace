@@ -6,6 +6,8 @@ import type {
 } from "./run-projection-types.js";
 
 export interface HistoricalReplayMessageEvent {
+  eventId: string;
+  turnGroupId: string;
   kind: "message";
   role: string | null;
   content: string | null;
@@ -14,6 +16,8 @@ export interface HistoricalReplayMessageEvent {
 }
 
 export interface HistoricalReplayReasoningEvent {
+  eventId: string;
+  turnGroupId: string;
   kind: "reasoning";
   content: string | null;
   media: Record<string, string[]> | null;
@@ -21,6 +25,8 @@ export interface HistoricalReplayReasoningEvent {
 }
 
 export interface HistoricalReplayToolEvent {
+  eventId: string;
+  turnGroupId: string;
   kind: "tool";
   invocationId: string;
   toolName: string;
@@ -38,6 +44,8 @@ export interface HistoricalReplayToolEvent {
 }
 
 export interface HistoricalReplayCompactionEvent {
+  eventId: string;
+  turnGroupId: string;
   kind: "compaction";
   activityId: string;
   phase: RunProjectionCompactionPhase;
@@ -53,6 +61,8 @@ export interface HistoricalReplayCompactionEvent {
   providerSessionId: string | null;
   trigger: string | null;
   preTokens: number | null;
+  rawTraceCount: number | null;
+  semanticFactCount: number | null;
   rotationEligible: boolean | null;
   ts: number | null;
   detailLevel: RunProjectionSourceDetailLevel;

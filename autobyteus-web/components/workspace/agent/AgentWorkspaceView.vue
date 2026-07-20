@@ -36,6 +36,8 @@
         :agent-name="selectedAgent.config.agentDefinitionName"
         :agent-avatar-url="selectedAgent.config.agentAvatarUrl"
         :presentation-revision="selectedAgent.state.eventMonitorPresentationRevision"
+        :has-earlier-active-trace-events="selectedAgent.state.hasEarlierActiveTraceEvents"
+        :browse-subject="{ kind: 'run', runId: selectedAgent.state.runId }"
         class="h-full"
       >
         <template #composerContext>

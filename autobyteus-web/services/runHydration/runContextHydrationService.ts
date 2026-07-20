@@ -23,6 +23,7 @@ export interface RunProjectionPayload {
   activities: RunProjectionActivityEntry[];
   summary?: string | null;
   lastActivityAt?: string | null;
+  hasEarlierActiveTraceEvents: boolean;
 }
 
 interface GetRunProjectionQueryData {
@@ -51,6 +52,7 @@ export interface RunContextHydrationPayload {
   conversation: ReturnType<typeof buildConversationFromProjection>;
   activities: RunProjectionActivityEntry[];
   fileChanges: RunFileChangeArtifact[];
+  hasEarlierActiveTraceEvents: boolean;
 }
 
 export const loadRunContextHydrationPayload = async (
@@ -166,6 +168,7 @@ export const loadRunContextHydrationPayload = async (
     conversation,
     activities: projection.activities || [],
     fileChanges: fileChangesResponse.data?.getRunFileChanges || [],
+    hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
   };
 };
 
@@ -178,6 +181,7 @@ export const hydrateLiveRunContext = async (
     config: payload.config,
     conversation: payload.conversation,
     status: normalizeAgentRuntimeStatus(input.currentStatus),
+    hasEarlierActiveTraceEvents: payload.hasEarlierActiveTraceEvents,
   });
   hydrateActivitiesFromProjection(payload.runId, payload.activities);
   hydrateRunFileChanges(payload.runId, payload.fileChanges);

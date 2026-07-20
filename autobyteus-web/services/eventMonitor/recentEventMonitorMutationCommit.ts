@@ -33,6 +33,7 @@ export const commitRecentEventMonitorMutation = (
   baseline: RecentEventMonitorPresentationWitness,
 ): RecentEventMonitorMutationCommitResult => {
   const enforcement = enforceRecentConversationWindow(context.conversation);
+  if (enforcement.retentionChanged) context.state.hasEarlierActiveTraceEvents = true;
   const finalWitness = captureRecentEventMonitorPresentationWitness(context);
   const presentationChanged = !areRecentEventMonitorPresentationWitnessesEqual(baseline, finalWitness);
   if (presentationChanged) context.state.markEventMonitorPresentationChanged();

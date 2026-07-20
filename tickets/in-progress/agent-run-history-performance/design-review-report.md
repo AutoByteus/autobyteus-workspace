@@ -6,11 +6,11 @@
 - Upstream Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Reviewed Design Spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- Current Review Round: `6`
-- Trigger: Revised validation supplement resolving round-5 findings `AR-004` and `AR-005`.
-- Prior Review Round Reviewed: `5`
-- Latest Authoritative Round: `6`
-- Current-State Evidence Basis: Revised cumulative package; integrated base `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`; implementation merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`; checkpoint `20fe710ef86f2658bc761f5e4bff4aad8603b630`; prior source/API-E2E/test-review reports; delivery observation and Electron logs; live PID 45 command/environment; old compiled provider showing `includeArchive:true` and no recent policy; integrated artifact/log evidence; representative corpus metrics; and the new validation supplement.
+- Current Review Round: `8`
+- Trigger: Revised active-trace paging design resolving round-7 findings `AR-006` and `AR-007`.
+- Prior Review Round Reviewed: `7`
+- Latest Authoritative Round: `8`
+- Current-State Evidence Basis: Revised cumulative package; integrated base `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`; implementation merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`; checkpoint `20fe710ef86f2658bc761f5e4bff4aad8603b630`; current replay-event types/transformer, active-file rewrite owners, normal projection converter, shared tool-card presentation seam, feed/component keys; revised identity-bearing replay/page/DOM contract; closed typed central page union; prior source/API-E2E/test-review/delivery reports; representative corpus metrics; and both approved UI and N/A validation supplements.
 
 ## Round History
 
@@ -21,7 +21,9 @@
 | 3 | Downstream source-review Design Impact | `AR-001`, `AR-002`, `CR-001`, `CR-002`, `MP-CR-001` | `AR-003` | `Fail` | No | The transaction/reset architecture was sound, but the proposed witness included non-central tool state and raw reference identity. |
 | 4 | Revised witness equality domain | `AR-001`, `AR-002`, `CR-001`, `CR-002`, `AR-003`, `MP-CR-001`, `MP-AR-003` | None | `Pass` | No | The central presentation/retained-interaction table, renderer-shared derivations, exclusions, and tests resolve `AR-003`. |
 | 5 | Delivery validation premise investigation | All prior findings; mixed-version premise; safe snapshot and measurement gates | `AR-004`, `AR-005` | `Fail` | No | The mixed-version conclusion was supported, but the executable validation contract needed archive-access, source-attribution, and workflow-routing corrections. |
-| 6 | Revised executable validation contract | `AR-004`, `AR-005`, `MP-VAL-001` | None | `Pass` | Yes | Path-only runtime auditing, Mode S/Mode R integrity records, explicit limited-evidence fallback, and mandatory API/E2E result routing resolve both findings. |
+| 6 | Revised executable validation contract | `AR-004`, `AR-005`, `MP-VAL-001` | None | `Pass` | No | Path-only runtime auditing, Mode S/Mode R integrity records, explicit limited-evidence fallback, and mandatory API/E2E result routing resolve both findings. |
+| 7 | Approved active-trace earlier-page Requirement Gap | All prior findings; `REQ-010`–`REQ-012`; `AC-012`–`AC-015`; `DS-006`–`DS-007` | `AR-006`, `AR-007` | `Fail` | No | The product contract was clear, but stable identity stopped before the actual DOM and the proposed page DTO reused non-central result-bearing projection entries. |
+| 8 | Identity-bearing and central-only page redesign | `AR-006`, `AR-007`, `MP-AR-006`, `MP-AR-007` | None | `Pass` | Yes | Required replay identity now reaches deterministic subvisual/DOM keys; a closed generated union and page-only linear converter make result/log/Activity data unrepresentable. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -35,14 +37,17 @@
 | Delivery observation | Validation-premise mismatch | N/A | `Confirmed` | The selected renderer used the old port-8000 provider (`includeArchive:true`, no recent policy) while the integrated backend with the recent policy used a different root. The 212.893-second interval lacks row/request/hydration markers. | This observation does not establish a product requirement gap or integrated implementation failure. |
 | 5 | `AR-004` / `MP-VAL-001` | High | `Resolved` | The supplement separates `COPY-001`, `OPEN-001`, `SNAPSHOT-RAW-001`, `LIVE-SOURCE-001`, and `OLD-OWNER-001`; Mode S requires live equality, while Mode R treats old-owner writes as informational and requires full-lifetime/request-bounded tracing. | Tracer-unavailable fallback is explicitly limited and cannot claim representative `AC-001` no-open proof. |
 | 5 | `AR-005` | Medium | `Resolved` | `api_e2e_engineer` owns execution; Fail returns to `code_reviewer` for focused origin analysis; Pass returns for proportional test review then delivery; Blocked goes to the user. | Delivery/user-verification hold remains explicit. |
+| 7 basis | Earlier browsing approval | N/A | `Confirmed` | Requirements and UI/UX supplement record user approval on 2026-07-20 for fixed 50-event pages within only the current active file. | This legitimately supersedes the former no-load-older decision without reopening archive access. |
+| 7 | `AR-006` / `MP-AR-006` | High | `Resolved` | Required `eventId`/`turnGroupId` are assigned while source/tool/legacy evidence exists; deterministic `visualId` then travels unchanged through typed page DTO, resident blocks, ID-only conversion, `data-event-monitor-visual-key`, and actual Vue row/subvisual keys. | Equal-content/equal-timestamp, multi-visual, prepend, turnover, DOM-instance, disclosure, legacy, tool, and collision tests are specified; normal semantic dedupe is forbidden. |
+| 7 | `AR-007` / `MP-AR-007` | High | `Resolved` | A closed TypeGraphQL visual union replaces normal conversation/Activity entries and `GraphQLJSON`; tool visuals carry only shallow allowlisted summary inputs, explicit status/error/action fields, and no result/log/Activity/generic payload. | Page projection/conversion are O(events + visuals); result-heavy byte-equivalence, schema absence, no-recursion, semantic card, and `PAGE-001` checks are specified. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
-- Approved requirements / intended behavior understood: `Yes` — normal Event Monitor data is active-file-only and recent-only; server and client are bounded to 100 visual events; completed-first retention preserves mutable lifecycle evidence when possible; unseen/jump behavior reflects net final central presentation; current disclosures remain; Activity is bounded; and the unused copy path is removed.
-- Relevant existing behavior and evidence confirmed: `Yes` — the old/new artifact and data-root mismatch is independently supported, prior same-candidate isolated evidence passed, and the live source can be actively owned while the disposable snapshot is separately validated.
-- Approved change, preserved behavior, and outside scope understood: `Yes` — no archive UI/load-older/export replacement, GraphQL schema change, persistence migration, or compatibility/full-history fallback is introduced.
-- Remaining material ambiguity, if any: `None`. Availability of quiesce/snapshot and tracing privilege is an execution dependency with explicit Blocked behavior, not a design ambiguity.
+- Approved requirements / intended behavior understood: `Yes` — normal Event Monitor data remains active-file-only/latest-100 and live; an explicit top action enters a frozen browse snapshot and loads fixed preceding pages of at most 50 canonical active events; canonical live/Activity state stays separate; browse presentation stays at most 300 visuals; Jump discards browse state; archive access remains forbidden.
+- Relevant existing behavior and evidence confirmed: `Yes` — the revised design directly accounts for current replay ID loss, semantic/result-bearing normal hydration, and ordinal component keys by extending replay construction and creating separate page projection/conversion/key paths rather than concealing those constraints.
+- Approved change, preserved behavior, and outside scope understood: `Yes` — the approved GraphQL additions are explicit standalone/team page queries only. Archive browsing, generic file/limit inputs, older Activity hydration, canonical conversation expansion, a persisted replay index, migration, and speculative compatibility fallbacks remain outside scope.
+- Remaining material ambiguity, if any: `None`.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -55,6 +60,11 @@
 | `REQ-007` | Activity retention | Pass | Pass | Pass | Confirmed | Activity is independently capped with shared completion policy; Activity-only detail is excluded from central revision. |
 | `REQ-008` | Copy cleanup | Pass | Pass | Pass | Confirmed | Control, import, eager derivation, and obsolete catalog output are removed without replacement. |
 | `REQ-009` | Persisted traces | Pass | Pass | Pass | Confirmed | Existing files remain directly usable; no migration. |
+| `REQ-010` | Explicit active-only earlier paging | Pass | Pass | Pass | Confirmed | Fixed standalone/team queries, first 100+up-to-50 snapshot, and later preceding-50 selection are coherent. |
+| `REQ-011` | Frozen browse/live separation and cursor recovery | Pass | Pass | Pass | Confirmed | Typed event/subvisual identity, subject/generation/anchor validation, typed expiry, frozen state, and Jump reset are complete. |
+| `REQ-012` | Browse resident/mounted bound and anchored page turnover | Pass | Pass | Pass | Confirmed | Final visual counting, complete farthest-newer block release, visual-ID anchors, actual stable keys, and disclosure identity are explicit. |
+| `AC-012`–`AC-014` | Exact traversal, retry/expiry, no gaps/duplicates, <=300 mounted | Pass | Pass | Pass | Confirmed | Fixed page arithmetic, ID-only merge, protocol errors, exact key flow, recovery states, and anchored turnover have concrete tests. |
+| `AC-015` | <=2.0-second representative page interaction | Pass | Pass | Pass | Confirmed | Closed result-free transport, O(E+V) server/web mapping, byte-equivalent result sentinel fixture, and `PAGE-001` timings are coherent. |
 | `AC-001` | Runtime archive exclusion evidence | Pass | Pass | Pass | Confirmed | Full-lifetime and request-bounded path-only audit proves active-file open, zero target archive opens, and zero live-root opens when executed; the tracer-unavailable Mode S fallback explicitly marks representative no-open re-proof not executed and cites prior durable evidence. |
 | `AC-009` | Same-candidate representative performance | Pass | Pass | Pass | Confirmed | Candidate fingerprinting, bootstrap/row/API/hydration/usability separation, cold/warm runs, and the 2.0-second gate are coherent. |
 | `REQ-009` / validation integrity records | Validation source integrity | Pass | Pass | Pass | Confirmed | Quiesced copy equality, validation-process access, snapshot raw-trace immutability, Mode-S live equality, and Mode-R old-owner attribution are separate results. |
@@ -63,8 +73,8 @@
 
 | Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `history-window-ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None. It remains user-approved and consistent with the net-presentation revision design. |
-| `integrated-live-validation-plan.md` | Pass | Pass | Pass | Pass | Pass | None. The supplement is executable, attributable, safely blocked when dependencies are absent, and approval `N/A` remains correct. |
+| `history-window-ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None. It is user-approved through 2026-07-20 and completely defines browse loading, retry, expiry, beginning, turnover, and live-jump states. |
+| `integrated-live-validation-plan.md` | Pass | Pass | Pass | Pass | Pass | None. `PAGE-001` now measures the approved paging path while preserving `AR-004`/`AR-005`; approval `N/A` remains correct. |
 
 ## Task Design Health Assessment Verdict
 
@@ -85,6 +95,8 @@
 | `DS-004` | Bounded presentation and scroll | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | `DS-005` | Activity retention | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | Validation evidence spine | Safe snapshot, same-candidate execution, measurement, classification | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-006` | Active-file page request and fixed server selection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `DS-007` | Browse merge, turnover, render, and anchor restoration | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
@@ -97,6 +109,8 @@
 | Team run-open replacement owner | Pass | Pass | Pass | Pass | Non-live reset and subscribed-live preservation are explicit. |
 | Snapshot/source-integrity owner | Pass | Pass | Pass | Pass | Mode-specific records keep copy identity, validation non-access, snapshot immutability, live equality, and restarted-owner attribution separate. |
 | Representative archive-access probe | Pass | Pass | Pass | Pass | Path-only full-lifetime/request-bounded tracing covers the server and descendants; incomplete coverage is explicitly Not Executed rather than inferred. |
+| Active-trace page policy/provider/projector | Pass | Pass | Pass | Pass | Identity is source-owned before selection; policy owns generation/page arithmetic and a sibling projector owns the closed central union/visual IDs. |
+| Browse controller, page converter, and feed anchor owner | Pass | Pass | Pass | Pass | Controller owns ID validation/blocks, converter owns typed stable-key presentation, and feed owns only actual visual-key measurement/restoration. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -118,6 +132,11 @@
 | Shared tool-card/usage/compaction presentation helpers | Pass | Pass | Pass | Low | Pass |
 | Validation integrity record set | Pass | Pass | Pass | Low | Pass |
 | Runtime archive-open observation | Pass | Pass | Pass | Low | Pass |
+| Explicit standalone/team active-trace page queries | Pass | Pass | Pass | Low | Pass |
+| `selectActiveTraceEventPage(...)` | Pass | Pass | Pass | Low | Pass |
+| `buildEventMonitorActiveTracePageEvents(...)` | Pass | Pass | Pass | Low | Pass |
+| `useEventMonitorActiveTraceBrowse(subject)` | Pass | Pass | Pass | Low | Pass |
+| `buildEventMonitorActiveTraceBrowsePresentation(...)` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -129,6 +148,7 @@
 | Usage and compaction formatting | Pass | Pass | Pass | Pass | Shared extraction prevents precision/presence drift. |
 | Team replacement reset | Pass | Pass | N/A | Pass | Existing merge owner is extended. |
 | Runtime file-access/process evidence | Pass | Pass | Pass | Pass | Path-only tracing is authoritative when available; configuration/FD checks are correctly labeled supporting evidence only. |
+| Existing historical projection converter for browse pages | Pass | Pass | Pass | Pass | Reuse is correctly rejected; a dedicated typed page converter reuses leaf presentation/components without semantic dedupe or result-bearing segments. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -140,6 +160,8 @@
 | Streaming/submission/open | Pass | Pass | Pass | Pass | All authoritative mutation/replacement exits are mapped. |
 | Activity and central UI | Pass | Pass | Pass | Pass | Activity state remains separate from center-presentation equality. |
 | Validation execution and review | Pass | Pass | Pass | Pass | API/E2E executes and result routing is explicit before delivery resumes. |
+| Active-trace server paging | Pass | Pass | Pass | Pass | Replay identity, selector/cursor, central projector, and explicit query/type responsibilities are separated and actionable. |
+| Web active-trace browsing | Pass | Pass | Pass | Pass | Generated union, controller, pure converter, stable keyed row/subvisual presentation, and feed anchoring are explicit. |
 
 ## Reusable Owned Structures Verdict
 
@@ -149,6 +171,8 @@
 | Ordered presentation witness | Pass | Pass | Pass | Pass | Bounded, semantic, and singular. |
 | Tool-card semantics | Pass | Pass | Pass | Pass | Shared helper is consumed by wrappers/indicator and witness. |
 | Usage/compaction strings | Pass | Pass | Pass | Pass | Renderer and witness use the same exact formatting. |
+| Active-trace page identity carrier | Pass | Pass | Pass | Pass | Required source-owned `eventId`/`turnGroupId` and derived `visualId` have one typed meaning across the full path. |
+| Central-only page tool projection | Pass | Pass | Pass | Pass | Closed allowlisted shallow tool-card variant is distinct from normal conversation/Activity models and shares the semantic display contract. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -159,6 +183,8 @@
 | Presentation items/descriptors | Pass | Pass | Pass | Pass | Pass | Ephemeral and bounded. |
 | Conversation/Activity overlap | Pass | Pass | Pass | Pass | Pass | Existing bounded transport duplication is accepted scope; the design adds no redundant witness fields and keeps semantics separate. |
 | Validation integrity evidence records | Pass | Pass | Pass | Pass | Pass | Each record has one attributable meaning across Mode S and Mode R. |
+| `EventMonitorActiveTracePageEvent` / visual union | Pass | Pass | Pass | Pass | Pass | Event identity and closed central variants are singular; result/log/Activity/generic payload fields are structurally absent. |
+| Browse presentation item/key | Pass | Pass | Pass | Pass | Pass | Stable event, row grouping, subvisual, Vue key, and DOM-anchor meanings are explicit without content/index recomputation. |
 
 ## File Responsibility Mapping Verdict
 
@@ -172,6 +198,12 @@
 | `teamRunOpenCoordinator.ts` | Pass | Pass | Pass | Pass | Reset at the replacement owner. |
 | Existing handlers/dispatchers/feed | Pass | Pass | Pass | Pass | Effects are removed from revision authority; boundaries remain thin. |
 | `integrated-live-validation-plan.md` | Pass | Pass | Pass | Pass | Singular validation/evidence contract with explicit execution owner and outcome routes. |
+| `historical-replay-event-types.ts` + replay builders | Pass | Pass | Pass | Pass | Required source/tool/legacy event and turn-group identity is assigned before selection by every replay constructor. |
+| `active-trace-event-page-policy.ts` | Pass | Pass | Pass | Pass | Generation/cursor/fixed-page selection consumes the identity-bearing replay type; it does not infer presentation identity. |
+| `event-monitor-active-trace-page-projection.ts` | Pass | Pass | Pass | Pass | Singular closed central visual/visual-ID projector; no result/log/Activity/generic serialization. |
+| `eventMonitorActiveTraceBrowsePresentation.ts` | Pass | Pass | Pass | Pass | Dedicated O(E+V) ID-preserving page conversion replaces normal hydration reuse. |
+| `eventMonitorActiveTraceBrowse.ts` | Pass | Pass | Pass | Pass | Subject request state, Map/Set validation, ID-only block merge, turnover, and reset are singular. |
+| `AgentConversationFeed.vue` / typed browse row | Pass | Pass | Pass | Pass | Actual browse row/subvisual Vue keys and `data-event-monitor-visual-key` anchoring are mapped without changing latest-mode semantics. |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -181,6 +213,8 @@
 | Web `services/eventMonitor` capability | Pass | Pass | Low | Pass | Three core files split by pure policy, pure witness, and stateful adapter. |
 | Web `utils` presentation helpers | Pass | Pass | Low | Pass | Reused by components and witness without store coupling. |
 | Stream/open/component/store paths | Pass | Pass | Low | Pass | Existing owners remain appropriate. |
+| Server active-trace replay/policy/projector/types | Pass | Pass | Low | Pass | Identity construction, selection/cursor, central projection, and transport typing have distinct coherent files. |
+| Web browse controller/converter/feed | Pass | Pass | Low | Pass | Network state, typed presentation conversion, and DOM scroll authority are separated with explicit stable IDs. |
 
 ## Removal / Decommission Completeness Verdict
 
@@ -212,6 +246,8 @@
 | Dispatcher/reset/feed integration | Pass | Pass | Pass | Pass |
 | Old-effect and copy cleanup | Pass | Pass | Pass | Pass |
 | Same-candidate snapshot validation | Pass | Pass | Pass | Pass |
+| Active-trace page identity/DTO implementation | Pass | Pass | Pass | Pass |
+| Browse conversion/keyed turnover integration | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
@@ -224,6 +260,10 @@
 | No-recursion constraint | Yes | Pass | Pass | Pass | Throwing/deep-getter cases prove only named shallow inputs are read. |
 | Source owner restarts during validation | Yes | Pass | Pass | Pass | Mode R makes live equality N/A and uses `OLD-OWNER-001` plus mandatory validation-path tracing. |
 | Runtime archive exclusion | Yes | Pass | Pass | Pass | Request-bounded path-only audit proves active open/zero archive opens when executed; fallback truthfully records Not Executed. |
+| Duplicate-content page boundary and prepend anchor | Yes | Pass | Pass | Pass | Raw IDs `r17`/`r18`, distinct event/visual IDs, unchanged keyed DOM instance, and anchor/disclosure behavior are traced end to end. |
+| Multi-visual event identity | Yes | Pass | Pass | Pass | Event/card/text/media subvisual IDs and stable assistant grouping are concrete. |
+| Central-only tool page DTO | Yes | Pass | Pass | Pass | Exact retained status/summary/error/action fields and forbidden result/log/generic payload shape are contrasted. |
+| Result-heavy exclusion | Yes | Pass | Pass | Pass | Result-null versus multi-megabyte sentinel byte-equivalence and no-recursion checks prove exclusion before transport. |
 
 ## Material Premise Validation (Only When Needed)
 
@@ -267,13 +307,33 @@
 - Reachability: `Reachable`
 - Review consequence / proportionate response: Resolved. Mode S keeps the owner stopped and requires live equality; Mode R restarts only after `COPY-001`, requires tracing, makes live equality N/A, records old-owner activity, and still requires snapshot raw-trace immutability.
 
+### `MP-AR-006` — Two distinct active replay events can have equal rendered content/timestamp and must remain distinct across a page boundary
+
+- Related approved requirement or established contract: `REQ-010`–`REQ-012`, `AC-012`–`AC-014`.
+- Relevant behavior ID(s): `DS-006`, `DS-007`.
+- Product-supported initiating trigger or governing contract, with evidence: The active JSONL format permits separate message/reasoning records with their own raw-trace IDs but equal content and timestamps; the approved contract explicitly requires stable event-ID merge with no gaps/duplicates and anchor-preserving prepend/turnover.
+- Concrete current or approved target production caller/event path from that trigger to the claimed state: active raw records -> `buildHistoricalReplayEvents` -> page identity/selection -> GraphQL page entry -> extracted projection converter -> browse page blocks -> feed/AI segment DOM keys -> first-visible-key restoration.
+- Lifecycle preconditions and material consequence at the claimed point: Current `HistoricalReplayMessageEvent`/`HistoricalReplayReasoningEvent` omit the raw ID, the transformer drops it, current hydration dedupe can merge semantically equal entries, and feed/segment keys are ordinal. A distinct event may therefore be collapsed or an anchor may bind to a different DOM instance after prepend/turnover.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: Resolved in round 8. The required source-owned identity carrier, collision-safe subvisual identity, ID-only merge, actual keyed DOM/anchor flow, and duplicate-content/turnover/disclosure tests are explicit.
+
+### `MP-AR-007` — A completed tool event can contain a large raw result that is not rendered in the central feed
+
+- Related approved requirement or established contract: `REQ-010`, `REQ-012`, `AC-015`, and the resolved `AR-003` central-presentation exclusion contract.
+- Relevant behavior ID(s): `DS-006`, `DS-007`, `PAGE-001`.
+- Product-supported initiating trigger or governing contract, with evidence: Normal tool execution stores arbitrary tool results; current replay and conversation projection types carry `toolResult`, while the central `ToolCallIndicator` renders derived name/status/summary/error/action primitives rather than raw result/log detail.
+- Concrete current or approved target production caller/event path from that trigger to the claimed state: tool call/result raw traces -> reconstructed tool replay event -> proposed “existing conversation projection entry” -> GraphQL JSON page payload -> current projection converter's recursive `stableJson(toolResult)` and result-bearing segment -> browse render.
+- Lifecycle preconditions and material consequence at the claimed point: An explicit earlier page containing such a tool event transports and recursively traverses non-central data, contradicting “central-feed-only” and weakening the fixed-response/performance purpose and `AC-015` gate.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: Resolved in round 8. The closed generated central union, shallow allowlist/status contract, direct `ToolCardPresentation` mapping, structural exclusions, and result-sentinel/linear tests are explicit.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
 ## Review Decision
 
-`Pass` — the evidence supports “mixed-version validation premise mismatch; no product Requirement Gap or production Design Impact yet.” The revised supplement provides a safe, attributable, executable same-candidate validation contract with explicit dependency blocking and mandatory API/E2E result routing.
+`Pass` — the revised package is ready for implementation rework. It preserves the approved active-only/latest-100 behavior while adding explicit fixed earlier paging through one identity-bearing, lifecycle-correct, closed central-only server path and a separate bounded, linear, stable-keyed browse presentation path. `AR-006` and `AR-007` are resolved without archive fallback, normal-conversation/Activity expansion, result-bearing page transport, or speculative indexing.
 
 ## Findings
 
@@ -285,7 +345,7 @@ N/A — no unresolved finding.
 
 ## Recommended Recipient
 
-`api_e2e_engineer`
+`implementation_engineer`
 
 ## Residual Risks
 
@@ -294,12 +354,14 @@ N/A — no unresolved finding.
 - Dynamic-height content may imperfectly anchor the viewport while the user is scrolled upward.
 - The all-mutable fallback can make a later stable-identity update source-limited at the newest edge; the design forbids duplicate/archive repair and immediately restores the cap.
 - Witness maintenance remains a correctness seam, now constrained by a complete per-kind contract, renderer-shared derivations, shallow/no-recursion rules, and focused tests.
-- Index-derived component keys/disclosure instance state remains a non-blocking API/E2E observation risk from code review.
+- Existing latest-mode ordinal keys remain outside this browse-only identity change; browse rows/subvisuals use carried stable IDs and focused tests guard disclosure/anchor identity.
 - Corrected representative execution still requires operator permission for a brief quiesce or an atomic snapshot; absent that dependency, API/E2E must report `Blocked` rather than weaken safety.
 - A current frontend connected to an older remote backend remains version-skewed; no client fallback in this scope can remove old-server archive work.
+- Complete active reconstruction per explicit page remains accepted pending `AC-015`; no index is justified without corrected same-candidate evidence.
+- The weaker manifest-plus-earliest generation fallback is accepted for the currently evidenced supported compaction path, which archives an old boundary and changes manifest/earliest evidence. The test-only `archive=false` prune caller does not establish a production premise requiring new generation machinery in this round.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: Round 6 is authoritative. The corrected package is ready for `api_e2e_engineer` execution. Pass/Fail/Blocked must follow the supplement and team routing; delivery finalization remains on explicit user-verification hold.
+- Notes: Round 8 is authoritative. `AR-006` and `AR-007` are resolved and the cumulative package is ready for `implementation_engineer` rework. Source review and API/E2E must run again after implementation; delivery finalization/user-verification hold remains active.
