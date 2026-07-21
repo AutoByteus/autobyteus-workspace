@@ -11,7 +11,8 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-communication-boundaries.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/design-review-report.md`
 - Implementation-source review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/code-review-report.md`
-- Current implementation source commit: `5e824f8de8fea67ae8da820b7f5134b78923907e`
+- Current implementation source/test commit: `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`
+- CR-001–CR-003 source-fix commit: `5e824f8de8fea67ae8da820b7f5134b78923907e`
 - Initial implementation source commit: `8d93ee5c1fb27dc910496626d6ef4aa38da4fb94`
 - Recorded implementation base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
 
@@ -35,6 +36,13 @@
 - `CR-002` resolved: the Gateway-owned custom WebSocket preflight now checks the active bundle's `backend.supportedExposures.webSockets` flag before `openApplicationWebSocket`; focused negative coverage proves a disabled flag produces only the safe rejection and no Engine/worker open, while positive coverage proves enabled entry reaches readiness.
 - `CR-003` resolved: removed the unreachable `ApplicationAgentCommunicationSession.closeByClient()` duplicate; socket close/error observation remains the only reachable transport-close path.
 - Local-fix source commit: `5e824f8de8fea67ae8da820b7f5134b78923907e`.
+
+## Implementation-Source Review Round 2 Resolution
+
+- `CR-004` resolved across all five active test files: every ignored `notificationStreamService` constructor property now uses the exact `notificationHub` dependency, and the REST/WS plus Brief integration hoisted state and initialization errors now use Notification Hub terminology. No production compatibility alias was added.
+- The required full five-file run exposed two already-stale integration harness assumptions after the production REST route split and V4 exposure-summary extension. The harnesses now register the existing `registerApplicationAvailabilityRoutes` module alongside backend routes and assert the current `webSocketRoutes: []` derived field; no production behavior changed.
+- Final focused result: `5 files / 25 tests` passed in one run. Active source/test/docs obsolete notification-stream owner inventory is empty.
+- CR-004 test-fix commit: `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -126,9 +134,10 @@
 - Built-ins: local-fix rerun of `pnpm build` in Brief Studio and Socratic Math Teacher — both passed; runtime/vendor/importable outputs regenerated with the sibling notification capability.
 - `autobyteus-server-ts`: initial selected implementation-owned unit run across Communication, Streaming, Gateway WebSockets, Engine/worker observation, Orchestration, bundle/package/storage boundaries — `22 files / 138 tests` passed.
 - `autobyteus-server-ts`: local-fix focused rerun for Gateway preflight and Communication session cleanup — `2 files / 12 tests` passed, including disabled/no-open and enabled/READY custom WebSocket cases.
+- `autobyteus-server-ts`: CR-004 final focused run across all five affected unit/integration files — `5 files / 25 tests` passed. The first run exposed stale integration harness registration/summary assumptions (`23/25`); after aligning those fixtures to the existing split availability route and current V4 exposure summary, the full rerun passed.
 - `autobyteus-server-ts`: local-fix rerun of `pnpm build` — TypeScript, shared-package preparation, Prisma client generation, and built-in agent bootstrap smoke passed.
 - `autobyteus-web`: exact changed four-file Vitest run — `4 files / 11 tests` passed.
-- Local-fix hygiene: `git diff --check` passed; exact `applicationClient.backend.subscribeNotifications` and dead `closeByClient` inventories are empty; broader v3/obsolete-owner/flat-client inventory passed; generated SDK/vendor/importable byte-or-normalized-declaration propagation passed; prohibited migration/schema diff is empty; changed implementation sources are `54`, `273`, and `183` effective non-empty lines (all `<=500`).
+- Local-fix hygiene: `git diff --check` passed; exact `applicationClient.backend.subscribeNotifications`, dead `closeByClient`, and active notification-stream-owner inventories are empty; broader v3/obsolete-owner/flat-client inventory passed; generated SDK/vendor/importable byte-or-normalized-declaration propagation passed; prohibited migration/schema diff is empty; changed implementation sources are `54`, `273`, and `183` effective non-empty lines (all `<=500`).
 
 ## Frontend Rendered-Result Check (When Applicable)
 
