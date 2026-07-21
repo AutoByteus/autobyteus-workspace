@@ -1,10 +1,12 @@
-import { type Prisma, type TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent } from "@prisma/client";
+import type {
+  Prisma,
+  PrismaClient,
+  TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent,
+} from "@prisma/client";
 import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
 import { createConfiguredPrismaClient } from "../../../config/prisma-client-factory.js";
 import { normalizeTokenUsageExecutionAddress } from "../../domain/execution-address.js";
 import { isCacheState, isInputTokenSemantic } from "../../domain/token-usage-component-basis.js";
-
-const prisma = createConfiguredPrismaClient();
 
 const toJsonString = (value: unknown): string | null =>
   value === undefined || value === null ? null : JSON.stringify(value);
@@ -225,13 +227,24 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
 };
 
 export class SqlTokenUsageLedgerRepository {
+  private prisma: PrismaClient | null;
+
+  constructor(prisma?: PrismaClient) {
+    this.prisma = prisma ?? null;
+  }
+
+  private get client(): PrismaClient {
+    this.prisma ??= createConfiguredPrismaClient();
+    return this.prisma;
+  }
+
   async appendUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
     try {
-      const created = await prisma.tokenUsageLedgerEvent.create({ data: toCreateInput(payload) });
+      const created = await this.client.tokenUsageLedgerEvent.create({ data: toCreateInput(payload) });
       return toDomainPayload(created);
     } catch (error) {
       if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "P2002") {
-        const existing = await prisma.tokenUsageLedgerEvent.findFirst({
+        const existing = await this.client.tokenUsageLedgerEvent.findFirst({
           where: {
             OR: [
               { usageEventId: payload.usage_event_id },
@@ -246,7 +259,7 @@ export class SqlTokenUsageLedgerRepository {
   }
 
   async updateUsageEventDisplayFields(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
-    const updated = await prisma.tokenUsageLedgerEvent.update({
+    const updated = await this.client.tokenUsageLedgerEvent.update({
       where: { usageEventId: payload.usage_event_id },
       data: {
         teamName: payload.team_name,
@@ -263,7 +276,7 @@ export class SqlTokenUsageLedgerRepository {
     runId: string;
     snapshotSeriesKey: string;
   }): Promise<TokenUsageUpdatedPayload | null> {
-    const record = await prisma.tokenUsageLedgerEvent.findFirst({
+    const record = await this.client.tokenUsageLedgerEvent.findFirst({
       where: {
         runId: input.runId,
         snapshotSeriesKey: input.snapshotSeriesKey,
@@ -278,7 +291,7 @@ export class SqlTokenUsageLedgerRepository {
   }
 
   async listEventsByRunId(runId: string): Promise<TokenUsageUpdatedPayload[]> {
-    const records = await prisma.tokenUsageLedgerEvent.findMany({
+    const records = await this.client.tokenUsageLedgerEvent.findMany({
       where: { runId },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });
@@ -286,7 +299,7 @@ export class SqlTokenUsageLedgerRepository {
   }
 
   async listEventsByTeamRunId(rootTeamRunId: string): Promise<TokenUsageUpdatedPayload[]> {
-    const records = await prisma.tokenUsageLedgerEvent.findMany({
+    const records = await this.client.tokenUsageLedgerEvent.findMany({
       where: { rootTeamRunId },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });
@@ -297,7 +310,7 @@ export class SqlTokenUsageLedgerRepository {
     startDate: Date;
     endDate: Date;
   }): Promise<TokenUsageUpdatedPayload[]> {
-    const records = await prisma.tokenUsageLedgerEvent.findMany({
+    const records = await this.client.tokenUsageLedgerEvent.findMany({
       where: { observedAt: { gte: input.startDate, lte: input.endDate } },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });

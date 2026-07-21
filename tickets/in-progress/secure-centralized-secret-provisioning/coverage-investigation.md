@@ -9,10 +9,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md`
-- Current Investigation Round: 1
-- Trigger: implementation-source review passed at `69d5442c0f8eb7c293097d939f79c272d0c56fad`; API/E2E must validate the reviewed centralized-secret change and repair the remaining live coverage.
-- Prior Investigation Reviewed: N/A
-- Latest Authoritative Investigation: Round 1 (this file; initial plan plus post-repository and broader-validation evidence, updated after execution).
+- Current Investigation Round: 2
+- Trigger: round-6 implementation-source review passed at `3068d0fad00a6adba302199c857b01d2ede7ebc5`; independently recheck `SCSP-E2E-RESTART-001` and execute the now-applicable broader matrix, including project-source Docker persistence when feasible.
+- Prior Investigation Reviewed: Round 1 at reviewed implementation `69d5442c0f8eb7c293097d939f79c272d0c56fad` (historical failure retained below).
+- Latest Authoritative Investigation: Round 2 (the Round 2 authoritative update at the end of this file governs where it differs from Round 1).
 
 ## Current Requirement And Design Basis
 
@@ -239,3 +239,93 @@ The approved live-test contract forbids reading, copying, importing, or migratin
 - Reroute Required Before Validation Execution: No; reroute became required during broader execution.
 - Recommended Recipient If Reroute Required: `code_reviewer` for focused failure-origin review, preliminary implementation-owned Local Fix.
 - Notes: final execution result is `Fail`, not `Blocked`, because the implementation restart defect is reproducible even though the dedicated real-provider Store is separately unavailable. No `.env.test`, default Store, credential file, raw credential, or secret-bearing artifact was read. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` in every later handoff.
+
+---
+
+## Round 2 Authoritative Re-investigation
+
+### Trigger, Scope, And Prior-Failure Recheck
+
+- Reviewed implementation HEAD: `3068d0fad00a6adba302199c857b01d2ede7ebc5`.
+- Reviewed base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`.
+- Round-6 source-review decision: Pass; CR-001–CR-009 resolved in the canonical `code-review-report.md`.
+- Required first action: independently recheck `SCSP-E2E-RESTART-001` with a sanitized second process, the same owned `--data-dir`, and no forwarded parent `DATABASE_URL`.
+- Broader action: revalidate the focused AppConfig/Prisma/app-data and Store/GraphQL boundaries, recheck the real-E2E capability inventory without reading credentials, and execute the documented source Docker path because Docker 29.0.1 was available.
+- Existing Round 1 validity decisions remain current. No stale ambient-key suite was restored, and no new durable API/E2E test edit was made in Round 2. The rework-added restart regression is relevant durable coverage, but its passing result cannot substitute for independent API/E2E execution.
+
+### Round 2 Coverage Decisions
+
+| Path / Scenario | Decision | Reason | Round 2 Action |
+| --- | --- | --- | --- |
+| `tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts` | Still Valid, insufficient alone | Directly targets CR-009, but is implementation-local and shares repository test setup. | Run 1/1, then independently repeat as two real server processes and direct GraphQL. |
+| AppConfig, Prisma child, app-data migration and token-usage tests | Still Valid | Directly exercise the changed database URL/configuration boundary. | Run sequentially after recording and correcting test-runner database contention. |
+| Local Store lifecycle and assembled GraphQL lifecycle | Still Valid | Confirms the managed Store/API behavior reopened by the process test. | Rerun 13/13. |
+| Round 1 actual-browser Settings journey | Still Valid | Rework is backend DB URL delivery only; renderer/GraphQL contract did not change. | Carry forward value-free browser evidence; do not rerun a redundant browser journey. |
+| Canonical real-E2E preflight | Still Valid capability gate | AC-006/AC-019 require exact unavailable capability reporting rather than fabricated execution. | Rerun read-only preflight; all 11 declared capabilities remain `UNAVAILABLE` / `SECRET_BACKEND_UNAVAILABLE`. |
+| `docker/docker-start.sh` + `Dockerfile.monorepo` + Compose | Execute temporary broader probe | Round 1 topology was only inspected. A clean project-source build can expose configuration assumptions hidden by a host checkout. | Attempt `up --build-local`; build fails at the server bootstrap smoke before container creation. |
+
+### Round 2 Repository And Runtime Results
+
+| Order | Command / Mode | Boundary | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | `pnpm -C autobyteus-server-ts build` | host production build, shared packages, Prisma generation, server bootstrap smoke | Pass | `execution-evidence/24-round2-server-build.log` |
+| 2 | three focused Vitest groups initially launched concurrently | API/E2E setup isolation | Two setup failures: shared `tests/.tmp/autobyteus-server-test.db` was locked; not a product failure | `25-round2-focused-prisma-appdata.log`, `26-round2-durable-restart.log` |
+| 3 | same AppConfig/Prisma/app-data group rerun sequentially | database URL parsing, migration child environment, app-data/token paths | Pass, 6 files / 38 tests | `25-round2-focused-prisma-appdata-rerun.log` |
+| 4 | restart lifecycle test rerun sequentially | durable two-process restart regression | Pass, 1/1 | `26-round2-durable-restart-rerun.log` |
+| 5 | Local Store + assembled GraphQL lifecycle | Store pair/lifecycle/status/save/remove | Pass, 2 files / 13 tests | `27-round2-store-graphql.log` |
+| 6 | two real built-server processes, same owned data dir/port, each launched through `env -i` operational allowlist without `DATABASE_URL`; direct GraphQL save/status/reopen/remove | `SCSP-E2E-RESTART-001` | **Pass**: two migration completions, two listens, value-free `CONFIGURED` reopen, removal to `MISSING`, zero P1012/missing-URL/canary log hits | `28-round2-manual-restart-runtime.log`, `29-round2-manual-graphql.log` |
+| 7 | `pnpm test:e2e:real:preflight` | tracked external capability inventory | Harness Pass 11/11; all declared external scenarios unavailable with exact `SECRET_BACKEND_UNAVAILABLE` | `30-round2-real-preflight.log` |
+| 8 | `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round2 --build-local` | documented clean source image build before Docker persistence/restart | **Fail: SCSP-E2E-DOCKER-001** | `31-round2-docker-build-up.log`, `33-round2-docker-failure-source.log` |
+| 9 | project-scoped Docker cleanup plus owned temp/port verification | cleanup | Pass; no container/volume/runtime state or manual temp process/data remained | `32-round2-cleanup.log` |
+
+The initial Vitest lock was an API/E2E-owned execution setup issue caused by concurrent global setup against one test database. Sequential reruns closed it. The Docker failure is distinct: Docker reached `RUN pnpm -C autobyteus-server-ts build`; `smoke-built-in-agents-bootstrap.mjs` imported a module graph that constructs the token-usage Prisma client, and the new configured Prisma factory synchronously called `getOperationalDatabaseUrl()` before a clean image-build context had initialized `DATABASE_URL`. The resulting `AppConfigError: DATABASE_URL is not configured.` stopped the source image build. Docker/Compose source itself is unchanged from the reviewed base, but the reviewed production-source interaction makes that unchanged packaging path unusable.
+
+### Prior Failure Resolution
+
+| Prior Scenario | Prior Result | Required Recheck | Round 2 Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `SCSP-E2E-RESTART-001` / AC-007, AC-014, AC-016 | Fail: second process hit Prisma P1012 | same binary, same owned data dir, sanitized second process, no parent `DATABASE_URL`, migrations/listen/value-free reopen/remove | **Resolved / Pass** | durable 1/1 plus independent `28`/`29` evidence |
+
+### New Reroute Trigger
+
+| Issue | Affected Criteria | Expected | Observed | Preliminary Classification | Evidence | Recipient |
+| --- | --- | --- | --- | --- | --- | --- |
+| `SCSP-E2E-DOCKER-001` | BEH-006; AC-002, AC-016 | documented local-source Docker path builds the reviewed source, creates the server container, then permits same-volume restart/persistence validation | build stops before image/container creation because the bootstrap smoke imports a production Prisma singleton whose configured factory requires an initialized operational DB URL | `Local Fix`, likely implementation-owned source/packaging interaction; focused reviewer classification required | `31-round2-docker-build-up.log`, `33-round2-docker-failure-source.log` | `code_reviewer` |
+
+This is not classified as an API/E2E environment failure: the documented build command ran on a healthy Docker 29.0.1 daemon, downloaded/built its dependencies, and failed deterministically in the repository's own server build step. Injecting a synthetic `DATABASE_URL` into the build would mask the clean-build contract and was therefore not used as a workaround.
+
+### Round 2 Confidence Gate
+
+Post-repository confidence before broader manual/Docker execution was **91.1%**: the focused rework suite was green, but independent process and container proof were still required. Final confidence after broader execution is **90.1%** (simple average):
+
+| Confidence Category | Final | Evidence | Remaining Uncertainty / Failure |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 86% | restart, Store, GraphQL, browser carry-forward and migration/config tests | Docker source-build/persistence critical path fails; external capability-selected invocations unavailable |
+| Changed-boundary execution directness | 96% | independent built processes and direct GraphQL plus focused production tests | real provider endpoints unavailable |
+| Cross-boundary integration realism and mock gap | 86% | actual browser retained; real processes and Docker build attempted | image never reaches container runtime |
+| Environment/configuration/identity/fixture fidelity | 84% | sanitized `env -i`, same data dir, clean source Docker builder | clean container build exposes unresolved DB initialization assumption |
+| Failure/edge/lifecycle/recovery evidence | 92% | Round 1 fault matrix plus passing restart and deterministic clean-build failure | container same-volume restart cannot run |
+| User-surface/browser/desktop-shell confidence | 92% | Round 1 actual browser plus Electron-focused evidence remains valid | packaged desktop intentionally not launched |
+| Durable regression coverage quality/relevance | 95% | current Store/GraphQL/restart/harness tests are focused and green | Docker clean-build regression is not yet covered |
+
+- Default 95% clean target met: No.
+- Applicable categories below 90%: requirement proof, cross-boundary realism, environment fidelity.
+- Critical failure present: Yes, `SCSP-E2E-DOCKER-001`.
+- Broader-validation decision: `Required` and executed. It resolved the prior restart failure and discovered a new implementation/packaging failure.
+- Final investigation result: **Fail**, not `Blocked`. The external real-E2E target remains an exactly reported unavailable sub-capability, while the Docker build failure is reproducible without any external secret.
+
+### Round 2 Safety And Dependency Record
+
+- No `.env.test`, default Store, credential file, Store value, or secret-bearing artifact was read, copied, imported, logged, or inspected.
+- Only synthetic managed-Store values were used, and evidence contains structural status/booleans rather than the synthetic value.
+- The user-requested real credential outcome remains safely available only through human hidden-input target provisioning with `pnpm secrets:local:e2e:setup -- --definition <logical-id>`; no ambient fallback is authorized.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency only. Delivery must recheck the four official Anthropic sources recorded in the package. It is not legal clearance or an authentication-mode redesign, and no Claude mode changed.
+- Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+
+### Round 2 Investigation Decision
+
+- Proceeded to execution: Yes.
+- Prior unresolved failure rechecked first: Yes; `SCSP-E2E-RESTART-001` passed.
+- Durable coverage changed by API/E2E in this round: No; Round 1 durable changes remain preserved.
+- Reroute required: Yes, because `SCSP-E2E-DOCKER-001` blocks a clean result.
+- Recommended recipient: `code_reviewer` for focused failure-origin review and owner classification, not proportional successful-test review.

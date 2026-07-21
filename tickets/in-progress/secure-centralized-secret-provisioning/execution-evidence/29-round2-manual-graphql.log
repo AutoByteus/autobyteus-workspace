@@ -1,0 +1,44 @@
+{
+  "phase": "first-process",
+  "saveAcknowledged": true,
+  "responseValueFree": true,
+  "status": {
+    "backendHealth": "READY",
+    "storageState": "CONFIGURED",
+    "lifecycle": "WRITABLE",
+    "instructionCode": null
+  }
+}
+{
+  "phase": "between-processes",
+  "sameOwnedDataDir": true,
+  "launchEnvironment": "env -i operational allowlist",
+  "parentDatabaseUrlForwarded": false,
+  "persistedSqliteDatabaseUrl": true,
+  "configValueFree": true
+}
+{
+  "phase": "second-process",
+  "reopenedValueFree": true,
+  "reopenedStatus": {
+    "backendHealth": "READY",
+    "storageState": "CONFIGURED",
+    "lifecycle": "WRITABLE",
+    "instructionCode": null
+  },
+  "removeAcknowledged": true,
+  "finalStatus": {
+    "backendHealth": "READY",
+    "storageState": "MISSING",
+    "lifecycle": "WRITABLE",
+    "instructionCode": null
+  }
+}
+{
+  "phase": "runtime-scan",
+  "migrationSuccessCount": 2,
+  "listenCount": 2,
+  "canaryHitCount": 0,
+  "p1012HitCount": 0,
+  "missingDatabaseUrlHitCount": 0
+}

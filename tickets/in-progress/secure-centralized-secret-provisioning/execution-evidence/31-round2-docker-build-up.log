@@ -1,0 +1,606 @@
+[2026-07-21 19:13:00] Picking unique ports for new project: scsp-round2
+[2026-07-21 19:13:00] Building variant: latest
+#0 building with "multi-platform-builder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 4.12kB 0.0s done
+#1 DONE 0.1s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.3s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#4 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 DONE 0.7s
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 1.2s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.0s
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 resolve docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37 0.0s done
+#10 sha256:72dbecc0b0e3f263dbf40813344983ab12a92be98560a06c646dba747d4a8fac 0B / 1.25MB 0.2s
+#10 sha256:ae0a37207e15936a6dbf9efc2e87e9c35742cdab5bb1d66c9929baed6b8134cf 445B / 445B 0.2s done
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 0B / 58.68MB 0.2s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 0B / 203.15MB 0.2s
+#10 sha256:72dbecc0b0e3f263dbf40813344983ab12a92be98560a06c646dba747d4a8fac 1.25MB / 1.25MB 0.3s done
+#10 sha256:1cb098f4bfa7213ccc4a68548e1204e6c05db281bfd03e57db7a5b1f27d8567d 0B / 3.33kB 0.2s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 0B / 64.50MB 0.2s
+#10 sha256:1cb098f4bfa7213ccc4a68548e1204e6c05db281bfd03e57db7a5b1f27d8567d 3.33kB / 3.33kB 0.3s done
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 0B / 23.61MB 0.2s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 3.15MB / 58.68MB 0.8s
+#10 ...
+
+#11 [internal] load build context
+#11 transferring context: 37.24MB 1.5s done
+#11 DONE 1.5s
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 6.29MB / 58.68MB 1.2s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 9.44MB / 58.68MB 2.0s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 2.10MB / 23.61MB 1.5s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 12.58MB / 58.68MB 2.7s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 4.19MB / 23.61MB 2.3s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 4.19MB / 64.50MB 2.9s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 6.29MB / 23.61MB 3.0s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 15.73MB / 58.68MB 3.6s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 10.49MB / 203.15MB 4.1s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 8.39MB / 23.61MB 3.8s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 18.87MB / 58.68MB 4.5s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 10.49MB / 23.61MB 4.5s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 8.39MB / 64.50MB 5.0s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 22.02MB / 58.68MB 5.4s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 12.58MB / 23.61MB 5.3s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 25.17MB / 58.68MB 6.3s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 14.68MB / 23.61MB 6.0s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 28.31MB / 58.68MB 7.2s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 16.78MB / 23.61MB 6.8s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 12.58MB / 64.50MB 7.1s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 20.97MB / 203.15MB 7.8s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 18.87MB / 23.61MB 7.5s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 31.46MB / 58.68MB 8.1s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 20.97MB / 23.61MB 8.3s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 34.60MB / 58.68MB 9.0s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 16.78MB / 64.50MB 9.0s
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 23.07MB / 23.61MB 9.0s
+#10 ...
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029 done
+#12 ...
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 23.61MB / 23.61MB 9.1s done
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 0B / 48.38MB 0.2s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 37.75MB / 58.68MB 10.4s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 31.46MB / 203.15MB 11.0s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 20.97MB / 64.50MB 10.7s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 3.15MB / 48.38MB 1.4s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 40.89MB / 58.68MB 12.0s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 6.29MB / 48.38MB 2.4s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 25.17MB / 64.50MB 12.2s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 9.44MB / 48.38MB 3.6s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 44.04MB / 58.68MB 13.5s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 41.94MB / 203.15MB 13.8s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 29.36MB / 64.50MB 13.8s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 12.58MB / 48.38MB 4.8s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 47.19MB / 58.68MB 14.7s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 15.73MB / 48.38MB 6.0s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 33.55MB / 64.50MB 15.5s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 50.33MB / 58.68MB 16.2s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 52.43MB / 203.15MB 17.0s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 18.87MB / 48.38MB 7.4s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 37.75MB / 64.50MB 16.8s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 53.48MB / 58.68MB 17.4s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 22.02MB / 48.38MB 8.7s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 56.62MB / 58.68MB 18.6s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 41.94MB / 64.50MB 18.5s
+#10 sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 58.68MB / 58.68MB 19.4s done
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 25.17MB / 48.38MB 9.9s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 46.14MB / 64.50MB 19.7s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 62.91MB / 203.15MB 20.3s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 50.33MB / 64.50MB 20.6s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 28.31MB / 48.38MB 11.3s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 54.53MB / 64.50MB 21.6s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 31.46MB / 48.38MB 12.3s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 73.40MB / 203.15MB 23.0s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 58.72MB / 64.50MB 22.7s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 34.60MB / 48.38MB 13.4s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 37.75MB / 48.38MB 14.3s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 62.91MB / 64.50MB 23.7s
+#10 sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 64.50MB / 64.50MB 24.2s done
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 40.89MB / 48.38MB 15.2s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 83.89MB / 203.15MB 25.1s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 44.04MB / 48.38MB 15.9s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 47.19MB / 48.38MB 16.8s
+#10 sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 48.38MB / 48.38MB 17.0s done
+#10 extracting sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 94.37MB / 203.15MB 26.9s
+#10 extracting sha256:445be8da0a7289e4b5d70a5c779ad63d484e76aa14fe2ad45893da9eb077e4e8 1.0s done
+#10 extracting sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876
+#10 extracting sha256:bb3bfe7e3c6a92e1bda6d3ddde9de882610239eba4323fd75d10ba1bccee7876 0.3s done
+#10 extracting sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 104.86MB / 203.15MB 28.5s
+#10 extracting sha256:5af2d47cd8540f7af1f8ba488289fa82e9a2258d051477163651baf22fc99ea6 1.2s done
+#10 ...
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 sha256:9a05a1a40bd14017dffe384066ba11802f05a8045ca459b610451780fb33c239 2.97kB / 2.97kB 0.5s done
+#12 sha256:b8e9e2f0e5f46ca0eaa5eb17bbc54fb8836c3c17464b46da9bbf76172b885ca1 1.10kB / 1.10kB 0.5s done
+#12 sha256:c5810ad9e4da24baba4c5846285ce9f3ebfd401f0bb4ffe96182c391de748784 389B / 389B 0.5s done
+#12 sha256:936d6d4274f565fb6d19355fdea81c3e87ffa34478bc64370d46d42d161b9aa9 792B / 792B 0.4s done
+#12 sha256:34b2dd9ac352ccce50c4ae17710395723fc17bd40578484b3b608e09e6a5b788 1.32kB / 1.32kB 0.2s done
+#12 sha256:2fdaab09fc69d49241083e9252c65f6eb83dc42976f2aa407b8a7ccfc82aa68c 1.09kB / 1.09kB 0.6s done
+#12 sha256:e5808f3c27d667082f967ded26f146a9b6df32a815dceb95db119633ffbedd91 161B / 161B 0.5s done
+#12 sha256:8d9cbe2e283d948fde6a8cf9c0b809891b85cfe176993b488e930ef4d596873d 379B / 379B 0.5s done
+#12 sha256:aacee85ff7eb31ce40b7518f5830409e3e7bbde879814d041019434a70e1191f 153B / 153B 0.5s done
+#12 sha256:c5c4661b84105d264893dc1ca709c45ddcf58d66d588951237a16eae51ba8b51 135B / 135B 0.5s done
+#12 sha256:ada96a4fd5316b65e24355b3d5f69fb7a422e64a80c8ecc8abbff67f7751a8b3 162B / 162B 0.5s done
+#12 sha256:cee62e7921aa532df3ea271bfcd8cc453ea15b434e67d2e5c1ac5686c5dbea40 202B / 202B 0.5s done
+#12 sha256:98587bc9a18dc4fbc078c51372aa116d53af6e711438ca0ee71ffdecb5ea94d8 125B / 125B 0.5s done
+#12 sha256:b14086ceee20b36fc73c489b8a8c021fc19aee79534ba2f2093fda4d6607b04a 148B / 148B 0.5s done
+#12 sha256:4338f791f403278041334dc62e284b6e8ce445e42e451b636eb22499910ae46e 995.46kB / 995.46kB 0.9s done
+#12 sha256:45875e81a44e6c4e53c6d413ae658dfc9de004869f492bc1f77082e1243fec24 12.58MB / 114.29MB 4.1s
+#12 ...
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 115.34MB / 203.15MB 30.0s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 125.83MB / 203.15MB 31.2s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 136.31MB / 203.15MB 32.7s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 146.80MB / 203.15MB 34.2s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 157.29MB / 203.15MB 35.9s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 167.77MB / 203.15MB 37.7s
+#10 ...
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 sha256:45875e81a44e6c4e53c6d413ae658dfc9de004869f492bc1f77082e1243fec24 55.57MB / 114.29MB 14.1s
+#12 ...
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 178.26MB / 203.15MB 39.6s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 188.74MB / 203.15MB 42.0s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 199.23MB / 203.15MB 44.0s
+#10 sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 203.15MB / 203.15MB 44.8s done
+#10 extracting sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a
+#10 extracting sha256:c09cafdc051b9826ce9f47360fd9501131e7c28c94021b769e4e6d91204cdf8a 3.0s done
+#10 DONE 48.2s
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 sha256:45875e81a44e6c4e53c6d413ae658dfc9de004869f492bc1f77082e1243fec24 114.29MB / 114.29MB 22.1s done
+#12 extracting sha256:45875e81a44e6c4e53c6d413ae658dfc9de004869f492bc1f77082e1243fec24
+#12 ...
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 extracting sha256:1cb098f4bfa7213ccc4a68548e1204e6c05db281bfd03e57db7a5b1f27d8567d done
+#10 extracting sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66
+#10 ...
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 extracting sha256:45875e81a44e6c4e53c6d413ae658dfc9de004869f492bc1f77082e1243fec24 1.6s done
+#12 DONE 49.7s
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 extracting sha256:0d1c0e0799f6fc8d5a6f25063e9df50dc2bb569a7e087b494b9c3658f6ce1e66 1.5s done
+#10 extracting sha256:72dbecc0b0e3f263dbf40813344983ab12a92be98560a06c646dba747d4a8fac 0.0s done
+#10 extracting sha256:ae0a37207e15936a6dbf9efc2e87e9c35742cdab5bb1d66c9929baed6b8134cf 0.0s done
+#10 DONE 49.8s
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 extracting sha256:4338f791f403278041334dc62e284b6e8ce445e42e451b636eb22499910ae46e 0.0s done
+#12 extracting sha256:7f3e82b84c421273849f7220e2eaffdcf8e575f7380f9dcabb44e3e18534a13f 0.0s done
+#12 extracting sha256:b14086ceee20b36fc73c489b8a8c021fc19aee79534ba2f2093fda4d6607b04a 0.0s done
+#12 extracting sha256:98587bc9a18dc4fbc078c51372aa116d53af6e711438ca0ee71ffdecb5ea94d8 done
+#12 extracting sha256:cee62e7921aa532df3ea271bfcd8cc453ea15b434e67d2e5c1ac5686c5dbea40 0.0s done
+#12 extracting sha256:ada96a4fd5316b65e24355b3d5f69fb7a422e64a80c8ecc8abbff67f7751a8b3 0.0s done
+#12 extracting sha256:c5c4661b84105d264893dc1ca709c45ddcf58d66d588951237a16eae51ba8b51
+#12 extracting sha256:c5c4661b84105d264893dc1ca709c45ddcf58d66d588951237a16eae51ba8b51 0.0s done
+#12 extracting sha256:aacee85ff7eb31ce40b7518f5830409e3e7bbde879814d041019434a70e1191f 0.0s done
+#12 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.1s done
+#12 DONE 49.9s
+
+#13 [builder  2/20] WORKDIR /app
+#13 ...
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 extracting sha256:e5808f3c27d667082f967ded26f146a9b6df32a815dceb95db119633ffbedd91 0.0s done
+#12 extracting sha256:8d9cbe2e283d948fde6a8cf9c0b809891b85cfe176993b488e930ef4d596873d 0.2s done
+#12 DONE 50.1s
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 extracting sha256:2fdaab09fc69d49241083e9252c65f6eb83dc42976f2aa407b8a7ccfc82aa68c 0.1s done
+#12 extracting sha256:34b2dd9ac352ccce50c4ae17710395723fc17bd40578484b3b608e09e6a5b788
+#12 extracting sha256:34b2dd9ac352ccce50c4ae17710395723fc17bd40578484b3b608e09e6a5b788 0.2s done
+#12 DONE 50.3s
+
+#13 [builder  2/20] WORKDIR /app
+#13 DONE 0.7s
+
+#12 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#12 extracting sha256:936d6d4274f565fb6d19355fdea81c3e87ffa34478bc64370d46d42d161b9aa9 0.1s done
+#12 extracting sha256:c5810ad9e4da24baba4c5846285ce9f3ebfd401f0bb4ffe96182c391de748784 0.0s done
+#12 extracting sha256:b8e9e2f0e5f46ca0eaa5eb17bbc54fb8836c3c17464b46da9bbf76172b885ca1 done
+#12 extracting sha256:9a05a1a40bd14017dffe384066ba11802f05a8045ca459b610451780fb33c239 done
+#12 DONE 50.4s
+
+#14 [runtime  2/23] WORKDIR /app
+#14 DONE 0.0s
+
+#15 [builder  3/20] RUN corepack enable
+#15 DONE 0.2s
+
+#16 [builder  4/20] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#16 DONE 0.0s
+
+#17 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#17 ...
+
+#18 [builder  5/20] COPY patches ./patches
+#18 DONE 0.0s
+
+#19 [builder  6/20] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#19 DONE 0.0s
+
+#20 [builder  7/20] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#20 DONE 0.0s
+
+#21 [builder  8/20] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#21 DONE 0.0s
+
+#22 [builder  9/20] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#22 DONE 0.0s
+
+#23 [builder 10/20] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#23 DONE 0.0s
+
+#24 [builder 11/20] COPY autobyteus-web/package.json ./autobyteus-web/
+#24 DONE 0.0s
+
+#17 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#17 0.411 Get:1 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease [18.1 kB]
+#17 0.411 Get:2 http://ports.ubuntu.com/ubuntu-ports jammy InRelease [270 kB]
+#17 0.416 Get:3 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#17 0.454 Get:4 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu jammy InRelease [24.3 kB]
+#17 0.549 Get:5 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy/main arm64 Packages [43.4 kB]
+#17 0.587 Get:6 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [11.1 kB]
+#17 0.597 Get:7 http://ports.ubuntu.com/ubuntu-ports jammy-updates InRelease [128 kB]
+#17 0.674 Get:8 http://ports.ubuntu.com/ubuntu-ports jammy-backports InRelease [127 kB]
+#17 0.717 Get:9 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu jammy/main arm64 Packages [58.9 kB]
+#17 0.764 Get:10 http://ports.ubuntu.com/ubuntu-ports jammy-security InRelease [129 kB]
+#17 0.827 Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 Packages [1,758 kB]
+#17 1.143 Get:12 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 Packages [17.2 MB]
+#17 2.599 Get:13 http://ports.ubuntu.com/ubuntu-ports jammy/restricted arm64 Packages [24.2 kB]
+#17 2.599 Get:14 http://ports.ubuntu.com/ubuntu-ports jammy/multiverse arm64 Packages [224 kB]
+#17 2.614 Get:15 http://ports.ubuntu.com/ubuntu-ports jammy-updates/universe arm64 Packages [1,687 kB]
+#17 2.748 Get:16 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 Packages [4,274 kB]
+#17 3.088 Get:17 http://ports.ubuntu.com/ubuntu-ports jammy-updates/restricted arm64 Packages [7,731 kB]
+#17 4.607 Get:18 http://ports.ubuntu.com/ubuntu-ports jammy-updates/multiverse arm64 Packages [63.5 kB]
+#17 4.641 Get:19 http://ports.ubuntu.com/ubuntu-ports jammy-backports/universe arm64 Packages [33.7 kB]
+#17 4.641 Get:20 http://ports.ubuntu.com/ubuntu-ports jammy-backports/main arm64 Packages [82.4 kB]
+#17 4.652 Get:21 http://ports.ubuntu.com/ubuntu-ports jammy-security/restricted arm64 Packages [7,414 kB]
+#17 6.566 Get:22 http://ports.ubuntu.com/ubuntu-ports jammy-security/multiverse arm64 Packages [56.7 kB]
+#17 6.580 Get:23 http://ports.ubuntu.com/ubuntu-ports jammy-security/universe arm64 Packages [1,391 kB]
+#17 6.793 Get:24 http://ports.ubuntu.com/ubuntu-ports jammy-security/main arm64 Packages [3,951 kB]
+#17 8.020 Fetched 46.7 MB in 8s (5,966 kB/s)
+#17 8.020 Reading package lists...
+#17 9.252 Reading package lists...
+#17 ...
+
+#25 [builder 12/20] RUN pnpm install --no-frozen-lockfile
+#25 0.102 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#25 2.428 Scope: all 6 workspace projects
+#25 3.101 Progress: resolved 0, reused 0, downloaded 1, added 0
+#25 3.889 
+#25 3.889    ╭───────────────────────────────────────────────╮
+#25 3.889    │                                               │
+#25 3.889    │     Update available! 10.28.2 → 11.15.1.      │
+#25 3.889    │     Changelog: https://pnpm.io/v/11.15.1      │
+#25 3.889    │   To update, run: corepack use pnpm@11.15.1   │
+#25 3.889    │                                               │
+#25 3.889    ╰───────────────────────────────────────────────╯
+#25 3.889 
+#25 4.101 Progress: resolved 17, reused 0, downloaded 16, added 0
+#25 4.285  WARN  Tarball download average speed 13 KiB/s (size 16 KiB) is below 50 KiB/s: https://registry.npmjs.org/ignore/-/ignore-7.0.5.tgz (GET)
+#25 4.498  WARN  Tarball download average speed 16 KiB/s (size 18 KiB) is below 50 KiB/s: https://registry.npmjs.org/vite-tsconfig-paths/-/vite-tsconfig-paths-4.3.2.tgz (GET)
+#25 5.101 Progress: resolved 56, reused 0, downloaded 55, added 0
+#25 6.106 Progress: resolved 79, reused 0, downloaded 78, added 0
+#25 7.107 Progress: resolved 94, reused 0, downloaded 93, added 0
+#25 8.108 Progress: resolved 97, reused 0, downloaded 96, added 0
+#25 9.112 Progress: resolved 100, reused 0, downloaded 99, added 0
+#25 10.11 Progress: resolved 104, reused 0, downloaded 103, added 0
+#25 ...
+
+#17 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#17 9.252 Reading package lists...
+#17 10.68 Building dependency tree...
+#17 11.06 Reading state information...
+#17 11.55 git is already the newest version (1:2.34.1-1ubuntu1.17).
+#17 11.55 ripgrep is already the newest version (13.0.0-2ubuntu0.1).
+#17 11.55 0 upgraded, 0 newly installed, 0 to remove and 13 not upgraded.
+#17 DONE 12.1s
+
+#25 [builder 12/20] RUN pnpm install --no-frozen-lockfile
+#25 11.11 Progress: resolved 105, reused 0, downloaded 104, added 0
+#25 13.53 Progress: resolved 105, reused 0, downloaded 105, added 0
+#25 14.53 Progress: resolved 106, reused 0, downloaded 106, added 0
+#25 15.53 Progress: resolved 107, reused 0, downloaded 107, added 0
+#25 16.53 Progress: resolved 218, reused 0, downloaded 191, added 0
+#25 17.53 Progress: resolved 321, reused 0, downloaded 294, added 0
+#25 18.53 Progress: resolved 404, reused 0, downloaded 377, added 0
+#25 19.53 Progress: resolved 486, reused 0, downloaded 460, added 0
+#25 20.53 Progress: resolved 667, reused 0, downloaded 643, added 0
+#25 21.53 Progress: resolved 793, reused 0, downloaded 758, added 0
+#25 ...
+
+#26 [runtime  4/23] RUN echo "CLI install cache buster: 20260721171301"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+#26 0.077 CLI install cache buster: 20260721171301
+#26 ...
+
+#25 [builder 12/20] RUN pnpm install --no-frozen-lockfile
+#25 22.54 Progress: resolved 887, reused 0, downloaded 852, added 0
+#25 23.54 Progress: resolved 931, reused 0, downloaded 884, added 0
+#25 24.54 Progress: resolved 984, reused 0, downloaded 908, added 0
+#25 25.31  WARN  Tarball download average speed 8 KiB/s (size 16 KiB) is below 50 KiB/s: https://registry.npmjs.org/@envelop/core/-/core-5.5.1.tgz (GET)
+#25 25.54 Progress: resolved 1038, reused 0, downloaded 944, added 0
+#25 26.54 Progress: resolved 1092, reused 0, downloaded 1002, added 0
+#25 27.54 Progress: resolved 1142, reused 0, downloaded 1054, added 0
+#25 28.54 Progress: resolved 1230, reused 0, downloaded 1142, added 0
+#25 29.55 Progress: resolved 1336, reused 0, downloaded 1241, added 0
+#25 30.55 Progress: resolved 1384, reused 0, downloaded 1254, added 0
+#25 31.55 Progress: resolved 1447, reused 0, downloaded 1286, added 0
+#25 32.55 Progress: resolved 1538, reused 0, downloaded 1376, added 0
+#25 33.55 Progress: resolved 1671, reused 0, downloaded 1506, added 0
+#25 34.55 Progress: resolved 1781, reused 0, downloaded 1618, added 0
+#25 35.56 Progress: resolved 1794, reused 0, downloaded 1631, added 0
+#25 36.56 Progress: resolved 1819, reused 0, downloaded 1656, added 0
+#25 37.56 Progress: resolved 1826, reused 0, downloaded 1663, added 0
+#25 38.56 Progress: resolved 1827, reused 0, downloaded 1664, added 0
+#25 41.64 Progress: resolved 1827, reused 0, downloaded 1665, added 0
+#25 52.47 Progress: resolved 1827, reused 0, downloaded 1666, added 0
+#25 53.47 Progress: resolved 1834, reused 0, downloaded 1672, added 0
+#25 54.48 Progress: resolved 1846, reused 0, downloaded 1684, added 0
+#25 55.48 Progress: resolved 1848, reused 0, downloaded 1686, added 0
+#25 ...
+
+#26 [runtime  4/23] RUN echo "CLI install cache buster: 20260721171301"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"
+#26 44.40 
+#26 44.40 added 4 packages in 44s
+#26 DONE 44.6s
+
+#25 [builder 12/20] RUN pnpm install --no-frozen-lockfile
+#25 ...
+
+#27 [runtime  5/23] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#27 DONE 0.2s
+
+#25 [builder 12/20] RUN pnpm install --no-frozen-lockfile
+#25 56.71  WARN  23 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, @xmldom/xmldom@0.8.11, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+#25 56.76 Packages: +1677
+#25 56.76 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#25 57.11 Progress: resolved 1848, reused 0, downloaded 1686, added 1
+#25 58.11 Progress: resolved 1848, reused 0, downloaded 1686, added 1676
+#25 58.13 Progress: resolved 1848, reused 0, downloaded 1686, added 1677, done
+#25 58.58 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+#25 58.58 .../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+#25 58.58 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#25 58.59 .../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+#25 58.72 .../node_modules/protobufjs postinstall: Done
+#25 58.72 .../node_modules/@parcel/watcher install: Done
+#25 58.74 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+#25 58.78 .../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+#25 58.78 .../node-pty@1.1.0/node_modules/node-pty install: [33m> Rebuilding because directory /app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/linux-arm64 does not exist[0m
+#25 58.79 .../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+#25 58.83 .../sharp@0.33.5/node_modules/sharp install$ node install/check
+#25 58.83 .../node-pty@1.1.0/node_modules/node-pty install: gyp info it worked if it ends with ok
+#25 58.83 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node-gyp@11.5.0
+#25 58.84 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node@22.23.1 | linux | arm64
+#25 58.84 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+#25 58.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info find Python using Python version 3.11.2 found at "/usr/bin/python3"
+#25 58.95 .../node_modules/vue-demi postinstall: Done
+#25 58.95 .../sharp@0.33.5/node_modules/sharp install: Done
+#25 59.07 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.23.1/node-v22.23.1-headers.tar.gz
+#25 59.42 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.23.1/node-v22.23.1-headers.tar.gz
+#25 60.51 .../node_modules/@prisma/engines postinstall: Done
+#25 66.11 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.23.1/SHASUMS256.txt
+#25 66.14 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.23.1/SHASUMS256.txt
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn /usr/bin/python3
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/gyp/gyp_main.py',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'binding.gyp',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-f',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'make',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/config.gypi',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/addon.gypi',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node-gyp/22.23.1/include/node/common.gypi',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dlibrary=shared_library',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dvisibility=default',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_root_dir=/root/.cache/node-gyp/22.23.1',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_gyp_dir=/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_lib_file=/root/.cache/node-gyp/22.23.1/<(target_arch)/node.lib',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dmodule_root_dir=/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_engine=v8',
+#25 67.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--depth=.',
+#25 67.20 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--no-parallel',
+#25 67.20 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--generator-output',
+#25 67.20 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'build',
+#25 67.20 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Goutput_dir=.'
+#25 67.20 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args ]
+#25 67.35 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn make
+#25 67.35 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
+#25 67.35 .../node-pty@1.1.0/node_modules/node-pty install: make: Entering directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#25 67.35 .../node-pty@1.1.0/node_modules/node-pty install:   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+#25 67.36 .../node-pty@1.1.0/node_modules/node-pty install:   CXX(target) Release/obj.target/pty/src/unix/pty.o
+#25 68.63 .../node-pty@1.1.0/node_modules/node-pty install:   SOLINK_MODULE(target) Release/obj.target/pty.node
+#25 68.68 .../node-pty@1.1.0/node_modules/node-pty install:   COPY Release/pty.node
+#25 68.68 .../node-pty@1.1.0/node_modules/node-pty install: make: Leaving directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#25 68.69 .../node-pty@1.1.0/node_modules/node-pty install: gyp info ok 
+#25 68.70 .../node-pty@1.1.0/node_modules/node-pty install: Done
+#25 68.70 .../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+#25 68.74 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+#25 68.74 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+#25 68.74 .../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+#25 68.75 .../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+#25 68.95 .../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+#25 69.00 .../prisma@5.22.0/node_modules/prisma preinstall: Done
+#25 69.05 .../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+#25 69.42 .../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+#25 69.42 .../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+#25 69.42 .../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+#25 69.42 .../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+#25 69.44 .../node_modules/@prisma/client postinstall: Done
+#25 70.47 autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+#25 70.52 autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+#25 70.52 autobyteus-ts postinstall: Done
+#25 70.57  WARN  Issues with peer dependencies found
+#25 70.57 autobyteus-web
+#25 70.57 └─┬ nuxt 3.21.1
+#25 70.57   └─┬ @nuxt/cli 3.33.1
+#25 70.57     ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+#25 70.57     └─┬ @bomb.sh/tab 0.0.12
+#25 70.57       └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+#25 70.57 
+#25 70.61 Done in 1m 8.5s using pnpm v10.28.2
+#25 DONE 71.4s
+
+#28 [builder 13/20] COPY autobyteus-ts ./autobyteus-ts
+#28 DONE 0.8s
+
+#29 [builder 14/20] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#29 DONE 0.0s
+
+#30 [builder 15/20] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#30 DONE 0.0s
+
+#31 [builder 16/20] COPY autobyteus-server-ts ./autobyteus-server-ts
+#31 DONE 0.3s
+
+#32 [builder 17/20] COPY autobyteus-web ./autobyteus-web
+#32 DONE 0.3s
+
+#33 [builder 18/20] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#33 0.628 Prisma schema loaded from prisma/schema.prisma
+#33 4.404 
+#33 4.404 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 153ms
+#33 4.404 
+#33 4.404 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#33 4.404 
+#33 4.404 Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+#33 4.404 
+#33 DONE 4.7s
+
+#34 [builder 19/20] RUN pnpm -C autobyteus-server-ts build
+#34 0.519 
+#34 0.519 > autobyteus-server-ts@0.1.1 prebuild /app/autobyteus-server-ts
+#34 0.519 > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+#34 0.519 
+#34 0.786 
+#34 0.786 > autobyteus-server-ts@0.1.1 prepare:shared /app/autobyteus-server-ts
+#34 0.786 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+#34 0.786 
+#34 1.077 Scope: 3 of 6 workspace projects
+#34 1.082 autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+#34 1.082 autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+#34 2.046 autobyteus-application-sdk-contracts build: Done
+#34 7.173 autobyteus-ts build: [verify:runtime-deps] OK
+#34 7.175 autobyteus-ts build: Done
+#34 7.176 autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+#34 7.831 autobyteus-application-backend-sdk build: Done
+#34 8.391 Prisma schema loaded from prisma/schema.prisma
+#34 8.882 
+#34 8.882 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 142ms
+#34 8.882 
+#34 8.882 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#34 8.882 
+#34 8.882 Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+#34 8.882 
+#34 9.102 
+#34 9.102 > autobyteus-server-ts@0.1.1 build /app/autobyteus-server-ts
+#34 9.102 > pnpm run build:full
+#34 9.102 
+#34 9.346 
+#34 9.346 > autobyteus-server-ts@0.1.1 build:full /app/autobyteus-server-ts
+#34 9.346 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+#34 9.346 
+#34 19.12 Successfully registered tool definition: 'read_file'
+#34 19.12 Successfully registered tool definition: 'write_file'
+#34 19.12 Successfully registered tool definition: 'edit_file'
+#34 19.12 Successfully registered tool definition: 'replace_in_file'
+#34 19.12 Successfully registered tool definition: 'insert_in_file'
+#34 19.12 Successfully registered tool definition: 'run_bash'
+#34 19.12 Successfully registered tool definition: 'start_background_process'
+#34 19.12 Successfully registered tool definition: 'get_background_processes'
+#34 19.12 Successfully registered tool definition: 'get_process_output'
+#34 19.12 Successfully registered tool definition: 'stop_background_process'
+#34 19.12 Successfully registered tool definition: 'search_web'
+#34 19.12 Successfully registered tool definition: 'read_media_file'
+#34 19.12 Successfully registered tool definition: 'download_media'
+#34 19.12 Successfully registered tool definition: 'read_url'
+#34 19.12 Successfully registered tool definition: 'add_todo'
+#34 19.12 Successfully registered tool definition: 'create_todo_list'
+#34 19.12 Successfully registered tool definition: 'get_todo_list'
+#34 19.12 Successfully registered tool definition: 'update_todo_status'
+#34 19.12 AgentFactory (Singleton) initialized.
+#34 19.14 Platform detection: Windows=false
+#34 19.14 App root directory: /app/autobyteus-server-ts
+#34 19.14 App data directory: /app/autobyteus-server-ts
+#34 19.14 file:///app/autobyteus-server-ts/dist/config/app-config.js:239
+#34 19.14             throw new AppConfigError("DATABASE_URL is not configured.");
+#34 19.14                   ^
+#34 19.14 
+#34 19.14 AppConfigError: DATABASE_URL is not configured.
+#34 19.14     at AppConfig.getOperationalDatabaseUrl (file:///app/autobyteus-server-ts/dist/config/app-config.js:239:19)
+#34 19.14     at createConfiguredPrismaClient (file:///app/autobyteus-server-ts/dist/config/prisma-client-factory.js:5:45)
+#34 19.14     at file:///app/autobyteus-server-ts/dist/token-usage/repositories/sql/token-usage-ledger-repository.js:4:16
+#34 19.14     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+#34 19.14     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+#34 19.14     at async file:///app/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs:38:36
+#34 19.14 
+#34 19.14 Node.js v22.23.1
+#34 19.16  ELIFECYCLE  Command failed with exit code 1.
+#34 19.19  ELIFECYCLE  Command failed with exit code 1.
+#34 ERROR: process "/bin/sh -c pnpm -C autobyteus-server-ts build" did not complete successfully: exit code: 1
+------
+ > [builder 19/20] RUN pnpm -C autobyteus-server-ts build:
+19.14     at AppConfig.getOperationalDatabaseUrl (file:///app/autobyteus-server-ts/dist/config/app-config.js:239:19)
+19.14     at createConfiguredPrismaClient (file:///app/autobyteus-server-ts/dist/config/prisma-client-factory.js:5:45)
+19.14     at file:///app/autobyteus-server-ts/dist/token-usage/repositories/sql/token-usage-ledger-repository.js:4:16
+19.14     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+19.14     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+19.14     at async file:///app/autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs:38:36
+19.14 
+19.14 Node.js v22.23.1
+19.16  ELIFECYCLE  Command failed with exit code 1.
+19.19  ELIFECYCLE  Command failed with exit code 1.
+------
+Dockerfile.monorepo:33
+--------------------
+  31 |     
+  32 |     RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+  33 | >>> RUN pnpm -C autobyteus-server-ts build
+  34 |     RUN pnpm -C autobyteus-web build:mobile-web
+  35 |     
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm -C autobyteus-server-ts build" did not complete successfully: exit code: 1
