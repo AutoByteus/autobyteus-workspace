@@ -4,6 +4,7 @@ import type { useLocalization } from '~/composables/useLocalization'
 type Translate = ReturnType<typeof useLocalization>['t']
 
 export type ProviderApiKeyRemovalDependencies = {
+  saving: Ref<boolean>
   removing: Ref<boolean>
   removeCredential: (providerId: string) => Promise<unknown>
   hydrateCredentialStatus: () => Promise<void>
@@ -15,7 +16,7 @@ export type ProviderApiKeyRemovalDependencies = {
 
 export const createProviderApiKeyRemoval = (dependencies: ProviderApiKeyRemovalDependencies) =>
   async (providerId: string): Promise<boolean> => {
-    if (!providerId || providerId === 'GEMINI') return false
+    if (!providerId || providerId === 'GEMINI' || dependencies.saving.value || dependencies.removing.value) return false
 
     dependencies.removing.value = true
     try {

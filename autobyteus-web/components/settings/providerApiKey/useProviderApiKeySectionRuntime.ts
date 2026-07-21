@@ -369,7 +369,7 @@ export function useProviderApiKeySectionRuntime() {
   }
 
   const saveProviderApiKey = async (providerId: string, apiKey: string) => {
-    if (!providerId || !apiKey.trim()) {
+    if (saving.value || removing.value || !providerId || !apiKey.trim()) {
       return false
     }
 
@@ -400,6 +400,7 @@ export function useProviderApiKeySectionRuntime() {
   }
 
   const removeProviderApiKey = createProviderApiKeyRemoval({
+    saving,
     removing,
     removeCredential: (providerId) => store.removeLLMProviderApiKey(providerId),
     hydrateCredentialStatus: hydrateProviderConfigs,

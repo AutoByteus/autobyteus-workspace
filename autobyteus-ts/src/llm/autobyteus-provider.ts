@@ -1,4 +1,5 @@
 import { AutobyteusClient } from '../clients/autobyteus-client.js';
+import type { AutobyteusDiscoveryAuthentication } from '../clients/autobyteus-discovery-authentication.js';
 import { LLMConfig } from './utils/llm-config.js';
 import { LLMModel } from './models.js';
 import { LLMProvider } from './providers.js';
@@ -98,7 +99,10 @@ export class AutobyteusModelProvider {
     }
   }
 
-  static async getModels(hosts: string[], apiKey: string): Promise<LLMModel[]> {
+  static async getModels(
+    hosts: string[],
+    authentication: AutobyteusDiscoveryAuthentication,
+  ): Promise<LLMModel[]> {
     if (!hosts.length) return [];
 
     const allModels: LLMModel[] = [];
@@ -114,7 +118,10 @@ export class AutobyteusModelProvider {
       let client: AutobyteusClient | null = null;
 
       try {
-        client = new AutobyteusClient(hostUrl, apiKey);
+        client = new AutobyteusClient(
+          hostUrl,
+          authentication.apiKey.revealToTrustedConsumer(),
+        );
         const response = await client.getAvailableLlmModelsSync();
 
         if (!AutobyteusModelProvider.validateServerResponse(response)) {

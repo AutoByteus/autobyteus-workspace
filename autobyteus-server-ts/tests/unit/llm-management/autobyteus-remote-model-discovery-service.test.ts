@@ -5,6 +5,12 @@ import { MultimediaRuntime } from 'autobyteus-ts/multimedia/runtimes.js';
 import { AutobyteusRemoteModelDiscoveryService } from '../../../src/llm-management/services/autobyteus-remote-model-discovery-service.js';
 
 describe('AutobyteusRemoteModelDiscoveryService', () => {
+  const createDeferred = <T>() => {
+    let resolve!: (value: T) => void;
+    const promise = new Promise<T>((complete) => { resolve = complete; });
+    return { promise, resolve };
+  };
+
   const resolveForUse = vi.fn();
   const ports = {
     discoverLlm: vi.fn(),
@@ -14,10 +20,12 @@ describe('AutobyteusRemoteModelDiscoveryService', () => {
     syncAudio: vi.fn(),
     syncImage: vi.fn(),
   };
+  let resolvedApiKey: SecretValue;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    resolveForUse.mockResolvedValue(SecretValue.fromString('synthetic-autobyteus-key'));
+    resolvedApiKey = SecretValue.fromString('synthetic-autobyteus-key');
+    resolveForUse.mockResolvedValue(resolvedApiKey);
     ports.discoverLlm.mockResolvedValue([{ runtime: LLMRuntime.AUTOBYTEUS }]);
     ports.discoverAudio.mockResolvedValue([{ runtime: MultimediaRuntime.AUTOBYTEUS }]);
     ports.discoverImage.mockResolvedValue([{ runtime: MultimediaRuntime.AUTOBYTEUS }]);
@@ -52,7 +60,7 @@ describe('AutobyteusRemoteModelDiscoveryService', () => {
       kind: 'modelDiscovery', modelKind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey',
     });
     expect(ports.discoverLlm).toHaveBeenCalledWith(
-      ['https://gateway.example.invalid'], 'synthetic-autobyteus-key',
+      ['https://gateway.example.invalid'], { apiKey: resolvedApiKey },
     );
     expect(ports.syncLlm).toHaveBeenCalledWith(
       LLMRuntime.AUTOBYTEUS,
@@ -77,5 +85,54 @@ describe('AutobyteusRemoteModelDiscoveryService', () => {
     expect(ports.syncLlm).toHaveBeenCalledWith(LLMRuntime.AUTOBYTEUS, []);
     expect(ports.syncAudio).toHaveBeenCalledWith(MultimediaRuntime.AUTOBYTEUS, []);
     expect(ports.syncImage).toHaveBeenCalledWith(MultimediaRuntime.AUTOBYTEUS, []);
+  });
+
+  it('fences an older in-flight discovery after authoritative credential removal', async () => {
+    const deferredModels = createDeferred<Array<{ runtime: LLMRuntime }>>();
+    ports.discoverLlm.mockReturnValueOnce(deferredModels.promise);
+    const service = createService(['https://gateway.example.invalid']);
+
+    const pendingDiscovery = service.ensureDiscovered('llm');
+    await vi.waitFor(() => expect(ports.discoverLlm).toHaveBeenCalledTimes(1));
+
+    await service.clearAllWithoutLookup();
+    deferredModels.resolve([{ runtime: LLMRuntime.AUTOBYTEUS }]);
+
+    await expect(pendingDiscovery).resolves.toBe(0);
+    await expect(service.ensureDiscovered('llm')).resolves.toBe(0);
+    expect(resolveForUse).toHaveBeenCalledTimes(1);
+    expect(ports.syncLlm).toHaveBeenCalledTimes(1);
+    expect(ports.syncLlm).toHaveBeenLastCalledWith(LLMRuntime.AUTOBYTEUS, []);
+  });
+
+  it('does not reuse or publish an in-flight discovery for a replaced host configuration', async () => {
+    const firstModels = createDeferred<Array<{ runtime: LLMRuntime }>>();
+    const secondModels = createDeferred<Array<{ runtime: LLMRuntime }>>();
+    let hosts = ['https://first.example.invalid'];
+    ports.discoverLlm
+      .mockReturnValueOnce(firstModels.promise)
+      .mockReturnValueOnce(secondModels.promise);
+    const service = new AutobyteusRemoteModelDiscoveryService(
+      () => ({ resolveForUse } as never),
+      () => hosts,
+      ports as never,
+    );
+
+    const firstDiscovery = service.ensureDiscovered('llm');
+    await vi.waitFor(() => expect(ports.discoverLlm).toHaveBeenCalledTimes(1));
+    hosts = ['https://second.example.invalid'];
+    const secondDiscovery = service.ensureDiscovered('llm');
+    await vi.waitFor(() => expect(ports.discoverLlm).toHaveBeenCalledTimes(2));
+
+    secondModels.resolve([{ runtime: LLMRuntime.AUTOBYTEUS }]);
+    await expect(secondDiscovery).resolves.toBe(1);
+    firstModels.resolve([{ runtime: LLMRuntime.AUTOBYTEUS }]);
+    await expect(firstDiscovery).resolves.toBe(1);
+
+    expect(ports.discoverLlm.mock.calls.map(([configuredHosts]) => configuredHosts)).toEqual([
+      ['https://first.example.invalid'],
+      ['https://second.example.invalid'],
+    ]);
+    expect(ports.syncLlm).toHaveBeenCalledTimes(1);
   });
 });

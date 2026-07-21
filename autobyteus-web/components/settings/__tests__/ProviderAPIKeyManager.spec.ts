@@ -131,7 +131,11 @@ const mountComponent = async (overrides: Record<string, any> = {}) => {
       },
       stubs: {
         GeminiSetupForm: { template: '<div data-testid="gemini-form-stub">gemini form</div>' },
-        ProviderApiKeyEditor: { template: '<div data-testid="api-key-editor-stub">api key editor</div>' },
+        ProviderApiKeyEditor: {
+          name: 'ProviderApiKeyEditor',
+          template: '<div data-testid="api-key-editor-stub">api key editor</div>',
+          props: ['configured', 'saving', 'removing', 'disabled', 'resetVersion'],
+        },
         CustomProviderEditor: { template: '<div data-testid="custom-provider-editor-stub">custom provider editor</div>' },
         CustomProviderProbePreview: { template: '<div data-testid="custom-provider-preview-stub">custom provider preview</div>' },
         CustomProviderDetailsCard: {
@@ -158,6 +162,12 @@ describe('ProviderAPIKeyManager', () => {
     expect(wrapper.text()).toContain('API Key Management')
     expect(wrapper.text()).toContain('gpt-4o')
     expect(wrapper.find('[data-testid="api-key-editor-stub"]').exists()).toBe(true)
+  })
+
+  it('propagates pending removal state to the built-in provider editor', async () => {
+    const wrapper = await mountComponent({ removing: ref(true) })
+
+    expect(wrapper.getComponent({ name: 'ProviderApiKeyEditor' }).props('removing')).toBe(true)
   })
 
   it('renders the draft custom-provider editor flow when the draft row is selected', async () => {

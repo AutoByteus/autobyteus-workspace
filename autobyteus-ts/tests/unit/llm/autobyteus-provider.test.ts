@@ -2,20 +2,30 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetAvailableLlmModelsSync = vi.hoisted(() => vi.fn());
 const mockClose = vi.hoisted(() => vi.fn());
+const mockClientConstruction = vi.hoisted(() => vi.fn());
 
 vi.mock('../../../src/clients/autobyteus-client.js', () => ({
   AutobyteusClient: class {
+    constructor(...args: unknown[]) {
+      mockClientConstruction(...args);
+    }
     getAvailableLlmModelsSync = mockGetAvailableLlmModelsSync;
     close = mockClose;
   }
 }));
 
 import { AutobyteusModelProvider } from '../../../src/llm/autobyteus-provider.js';
+import { SecretValue } from '../../../src/secrets/secret-value.js';
+
+const discoveryAuthentication = () => ({
+  apiKey: SecretValue.fromString('synthetic-gateway-key'),
+});
 
 describe('AutobyteusModelProvider', () => {
   beforeEach(() => {
     mockGetAvailableLlmModelsSync.mockReset();
     mockClose.mockReset();
+    mockClientConstruction.mockReset();
   });
 
   it('keeps unknown context metadata as null instead of defaulting to 8192', async () => {
@@ -37,13 +47,17 @@ describe('AutobyteusModelProvider', () => {
     });
 
     const models = await AutobyteusModelProvider.getModels(
-      ['https://autobyteus.example'], 'synthetic-gateway-key',
+      ['https://autobyteus.example'], discoveryAuthentication(),
     );
 
     expect(models).toHaveLength(1);
     expect(models[0]?.maxContextTokens).toBeNull();
     expect(models[0]?.activeContextTokens).toBeNull();
     expect(models[0]?.credentialProviderId).toBe('AUTOBYTEUS');
+    expect(mockClientConstruction).toHaveBeenCalledWith(
+      'https://autobyteus.example',
+      'synthetic-gateway-key',
+    );
   });
 
   it('prefers explicit server metadata when present', async () => {
@@ -70,7 +84,7 @@ describe('AutobyteusModelProvider', () => {
     });
 
     const models = await AutobyteusModelProvider.getModels(
-      ['https://autobyteus.example'], 'synthetic-gateway-key',
+      ['https://autobyteus.example'], discoveryAuthentication(),
     );
 
     expect(models).toHaveLength(1);
@@ -111,7 +125,7 @@ describe('AutobyteusModelProvider', () => {
     });
 
     const models = await AutobyteusModelProvider.getModels(
-      ['https://autobyteus.example'], 'synthetic-gateway-key',
+      ['https://autobyteus.example'], discoveryAuthentication(),
     );
     const modelInfo = models[0]?.toModelInfo();
 

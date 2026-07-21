@@ -19,21 +19,22 @@
 
 - Retained the round-4 centralized-secret implementation: server-owned lifecycle/catalog/configuration boundaries, InMemory and encrypted Local SQLite custody, early backend bootstrap, pair-authenticated default/E2E Stores, explicit JIT provider construction, clean migration, empty-base execution policy, rich value-free health/status, and unchanged Docker topology.
 - Restored AutoByteus remote LLM/audio/image discovery and invocation through one managed definition, `provider.autobyteus.api-key`, without restoring an ambient `AUTOBYTEUS_API_KEY` read.
-- Added exact discovery consumers for `modelDiscovery/{llm|audio|image}/AUTOBYTEUS/apiKey`, server-owned JIT resolution, storage-neutral core discovery ports, runtime-scoped authoritative synchronization, zero-lookup clear for absent hosts or explicit credential removal, and last-known-good retention on transient pre-authoritative failure.
+- Added exact discovery consumers for `modelDiscovery/{llm|audio|image}/AUTOBYTEUS/apiKey`, server-owned JIT resolution, a narrow `SecretValue`-carrying discovery-authentication shape, storage-neutral core discovery ports, runtime-scoped authoritative synchronization, zero-lookup clear for absent hosts or explicit credential removal, and last-known-good retention on transient pre-authoritative failure. Raw reveal now occurs only in each core `AutobyteusClient` construction expression.
 - Tightened model construction routing. `LLMConstructionTarget` and the multimedia equivalent contain exactly `credentialProviderId` and `authenticationRequirement`. Native registrations materialize their known credential owner once; discovered AutoByteus-runtime registrations explicitly materialize `credentialProviderId=AUTOBYTEUS`. Generic LLM/media provisioning constructs its consumer only from that field and the tagged requirement-owned slot.
 - Preserved downstream provider identity for discovered models, native/remote same-provider coexistence, runtime/model-kind-scoped replacement, startup/list/full/provider reload paths, and LLM/audio/image discovery/invocation hooks.
-- Made the existing AutoByteus Settings provider row fully managed: write-only save/replace/status plus idempotent remove. Removal clears all AutoByteus-runtime LLM/audio/image subsets without resolving the removed definition. The web schema binding, generated GraphQL types, Pinia state, runtime notifications, localized controls, and component tests were updated.
+- Made the existing AutoByteus Settings provider row fully managed: write-only save/replace/status plus idempotent remove. Removal advances per-kind discovery generations, invalidates configuration-bound in-flight reuse, and serializes/fences registry publication before clearing all AutoByteus-runtime LLM/audio/image subsets without resolving the removed definition. The web schema binding, generated GraphQL types, Pinia state, runtime notifications, localized controls, pending-state bindings/action guards, and component tests were updated.
 - Added `AUTOBYTEUS_API_KEY` only to the migration alias scrub/reprovision map. Current production reads remain absent; the unchanged core header name is a wire-protocol constant, not an environment lookup.
 - Completed retained source-review fixes: Claude CLI maps the actual node-local OS home (or a validated existing override) into its empty-base child; stdio MCP composes sanitized operational variables plus exact configured additions; absent custom-provider deletion succeeds idempotently while built-in deletion is still rejected.
+- Completed round-2 bounded source-review fixes: discovery authentication stays wrapped through the server coordinator and core ports; stale discovery cannot publish after credential removal or host replacement; and generic provider removal disables and rejects overlapping input/reveal/save/remove actions.
 - Corrected Claude scope wording: both `cli` and `managed-secret` use an empty-base child environment and never fall back. Only `managed-secret` receives the exact child key and enforces `tools: []`, empty setting sources, and strict explicit AutoByteus in-process MCP. CLI uses the existing external account state and normal CLI tools/settings/MCP behavior while performing zero secret-management lookup.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Write-only Settings lifecycle through one server owner | `secret-management/services/secret-management-service.ts`; `llm-provider-service.ts`; GraphQL; web provider editor/store | Save/remove/status remains value-free. Custom delete is now idempotent; built-in delete remains rejected. AutoByteus credential removal is idempotent and triggers authoritative scoped clear. |
+| `BEH-001` | Write-only Settings lifecycle through one server owner | `secret-management/services/secret-management-service.ts`; `llm-provider-service.ts`; GraphQL; web provider editor/store | Save/remove/status remains value-free. Custom delete is now idempotent; built-in delete remains rejected. AutoByteus credential removal is idempotent and triggers authoritative scoped clear. The generic editor propagates removal state and rejects conflicting save or duplicate-remove actions. |
 | `BEH-002` | Empty-base children, authorized roots, `LOCAL_HARDENED` only | `agent-child-environment.ts`; process/PTY/MCP/application launchers; workspace authorization | Named launch paths remain sanitized. Stdio MCP now uses the environment owner's additions boundary, preserving configured entries without broad parent inheritance. No same-user-isolation claim. |
-| `BEH-003` | Explicit JIT LLM/search/media/metadata authentication | server provisioning services; exact construction targets; core factories/clients | Generic LLM/media consumers use only `target.credentialProviderId` and the tagged requirement slot. No displayed provider/runtime/host/model fallback exists. |
+| `BEH-003` | Explicit JIT LLM/search/media/metadata authentication | server provisioning services; exact construction targets; core factories/clients | Generic LLM/media consumers use only `target.credentialProviderId` and the tagged requirement slot. AutoByteus discovery carries `SecretValue` through an exact authentication shape and reveals only at core client construction. No displayed provider/runtime/host/model fallback exists. |
 | `BEH-004` | Tracked non-secret real-test selection and direct target provisioning | `test-config/live-e2e.json`; real-E2E Store CLI; live-test supplement | Target-only setup remains implemented. AutoByteus real scenarios and remaining old live-suite gates are explicitly left for API/E2E-owned durable harness migration/execution. |
 | `BEH-005` | Five-state health plus healthy-only definition status | secret domain/backend/service status; GraphQL; web stores/components | Existing `READY/LOCKED/UNAVAILABLE/CORRUPT/INCOMPATIBLE` and `MISSING/CONFIGURED` behavior is preserved. |
 | `BEH-006` | Deployment-neutral early bootstrap below `serverDataDir` | configuration/bootstrap services; direct/Electron server entrypoints | Preserved; no Docker Compose/launcher/port/volume changes were made. |
@@ -43,7 +44,7 @@
 | `BEH-010` | Separate pair-authenticated default/E2E Stores | Local initializer/provisioning/reset/crypto/schema/repository | Preserved with read-only real-E2E runtime and no source/default Store access. |
 | `BEH-011` | Typed neutral configuration and extension contract | storage configuration/backend ports; GraphQL capability projection | Preserved with only approved first-delivery implementations. |
 | `BEH-012` | Exact Claude `cli` / `managed-secret` modes | Claude authentication service, launch policy, SDK client, diagnostics | CLI uses actual external account home, empty-base environment, and zero secret lookup. Managed mode alone gets exact-child `ANTHROPIC_API_KEY`, empty settings, `tools: []`, strict explicit MCP, and early redaction. Both modes are fallback-free. |
-| `BEH-013` | Preserve AutoByteus gateway Settings, discovery, reload, and LLM/audio/image invocation | `autobyteus-remote-model-discovery-service.ts`; secret catalog; core AutoByteus providers/factories; provisioning services; Settings GraphQL/web | Implemented one definition, exact discovery/construction identities, required credential ownership, per-kind runtime sync, last-known-good behavior, migration-only alias handling, and zero-lookup clears. Real remote execution remains a downstream API/E2E obligation. |
+| `BEH-013` | Preserve AutoByteus gateway Settings, discovery, reload, and LLM/audio/image invocation | `autobyteus-remote-model-discovery-service.ts`; secret catalog; core AutoByteus providers/factories; provisioning services; Settings GraphQL/web | Implemented one definition, exact discovery/construction identities, required credential ownership, wrapped discovery authentication, generation/configuration-aware in-flight reuse, serialized stale-publication fencing, per-kind runtime sync, last-known-good behavior, migration-only alias handling, and zero-lookup authoritative clears. Real remote execution remains a downstream API/E2E obligation. |
 
 ## Key Files Or Areas
 
@@ -54,6 +55,7 @@
 - `autobyteus-server-ts/src/secret-management/{catalog,domain,migration}/`
 - `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-launch-policy.ts`
 - `autobyteus-ts/src/llm/{llm-construction-context,llm-factory,models,autobyteus-provider}.ts`
+- `autobyteus-ts/src/clients/autobyteus-discovery-authentication.ts`
 - `autobyteus-ts/src/multimedia/`
 - `autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts`
 - `autobyteus-web/components/settings/`
@@ -125,17 +127,17 @@
 - `pnpm --filter autobyteus-server-ts run build` — passed, including shared/core build, Prisma generation, TypeScript compilation, and built-in-agent bootstrap smoke.
 - `pnpm --filter autobyteus run build` — passed; static Nuxt client generated successfully with only existing large-chunk warnings.
 - GraphQL schema generation from the built server followed by `pnpm run codegen` — passed; generated web bindings include `removeLlmProviderApiKey`.
-- Focused core routing/MCP suite — 3 files / 7 tests passed.
+- Focused core AutoByteus discovery/routing/MCP suite — 4 files / 10 tests passed, including reveal only at client construction.
 - Broader core unit suite — 326/327 files and 1,718/1,719 tests passed; sole failure is the unchanged baseline event-count assertion described above.
 - Focused non-live core reload suite — `llm-reloading.test.ts` 4/4 passed. The paired pre-existing metadata-resolution integration file remains non-green in three unrelated old-signature/live-metadata cases; no combined integration pass is claimed.
-- Focused server suite covering AutoByteus discovery/catalog/provisioning/provider lifecycle, media, migration, Claude CLI/managed policy, GraphQL removal, and token catalog — 13 files / 59 tests passed.
-- Focused web Settings suites — 3 files / 14 tests passed, including configured remove-button interaction and runtime credential-removal state refresh.
+- Focused server suite covering AutoByteus discovery/catalog/provisioning/provider lifecycle, media, migration, Claude CLI/managed policy, GraphQL removal, and token catalog — 13 files / 61 tests passed, including deterministic credential-removal and host-replacement races.
+- Focused web Settings suites — 3 files / 17 tests passed, including parent-to-editor removal-state propagation and runtime/editor overlap rejection.
 - `pnpm --filter autobyteus transpile-electron` — passed.
 - `pnpm --filter autobyteus guard:web-boundary` — passed.
 - `pnpm --filter autobyteus guard:localization-boundary` — passed.
 - `pnpm --filter autobyteus audit:localization-literals` — passed with zero unresolved findings (existing module-type warning only).
 - `pnpm --filter autobyteus-ts exec tsc -p tsconfig.json --noEmit --pretty false` — not green: 365 broader test-tree errors; production build is green and no full test-tree typecheck pass is claimed.
-- Static checks — `git diff --check` passed; no Docker changes; normal production `AUTOBYTEUS_API_KEY` reads absent; no construction-target fallback scan hit; all changed hand-authored source remains below 500 effective non-empty lines and no changed source delta exceeds 220 lines.
+- Static checks — `git diff --check` passed; no Docker changes; normal production `AUTOBYTEUS_API_KEY` reads absent; no construction-target fallback scan hit; all changed hand-authored source remains below 500 effective non-empty lines and no effective non-empty source delta exceeds 220 lines.
 - No actual secret value, secret-bearing Store, or credential file was inspected. Tests use synthetic values only.
 
 ## Frontend Rendered-Result Check (When Applicable)
@@ -144,7 +146,7 @@
 - Approved UI/UX, interaction, requirement, or design references: `requirements.md`, `design-spec.md`, `credential-consumer-mapping.md`, and the existing Settings component system.
 - Existing design system, shared components, and adjacent product surfaces reviewed: existing provider editor controls, destructive-action styling, configured/missing status, loading/disabled behavior, and notification patterns.
 - Project development / preview instructions and rendered surface used: production Nuxt build plus mounted Vue component/runtime surfaces under the repository's Nuxt test harness; prior full Settings browser-equivalent render remains applicable to the unchanged surrounding layout.
-- States, layouts, viewports, and interactions inspected: configured and missing editor states, configured-only remove control, removal click emission, disabled/saving/removing state bindings, runtime refresh, and success notification.
+- States, layouts, viewports, and interactions inspected: configured and missing editor states, configured-only remove control, removal click emission, disabled/saving/removing state bindings, parent-to-editor pending propagation, blocked input/reveal/save/duplicate-remove actions during removal, runtime refresh, and success notification.
 - Visual or interaction issues found and corrected: added a configured-only destructive control using the existing spacing, border, focus, disabled, and localization conventions; added explicit removing state so save/remove cannot overlap.
 - Supporting evidence and remaining unverified states or limitations: mounted component interaction passed. A full-page configured provider state was not connected to a live backend during this bounded rework, so end-to-end focus/keyboard behavior and all degraded backend states remain downstream coverage work. This is implementation self-validation, not API/E2E sign-off.
 

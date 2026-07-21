@@ -1,4 +1,5 @@
 import { AutobyteusClient } from '../../clients/autobyteus-client.js';
+import type { AutobyteusDiscoveryAuthentication } from '../../clients/autobyteus-discovery-authentication.js';
 import { MultimediaProvider } from '../providers.js';
 import { MultimediaRuntime } from '../runtimes.js';
 import { ImageModel } from './image-model.js';
@@ -24,7 +25,10 @@ const resolveProvider = (provider: string): MultimediaProvider | null => {
 };
 
 export class AutobyteusImageModelProvider {
-  static async getModels(hosts: string[], apiKey: string): Promise<ImageModel[]> {
+  static async getModels(
+    hosts: string[],
+    authentication: AutobyteusDiscoveryAuthentication,
+  ): Promise<ImageModel[]> {
     if (hosts.length === 0) return [];
 
     const discovered: ImageModel[] = [];
@@ -36,7 +40,10 @@ export class AutobyteusImageModelProvider {
         continue;
       }
 
-      const client = new AutobyteusClient(hostUrl, apiKey);
+      const client = new AutobyteusClient(
+        hostUrl,
+        authentication.apiKey.revealToTrustedConsumer(),
+      );
       try {
         const response = await client.getAvailableImageModelsSync();
         const models = isRecord(response) ? response.models : null;

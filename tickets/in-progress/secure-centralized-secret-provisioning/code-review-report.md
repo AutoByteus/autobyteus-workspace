@@ -11,10 +11,10 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
-- Current Review Round: `1`
-- Trigger: implementation commit `240d722070864e0ed960f552cdafc03d05d0ffeb` against reviewed base `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Review Round: `2`
+- Trigger: reworked implementation commit `be1beb2f69d8f9a6f80c521a9febb187624bfee6` against reviewed base `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
+- Prior Review Round Reviewed: `1`
+- Latest Authoritative Round: `2`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
@@ -23,130 +23,125 @@
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - Failing Scenario IDs: `N/A`
 - Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: source paths cited below
+- Failure Evidence Paths: source and test paths cited in `CR-006`–`CR-008`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Implementation handoff at `240d722` | N/A | `CR-001`–`CR-005` | Fail | Yes | One concrete supported behavior is missing from the approved basis; four bounded source/packaging defects also remain. |
+| 1 | Implementation handoff at `240d722` | N/A | `CR-001`–`CR-005` | Fail | No | Missing supported AutoByteus gateway behavior required solution revision; four bounded defects also remained. |
+| 2 | Architecture-reviewed rework at `be1beb2` | `CR-001`–`CR-005` | `CR-006`–`CR-008` | Fail | Yes | All prior findings are resolved. Three bounded implementation defects remain before API/E2E. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-Not applicable in round 1.
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `CR-001` | High | Resolved | Architecture round 6 approved BEH-013/REQ-019/AC-019/UC-018. The implementation restores AutoByteus Settings, startup/list/full/provider reload, LLM/audio/image discovery and invocation, target-owner construction, runtime-scoped replacement, native coexistence, migration, and Store-backed coverage hooks. | The critical removal of existing functionality identified in round 1 is substantively restored. New lifecycle/security defects in that restored path are tracked separately below. |
+| 1 | `CR-002` | High | Resolved | `claude-sdk-launch-policy.ts` now maps the actual node-local OS home or a validated existing absolute override into the empty-base CLI child while the CLI mode performs zero secret lookup. | No broad parent-environment inheritance or mode fallback was added. |
+| 1 | `CR-003` | Medium | Resolved | `stdio-managed-mcp-server.ts` now calls `buildAgentChildEnvironment(process.env, config.env ?? {})`, preserving the sanitized operational base plus exact configured additions. | The changed focused tests cover configured delivery and parent exclusion. |
+| 1 | `CR-004` | Medium | Resolved | `llm-provider-service.ts:180-192` treats an absent custom provider as successful deletion while retaining the built-in rejection at `:175-179`. | Idempotency is restored without weakening the built-in boundary. |
+| 1 | `CR-005` | Medium | Resolved | `implementation-handoff.md` now scopes empty-base/no-fallback to both Claude modes and scopes `tools: []`, empty settings, and strict explicit MCP to `managed-secret` only. | Downstream no longer receives the false CLI assertion. |
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: encrypted Local/InMemory custody, secret catalog and lifecycle, migration, provider/search/media/metadata JIT provisioning, child environment and file-root hardening, Claude two-mode authentication, GraphQL/Settings projections, and related changed tests.
-- Files / areas reviewed: the complete `534210b..240d722` diff; production paths in `autobyteus-ts`, `autobyteus-server-ts`, `autobyteus-web`, and Electron; the cumulative artifact package; changed tests relevant to implemented contracts; unchanged production callers needed to prove reachability.
-- Explicit exclusions: no real credential or secret-bearing Store was read; no live provider/API/desktop execution was performed. The implementation engineer's recorded builds and focused checks were treated as upstream evidence, while this review independently performed source tracing, a complete changed-source size/delta audit, `git diff --check`, and clean-worktree verification.
-- Repository state at review: `HEAD=240d722070864e0ed960f552cdafc03d05d0ffeb`; worktree clean; `git diff --check 534210b..HEAD` passed.
+- Changed implementation and behavior reviewed: the complete reworked centralized-secret delivery, with rework-first tracing of `CR-001`–`CR-005`, restored AutoByteus LLM/audio/image Settings/discovery/reload/construction/invocation, exact credential ownership, Local/InMemory custody, migration, generic provisioning, process launch hardening, Claude two-mode authentication, GraphQL/UI lifecycle, and changed tests.
+- Files / areas reviewed: the complete `534210b9e1dffff6c22855ae89ddb3d2afef5a9b..be1beb2f69d8f9a6f80c521a9febb187624bfee6` implementation diff; relevant production callers in `autobyteus-ts`, `autobyteus-server-ts`, `autobyteus-web`, and Electron; all cumulative artifacts; and changed tests needed to assess contract alignment and next-stage readiness.
+- Explicit exclusions: no real credential, credential file, or secret-bearing Store was read; no live provider/API/browser/desktop execution was performed. Implementation-engineer commands are upstream evidence rather than independent API/E2E sign-off. This review independently performed source tracing, a full changed-source size/delta audit, `git diff --check`, and repository-state verification.
+- Repository state at review: `HEAD=be1beb2f69d8f9a6f80c521a9febb187624bfee6`; implementation worktree was clean before this reviewer-owned report update; `git diff --check 534210b9e1dffff6c22855ae89ddb3d2afef5a9b..HEAD` passed.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: yes, including BEH-001–012, REQ-001–018, AC-001–018, the exact five-state health contract, `LOCAL_HARDENED` limit, and the Claude two-mode decision.
-- Design-spec behavior map verified against the implementation: partially. Most reviewed spines are recognizable and correctly owned, but three mapped behaviors are contradicted and one concrete supported provider behavior was omitted upstream.
-- Design review report and round confirmed: architecture-review round 4 pass at reviewed base, including MP-001/MP-002 and mandatory `EXT-ANTHROPIC-AGENT-SDK-AUTH` carry-forward.
+- Approved requirements basis understood: yes, including BEH-001–013, REQ-001–019, AC-001–019, the exact five-state health contract, `LOCAL_HARDENED` limit, preserved AutoByteus gateway behavior, and exact Claude two-mode decision.
+- Design-spec behavior map verified against the implementation: mostly. All prior source-review findings are resolved, but the restored AutoByteus discovery path contradicts its approved secret-reveal and authoritative-removal lifecycle, and the generic provider editor contradicts its pending-operation lifecycle.
+- Design review report and round confirmed: architecture-review round 6 pass, including the exact `{credentialProviderId, authenticationRequirement}` construction target, MP-001/MP-002, and mandatory `EXT-ANTHROPIC-AGENT-SDK-AUTH` carry-forward.
 - Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior: `BEH-PROV-013` records the existing AutoByteus remote LLM/audio/image discovery and construction behavior that the solution package omitted.
-- Remaining material ambiguity: the approved solution does not decide how `AUTOBYTEUS_API_KEY` is catalogued, migrated, provisioned for discovery/construction, or exposed through lifecycle/coverage. That is a requirement/design gap, not an implementation detail the reviewer can invent.
+- Changed or newly discovered behavior, if any: none. `CR-006`–`CR-008` are bounded defects against already approved behavior and contracts.
+- Remaining material ambiguity, if any: none.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Contradicted | Settings/GraphQL -> `LlmProviderService` -> management service -> backend is otherwise explicit and value-free. | `deleteCustomProvider` first requires metadata to exist, so a repeated delete returns `CUSTOM_PROVIDER_DELETE_REJECTED` rather than satisfying AC-011 idempotency (`CR-004`). |
-| `BEH-002` | Contradicted | `buildAgentChildEnvironment` centralizes an empty base and generic operational allowlist; file-tool roots use realpath-aware checks. | `StdioManagedMcpServer` treats explicitly configured MCP `env` as the parent source, so every non-generic configured variable is discarded rather than being the server-specific addition (`CR-003`, `CR-MP-003`). |
-| `BEH-003` | Confirmed for mapped providers | Server-owned LLM, metadata, search, and media provisioning resolve semantic consumers and pass ephemeral authentication contexts to core clients. | The mapped set was incomplete; see `BEH-PROV-013`. |
-| `BEH-004` | Confirmed | The tracked live manifest and exact Store setup are secret-free and target-only; remaining durable live-suite migration is explicitly reserved for API/E2E. | None. |
-| `BEH-005` | Confirmed | `SecretManagementService` owns catalog-bound save/remove/status/resolve; healthy-only definition state and value-free events are represented. | Whole custom-provider deletion, distinct from backend record removal, is contradicted under BEH-001/AC-011. |
-| `BEH-006` | Confirmed | Migration -> typed backend configuration/bootstrap -> provider initialization is ordered in server startup; Electron and direct server construct in-process Local custody. | None. |
-| `BEH-007` | Confirmed | Only Local/InMemory are registered; unregistered kinds fail value-free; assurance remains `LOCAL_HARDENED`. | None. |
-| `BEH-008` | Confirmed | Migration alone understands historical aliases/schema; it scrubs recognized plaintext, preserves metadata, records reprovision, and normal runtime has no corresponding fallback. | The omitted AutoByteus credential alias must be decided under `BEH-PROV-013`. |
-| `BEH-009` | Confirmed | `LLMFactory` composes config separately from required authentication, and concrete clients receive an ephemeral construction context. | None. |
-| `BEH-010` | Confirmed | Local initialization authenticates the database/key pair, supports read-write/read-only modes, and has direct target-only provisioning/reset paths. | Broader realistic/conformance evidence remains an API/E2E obligation. |
-| `BEH-011` | Confirmed | Typed configuration, backend registration, and discriminated lifecycle capabilities are implemented without a production enterprise placeholder. | None. |
-| `BEH-012` | Contradicted | Exact mode parsing, zero management lookup for CLI, exact managed consumer resolution, exact-child key delivery, managed tools/settings restrictions, and redaction are present. | Default CLI redirects `HOME` and `CLAUDE_CONFIG_DIR` to a newly created app-data directory rather than the approved pre-existing external node-local account state (`CR-002`, `CR-MP-004`). |
-| `BEH-PROV-013` | Newly Discovered | Existing Settings accepts `AUTOBYTEUS_LLM_SERVER_HOSTS`; server model/media catalogs initialize and refresh the core factories. The base implementation invoked AutoByteus LLM/audio/image discovery, which authenticated `AutobyteusClient` with `AUTOBYTEUS_API_KEY`. | The implementation removed all factory discovery calls and targeted AutoByteus reload support while changing provider discovery methods to require an explicit key. No production caller supplies it, and `SecretCatalog` has no AutoByteus definition/binding. Configured remote AutoByteus LLM/audio/image models therefore disappear. This supported path is absent from every upstream core/supplemental artifact (`CR-001`). |
+| `BEH-001` | Contradicted | Settings/GraphQL -> provider service -> secret management/backend is write-only and value-free; save/remove refresh the relevant state. | The generic provider editor is not passed `removing` and does not disable save/input while removal is pending (`CR-008`). |
+| `BEH-002` | Confirmed | Empty-base child construction, exact configured stdio MCP additions, file-root validation, and `LOCAL_HARDENED` constraints are preserved. | None. |
+| `BEH-003` | Contradicted | Server provisioning uses semantic consumers and narrow construction contexts for LLM/search/media/metadata. | AutoByteus discovery reveals the raw key in the server coordination service rather than at the authorized core client-construction boundary (`CR-006`). |
+| `BEH-004` | Confirmed | The tracked live manifest remains secret-free and direct target-only provisioning is retained; durable live-suite migration remains assigned to API/E2E. | None. |
+| `BEH-005` | Confirmed | Catalog-bound lifecycle/status/resolve and the five-state health union remain explicit and value-free. | None. |
+| `BEH-006` | Confirmed | Early deployment-neutral bootstrap uses the selected backend below `serverDataDir`; Docker topology is unchanged. | None. |
+| `BEH-007` | Confirmed | First delivery remains Local/InMemory with typed future registration boundaries and no enterprise placeholder. | None. |
+| `BEH-008` | Confirmed | Migration scrubs mapped aliases, including `AUTOBYTEUS_API_KEY`, records reprovisioning, and leaves normal runtime free of ambient fallback. | None. |
+| `BEH-009` | Confirmed | Factory config composition is preserved and authentication remains in the exact tagged construction context. | None. |
+| `BEH-010` | Confirmed | Default and real-E2E Local Stores remain separate pair-authenticated targets with read-only real-E2E runtime. | None. |
+| `BEH-011` | Confirmed | Configuration/backend/capability contracts remain typed, neutral, and limited to approved implementations. | None. |
+| `BEH-012` | Confirmed | CLI and managed-secret modes now match the reviewed account, lookup, child-environment, settings/tools/MCP, redaction, and no-fallback contract. | None. |
+| `BEH-013` | Contradicted | AutoByteus Settings, exact discovery/construction identities, scoped registration, native coexistence, migration, and invocation are restored. | Raw authentication is exposed above the authorized core boundary (`CR-006`); an older in-flight discovery can republish after authoritative removal (`CR-007`, `CR-MP-005`); generic Settings pending state permits overlapping removal/save (`CR-008`). |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Fail | The package contains a detailed health assessment, but it omitted the reachable AutoByteus provider behavior and its credential. | Revise the behavior inventory and design under `CR-001`. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | Local Store contracts largely match; MCP configured environment delivery conflicts with the consumer mapping, and the implementation handoff overstates CLI restrictions. | Resolve `CR-003` and `CR-005`. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | Mapped custody/JIT spines are clear, but AutoByteus discovery has no current spine or provisioning owner. | Add the missing supported behavior and full discovery/construction lifecycle. |
-| Ownership boundary preservation and clarity | Fail | Generic management/catalog ownership is sound for mapped consumers; AutoByteus discovery signatures require a key with no server provisioning owner/caller. | Solution design must assign the semantic consumer/owner before implementation resumes. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | crypto/filesystem/schema/migration/redaction remain owned helpers around the core management and launch spines. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | JIT services reuse `SecretManagementService`; Claude reuses the generic consumer boundary; Local uses the server secret subsystem. | Preserve this structure when adding AutoByteus coverage. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | authentication contexts, child environment composition, Local crypto/filesystem/schema, and frontend support types are factored into owned modules. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | closed auth unions, consumer identities, health/lifecycle unions, and construction contexts are narrow and compositional. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | management, catalog, configuration, migration, and child environment policy each have a clear owner. | Correct the MCP call into the environment owner; do not duplicate policy. |
-| Empty indirection check (no pass-through-only boundary) | Pass | provisioning services add semantic consumer resolution/failure policy; backend/config owners add real behavior. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | new secret-management and launch-policy files are cohesive; near-threshold existing files remain subject-focused. | None beyond findings. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | core clients remain backend-agnostic; server provisioning owns backend access; UI sees value-free projections only. | Preserve for `CR-001`. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | subject services depend on management/configuration boundaries, not repositories or Local implementation internals. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | new Local, migration, provisioning, Claude, GraphQL, and frontend support files match their owning subsystems. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | the large delivery is split by real ownership boundaries without one-file-per-trivial-wrapper fragmentation. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | AutoByteus discovery now requires an explicit key but no public/server command owns key resolution; reload still advertises AutoByteus at the server layer while core returns the current empty count. | Define and implement explicit discovery/reload provisioning; fix delete idempotency. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | names generally expose lifecycle, consumer, access mode, and runtime intent directly. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | repeated authentication/environment and Local Store mechanics use shared owned helpers. | None. |
-| Patch-on-patch complexity control | Pass | no compatibility overloads or fallback ladders were added; the principal issue is an omitted supported path, not compensating complexity. | Do not repair `CR-001` with ambient fallback. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | AutoByteus LLM/audio/image provider discovery methods remain compiled but have no production caller, while server/UI still expose related host/reload behavior. | Reconnect them through the revised explicit provisioning spine or retire the behavior only after an approved decision. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Store/provider/Claude focused tests are mostly clear, but the stdio MCP unit test explicitly asserts configured `TEST_ENV` is absent, encoding `CR-003`; no default CLI external-account-path test catches `CR-002`. | Correct/add focused tests after the solution revision. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | synthetic secrets and focused subsystem helpers are used; real-secret setup remains separate. | API/E2E should finish the tracked Store-backed harness. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Fail | AutoByteus provider unit/integration files still call the pre-cutover no-argument discovery signatures, contributing to the acknowledged non-green test-tree typecheck. | Migrate them to the revised explicit Store-backed discovery contract; do not restore optional/env auth. |
-| API/E2E readiness for the next workflow stage | Fail | Blocking source/behavior gaps precede execution; the full core test-tree typecheck also has 368 acknowledged errors and the broad server-unit run has no pass claim. | Revise design, implement fixes, repeat source review, then hand to API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The current package identifies custody, ambient resolution, launch inheritance, migration, preserved gateway behavior, and deferred isolation accurately; the implementation follows its overall ownership layout. | Keep the assessment and stated scope intact during local rework. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | `credential-consumer-mapping.md:184-186` requires wrapped discovery authentication and authoritative removal; source contradicts both (`CR-006`, `CR-007`). | Correct the discovery authentication and lifecycle mechanics without changing the reviewed behavior. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | The 28-spine inventory is clear, but DS-UC018 discovery/removal can publish stale results after its authoritative lifecycle boundary (`CR-007`). | Fence or serialize discovery publication against clear/replacement. |
+| Ownership boundary preservation and clarity | Fail | Most owners are explicit; AutoByteus discovery unwraps a secret inside a server coordinator instead of the authorized client-construction owner (`CR-006`). | Pass a narrow wrapped authentication shape to core discovery. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Migration, launch policy, health projection, crypto/persistence, and test provisioning remain separately owned. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing secret management, factories, registries, launch environment owner, Settings runtime, and provider services are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Fail | Three discovery ports accept the same raw string because the reviewed dedicated discovery-authentication shape is absent (`CR-006`). | Introduce the narrow shared shape at the core discovery boundary. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Fail | Construction targets and other unions are tight, but the AutoByteus discovery boundary collapses protected authentication to an untyped raw string across coordinator and ports (`CR-006`). | Preserve `SecretValue` in a purpose-specific authentication shape until client construction. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Remote discovery/reload/clear coordination is centralized in one service; provisioning and child-environment policy also have clear owners. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | New services own real policy, identity mapping, lifecycle, or construction rather than forwarding only. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Fail | File placement is coherent, but secret revelation occurs in the discovery lifecycle coordinator rather than the request-auth/client construction concern (`CR-006`). | Move raw reveal to the narrow authorized core boundary. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Fail | Core remains storage-neutral, but the server discovery owner depends on and distributes a raw secret through injectable application ports (`CR-006`). | Depend on the protected authentication shape and keep reveal in core client creation. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Callers use secret management/configuration and subject provisioning public entries; no caller simultaneously bypasses into repositories/backend internals. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Secret, discovery, provisioning, factory, migration, launch, GraphQL, and Settings files reside under their owning capability areas. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The change is large but divided by established subsystem; no artificial one-method file proliferation was found. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | Generic construction identities are exact, but discovery exposes raw `string` authentication and in-flight reuse is not lifecycle/configuration aware (`CR-006`, `CR-007`). | Tighten the discovery interface and add epoch/config-aware publication. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names consistently expose provider, runtime, consumer, storage, health, and lifecycle intent. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Shared catalog, management, provisioning, launch policy, and runtime synchronization eliminate meaningful policy duplication. | None. |
+| Patch-on-patch complexity control | Pass | Rework integrates with existing owners rather than layering compatibility adapters or ambient fallbacks. | Preserve this posture during fixes. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Round-1 dormant AutoByteus paths are reconnected; legacy aliases are migration-only; no additional dead path was found. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The discovery test explicitly expects a raw string at the server port and has no clear-vs-in-flight race; the UI tests do not verify pending-state propagation/overlap (`CR-006`–`CR-008`). | Replace the stale assertion and add deterministic lifecycle/UI concurrency tests. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing service ports, synthetic `SecretValue`, Vue runtime fixtures, and focused component mounts are reusable and localized. | Reuse them for the missing cases. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Fail | `autobyteus-remote-model-discovery-service.test.ts:54-56` codifies the boundary the approved supplement forbids. | Assert the wrapped authentication shape instead. |
+| API/E2E readiness for the next workflow stage | Fail | Three source defects remain; advancing would ask API/E2E to validate a known security-boundary breach, lifecycle race, and UI overlap. | Fix and return through full source review first. |
 
-## Source File Size And Structure Audit
+## Source File Size And Structure Audit (If Applicable)
 
-The audit covered all 142 changed hand-authored implementation-source files (`.ts/.js/.mjs/.vue/.py/.sql/.prisma` in implementation locations, excluding tests, fixtures, generated coverage, docs, tickets, and migrations directories). Effective lines count non-empty current lines; delta is additions plus deletions from `534210b..240d722`. No changed implementation file exceeds either threshold.
+The audit covered all 152 changed implementation-source files. No file exceeds 500 effective non-empty lines and no effective non-empty delta exceeds 220 lines. Representative highest-pressure files and finding-bearing files follow; tests, fixtures, generated outputs, and coverage files were excluded from these thresholds.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | 498 | Pass | Pass (6) | Pass; existing session coordinator | Pass | None | None |
-| `autobyteus-ts/src/llm/supported-model-definitions.ts` | 498 | Pass | Pass (35) | Pass; declarative model catalog | Pass | None | None |
-| `autobyteus-ts/src/clients/autobyteus-client.ts` | 491 | Pass | Pass (184) | Pass locally; explicit auth conversion is cohesive | Pass | `CR-001` only through missing callers | Keep explicit auth; reconnect through server provisioning. |
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | 485 | Pass | Pass (17) | Pass; existing factory responsibility | Pass | None | None |
-| `autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts` | 484 | Pass | Pass (51) | Pass; UI coordination remains cohesive at current scope | Pass | None | None |
-| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts` | 467 | Pass | Pass (96) | Pass; last-mile SDK policy owner | Pass | `CR-005` packaging mismatch only | Preserve source's managed-only restrictions; correct handoff text. |
-| `autobyteus-ts/src/llm/llm-factory.ts` | 465 | Pass | Pass (38) | Fail behaviorally; AutoByteus initialization/reload is removed without replacement | Pass | `Requirement Gap` / `CR-001` | Implement the reviewed explicit discovery path after upstream revision. |
-| `autobyteus-server-ts/src/config/app-config.ts` | 458 | Pass | Pass (26) | Pass; non-secret configuration owner | Pass | None | None |
-| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 409 | Pass | Pass (196) | Pass overall; one lifecycle command violates its contract | Pass | `Local Fix` / `CR-004` | Make repeated custom-provider delete successful and value-free. |
-| `autobyteus-web/stores/llmProviderConfig.ts` | 404 | Pass | Pass (184) | Pass; provider state/API owner | Pass | None | Preserve behavior while server delete becomes idempotent. |
-| `autobyteus-server-ts/src/secret-management/backends/local/local-secret-store-initializer.ts` | 195 | Pass | Pass (216) | Pass; cohesive pair/create/open validation | Pass | None | None |
-| `autobyteus-server-ts/src/secret-management/migration/legacy-secret-cutover-migration.ts` | 153 | Pass | Pass (162) | Pass for mapped aliases; AutoByteus decision missing upstream | Pass | `CR-001` dependency | Extend only after the revised migration decision. |
-| `autobyteus-server-ts/src/secret-management/backends/local/local-encrypted-secret-repository.ts` | 136 | Pass | Pass (152) | Pass; record crypto/transaction owner | Pass | None | None |
-| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-launch-policy.ts` | 57 | Pass | Pass (62) | Fail on default CLI account-state lifecycle | Pass | `Local Fix` / `CR-002` | Point CLI at the approved explicit external account state without broad env inheritance. |
-| `autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts` | 63 | Pass | Pass (3) | Fail; explicit MCP env is passed in the wrong builder position | Pass | `Local Fix` / `CR-003` | Build from the operational base and apply authorized server-specific additions. |
-| `autobyteus-ts/src/llm/autobyteus-provider.ts` | 292 | Pass | Pass (9) | Structurally cohesive but dormant | Pass | `Requirement Gap` / `CR-001` | Reconnect through explicit discovery provisioning. |
-| `autobyteus-ts/src/multimedia/audio/autobyteus-audio-provider.ts` | 152 | Pass | Pass (9) | Structurally cohesive but dormant | Pass | `Requirement Gap` / `CR-001` | Reconnect through explicit discovery provisioning. |
-| `autobyteus-ts/src/multimedia/image/autobyteus-image-provider.ts` | 152 | Pass | Pass (9) | Structurally cohesive but dormant | Pass | `Requirement Gap` / `CR-001` | Reconnect through explicit discovery provisioning. |
-| `autobyteus-server-ts/src/secret-management/catalog/secret-catalog.ts` | 76 | Pass | Pass (89) | Pass for approved mappings; missing AutoByteus behavior is upstream | Pass | `Requirement Gap` / `CR-001` | Add only the solution-approved definition/consumer mapping. |
-| `autobyteus-ts/src/multimedia/audio/audio-client-factory.ts` | 203 | Pass | Pass (15) | Fail behaviorally; discovery removed with no replacement | Pass | `Requirement Gap` / `CR-001` | Restore explicit JIT discovery lifecycle. |
-| `autobyteus-ts/src/multimedia/image/image-client-factory.ts` | 198 | Pass | Pass (20) | Fail behaviorally; discovery removed with no replacement | Pass | `Requirement Gap` / `CR-001` | Restore explicit JIT discovery lifecycle. |
-| Remaining 121 changed implementation-source files | 1–374 | Pass | Pass (maximum 143) | Pass under subsystem review; no additional size/ownership finding | Pass | None | None beyond findings above. |
+| `autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts` | 498 | Pass | Pass (65) | Pass | Pass | None | None. |
+| `autobyteus-ts/src/llm/supported-model-definitions.ts` | 498 | Pass | Pass (33) | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | 498 | Pass | Pass (6) | Pass | Pass | None | None. |
+| `autobyteus-ts/src/clients/autobyteus-client.ts` | 491 | Pass | Pass (163) | Pass | Pass | None | None. |
+| `autobyteus-ts/src/llm/llm-factory.ts` | 486 | Pass | Pass (61) | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts` | 467 | Pass | Pass (93) | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 435 | Pass | Pass (217) | Pass | Pass | None | None. |
+| `autobyteus-web/stores/llmProviderConfig.ts` | 421 | Pass | Pass (184) | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts` | 385 | Pass | Pass (130) | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.ts` | 133 | Pass | Pass (133) | Fail (`CR-006`, `CR-007`) | Pass | `Local Fix` | Keep the file cohesive while tightening auth ownership and stale-publication fencing. |
+| `autobyteus-web/components/settings/ProviderAPIKeyManager.vue` | 177 | Pass | Pass (17) | Fail (`CR-008`) | Pass | `Local Fix` | Bind pending state to the editor and prohibit overlapping actions. |
+| Remaining 141 changed implementation-source files | 1–374 | Pass | Pass (maximum 143) | Pass under subsystem review | Pass | None | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No optional constructor fallback, ambient auth fallback, or current-runtime dual shape was added. |
-| No legacy old-behavior retention in changed scope | Pass | Historical aliases and custom-provider v1 parsing are confined to migration. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | Explicit-key AutoByteus discovery methods and server/UI reload entry points are mutually disconnected (`CR-001`). |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Known mapped plaintext values are scrubbed/reprovisioned; no plaintext import or backup path exists. |
+| No backward-compatibility mechanisms in changed scope | Pass | No optional constructor fallback, ambient credential fallback, or current-runtime dual shape was added. |
+| No legacy old-behavior retention in changed scope | Pass | Historical aliases and custom-provider v1 parsing remain confined to migration. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Previously dormant AutoByteus discovery/reload/construction paths are now reconnected. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Mapped plaintext is scrubbed and recorded for reprovision; hosts remain non-secret; no plaintext import or backup path exists. |
 | No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Normal repositories/services use only current shapes. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Migration runs before normal consumers and is the sole legacy owner. The missing AutoByteus alias decision must be added upstream rather than guessed. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Migration occurs pre-runtime and is the sole historical-data owner. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-| Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
-| --- | --- | --- | --- | --- |
-| Disconnected AutoByteus discovery/reload state across `llm-factory.ts`, audio/image factories/providers, and `AutobyteusLlmModelProvider` | `DormantPath` | Providers require `apiKey`, no production caller invokes them, factories no longer initialize them, core targeted reload omits AutoByteus, while server/UI still expose hosts and reloadability. | The dormant mismatch must not ship: configured behavior silently yields no remote models and leaves misleading entry points. | Remove the dormancy by reconnecting all supported paths through the revised explicit provisioning design; retire entry points only if solution design and user approval intentionally remove the behavior. |
+None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: the delivery changes provider credential setup, Local Store operation/reset/health, test provisioning, child-environment guarantees, and Claude authentication modes. The newly discovered AutoByteus credential path also needs an explicit operator/product contract.
-- Files or areas likely affected: server/provider setup docs, Local Store operations and recovery, live-E2E setup, deployment/security limits, Claude runtime configuration and `EXT-ANTHROPIC-AGENT-SDK-AUTH`, and AutoByteus remote provider setup.
+- Why: the delivery changes provider credential setup, Local Store operation/reset/health, real-test provisioning, child-environment guarantees, Claude authentication modes, and AutoByteus remote gateway credential lifecycle.
+- Files or areas likely affected: provider/server setup, Local Store operations/recovery, live-E2E setup, deployment/security limits, Claude runtime configuration and `EXT-ANTHROPIC-AGENT-SDK-AUTH`, and AutoByteus remote provider setup.
 
 ## Material Premise Validation
 
@@ -154,130 +149,107 @@ The audit covered all 142 changed hand-authored implementation-source files (`.t
 
 | Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
 | --- | --- | --- |
-| `MP-001` | Confirmed | N/A |
+| `MP-001` | Confirmed | N/A. Empty/read-only Local Stores still require authenticated pair identity and the implementation retains that contract. |
 | `MP-002` | Confirmed | N/A. `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency, not legal clearance. |
 
-### `CR-MP-003` — Explicitly configured stdio MCP environments are a supported runtime input
+Prior round premises `CR-MP-003` and `CR-MP-004` remain reachable supported scenarios, and their corresponding implementation defects are resolved in this round.
+
+### `CR-MP-005` — Authoritative credential removal can overlap an ordinary in-flight remote discovery
 
 - Origin: `New`
-- Related approved requirement or established contract: BEH-002 preserved authorized runtime capabilities; REQ-004 per-runtime allowlists; credential-consumer mapping row “MCP servers”; `StdioMcpServerConfigData.env` public configuration contract.
-- Relevant behavior ID(s): `BEH-002`
-- Product-supported initiating trigger or governing contract, with evidence: GraphQL and the Settings MCP form accept and persist a stdio `env` map; repository integration coverage configures Google MCP credentials and E2E persistence coverage stores `TEST_ENV`.
-- Actual production caller/event path from that trigger to the claimed state: Settings/GraphQL config -> `McpConfigService`/persisted config -> `ServerInstanceManager` -> `StdioManagedMcpServer.createClientSession` -> `buildAgentChildEnvironment(config.env)` -> SDK transport spawn.
-- Lifecycle preconditions and material consequence at the claimed point: a configured MCP command requires a non-generic server-specific variable. The builder reads only generic operational keys from the map and drops the configured variable, so the MCP process starts without its required configuration/credential and cannot provide its supported tools.
+- Related approved requirement or established contract: BEH-013; REQ-019; AC-019(a)–(c); `credential-consumer-mapping.md:186`, which makes successful credential removal authoritative and requires all AutoByteus runtime subsets to clear without lookup.
+- Relevant behavior ID(s): `BEH-013`
+- Product-supported initiating trigger or governing contract, with evidence: model list/reload operations and Settings credential removal are public GraphQL/UI operations. They may be initiated concurrently by ordinary API callers or separate browser tabs; the server's async resolver/service model does not serialize them.
+- Actual production caller/event path from that trigger to the claimed state: list or reload -> singleton `AutobyteusRemoteModelDiscoveryService.run` -> remote discovery pending; overlapping Settings remove -> `LlmProviderService.removeProviderApiKey` -> Store removal -> `clearAutobyteusRemoteModels` -> `clearAllWithoutLookup`; the older remote promise then resolves -> `discoverAndSync` publishes models and overwrites its completed/count cache.
+- Lifecycle preconditions and material consequence at the claimed point: a configured AutoByteus host responds slowly enough for removal to complete first. `clearAllWithoutLookup()` clears registries but neither awaits, invalidates, nor fences `inFlightByKind`; `discoverAndSync()` later unconditionally synchronizes results. Removed remote models therefore reappear after the authoritative clear, and cache state can again report a completed nonzero discovery. Construction still fails closed on the missing key, but the approved catalog-removal outcome is violated.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-003`; keep the empty parent base but apply the explicitly authorized server-specific environment through the additions/allowlist boundary, with tests for both required delivery and unrelated-parent exclusion.
-
-### `CR-MP-004` — Default Claude CLI mode must consume pre-existing external node-local account state
-
-- Origin: `New`
-- Related approved requirement or established contract: BEH-012, REQ-018, AC-018(a), AR-007/MP-002 deployment distinction.
-- Relevant behavior ID(s): `BEH-012`
-- Product-supported initiating trigger or governing contract, with evidence: omitted mode defaults to `cli`; the approved contract says CLI uses external/pre-existing node-local Claude account state and preserves the working path without secret-management lookup.
-- Actual production caller/event path from that trigger to the claimed state: Claude model discovery or run -> `ClaudeRuntimeAuthenticationService.resolve` returns `{kind:"cli"}` -> `ClaudeSdkClient` -> `buildClaudeSdkSpawnEnvironment` -> SDK query child.
-- Lifecycle preconditions and material consequence at the claimed point: an existing user/node Claude login is stored in its normal external account location and `AUTOBYTEUS_CLAUDE_ACCOUNT_HOME` is unset (the default). The implementation instead creates `<appDataDir>/runtime/claude-account` and sets both `HOME` and `CLAUDE_CONFIG_DIR` there, so the child cannot observe the pre-existing account and the default mode loses authentication.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-002`; explicitly map the permitted existing account state into the empty-base child without inheriting the broad parent environment, and cover default plus configured account-location cases.
+- Review consequence / proportionate response: `CR-007`. Add per-kind generation/epoch or equivalent serialization so an operation begun before authoritative clear/replacement cannot publish or update state afterward. Cover it with a deterministic deferred-promise test.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `7.6`
-- Overall score (`/100`): `75.8`
-- Score calculation note: simple average of the ten category scores, rounded for the `/10` summary. The fail decision is driven by findings and sub-9 categories, not the average.
+- Overall score (`/10`): `8.6`
+- Overall score (`/100`): `86.2`
+- Score calculation note: simple average of the ten category scores, rounded for the `/10` summary. The fail decision follows the findings and sub-9 categories, not the average.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 6.5 | The mapped custody/JIT/Claude/launch spines are generally explicit. | A supported AutoByteus LLM/audio/image discovery spine and credential were omitted, then its callers were removed. | Add `BEH-PROV-013` to the authoritative package with complete discovery, construction, lifecycle, migration, and coverage paths. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 7.0 | Management/catalog/configuration/backend owners are strong for mapped consumers. | No owner resolves AutoByteus discovery auth; MCP explicit additions are misapplied as a parent source. | Assign AutoByteus provisioning ownership and correct the environment boundary use. |
-| `3` | `API / Interface / Query / Command Clarity` | 7.5 | Consumer identities and construction contexts are narrow and explicit. | AutoByteus methods require a key with no production command/caller; targeted reload advertises unsupported behavior; delete is not idempotent. | Define explicit discovery/reload APIs and honor AC-011. |
-| `4` | `Separation of Concerns and File Placement` | 9.0 | New modules are placed by real concern and near-threshold files remain cohesive. | Findings are behavioral/ownership defects rather than file-boundary sprawl. | Preserve current factoring during rework. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.1 | Closed unions, semantic identities, shared environment builder, and Local helpers are appropriately narrow/reused. | The shared environment API is called incorrectly for MCP, but its model is sound. | Use the existing source/additions split correctly. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | Names communicate consumer, lifecycle, access mode, runtime, and policy intent well. | No material naming defect; dormant AutoByteus entry points make runtime support misleading. | Reconcile behavior so names again match reachable capability. |
-| `7` | `API/E2E Readiness` | 6.0 | Focused implementation checks and synthetic fixtures are useful. | Blocking behavior gaps remain; MCP test encodes the wrong assertion; AutoByteus tests retain old signatures; core test-tree typecheck has 368 errors and broad server unit has no pass claim. | Fix/re-review source, then let API/E2E migrate durable suites and run realistic coverage. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 5.5 | Most secret Store and managed Claude mechanics align closely with the approved contracts. | Configured AutoByteus remote models disappear; default CLI account state is hidden; configured MCP env is dropped; repeated custom delete fails. | Resolve `CR-001`–`CR-004` with regression coverage. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.0 | Normal runtime has no credential-env fallback or version-specific dual path; historical parsing is migration-only. | The omitted AutoByteus migration decision prevents a stronger score, but no compatibility mechanism was added. | Make the alias transition explicit upstream and keep it migration-only. |
-| `10` | `Cleanup Completeness` | 7.0 | Most legacy aliases, constructors, and plaintext fields were removed. | AutoByteus providers are left dormant while UI/server entry points remain; stale test signatures and a misleading handoff claim remain. | Reconnect or intentionally retire the path, update tests, and correct handoff evidence. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.6 | All approved spines, including the restored gateway and prior fixes, are recognizable and mostly complete. | AutoByteus authoritative removal is not preserved against an older in-flight discovery (`CR-007`). | Fence publication/cache updates by lifecycle generation. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.2 | Secret management, subject provisioning, registries, launch security, and UI/runtime owners are generally explicit. | Server discovery unwraps and distributes a raw secret above the approved client-construction boundary (`CR-006`). | Pass a dedicated wrapped authentication shape to core. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.3 | Construction targets and semantic consumers are exact and fallback-free. | Discovery ports accept raw strings and in-flight reuse has no lifecycle/config identity (`CR-006`, `CR-007`). | Tighten authentication and publication interfaces. |
+| `4` | `Separation of Concerns and File Placement` | 8.7 | Files reside under clear capabilities and the rework avoids compatibility layers. | Secret revelation is placed in lifecycle coordination instead of core request-auth/client construction (`CR-006`). | Move only the reveal responsibility; retain current layout. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.0 | Closed unions, exact construction targets, catalog identities, health states, and shared launch policy are tight. | The reviewed discovery-auth shape is missing, but this is localized. | Add the purpose-specific wrapped shape without a kitchen-sink abstraction. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Names communicate runtime, credential owner, consumer, storage, health, and lifecycle intent consistently. | No material naming defect. | Preserve naming during rework. |
+| `7` | `API/E2E Readiness` | 8.2 | Builds and focused tests are strong and the remaining live-harness migration is explicitly scoped. | Current tests encode the raw boundary and omit the removal race and pending UI propagation (`CR-006`–`CR-008`). | Fix source/tests, then return for source review before API/E2E. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.0 | Prior critical behavior removal and all prior bounded defects are fixed. | Removal can be undone by stale discovery, and generic save/remove can overlap (`CR-007`, `CR-008`). | Make authoritative lifecycle and pending controls deterministic. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.2 | Normal runtime has no credential-env fallback or dual shape; history is migration-only. | No material legacy issue. | Preserve the current cutover boundary. |
+| `10` | `Cleanup Completeness` | 8.8 | Dormant gateway paths and prior stale handoff assertions are corrected. | The handoff now overstates the generic editor's pending-state behavior, and tests retain one stale auth-boundary assertion (`CR-006`, `CR-008`). | Correct source, tests, and handoff evidence together. |
 
 ## Findings
 
-### `CR-001` — Supported AutoByteus remote LLM/audio/image discovery is omitted from the solution basis and disabled
+### `CR-006` — AutoByteus discovery unwraps the secret above its explicitly authorized core client boundary
 
 - Severity: `High`
-- Classification: `Requirement Gap` (with design impact)
-- Affected behavior/contracts: `BEH-003`, REQ-001/005/011/014, AC-005/006/010, preserved provider behavior; provisional `BEH-PROV-013`.
+- Classification: `Local Fix`
+- Affected behavior/contracts: BEH-003, BEH-013, REQ-005, REQ-019, AC-005, AC-019(b)/(d), and `credential-consumer-mapping.md:184`.
 - Evidence:
-  - The reviewed base called `AutobyteusModelProvider.discoverAndRegister()` from `LLMFactory.initializeRegistry`, included it in `reloadModels`, and invoked audio/image `ensureDiscovered()` from their factories.
-  - Current `autobyteus-ts/src/llm/llm-factory.ts:155-164,495-507` removes AutoByteus initialization and targeted reload.
-  - Current audio/image factories end initialization after static registration (`audio-client-factory.ts:186-191`, `image-client-factory.ts:173-186`).
-  - The three provider implementations now require `apiKey: string`, but repository search finds no production caller; only their internal/self calls remain.
-  - `autobyteus-server-ts/src/secret-management/catalog/secret-catalog.ts:8-19,62-70` has no AutoByteus binding and media allows only OpenAI.
-  - `ServerSettingsService` and the web Settings endpoint card still support `AUTOBYTEUS_LLM_SERVER_HOSTS`; `AutobyteusLlmModelProvider` still declares AutoByteus reloadable, proving this is a supported product path rather than dead technical possibility.
-  - None of the requirements, investigation/design core documents, or supplements mentions `AUTOBYTEUS_API_KEY` or this provider discovery lifecycle.
-- Material consequence: users with configured AutoByteus remote hosts receive no discovered remote LLM, audio, or image models; targeted reload reports no real refresh. The explicit-auth cutover avoids ambient reads by removing behavior rather than provisioning it.
-- Required action: `solution_designer` must add the supported behavior provisionally, decide its product-owned definition/bindings, discovery versus construction consumers, migration/reprovision semantics, Settings/status surface, and Store-backed live coverage. The revised package must pass architecture review before implementation reconnects all LLM/audio/image discovery and runtime construction without ambient fallback.
+  - `autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.ts:100-118` resolves `SecretValue`, immediately calls `revealToTrustedConsumer()`, and sends `apiKey: string` through its discovery method and injectable ports.
+  - `autobyteus-ts/src/llm/autobyteus-provider.ts:101,117`, `multimedia/audio/autobyteus-audio-provider.ts:27,39`, and `multimedia/image/autobyteus-image-provider.ts:27,39` accept the raw string and construct `AutobyteusClient` later.
+  - The authoritative mapping at `credential-consumer-mapping.md:184` requires the server service to pass `SecretValue` through an explicit discovery-authentication shape and requires the core provider to unwrap only while constructing `AutobyteusClient`. The architecture sequence at `secret-storage-architecture.md:406-410` likewise keeps `SecretValue` through management/discovery before remote request authentication. AC-005 authorizes raw reveal only at the SDK/request-auth/child-environment boundary.
+  - `autobyteus-server-ts/tests/unit/llm-management/autobyteus-remote-model-discovery-service.test.ts:54-56` currently codifies the incorrect raw-string port contract.
+- Material consequence: raw credential lifetime and exposure expand into a server application coordinator, a local variable, and three injectable discovery ports rather than remaining inside the narrow client/request-auth boundary. That violates the task's central security invariant even though logs and serialized state remain value-free.
+- Required action: define the reviewed narrow discovery-authentication shape containing `SecretValue`; pass it unchanged from the server discovery owner; unwrap only at each `new AutobyteusClient` call in core; and update focused tests to prove the wrapped boundary without exposing the value.
 
-### `CR-002` — Default Claude CLI mode cannot see the approved pre-existing external account state
+### `CR-007` — An older in-flight discovery can republish AutoByteus models after authoritative credential removal
 
 - Severity: `High`
 - Classification: `Local Fix`
-- Affected behavior/contracts: `BEH-012`, REQ-018, AC-018(a), AR-007/MP-002; `CR-MP-004`.
-- Evidence: `claude-sdk-launch-policy.ts:18-32` defaults CLI `accountHome` to `<appDataDir>/runtime/claude-account`, creates it, and sets both `HOME` and `CLAUDE_CONFIG_DIR` to it. `AUTOBYTEUS_CLAUDE_ACCOUNT_HOME` has no other source registration, setup flow, or coverage. The reviewed contract says default CLI consumes pre-existing external node-local account state and preserves the working CLI path while doing zero secret lookup.
-- Material consequence: on the default/upgrade path, an existing Claude CLI login in the normal node-local account location is invisible, so model discovery/run fails despite valid external authentication.
-- Required action: preserve the empty-base/no-secret-lookup rule while explicitly selecting the permitted existing external account location (and any approved explicit override), then test default and override behavior without broad environment inheritance or mode fallback.
+- Affected behavior/contracts: BEH-013, REQ-019, AC-019(a)–(c), authoritative successful removal in `credential-consumer-mapping.md:186`; `CR-MP-005`.
+- Evidence:
+  - `autobyteus-remote-model-discovery-service.ts:35-37,72-79` reuses one in-flight promise per model kind with no configuration or lifecycle generation.
+  - `clearAllWithoutLookup()` at `:63-69` clears registries and records zero state but does not await, cancel, or invalidate those promises.
+  - `discoverAndSync()` at `:82-107` later synchronizes discovered models and updates completion/count state unconditionally.
+  - `llm-provider-service.ts:195-205` first removes the managed AutoByteus credential, then calls the authoritative all-kind clear. As established in `CR-MP-005`, ordinary public list/reload and Settings removal operations can overlap.
+- Material consequence: after successful credential removal reports an authoritative empty state, the older request can restore remote registry entries and nonzero discovery cache state. Later construction still fails closed because the credential is gone, but the model catalog and Settings lifecycle no longer reflect the authoritative removal.
+- Required action: serialize or fence the lifecycle with a per-kind generation/epoch (or equivalent) so stale operations cannot publish or update cache after authoritative clear/replacement; make in-flight reuse configuration/generation aware; add a deterministic deferred-promise test proving final registry/cache state remains empty after the overlap.
 
-### `CR-003` — Stdio MCP launch drops every explicitly configured server-specific environment variable
-
-- Severity: `Medium`
-- Classification: `Local Fix`
-- Affected behavior/contracts: `BEH-002`, REQ-004, AC-003, preserved authorized MCP capability; `CR-MP-003`.
-- Evidence: `stdio-managed-mcp-server.ts:48-53` calls `buildAgentChildEnvironment(config.env)`. The builder treats its first argument as a parent source and copies only generic operational keys; server-specific values belong in its second `additions` argument. `StdioMcpServerConfig.env`, GraphQL/Settings, persistence coverage, and real MCP integration fixtures all establish explicit env as a supported input. The changed unit test at `tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts:64-74` incorrectly asserts `TEST_ENV` is absent.
-- Material consequence: configured MCPs that require a server-specific non-secret setting or separately authorized credential start without it and fail, while the product continues to accept/persist the configuration.
-- Required action: start from the sanitized operational base and add only the explicitly authorized server-specific map through the intended allowlist/additions boundary. Tests must prove configured delivery and unrelated parent/Store/provider credential exclusion.
-
-### `CR-004` — Custom-provider delete is not idempotent
+### `CR-008` — Generic provider removal state is not propagated and does not prevent conflicting save/remove actions
 
 - Severity: `Medium`
 - Classification: `Local Fix`
-- Affected behavior/contracts: AC-011 and the custom-provider lifecycle under BEH-001/BEH-005.
-- Evidence: `LlmProviderService.deleteCustomProvider` calls `getCustomProviderOrThrow` before removal (`llm-provider-service.ts:172-179`); a second delete reaches `getProviderById` and throws `Unknown provider` (`:325-338`). The resolver catches it and returns `CUSTOM_PROVIDER_DELETE_REJECTED` (`api/graphql/types/llm-provider.ts:350-357`).
-- Material consequence: a repeated/retried delete reports failure even after the desired absent state has already been reached, contrary to AC-011.
-- Required action: make repeated deletion of an already absent custom provider a value-free success without weakening the built-in-provider guard or reintroducing secret lookup/value return; add service/API retry coverage.
-
-### `CR-005` — The implementation handoff misstates Claude CLI settings/tools behavior and gives downstream a false scenario
-
-- Severity: `Medium`
-- Classification: `Local Fix` (packaging/evidence)
-- Affected behavior/contracts: BEH-012, REQ-018, AC-018, reviewed design sections 41/289/922.
-- Evidence: `implementation-handoff.md:24,45,158` claims both modes use `tools: []`, empty setting sources, and strict explicit MCP. Actual `ClaudeSdkClient.buildQueryOptions` applies those controls only when `authentication.kind === "managedApiKey"`; CLI uses the approved CLI setting sources and caller-provided MCP config (`claude-sdk-client.ts:396-438,471-488`). The detailed reviewed requirements/design constrain those controls to managed mode.
-- Material consequence: API/E2E would be instructed to assert behavior that contradicts both source and the approved two-mode contract, creating a likely stale-test failure or an accidental CLI behavior change.
-- Required action: correct the canonical implementation handoff's summary, BEH-012 trace, and downstream scenario to say the empty child environment applies to both modes, while `tools: []`/empty setting sources/strict explicit AutoByteus MCP are managed-mode restrictions.
+- Affected behavior/contracts: BEH-001, BEH-013, provider Settings lifecycle under REQ-001/REQ-019 and AC-001/AC-019(a), plus the implementation handoff's claimed interaction behavior.
+- Evidence:
+  - `autobyteus-web/components/settings/ProviderAPIKeyManager.vue:96-104` renders `ProviderApiKeyEditor` with configured/saving/disabled/reset state but omits `:removing="removing"`, although the parent runtime exposes `removing` at `:139-143`.
+  - `providerApiKey/ProviderApiKeyEditor.vue:53-58` declares `removing` as required. It uses it only to disable/label the remove button at `:36-45`; the input, reveal control, and save button at `:4-26` ignore it. Even after prop wiring, a save remains possible while removal is pending.
+  - `ProviderAPIKeyManager.spec.ts:132-140` stubs the editor without declaring or asserting the pending prop. `ProviderApiKeyEditor.spec.ts:49-55` checks only remove emission, not pending-state blocking.
+  - `implementation-handoff.md:143-149` states that removing-state binding prevents save/remove overlap; the current source does not support that claim.
+- Material consequence: the generic editor never presents its actual “Removing…” state, duplicate removal remains clickable in the rendered parent, and a conflicting replacement save can be submitted while removal is pending. The final result becomes timing-dependent and contradicts the claimed lifecycle guard.
+- Required action: bind `:removing="removing"` from the manager; treat removal as disabling conflicting input/reveal/save as well as remove; add parent-child pending-propagation and editor overlap-guard tests; and keep the handoff wording only once source and tests support it.
 
 ## Classification
 
-- Primary package classification: `Requirement Gap`
-- Additional bounded findings: `Local Fix`
-- Reason: `CR-001` is a concrete newly discovered supported behavior absent from the approved behavior basis, so implementation review cannot define the missing product contract or pass. `CR-002`–`CR-005` are bounded implementation/packaging corrections but should be addressed after the revised solution package is architecture-reviewed.
+- Primary package classification: `Local Fix`
+- Reason: `CR-006`–`CR-008` are bounded implementation/test/handoff corrections within the architecture-reviewed design. They do not require a new behavior, requirement, or structural design decision.
 
 ## Recommended Recipient
 
-- `solution_designer`
-- Routing: revise the solution package for `BEH-PROV-013`, carry all five findings and every upstream artifact through architecture re-review, then return implementation-owned fixes through implementation engineering and a new full source-review round before API/E2E.
+- `implementation_engineer`
+- Routing: correct all three findings, update focused tests and the canonical implementation handoff, then return the complete package for another full implementation-source review before API/E2E.
 
 ## Residual Risks
 
 - `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency. It is not legal clearance, and neither Claude authentication mode may be silently changed.
 - Only `LOCAL_HARDENED` is claimed; arbitrary same-user filesystem/process inspection and strong identity/container isolation remain deferred.
-- Cross-platform Local ACL/owner behavior, restart/reopen, contention, staged interruption, all pair/format faults, unchanged Docker persistence, and single-Pod/PVC behavior still require realistic API/E2E evidence.
-- The core test-tree TypeScript check remains non-green with 368 errors, including stale explicit-auth test callers; the full Nuxt typecheck has broad baseline errors; a broad server-unit run was stopped without a pass claim.
-- The implementation engineer did not execute a live backend UI matrix; rich healthy/degraded Settings states still need browser-equivalent/live verification.
+- Cross-platform Local ACL/owner behavior, restart/reopen, contention, staged interruption, pair/format faults, unchanged Docker persistence, single-Pod/PVC behavior, and real AutoByteus LLM/audio/image execution still require realistic API/E2E evidence.
+- The core test-tree TypeScript check remains non-green with 365 broader errors, including eight old live AutoByteus audio/image suites that API/E2E must migrate to the Store-backed harness. The broad core unit run remains 1,718/1,719 on one unchanged event-enum count mismatch. Full Nuxt typecheck remains broadly baseline-non-green.
+- Rich configured/removal Settings behavior still needs browser-equivalent/live-backend verification after `CR-008` is fixed.
 - No real credential, secret-bearing Store, or credential file was accessed during this review.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Fail`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Fail`
-- Score Summary: `7.6/10` (`75.8/100`); Data-Flow Spine, Ownership, API Clarity, API/E2E Readiness, Runtime Correctness, and Cleanup are below the clean-pass target.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `8.6/10` (`86.2/100`); Ownership, API Clarity, API/E2E Readiness, Runtime Correctness, and related structural categories remain below the clean-pass target.
 - Failure Origin (when applicable): `N/A` (not an API/E2E failure-origin entry point)
-- Recommended Recipient (when applicable): `solution_designer`
-- Notes: `CR-001` requires upstream behavior/design revision and architecture re-review. `CR-002`–`CR-005` remain implementation-owned corrections. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` through every downstream handoff.
+- Recommended Recipient (when applicable): `implementation_engineer`
+- Notes: the round-1 critical functionality-removal finding and all four accompanying defects are resolved. `CR-006`–`CR-008` must be corrected and re-reviewed before API/E2E. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` through every downstream handoff.

@@ -97,6 +97,7 @@
                   v-else-if="selectedProviderId"
                   :configured="selectedProviderConfigured"
                   :saving="saving"
+                  :removing="removing"
                   :disabled="!canWriteSelectedCredential"
                   :reset-version="providerEditorResetVersion"
                   @save="saveProviderApiKey(selectedProviderId, $event)"

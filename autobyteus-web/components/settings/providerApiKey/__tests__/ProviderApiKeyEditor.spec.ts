@@ -53,4 +53,21 @@ describe('ProviderApiKeyEditor', () => {
 
     expect(wrapper.emitted('remove')).toEqual([[]])
   })
+
+  it('blocks input, reveal, save, and duplicate remove actions while removal is pending', async () => {
+    const wrapper = mountComponent(true)
+    await wrapper.get('input').setValue('replacement-key')
+    await wrapper.setProps({ removing: true })
+
+    expect(wrapper.get('input').attributes('disabled')).toBeDefined()
+    const buttons = wrapper.findAll('button')
+    expect(buttons).toHaveLength(3)
+    for (const button of buttons) expect(button.attributes('disabled')).toBeDefined()
+    expect(buttons.at(2)?.text()).toContain('Removing...')
+
+    await buttons.at(1)!.trigger('click')
+    await buttons.at(2)!.trigger('click')
+    expect(wrapper.emitted('save')).toBeUndefined()
+    expect(wrapper.emitted('remove')).toBeUndefined()
+  })
 })

@@ -1,4 +1,5 @@
 import { LLMFactory } from 'autobyteus-ts';
+import type { AutobyteusDiscoveryAuthentication } from 'autobyteus-ts/clients/autobyteus-discovery-authentication.js';
 import { AutobyteusModelProvider } from 'autobyteus-ts/llm/autobyteus-provider.js';
 import { LLMRuntime } from 'autobyteus-ts/llm/runtimes.js';
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
@@ -12,6 +13,15 @@ import { getSecretStorageConfigurationService } from '../../secret-management/co
 import type { SecretManagementService } from '../../secret-management/services/secret-management-service.js';
 
 export type AutobyteusRemoteModelKind = 'llm' | 'audio' | 'image';
+
+const REMOTE_MODEL_KINDS = ['llm', 'audio', 'image'] as const;
+
+type InFlightDiscovery = {
+  generation: number;
+  hostsKey: string;
+  token: symbol;
+  promise: Promise<number>;
+};
 
 type DiscoveryPorts = {
   discoverLlm: typeof AutobyteusModelProvider.getModels;
@@ -34,7 +44,11 @@ const defaultPorts: DiscoveryPorts = {
 export class AutobyteusRemoteModelDiscoveryService {
   private readonly completedHostsByKind = new Map<AutobyteusRemoteModelKind, string>();
   private readonly modelCountsByKind = new Map<AutobyteusRemoteModelKind, number>();
-  private readonly inFlightByKind = new Map<AutobyteusRemoteModelKind, Promise<number>>();
+  private readonly generationsByKind = new Map<AutobyteusRemoteModelKind, number>();
+  private readonly inFlightByKind = new Map<AutobyteusRemoteModelKind, InFlightDiscovery>();
+  private readonly syncTailsByKind = new Map<AutobyteusRemoteModelKind, Promise<void>>();
+  private clearInFlight: Promise<void> | null = null;
+  private clearToken: symbol | null = null;
 
   constructor(
     private readonly managementProvider: () => SecretManagementService = () =>
@@ -47,6 +61,7 @@ export class AutobyteusRemoteModelDiscoveryService {
   ) {}
 
   async ensureDiscovered(kind: AutobyteusRemoteModelKind): Promise<number> {
+    if (this.clearInFlight) await this.clearInFlight;
     const hosts = this.hostsProvider();
     const hostsKey = hosts.join(',');
     if (this.completedHostsByKind.get(kind) === hostsKey) {
@@ -56,26 +71,57 @@ export class AutobyteusRemoteModelDiscoveryService {
   }
 
   async refresh(kind: AutobyteusRemoteModelKind): Promise<number> {
+    if (this.clearInFlight) await this.clearInFlight;
     const hosts = this.hostsProvider();
     return this.run(kind, hosts, hosts.join(','));
   }
 
-  async clearAllWithoutLookup(): Promise<void> {
+  clearAllWithoutLookup(): Promise<void> {
+    if (this.clearInFlight) return this.clearInFlight;
+
+    const token = Symbol('authoritative-clear');
+    const operation = this.performAuthoritativeClear().finally(() => {
+      if (this.clearToken === token) {
+        this.clearInFlight = null;
+        this.clearToken = null;
+      }
+    });
+    this.clearToken = token;
+    this.clearInFlight = operation;
+    return operation;
+  }
+
+  private async performAuthoritativeClear(): Promise<void> {
     const hostsKey = this.hostsProvider().join(',');
-    for (const kind of ['llm', 'audio', 'image'] as const) {
-      await this.clear(kind);
-      this.completedHostsByKind.set(kind, hostsKey);
-      this.modelCountsByKind.set(kind, 0);
+    const generations = REMOTE_MODEL_KINDS.map((kind) => {
+      const generation = this.advanceGeneration(kind);
+      this.inFlightByKind.delete(kind);
+      return { kind, generation };
+    });
+
+    for (const { kind, generation } of generations) {
+      await this.publish(kind, generation, hostsKey, () => this.clear(kind));
     }
   }
 
   private run(kind: AutobyteusRemoteModelKind, hosts: string[], hostsKey: string): Promise<number> {
+    const currentGeneration = this.generationsByKind.get(kind) ?? 0;
     const existing = this.inFlightByKind.get(kind);
-    if (existing) return existing;
+    if (
+      existing
+      && existing.generation === currentGeneration
+      && existing.hostsKey === hostsKey
+    ) return existing.promise;
 
-    const operation = this.discoverAndSync(kind, hosts, hostsKey)
-      .finally(() => this.inFlightByKind.delete(kind));
-    this.inFlightByKind.set(kind, operation);
+    const generation = this.advanceGeneration(kind);
+    const token = Symbol(`${kind}:${generation}`);
+    const operation = this.discoverAndSync(kind, hosts, hostsKey, generation)
+      .finally(() => {
+        if (this.inFlightByKind.get(kind)?.token === token) {
+          this.inFlightByKind.delete(kind);
+        }
+      });
+    this.inFlightByKind.set(kind, { generation, hostsKey, token, promise: operation });
     return operation;
   }
 
@@ -83,12 +129,10 @@ export class AutobyteusRemoteModelDiscoveryService {
     kind: AutobyteusRemoteModelKind,
     hosts: string[],
     hostsKey: string,
+    generation: number,
   ): Promise<number> {
     if (hosts.length === 0) {
-      const count = await this.clear(kind);
-      this.completedHostsByKind.set(kind, hostsKey);
-      this.modelCountsByKind.set(kind, count);
-      return count;
+      return this.publish(kind, generation, hostsKey, () => this.clear(kind));
     }
 
     const consumer: SecretConsumerIdentity = {
@@ -97,36 +141,77 @@ export class AutobyteusRemoteModelDiscoveryService {
       providerId: 'AUTOBYTEUS',
       credentialSlot: 'apiKey',
     };
-    let rawApiKey: string | null = null;
     try {
       const apiKey = await this.managementProvider().resolveForUse(consumer);
-      rawApiKey = apiKey.revealToTrustedConsumer();
-      const count = await this.discover(kind, hosts, rawApiKey);
-      this.completedHostsByKind.set(kind, hostsKey);
-      this.modelCountsByKind.set(kind, count);
-      return count;
+      const authentication: AutobyteusDiscoveryAuthentication = { apiKey };
+      return await this.discover(kind, hosts, hostsKey, generation, authentication);
     } catch {
+      if (!this.isCurrentGeneration(kind, generation)) {
+        return this.modelCountsByKind.get(kind) ?? 0;
+      }
       throw new Error(`AUTOBYTEUS_${kind.toUpperCase()}_DISCOVERY_FAILED`);
-    } finally {
-      rawApiKey = null;
     }
   }
 
-  private async discover(kind: AutobyteusRemoteModelKind, hosts: string[], apiKey: string): Promise<number> {
+  private async discover(
+    kind: AutobyteusRemoteModelKind,
+    hosts: string[],
+    hostsKey: string,
+    generation: number,
+    authentication: AutobyteusDiscoveryAuthentication,
+  ): Promise<number> {
     switch (kind) {
       case 'llm': {
-        const models = await this.ports.discoverLlm(hosts, apiKey);
-        return this.ports.syncLlm(LLMRuntime.AUTOBYTEUS, models);
+        const models = await this.ports.discoverLlm(hosts, authentication);
+        return this.publish(kind, generation, hostsKey, () =>
+          this.ports.syncLlm(LLMRuntime.AUTOBYTEUS, models));
       }
       case 'audio': {
-        const models = await this.ports.discoverAudio(hosts, apiKey);
-        return this.ports.syncAudio(MultimediaRuntime.AUTOBYTEUS, models);
+        const models = await this.ports.discoverAudio(hosts, authentication);
+        return this.publish(kind, generation, hostsKey, () =>
+          this.ports.syncAudio(MultimediaRuntime.AUTOBYTEUS, models));
       }
       case 'image': {
-        const models = await this.ports.discoverImage(hosts, apiKey);
-        return this.ports.syncImage(MultimediaRuntime.AUTOBYTEUS, models);
+        const models = await this.ports.discoverImage(hosts, authentication);
+        return this.publish(kind, generation, hostsKey, () =>
+          this.ports.syncImage(MultimediaRuntime.AUTOBYTEUS, models));
       }
     }
+  }
+
+  private publish(
+    kind: AutobyteusRemoteModelKind,
+    generation: number,
+    hostsKey: string,
+    synchronize: () => number | Promise<number>,
+  ): Promise<number> {
+    const predecessor = this.syncTailsByKind.get(kind) ?? Promise.resolve();
+    const operation = predecessor.catch(() => undefined).then(async () => {
+      if (!this.isCurrentGeneration(kind, generation)) {
+        return this.modelCountsByKind.get(kind) ?? 0;
+      }
+
+      const count = await synchronize();
+      if (!this.isCurrentGeneration(kind, generation)) {
+        return this.modelCountsByKind.get(kind) ?? 0;
+      }
+
+      this.completedHostsByKind.set(kind, hostsKey);
+      this.modelCountsByKind.set(kind, count);
+      return count;
+    });
+    this.syncTailsByKind.set(kind, operation.then(() => undefined, () => undefined));
+    return operation;
+  }
+
+  private advanceGeneration(kind: AutobyteusRemoteModelKind): number {
+    const generation = (this.generationsByKind.get(kind) ?? 0) + 1;
+    this.generationsByKind.set(kind, generation);
+    return generation;
+  }
+
+  private isCurrentGeneration(kind: AutobyteusRemoteModelKind, generation: number): boolean {
+    return this.generationsByKind.get(kind) === generation;
   }
 
   private async clear(kind: AutobyteusRemoteModelKind): Promise<number> {

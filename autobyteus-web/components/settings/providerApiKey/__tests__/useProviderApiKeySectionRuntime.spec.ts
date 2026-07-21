@@ -256,6 +256,26 @@ describe('useProviderApiKeySectionRuntime', () => {
     expect((wrapper.vm as any).notification.message).toBe('API key for Anthropic removed successfully')
   })
 
+  it('rejects overlapping save and duplicate remove actions while removal is pending', async () => {
+    const { wrapper, store } = mountRuntime({ providersWithModels: [anthropicRow] })
+    let completeRemoval!: (value: boolean) => void
+    store.removeLLMProviderApiKey = vi.fn().mockReturnValue(
+      new Promise<boolean>((resolve) => { completeRemoval = resolve }),
+    )
+    await (wrapper.vm as any).initialize()
+
+    const pendingRemoval = (wrapper.vm as any).removeProviderApiKey('ANTHROPIC')
+    expect((wrapper.vm as any).removing).toBe(true)
+    await expect((wrapper.vm as any).saveProviderApiKey('ANTHROPIC', 'replacement-key')).resolves.toBe(false)
+    await expect((wrapper.vm as any).removeProviderApiKey('ANTHROPIC')).resolves.toBe(false)
+    expect(store.setLLMProviderApiKey).not.toHaveBeenCalled()
+    expect(store.removeLLMProviderApiKey).toHaveBeenCalledTimes(1)
+
+    completeRemoval(true)
+    await expect(pendingRemoval).resolves.toBe(true)
+    expect((wrapper.vm as any).removing).toBe(false)
+  })
+
   it('saves Gemini setup without mutating immutable provider query results in place', async () => {
     const { wrapper, store } = mountRuntime({
       providersWithModels: [deepFreeze(geminiRow)],
