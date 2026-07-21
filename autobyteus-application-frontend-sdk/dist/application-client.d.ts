@@ -16,14 +16,16 @@ export declare const createApplicationClient: (options: ApplicationClientOptions
     agentCommunication: {
         connect: (address: ApplicationAgentTargetAddress, connectOptions?: ApplicationAgentConnectionOptions) => import("./application-agent-connection.js").ApplicationAgentConnection;
     };
+    notifications: {
+        subscribe: (listener: (message: ApplicationNotificationMessage) => void) => {
+            close: () => void;
+        };
+    };
     backend: {
         query: (queryName: string, input?: unknown) => Promise<unknown>;
         command: (commandName: string, input?: unknown) => Promise<unknown>;
         graphql: (request: ApplicationGraphqlRequest) => Promise<unknown>;
         route: (request: ApplicationRouteRequest) => Promise<ApplicationRouteResponse | unknown>;
-        subscribeNotifications: (listener: (message: ApplicationNotificationMessage) => void) => {
-            close: () => void;
-        };
         connectWebSocket: (path: string, connectOptions?: ApplicationBackendWebSocketConnectOptions) => import("./application-backend-websocket-connection.js").ApplicationBackendWebSocketConnection;
     };
 };

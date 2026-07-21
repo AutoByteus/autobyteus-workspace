@@ -8,6 +8,9 @@ export const createApplicationClient = (options) => {
         agentCommunication: {
             connect: (address, connectOptions) => options.transport.connectAgentCommunication(address, connectOptions),
         },
+        notifications: {
+            subscribe: (listener) => options.transport.subscribeNotifications?.({ applicationId: options.applicationId, listener }) ?? { close: () => undefined },
+        },
         backend: {
             query: (queryName, input) => options.transport.invokeQuery({
                 applicationId: options.applicationId, queryName, requestContext: getRequestContext(), input: input ?? null,
@@ -23,7 +26,6 @@ export const createApplicationClient = (options) => {
                     throw new Error("The application transport does not support route invocation.");
                 return options.transport.invokeRoute({ applicationId: options.applicationId, requestContext: getRequestContext(), request });
             },
-            subscribeNotifications: (listener) => options.transport.subscribeNotifications?.({ applicationId: options.applicationId, listener }) ?? { close: () => undefined },
             connectWebSocket: (path, connectOptions) => {
                 if (!options.transport.connectWebSocket)
                     throw new Error("The application transport does not support WebSocket connections.");

@@ -5,6 +5,39 @@ import {
 } from "../../../src/application-orchestration/services/application-availability-service.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 
+class TestSocket {
+  sent: Array<string | Uint8Array> = [];
+  closes: Array<{ code?: number; reason?: string }> = [];
+  private listeners = new Map<string, Set<(...args: unknown[]) => void>>();
+
+  send(value: string | Uint8Array): void { this.sent.push(value); }
+  close(code?: number, reason?: string): void { this.closes.push({ code, reason }); }
+  on(event: string, listener: (...args: unknown[]) => void): void {
+    const listeners = this.listeners.get(event) ?? new Set();
+    listeners.add(listener);
+    this.listeners.set(event, listeners);
+  }
+}
+
+const flushAsyncWork = async (): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, 0));
+};
+
+const applicationWithWebSockets = (webSockets: boolean) => ({
+  id: "app-1",
+  backend: {
+    supportedExposures: {
+      queries: true,
+      commands: true,
+      routes: true,
+      graphql: true,
+      notifications: true,
+      eventHandlers: true,
+      webSockets,
+    },
+  },
+});
+
 describe("ApplicationBackendApiGatewayService", () => {
   const createDeferred = <T>() => {
     let resolve!: (value: T | PromiseLike<T>) => void;
@@ -73,6 +106,74 @@ describe("ApplicationBackendApiGatewayService", () => {
       },
       { title: "Hello" },
     )).rejects.toThrow("requestContext.applicationId must match the route applicationId");
+  });
+
+  it("rejects disabled custom WebSockets before opening the application engine path", async () => {
+    const engineHostService = {
+      onWebSocketAction: vi.fn(),
+      onWorkerClose: vi.fn(),
+      openApplicationWebSocket: vi.fn(async () => undefined),
+      closeApplicationWebSocket: vi.fn(async () => undefined),
+    };
+    const socket = new TestSocket();
+    const service = new ApplicationBackendApiGatewayService({
+      applicationBundleService: {
+        getApplicationById: vi.fn(async () => applicationWithWebSockets(false)),
+      } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
+      } as never,
+      engineHostService: engineHostService as never,
+    });
+
+    service.connectApplicationWebSocket({
+      applicationId: "app-1",
+      request: { path: "/rooms/one", params: {}, query: {}, headers: {} },
+      socket,
+    });
+    await flushAsyncWork();
+
+    expect(engineHostService.openApplicationWebSocket).not.toHaveBeenCalled();
+    expect(socket.sent).toEqual([]);
+    expect(socket.closes).toEqual([{
+      code: 1011,
+      reason: "Application backend connection rejected",
+    }]);
+  });
+
+  it("opens custom WebSockets after the active bundle enables the exposure", async () => {
+    const engineHostService = {
+      onWebSocketAction: vi.fn(),
+      onWorkerClose: vi.fn(),
+      openApplicationWebSocket: vi.fn(async () => undefined),
+      closeApplicationWebSocket: vi.fn(async () => undefined),
+    };
+    const socket = new TestSocket();
+    const service = new ApplicationBackendApiGatewayService({
+      applicationBundleService: {
+        getApplicationById: vi.fn(async () => applicationWithWebSockets(true)),
+      } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
+      } as never,
+      engineHostService: engineHostService as never,
+    });
+
+    service.connectApplicationWebSocket({
+      applicationId: "app-1",
+      request: { path: "/rooms/one", params: {}, query: {}, headers: {} },
+      socket,
+    });
+    await flushAsyncWork();
+
+    expect(engineHostService.openApplicationWebSocket).toHaveBeenCalledOnce();
+    expect(socket.sent).toEqual([
+      JSON.stringify({
+        protocol: "autobyteus.application-backend.websocket.v1",
+        type: "CONNECTION_READY",
+      }),
+    ]);
+    expect(socket.closes).toEqual([]);
   });
 
   it("surfaces application availability failures before worker launch", async () => {

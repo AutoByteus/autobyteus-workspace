@@ -120,7 +120,7 @@ export const createBriefStudioGraphqlClient = (applicationClient) => {
 
   return {
     getApplicationInfo: applicationClient.getApplicationInfo,
-    subscribeNotifications: applicationClient.backend.subscribeNotifications,
+    subscribeNotifications: applicationClient.notifications.subscribe,
     briefs: () => execute(BRIEFS_QUERY, "BriefsQuery", null, "briefs"),
     brief: (briefId) => execute(BRIEF_QUERY, "BriefQuery", { briefId }, "brief"),
     briefExecutions: (briefId) =>

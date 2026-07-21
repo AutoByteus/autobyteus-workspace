@@ -146,7 +146,7 @@ export const createSocraticMathGraphqlClient = (applicationClient) => {
 
   return {
     getApplicationInfo: applicationClient.getApplicationInfo,
-    subscribeNotifications: applicationClient.backend.subscribeNotifications,
+    subscribeNotifications: applicationClient.notifications.subscribe,
     lessons: () => execute(LESSONS_QUERY, "LessonsQuery", null, "lessons"),
     lesson: (lessonId) => execute(LESSON_QUERY, "LessonQuery", { lessonId }, "lesson"),
     startLesson: (input) => execute(START_LESSON_MUTATION, "StartLessonMutation", { input }, "startLesson"),

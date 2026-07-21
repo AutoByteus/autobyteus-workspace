@@ -29,6 +29,10 @@ export const createApplicationClient = (options: ApplicationClientOptions) => {
       connect: (address: ApplicationAgentTargetAddress, connectOptions?: ApplicationAgentConnectionOptions) =>
         options.transport.connectAgentCommunication(address, connectOptions),
     },
+    notifications: {
+      subscribe: (listener: (message: ApplicationNotificationMessage) => void): { close: () => void } =>
+        options.transport.subscribeNotifications?.({ applicationId: options.applicationId, listener }) ?? { close: () => undefined },
+    },
     backend: {
       query: (queryName: string, input?: unknown) => options.transport.invokeQuery({
         applicationId: options.applicationId, queryName, requestContext: getRequestContext(), input: input ?? null,
@@ -43,8 +47,6 @@ export const createApplicationClient = (options: ApplicationClientOptions) => {
         if (!options.transport.invokeRoute) throw new Error("The application transport does not support route invocation.");
         return options.transport.invokeRoute({ applicationId: options.applicationId, requestContext: getRequestContext(), request });
       },
-      subscribeNotifications: (listener: (message: ApplicationNotificationMessage) => void): { close: () => void } =>
-        options.transport.subscribeNotifications?.({ applicationId: options.applicationId, listener }) ?? { close: () => undefined },
       connectWebSocket: (path: string, connectOptions?: ApplicationBackendWebSocketConnectOptions) => {
         if (!options.transport.connectWebSocket) throw new Error("The application transport does not support WebSocket connections.");
         return options.transport.connectWebSocket(path, connectOptions);

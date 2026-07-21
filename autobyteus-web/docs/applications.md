@@ -210,7 +210,7 @@ The public author-facing surface is:
 - `@autobyteus/application-backend-sdk` for backend definition typing
 - `application-bundle-iframe-contract-v4.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
 
-App UIs use `applicationClient.backend` for backend request/response, notifications, and optional custom WebSockets. `applicationClient.agentCommunication.connect(address)` is the separate standard direct connection for a bound agent/team target; it does not traverse the backend API gateway, application engine, or worker. Both capabilities derive their fixed desktop endpoints from the strict v4 bootstrap transport, which exposes no application authentication field.
+App UIs use `applicationClient.backend` for backend request/response and optional custom WebSockets, `applicationClient.notifications.subscribe(listener)` for one-way backend notifications, and `applicationClient.agentCommunication.connect(address)` for the separate standard direct connection to a bound agent/team target. Standard agent communication does not traverse the backend API gateway, application engine, or worker. All three capabilities derive their fixed desktop endpoints from the strict v4 bootstrap transport, which exposes no application authentication field.
 
 ## Ownership Boundary
 

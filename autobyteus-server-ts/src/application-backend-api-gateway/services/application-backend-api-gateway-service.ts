@@ -106,11 +106,19 @@ export class ApplicationBackendApiGatewayService {
     });
   }
 
-  private async requireApplication(applicationId: string): Promise<void> {
+  private async requireApplication(applicationId: string) {
     await this.availabilityService.requireApplicationActive(applicationId);
     const application = await this.applicationBundleService.getApplicationById(applicationId);
     if (!application) {
       throw new Error(`Application '${applicationId}' was not found.`);
+    }
+    return application;
+  }
+
+  private async requireApplicationWebSocketExposure(applicationId: string): Promise<void> {
+    const application = await this.requireApplication(applicationId);
+    if (!application.backend.supportedExposures.webSockets) {
+      throw new Error(`Application '${applicationId}' does not support backend WebSockets.`);
     }
   }
 
@@ -183,7 +191,7 @@ export class ApplicationBackendApiGatewayService {
   }): string {
     return this.webSocketSessionService.connect({
       ...input,
-      requireApplication: () => this.requireApplication(input.applicationId),
+      requireApplication: () => this.requireApplicationWebSocketExposure(input.applicationId),
     });
   }
 }

@@ -93,21 +93,6 @@ export class ApplicationAgentCommunicationSession {
     }
   }
 
-  closeByClient(): void {
-    if (this.state === "CLOSED" || this.state === "CLOSING") return;
-    if (this.state === "ESTABLISHING" || this.state === "READY_COMMIT_PENDING" || this.state === "READY_COMMITTING") {
-      if (this.state === "READY_COMMITTING") {
-        this.transportClosedDuringReadyCommit = true;
-        try { this.input.socket.close(applicationAgentConnectionCloseCode("CLIENT_CLOSED"), "client closed"); } catch { /* cleanup follows commit */ }
-        return;
-      }
-      this.state = "PRE_READY_FAILED";
-      this.finish("CLIENT_CLOSED", false);
-      return;
-    }
-    this.finish("CLIENT_CLOSED", false);
-  }
-
   private commitReady(): void {
     if (this.state !== "READY_COMMIT_PENDING" || !this.pausedStream) return;
     if (!this.pausedStream.beginReadyCommit()) {

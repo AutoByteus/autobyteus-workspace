@@ -8,7 +8,8 @@ Frontend helper package for application bundle UIs running inside the AutoByteus
 - `createApplicationClient(...)`
 - `createApplicationBackendMountTransport(...)`
 - framework-owned hosted-application startup states for unsupported entry, waiting, local startup, and startup failure
-- schema-agnostic `applicationClient.backend` helpers for GraphQL, routes, queries, commands, notifications, and optional custom WebSockets
+- schema-agnostic `applicationClient.backend` helpers for GraphQL, routes, queries, commands, and optional custom WebSockets
+- sibling `applicationClient.notifications.subscribe(listener)` for backend notifications
 - standard `applicationClient.agentCommunication.connect(address)` connections for application-bound agents and teams
 - re-exported request/notification/context types from `@autobyteus/application-sdk-contracts`
 
@@ -51,7 +52,7 @@ startHostedApplication({
 - `applicationClient.backend.connectWebSocket(path, options)` is a separate optional escape hatch for custom realtime business protocols.
 - The hosted client exposes no raw browser socket, runtime-id API, or application authentication surface.
 - `bootstrap.iframeLaunchId` is iframe-bootstrap correlation context only; `applicationClient.getApplicationInfo().requestContext` contains `{ applicationId }`.
-- `subscribeNotifications` is optional; omit it if the app UI does not use backend notifications.
+- `applicationClient.notifications.subscribe(listener)` is optional; omit the notification transport if the app UI does not use backend notifications.
 - The SDK does not own app business schemas or generated clients. Those stay inside each application workspace.
 
 ## Teaching samples

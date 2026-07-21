@@ -4,6 +4,7 @@ import {
   APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
 } from '../../autobyteus-application-sdk-contracts/dist/index.js';
 import {
+  createApplicationClient,
   createApplicationBackendMountTransport,
 } from '../dist/index.js';
 import { composeApplicationWebSocketUrl } from '../dist/application-websocket-url.js';
@@ -32,6 +33,29 @@ const createTransport = (overrides = {}) => createApplicationBackendMountTranspo
   agentCommunicationWebSocketBaseUrl: 'ws://node/ws/applications/app/agent-communication',
   fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({}), text: async () => '', headers: { get: () => 'application/json' } }),
   ...overrides,
+});
+
+test('application client exposes the exact capability groups and notification sibling', () => {
+  const notificationHandle = { close() {} };
+  const transport = {
+    invokeQuery: async () => null,
+    invokeCommand: async () => null,
+    executeGraphql: async () => null,
+    connectAgentCommunication: () => null,
+    subscribeNotifications: ({ applicationId, listener }) => {
+      assert.equal(applicationId, 'app');
+      assert.equal(typeof listener, 'function');
+      return notificationHandle;
+    },
+  };
+  const client = createApplicationClient({ applicationId: 'app', transport });
+
+  assert.deepEqual(Object.keys(client).sort(), ['agentCommunication', 'backend', 'getApplicationInfo', 'notifications']);
+  assert.deepEqual(Object.keys(client.backend).sort(), ['command', 'connectWebSocket', 'graphql', 'query', 'route']);
+  assert.deepEqual(Object.keys(client.notifications), ['subscribe']);
+  assert.deepEqual(Object.keys(client.agentCommunication), ['connect']);
+  assert.equal('subscribeNotifications' in client.backend, false);
+  assert.equal(client.notifications.subscribe(() => undefined), notificationHandle);
 });
 
 test('canonical WebSocket URL composition appends ordered business query values', () => {
