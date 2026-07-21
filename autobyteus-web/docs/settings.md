@@ -4,6 +4,32 @@
 
 This document outlines the end-to-end architecture of how Agent and Agent Team executions are managed in the frontend. The architecture has evolved to offload complex parsing to the backend. The frontend now acts as a **Renderer** of structured events rather than a parser of raw text.
 
+## Provider Credential Settings
+
+Settings -> API Key Management is a write-only credential surface backed by the
+server's centralized secret-management subsystem:
+
+- provider reads expose backend health, lifecycle, and `MISSING` / `CONFIGURED`
+  status but never return stored credential values;
+- saving replaces the selected credential and clears the editor after success;
+- configured built-in providers expose an explicit Remove action, and save and
+  remove operations cannot overlap;
+- backend `LOCKED`, `UNAVAILABLE`, `CORRUPT`, or `INCOMPATIBLE` state remains
+  visible as value-free status and blocks writes; and
+- an `EXTERNALLY_MANAGED` lifecycle shows its instruction code and does not
+  pretend the frontend can write the deployment-owned backend.
+
+Custom OpenAI-compatible provider drafts still accept an API key for the probe
+and create transaction, but only non-secret provider metadata is persisted in
+the custom-provider JSON file. The credential is stored separately, and deleting
+the custom provider removes both its credential and metadata. AutoByteus gateway
+models retain their downstream display provider while credential status and
+write/remove operations remain owned by the `AUTOBYTEUS` gateway provider.
+
+See `autobyteus-server-ts/docs/modules/secret_management.md` for Local Store,
+migration, runtime provisioning, Claude authentication, and real-E2E operator
+contracts.
+
 ## Server Settings: Working-Context Compaction
 
 Settings -> Server Settings -> Basics contains the global Compaction card. Its

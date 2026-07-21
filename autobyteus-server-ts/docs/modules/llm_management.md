@@ -2,9 +2,9 @@
 
 ## Scope
 
-Provider lifecycle, model-catalog reads, provider-targeted reload, fixed
-provider secret writes, and custom OpenAI-compatible provider persistence/sync
-for the TypeScript server.
+Provider lifecycle, model-catalog reads, provider-targeted reload, centralized
+provider credential writes/status, and custom OpenAI-compatible provider
+metadata persistence/sync for the TypeScript server.
 
 ## TS Source
 
@@ -23,9 +23,13 @@ for the TypeScript server.
   - fixed-provider API-key writes
   - custom-provider probe + create + delete
   - authoritative normalized provider-name uniqueness checks
+- **`SecretManagementService`**
+  (`src/secret-management/services/secret-management-service.ts`)
+  - write-only provider credential lifecycle and value-free status
+  - catalog-authorized just-in-time credential resolution
 - **`CustomLlmProviderStore`**
   (`src/llm-management/llm-providers/stores/custom-llm-provider-store.ts`)
-  - secret-bearing custom provider persistence
+  - metadata-only custom provider persistence
 - **`CustomLlmProviderRuntimeSyncService`**
   (`src/llm-management/llm-providers/services/custom-llm-provider-runtime-sync-service.ts`)
   - load/sync saved custom providers into runtime state
@@ -48,12 +52,13 @@ The GraphQL boundary stays provider-centered through
 - `availableAudioProvidersWithModels(runtimeKind?)`
 - `availableImageProvidersWithModels(runtimeKind?)`
 - `availableVideoProvidersWithModels(runtimeKind?)`
-- `getLlmProviderApiKeyConfigured(providerId)`
+- `getLlmProviderCredentialStatus(providerId)`
 - `getGeminiSetupConfig()`
 
 ### Mutations
 
 - `setLlmProviderApiKey(providerId, apiKey)`
+- `removeLlmProviderApiKey(providerId)`
 - `probeCustomLlmProvider(input)`
 - `createCustomLlmProvider(input, runtimeKind?)`
 - `deleteCustomLlmProvider(providerId, runtimeKind?)`
@@ -70,7 +75,11 @@ The GraphQL boundary stays provider-centered through
 - `providerType`
 - `isCustom`
 - `baseUrl`
-- `apiKeyConfigured`
+- `credentialStatus`
+  - `backendHealth`
+  - nullable `storageState`
+  - nullable `lifecycle`
+  - nullable `instructionCode`
 - `status`
 - `statusMessage`
 
@@ -110,9 +119,10 @@ selection guidance; missing descriptions remain valid name-only options.
 
 - Built-in provider IDs are stable enum-backed values such as `OPENAI`,
   `ANTHROPIC`, `GEMINI`, `LMSTUDIO`, and `OLLAMA`.
-- Secret writes remain write-only through `setLlmProviderApiKey(...)`.
-- Readback exposes configured status only (`apiKeyConfigured`), not raw secret
-  values.
+- Secret writes/removals remain write-only through
+  `setLlmProviderApiKey(...)` / `removeLlmProviderApiKey(...)`.
+- Readback exposes value-free `credentialStatus`; raw secret values are never
+  returned.
 - Gemini keeps its special setup modes, but it still projects into the same
   provider-centered list.
 - The Autobyteus runtime model catalog delegates built-in LLM entries to the
@@ -125,7 +135,8 @@ selection guidance; missing descriptions remain valid name-only options.
 - Custom providers are currently limited to
   `providerType = OPENAI_COMPATIBLE`.
 - Each saved custom provider gets its own stable provider ID
-  (`provider_<uuid>`), name, base URL, and API key.
+  (`provider_<uuid>`), name, provider type, and base URL. Its API key is stored
+  separately by Secret Management.
 - Custom providers are returned in the same provider list as built-ins.
 - Saved custom providers can be removed through
   `deleteCustomLlmProvider(providerId, runtimeKind?)`; built-ins remain
@@ -150,7 +161,10 @@ and currently contains:
   - `name`
   - `providerType`
   - `baseUrl`
-  - `apiKey`
+
+The current file version is `2` and is metadata-only. Credentials are stored in
+the paired encrypted Local Store (or another selected backend) under the custom
+provider's stable definition ID. See [Secret Management](./secret_management.md).
 
 ## Custom Provider Lifecycle
 
@@ -163,7 +177,9 @@ and currently contains:
    - supported provider type (`OPENAI_COMPATIBLE`)
    - provider-name uniqueness across built-ins and existing custom providers
 3. Probe uses the OpenAI-compatible `/models` discovery owner before save.
-4. On successful create, the custom provider is persisted.
+4. On successful create, metadata is persisted and the credential is written
+   through `SecretManagementService`. A failed credential write rolls back the
+   metadata record.
 5. The server triggers provider-targeted model refresh through the real model
    catalog path.
 
@@ -172,9 +188,10 @@ and currently contains:
 1. `deleteCustomLlmProvider(providerId, runtimeKind?)` rejects built-in
    provider IDs and validates that the custom provider exists for the requested
    runtime kind.
-2. `CustomLlmProviderStore.deleteProvider(...)` removes the persisted record
+2. `SecretManagementService.removeForConsumer(...)` removes the credential.
+3. `CustomLlmProviderStore.deleteProvider(...)` removes the metadata record
    from `custom-llm-providers.json`.
-3. The server then triggers an authoritative full LLM catalog refresh through
+4. The server then triggers an authoritative full LLM catalog refresh through
    `reloadLlmModels(runtimeKind?)` so the deleted provider and its models
    disappear from the served provider list and runtime registry.
 

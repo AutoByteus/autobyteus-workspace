@@ -250,7 +250,7 @@ unvalidated renderer URL path.
 | `read-log-file`        | Read last 500 lines of log       |
 | `read-local-text-file` | Securely read local file content |
 | `open-external-link`   | Open URL in system browser       |
-| `reset-server-data`    | Clear server data directory      |
+| `reset-server-data`    | Clear server data while preserving the paired encrypted `secret-store` directory |
 | `get-platform`         | Return OS platform string        |
 
 ### App Lifecycle

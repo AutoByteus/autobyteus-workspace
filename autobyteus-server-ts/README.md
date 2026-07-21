@@ -61,6 +61,8 @@ DISABLE_HTTP_REQUEST_LOGS=true
 
 Notes:
 - `AUTOBYTEUS_SERVER_HOST` is required (used for URL generation).
+- Provider and search credentials must be saved through the applicable product Settings surface (**API Key Management** for model/media providers and **Web Search** configuration for search providers). They are not supported as plaintext `.env` entries or ambient runtime credential aliases.
+- The default encrypted Local Store is the `secret-store/secret-store.db` plus `secret-store/secret-store.key` pair under the effective app data directory. `--data-dir` moves that pair; `AUTOBYTEUS_SECRET_STORAGE_CONFIG_FILE` is the advanced backend-configuration hook. See `docs/modules/secret_management.md`.
 - Optional `AUTOBYTEUS_MCP_GATEWAY_TOKEN` protects the general `/mcp/gateway` Streamable HTTP MCP endpoint. When unset, that endpoint is restricted to local loopback requests only.
 - SQLite DB defaults to `db/production.db` (or `db/test.db` when `APP_ENV=test`).
 - `DATABASE_URL` is optional for SQLite; when missing, it is derived from the runtime SQLite DB path.

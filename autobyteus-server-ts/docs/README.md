@@ -10,7 +10,7 @@ The goal is to keep architecture and module docs close to the actual Node.js/Typ
 - `PROJECT_OVERVIEW.md`: runtime lifecycle, transport layers, and development flow.
 - `URL_GENERATION_AND_ENV_STRATEGY.md`: base URL strategy and environment ownership.
 - `FILE_RENDERING_AND_MEDIA_PIPELINE.md`: media and file-serving pipeline.
-- `modules/`: per-module design docs, including `modules/mcp_gateway.md` for the general external MCP gateway, `modules/agent_work_traces.md` for shared readable work trace projection, and `modules/skill_improvement.md` for the manual Skill Improvement capability.
+- `modules/`: per-module design docs, including `modules/secret_management.md` for centralized credential custody and provisioning, `modules/mcp_gateway.md` for the general external MCP gateway, `modules/agent_work_traces.md` for shared readable work trace projection, and `modules/skill_improvement.md` for the manual Skill Improvement capability.
 - `design/`: focused ADR-style design notes.
 - `features/`: feature-level documents, including Memory Sync / Memory Hub and Remote Access / Phone Access.
 

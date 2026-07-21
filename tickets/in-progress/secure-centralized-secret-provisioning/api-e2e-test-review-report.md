@@ -83,3 +83,11 @@ No unresolved actionable durable test-code findings remain. `TCR-001` and `TCR-0
 - Unresolved finding IDs: `None`
 - Recommended Recipient: `delivery_engineer`
 - Notes: This is a proportional durable test-code result only; it does not reopen the implementation scorecard. Implementation-source review and API/E2E execution remain `Pass`. The dedicated real-E2E Store is unavailable, so no real OpenAI, Gemini, Serper, Anthropic, Claude managed-secret, or AutoByteus provider invocation is claimed. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck dependency only, not legal clearance or an authentication-mode redesign. Delivery must recheck the four official Anthropic sources recorded in the package. Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+
+## Post-Review Clarification
+
+- The post-review `.env.test` importer proposal was explicitly withdrawn after solution-design clarification. The user/operator will perform local credential setup independently.
+- The reviewed hidden-input, target-only provisioning command remains authoritative. Engineering workflow must not read, copy, or import values from `.env.test`, another checkout, the default Store, or another credential artifact.
+- No requirements, design, implementation, durable test, runtime, Store, Docker, Claude, or AutoByteus behavior changed. No architecture rereview is required.
+- The temporary workflow hold is lifted. The `Pass` result, `97.1%` execution confidence, and recommendation to `delivery_engineer` are active again.
+- The dedicated real-E2E Store remains unavailable and real provider invocation remains unclaimed until the user/operator provisions it independently.
