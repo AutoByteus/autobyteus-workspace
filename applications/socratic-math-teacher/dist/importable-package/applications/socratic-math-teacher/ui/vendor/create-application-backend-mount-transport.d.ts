@@ -1,5 +1,7 @@
-import type { ApplicationRequestContext, ApplicationRouteMethod, ApplicationRouteRequest, ApplicationRouteResponse } from "./application-sdk-contracts/index.js";
+import { type ApplicationRequestContext, type ApplicationRouteMethod, type ApplicationRouteRequest, type ApplicationRouteResponse } from "./application-sdk-contracts/index.js";
 import type { ApplicationClientTransport } from "./application-client-transport.js";
+import { type ApplicationBackendBrowserWebSocketFactory } from "./application-backend-websocket-transport.js";
+import type { ApplicationAgentBrowserWebSocketFactory } from "./application-agent-connection-transport.js";
 type FetchHeaders = Record<string, string>;
 type FetchResponse = {
     ok: boolean;
@@ -39,8 +41,12 @@ export type ApplicationBackendMountTransport = ApplicationClientTransport & {
 export type ApplicationBackendMountTransportOptions = {
     backendBaseUrl: string;
     backendNotificationsUrl?: string | null;
+    backendWebSocketBaseUrl?: string | null;
+    agentCommunicationWebSocketBaseUrl?: string | null;
     fetchImpl?: FetchLike;
     webSocketFactory?: NotificationSocketFactory;
+    applicationWebSocketFactory?: ApplicationBackendBrowserWebSocketFactory;
+    agentCommunicationWebSocketFactory?: ApplicationAgentBrowserWebSocketFactory;
 };
 export type ApplicationBackendMountEndpoints = {
     backendBaseUrl: string;

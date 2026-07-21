@@ -20,13 +20,18 @@ export const buildApplicationHostTransport = (
   const httpBaseUrl = normalizeNodeBaseUrl(endpoints.rest.replace(/\/+$/, ''))
   const websocketBaseUrl = toWebsocketBase(httpBaseUrl)
   const encodedApplicationId = applicationId ? encodeURIComponent(applicationId) : null
-
   return {
     backendBaseUrl: encodedApplicationId
       ? `${httpBaseUrl}/rest/applications/${encodedApplicationId}/backend`
       : null,
     backendNotificationsUrl: encodedApplicationId
       ? `${websocketBaseUrl}/ws/applications/${encodedApplicationId}/backend/notifications`
+      : null,
+    backendWebSocketBaseUrl: encodedApplicationId
+      ? `${websocketBaseUrl}/ws/applications/${encodedApplicationId}/backend/routes`
+      : null,
+    agentCommunicationWebSocketBaseUrl: encodedApplicationId
+      ? `${websocketBaseUrl}/ws/applications/${encodedApplicationId}/agent-communication`
       : null,
   }
 }

@@ -1,8 +1,8 @@
+import type { ApplicationAgentBindingRecord } from "../../../src/application-orchestration/domain/models.js";
 import { describe, expect, it, vi } from "vitest";
 import type {
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
-  ApplicationRunBindingSummary,
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
@@ -61,7 +61,7 @@ const buildService = () => {
     ) => buildResolvedResource(executionResourceRef)),
   };
   const bindingStore = {
-    persistBinding: vi.fn(async (binding: ApplicationRunBindingSummary) => binding),
+    persistBinding: vi.fn(async (binding: ApplicationAgentBindingRecord) => binding),
   };
   const lookupStore = {
     replaceBindingLookups: vi.fn(),

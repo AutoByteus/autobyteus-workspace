@@ -1,42 +1,27 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type {
-  ApplicationConfiguredLaunchProfile,
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteMethod,
   ApplicationRouteRequest,
 } from "@autobyteus/application-sdk-contracts";
 import { getApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
-import { ApplicationUnavailableError, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
-import { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
-import { LaunchProfileValidationError } from "../../application-orchestration/services/application-execution-resource-configuration-launch-profile.js";
-import { ApplicationExecutionResourceConfigurationService } from "../../application-orchestration/services/application-execution-resource-configuration-service.js";
+import { sendApplicationRouteError } from "./application-route-error.js";
 
 const apiGateway = () => getApplicationBackendApiGatewayService();
-const orchestrationHost = () => ApplicationOrchestrationHostService.getInstance();
-const executionResourceConfigurations = () => new ApplicationExecutionResourceConfigurationService();
 const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
 const readRequestContext = (
   applicationId: string,
   _request: FastifyRequest,
   _bodyRequestContext?: unknown,
-): ApplicationRequestContext => ({
-  applicationId,
-});
+): ApplicationRequestContext => ({ applicationId });
 
 const toQueryRecord = (value: unknown): Record<string, string | string[]> => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {};
-  }
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   const result: Record<string, string | string[]> = {};
   for (const [key, rawValue] of Object.entries(value as Record<string, unknown>)) {
-    if (typeof rawValue === "string") {
-      result[key] = rawValue;
-      continue;
-    }
-    if (Array.isArray(rawValue) && rawValue.every((entry) => typeof entry === "string")) {
-      result[key] = rawValue as string[];
-    }
+    if (typeof rawValue === "string") result[key] = rawValue;
+    else if (Array.isArray(rawValue) && rawValue.every((entry) => typeof entry === "string")) result[key] = rawValue as string[];
   }
   return result;
 };
@@ -44,125 +29,12 @@ const toQueryRecord = (value: unknown): Record<string, string | string[]> => {
 const toHeaderRecord = (headers: FastifyRequest["headers"]): Record<string, string | string[] | undefined> => {
   const result: Record<string, string | string[] | undefined> = {};
   for (const [key, value] of Object.entries(headers)) {
-    if (typeof value === "string" || Array.isArray(value) || value === undefined) {
-      result[key] = value;
-    }
+    if (typeof value === "string" || Array.isArray(value) || value === undefined) result[key] = value;
   }
   return result;
 };
 
-const sendApplicationBackendRouteError = (reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } }, error: unknown) => {
-  if (error instanceof ApplicationUnavailableError) {
-    return reply.code(503).send({
-      detail: error.message,
-      applicationId: error.applicationId,
-      availabilityState: error.state,
-      retryable: true,
-    });
-  }
-  if (error instanceof LaunchProfileValidationError) {
-    return reply.code(400).send({ detail: error.message });
-  }
-  const message = error instanceof Error ? error.message : String(error);
-  if (message.includes("was not found")) {
-    return reply.code(404).send({ detail: message });
-  }
-  if (
-    message.includes("must match")
-    || message.includes("does not support")
-    || message.includes("requires a resource selection")
-    || message.includes("cannot persist launchProfile")
-    || message.includes("no longer supports")
-    || message.includes("malformed")
-    || message.includes("No application route matched")
-  ) {
-    return reply.code(400).send({ detail: message });
-  }
-  return reply.code(500).send({ detail: message });
-};
-
 export async function registerApplicationBackendRoutes(app: FastifyInstance): Promise<void> {
-  app.get<{ Params: { applicationId: string } }>(
-    `${APPLICATION_BACKEND_ROUTE_BASE}/status`,
-    async (request, reply) => {
-      try {
-        const status = await apiGateway().getApplicationEngineStatus(request.params.applicationId);
-        return reply.send(status);
-      } catch (error) {
-        return sendApplicationBackendRouteError(reply, error);
-      }
-    },
-  );
-
-  app.get<{ Params: { applicationId: string } }>(
-    `/applications/:applicationId/execution-resource-configurations`,
-    async (request, reply) => {
-      try {
-        return reply.send(await executionResourceConfigurations().listConfigurations(request.params.applicationId));
-      } catch (error) {
-        return sendApplicationBackendRouteError(reply, error);
-      }
-    },
-  );
-
-  app.get<{ Params: { applicationId: string } }>(
-    `/applications/:applicationId/available-execution-resources`,
-    async (request, reply) => {
-      try {
-        return reply.send(await orchestrationHost().listAvailableExecutionResources(request.params.applicationId));
-      } catch (error) {
-        return sendApplicationBackendRouteError(reply, error);
-      }
-    },
-  );
-
-  app.put<{
-    Params: { applicationId: string; slotKey: string };
-    Body: { executionResourceRef?: unknown; launchProfile?: ApplicationConfiguredLaunchProfile | null };
-  }>(
-    `/applications/:applicationId/execution-resource-configurations/:slotKey`,
-    async (request, reply) => {
-      try {
-        return reply.send(
-          await executionResourceConfigurations().upsertConfiguration(
-            request.params.applicationId,
-            request.params.slotKey,
-            {
-              executionResourceRef: request.body?.executionResourceRef as never,
-              launchProfile: request.body?.launchProfile ?? null,
-            },
-          ),
-        );
-      } catch (error) {
-        return sendApplicationBackendRouteError(reply, error);
-      }
-    },
-  );
-
-  app.post<{ Params: { applicationId: string } }>(
-    `${APPLICATION_BACKEND_ROUTE_BASE}/ensure-ready`,
-    async (request, reply) => {
-      try {
-        const status = await apiGateway().ensureApplicationReady(request.params.applicationId);
-        return reply.send(status);
-      } catch (error) {
-        return sendApplicationBackendRouteError(reply, error);
-      }
-    },
-  );
-
-  app.post<{ Params: { applicationId: string } }>(
-    `${APPLICATION_BACKEND_ROUTE_BASE}/reload`,
-    async (request, reply) => {
-      try {
-        const availability = await getApplicationAvailabilityService().reloadAndReenter(request.params.applicationId);
-        return reply.send(availability);
-      } catch (error) {
-        return sendApplicationBackendRouteError(reply, error);
-      }
-    },
-  );
-
   app.post<{
     Params: { applicationId: string; queryName: string };
     Body: { requestContext?: ApplicationRequestContext | null; input?: unknown };
@@ -176,7 +48,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       );
       return reply.send({ result });
     } catch (error) {
-      return sendApplicationBackendRouteError(reply, error);
+      return sendApplicationRouteError(reply, error);
     }
   });
 
@@ -193,7 +65,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       );
       return reply.send({ result });
     } catch (error) {
-      return sendApplicationBackendRouteError(reply, error);
+      return sendApplicationRouteError(reply, error);
     }
   });
 
@@ -209,7 +81,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
       );
       return reply.send({ result });
     } catch (error) {
-      return sendApplicationBackendRouteError(reply, error);
+      return sendApplicationRouteError(reply, error);
     }
   });
 
@@ -244,7 +116,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
         reply.code(routeResponse.status ?? 200);
         return reply.send(routeResponse.body ?? null);
       } catch (error) {
-        return sendApplicationBackendRouteError(reply, error);
+        return sendApplicationRouteError(reply, error);
       }
     },
   });

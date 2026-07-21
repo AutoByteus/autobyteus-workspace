@@ -87,8 +87,8 @@
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import {
   APPLICATION_IFRAME_READY_EVENT,
-  createApplicationHostBootstrapEnvelopeV3,
-  type ApplicationHostBootstrapEnvelopeV3,
+  createApplicationHostBootstrapEnvelopeV4,
+  type ApplicationHostBootstrapEnvelopeV4,
   type ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationIframeHost from '~/components/applications/ApplicationIframeHost.vue'
@@ -118,7 +118,7 @@ const windowNodeContextStore = useWindowNodeContextStore()
 const launchDescriptor = shallowRef<ApplicationIframeLaunchDescriptor | null>(null)
 const committedLaunchInputs = shallowRef<ApplicationIframeLaunchDescriptorInputs | null>(null)
 const committedIframeLaunchId = ref<string | null>(null)
-const pendingBootstrapEnvelope = shallowRef<ApplicationHostBootstrapEnvelopeV3 | null>(null)
+const pendingBootstrapEnvelope = shallowRef<ApplicationHostBootstrapEnvelopeV4 | null>(null)
 const launchState = ref<'waiting_for_ready' | 'bootstrapped' | 'failed'>('waiting_for_ready')
 const launchError = ref<string | null>(null)
 const readyTimeoutHandle = ref<number | null>(null)
@@ -256,7 +256,7 @@ const handleReady = (signal: ApplicationIframeReadySignal): void => {
     `accepted ready event applicationId=${signal.applicationId} iframeLaunchId=${signal.iframeLaunchId} origin=${signal.iframeOrigin}`,
   )
 
-  pendingBootstrapEnvelope.value = createApplicationHostBootstrapEnvelopeV3({
+  pendingBootstrapEnvelope.value = createApplicationHostBootstrapEnvelopeV4({
     host: {
       origin: descriptor.normalizedHostOrigin,
     },

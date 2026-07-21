@@ -15,6 +15,8 @@ export type StartDevBootstrapServerOptions = {
   applicationId?: string | null;
   backendBaseUrl?: string | null;
   backendNotificationsUrl?: string | null;
+  backendWebSocketBaseUrl?: string | null;
+  agentCommunicationWebSocketBaseUrl?: string | null;
   mockBackend?: boolean | null;
 };
 
@@ -44,8 +46,16 @@ const normalizeOptionalString = (value: string | null | undefined): string | nul
 const assertDevTransportOptionsValid = (options: StartDevBootstrapServerOptions): void => {
   const realBackendBaseUrl = normalizeOptionalString(options.backendBaseUrl);
   const realNotificationsUrl = normalizeOptionalString(options.backendNotificationsUrl);
+  const realWebSocketBaseUrl = normalizeOptionalString(options.backendWebSocketBaseUrl);
+  const realAgentCommunicationUrl = normalizeOptionalString(options.agentCommunicationWebSocketBaseUrl);
   if (realNotificationsUrl && !realBackendBaseUrl) {
     throw new Error('--backend-notifications-url requires --backend-base-url.');
+  }
+  if (realWebSocketBaseUrl && !realBackendBaseUrl) {
+    throw new Error('--backend-websocket-base-url requires --backend-base-url.');
+  }
+  if (realAgentCommunicationUrl && !realBackendBaseUrl) {
+    throw new Error('--agent-communication-websocket-base-url requires --backend-base-url.');
   }
   if (realBackendBaseUrl && options.mockBackend) {
     throw new Error('--mock-backend cannot be combined with --backend-base-url.');
@@ -61,10 +71,14 @@ const resolveDevTransport = (input: {
   applicationId?: string | null;
   backendBaseUrl?: string | null;
   backendNotificationsUrl?: string | null;
+  backendWebSocketBaseUrl?: string | null;
+  agentCommunicationWebSocketBaseUrl?: string | null;
   mockBackend?: boolean | null;
-}): { applicationId: string; backendBaseUrl: string; backendNotificationsUrl: string | null } => {
+}): { applicationId: string; backendBaseUrl: string; backendNotificationsUrl: string | null; backendWebSocketBaseUrl: string | null; agentCommunicationWebSocketBaseUrl: string | null } => {
   const realBackendBaseUrl = normalizeOptionalString(input.backendBaseUrl);
   const realNotificationsUrl = normalizeOptionalString(input.backendNotificationsUrl);
+  const realWebSocketBaseUrl = normalizeOptionalString(input.backendWebSocketBaseUrl);
+  const realAgentCommunicationUrl = normalizeOptionalString(input.agentCommunicationWebSocketBaseUrl);
   if (realNotificationsUrl && !realBackendBaseUrl) {
     throw new Error('--backend-notifications-url requires --backend-base-url.');
   }
@@ -80,6 +94,8 @@ const resolveDevTransport = (input: {
       applicationId,
       backendBaseUrl: realBackendBaseUrl,
       backendNotificationsUrl: realNotificationsUrl,
+      backendWebSocketBaseUrl: realWebSocketBaseUrl,
+      agentCommunicationWebSocketBaseUrl: realAgentCommunicationUrl,
     };
   }
   const applicationId = normalizeOptionalString(input.applicationId) ?? `dev:${input.localApplicationId}`;
@@ -87,6 +103,8 @@ const resolveDevTransport = (input: {
     applicationId,
     backendBaseUrl: `${input.hostOrigin}/mock-backend`,
     backendNotificationsUrl: null,
+    backendWebSocketBaseUrl: null,
+    agentCommunicationWebSocketBaseUrl: null,
   };
 };
 
@@ -181,6 +199,8 @@ export const startDevBootstrapServer = async (
     applicationId: options.applicationId,
     backendBaseUrl: options.backendBaseUrl,
     backendNotificationsUrl: options.backendNotificationsUrl,
+    backendWebSocketBaseUrl: options.backendWebSocketBaseUrl,
+    agentCommunicationWebSocketBaseUrl: options.agentCommunicationWebSocketBaseUrl,
     mockBackend: options.mockBackend,
   });
   session = createDevBootstrapSession({
@@ -191,6 +211,8 @@ export const startDevBootstrapServer = async (
     applicationName: manifest.name,
     backendBaseUrl: transport.backendBaseUrl,
     backendNotificationsUrl: transport.backendNotificationsUrl,
+    backendWebSocketBaseUrl: transport.backendWebSocketBaseUrl,
+    agentCommunicationWebSocketBaseUrl: transport.agentCommunicationWebSocketBaseUrl,
     entryHtml: loadedConfig.config.frontend.entryHtml,
   });
 

@@ -7,7 +7,8 @@ import type {
   ApplicationExecutionEventEnvelope,
   ApplicationHandlerContext,
   ApplicationPublishedArtifactEvent,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
 import { createBriefRunLaunchService } from "../../../../applications/brief-studio/backend-src/services/brief-run-launch-service.ts";
 import { createBriefArtifactReconciliationService } from "../../../../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts";
@@ -140,7 +141,7 @@ const createTempDatabase = async (prefix: string, migrationsDir: string): Promis
   return dbPath;
 };
 
-const buildBriefBinding = (launchRequestId: string): ApplicationRunBindingSummary => ({
+const buildBriefBinding = (launchRequestId: string): ApplicationAgentBinding | ApplicationAgentTeamBinding => ({
   bindingId: "binding-brief-1",
   applicationId: "brief-studio",
   launchRequestId,
@@ -181,8 +182,8 @@ const buildBriefBinding = (launchRequestId: string): ApplicationRunBindingSummar
 
 const buildLessonBinding = (
   launchRequestId: string,
-  overrides: Partial<Pick<ApplicationRunBindingSummary, "status" | "updatedAt" | "terminatedAt" | "lastErrorMessage">> = {},
-): ApplicationRunBindingSummary => ({
+  overrides: Partial<Pick<ApplicationAgentBinding | ApplicationAgentTeamBinding, "status" | "updatedAt" | "terminatedAt" | "lastErrorMessage">> = {},
+): ApplicationAgentBinding | ApplicationAgentTeamBinding => ({
   bindingId: "binding-lesson-1",
   applicationId: "socratic-math-teacher",
   launchRequestId,
@@ -219,7 +220,7 @@ const buildRevisionReader = (entries: Record<string, string>) => ({
 });
 
 const buildBriefArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-brief-1::researcher",
   artifactId: "team-run-brief-1::researcher:/tmp/downloads/brief-studio/research.md",
@@ -240,7 +241,7 @@ const buildBriefArtifactEvent = (
 });
 
 const buildBriefFinalArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-brief-1::writer",
   artifactId: "team-run-brief-1::writer:/tmp/downloads/final-brief.md",
@@ -261,7 +262,7 @@ const buildBriefFinalArtifactEvent = (
 });
 
 const buildLessonArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-lesson-1::tutor",
   artifactId: "team-run-lesson-1::tutor:/tmp/downloads/socratic-math/lesson-response.md",
@@ -282,7 +283,7 @@ const buildLessonArtifactEvent = (
 });
 
 const buildLessonHintArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-lesson-1::tutor",
   artifactId: "team-run-lesson-1::tutor:/tmp/downloads/lesson-hint.md",
@@ -303,7 +304,7 @@ const buildLessonHintArtifactEvent = (
 });
 
 const buildLessonLifecycleEnvelope = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
   family: "RUN_FAILED" | "RUN_STARTED" | "RUN_ORPHANED" | "RUN_TERMINATED",
 ): ApplicationExecutionEventEnvelope => ({
   event: {

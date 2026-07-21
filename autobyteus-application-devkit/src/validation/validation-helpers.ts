@@ -10,6 +10,22 @@ export const isObjectRecord = (value: unknown): value is UnknownRecord => (
   Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 );
 
+export const pushUnknownKeyDiagnostics = (
+  diagnostics: ValidationDiagnostic[],
+  record: UnknownRecord,
+  allowedKeys: readonly string[],
+  diagnosticPath: string,
+  code: "INVALID_MANIFEST" | "INVALID_BACKEND_MANIFEST",
+): void => {
+  const allowed = new Set(allowedKeys);
+  for (const key of Object.keys(record)) {
+    if (!allowed.has(key)) {
+      const pathValue = diagnosticPath ? `${diagnosticPath}.${key}` : key;
+      diagnostics.push(errorDiagnostic(code, `${pathValue} is not supported.`, pathValue));
+    }
+  }
+};
+
 export const pathExists = async (targetPath: string): Promise<boolean> => {
   try {
     await fs.access(targetPath);
@@ -107,8 +123,15 @@ export const validateSupportedExposures = (
     diagnostics.push(errorDiagnostic('INVALID_BACKEND_MANIFEST', 'supportedExposures must be an object.', 'supportedExposures'));
     return null;
   }
+  const supportedKeys = ['queries', 'commands', 'routes', 'graphql', 'notifications', 'eventHandlers', 'webSockets'] as const;
+  const supportedKeySet = new Set<string>(supportedKeys);
+  for (const key of Object.keys(value)) {
+    if (!supportedKeySet.has(key)) {
+      diagnostics.push(errorDiagnostic('INVALID_BACKEND_MANIFEST', `supportedExposures contains unsupported key '${key}'.`, `supportedExposures.${key}`));
+    }
+  }
   const output = {} as ApplicationBackendSupportedExposures;
-  for (const key of ['queries', 'commands', 'routes', 'graphql', 'notifications', 'eventHandlers'] as const) {
+  for (const key of supportedKeys) {
     if (typeof value[key] !== 'boolean') {
       diagnostics.push(
         errorDiagnostic('INVALID_BACKEND_MANIFEST', `supportedExposures.${key} must be a boolean.`, `supportedExposures.${key}`),

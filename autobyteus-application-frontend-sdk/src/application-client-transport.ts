@@ -4,9 +4,22 @@ import type {
   ApplicationRequestContext,
   ApplicationRouteRequest,
   ApplicationRouteResponse,
+  ApplicationAgentTargetAddress,
 } from "@autobyteus/application-sdk-contracts";
+import type {
+  ApplicationAgentConnection,
+  ApplicationAgentConnectionOptions,
+} from "./application-agent-connection.js";
+import type {
+  ApplicationBackendWebSocketConnection,
+  ApplicationBackendWebSocketConnectOptions,
+} from "./application-backend-websocket-connection.js";
 
 export type ApplicationClientTransport = {
+  connectAgentCommunication: (
+    address: ApplicationAgentTargetAddress,
+    options?: ApplicationAgentConnectionOptions,
+  ) => ApplicationAgentConnection;
   invokeQuery: (args: {
     applicationId: string;
     queryName: string;
@@ -35,4 +48,8 @@ export type ApplicationClientTransport = {
       listener: (message: ApplicationNotificationMessage) => void;
     },
   ) => { close: () => void };
+  connectWebSocket?: (
+    path: string,
+    options?: ApplicationBackendWebSocketConnectOptions,
+  ) => ApplicationBackendWebSocketConnection;
 };

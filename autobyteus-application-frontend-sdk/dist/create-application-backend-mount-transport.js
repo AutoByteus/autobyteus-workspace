@@ -1,3 +1,10 @@
+import { ApplicationAgentConnectionError, getApplicationAgentTargetPathSegments, } from "@autobyteus/application-sdk-contracts";
+import { createApplicationBackendWebSocketConnection } from "./application-backend-websocket-connection.js";
+import { createApplicationBackendWebSocketTransport, } from "./application-backend-websocket-transport.js";
+import { createApplicationAgentConnection } from "./application-agent-connection.js";
+import { createApplicationAgentConnectionTransport } from "./application-agent-connection-transport.js";
+import { composeApplicationWebSocketUrl, parseApplicationWebSocketPath, } from "./application-websocket-url.js";
+import { ApplicationBackendWebSocketConnectionError } from "./application-backend-websocket-connection.js";
 const normalizeBackendBaseUrl = (backendBaseUrl) => {
     const normalized = backendBaseUrl.trim().replace(/\/+$/, "");
     if (!normalized) {
@@ -142,10 +149,7 @@ const prepareRouteFetchRequest = (input) => {
     if (!isJsonContentType(contentTypeHeader ? headers[contentTypeHeader] : null)) {
         headers[contentTypeHeader ?? "content-type"] = "application/json";
     }
-    return {
-        headers,
-        body: JSON.stringify(requestBody),
-    };
+    return { headers, body: JSON.stringify(requestBody) };
 };
 const parseRouteResponseBody = async (response) => {
     const contentType = response.headers?.get?.("content-type") ?? "";
@@ -169,6 +173,38 @@ export const createApplicationBackendMountTransport = (options) => {
     const endpoints = deriveApplicationBackendMountEndpoints(options.backendBaseUrl);
     const fetchImpl = resolveFetch(options.fetchImpl);
     return {
+        connectAgentCommunication: (address, connectOptions) => {
+            const baseUrl = options.agentCommunicationWebSocketBaseUrl?.trim();
+            if (!baseUrl) {
+                throw new ApplicationAgentConnectionError({
+                    code: "TRANSPORT_FAILED",
+                    message: "The application agent connection transport failed.",
+                    recoverable: true,
+                });
+            }
+            let url;
+            try {
+                url = composeApplicationWebSocketUrl({
+                    baseUrl,
+                    pathSegments: getApplicationAgentTargetPathSegments(address),
+                });
+            }
+            catch {
+                throw new ApplicationAgentConnectionError({
+                    code: "TRANSPORT_FAILED",
+                    message: "The application agent connection transport failed.",
+                    recoverable: true,
+                });
+            }
+            return createApplicationAgentConnection({
+                address,
+                signal: connectOptions?.signal,
+                transport: createApplicationAgentConnectionTransport({
+                    url,
+                    webSocketFactory: options.agentCommunicationWebSocketFactory,
+                }),
+            });
+        },
         invokeQuery: async ({ queryName, requestContext, input }) => invokeJsonResult(fetchImpl, `${endpoints.queriesBaseUrl}/${encodeURIComponent(queryName)}`, { requestContext, input }),
         invokeCommand: async ({ commandName, requestContext, input }) => invokeJsonResult(fetchImpl, `${endpoints.commandsBaseUrl}/${encodeURIComponent(commandName)}`, { requestContext, input }),
         executeGraphql: async ({ requestContext, request }) => invokeJsonResult(fetchImpl, endpoints.graphqlUrl, { requestContext, request }),
@@ -215,6 +251,30 @@ export const createApplicationBackendMountTransport = (options) => {
                     }
                 },
             };
+        },
+        connectWebSocket: (path, connectOptions) => {
+            const baseUrl = options.backendWebSocketBaseUrl?.trim();
+            if (!baseUrl) {
+                throw new Error("The application transport does not provide a backend WebSocket base URL.");
+            }
+            let url;
+            try {
+                url = composeApplicationWebSocketUrl({
+                    baseUrl,
+                    pathSegments: parseApplicationWebSocketPath(path),
+                    query: connectOptions?.query,
+                });
+            }
+            catch {
+                throw new ApplicationBackendWebSocketConnectionError("CONNECTION_REJECTED");
+            }
+            return createApplicationBackendWebSocketConnection({
+                transport: createApplicationBackendWebSocketTransport({
+                    url,
+                    webSocketFactory: options.applicationWebSocketFactory,
+                }),
+                signal: connectOptions?.signal,
+            });
         },
     };
 };

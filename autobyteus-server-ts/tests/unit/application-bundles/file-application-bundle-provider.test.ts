@@ -126,13 +126,13 @@ describe("FileApplicationBundleProvider", () => {
       path.join(bundleRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "3",
+          manifestVersion: "4",
           id: localApplicationId,
           name: "Sample App",
           description: "Sample description",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "3",
+            frontendSdkContractVersion: "4",
           },
           backend: {
             bundleManifest: "backend/bundle.json",
@@ -176,8 +176,8 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "3",
-            frontendSdkContractVersion: "3",
+            backendDefinitionContractVersion: "4",
+            frontendSdkContractVersion: "4",
           },
           supportedExposures: {
             queries: true,
@@ -186,6 +186,7 @@ describe("FileApplicationBundleProvider", () => {
             graphql: true,
             notifications: true,
             eventHandlers: true,
+            webSockets: false,
           },
           migrationsDir: "backend/migrations",
           assetsDir: "backend/assets",
@@ -196,7 +197,7 @@ describe("FileApplicationBundleProvider", () => {
     );
     await writeFile(
       path.join(bundleRoot, "backend", "dist", "entry.mjs"),
-      "export default { definitionContractVersion: '3' }\n",
+      "export default { definitionContractVersion: '4' }\n",
     );
     await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
     await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
@@ -423,7 +424,7 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "3",
+            backendDefinitionContractVersion: "4",
             frontendSdkContractVersion: retiredFrontendSdkVersion,
           },
           supportedExposures: {
@@ -433,6 +434,7 @@ describe("FileApplicationBundleProvider", () => {
             graphql: true,
             notifications: true,
             eventHandlers: true,
+            webSockets: false,
           },
         },
         null,
@@ -449,7 +451,7 @@ describe("FileApplicationBundleProvider", () => {
     );
   });
 
-  it("rejects an explicit v2 backend-definition compatibility fixture during discovery", async () => {
+  it("rejects an explicit v3 backend-definition compatibility fixture during discovery", async () => {
     await writeBundle();
     const backendManifestPath = path.join(
       builtInRoot,
@@ -459,7 +461,7 @@ describe("FileApplicationBundleProvider", () => {
       "bundle.json",
     );
     const manifest = JSON.parse(await fs.readFile(backendManifestPath, "utf8"));
-    manifest.sdkCompatibility.backendDefinitionContractVersion = "2";
+    manifest.sdkCompatibility.backendDefinitionContractVersion = "3";
     await writeFile(backendManifestPath, JSON.stringify(manifest, null, 2));
 
     const snapshot = await buildProvider().getCatalogSnapshot();
@@ -467,7 +469,7 @@ describe("FileApplicationBundleProvider", () => {
     expect(snapshot.applications).toHaveLength(0);
     expect(snapshot.diagnostics).toHaveLength(1);
     expect(snapshot.diagnostics[0]?.message).toContain(
-      "Unsupported backendDefinitionContractVersion '2'.",
+      "Unsupported backendDefinitionContractVersion '3'.",
     );
   });
 
@@ -477,12 +479,12 @@ describe("FileApplicationBundleProvider", () => {
       path.join(builtInRoot, "applications", "broken-app", "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "3",
+          manifestVersion: "4",
           id: "broken-app",
           name: "Broken App",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "3",
+            frontendSdkContractVersion: "4",
           },
           backend: {
             bundleManifest: "backend/bundle.json",
@@ -728,12 +730,12 @@ describe("FileApplicationBundleProvider", () => {
       path.join(nestedMirrorRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "3",
+          manifestVersion: "4",
           id: "sample-app",
           name: "Nested Mirror",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "3",
+            frontendSdkContractVersion: "4",
           },
           backend: {
             bundleManifest: "backend/bundle.json",

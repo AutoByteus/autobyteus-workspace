@@ -45,8 +45,8 @@ describe("ApplicationEngineHostService", () => {
       distribution: "self-contained",
       targetRuntime: { engine: "node", semver: ">=22 <23" },
       sdkCompatibility: {
-        backendDefinitionContractVersion: "3",
-        frontendSdkContractVersion: "3",
+        backendDefinitionContractVersion: "4",
+        frontendSdkContractVersion: "4",
       },
       supportedExposures: {
         queries: true,
@@ -55,6 +55,7 @@ describe("ApplicationEngineHostService", () => {
         graphql: true,
         notifications: true,
         eventHandlers: true,
+        webSockets: false,
       },
       migrationsDirPath,
       migrationsDirRelativePath: migrationsDirPath ? "backend/migrations" : null,
@@ -72,7 +73,7 @@ describe("ApplicationEngineHostService", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-        definitionContractVersion: '3',
+        definitionContractVersion: '4',
         queries: {
           'tickets.get': async (input, ctx) => {
             await ctx.publishNotification('query.called', { input })

@@ -27,7 +27,7 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `utils/application/applicationLaunchProfile.ts`
 - `utils/application/applicationSetupGate.ts`
 - `utils/teamLaunchReadinessCore.ts`
-- `docs/application-bundle-iframe-contract-v3.md`
+- `docs/application-bundle-iframe-contract-v4.md`
 - `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
 
 ## Runtime Availability And Gating
@@ -176,26 +176,26 @@ Inside the bundle, `startHostedApplication(...)` from `@autobyteus/application-f
 
 Direct/raw bundle entry without valid host launch context is intentionally unsupported by that startup boundary rather than left to app-authored placeholder UI.
 
-## Iframe Bootstrap v3
+## Iframe Bootstrap v4
 
 The host resolves `entryHtmlAssetPath` against the bound REST base, appends the versioned iframe launch hints, and bootstraps the child iframe only after it receives the matching ready event.
 
 The shared contract definitions live in `@autobyteus/application-sdk-contracts`.
 
-The v3 query contract uses:
+The v4 query contract uses:
 
-- `autobyteusContractVersion=3`
+- `autobyteusContractVersion=4`
 - `autobyteusApplicationId`
 - `autobyteusIframeLaunchId`
 - `autobyteusHostOrigin`
 
-The v3 bootstrap payload contains:
+The v4 bootstrap payload contains:
 
 - `host.origin`
 - `application { applicationId, localApplicationId, packageId, name }`
 - top-level `iframeLaunchId`
 - `requestContext { applicationId }`
-- `transport` with host and app-backend API gateway URLs
+- exact `transport` fields for backend request/response, backend notifications, optional custom backend WebSockets, and standard application-agent communication
 
 The payload intentionally does **not** contain a platform-owned execution id, session id, app instance id, or prelaunched runtime summary. The iframe launch id is only an ephemeral bootstrap correlation id.
 
@@ -208,9 +208,9 @@ The public author-facing surface is:
 - `@autobyteus/application-sdk-contracts` for shared manifest, request-context, storage, `agentExecution`, `agentResources`, and `publishedArtifacts` capability types, plus execution-event types
 - `@autobyteus/application-frontend-sdk` for framework-owned startup plus app UI query/command/GraphQL/notification helpers
 - `@autobyteus/application-backend-sdk` for backend definition typing
-- `application-bundle-iframe-contract-v3.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
+- `application-bundle-iframe-contract-v4.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
 
-App UIs call their own backend through the platform-owned application backend API gateway URLs delivered in `transport`.
+App UIs use `applicationClient.backend` for backend request/response, notifications, and optional custom WebSockets. `applicationClient.agentCommunication.connect(address)` is the separate standard direct connection for a bound agent/team target; it does not traverse the backend API gateway, application engine, or worker. Both capabilities derive their fixed desktop endpoints from the strict v4 bootstrap transport, which exposes no application authentication field.
 
 ## Ownership Boundary
 
@@ -237,7 +237,7 @@ This separation is the core architectural change: the Applications page launches
 
 ## Related Docs
 
-- `application-bundle-iframe-contract-v3.md`
+- `application-bundle-iframe-contract-v4.md`
 - `agent_management.md`
 - `agent_teams.md`
 - `settings.md`

@@ -39,8 +39,8 @@ const createBundle = (applicationRootPath: string, migrationsDirPath: string | n
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "3",
-      frontendSdkContractVersion: "3",
+      backendDefinitionContractVersion: "4",
+      frontendSdkContractVersion: "4",
     },
     supportedExposures: {
       queries: true,
@@ -49,6 +49,7 @@ const createBundle = (applicationRootPath: string, migrationsDirPath: string | n
       graphql: true,
       notifications: true,
       eventHandlers: true,
+      webSockets: false,
     },
     migrationsDirPath,
     migrationsDirRelativePath: migrationsDirPath ? "backend/migrations" : null,

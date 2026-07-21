@@ -196,9 +196,11 @@ export const createLessonRuntimeService = (context) => ({
             });
         });
         await context.agentExecution.sendInput({
-            bindingId,
-            text,
-            metadata: { lessonId },
+            address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+            input: {
+                text,
+                metadata: { lessonId },
+            },
         });
         return createLessonReadService(context).getLesson(lessonId);
     },
@@ -235,9 +237,11 @@ export const createLessonRuntimeService = (context) => ({
             });
         });
         await context.agentExecution.sendInput({
-            bindingId,
-            text: `The student requests a hint. ${detail}`,
-            metadata: { lessonId, requestKind: "hint" },
+            address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+            input: {
+                text: `The student requests a hint. ${detail}`,
+                metadata: { lessonId, requestKind: "hint" },
+            },
         });
         return createLessonReadService(context).getLesson(lessonId);
     },

@@ -1,6 +1,7 @@
 import readline from "node:readline";
 import { ApplicationWorkerHostBridgeClient } from "./application-worker-host-bridge-client.js";
-import { ApplicationWorkerRuntime } from "./application-worker-runtime.js";
+import { ApplicationBackendHost } from "./application-backend-host.js";
+import { JsonLineFrameWriter } from "../runtime/json-line-frame-writer.js";
 import {
   APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL,
   APPLICATION_ENGINE_METHOD_GET_STATUS,
@@ -12,6 +13,12 @@ import {
   APPLICATION_ENGINE_METHOD_ROUTE_REQUEST,
   APPLICATION_ENGINE_METHOD_STOP,
   APPLICATION_ENGINE_NOTIFICATION_METHOD,
+  APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET,
+  APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE,
+  APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET,
+  APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_EVENT,
+  APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_ERROR,
+  APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_CLOSED,
   type ApplicationWorkerNotificationParams,
 } from "../runtime/protocol.js";
 
@@ -24,28 +31,28 @@ type JsonRpcRequest = {
   error?: { message?: string };
 };
 
-const writeFrame = (frame: Record<string, unknown>): void => {
-  process.stdout.write(`${JSON.stringify(frame)}\n`);
-};
+const frameWriter = new JsonLineFrameWriter(process.stdout);
+const writeFrame = (frame: Record<string, unknown>): Promise<void> => frameWriter.write(frame);
 
 const hostBridgeClient = new ApplicationWorkerHostBridgeClient(writeFrame);
-const runtime = new ApplicationWorkerRuntime(
+const runtime = new ApplicationBackendHost(
   async (params: ApplicationWorkerNotificationParams) => {
-    writeFrame({
+    await writeFrame({
       jsonrpc: "2.0",
       method: APPLICATION_ENGINE_NOTIFICATION_METHOD,
       params,
     });
   },
   async (input) => hostBridgeClient.invokeContextCapability(input),
+  async (input) => hostBridgeClient.invokeWebSocketAction(input),
 );
 
-const respondSuccess = (id: string | number | null, result: unknown): void => {
-  writeFrame({ jsonrpc: "2.0", id, result });
+const respondSuccess = async (id: string | number | null, result: unknown): Promise<void> => {
+  await writeFrame({ jsonrpc: "2.0", id, result });
 };
 
-const respondError = (id: string | number | null, message: string): void => {
-  writeFrame({
+const respondError = async (id: string | number | null, message: string): Promise<void> => {
+  await writeFrame({
     jsonrpc: "2.0",
     id,
     error: { message },
@@ -66,7 +73,7 @@ rl.on("line", async (line) => {
   try {
     request = JSON.parse(line) as JsonRpcRequest;
   } catch (error) {
-    respondError(null, `Invalid JSON request: ${String(error)}`);
+    await respondError(null, `Invalid JSON request: ${String(error)}`);
     return;
   }
 
@@ -78,43 +85,62 @@ rl.on("line", async (line) => {
   const method = request.method ?? "";
   const params = request.params ?? {};
 
+  if (id === null) {
+    if (method === APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_EVENT) runtime.dispatchAgentStreamEvent(params);
+    if (method === APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_ERROR) runtime.dispatchAgentStreamError(params);
+    if (method === APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_CLOSED) runtime.dispatchAgentStreamClosed(params);
+    return;
+  }
+
   try {
     switch (method) {
       case APPLICATION_ENGINE_METHOD_LOAD_DEFINITION:
-        respondSuccess(id, await runtime.loadDefinition(params as never));
+        await respondSuccess(id, await runtime.loadDefinition(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_GET_STATUS:
-        respondSuccess(id, runtime.getStatus());
+        await respondSuccess(id, runtime.getStatus());
         break;
       case APPLICATION_ENGINE_METHOD_INVOKE_QUERY:
-        respondSuccess(id, await runtime.invokeQuery(params as never));
+        await respondSuccess(id, await runtime.invokeQuery(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_INVOKE_COMMAND:
-        respondSuccess(id, await runtime.invokeCommand(params as never));
+        await respondSuccess(id, await runtime.invokeCommand(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_ROUTE_REQUEST:
-        respondSuccess(id, await runtime.routeRequest(params as never));
+        await respondSuccess(id, await runtime.routeRequest(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL:
-        respondSuccess(id, await runtime.executeGraphql(params as never));
+        await respondSuccess(id, await runtime.executeGraphql(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER:
-        respondSuccess(id, await runtime.invokeEventHandler(params as never));
+        await respondSuccess(id, await runtime.invokeEventHandler(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER:
-        respondSuccess(id, await runtime.invokeArtifactHandler(params as never));
+        await respondSuccess(id, await runtime.invokeArtifactHandler(params as never));
+        break;
+      case APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET:
+        await runtime.openWebSocket(params as never);
+        await respondSuccess(id, { opened: true });
+        break;
+      case APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE:
+        await runtime.deliverWebSocketMessage(params as never);
+        await respondSuccess(id, { delivered: true });
+        break;
+      case APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET:
+        await runtime.closeWebSocket(params as never);
+        await respondSuccess(id, { closed: true });
         break;
       case APPLICATION_ENGINE_METHOD_STOP:
         await runtime.stop();
-        respondSuccess(id, { stopped: true });
+        await respondSuccess(id, { stopped: true });
         process.exit(0);
         break;
       default:
-        respondError(id, `Unsupported worker method '${method}'.`);
+        await respondError(id, `Unsupported worker method '${method}'.`);
         break;
     }
   } catch (error) {
-    respondError(id, error instanceof Error ? error.message : String(error));
+    await respondError(id, error instanceof Error ? error.message : String(error));
   }
 });
 

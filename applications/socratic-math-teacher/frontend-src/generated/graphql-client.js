@@ -140,13 +140,13 @@ const readGraphqlField = async (promise, fieldName) => {
 export const createSocraticMathGraphqlClient = (applicationClient) => {
   const execute = (query, operationName, variables, fieldName) =>
     readGraphqlField(
-      applicationClient.graphql({ query, operationName, variables }),
+      applicationClient.backend.graphql({ query, operationName, variables }),
       fieldName,
     );
 
   return {
     getApplicationInfo: applicationClient.getApplicationInfo,
-    subscribeNotifications: applicationClient.subscribeNotifications,
+    subscribeNotifications: applicationClient.backend.subscribeNotifications,
     lessons: () => execute(LESSONS_QUERY, "LessonsQuery", null, "lessons"),
     lesson: (lessonId) => execute(LESSON_QUERY, "LessonQuery", { lessonId }, "lesson"),
     startLesson: (input) => execute(START_LESSON_MUTATION, "StartLessonMutation", { input }, "startLesson"),

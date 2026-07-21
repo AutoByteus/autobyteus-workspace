@@ -9,15 +9,15 @@ import { ApplicationStorageLifecycleService } from "../../../src/application-sto
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import {
-  ApplicationBackendNotificationStreamService,
+  ApplicationBackendNotificationHub,
   type ApplicationBackendNotificationStreamMessage,
-} from "../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js";
+} from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
 
 const applicationBackendState = vi.hoisted(() => ({
   apiGatewayService: null as ApplicationBackendApiGatewayService | null,
-  notificationStreamService: null as ApplicationBackendNotificationStreamService | null,
+  notificationStreamService: null as ApplicationBackendNotificationHub | null,
 }));
 
 vi.mock("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", async () => {
@@ -35,13 +35,13 @@ vi.mock("../../../src/application-backend-api-gateway/services/application-backe
   };
 });
 
-vi.mock("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js", async () => {
+vi.mock("../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js", async () => {
   const actual = await vi.importActual<
-    typeof import("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js")
-  >("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js");
+    typeof import("../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js")
+  >("../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js");
   return {
     ...actual,
-    getApplicationBackendNotificationStreamService: () => {
+    getApplicationBackendNotificationHub: () => {
       if (!applicationBackendState.notificationStreamService) {
         throw new Error("Integration test notification stream service was not initialized.");
       }
@@ -84,8 +84,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "3",
-      frontendSdkContractVersion: "3",
+      backendDefinitionContractVersion: "4",
+      frontendSdkContractVersion: "4",
     },
     supportedExposures: {
       queries: true,
@@ -94,6 +94,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
       graphql: true,
       notifications: true,
       eventHandlers: true,
+      webSockets: false,
     },
     migrationsDirPath: null,
     migrationsDirRelativePath: null,
@@ -218,7 +219,7 @@ const ensureTables = (storage) => {
 }
 
 export default {
-  definitionContractVersion: '3',
+  definitionContractVersion: '4',
   lifecycle: {
     onStart(ctx) {
       ensureTables(ctx.storage)
@@ -338,7 +339,7 @@ export default {
       applicationBundleService: bundleService as never,
       storageLifecycleService,
     });
-    applicationBackendState.notificationStreamService = new ApplicationBackendNotificationStreamService();
+    applicationBackendState.notificationStreamService = new ApplicationBackendNotificationHub();
     applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       engineHostService,
@@ -577,6 +578,7 @@ export default {
           graphql: true,
           notifications: true,
           eventHandlers: true,
+          webSockets: false,
         },
         queries: ["tickets.get"],
         commands: ["tickets.create"],

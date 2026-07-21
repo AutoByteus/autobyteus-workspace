@@ -1,5 +1,8 @@
 import type { ApplicationGraphqlRequest, ApplicationNotificationMessage, ApplicationRequestContext, ApplicationRouteRequest, ApplicationRouteResponse } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationClientTransport } from "./application-client-transport.js";
+import type { ApplicationBackendWebSocketConnectOptions } from "./application-backend-websocket-connection.js";
+import type { ApplicationAgentConnectionOptions } from "./application-agent-connection.js";
+import type { ApplicationAgentTargetAddress } from "@autobyteus/application-sdk-contracts";
 export type ApplicationClientOptions = {
     applicationId: string;
     requestContext?: ApplicationRequestContext | null;
@@ -10,12 +13,18 @@ export declare const createApplicationClient: (options: ApplicationClientOptions
         applicationId: string;
         requestContext: ApplicationRequestContext | null;
     };
-    query: (queryName: string, input?: unknown) => Promise<unknown>;
-    command: (commandName: string, input?: unknown) => Promise<unknown>;
-    graphql: (request: ApplicationGraphqlRequest) => Promise<unknown>;
-    route: (request: ApplicationRouteRequest) => Promise<ApplicationRouteResponse | unknown>;
-    subscribeNotifications: (listener: (message: ApplicationNotificationMessage) => void) => {
-        close: () => void;
+    agentCommunication: {
+        connect: (address: ApplicationAgentTargetAddress, connectOptions?: ApplicationAgentConnectionOptions) => import("./application-agent-connection.js").ApplicationAgentConnection;
+    };
+    backend: {
+        query: (queryName: string, input?: unknown) => Promise<unknown>;
+        command: (commandName: string, input?: unknown) => Promise<unknown>;
+        graphql: (request: ApplicationGraphqlRequest) => Promise<unknown>;
+        route: (request: ApplicationRouteRequest) => Promise<ApplicationRouteResponse | unknown>;
+        subscribeNotifications: (listener: (message: ApplicationNotificationMessage) => void) => {
+            close: () => void;
+        };
+        connectWebSocket: (path: string, connectOptions?: ApplicationBackendWebSocketConnectOptions) => import("./application-backend-websocket-connection.js").ApplicationBackendWebSocketConnection;
     };
 };
 export type ApplicationClient = ReturnType<typeof createApplicationClient>;

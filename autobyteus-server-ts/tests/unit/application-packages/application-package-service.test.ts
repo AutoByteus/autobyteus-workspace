@@ -87,10 +87,10 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
   await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
   await fs.mkdir(path.join(bundleRoot, "agent-teams", "sample-team", "agents", "sample-agent"), { recursive: true });
   await fs.writeFile(path.join(bundleRoot, "application.json"), JSON.stringify({
-    manifestVersion: "3",
+    manifestVersion: "4",
     id: applicationId,
     name: applicationId,
-    ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "3" },
+    ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "4" },
     backend: { bundleManifest: "backend/bundle.json" },
     executionResourceSlots: [
       {
@@ -112,8 +112,8 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     moduleFormat: "esm",
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
-    sdkCompatibility: { backendDefinitionContractVersion: "3", frontendSdkContractVersion: "3" },
-    supportedExposures: { queries: true, commands: true, routes: true, graphql: true, notifications: true, eventHandlers: true },
+    sdkCompatibility: { backendDefinitionContractVersion: "4", frontendSdkContractVersion: "4" },
+    supportedExposures: { queries: true, commands: true, routes: true, graphql: true, notifications: true, eventHandlers: true, webSockets: false },
     migrationsDir: "backend/migrations",
     assetsDir: "backend/assets",
   }, null, 2));

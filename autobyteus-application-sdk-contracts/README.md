@@ -4,14 +4,15 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 ## What it owns
 
-- application manifest v3 types and version constants
+- application manifest v4 types and version constants
 - backend bundle manifest v1 types and version constants
-- backend definition contract v3 types
-- frontend SDK contract v3 constants
-- iframe/bootstrap contract v3 constants, query hints, payload types, transport shape, and validators/builders
+- backend definition contract v4 types
+- frontend SDK contract v4 constants
+- iframe/bootstrap contract v4 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
 - execution-resource, resource-slot, and host-managed launch-default configuration types
-- named agent-execution, agent-resource, published-artifact, run-binding, and execution-event types
+- named agent-execution, agent-resource, published-artifact, precise agent/team binding, standard agent-communication, and execution-event types
+- optional application-backend WebSocket request/session/route types
 - application engine status types
 
 
@@ -21,20 +22,20 @@ New external custom applications should start with `@autobyteus/application-devk
 
 ## Key exported version constants
 
-- `APPLICATION_MANIFEST_VERSION_V3`
+- `APPLICATION_MANIFEST_VERSION_V4`
 - `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1`
-- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3`
-- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3`
+- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4`
+- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4`
 - `APPLICATION_EVENT_DELIVERY_SEMANTICS` (`AT_LEAST_ONCE`)
 
 ## Main shared contracts
 
 ### Bundle manifests
 
-- `ApplicationManifestV3`
+- `ApplicationManifestV4`
   - `application.json`
-  - requires `manifestVersion: "3"`
-  - requires `ui.frontendSdkContractVersion: "3"`
+  - requires `manifestVersion: "4"`
+  - requires `ui.frontendSdkContractVersion: "4"`
   - requires `backend.bundleManifest`
   - may declare app-consumable `executionResourceSlots[]` for host-managed saved setup
   - does **not** declare a singular launch-time `runtimeTarget`
@@ -57,17 +58,17 @@ New external custom applications should start with `@autobyteus/application-devk
 ### Iframe / bootstrap contract
 
 - `APPLICATION_IFRAME_CHANNEL`
-- `APPLICATION_IFRAME_CONTRACT_VERSION_V3`
+- `APPLICATION_IFRAME_CONTRACT_VERSION_V4`
 - `APPLICATION_IFRAME_READY_EVENT`
 - `APPLICATION_IFRAME_BOOTSTRAP_EVENT`
 - `ApplicationIframeLaunchHints`
 - `ApplicationHostTransport`
-- `ApplicationUiReadyEnvelopeV3`
-- `ApplicationHostBootstrapEnvelopeV3`
-- `createApplicationUiReadyEnvelopeV3(...)`
-- `createApplicationHostBootstrapEnvelopeV3(...)`
-- `isApplicationUiReadyEnvelopeV3(...)`
-- `isApplicationHostBootstrapEnvelopeV3(...)`
+- `ApplicationUiReadyEnvelopeV4`
+- `ApplicationHostBootstrapEnvelopeV4`
+- `createApplicationUiReadyEnvelopeV4(...)`
+- `createApplicationHostBootstrapEnvelopeV4(...)`
+- `isApplicationUiReadyEnvelopeV4(...)`
+- `isApplicationHostBootstrapEnvelopeV4(...)`
 - `readApplicationIframeLaunchHints(...)`
 - `normalizeApplicationHostOrigin(...)`
 - `doesApplicationHostOriginMatch(...)`
@@ -81,9 +82,12 @@ New external custom applications should start with `@autobyteus/application-devk
 - `ApplicationExecutionResourceSlotDeclaration`
 - `ApplicationConfiguredExecutionResource` / `ApplicationConfiguredLaunchDefaults`
 - `ApplicationStartAgentInput` / `ApplicationStartAgentTeamInput`
-- `ApplicationRunBindingSummary`
+- `ApplicationAgentBinding` / `ApplicationAgentTeamBinding`
+- `ApplicationAgentTargetAddress` / `ApplicationAgentInput` / `ApplicationAgentEvent`
+- `ApplicationAgentConnectionError` and standard wire-frame types
 - `ApplicationExecutionEventEnvelope`
 - `ApplicationPublishedArtifactEvent`
+- `ApplicationWebSocketRouteDefinition` and its request/session/frame types
 
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
 
@@ -117,10 +121,10 @@ It also emits a packaging-only import mirror under:
 
 It demonstrates:
 
-- manifest v3
+- manifest v4
 - manifest-declared `executionResourceSlots[]`
 - backend bundle manifest v1
-- shared iframe/bootstrap contract v3
+- shared iframe/bootstrap contract v4 with fixed backend notification, custom WebSocket, and standard agent-communication bases
 - request context `{ applicationId }`
 - application-authored `agentResources.getConfigured(...)` + `agentExecution.startAgentTeam(...)`
 - published-artifact reads via `publishedArtifacts.list(...)`
@@ -133,6 +137,6 @@ It demonstrates:
 - `../autobyteus-server-ts/docs/modules/application_backend_api_gateway.md`
 - `../autobyteus-server-ts/docs/modules/application_engine.md`
 - `../autobyteus-server-ts/docs/modules/application_storage.md`
-- `../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
+- `../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
 - `../autobyteus-application-frontend-sdk/README.md`
 - `../autobyteus-application-backend-sdk/README.md`

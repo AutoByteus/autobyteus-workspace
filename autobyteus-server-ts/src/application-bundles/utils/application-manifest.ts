@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
-  APPLICATION_MANIFEST_VERSION_V3,
-  type ApplicationManifestV3,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
+  APPLICATION_MANIFEST_VERSION_V4,
+  type ApplicationManifestV4,
   type ApplicationExecutionResourceSlotDeclaration,
   type ApplicationExecutionResourceKind,
   type ApplicationExecutionResourceSource,
@@ -115,6 +115,18 @@ const hasOwnField = (
   candidateFieldName: string,
 ): boolean => Object.prototype.hasOwnProperty.call(record, candidateFieldName);
 
+const rejectUnknownFields = (
+  record: Record<string, unknown>,
+  allowedFields: readonly string[],
+  fieldName: string,
+): void => {
+  const allowed = new Set(allowedFields);
+  const unknown = Object.keys(record).find((key) => !allowed.has(key));
+  if (unknown) {
+    throw new ApplicationManifestParseError(`${fieldName} contains unsupported key '${unknown}'.`);
+  }
+};
+
 const rejectLegacyField = (
   record: Record<string, unknown>,
   fieldName: string,
@@ -209,12 +221,14 @@ const normalizeExecutionResourceRef = (
     throw new ApplicationManifestParseError(`${fieldName}.kind must be 'AGENT' or 'AGENT_TEAM'.`);
   }
   if (source === "bundle") {
+    rejectUnknownFields(record, ["source", "kind", "localId"], fieldName);
     return {
       source,
       kind,
       localId: normalizeRequiredString(record.localId, `${fieldName}.localId`),
     } as ApplicationExecutionResourceRef;
   }
+  rejectUnknownFields(record, ["source", "kind", "definitionId"], fieldName);
   return {
     source,
     kind,
@@ -315,6 +329,16 @@ const normalizeExecutionResourceSlots = (value: unknown): ApplicationExecutionRe
     rejectLegacyField(record, fieldName, "allowedResourceKinds", "allowedExecutionResourceKinds");
     rejectLegacyField(record, fieldName, "allowedResourceOwners", "allowedExecutionResourceSources");
     rejectLegacyField(record, fieldName, "defaultResourceRef", "defaultExecutionResourceRef");
+    rejectUnknownFields(record, [
+      "slotKey",
+      "name",
+      "description",
+      "allowedExecutionResourceKinds",
+      "allowedExecutionResourceSources",
+      "required",
+      "supportedLaunchConfig",
+      "defaultExecutionResourceRef",
+    ], fieldName);
     const slotKey = normalizeRequiredString(record.slotKey, `${fieldName}.slotKey`);
     if (!SLOT_KEY_PATTERN.test(slotKey)) {
       throw new ApplicationManifestParseError(
@@ -394,20 +418,31 @@ export const parseApplicationManifest = (
     throw new ApplicationManifestParseError("Application manifest must be a JSON object.");
   }
 
-  const manifest = payload as ApplicationManifestV3 & Record<string, unknown>;
+  const manifest = payload as ApplicationManifestV4 & Record<string, unknown>;
   rejectLegacyField(manifest, "application manifest", "resourceSlots", "executionResourceSlots");
+  rejectUnknownFields(manifest, ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots"], "Application manifest");
+  if (!manifest.ui || typeof manifest.ui !== "object" || Array.isArray(manifest.ui)) {
+    throw new ApplicationManifestParseError("ui must be an object.");
+  }
+  const ui = manifest.ui as Record<string, unknown>;
+  rejectUnknownFields(ui, ["entryHtml", "frontendSdkContractVersion"], "ui");
+  if (!manifest.backend || typeof manifest.backend !== "object" || Array.isArray(manifest.backend)) {
+    throw new ApplicationManifestParseError("backend must be an object.");
+  }
+  const backend = manifest.backend as Record<string, unknown>;
+  rejectUnknownFields(backend, ["bundleManifest"], "backend");
   const manifestVersion = normalizeRequiredString(manifest.manifestVersion, "manifestVersion");
-  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V3) {
+  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V4) {
     throw new ApplicationManifestParseError(
-      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V3}'.`,
+      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V4}'.`,
     );
   }
 
   const frontendSdkContractVersion = normalizeRequiredString(
-    (manifest.ui as Record<string, unknown> | undefined)?.frontendSdkContractVersion,
+    ui.frontendSdkContractVersion,
     "ui.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4) {
     throw new ApplicationManifestParseError(
       `Unsupported ui.frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
     );
@@ -425,13 +460,13 @@ export const parseApplicationManifest = (
           }),
     entryHtmlRelativePath: normalizeBundleRelativePath(
       bundleRootPath,
-      (manifest.ui as Record<string, unknown> | undefined)?.entryHtml,
+      ui.entryHtml,
       "ui.entryHtml",
       { requiredPrefix: "ui/" },
     ),
     backendBundleManifestRelativePath: normalizeBundleRelativePath(
       bundleRootPath,
-      (manifest.backend as Record<string, unknown> | undefined)?.bundleManifest,
+      backend.bundleManifest,
       "backend.bundleManifest",
       { requiredPrefix: "backend/" },
     ),

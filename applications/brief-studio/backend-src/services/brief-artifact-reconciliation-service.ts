@@ -2,7 +2,8 @@ import type {
   ApplicationExecutionProducer,
   ApplicationHandlerContext,
   ApplicationPublishedArtifactEvent,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
 } from "@autobyteus/application-backend-sdk";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createArtifactRepository } from "../repositories/artifact-repository.js";
@@ -14,10 +15,10 @@ import { createRunBindingCorrelationService } from "./run-binding-correlation-se
 
 const TERMINAL_BINDING_STATUSES = new Set(["TERMINATED", "FAILED", "ORPHANED"]);
 
-const isTerminalBinding = (binding: ApplicationRunBindingSummary): boolean =>
+const isTerminalBinding = (binding: ApplicationAgentBinding | ApplicationAgentTeamBinding): boolean =>
   TERMINAL_BINDING_STATUSES.has(binding.status);
 
-const resolveBindingRunIds = (binding: ApplicationRunBindingSummary): string[] => {
+const resolveBindingRunIds = (binding: ApplicationAgentBinding | ApplicationAgentTeamBinding): string[] => {
   if (binding.runtime.members.length > 0) {
     return binding.runtime.members.map((member) => member.runId);
   }
@@ -34,7 +35,7 @@ const sortArtifacts = <T extends { updatedAt: string; createdAt: string }>(artif
   });
 
 const resolveProducerForRun = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
   runId: string,
 ): ApplicationExecutionProducer | null => {
   const member = binding.runtime.members.find((candidate) => candidate.runId === runId) ?? null;
@@ -139,7 +140,7 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
   },
 
   async projectArtifactRevision(input: {
-    binding: ApplicationRunBindingSummary;
+    binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
     producer: ApplicationExecutionProducer | null;
     runId: string;
     revisionId: string;

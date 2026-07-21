@@ -44,8 +44,8 @@ const buildSnapshot = (): ApplicationCatalogSnapshot => ({
         distribution: "self-contained",
         targetRuntime: { engine: "node", semver: ">=22 <23" },
         sdkCompatibility: {
-          backendDefinitionContractVersion: "3",
-          frontendSdkContractVersion: "3",
+          backendDefinitionContractVersion: "4",
+          frontendSdkContractVersion: "4",
         },
         supportedExposures: {
           queries: true,
@@ -54,6 +54,7 @@ const buildSnapshot = (): ApplicationCatalogSnapshot => ({
           graphql: true,
           notifications: true,
           eventHandlers: true,
+          webSockets: false,
         },
         migrationsDirPath: null,
         migrationsDirRelativePath: null,

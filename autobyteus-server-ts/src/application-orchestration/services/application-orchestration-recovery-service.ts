@@ -1,4 +1,4 @@
-import type { ApplicationRunBindingSummary } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import type { ApplicationCatalogSnapshot } from "../../application-bundles/domain/application-catalog-snapshot.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
@@ -6,6 +6,10 @@ import { ApplicationExecutionEventIngressService } from "./application-execution
 import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+import {
+  ApplicationRunBindingTerminalTransitionService,
+  getApplicationRunBindingTerminalTransitionService,
+} from "./application-run-binding-terminal-transition-service.js";
 
 export type ApplicationRecoveryOutcomeStatus = "RECOVERED" | "QUARANTINED" | "NO_PERSISTED_STATE";
 
@@ -15,7 +19,7 @@ export type ApplicationRecoveryOutcome = {
   detail: string | null;
 };
 
-const collectBindingRunIds = (binding: ApplicationRunBindingSummary): string[] =>
+const collectBindingRunIds = (binding: ApplicationAgentBindingRecord): string[] =>
   Array.from(
     new Set([
       binding.runtime.runId,
@@ -48,6 +52,7 @@ export class ApplicationOrchestrationRecoveryService {
       lookupStore?: ApplicationRunLookupStore;
       runObserverService?: ApplicationRunObserverService;
       ingressService?: ApplicationExecutionEventIngressService;
+      terminalTransitionService?: ApplicationRunBindingTerminalTransitionService;
     } = {},
   ) {}
 
@@ -73,6 +78,18 @@ export class ApplicationOrchestrationRecoveryService {
 
   private get ingressService(): ApplicationExecutionEventIngressService {
     return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
+  }
+
+  private get terminalTransitionService(): ApplicationRunBindingTerminalTransitionService {
+    if (this.dependencies.terminalTransitionService) return this.dependencies.terminalTransitionService;
+    if (this.dependencies.bindingStore || this.dependencies.lookupStore || this.dependencies.ingressService) {
+      return new ApplicationRunBindingTerminalTransitionService({
+        bindingStore: this.bindingStore,
+        lookupStore: this.lookupStore,
+        ingressService: this.ingressService,
+      });
+    }
+    return getApplicationRunBindingTerminalTransitionService();
   }
 
   async resumeBindings(
@@ -117,29 +134,19 @@ export class ApplicationOrchestrationRecoveryService {
   }
 
   async markBindingOrphaned(
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     reason: string,
     errorMessage: string | null,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     await this.runObserverService.detachBinding(binding.bindingId);
-    const now = new Date().toISOString();
-    const orphanedBinding: ApplicationRunBindingSummary = {
-      ...binding,
+    const orphanedBinding = await this.terminalTransitionService.transition({
+      applicationId: binding.applicationId,
+      bindingId: binding.bindingId,
       status: "ORPHANED",
-      updatedAt: now,
-      terminatedAt: now,
-      lastErrorMessage: errorMessage ?? binding.lastErrorMessage,
-    };
-    await this.bindingStore.persistBinding(orphanedBinding);
-    this.lookupStore.removeBindingLookups(orphanedBinding.applicationId, orphanedBinding.bindingId);
-    await this.ingressService.appendBindingLifecycleEvent({
-      family: "RUN_ORPHANED",
-      binding: orphanedBinding,
-      payload: {
-        reason,
-        errorMessage: errorMessage ?? binding.lastErrorMessage,
-      },
+      reason,
+      errorMessage,
     });
+    if (!orphanedBinding) throw new Error(`Application run binding '${binding.bindingId}' was not found.`);
     return orphanedBinding;
   }
 

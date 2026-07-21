@@ -9,7 +9,8 @@ import type {
 import type {
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
@@ -102,8 +103,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "3",
-      frontendSdkContractVersion: "3",
+      backendDefinitionContractVersion: "4",
+      frontendSdkContractVersion: "4",
     },
     supportedExposures: {
       queries: false,
@@ -112,6 +113,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
       graphql: false,
       notifications: false,
       eventHandlers: false,
+      webSockets: false,
     },
     migrationsDirPath: null,
     migrationsDirRelativePath: null,
@@ -129,7 +131,7 @@ const writeCapabilityBackend = async (applicationRootPath: string): Promise<void
     `import { DatabaseSync } from 'node:sqlite'
 
 export default {
-  definitionContractVersion: '3',
+  definitionContractVersion: '4',
   commands: {
     'capabilities.exercise': async (_input, context) => {
       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
@@ -417,7 +419,7 @@ describe("Application context capability integration", () => {
     const ingressService = {
       appendBindingLifecycleEvent: vi.fn(async (input: {
         family: "RUN_TERMINATED";
-        binding: ApplicationRunBindingSummary;
+        binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
         payload: unknown;
       }) => journalStore.appendEventAwaitable(input.binding.applicationId, {
         eventId: `termination-${++journalSequence}`,
@@ -459,7 +461,7 @@ describe("Application context capability integration", () => {
       bindingStore,
       lookupStore,
       runObserverService: {
-        attachBinding: vi.fn(async (binding: ApplicationRunBindingSummary) => {
+        attachBinding: vi.fn(async (binding: ApplicationAgentBinding | ApplicationAgentTeamBinding) => {
           if (binding.launchRequestId === "recovery-launch-request-1") {
             throw new Error("simulated post-persist launch handoff failure");
           }
@@ -487,25 +489,25 @@ describe("Application context capability integration", () => {
       requestContext: { applicationId: string };
       resources: ApplicationExecutionResourceSummary[];
       configured: { slotKey: string; executionResourceRef: ApplicationExecutionResourceRef };
-      agent: ApplicationRunBindingSummary;
-      team: ApplicationRunBindingSummary;
-      sent: ApplicationRunBindingSummary;
-      fetched: ApplicationRunBindingSummary | null;
-      missing: ApplicationRunBindingSummary | null;
-      listed: ApplicationRunBindingSummary[];
-      found: ApplicationRunBindingSummary | null;
-      notFound: ApplicationRunBindingSummary | null;
+      agent: ApplicationAgentBinding | ApplicationAgentTeamBinding;
+      team: ApplicationAgentBinding | ApplicationAgentTeamBinding;
+      sent: ApplicationAgentBinding | ApplicationAgentTeamBinding;
+      fetched: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      missing: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      listed: Array<ApplicationAgentBinding | ApplicationAgentTeamBinding>;
+      found: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      notFound: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
       artifacts: typeof artifactSummary[];
       revision: string | null;
       recoveryLaunchFailure: string | null;
-      recovered: ApplicationRunBindingSummary | null;
+      recovered: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
       recoveryState: {
         status: string;
         pendingBindingId: string;
         objectBindingId: string;
       };
-      terminatedAgent: ApplicationRunBindingSummary | null;
-      terminatedTeam: ApplicationRunBindingSummary | null;
+      terminatedAgent: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      terminatedTeam: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
     };
 
     expect(result.requestContext).toEqual({ applicationId: APPLICATION_ID });

@@ -5,41 +5,30 @@ export const createApplicationClient = (options) => {
             applicationId: options.applicationId,
             requestContext: getRequestContext(),
         }),
-        query: (queryName, input) => options.transport.invokeQuery({
-            applicationId: options.applicationId,
-            queryName,
-            requestContext: getRequestContext(),
-            input: input ?? null,
-        }),
-        command: (commandName, input) => options.transport.invokeCommand({
-            applicationId: options.applicationId,
-            commandName,
-            requestContext: getRequestContext(),
-            input: input ?? null,
-        }),
-        graphql: (request) => options.transport.executeGraphql({
-            applicationId: options.applicationId,
-            requestContext: getRequestContext(),
-            request,
-        }),
-        route: (request) => {
-            if (!options.transport.invokeRoute) {
-                throw new Error("The application transport does not support route invocation.");
-            }
-            return options.transport.invokeRoute({
-                applicationId: options.applicationId,
-                requestContext: getRequestContext(),
-                request,
-            });
+        agentCommunication: {
+            connect: (address, connectOptions) => options.transport.connectAgentCommunication(address, connectOptions),
         },
-        subscribeNotifications: (listener) => {
-            if (!options.transport.subscribeNotifications) {
-                return { close: () => undefined };
-            }
-            return options.transport.subscribeNotifications({
-                applicationId: options.applicationId,
-                listener,
-            });
+        backend: {
+            query: (queryName, input) => options.transport.invokeQuery({
+                applicationId: options.applicationId, queryName, requestContext: getRequestContext(), input: input ?? null,
+            }),
+            command: (commandName, input) => options.transport.invokeCommand({
+                applicationId: options.applicationId, commandName, requestContext: getRequestContext(), input: input ?? null,
+            }),
+            graphql: (request) => options.transport.executeGraphql({
+                applicationId: options.applicationId, requestContext: getRequestContext(), request,
+            }),
+            route: (request) => {
+                if (!options.transport.invokeRoute)
+                    throw new Error("The application transport does not support route invocation.");
+                return options.transport.invokeRoute({ applicationId: options.applicationId, requestContext: getRequestContext(), request });
+            },
+            subscribeNotifications: (listener) => options.transport.subscribeNotifications?.({ applicationId: options.applicationId, listener }) ?? { close: () => undefined },
+            connectWebSocket: (path, connectOptions) => {
+                if (!options.transport.connectWebSocket)
+                    throw new Error("The application transport does not support WebSocket connections.");
+                return options.transport.connectWebSocket(path, connectOptions);
+            },
         },
     };
 };
