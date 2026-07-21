@@ -23,10 +23,17 @@ const manifest = enabled ? loadLiveE2eManifest(manifestPath) : null;
 const selectedScenarioIds = manifest ? selectedLiveE2eScenarioIds(manifest) : [];
 const scanner = new LiveE2eEvidenceScanner(['synthetic-live-e2e-scan-canary']);
 
+const assertEvidenceClean = (value: unknown): void => {
+  scanner.assertEvidenceClean(value);
+};
+
 const safeExternalOperation = async <T>(scenarioId: string, operation: () => Promise<T>): Promise<T> => {
   try {
     return await operation();
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('LIVE_E2E_EVIDENCE_')) {
+      throw error;
+    }
     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`);
   }
 };
@@ -39,8 +46,7 @@ const reportPreflight = (preflight: LiveE2ePreflight): void => {
     missing: preflight.missing,
     instructionCode: preflight.instructionCode,
   };
-  scanner.assertClean(report);
-  scanner.assertStructurallyValueFree(report);
+  assertEvidenceClean(report);
   process.stdout.write(`${JSON.stringify(report)}\n`);
 };
 
@@ -73,6 +79,29 @@ run('read-only Store-backed real provider capabilities', () => {
       const execution = await harness.requireScenario(scenarioId);
       const scenario = execution.scenario;
 
+      if (scenario.mode === 'REAL_GATEWAY') {
+        if (scenarioId !== 'openai.agent-flow') {
+          throw new Error(`LIVE_E2E_SCENARIO_MODE_MISMATCH:${scenarioId}`);
+        }
+        const result = await safeExternalOperation(
+          scenarioId,
+          () => execution.executeOpenAiAgentFlow(assertEvidenceClean),
+        );
+        assertEvidenceClean(result);
+        expect(result).toMatchObject({
+          scenarioId,
+          mode: 'REAL_GATEWAY',
+          capability: 'agent-turn',
+          status: 'PASSED',
+        });
+        expect(result.observedEventCount).toBeGreaterThan(0);
+        return;
+      }
+
+      if (scenario.mode !== 'REAL_DIRECT_SECRET') {
+        throw new Error(`LIVE_E2E_SCENARIO_MODE_MISMATCH:${scenarioId}`);
+      }
+
       if (scenarioId === 'openai.llm') {
         const llm = await safeExternalOperation(scenarioId, () => execution.createLlm(scenario.model!));
         try {
@@ -80,6 +109,7 @@ run('read-only Store-backed real provider capabilities', () => {
             new LLMUserMessage({ content: 'Reply with the single word pong.' }),
             { logicalConversationId: 'secure-secret-real-openai-llm' },
           ));
+          assertEvidenceClean(response);
           expect(response.content.trim().length).toBeGreaterThan(0);
         } finally {
           await llm.cleanup();
@@ -87,12 +117,9 @@ run('read-only Store-backed real provider capabilities', () => {
         return;
       }
 
-      if (scenarioId === 'openai.agent-flow') {
-        throw new Error('LIVE_E2E_GATEWAY_CAPABILITY_NOT_CONFIGURED:openai.agent-flow');
-      }
-
       if (scenarioId === 'serper.search') {
         const result = await safeExternalOperation(scenarioId, () => execution.search('AutoByteus', 2));
+        assertEvidenceClean(result);
         expect(result.length).toBeGreaterThan(0);
         return;
       }
@@ -103,6 +130,7 @@ run('read-only Store-backed real provider capabilities', () => {
           const result = await safeExternalOperation(scenarioId, () => client.generateSpeech(
             'Hello from the secure Store-backed audio test.',
           ));
+          assertEvidenceClean(result);
           expect(result.audio_urls.length).toBeGreaterThan(0);
         } finally {
           await client.cleanup();
@@ -116,6 +144,7 @@ run('read-only Store-backed real provider capabilities', () => {
           const result = await safeExternalOperation(scenarioId, () => client.generateImage(
             'A simple blue circle centered on a white background.',
           ));
+          assertEvidenceClean(result);
           expect(result.image_urls.length).toBeGreaterThan(0);
         } finally {
           await client.cleanup();
@@ -139,7 +168,10 @@ run('read-only Store-backed real provider capabilities', () => {
           }));
           let observedEvents = 0;
           await safeExternalOperation(scenarioId, async () => {
-            for await (const _event of query!) observedEvents += 1;
+            for await (const event of query!) {
+              assertEvidenceClean(event);
+              observedEvents += 1;
+            }
           });
           expect(observedEvents).toBeGreaterThan(0);
         } finally {
@@ -153,8 +185,10 @@ run('read-only Store-backed real provider capabilities', () => {
       if (scenarioId.startsWith('autobyteus.remote-')) {
         const kind = scenarioId.endsWith('llm') ? 'llm' : scenarioId.endsWith('audio') ? 'audio' : 'image';
         const discovered = await safeExternalOperation(scenarioId, () => execution.discoverAutoByteus(kind));
+        assertEvidenceClean(discovered);
         if (discovered === 0) throw new Error(`LIVE_E2E_CAPABILITY_UNAVAILABLE:${scenarioId}`);
         const models = await execution.listAutoByteusModels(kind);
+        assertEvidenceClean(models);
         const model = scenario.model
           ? models.find((candidate) => {
               const identifier = 'model_identifier' in candidate
@@ -173,6 +207,7 @@ run('read-only Store-backed real provider capabilities', () => {
               new LLMUserMessage({ content: 'Reply with the single word pong.' }),
               { logicalConversationId: 'secure-secret-real-autobyteus-llm' },
             ));
+            assertEvidenceClean(result);
             expect(result.content.trim().length).toBeGreaterThan(0);
           } finally {
             await llm.cleanup();
@@ -183,6 +218,7 @@ run('read-only Store-backed real provider capabilities', () => {
             const result = await safeExternalOperation(scenarioId, () => client.generateSpeech(
               'Hello from the secure AutoByteus gateway test.',
             ));
+            assertEvidenceClean(result);
             expect(result.audio_urls.length).toBeGreaterThan(0);
           } finally {
             await client.cleanup();
@@ -193,6 +229,7 @@ run('read-only Store-backed real provider capabilities', () => {
             const result = await safeExternalOperation(scenarioId, () => client.generateImage(
               'A simple blue circle centered on a white background.',
             ));
+            assertEvidenceClean(result);
             expect(result.image_urls.length).toBeGreaterThan(0);
           } finally {
             await client.cleanup();

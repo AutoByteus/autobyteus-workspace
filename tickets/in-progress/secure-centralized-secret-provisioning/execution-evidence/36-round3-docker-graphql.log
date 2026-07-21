@@ -1,0 +1,28 @@
+{
+  "phase": "before-container-restart",
+  "saveAcknowledged": true,
+  "responseValueFree": true,
+  "status": {
+    "backendHealth": "READY",
+    "storageState": "CONFIGURED",
+    "lifecycle": "WRITABLE",
+    "instructionCode": null
+  }
+}
+{
+  "phase": "after-container-restart",
+  "reopenedValueFree": true,
+  "reopenedStatus": {
+    "backendHealth": "READY",
+    "storageState": "CONFIGURED",
+    "lifecycle": "WRITABLE",
+    "instructionCode": null
+  },
+  "removeAcknowledged": true,
+  "finalStatus": {
+    "backendHealth": "READY",
+    "storageState": "MISSING",
+    "lifecycle": "WRITABLE",
+    "instructionCode": null
+  }
+}

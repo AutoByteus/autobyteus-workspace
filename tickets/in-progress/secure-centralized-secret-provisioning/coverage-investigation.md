@@ -9,10 +9,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md`
-- Current Investigation Round: 2
-- Trigger: round-6 implementation-source review passed at `3068d0fad00a6adba302199c857b01d2ede7ebc5`; independently recheck `SCSP-E2E-RESTART-001` and execute the now-applicable broader matrix, including project-source Docker persistence when feasible.
-- Prior Investigation Reviewed: Round 1 at reviewed implementation `69d5442c0f8eb7c293097d939f79c272d0c56fad` (historical failure retained below).
-- Latest Authoritative Investigation: Round 2 (the Round 2 authoritative update at the end of this file governs where it differs from Round 1).
+- Current Investigation Round: 4
+- Trigger: proportional durable-test review failed with bounded API/E2E-owned findings `TCR-001` (non-authoritative mode / fail-only gateway agent flow) and `TCR-002` (full-run evidence bypass); implementation source and Round 3 execution remain passed at `62417e80831a52e627d1b4365e9bfcdc9817ae81`.
+- Prior Investigation Reviewed: Rounds 1–3, including resolved `SCSP-E2E-RESTART-001`, resolved `SCSP-E2E-DOCKER-001`, and the Round 3 96.9% execution Pass.
+- Latest Authoritative Investigation: Round 4 (the Round 4 authoritative update at the end of this file governs where it differs from earlier rounds).
 
 ## Current Requirement And Design Basis
 
@@ -329,3 +329,164 @@ Post-repository confidence before broader manual/Docker execution was **91.1%**:
 - Durable coverage changed by API/E2E in this round: No; Round 1 durable changes remain preserved.
 - Reroute required: Yes, because `SCSP-E2E-DOCKER-001` blocks a clean result.
 - Recommended recipient: `code_reviewer` for focused failure-origin review and owner classification, not proportional successful-test review.
+
+---
+
+## Round 3 Authoritative Re-investigation
+
+### Trigger And Recheck Scope
+
+- Implementation HEAD: `62417e80831a52e627d1b4365e9bfcdc9817ae81`.
+- Reviewed base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`.
+- Round-9 implementation-source review: Pass, 93.4/100, CR-001–CR-011 resolved.
+- Mandatory first scenario: `SCSP-E2E-DOCKER-001`, without an injected `DATABASE_URL` or another clean-build workaround.
+- Required Docker spine: documented local source build -> image import -> container creation/start -> migrations/listen -> synthetic provider save/status -> same named data volume through container restart -> value-free `CONFIGURED` reopen -> removal -> `MISSING` -> complete project cleanup.
+- Applicable repository matrix: AppConfig/Prisma/import lifecycle/app-data/token-usage; Local Store/GraphQL/restart; value-free external capability preflight.
+- Round 1 actual-browser Settings evidence remains valid because the later rework is limited to Prisma initialization/resource ownership and build smoke. No renderer, Settings, GraphQL credential contract, Docker launcher, or Compose source changed.
+
+### Round 3 Existing-Coverage Decisions
+
+| Path / Scenario | Decision | Round 3 Reason / Action |
+| --- | --- | --- |
+| `SCSP-E2E-DOCKER-001` temporary project-source probe | Recheck first | The prior clean build failed before container creation; only an independent clean image build and same-volume runtime lifecycle can resolve it. |
+| `tests/unit/config/prisma-import-lifecycle.test.ts` | Still Valid | Directly proves import/constructor configuration freedom, shared lazy default client ownership, caller ownership, and migration disconnect behavior. Run with the focused Prisma/token matrix. |
+| AppConfig, migration-child, app-data, token-usage repository/store integration tests | Still Valid | CR-010/CR-011 changed their interaction and lifetime. Run sequentially in one Vitest process to avoid the Round 2 shared-test-database contention. |
+| `server-restart-secret-lifecycle.e2e.test.ts` | Still Valid | Recheck that CR-009 remains resolved while CR-010/CR-011 change acquisition timing/ownership. |
+| Local Store + assembled provider GraphQL lifecycle | Still Valid | Recheck real managed storage/API save/replace/remove/status behavior around the Prisma changes. |
+| canonical real-E2E preflight | Still Valid capability gate | Reconfirm exact capability availability without credential inspection. External invocation remains unclaimed when the dedicated Store reports unavailable. |
+| Round 1 browser journey and focused UI/Electron evidence | Carry Forward | No affected UI/shell source; repeated browser or actual desktop execution would not improve confidence in the changed database/build boundary. |
+
+No API/E2E durable test code was edited in Round 3. All earlier durable coverage additions, updates, and stale removals remain preserved for proportional review after the successful run.
+
+### Round 3 Execution Plan And Results
+
+| Order | Command / Mode | Boundary | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round3 --build-local` | clean project-source image build and container start; no DB URL workaround | **Pass** | `34-round3-docker-build-up.log` |
+| 2 | Docker GraphQL readiness and initial provider status | container migrations/listen and writable Local Store | Pass: `READY / MISSING / WRITABLE` | `35-round3-docker-runtime.log` |
+| 3 | synthetic AutoByteus save/status inside the started container | write-only Store/GraphQL boundary | Pass: value-free `CONFIGURED` | `36-round3-docker-graphql.log` |
+| 4 | project Compose `restart autobyteus-server`; readiness and identity/mount inspection | same container and same named data volume across restart | Pass | `37-round3-docker-restart.log` |
+| 5 | post-restart status/remove/final status and structural runtime scan | persisted Store reopen/removal plus migration/listen/error evidence | Pass: value-free `CONFIGURED`, remove acknowledged, final `MISSING`; 2 migrations, 2 listens, zero P1012/missing-URL/canary hits | `36-round3-docker-graphql.log`, `37-round3-docker-restart.log` |
+| 6 | 9-file AppConfig/Prisma/import/app-data/token focused Vitest | changed lazy ownership and explicit configuration | Pass, 54/54 | `38-round3-focused-prisma-token.log` |
+| 7 | restart + Local Store + assembled GraphQL focused Vitest | restart/fault/lifecycle regression | Pass, 14/14 | `39-round3-store-restart.log` |
+| 8 | `pnpm test:e2e:real:preflight` | tracked external capability inventory | Harness Pass, 11/11; all capabilities exactly unavailable | `40-round3-real-preflight.log` |
+| 9 | `docker-start.sh down -p scsp-round3 --volumes --delete-state` plus resource queries | cleanup | Pass; container, volumes, network, and saved runtime state absent | `41-round3-cleanup.log` |
+| 10 | structural evidence aggregation, Docker/base diff, secret-canary scan, `git diff --check` | evidence integrity | Pass | `42-round3-summary-scan.log` |
+
+One temporary evidence-collection formatting issue occurred after the container was already ready: a Docker Go-template expression used to print the data mount was incorrectly escaped, producing an empty first `data_volume` field in `35-round3-docker-runtime.log`. A Python `docker inspect` parse immediately corrected the evidence in the same file. Product execution was unaffected; the corrected initial and post-restart records both show `scsp-round3_autobyteus-server-data` mounted at `/home/autobyteus/data` on container `7bec5da74c3e`.
+
+### Prior Failure Resolution
+
+| Scenario ID | Prior Round Result | Required Round 3 Recheck | Round 3 Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `SCSP-E2E-DOCKER-001` / BEH-006 / AC-002 / AC-016 | Fail before image/container creation | clean local-source build with no injected DB URL; container migrations/listen; same named volume through save/restart/value-free reopen/remove | **Resolved / Pass** | `34`–`37`, `41`, `42` round3 evidence |
+
+The exact earlier failure no longer reproduces: the Docker build output contains `Sanitized built-module/bootstrap smoke passed without DATABASE_URL.`, completes the Linux/arm64 image, creates and starts the container, and reaches the lifecycle. No Docker/Compose/launcher source changed from the reviewed base; the production import/lazy-ownership corrections restore the existing packaging path.
+
+### Round 3 Confidence Gate
+
+Post-repository confidence before the required Docker rerun was **93.3%**. The focused ownership/restart evidence was strong, but the historically failing clean image boundary remained unresolved and therefore required broader execution.
+
+Final confidence after Docker and cleanup is **96.9%** (simple average):
+
+| Confidence Category | Final | Direct Evidence | Residual Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | cumulative requirements matrix, browser, Store/GraphQL, migrations, exact consumers, restart, and clean Docker lifecycle | external capability-selected calls remain unavailable, explicitly reported rather than passed |
+| Changed-boundary execution directness | 98% | clean source image, real container, real SQLite/Store, direct GraphQL, focused ownership integration | no production external provider target |
+| Cross-boundary integration realism and mock gap | 98% | image build -> supervisor -> server -> migrations -> GraphQL -> Store -> named volume -> restart | multi-node/Kubernetes remains outside first-delivery scope |
+| Environment/configuration/identity/fixture fidelity | 98% | documented helper, clean Linux/arm64 builder/runtime, no DB URL workaround, owned ports/project/volume | other OS/container architectures not executed |
+| Failure/edge/lifecycle/recovery evidence | 98% | cumulative fault/contention/reset plus local and container restart/reopen/removal | none material for the reviewed local single-node scope |
+| User-surface/browser/desktop-shell confidence | 95% | Round 1 actual browser plus focused web/Electron evidence remains applicable | actual packaged desktop intentionally unnecessary |
+| Durable regression coverage quality/relevance | 96% | Store/GraphQL/harness/restart/import-lifecycle coverage and stale suite removal | Docker lifecycle remains temporary evidence, not a default durable suite |
+
+- Default 95% clean target met: Yes.
+- Applicable category below 90%: No.
+- Historically failing critical scenario unresolved: No.
+- External real-provider scenarios: `Unavailable`, not claimed as passed. The capability gate itself was directly exercised and returned the exact accepted unavailability status for all 11 declarations.
+- Broader-validation decision: `Required` and completed successfully.
+- Round 3 investigation result: **Pass**.
+
+### Round 3 Safety, Scope, And Dependency Record
+
+- No `.env.test`, default Store, credential file, Store value, or secret-bearing artifact was read, copied, imported, inspected, or logged.
+- Only an owned disposable Docker Local Store and a synthetic canary were used. Raw-canary hit count across Round 3 evidence is zero.
+- The dedicated real-E2E Store remains unavailable. No real OpenAI, Gemini, Serper, Anthropic, or AutoByteus execution is claimed.
+- Safe future live execution requires human hidden-input target provisioning with `pnpm secrets:local:e2e:setup -- --definition <logical-id>`; no ambient fallback is authorized.
+- Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency only. Delivery must recheck the four official Anthropic sources recorded in the package. It is not legal clearance or an authentication-mode redesign, and no Claude authentication mode changed.
+
+### Round 3 Investigation Decision
+
+- Proceeded to API/E2E and broader execution: Yes.
+- Prior failure rechecked first: Yes; `SCSP-E2E-DOCKER-001` passed.
+- Repository-resident durable coverage changed in Round 3: No; cumulative earlier durable changes remain reviewable.
+- Reroute required: No.
+- Recommended recipient: `code_reviewer` for the separate proportional durable-test review, with the cumulative package and all still-relevant evidence.
+
+---
+
+## Round 4 Authoritative Re-investigation
+
+### Trigger And Scope
+
+- Implementation HEAD remains `62417e80831a52e627d1b4365e9bfcdc9817ae81`; implementation source review and Round 3 executable result remain `Pass`.
+- Proportional durable-test review identified only `TCR-001` and `TCR-002`; both are bounded API/E2E-owned harness/runner defects. No production source, Docker/Compose/launcher, UI, GraphQL contract, Store implementation, migration, or Claude authentication mode changed in this round.
+- The dedicated read-only real-E2E Store remains unavailable. The approved target-only provisioning workflow remains the only safe resume path; `.env.test`, a default Store, credential files, Store values, and secret-bearing artifacts remain prohibited.
+
+### Finding-To-Coverage Decisions
+
+| Finding | Durable Decision | Direct Proof Planned / Added | Why This Is Sufficient |
+| --- | --- | --- | --- |
+| `TCR-001` | Update manifest, harness, tracked declaration, executor, and deterministic harness tests | fixed ID-to-mode registry; reject unknown/mismatched ID/mode before backend health/status or provisioning; direct-secret methods reject gateway execution; declared `openai.agent-flow` requires model plus `agent-turn`; normal `AutoByteusAgentRunBackendFactory -> LLMProvisioningService -> Store-backed management -> provider -> assistant event` flow returns only an opaque value-free summary | Removes the fail-only branch while preserving the approved `REAL_GATEWAY` intent and normal product agent spine. Fake-backend execution coverage proves dispatch/completion/cleanup deterministically; capability-available real execution remains correctly conditional on the dedicated Store. |
+| `TCR-002` | Update the canonical root runner and shared scanner boundary; add deterministic process and artifact controls | runner uses pipe capture instead of inherited stdio; stdout/stderr are scanned before release; an owned evidence directory is recursively scanned; structured provider/SDK results and events are scanned in-test; exact/encoded canary and structural failures expose only stable codes; clean, stdout-leak, and artifact-leak controls use the same capture function as the canonical runner | Makes future `pnpm test:e2e:real` fail closed on captured evidence without echoing a raw hit and without inspecting any real credential value. |
+
+### Durable Coverage Changes In Round 4
+
+| Path | Round 4 Decision / Change |
+| --- | --- |
+| `test-support/live-e2e/live-e2e-manifest.ts` | Updated: authoritative scenario-mode registry, deterministic mismatch/unknown rejection, and declared gateway capability requirements. |
+| `test-support/live-e2e/live-e2e-harness.ts` | Updated: mode enforcement at preflight/execution/direct-secret boundaries and a normal product AutoByteus agent-flow gateway with owned workspace/memory and value-free result. |
+| `test-support/live-e2e/live-e2e-evidence-scanner.ts` | Updated: typed TypeScript entry reuses the canonical runtime scanner. |
+| `test-support/live-e2e/live-e2e-evidence-scanner.mjs` | Added: canonical scanner plus captured-process stdout/stderr/artifact enforcement. |
+| `test-support/live-e2e/live-e2e-evidence-scanner.d.mts` | Added: strict TypeScript contract for the shared runtime module. |
+| `test-support/live-e2e/run-live-e2e.mjs` | Updated: allowlisted non-credential child environment, captured output, owned evidence directory, scan-before-release, stable failure codes, cleanup. |
+| `test-config/live-e2e.json` | Updated: `openai.agent-flow` remains `REAL_GATEWAY` and now declares `gpt-4o-mini` plus `agent-turn`; no secret value is present. |
+| `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | Updated: mode-first dispatch, executable gateway branch, and structured result/event scanning for LLM/search/audio/image/Claude/AutoByteus paths. |
+| `autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts` | Updated: deterministic mismatch, missing capability, gateway execution/cleanup, capture clean control, stdout leak, and artifact leak coverage. |
+
+All other cumulative durable additions/updates and the eight valid stale multimedia removals remain unchanged and preserved.
+
+### Round 4 Execution Results
+
+| Command / Mode | Result | Evidence |
+| --- | --- | --- |
+| focused harness + Local Store + assembled GraphQL + restart + default-skipped real-provider file | Pass: 4 files passed, 1 skipped; 24/24 tests | `execution-evidence/43-round4-tcr-focused-rerun.log` |
+| `pnpm test:e2e:real:preflight` through the new capture/artifact runner | Pass: 11/11; every tracked scenario exactly `UNAVAILABLE / SECRET_BACKEND_UNAVAILABLE` | `execution-evidence/44-round4-captured-real-preflight.log` |
+| scanner/runner `node --check`, `git diff --check`, source invariants, evidence scan, temp-directory cleanup check | Pass: no inherited stdio, no old fail-only branch, 15 structured scan call sites, zero synthetic-canary/secret-assignment/provider-operation-failure hits, 11 unavailable rows, zero owned evidence directories left | `execution-evidence/45-round4-tcr-summary-scan.log` |
+
+The 24-test focused result includes: 10 harness/runner tests, 11 Local Store lifecycle/fault tests, 2 assembled GraphQL lifecycle tests, and the 1 built two-process restart regression. The real-provider file is intentionally skipped in the ordinary focused command and then executed separately in preflight mode through the canonical root runner.
+
+### Broader-Validation And Confidence Decision
+
+- Round 4 broader-validation decision: `Not Required` for another Docker or browser run. The round changes only durable test support/coverage; no implementation, UI, shell, GraphQL, Store, Docker, or lifecycle production boundary changed. Round 3 clean Docker persistence and Round 1 actual-browser Settings evidence remain directly applicable.
+- Targeted real-E2E runner validation: required and completed through the canonical captured preflight plus deterministic clean/leak controls. Full external invocation remains unavailable because the dedicated Store reports `SECRET_BACKEND_UNAVAILABLE`; it is not claimed as passed.
+- Final cumulative confidence: **97.1%** (simple average).
+
+| Confidence Category | Final | Evidence | Residual Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | cumulative requirement matrix, browser, Store/GraphQL, migration, restart, Docker, and corrected real-E2E contract | real external calls remain capability-unavailable and unclaimed |
+| Changed-boundary execution directness | 98% | real Store/GraphQL/process/container boundaries plus direct harness/runner enforcement | no configured production external target |
+| Cross-boundary integration realism and mock gap | 98% | cumulative browser/process/Docker chain and canonical real-E2E runner | external endpoint invocation conditional on Store capability |
+| Environment/configuration/identity/fixture fidelity | 98% | clean Docker/runtime evidence and allowlisted real-E2E child environment with fixed read-only target | other OS/container architectures not executed |
+| Failure/edge/lifecycle/recovery evidence | 98% | Store fault/contention/reset, restart/removal, mode mismatch, capture and artifact negative controls | none material for local single-node scope |
+| User-surface/browser/desktop-shell confidence | 95% | retained actual-browser Settings and focused Electron evidence | packaged desktop remains unnecessary |
+| Durable regression coverage quality/relevance | 98% | TCR-001/TCR-002 controls now enforce the declared gateway and evidence boundary; cumulative stale removals remain valid | Docker lifecycle remains temporary executable evidence |
+
+### Round 4 Safety, Scope, And Routing
+
+- No `.env.test`, default Store, credential file, Store value, real credential, or secret-bearing artifact was read, copied, imported, inspected, or logged.
+- The canonical child environment copies only an operational allowlist and does not forward ambient provider credential variables or `DATABASE_URL`.
+- Owned process-evidence directories are deleted in the runner `finally`; the final residue count is zero. No service, browser, container, volume, or external account was created in Round 4.
+- Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency only. Delivery must recheck the four official Anthropic sources recorded in the package. This is not legal clearance or an authentication-mode redesign; no Claude mode changed.
+- Round 4 result: **Pass**. `TCR-001` and `TCR-002` are corrected and require another proportional durable-test review by `code_reviewer` before delivery.

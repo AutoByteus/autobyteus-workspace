@@ -11,17 +11,17 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
-- Current Review Round: `8`
-- Trigger: implementation-owned `CR-010` rework commit `71e922a1396819e2a5bbc40877b1a810597449ab` against reviewed base `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
-- Prior Review Round Reviewed: `7`
-- Latest Authoritative Round: `8`
+- Current Review Round: `9`
+- Trigger: implementation-owned `CR-011` rework commit `62417e80831a52e627d1b4365e9bfcdc9817ae81` against reviewed base `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
+- Prior Review Round Reviewed: `8`
+- Latest Authoritative Round: `9`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md`
 - Coverage Investigation Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md`
 - Execution Coverage Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md`
-- Failing Scenario IDs: historical `SCSP-E2E-DOCKER-001`; implementation-local sanitized build is now green, but independent Docker execution remains failed until rerun.
+- Failing Scenario IDs: historical `SCSP-E2E-DOCKER-001`; source review is now green, but independent Docker execution remains failed until API/E2E reruns it.
 - Exact Failing Commands / Execution Mode: historical `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round2 --build-local`; see retained Round 2 evidence.
 - Failure Evidence Paths:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/31-round2-docker-build-up.log`
@@ -38,85 +38,91 @@
 | 5 | API/E2E failure `SCSP-E2E-RESTART-001` | None | `CR-009` | Fail | No | Persisted `DATABASE_URL` was unavailable to Prisma on clean restart. |
 | 6 | `CR-009` rework at `3068d0f` | `CR-009` | None | Pass | No | Source/local restart passed; clean Docker build later exposed eager import-time acquisition. |
 | 7 | API/E2E Docker build failure | `CR-009` execution | `CR-010` | Fail | No | Clean source-image build failed during module import before runtime configuration. |
-| 8 | `CR-010` rework at `71e922a` | `CR-010` | `CR-011` | Fail | Yes | Import-time acquisition is fixed, but the replacement creates an undisposed Prisma client per normal token-usage repository instance/request. |
+| 8 | `CR-010` rework at `71e922a` | `CR-010` | `CR-011` | Fail | No | Import-time acquisition was fixed, but the replacement created an undisposed Prisma client per normal token-usage repository instance. |
+| 9 | `CR-011` rework at `62417e8` | `CR-011` | None | Pass | Yes | One import-safe lazy process owner now bounds default token-usage Prisma lifecycle while preserving injected and migration-owned semantics. |
 
 ## Prior Findings Resolution Check
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 7 | `CR-010` | High | Resolved | All four owners now defer factory invocation until first operation; constructors/imports are configuration-free; production build runs the existing smoke in a sanitized child with no `DATABASE_URL`. Reviewer reruns passed build, 7 files/44 tests, and restart 1/1. | No Dockerfile/Compose/launcher or dummy URL was added. Independent Docker rerun remains required. |
-| 5–6 | `CR-009` | High | Remains resolved | Explicit AppConfig URL delivery and datasource overrides remain; the built two-process restart regression passes. | Independently confirmed in API/E2E Round 2. |
-| 1–4 | `CR-001`–`CR-008` | Mixed | Remain resolved | Complete rework/full-source tracing found no regression in the prior secret, AutoByteus, Claude, MCP, lifecycle, or Settings corrections. | No prior finding reopened. |
+| 8 | `CR-011` | High | Resolved | `TokenUsagePrismaClientOwner` holds one module-owned default client, acquires it only on first database work, and all default repositories/stores reuse it. Multi-instance coverage proves one factory call; injected clients remain caller-owned and migration-owned clients still disconnect. | Normal GraphQL/event paths no longer allocate one Prisma client per request/store instance. |
+| 7–8 | `CR-010` | High | Remains resolved | Imports and constructors remain configuration-free; production build passes its sanitized no-`DATABASE_URL` smoke. | No Docker/Compose/launcher or dummy URL was added. Independent Docker rerun remains required. |
+| 5–8 | `CR-009` | High | Remains resolved | Explicit AppConfig URL delivery/datasource override remains, and the built two-process restart regression passes. | Independently confirmed in API/E2E Round 2. |
+| 1–4 | `CR-001`–`CR-008` | Mixed | Remain resolved | Full source and cumulative-package tracing found no regression in secret, AutoByteus, Claude, MCP, discovery lifecycle, or Settings corrections. | No prior finding reopened. |
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: rework-first validation of `CR-010`, followed by complete `534210b9e1dffff6c22855ae89ddb3d2afef5a9b..71e922a1396819e2a5bbc40877b1a810597449ab` source/structure confirmation.
-- Files / areas reviewed: sanitized build wrapper/package script; all four lazy Prisma repository/database owners; AppConfig/factory/startup ordering; normal token-usage GraphQL/provider/store callers; implementation-owned lifecycle tests; all changed production source; and the cumulative artifact package.
-- Explicit exclusions: no real credential, credential file, secret-bearing Store, external provider/API, Docker, browser, or desktop execution. API/E2E owns the independent clean Docker rerun; successful proportional review of API/E2E durable test changes remains pending.
+- Changed implementation and behavior reviewed: rework-first validation of `CR-011`, followed by complete `534210b9e1dffff6c22855ae89ddb3d2afef5a9b..62417e80831a52e627d1b4365e9bfcdc9817ae81` source/structure confirmation.
+- Files / areas reviewed: shared lazy token-usage Prisma owner; normal GraphQL/provider/store/event callers; configured factory and AppConfig boundary; all migration-owned clients; sanitized build wrapper/package script; implementation-owned lifecycle tests; all changed production source; and the cumulative artifact package.
+- Explicit exclusions: no real credential, credential file, secret-bearing Store, external provider/API, Docker, browser, or desktop execution. API/E2E owns the independent clean Docker rerun and broader execution; successful proportional review of API/E2E durable test changes remains pending.
 - Independent reviewer checks:
-  - focused AppConfig/Prisma/app-data/import-lifecycle suite: 7 files / 44 tests passed;
+  - focused AppConfig/Prisma/app-data/import-lifecycle plus token-usage integration: 8 files / 54 tests passed;
   - production server build passed, including the sanitized built-module/bootstrap smoke with no `DATABASE_URL`;
+  - `tsconfig.build.json --noEmit` passed;
   - built two-process restart/reopen regression: 1/1 passed;
-  - implementation-source/script/focused-test diff checks passed;
-  - all 143 changed production-source files remain below 500 effective non-empty lines and below 220 effective delta lines;
-  - no Docker/Compose/launcher change, dummy build URL, broad dotenv restoration, ambient Prisma fallback, or provider-secret read was found.
-- Repository state at review: `HEAD=71e922a1396819e2a5bbc40877b1a810597449ab`; worktree was clean before this reviewer-owned report update.
+  - `71e922a..62417e8` diff check passed;
+  - base-to-head implementation-source size/delta audit found no file above 500 effective non-empty lines and no effective delta above 220;
+  - no Docker/Compose/launcher change, dummy database URL, broad dotenv restoration, ambient provider-secret/Prisma fallback, or new authentication fallback was found.
+- Repository state at review: `HEAD=62417e80831a52e627d1b4365e9bfcdc9817ae81`; worktree was clean before this reviewer-owned report update.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: yes, including BEH-001–013, REQ-001–019, AC-001–019, restart/reopen, unchanged Docker behavior, five-state health, `LOCAL_HARDENED`, restored AutoByteus behavior, and exact Claude modes.
-- Design-spec behavior map verified against the implementation: approved secret/configuration behavior remains mapped. The new finding concerns an existing public token-usage database lifecycle touched by the Prisma correction and does not require a new product requirement.
+- Design-spec behavior map verified against the implementation: yes. Approved secret/configuration behavior remains mapped, and the existing public token-usage lifecycle touched by CR-010/011 is again resource-bounded.
 - Design review report and round confirmed: architecture-review round 6 pass, MP-001/MP-002, exact construction contracts, and mandatory `EXT-ANTHROPIC-AGENT-SDK-AUTH` carry-forward.
-- Behavior-basis status: `Confirmed for approved BEH-001–013; contradicted for the established token-usage runtime resource lifecycle`
-- Changed or newly discovered behavior: none. Public token-usage GraphQL queries and event persistence already exist and must retain stable database-client lifecycle behavior.
-- Remaining material ambiguity: none for `CR-011` owner classification.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior: none.
+- Remaining material ambiguity: none that blocks implementation review.
 
-| Behavior / Contract | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
+| Behavior / Contract | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Evidence |
 | --- | --- | --- | --- |
-| `BEH-006` | Confirmed in source/local evidence | Clean built-module import is configuration-free; first database work uses the AppConfig-owned explicit datasource; direct restart remains green. | Independent Docker execution is pending, not contradicted by current source. |
-| Existing token-usage GraphQL/runtime contract | Contradicted | Every resolver request constructs a new provider/store/repository; the repository's first query creates a new Prisma client held only by that short-lived repository. | The repository exposes no disconnect and no shared lazy owner, whereas the reviewed-base/`3068d0f` implementation used one module-scoped client across repository instances. |
+| `BEH-006` | Confirmed | AppConfig owns the validated operational SQLite URL; migration children and in-process Prisma receive it explicitly. Built-module import is configuration-free; the direct two-process restart passes. | None in current source/local evidence; independent Docker rerun remains downstream. |
+| Existing token-usage GraphQL/runtime contract | Confirmed | resolver/event trigger -> request/processor store -> repository -> module-owned lazy default client owner -> configured Prisma client -> query/write result. Repeated default stores reuse one client; injected clients remain separate. | None. |
+| `BEH-001`–`BEH-005`, `BEH-007`–`BEH-013` | Confirmed | Full base-to-head tracing and prior-finding rechecks preserve Store custody/health, JIT provisioning, migration, launcher sanitization, AutoByteus behavior, Settings lifecycle, and exact Claude modes. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present and evidence-backed | Pass | CR-009/010 root causes and security constraints are accurately documented. | Correct the newly introduced client-lifecycle regression. |
-| Implementation matches approved behavior-defining supplements | Pass | Secret/backend/consumer/launch contracts remain aligned. | None for the approved secret scope. |
-| Data-flow spine inventory clarity and preservation | Fail | Import/build and restart spines are repaired, but token-usage request -> store -> repository -> client lacks a stable resource-lifecycle end. | Preserve bounded shared-client ownership or deterministic disposal. |
-| Ownership boundary preservation and clarity | Fail | Each short-lived repository silently becomes a long-lived Prisma resource owner without disposal or a shared owner. | Assign explicit shared lifecycle or owned cleanup. |
-| Off-spine concern clarity | Pass | Sanitized build wrapper and configured factory serve clear startup/configuration owners. | None. |
-| Existing capability/subsystem reuse check | Pass | Existing AppConfig, build smoke, repositories, and Prisma factory are reused. | None. |
-| Reusable owned structures check | Fail | Construction is shared, but client lifetime/reuse is not; each default repository instance creates independently. | Add an import-safe lazy shared owner or deterministic per-instance cleanup. |
-| Shared-structure/data-model tightness check | Pass | New APIs remain narrow and carry no generic configuration/secret bag. | None. |
-| Repeated coordination ownership check | Fail | Normal GraphQL callers repeatedly coordinate identical Prisma creation with no common lifecycle owner. | Centralize reuse/lifetime under the database/configuration subsystem. |
-| Empty indirection check | Pass | The configured factory applies a real datasource override; the sanitized wrapper enforces a real environment invariant. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Build sanitization, configuration, repositories, and migration databases remain placed by concern. | Fix resource lifecycle without moving configuration back into callers. |
-| Ownership-driven dependency check | Pass | Repositories depend on the factory rather than parsing config or reaching into files. | None. |
-| Authoritative Boundary Rule check | Pass | No caller bypasses AppConfig/factory or combines it with direct `.env`/Prisma defaults. | None. |
-| File placement check | Pass | Rework files sit under build scripts, config, repositories, and migration owners. | None. |
-| Flat-vs-over-split layout judgment | Pass | The wrapper and factory remain proportionate. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | Constructors accept injected clients and operations trigger lazy acquisition explicitly. | Clarify shared/default lifetime through the owning API. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Sanitized smoke, configured factory, and client accessors are accurately named. | None. |
-| No unjustified duplication / repeated structures | Fail | Each default `SqlTokenUsageLedgerRepository` repeats configured-client creation. | Restore safe shared reuse or close every owned instance. |
-| Patch-on-patch complexity control | Fail | The import fix trades an eager build failure for an unbounded runtime-client lifecycle in a frequently constructed repository. | Resolve both invariants together rather than shifting the failure. |
-| Dead/obsolete code cleanup completeness | Pass | Eager module/default-argument factory calls are removed. | None. |
-| Relevant test scenarios and assertions are requirement-aligned | Fail | Tests prove one acquisition per owner instance but do not exercise multiple normal repository instances or disposal/reuse. | Add multi-instance lifecycle coverage. |
-| Test fixtures/helpers are reasonably reusable | Pass | Mocked factory and sanitized child runner are focused and deterministic. | Extend the lifecycle harness rather than duplicating it. |
-| No stale, duplicated, or compatibility-only tests retained | Pass | Current tests assert current explicit-delivery and import-safety contracts. | None. |
-| API/E2E readiness for the next workflow stage | Fail | CR-010 is locally green, but `CR-011` can accumulate database clients under normal public queries. | Fix, re-review, then rerun Docker/API-E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Handoff records CR-009/010/011 root causes and the final combined invariant accurately. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Storage, consumer, test-provisioning, threat, and launch contracts remain aligned. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Startup/restart, provider provisioning, launcher, and token-usage spines have explicit owners and meaningful outcomes. | None. |
+| Ownership boundary preservation and clarity | Pass | AppConfig owns URL selection; the factory owns explicit Prisma construction; the token repository module owns the shared default lifetime; migration instances own only clients they acquire. | None. |
+| Off-spine concern clarity | Pass | Sanitized build smoke and client construction serve clear bootstrap/database owners without taking business sequencing. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing AppConfig, Prisma factory, repository, migration, and smoke owners are reused. | None. |
+| Reusable owned structures check | Pass | One lazy default owner is reused across every default token-usage repository/store instance. | None. |
+| Shared-structure/data-model tightness check | Pass | No generic configuration/secret bag or overlapping client representation was added. | None. |
+| Repeated coordination ownership check | Pass | Default Prisma acquisition/reuse is coordinated once in the token-usage repository module. | None. |
+| Empty indirection check | Pass | The owner enforces import safety and bounded lifetime; the factory applies a real datasource override. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Configuration, construction, repository lifetime, migration disposal, and build sanitization stay separate. | None. |
+| Ownership-driven dependency check | Pass | Callers use stores/repositories; repositories use the configured factory; no caller parses persisted config or reaches around AppConfig. | None. |
+| Authoritative Boundary Rule check | Pass | No caller depends on both AppConfig and its Prisma internals, or on secret boundaries and lower-level custody internals. | None. |
+| File placement check | Pass | Shared default lifecycle remains with the SQL token-usage repository; migration and configuration files remain under their owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | The small private owner is proportionate and avoids an artificial subsystem. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Default and injected client semantics are explicit and do not alter public query/command identity. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `TokenUsagePrismaClientOwner`, `injectedPrisma`, and configured factory names match their roles. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Default client construction/lifetime is no longer repeated per repository instance. | None. |
+| Patch-on-patch complexity control | Pass | CR-009 explicit delivery, CR-010 import safety, and CR-011 shared lifetime now hold simultaneously without fallback. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Eager clients and per-instance default ownership are absent; no redundant compatibility path remains. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests prove zero import/constructor acquisition, one acquisition across multiple default repositories/stores, injected non-ownership, and migration-owned disconnect. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | One focused mocked factory harness covers all relevant ownership variants; integration exercises the normal store path. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Assertions cover current explicit-delivery/import/lifetime contracts only. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Source, focused tests, production build, build typecheck, and restart regression are green. | API/E2E must rerun `SCSP-E2E-DOCKER-001` and the applicable matrix. |
 
 ## Source File Size And Structure Audit
 
-No changed implementation-source file exceeds 500 effective non-empty lines and no effective delta exceeds 220 lines. Tests, captured evidence, and generated files are excluded from these thresholds.
+Tests, captured evidence, and generated files are excluded from implementation-source thresholds. No changed implementation-source file exceeds 500 effective non-empty lines or 220 effective changed non-empty lines.
 
 | Source File | Effective Non-Empty Lines | `>500` Check | `>220` Delta Check | SoC / Ownership | Placement | Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | 301 | Pass | Pass (12) | Fail — per-instance client has no lifecycle completion | Pass | Local Fix | Implement shared lazy reuse or deterministic disposal. |
-| `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts` | 143 | Pass | Pass (8) | Pass for cached production repository | Pass | None | Preserve import safety. |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts` | 428 | Pass | Pass (7) | Pass — owned client is lazily acquired and disconnected | Pass | None | None. |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.ts` | 216 | Pass | Pass (7) | Pass — owned client is lazily acquired and disconnected | Pass | None | None. |
-| `autobyteus-server-ts/scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs` | 19 | Pass | Pass (19) | Pass | Pass | None | None. |
-| Remaining 138 audited changed production-source files | 1–498 | Pass | Pass | Pass under subsystem review | Pass | None | None. |
+| `autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | 308 | Pass | Pass (37 cumulative changed non-empty lines) | Pass — private shared owner bounds the default process lifetime; injected clients remain caller-owned | Pass | None | None. |
+| `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts` | 143 | Pass | Pass (44) | Pass — cached repository lazily owns its configured client | Pass | None | None. |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts` | 428 | Pass | Pass (19) | Pass — owned lazy client disconnects deterministically | Pass | None | None. |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.ts` | 216 | Pass | Pass (23) | Pass — owned lazy client disconnects deterministically | Pass | None | None. |
+| `autobyteus-server-ts/scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs` | 19 | Pass | Pass (19) | Pass — one build-environment invariant | Pass | None | None. |
+| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 438 | Pass | Pass (220) | Pass under prior full review; exact threshold but cohesive provider lifecycle owner | Pass | None | Monitor future growth. |
+| `autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts` | 499 | Pass | Pass (68) | Pass under prior full review; cohesive editor runtime owner | Pass | None | Monitor future growth. |
+| Remaining changed implementation-source files | 1–498 | Pass | Pass | Pass under subsystem/full source review | Pass | None | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -124,10 +130,10 @@ No changed implementation-source file exceeds 500 effective non-empty lines and 
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | No dual configuration path or fallback exists. |
 | No legacy old-behavior retention in changed scope | Pass | Broad dotenv and ambient provider aliases remain removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Eager import-time clients were removed. |
-| Approved persisted-data transition decision is followed | Pass | No data rewrite or compatibility migration was added. |
-| No version-specific dual reads/writes or request-time fallback exists | Pass | One current AppConfig-selected URL remains authoritative. |
-| Approved transition mechanics match reviewed design | Pass | Historical secret migration remains isolated. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Eager and per-request default Prisma construction are absent. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | No data rewrite or compatibility migration was added. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | One current AppConfig-selected URL remains authoritative. |
+| Approved transition mechanics match the reviewed design | Pass | Historical secret migration remains isolated. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -137,7 +143,7 @@ None.
 
 - Docs impact: `Yes`
 - Why: provider credentials, Local Store lifecycle, direct/Docker startup, live-test provisioning, Claude modes, and AutoByteus gateway behavior materially change operational guidance.
-- Files or areas likely affected: server/provider setup, Store recovery/reset, Docker/direct restart, real-E2E setup, security limits, Claude configuration and `EXT-ANTHROPIC-AGENT-SDK-AUTH`.
+- Files or areas likely affected: server/provider setup, Store recovery/reset, Docker/direct restart, real-E2E setup, security limits, Claude configuration, and `EXT-ANTHROPIC-AGENT-SDK-AUTH`.
 
 ## Material Premise Validation
 
@@ -148,86 +154,70 @@ None.
 | `MP-001` | Confirmed | Empty/read-only Local Stores retain authenticated pair identity. |
 | `MP-002` | Confirmed | `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a release recheck dependency, not legal clearance. |
 | `CR-MP-003`–`CR-MP-006` | Confirmed | MCP, Claude, AutoByteus removal, and replacement premises remain correctly handled. |
-| `CR-MP-007` | Confirmed and resolved | Direct second-process restart/reopen is independently green. |
-| `CR-MP-008` | Confirmed and locally resolved | Clean built-module/bootstrap smoke now passes without `DATABASE_URL`; Docker rerun remains downstream. |
+| `CR-MP-007` | Confirmed and resolved | Direct second-process restart/reopen remains independently green. |
+| `CR-MP-008` | Confirmed and locally resolved | Clean built-module/bootstrap smoke passes without `DATABASE_URL`; Docker rerun remains downstream. |
+| `CR-MP-009` | Confirmed and resolved | Normal repeated token-usage queries remain reachable; they now converge on one shared lazy process client rather than allocating one client per request. |
 
-### `CR-MP-009` — Normal token-usage queries repeatedly construct short-lived default repositories
-
-- Origin: `New`
-- Related established contract: public token-usage GraphQL queries and runtime event persistence must remain operational over the long-running server lifecycle.
-- Relevant behavior ID: existing behavior preservation; no new product behavior ID is needed.
-- Product-supported initiating trigger: clients invoke `totalCostInPeriod`, task/runtime statistics, agent-run summary, team-run summary, or team-member summary repeatedly through the public GraphQL API.
-- Actual production path: resolver method -> new `TokenUsageStatisticsProvider` or `TokenUsageLedgerStore` -> new `SqlTokenUsageLedgerRepository` -> first database operation -> instance getter calls `createConfiguredPrismaClient()` -> response completes and the store/repository becomes unreachable, but no `$disconnect()` or shared owner exists. Every subsequent request repeats this path.
-- Lifecycle preconditions and material consequence: the server is long-running and the queries are ordinary request paths. The reviewed-base and `3068d0f` implementation shared one module-level Prisma client; `71e922a` creates an additional Prisma engine/client per request/instance with no deterministic cleanup, enabling unbounded resource/connection growth and SQLite contention/lock failures.
-- Reachability: `Reachable`
-- Review consequence: `CR-011`, a bounded implementation-owned `Local Fix`.
+No new or reclassified material premise was needed in Round 9.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `8.9`
-- Overall score (`/100`): `88.9`
-- Score calculation note: simple average of the ten categories. The fail decision is driven by `CR-011` and sub-9 spine, ownership, shared-lifecycle, API/E2E readiness, runtime correctness, and cleanup scores.
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93.4`
+- Score calculation note: simple average of the ten categories. Every category meets the clean-pass target; independent Docker and real-provider execution remain downstream evidence obligations rather than source findings.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 8.8 | Approved secret/startup spines are clear and CR-010 is fixed. | Token-usage request spines omit resource-lifecycle completion. | Close or share the client at the owning boundary. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.7 | AppConfig/factory authority is clear. | Short-lived repositories implicitly own long-lived Prisma clients without cleanup. | Establish one explicit lifecycle owner. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Configuration and lazy acquisition APIs are narrow. | Default repository client lifetime is not communicated. | Make the default lifetime explicit. |
-| `4` | `Separation of Concerns and File Placement` | 9.2 | Rework remains capability-aligned. | Resource lifetime is embedded in a request-scoped repository default. | Move shared lifecycle to the appropriate database owner. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 8.8 | Construction is centralized. | Reuse stops at construction and omits shared lifetime. | Centralize import-safe lazy reuse. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | Names communicate sanitization and configuration well. | `createConfiguredPrismaClient` accurately means new, exposing the missing lifetime owner. | Add/rename an owner API if shared reuse is selected. |
-| `7` | `API/E2E Readiness` | 8.7 | Build, focused tests, and restart pass. | Normal request repetition can create unbounded clients; Docker rerun is still pending. | Fix lifecycle, re-review, then rerun. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.3 | CR-009/010 mechanics are corrected. | Existing token-usage requests now multiply undisposed clients and risk SQLite locks/resources. | Preserve prior stable sharing or deterministic cleanup. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No fallback, broad dotenv, or legacy path was restored. | No material legacy issue. | Preserve the clean cutover. |
-| `10` | `Cleanup Completeness` | 8.6 | Eager acquisition is removed and build sanitization is durable. | The replacement leaves no cleanup/reuse path for per-request clients. | Complete the client lifecycle and tests. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Approved Store, provisioning, launch, restart, and token-usage paths are traceable end to end. | The overall change remains broad. | Preserve the existing behavior trace as later changes land. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | AppConfig, configured Prisma construction, shared default lifetime, migration ownership, and secret custody are distinct. | Process-lifetime ownership is private rather than exposed as a reusable server lifecycle service, which is proportionate here. | Revisit only if another subsystem needs the same owner. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Public/query identities and exact credential consumers remain explicit; injected/default client semantics are narrow. | No material source gap. | Preserve exact identity shapes and no-fallback behavior. |
+| `4` | `Separation of Concerns and File Placement` | 9.3 | Rework remains within configuration, repository, migration, and build owners. | A few changed source files are near size thresholds. | Avoid adding unrelated responsibilities to those files. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | The client owner, credential targets, and authentication shapes are tight and reused. | Broad feature scope creates many participating types. | Keep shared structures semantic and minimal. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | Names describe custody, targets, lifecycle, and client ownership clearly. | Some security/runtime paths remain intrinsically dense. | Keep lifecycle invariants adjacent to their owners and tests. |
+| `7` | `API/E2E Readiness` | 9.2 | Source review, focused/integration tests, build/typecheck, and restart regression pass. | Clean Docker and external-provider evidence are not yet rerun/available. | API/E2E should execute the required matrix without workarounds. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | CR-009/010/011 now preserve explicit configuration, import safety, and bounded runtime clients together. | Docker remains runtime-unverified after the latest fixes. | Confirm container start and same-volume lifecycle downstream. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No provider alias, ambient secret fallback, dual read/write, or runtime compatibility branch was restored. | No material weakness. | Preserve the clean cutover. |
+| `10` | `Cleanup Completeness` | 9.3 | Removed functionality was restored intentionally; obsolete ambient/eager/per-instance paths are absent. | Captured historical execution logs retain their original whitespace, intentionally. | Delivery should update durable docs and preserve evidence integrity. |
 
 ## Findings
 
-### `CR-011` — Normal token-usage requests create undisposed Prisma clients per repository instance
+No open implementation-source findings.
 
-- Severity: `High`
-- Classification: `Local Fix`
-- Owner: `implementation_engineer`
-- Affected contract: existing public token-usage GraphQL/runtime behavior; reachable premise `CR-MP-009`.
-- Evidence:
-  - `TokenUsageStatisticsResolver` constructs new providers/stores in each public query at `token-usage-stats.ts:500,509,519,528,536,546`.
-  - `TokenUsageLedgerStore` constructs a new `SqlTokenUsageLedgerRepository` by default at `token-usage-ledger-store.ts:28-32`.
-  - `SqlTokenUsageLedgerRepository.client` creates and retains a new configured Prisma client per repository instance at `token-usage-ledger-repository.ts:229-239`.
-  - The repository exposes no disconnect and no shared lazy client owner. The prior implementation used one module-level client shared by all repository instances.
-  - `prisma-import-lifecycle.test.ts` verifies one acquisition for one instance of each owner but does not exercise repeated instances, shared reuse, or cleanup.
-- Consequence: ordinary repeated token-usage queries/event-processing constructions can accumulate Prisma clients/engines and SQLite connections without deterministic release, causing resource growth, contention, lock failures, or long-running server degradation.
-- Required action:
-  1. Preserve CR-009's explicit configured datasource and CR-010's configuration-free imports/constructors.
-  2. Restore bounded Prisma lifecycle for default token-usage repositories: use an import-safe lazy shared owner, or deterministically disconnect every per-instance owned client at the actual request/processor lifecycle boundary.
-  3. Do not return to eager module evaluation, ambient `DATABASE_URL`, default Prisma resolution, or dummy build configuration.
-  4. Add deterministic coverage proving multiple default repository/store instances do not create unbounded clients and that injected/migration-owned clients retain correct ownership/disconnect behavior.
-  5. Keep the sanitized production build and two-process restart regressions green; preserve all API/E2E artifacts.
+### Resolved In Round 9: `CR-011` — Normal token-usage requests created undisposed Prisma clients per repository instance
+
+- Previous severity/classification: `High`, `Local Fix`, `implementation_engineer`.
+- Resolution evidence:
+  - `TokenUsagePrismaClientOwner` owns one module-level default client and calls `createConfiguredPrismaClient()` only on the first database operation.
+  - Every default `SqlTokenUsageLedgerRepository` and `TokenUsageLedgerStore` reuses that owner.
+  - Caller-injected clients bypass the default owner and are never disconnected by the repository.
+  - Migration-owned lazy clients retain deterministic disconnect; injected migration clients remain caller-owned.
+  - Focused multi-instance coverage proves one factory acquisition across separate default repositories/stores.
+- Verdict: resolved without weakening CR-009, CR-010, security boundaries, or unchanged Docker topology.
 
 ## Classification
 
-- `Local Fix` — bounded implementation-owned database-client lifecycle correction; no design or requirement revision is needed.
+Not applicable — implementation review passes.
 
 ## Recommended Recipient
 
-- `implementation_engineer`
-- Routing: correct `CR-011`, update the implementation handoff, and return the complete package for another full source review before API/E2E resumes.
+- `api_e2e_engineer`
+- Routing: rerun `SCSP-E2E-DOCKER-001` from a clean source-image build through server container start and same-volume persistence/restart/removal, then execute the applicable broader matrix. A successful execution returns for the separate proportional durable-test review.
 
 ## Residual Risks
 
-- `SCSP-E2E-DOCKER-001` remains independently failed until source review passes and API/E2E reruns clean build, container start, and same-volume persistence/removal.
-- Direct restart/reopen is independently proven and must remain green.
+- `SCSP-E2E-DOCKER-001` remains historically failed until API/E2E independently reruns clean build, container start, and same-volume persistence/removal at `62417e8`.
 - The dedicated real-E2E Store remains unavailable; real provider execution remains unclaimed. No `.env.test`, default Store, credential file, Store value, or secret-bearing artifact may be inspected or migrated.
-- Durable API/E2E changes have not received successful-run proportional review.
+- Durable API/E2E changes have not yet received successful-run proportional test-code review.
 - Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
-- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains mandatory in every handoff as a delivery/release recheck dependency, not legal clearance or an auth-mode redesign. Delivery must recheck the four official Anthropic sources; no Claude mode may change silently.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains mandatory in every handoff as a delivery/release recheck dependency, not legal clearance or an authentication-mode redesign. Delivery must recheck the four official Anthropic sources; no Claude mode may change silently.
 - No real credential or secret-bearing artifact was accessed during review.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate: `Pass`
-- Score Summary: `8.9/10` (`88.9/100`); `CR-011` and multiple sub-9 categories prevent a clean pass.
-- Failure Origin: `CR-010` is resolved; `CR-011` is a newly introduced implementation-owned resource-lifecycle defect.
-- Recommended Recipient: `implementation_engineer`
-- Notes: do not resume API/E2E yet. Fix `CR-011`, preserve CR-009/010 and all API/E2E evidence, then return through full source review. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` in every downstream handoff.
+- Score Summary: `9.3/10` (`93.4/100`); every category meets the clean-pass target.
+- Failure Origin: not applicable; CR-011 is resolved and no new source finding was found.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: API/E2E must rerun `SCSP-E2E-DOCKER-001` and the applicable matrix at `62417e80831a52e627d1b4365e9bfcdc9817ae81`. Preserve all prior API/E2E evidence and `EXT-ANTHROPIC-AGENT-SDK-AUTH` in every downstream handoff.

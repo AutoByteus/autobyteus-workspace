@@ -1,0 +1,15 @@
+round4_tcr_summary
+head=62417e80831a52e627d1b4365e9bfcdc9817ae81
+scanner_node_check=PASS
+runner_node_check=PASS
+git_diff_check=PASS
+legacy_unconditional_gateway_failure_refs=0
+runner_inherited_stdio_refs=0
+mode_assertion_refs=8
+structured_result_scan_refs=15
+synthetic_canary_hits=0
+secret_assignment_shape_hits=0
+provider_operation_failure_hits=0
+unavailable_status_rows=11
+owned_evidence_temp_dirs=0
+result=PASS

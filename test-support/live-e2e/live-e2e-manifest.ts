@@ -3,6 +3,40 @@ import path from 'node:path';
 
 export type LiveE2eScenarioMode = 'REAL_DIRECT_SECRET' | 'REAL_GATEWAY';
 
+export const LIVE_E2E_SCENARIO_MODES = {
+  'openai.llm': 'REAL_DIRECT_SECRET',
+  'openai.agent-flow': 'REAL_GATEWAY',
+  'serper.search': 'REAL_DIRECT_SECRET',
+  'openai.audio': 'REAL_DIRECT_SECRET',
+  'openai.image': 'REAL_DIRECT_SECRET',
+  'gemini.audio': 'REAL_DIRECT_SECRET',
+  'gemini.image': 'REAL_DIRECT_SECRET',
+  'anthropic.claude-agent-sdk': 'REAL_DIRECT_SECRET',
+  'autobyteus.remote-llm': 'REAL_DIRECT_SECRET',
+  'autobyteus.remote-audio': 'REAL_DIRECT_SECRET',
+  'autobyteus.remote-image': 'REAL_DIRECT_SECRET',
+} as const satisfies Record<string, LiveE2eScenarioMode>;
+
+export type LiveE2eScenarioId = keyof typeof LIVE_E2E_SCENARIO_MODES;
+
+export const assertLiveE2eScenarioMode = (
+  scenarioId: string,
+  mode: LiveE2eScenarioMode,
+): LiveE2eScenarioId => {
+  const expectedMode = LIVE_E2E_SCENARIO_MODES[
+    scenarioId as LiveE2eScenarioId
+  ] as LiveE2eScenarioMode | undefined;
+  if (!expectedMode) {
+    throw new Error(`LIVE_E2E_SCENARIO_EXECUTOR_MISSING:${scenarioId}`);
+  }
+  if (mode !== expectedMode) {
+    throw new Error(
+      `LIVE_E2E_SCENARIO_MODE_MISMATCH:${scenarioId}:${expectedMode}:${mode}`,
+    );
+  }
+  return scenarioId as LiveE2eScenarioId;
+};
+
 export type LiveE2eScenario = {
   mode: LiveE2eScenarioMode;
   requiredSecrets: string[];
@@ -51,6 +85,17 @@ const parseScenario = (id: string, value: unknown): LiveE2eScenario => {
   if (value.mode !== 'REAL_DIRECT_SECRET' && value.mode !== 'REAL_GATEWAY') {
     throw new Error(`LIVE_E2E_CONFIG_INVALID:scenarios.${id}.mode`);
   }
+  assertLiveE2eScenarioMode(id, value.mode);
+  const model = optionalString(value.model, `scenarios.${id}.model`);
+  if (id === 'openai.agent-flow' && !model) {
+    throw new Error('LIVE_E2E_GATEWAY_CAPABILITY_UNAVAILABLE:openai.agent-flow:model');
+  }
+  const expectedCapabilities = value.expectedCapabilities === undefined
+    ? undefined
+    : stringArray(value.expectedCapabilities, `scenarios.${id}.expectedCapabilities`);
+  if (id === 'openai.agent-flow' && !expectedCapabilities?.includes('agent-turn')) {
+    throw new Error('LIVE_E2E_GATEWAY_CAPABILITY_UNAVAILABLE:openai.agent-flow:agent-turn');
+  }
   const runtimeAuthMode = optionalString(value.runtimeAuthMode, `scenarios.${id}.runtimeAuthMode`);
   if (runtimeAuthMode !== undefined && runtimeAuthMode !== 'managed-secret') {
     throw new Error(`LIVE_E2E_CONFIG_INVALID:scenarios.${id}.runtimeAuthMode`);
@@ -66,18 +111,11 @@ const parseScenario = (id: string, value: unknown): LiveE2eScenario => {
   return {
     mode: value.mode,
     requiredSecrets: stringArray(value.requiredSecrets, `scenarios.${id}.requiredSecrets`),
-    ...(optionalString(value.model, `scenarios.${id}.model`) ? {
-      model: optionalString(value.model, `scenarios.${id}.model`),
-    } : {}),
+    ...(model ? { model } : {}),
     ...(value.hosts === undefined ? {} : {
       hosts: stringArray(value.hosts, `scenarios.${id}.hosts`),
     }),
-    ...(value.expectedCapabilities === undefined ? {} : {
-      expectedCapabilities: stringArray(
-        value.expectedCapabilities,
-        `scenarios.${id}.expectedCapabilities`,
-      ),
-    }),
+    ...(expectedCapabilities ? { expectedCapabilities } : {}),
     ...(runtimeAuthMode ? { runtimeAuthMode } : {}),
     ...(googleSetupMode ? { googleSetupMode } : {}),
   };

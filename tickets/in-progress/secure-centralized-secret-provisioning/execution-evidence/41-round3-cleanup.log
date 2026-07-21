@@ -1,0 +1,21 @@
+Docker cleanup after passing lifecycle
+ Container scsp-round3-autobyteus-server-1  Stopping
+ Container scsp-round3-autobyteus-server-1  Stopped
+ Container scsp-round3-autobyteus-server-1  Removing
+ Container scsp-round3-autobyteus-server-1  Removed
+ Network scsp-round3_default  Removing
+ Volume scsp-round3_autobyteus-server-root-home  Removing
+ Volume scsp-round3_autobyteus-server-workspace  Removing
+ Volume scsp-round3_autobyteus-server-data  Removing
+ Volume scsp-round3_autobyteus-server-chromium-profile  Removing
+ Volume scsp-round3_autobyteus-server-workspace  Removed
+ Volume scsp-round3_autobyteus-server-root-home  Removed
+ Volume scsp-round3_autobyteus-server-chromium-profile  Removed
+ Volume scsp-round3_autobyteus-server-data  Removed
+ Network scsp-round3_default  Removed
+[2026-07-21 19:59:10] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/docker/.runtime/scsp-round3.env
+
+Remaining project resources:
+containers=none
+volumes=none
+runtime_state_absent=true

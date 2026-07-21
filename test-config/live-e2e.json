@@ -14,7 +14,9 @@
     },
     "openai.agent-flow": {
       "mode": "REAL_GATEWAY",
-      "requiredSecrets": ["provider.openai.api-key"]
+      "requiredSecrets": ["provider.openai.api-key"],
+      "model": "gpt-4o-mini",
+      "expectedCapabilities": ["agent-turn"]
     },
     "serper.search": {
       "mode": "REAL_DIRECT_SECRET",
