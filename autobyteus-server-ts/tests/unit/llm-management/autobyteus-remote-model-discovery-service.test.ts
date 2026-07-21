@@ -135,4 +135,41 @@ describe('AutobyteusRemoteModelDiscoveryService', () => {
     ]);
     expect(ports.syncLlm).toHaveBeenCalledTimes(1);
   });
+
+  it('resolves and publishes only the new credential generation after replacement', async () => {
+    const oldApiKey = SecretValue.fromString('synthetic-old-autobyteus-key');
+    const newApiKey = SecretValue.fromString('synthetic-new-autobyteus-key');
+    const oldModels = createDeferred<Array<{ runtime: LLMRuntime; revision: string }>>();
+    const newModels = createDeferred<Array<{ runtime: LLMRuntime; revision: string }>>();
+    resolveForUse.mockReset()
+      .mockResolvedValueOnce(oldApiKey)
+      .mockResolvedValueOnce(newApiKey);
+    ports.discoverLlm.mockImplementation((_hosts, authentication) =>
+      authentication.apiKey === oldApiKey ? oldModels.promise : newModels.promise);
+    const service = createService(['https://gateway.example.invalid']);
+
+    const preReplacementDiscovery = service.ensureDiscovered('llm');
+    await vi.waitFor(() => expect(ports.discoverLlm).toHaveBeenCalledTimes(1));
+
+    service.invalidateAfterCredentialReplacement();
+    const postReplacementRefresh = service.refresh('llm');
+    await vi.waitFor(() => expect(ports.discoverLlm).toHaveBeenCalledTimes(2));
+
+    oldModels.resolve([{ runtime: LLMRuntime.AUTOBYTEUS, revision: 'old' }]);
+    await expect(preReplacementDiscovery).resolves.toBe(0);
+    expect(ports.syncLlm).not.toHaveBeenCalled();
+
+    const authoritativeModels = [{ runtime: LLMRuntime.AUTOBYTEUS, revision: 'new' }];
+    newModels.resolve(authoritativeModels);
+    await expect(postReplacementRefresh).resolves.toBe(1);
+    await expect(service.ensureDiscovered('llm')).resolves.toBe(1);
+
+    expect(resolveForUse).toHaveBeenCalledTimes(2);
+    expect(ports.discoverLlm.mock.calls.map(([, authentication]) => authentication)).toEqual([
+      { apiKey: oldApiKey },
+      { apiKey: newApiKey },
+    ]);
+    expect(ports.syncLlm).toHaveBeenCalledTimes(1);
+    expect(ports.syncLlm).toHaveBeenCalledWith(LLMRuntime.AUTOBYTEUS, authoritativeModels);
+  });
 });

@@ -25,6 +25,7 @@ describe('LlmProviderService', () => {
     reloadLlmModels: vi.fn(),
     reloadLlmModelsForProvider: vi.fn(),
     clearAutobyteusRemoteModels: vi.fn(),
+    invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement: vi.fn(),
   };
 
   const discovery = {
@@ -102,6 +103,7 @@ describe('LlmProviderService', () => {
     modelCatalogService.reloadLlmModels.mockReset();
     modelCatalogService.reloadLlmModelsForProvider.mockReset();
     modelCatalogService.clearAutobyteusRemoteModels.mockReset();
+    modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement.mockReset();
     modelCatalogService.listLlmModels.mockResolvedValue([]);
     modelCatalogService.reloadLlmModels.mockResolvedValue(undefined);
     modelCatalogService.reloadLlmModelsForProvider.mockResolvedValue(2);
@@ -260,5 +262,25 @@ describe('LlmProviderService', () => {
       kind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey',
     });
     expect(modelCatalogService.clearAutobyteusRemoteModels).toHaveBeenCalledOnce();
+  });
+
+  it('invalidates AutoByteus discovery only after credential replacement succeeds', async () => {
+    secretManagement.saveForConsumer.mockResolvedValue(undefined);
+    const service = createService();
+
+    await expect(service.setProviderApiKey('AUTOBYTEUS', 'synthetic-new-key')).resolves.toEqual(
+      expect.objectContaining({ id: 'AUTOBYTEUS', name: 'AutoByteus' }),
+    );
+
+    expect(secretManagement.saveForConsumer).toHaveBeenCalledWith({
+      consumer: { kind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' },
+      value: expect.anything(),
+    });
+    expect(modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement)
+      .toHaveBeenCalledOnce();
+    expect(secretManagement.saveForConsumer.mock.invocationCallOrder[0]).toBeLessThan(
+      modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement
+        .mock.invocationCallOrder[0]!,
+    );
   });
 });

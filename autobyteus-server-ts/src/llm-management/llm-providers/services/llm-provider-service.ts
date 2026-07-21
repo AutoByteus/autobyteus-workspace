@@ -218,6 +218,9 @@ export class LlmProviderService {
       consumer: this.builtInConsumer(normalizedProviderId),
       value: SecretValue.fromString(normalizedApiKey),
     });
+    if (normalizedProviderId === LLMProvider.AUTOBYTEUS) {
+      this.modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement();
+    }
     return this.withCredentialStatus(this.builtInCatalog.getProvider(normalizedProviderId));
   }
 

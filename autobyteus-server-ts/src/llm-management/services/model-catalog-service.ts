@@ -153,6 +153,15 @@ export class ModelCatalogService {
 
   async clearAutobyteusRemoteModels(): Promise<void> {
     await this.remoteDiscoveryService.clearAllWithoutLookup();
+    this.invalidateAutobyteusRemoteModelCaches();
+  }
+
+  invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement(): void {
+    this.remoteDiscoveryService.invalidateAfterCredentialReplacement();
+    this.invalidateAutobyteusRemoteModelCaches();
+  }
+
+  private invalidateAutobyteusRemoteModelCaches(): void {
     this.metadataProvisioningService.invalidate();
     this.autobyteusModelCatalog.invalidate();
     this.audioModelService.invalidate();

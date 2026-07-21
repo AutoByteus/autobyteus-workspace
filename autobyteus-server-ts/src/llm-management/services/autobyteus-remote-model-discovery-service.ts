@@ -91,13 +91,13 @@ export class AutobyteusRemoteModelDiscoveryService {
     return operation;
   }
 
+  invalidateAfterCredentialReplacement(): void {
+    this.invalidateDiscoveryLifecycle();
+  }
+
   private async performAuthoritativeClear(): Promise<void> {
     const hostsKey = this.hostsProvider().join(',');
-    const generations = REMOTE_MODEL_KINDS.map((kind) => {
-      const generation = this.advanceGeneration(kind);
-      this.inFlightByKind.delete(kind);
-      return { kind, generation };
-    });
+    const generations = this.invalidateDiscoveryLifecycle();
 
     for (const { kind, generation } of generations) {
       await this.publish(kind, generation, hostsKey, () => this.clear(kind));
@@ -208,6 +208,19 @@ export class AutobyteusRemoteModelDiscoveryService {
     const generation = (this.generationsByKind.get(kind) ?? 0) + 1;
     this.generationsByKind.set(kind, generation);
     return generation;
+  }
+
+  private invalidateDiscoveryLifecycle(): Array<{
+    kind: AutobyteusRemoteModelKind;
+    generation: number;
+  }> {
+    return REMOTE_MODEL_KINDS.map((kind) => {
+      const generation = this.advanceGeneration(kind);
+      this.inFlightByKind.delete(kind);
+      this.completedHostsByKind.delete(kind);
+      this.modelCountsByKind.delete(kind);
+      return { kind, generation };
+    });
   }
 
   private isCurrentGeneration(kind: AutobyteusRemoteModelKind, generation: number): boolean {
