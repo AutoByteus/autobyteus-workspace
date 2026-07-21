@@ -4,8 +4,8 @@
 
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`.
 - Purpose: retain the current source inventory and define the target mapping from legacy aliases to product definitions, authorized consumers, Store-independent construction boundaries, and migration outcomes.
-- Scope: REQ-001, REQ-002, REQ-005, REQ-011, REQ-014, REQ-016, REQ-018 / AC-005, AC-009–AC-012, AC-018.
-- Status: `User Approved — AR-007 / MP-002 Evidence Reassessment; Architecture Re-review Requested`.
+- Scope: REQ-001, REQ-002, REQ-005, REQ-011, REQ-014, REQ-016, REQ-018, REQ-019 / AC-005, AC-009–AC-012, AC-018, AC-019.
+- Status: `AR-008 Bounded Construction-Target Correction; User-Approved Behavior Unchanged; Architecture Re-review Required`.
 - Approval applicability: `Required` for target identities/mappings; current-source evidence is approval `N/A`.
 - Core artifacts supported: [requirements.md](./requirements.md), [investigation-notes.md](./investigation-notes.md), [design-spec.md](./design-spec.md).
 - Related supplements: [use-case-spine-validation.md](./use-case-spine-validation.md), [secret-storage-architecture.md](./secret-storage-architecture.md), [secret-storage-backend-contract.md](./secret-storage-backend-contract.md), [live-test-secret-provisioning.md](./live-test-secret-provisioning.md), [threat-model-and-option-analysis.md](./threat-model-and-option-analysis.md).
@@ -21,6 +21,8 @@
 7. Workload identity is an authentication mode, not an API-key secret. Its node identity/mount/capability is still protected from agent children.
 8. Physical Store selection is a backend-bootstrap concern. A consumer definition and construction mapping is identical in the default Local Store, separate real-E2E Local Store, or an enterprise namespace; consumers cannot select Stores or paths.
 9. Claude managed authentication reuses the upstream Anthropic definition through its own exact runtime identity. Sharing one definition does not merge the Claude, native LLM, or metadata consumer boundaries.
+10. A model's displayed provider and its credential provider are distinct facts. Native registration assigns the required `credentialProviderId` once from the known credential owner; AutoByteus-runtime registration assigns `AUTOBYTEUS` because the gateway, not the downstream model creator, receives the request. The construction target omits displayed provider, so provisioning has no provider fallback.
+11. Discovery and construction consumers are distinct authorizations even when they share one definition. Hosts remain non-secret configuration and never enter a consumer identity.
 
 ## Built-In Provider Mapping
 
@@ -38,6 +40,7 @@
 | `provider.lmstudio.api-key` | `LMSTUDIO_API_KEY` | `LMStudioLLM` optional endpoint authentication | LLM `LMSTUDIO` only when endpoint requires auth | LLM construction | Optional credential requirement. Local unauthenticated models require no secret. |
 | `provider.gemini.ai-studio-api-key` | `GEMINI_API_KEY` | Gemini LLM/media helper; Gemini metadata; Settings/live tests | Gemini LLM/metadata/media in `AI_STUDIO` mode | `ResolvedLLMAuthentication { kind: "apiKey" }` and analogous media context | Explicit mode replaces environment-precedence selection. |
 | `provider.google.vertex-express-api-key` | `VERTEX_AI_API_KEY` | Gemini helper; Settings/live tests | Gemini LLM/metadata/media in `VERTEX_EXPRESS` mode | resolved api-key authentication | Separate from AI Studio even though the same SDK is used. |
+| `provider.autobyteus.api-key` | `AUTOBYTEUS_API_KEY` | `AutobyteusModelProvider`; AutoByteus audio/image providers; `AutobyteusLLM`; AutoByteus audio/image clients; live remote tests | discovery `{kind:"modelDiscovery",modelKind:"llm"\|"audio"\|"image",providerId:"AUTOBYTEUS",credentialSlot:"apiKey"}`; construction `llm/AUTOBYTEUS/apiKey` and `media/{audio\|image}/AUTOBYTEUS/apiKey` | `AutobyteusRemoteModelDiscoveryService` for catalog requests; generic LLM/media provisioning for invocation; `AutobyteusClient` unwraps at request-client construction | One gateway credential. `AUTOBYTEUS_LLM_SERVER_HOSTS` remains non-secret. No hosts performs zero lookup. Do not resolve the downstream model provider key. |
 
 ### Gemini workload-identity mode
 
@@ -113,12 +116,13 @@ If metadata persistence fails, no secret has been saved. If the secret save fail
 
 ```text
 resolve current provider metadata
+ -> if absent: return value-free success
  -> SecretManagementService.remove(custom definition ID)
  -> delete v2 metadata
  -> reload models
 ```
 
-Missing secret is idempotent. If metadata deletion fails, the provider remains visible but unconfigured/deletion-pending and delete can be retried. No orphan secret remains. If model reload fails after deletion, stale in-memory models are removed/rebuilt by the existing last-known-good/reload owner according to a value-free failure status; no model contains the old key.
+Missing provider and missing secret are both idempotent success. If metadata deletion fails, the provider remains visible but unconfigured and delete can be retried; “deletion pending” is an observable operation outcome, not a new persisted transaction field. No orphan secret remains. If model reload fails after deletion, stale in-memory models are removed/rebuilt by the existing last-known-good/reload owner according to a value-free failure status; no model contains the old key.
 
 ## Search Mapping
 
@@ -139,7 +143,9 @@ The `Search` tool no longer instantiates a process-global `SearchClientFactory`.
 | OpenAI audio | `process.env.OPENAI_API_KEY` in `OpenAIAudioClient` | `provider.openai.api-key`, slot `apiKey` | constructor receives `MultimediaConstructionContext`; SDK client unwraps once. |
 | OpenAI image | same | same | same |
 | Gemini audio/image/video helpers | Gemini/Vertex environment selection | explicit Gemini authentication mode and matching definition/workload identity | `MediaClientProvisioningService` resolves before factory construction. |
-| AutoByteus/other local media | non-secret host config or no credential | `none` unless provider declares auth | no artificial secret requirement |
+| AutoByteus remote audio | `process.env.AUTOBYTEUS_API_KEY` plus `AUTOBYTEUS_LLM_SERVER_HOSTS` | `provider.autobyteus.api-key`, media `audio`, provider `AUTOBYTEUS`, slot `apiKey` | remote model keeps downstream provider but sets `credentialProviderId=AUTOBYTEUS`; media provisioning resolves gateway key for `AutobyteusAudioClient`. |
+| AutoByteus remote image | same | `provider.autobyteus.api-key`, media `image`, provider `AUTOBYTEUS`, slot `apiKey` | same for `AutobyteusImageClient`. |
+| Other local media | non-secret host config or no credential | `none` unless its authoritative model declares auth | no artificial secret requirement |
 
 `MediaGenerationService` already has injectable client creators. They become asynchronous and are supplied by `MediaClientProvisioningService`; media tool code never imports secret management.
 
@@ -151,6 +157,58 @@ Current default `ModelMetadataResolver` creates provider metadata clients that r
 2. Server `ModelMetadataProvisioningService` requests credentials for the `llm-metadata` consumer identity, constructs a credential-aware provider metadata client, and applies returned metadata through an explicit registry refresh API.
 3. Missing/locked/unavailable credentials leave curated metadata in place and produce value-free enrichment status; they do not make model listing read environment or fail globally.
 4. Custom endpoint discovery uses the custom provider's derived secret through `LlmProviderService`, not the core static endpoint provider reading a model-held key.
+
+## AutoByteus Remote Gateway Mapping
+
+### Existing supported triggers
+
+- startup/cache-preload and first catalog list;
+- full LLM/audio/image reload;
+- targeted `AUTOBYTEUS` LLM reload;
+- saving/replacing the `AUTOBYTEUS` provider key, after which the existing web flow requests a full reload;
+- constructing/invoking a selected remote LLM/audio/image model.
+
+All remain supported. Only credential sourcing changes.
+
+### Discovery consumers
+
+```ts
+type AutoByteusDiscoveryConsumer = {
+  kind: "modelDiscovery";
+  modelKind: "llm" | "audio" | "image";
+  providerId: "AUTOBYTEUS";
+  credentialSlot: "apiKey";
+};
+```
+
+`AutobyteusRemoteModelDiscoveryService` checks normalized configured hosts first. An empty host set clears only the matching model-kind AutoByteus runtime subset without calling secret management. Otherwise it resolves the exact model-kind consumer, passes `SecretValue` through an explicit discovery-authentication shape, and invokes the corresponding core provider. The core provider unwraps only while constructing `AutobyteusClient`; it never imports server secret management.
+
+Successful results atomically replace only that model kind's `runtime=AUTOBYTEUS` registrations. A remote OpenAI model and a native OpenAI model therefore coexist. A transient failure before an authoritative result preserves the previous remote subset and returns/logs only a stable value-free outcome; a successful authoritative empty response clears the subset. Explicit successful credential removal is authoritative lifecycle input and clears every AutoByteus runtime subset without discovery resolution.
+
+### Construction identity
+
+```ts
+type LLMConstructionTarget = {
+  credentialProviderId: string;
+  authenticationRequirement: LLMAuthenticationRequirement;
+};
+```
+
+Native model registration materializes the required `credentialProviderId` once from the known credential owner. Every AutoByteus-runtime model created by remote LLM/audio/image discovery materializes it as `AUTOBYTEUS`, even when `model.provider` remains `OPENAI`, `GEMINI`, or another returned provider. Generic LLM/media provisioning builds its existing consumer only from the construction target's `credentialProviderId`; displayed provider is absent and no fallback, AutoByteus conditional, or host-derived inference is added.
+
+```text
+remote model selection
+ -> describe construction target
+ -> credentialProviderId AUTOBYTEUS
+ -> resolve llm/AUTOBYTEUS/apiKey or media/<kind>/AUTOBYTEUS/apiKey
+ -> provider.autobyteus.api-key
+ -> construction context
+ -> AutobyteusClient gateway request
+```
+
+### Settings and status
+
+The existing built-in provider row `AUTOBYTEUS` uses the same write-only editor/status projection as other API-key providers. It is no longer skipped as not applicable. Save/replace retains the established full refresh. Idempotent successful remove clears all AutoByteus-runtime LLM/audio/image subsets without resolving the removed definition. `AUTOBYTEUS_LLM_SERVER_HOSTS` remains in the existing endpoint Settings surface. The frontend receives backend health and `MISSING|CONFIGURED`, never the saved value. No generic gateway-secret UI or new server route is introduced.
 
 ## LLM Construction Mapping
 
@@ -180,14 +238,15 @@ type LLMConstructionContext = {
 AutoByteusAgentRunBackendFactory
  -> LLMProvisioningService.createLLM(modelIdentifier, configInput)
  -> LLMFactory.describeConstructionTarget(modelIdentifier)
- -> SecretManagementService.resolveForUse({kind: llm, providerId: OPENAI, credentialSlot: apiKey})
+ -> target {credentialProviderId: OPENAI, authenticationRequirement: {kind: apiKey, credentialSlot: apiKey}}
+ -> SecretManagementService.resolveForUse({kind: llm, providerId: target.credentialProviderId, credentialSlot: target.authenticationRequirement.credentialSlot})
  -> SecretManagementService resolves provider.openai.api-key through its internal catalog
  -> LLMFactory.createLLM(modelIdentifier, { configInput, authentication })
  -> OpenAILLM/OpenAIResponsesLLM
  -> new OpenAIClient({ apiKey: authentication.apiKey.revealToTrustedConsumer() })
 ```
 
-`LLMFactory` composes model defaults with the caller config and creates the context. The server provisioning service resolves authentication; the individual LLM does neither. No static global resolver setter is introduced.
+`LLMFactory` composes model defaults with the caller config and creates the context. `describeConstructionTarget` returns exactly `{credentialProviderId, authenticationRequirement}`; displayed/creator provider and a duplicate top-level slot are absent. The server provisioning service uses only the returned credential owner and the requirement-owned slot; the individual LLM resolves neither. No static global resolver setter is introduced.
 
 ### Model credential requirement declaration
 
@@ -218,6 +277,7 @@ The declaration says what the client needs. It does not contain a secret definit
 | Local Store key bytes, Vault token, cloud service-account key | Yes/identity | machine/deployment identity outside checkout and agent processes; never ordinary `AppConfig` |
 | operation correlation ID/status | No | value-free operation event/status boundary |
 | Claude authentication mode (`cli` or `managed-secret`) | No | validated server startup/runtime configuration; omitted means `cli`; no UI secret field required |
+| `AUTOBYTEUS_LLM_SERVER_HOSTS` | No | existing non-secret server endpoint Settings/AppConfig; validated before use; preserved during credential migration |
 
 Generic server settings reject catalog legacy aliases and sensitive-looking names matching API key/token/password/secret/private-key/credential patterns. `AppConfig.setLlmApiKey/getLlmApiKey` are removed.
 
@@ -231,6 +291,7 @@ Generic server settings reject catalog legacy aliases and sensitive-looking name
 | Nuxt public `googleSpeechApiKey` | source removal | N/A (no consumer found) | public runtime field and environment alias | no browser-public key path |
 | parent process recognized credential aliases | presence only at startup | none | delete from current server process before any agent child; warn with alias only | no supported environment fallback |
 | `CLAUDE_AGENT_SDK_AUTH_MODE` set to `auto` or `api-key` | exact non-secret configuration value | none | legacy value rejected with remediation; no implicit rewrite to another mode | operator selects `cli` or `managed-secret`; omitted defaults to `cli` |
+| application/test `AUTOBYTEUS_API_KEY` | key-name/presence only | `AUTOBYTEUS_LLM_SERVER_HOSTS` and other non-secret lines | key line and inherited alias; no value import/copy | ledger records `provider.autobyteus.api-key` for direct reprovision; remote consumers use Store only |
 
 The migration ledger records only alias/definition/provider IDs and outcomes. It never records value length, hash, prefix, or suffix.
 
@@ -243,8 +304,8 @@ Removing consumer environment reads is necessary but not sufficient. The followi
 | non-interactive shell/background process | resolver defaults to/copies `process.env` | explicit allowlist, sandbox HOME/TMP, sandbox filesystem/identity |
 | direct/isolated PTY, bridge, WSL/tmux | parent env/cwd propagated | same policy encoded once and passed to every backend; no real home/Store files/backend identity |
 | Codex app-server | defaults to `process.env` | purpose-specific non-secret launch env; account/session auth classified separately |
-| Claude SDK/client | starts from full env, accepts caller `env`, removes only some keys in one mode, and loads broad setting sources | exact `cli` or `managed-secret`; both build from empty base and reject caller `env`. CLI receives no key. Managed receives exactly `ANTHROPIC_API_KEY` in the exact Claude child, empty setting sources, `tools: []`, and strict explicitly materialized AutoByteus MCP; no other child receives it |
-| MCP servers | may inherit server env or user config | server-specific allowlist and sandbox; no product credentials unless the MCP server is itself a separately authorized trusted consumer |
+| Claude SDK/client | starts from full env, accepts caller `env`, removes only some keys in one mode, and loads broad setting sources | exact `cli` or `managed-secret`; both build from empty base and reject caller `env`. CLI receives no key and deliberately maps the existing node-local account home/config root, not a new empty directory. Managed receives exactly `ANTHROPIC_API_KEY` in the exact child, empty setting sources, `tools: []`, and strict explicitly materialized AutoByteus MCP; no other child receives it |
+| MCP servers | may inherit server env or user config | build a sanitized operational base, then add the exact explicitly configured server-specific `config.env` map through the additions boundary; do not treat that map as the parent or inherit unrelated product/Store credentials |
 | browser/application/file-watcher workers, including `application-engine/runtime/application-worker-supervisor.ts` | the supported application worker currently spreads `process.env` and executes with the server filesystem identity | classify trusted support worker versus application/agent-controlled worker; each receives its own empty-base allowlist; first delivery also denies Store paths through built-in file tools but does not claim arbitrary same-user filesystem denial |
 | Electron embedded server | platform managers spread parent env | server receives non-secret startup config and constructs the in-process Local backend against canonical default database/key; custody remains unavailable to renderer and agent runtime |
 

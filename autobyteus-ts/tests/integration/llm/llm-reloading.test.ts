@@ -20,7 +20,6 @@ import { LLMRuntime } from '../../../src/llm/runtimes.js';
 import { LMStudioLLM } from '../../../src/llm/api/lmstudio-llm.js';
 import { LMStudioModelProvider } from '../../../src/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from '../../../src/llm/ollama-provider.js';
-import { AutobyteusModelProvider } from '../../../src/llm/autobyteus-provider.js';
 
 const CLOUD_METADATA_ENV_KEYS = ['KIMI_API_KEY', 'MISTRAL_API_KEY', 'GEMINI_API_KEY', 'VERTEX_AI_API_KEY'] as const;
 
@@ -39,7 +38,6 @@ describe('LLMFactory reload models', () => {
     vi.stubGlobal('fetch', mockFetch);
     vi.spyOn(OllamaModelProvider, 'discoverAndRegister').mockResolvedValue(0);
     vi.spyOn(LMStudioModelProvider, 'discoverAndRegister').mockResolvedValue(0);
-    vi.spyOn(AutobyteusModelProvider, 'discoverAndRegister').mockResolvedValue(0);
     await LLMFactory.reinitialize();
   });
 

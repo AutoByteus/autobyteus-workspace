@@ -14,6 +14,7 @@ export interface VideoModelOptions {
   name: string;
   value: string;
   provider: MultimediaProvider;
+  credentialProviderId?: string;
   clientClass: VideoClientConstructor;
   authenticationRequirement: LLMAuthenticationRequirement;
   parameterSchema?: ParameterSchemaInput;
@@ -26,6 +27,7 @@ export class VideoModel {
   name: string;
   value: string;
   provider: MultimediaProvider;
+  credentialProviderId: string;
   clientClass: VideoClientConstructor;
   authenticationRequirement: LLMAuthenticationRequirement;
   runtime: MultimediaRuntime;
@@ -38,9 +40,13 @@ export class VideoModel {
     this.name = options.name;
     this.value = options.value;
     this.provider = options.provider;
+    const runtime = options.runtime ?? MultimediaRuntime.API;
+    this.credentialProviderId = options.credentialProviderId?.trim()
+      || (runtime === MultimediaRuntime.AUTOBYTEUS ? '' : String(this.provider));
+    if (!this.credentialProviderId) throw new Error('credentialProviderId is required for every video model.');
     this.clientClass = options.clientClass;
     this.authenticationRequirement = options.authenticationRequirement;
-    this.runtime = options.runtime ?? MultimediaRuntime.API;
+    this.runtime = runtime;
     this.hostUrl = options.hostUrl;
     this.description = options.description ?? null;
 

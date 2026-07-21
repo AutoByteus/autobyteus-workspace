@@ -16,6 +16,7 @@ const API_KEY_BINDINGS: Record<string, string> = {
   GLM: 'provider.glm.api-key',
   MINIMAX: 'provider.minimax.api-key',
   LMSTUDIO: 'provider.lmstudio.api-key',
+  AUTOBYTEUS: 'provider.autobyteus.api-key',
 };
 
 const SEARCH_BINDINGS: Record<string, string> = {
@@ -39,6 +40,14 @@ export class SecretCatalog {
       const definition = SEARCH_BINDINGS[consumer.providerId.toLowerCase()];
       if (!definition) throw new Error('SECRET_CONSUMER_NOT_AUTHORIZED');
       return asDefinition(definition);
+    }
+
+    if (consumer.kind === 'modelDiscovery') {
+      const modelKindAllowed = ['llm', 'audio', 'image'].includes(consumer.modelKind);
+      if (modelKindAllowed && consumer.providerId === 'AUTOBYTEUS' && consumer.credentialSlot === 'apiKey') {
+        return asDefinition('provider.autobyteus.api-key');
+      }
+      throw new Error('SECRET_CONSUMER_NOT_AUTHORIZED');
     }
 
     const providerId = consumer.providerId.trim();
@@ -65,7 +74,9 @@ export class SecretCatalog {
     }
 
     if (consumer.kind === 'media') {
-      const mediaAllowed = providerId.toUpperCase() === 'OPENAI';
+      const normalizedProviderId = providerId.toUpperCase();
+      const mediaAllowed = normalizedProviderId === 'OPENAI'
+        || (normalizedProviderId === 'AUTOBYTEUS' && consumer.mediaKind !== 'video');
       if (!mediaAllowed) throw new Error('SECRET_CONSUMER_NOT_AUTHORIZED');
     }
 

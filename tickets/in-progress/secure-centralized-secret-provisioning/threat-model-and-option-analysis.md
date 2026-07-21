@@ -4,8 +4,8 @@
 
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
 - Purpose: retain security evidence, trust boundaries, assurance limits, custody/test/deployment option analysis, and rejected shortcuts.
-- Scope: REQ-002–REQ-005, REQ-008, REQ-009, REQ-012–REQ-018 / AC-002–AC-006, AC-009–AC-018.
-- Status: `User Approved — AR-007 / MP-002 Evidence Reassessment; Architecture Re-review Requested`.
+- Scope: REQ-002–REQ-005, REQ-008, REQ-009, REQ-012–REQ-019 / AC-002–AC-006, AC-009–AC-019.
+- Status: `User Approved — CR-001 AutoByteus Remote Gateway Preservation; Architecture Re-review Required`.
 - Approval applicability: `Required` for stated security guarantees and exclusions; current-state evidence is approval `N/A`.
 - Core artifacts supported: [requirements.md](./requirements.md), [investigation-notes.md](./investigation-notes.md), [design-spec.md](./design-spec.md).
 - Related supplements: [use-case-spine-validation.md](./use-case-spine-validation.md), [secret-storage-architecture.md](./secret-storage-architecture.md), [secret-storage-backend-contract.md](./secret-storage-backend-contract.md), [credential-consumer-mapping.md](./credential-consumer-mapping.md), [live-test-secret-provisioning.md](./live-test-secret-provisioning.md).
@@ -26,6 +26,8 @@ The proposed first-delivery design is an in-process cross-platform `LocalSecretS
 
 Claude Agent SDK is the deliberate exception to a blanket “no agent child ever receives a key” statement. Default `cli` remains external and secret-free. Explicit `managed-secret` makes the exact Claude Code child an authorized consumer of one Anthropic credential. The architecture removes ambient selection, parent/sibling/tool-child inheritance, built-in tools/settings propagation, and raw diagnostics, but it does not claim secrecy from that authorized executable/SDK.
 
+The supported AutoByteus remote gateway is not removed to obtain the security improvement. Its LLM/audio/image discovery and construction remain, but the gateway API key moves from ambient `AUTOBYTEUS_API_KEY` custody to one Store definition with exact discovery/construction consumers. A model's displayed provider is no longer overloaded as credential ownership; explicit non-secret `credentialProviderId` prevents resolving a native-provider credential for a request that actually authenticates to AutoByteus.
+
 ## Confirmed Deployment Reality
 
 | Deployment Shape | Current Reality | Security Consequence | Target Posture |
@@ -40,6 +42,7 @@ Claude Agent SDK is the deliberate exception to a blanket “no agent child ever
 ## Assets
 
 - provider API keys/tokens and custom-provider credentials;
+- the AutoByteus remote gateway API key and its LLM/audio/image catalog integrity;
 - default Local Store encrypted database and independent key;
 - real-E2E Local Store encrypted database and independent key;
 - Vault/cloud/Kubernetes workload identity and mounted credentials;
@@ -56,6 +59,7 @@ Claude Agent SDK is the deliberate exception to a blanket “no agent child ever
 | Server service -> backend | catalog policy and exact-address operation | adapter/vendor/storage failures | typed port, normalized redacted errors, no fallback |
 | SecretManagementService -> in-process Local backend | exact definition operations in one bootstrap-bound Store | database/key details and alternate Store | narrow backend port, no caller path/Store selector, database handle encapsulation |
 | Consumer provisioning -> LLM/client | semantic auth delivery | serializable config and provider request data | ephemeral construction context, reveal only at SDK boundary |
+| AutoByteus remote discovery -> registries/provider | one gateway credential plus non-secret hosts and scoped catalog results | remote provider response, displayed model provider, shared registries | exact discovery consumer, JIT resolution, explicit credential owner, runtime/model-kind scoped replacement, redaction |
 | Claude runtime authentication -> exact Claude Code child | one catalog-authorized Anthropic credential in managed mode | agentic child, its tools/settings, sibling/descendant processes, diagnostics | JIT resolve, exact empty-base child env, managed safe-tool/settings policy, early redaction, no fallback; recipient explicitly trusted |
 | Trusted server -> other agent runtime | bounded work request/result | file/shell/PTY/MCP/Codex/Claude-controlled execution | explicit env allowlist plus process/filesystem/network isolation |
 | Test manifest -> machine custody | logical requirements and canonical Store selection only | agent-visible Git/worktree | no value/database/key bytes in tracked files |
@@ -107,6 +111,9 @@ Branch/test code that runs in the trusted direct-secret boundary can exfiltrate 
 | `AP-010` | Local database is empty -> wrong/swapped key appears usable because no record decryption occurs | a mismatched Store/key pair is accepted until a later write/read, undermining custody integrity |
 | `AP-011` | Claude raw `api-key`/`auto` path -> copied parent environment/API-key aliases -> agentic Claude runtime | unrelated ambient state and Anthropic key enter an agent-controlled runtime without explicit consumer authorization |
 | `AP-012` | explicit managed Claude child -> built-in shell/settings/hooks/plugins/external MCP or raw diagnostic buffer -> child/descendant reads or emits its authorized environment | intentionally delivered key can propagate into tool output, conversation, logs, or sibling/descendant processes unless the managed launch surface is constrained |
+| `AP-013` | `AUTOBYTEUS_API_KEY` remains ambient or is restored as fallback -> server/tests/children inherit gateway key | centralized custody is bypassed and the original leak path remains |
+| `AP-014` | AutoByteus-discovered model displays `OPENAI`/`GEMINI` -> construction infers credential owner from display provider -> wrong Store definition is resolved | credential crosses the wrong authorization binding or valid remote behavior breaks |
+| `AP-015` | gateway refresh replaces an entire displayed-provider catalog instead of the AutoByteus runtime subset | native same-provider models disappear; pre-authoritative failures destructively mutate catalog state |
 
 ## Assurance Tiers
 
@@ -183,6 +190,19 @@ Native `AnthropicLLM` and metadata clients remain reviewed SDK-construction cons
 
 This closes `AP-011` by removing accidental ambient authorization and constrains `AP-012` across supported tools/settings/children. It does not claim protection from the authorized Claude executable/SDK, unsupported native descendants, equivalent-user debuggers/processes, or deterministic memory retention.
 
+## AutoByteus Remote Gateway Custody Decision
+
+The base behavior remains supported; only its secret source changes:
+
+- `provider.autobyteus.api-key` is the one stored definition;
+- exact `modelDiscovery/{llm|audio|image}/AUTOBYTEUS/apiKey` and `llm|media/AUTOBYTEUS/apiKey` consumers authorize discovery and construction without arbitrary definition lookup;
+- `AUTOBYTEUS_LLM_SERVER_HOSTS` remains non-secret endpoint configuration and an empty list causes zero secret lookup plus authoritative clear of only the matching AutoByteus runtime subset;
+- `credentialProviderId = AUTOBYTEUS` is explicit on every discovered target, while displayed provider/model semantics remain available to callers;
+- successful discovery replaces only the matching model-kind AutoByteus runtime subset; authoritative empty success clears only that subset, transient pre-authoritative failure preserves last-known-good, and explicit credential removal authoritatively clears every AutoByteus runtime subset without lookup;
+- the legacy key alias is migration-owned only and never a normal/fallback runtime source.
+
+This closes `AP-013` and `AP-014` without duplicating one secret into each provider family. Runtime-scoped synchronization addresses `AP-015` and avoids treating feature removal as a security control. Trusted provider code necessarily observes the decrypted key when it constructs the outbound request; that is the same `TRUSTED_DIRECT_CONSUMER` limit as other provider SDKs, not a claim that plaintext never exists in memory.
+
 ## Test Provisioning Option Analysis
 
 | Pattern | Real Provider? | Key Visible To General Test Process? | New Worktree Human Step? | Decision |
@@ -215,6 +235,10 @@ This closes `AP-011` by removing accidental ambient authorization and constrains
 16. Letting Claude SDK/session/model-catalog callers supply arbitrary `env`, or spreading/mutating parent `process.env` before managed delivery.
 17. Delivering a Claude managed key through CLI arguments, settings, session state, files, logs, diagnostics, external MCP configuration, or a built-in process/environment-inspection tool.
 18. Claiming that child-environment delivery hides the key from the authorized Claude executable/SDK or that JavaScript deterministically zeroizes it.
+19. Removing AutoByteus remote discovery/reload calls or provider wrappers as a shortcut for eliminating `AUTOBYTEUS_API_KEY`; supported functionality must remain while custody changes.
+20. Inferring a gateway model's credential definition from its displayed provider instead of its explicit credential owner.
+21. Giving LLM/audio/image three independent AutoByteus secret resolvers/discovery coordinators; one typed discovery owner and the generic management boundary are sufficient.
+22. Replacing/clearing all models of a displayed provider after an AutoByteus refresh; only the matching AutoByteus runtime/model-kind subset is owned by that refresh.
 
 ## External Authority Summary
 

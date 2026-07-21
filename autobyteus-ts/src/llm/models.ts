@@ -15,6 +15,7 @@ export interface LLMModelOptions {
   provider: LLMProvider;
   providerId?: string;
   providerName?: string;
+  credentialProviderId?: string;
   llmClass?: new (model: LLMModel, context: LLMConstructionContext) => BaseLLM;
   authenticationRequirement: LLMAuthenticationRequirement;
   canonicalName: string;
@@ -56,6 +57,7 @@ export class LLMModel {
   public provider: LLMProvider;
   public providerId: string;
   public providerName: string;
+  public credentialProviderId: string;
   public llmClass?: new (model: LLMModel, context: LLMConstructionContext) => BaseLLM;
   public authenticationRequirement: LLMAuthenticationRequirement;
   public defaultConfig: LLMConfig;
@@ -78,6 +80,12 @@ export class LLMModel {
     this.provider = options.provider;
     this.providerId = options.providerId?.trim() || String(this.provider);
     this.providerName = options.providerName?.trim() || getLlmProviderDisplayName(this.provider);
+    const runtime = options.runtime || LLMRuntime.API;
+    this.credentialProviderId = options.credentialProviderId?.trim()
+      || (runtime === LLMRuntime.AUTOBYTEUS ? '' : String(this.provider));
+    if (!this.credentialProviderId) {
+      throw new Error('credentialProviderId is required for every LLM model.');
+    }
     this.llmClass = options.llmClass;
     this.authenticationRequirement = options.authenticationRequirement;
     this.defaultConfig = options.defaultConfig || new LLMConfig();
@@ -87,7 +95,7 @@ export class LLMModel {
     this.maxOutputTokens = options.maxOutputTokens ?? null;
     this.defaultCompactionRatio = options.defaultCompactionRatio ?? 0.8;
     this.defaultSafetyMarginTokens = options.defaultSafetyMarginTokens ?? 256;
-    this.runtime = options.runtime || LLMRuntime.API;
+    this.runtime = runtime;
     this.hostUrl = options.hostUrl;
     this.configSchema = options.configSchema;
     this.modelIdentifierOverride = options.modelIdentifierOverride?.trim() || undefined;

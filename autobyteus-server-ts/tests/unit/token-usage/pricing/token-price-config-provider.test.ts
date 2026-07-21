@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LLMFactory } from 'autobyteus-ts';
-import { AutobyteusModelProvider } from 'autobyteus-ts/llm/autobyteus-provider.js';
 import { LMStudioModelProvider } from 'autobyteus-ts/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from 'autobyteus-ts/llm/ollama-provider.js';
 import { TokenPriceConfigProvider } from '../../../../src/token-usage/pricing/token-price-config-provider.js';
@@ -24,7 +23,6 @@ describe('TokenPriceConfigProvider Anthropic catalog policies', () => {
 
     vi.spyOn(OllamaModelProvider, 'discoverAndRegister').mockResolvedValue(0);
     vi.spyOn(LMStudioModelProvider, 'discoverAndRegister').mockResolvedValue(0);
-    vi.spyOn(AutobyteusModelProvider, 'discoverAndRegister').mockResolvedValue(0);
     LLMFactory.resetForTests();
   });
 

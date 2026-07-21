@@ -4,7 +4,6 @@ const mockFetch = vi.hoisted(() => vi.fn());
 
 import { LLMFactory } from '../../../src/llm/llm-factory.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
-import { AutobyteusModelProvider } from '../../../src/llm/autobyteus-provider.js';
 import { LMStudioModelProvider } from '../../../src/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from '../../../src/llm/ollama-provider.js';
 import { OpenAILLM } from '../../../src/llm/api/openai-llm.js';
@@ -32,8 +31,6 @@ describe('LLMFactory metadata resolution', () => {
     vi.stubGlobal('fetch', mockFetch);
     vi.spyOn(OllamaModelProvider, 'discoverAndRegister').mockResolvedValue(0);
     vi.spyOn(LMStudioModelProvider, 'discoverAndRegister').mockResolvedValue(0);
-    vi.spyOn(AutobyteusModelProvider, 'discoverAndRegister').mockResolvedValue(0);
-
     await LLMFactory.reinitialize();
   });
 

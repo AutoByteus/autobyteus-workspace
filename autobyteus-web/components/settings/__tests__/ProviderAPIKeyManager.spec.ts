@@ -44,6 +44,7 @@ const translations: Record<string, string> = {
 const createRuntime = (overrides: Record<string, any> = {}) => ({
   loading: ref(false),
   saving: ref(false),
+  removing: ref(false),
   notification: ref(null),
   providerEditorResetVersion: ref(0),
   isLoadingModels: ref(false),
@@ -112,6 +113,7 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   reloadSelectedProvider: vi.fn(),
   saveGeminiSetup: vi.fn(),
   saveProviderApiKey: vi.fn(),
+  removeProviderApiKey: vi.fn(),
   updateCustomProviderDraft: vi.fn(),
   probeCustomProviderDraft: vi.fn(),
   saveCustomProviderDraft: vi.fn(),

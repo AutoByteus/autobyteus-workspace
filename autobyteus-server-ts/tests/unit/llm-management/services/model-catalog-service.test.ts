@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LLMFactory } from 'autobyteus-ts';
-import { AutobyteusModelProvider } from 'autobyteus-ts/llm/autobyteus-provider.js';
 import { LMStudioModelProvider } from 'autobyteus-ts/llm/lmstudio-provider.js';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import { OllamaModelProvider } from 'autobyteus-ts/llm/ollama-provider.js';
@@ -26,7 +25,6 @@ describe('ModelCatalogService', () => {
 
     vi.spyOn(OllamaModelProvider, 'discoverAndRegister').mockResolvedValue(0);
     vi.spyOn(LMStudioModelProvider, 'discoverAndRegister').mockResolvedValue(0);
-    vi.spyOn(AutobyteusModelProvider, 'discoverAndRegister').mockResolvedValue(0);
     LLMFactory.resetForTests();
   });
 
@@ -48,7 +46,8 @@ describe('ModelCatalogService', () => {
     const syncService = {
       ensureSyncedForCatalogRead: vi.fn().mockResolvedValue(undefined)
     };
-    const provider = new AutobyteusLlmModelProvider(syncService as any);
+    const remoteDiscovery = { ensureDiscovered: vi.fn().mockResolvedValue(0) };
+    const provider = new AutobyteusLlmModelProvider(syncService as any, remoteDiscovery as any);
     const autobyteusModelCatalog = {
       listModels: vi.fn(async () => provider.listModels()),
       reloadModels: vi.fn(),
@@ -70,6 +69,7 @@ describe('ModelCatalogService', () => {
     const models = await service.listLlmModels('autobyteus');
 
     expect(syncService.ensureSyncedForCatalogRead).toHaveBeenCalledTimes(1);
+    expect(remoteDiscovery.ensureDiscovered).toHaveBeenCalledWith('llm');
     expect(autobyteusModelCatalog.listModels).toHaveBeenCalledTimes(1);
     expect(models.find((model) => model.model_identifier === 'gemini-3.5-flash')).toMatchObject({
       model_identifier: 'gemini-3.5-flash',

@@ -6,8 +6,11 @@ import { BaseImageClient } from './base-image-client.js';
 import { OpenAIImageClient } from './api/openai-image-client.js';
 import { GeminiImageClient } from './api/gemini-image-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { AutobyteusImageModelProvider } from './autobyteus-image-provider.js';
-import type { ResolvedMultimediaAuthentication } from '../multimedia-construction-context.js';
+import { MultimediaRuntime } from '../runtimes.js';
+import type {
+  MultimediaConstructionTarget,
+  ResolvedMultimediaAuthentication,
+} from '../multimedia-construction-context.js';
 
 export class ImageClientFactory extends Singleton {
   protected static instance?: ImageClientFactory;
@@ -31,10 +34,13 @@ export class ImageClientFactory extends Singleton {
   }
 
   static reinitialize(): void {
-    ImageClientFactory.initialized = false;
-    ImageClientFactory.modelsByIdentifier.clear();
-    AutobyteusImageModelProvider.resetDiscovery();
     ImageClientFactory.ensureInitialized();
+    const retainedGatewayModels = Array.from(ImageClientFactory.modelsByIdentifier.values())
+      .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
+    ImageClientFactory.modelsByIdentifier.clear();
+    ImageClientFactory.initializeRegistry();
+    for (const model of retainedGatewayModels) ImageClientFactory.registerModel(model);
+    ImageClientFactory.initialized = true;
   }
 
   private static initializeRegistry(): void {
@@ -101,6 +107,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gpt-image-1.5',
       value: 'gpt-image-1.5',
       provider: MultimediaProvider.OPENAI,
+      credentialProviderId: MultimediaProvider.OPENAI,
       authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIImageClient,
       parameterSchema: gptImageSchema,
@@ -112,6 +119,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gpt-image-2',
       value: 'gpt-image-2',
       provider: MultimediaProvider.OPENAI,
+      credentialProviderId: MultimediaProvider.OPENAI,
       authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIImageClient,
       parameterSchema: gptImage2Schema,
@@ -123,6 +131,7 @@ export class ImageClientFactory extends Singleton {
       name: 'imagen-4',
       value: 'imagen-4.0-generate-001',
       provider: MultimediaProvider.GEMINI,
+      credentialProviderId: MultimediaProvider.GEMINI,
       authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
@@ -133,6 +142,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-2.5-flash-image',
       value: 'gemini-2.5-flash-image',
       provider: MultimediaProvider.GEMINI,
+      credentialProviderId: MultimediaProvider.GEMINI,
       authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
@@ -143,6 +153,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3.1-flash-lite-image',
       value: 'gemini-3.1-flash-lite-image',
       provider: MultimediaProvider.GEMINI,
+      credentialProviderId: MultimediaProvider.GEMINI,
       authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
@@ -154,6 +165,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3.1-flash-image',
       value: 'gemini-3.1-flash-image',
       provider: MultimediaProvider.GEMINI,
+      credentialProviderId: MultimediaProvider.GEMINI,
       authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
@@ -164,6 +176,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3-pro-image',
       value: 'gemini-3-pro-image',
       provider: MultimediaProvider.GEMINI,
+      credentialProviderId: MultimediaProvider.GEMINI,
       authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
@@ -190,7 +203,7 @@ export class ImageClientFactory extends Singleton {
     ImageClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
-  static describeConstructionTarget(modelIdentifier: string): ImageModel {
+  private static requireModel(modelIdentifier: string): ImageModel {
     ImageClientFactory.ensureInitialized();
     const model = ImageClientFactory.modelsByIdentifier.get(modelIdentifier);
     if (!model) {
@@ -203,11 +216,29 @@ export class ImageClientFactory extends Singleton {
     return model;
   }
 
+  static describeConstructionTarget(modelIdentifier: string): MultimediaConstructionTarget {
+    const model = ImageClientFactory.requireModel(modelIdentifier);
+    return {
+      credentialProviderId: model.credentialProviderId,
+      authenticationRequirement: model.authenticationRequirement,
+    };
+  }
+
   static createImageClient(
     modelIdentifier: string,
     input: { configOverride?: MultimediaConfig | null; authentication: ResolvedMultimediaAuthentication },
   ): BaseImageClient {
-    return ImageClientFactory.describeConstructionTarget(modelIdentifier).createClient(input);
+    return ImageClientFactory.requireModel(modelIdentifier).createClient(input);
+  }
+
+  static syncRuntimeModels(runtime: MultimediaRuntime, models: ImageModel[]): number {
+    ImageClientFactory.ensureInitialized();
+    if (models.some((model) => model.runtime !== runtime)) throw new Error('IMAGE_RUNTIME_MODEL_SYNC_INVALID');
+    for (const [identifier, model] of ImageClientFactory.modelsByIdentifier) {
+      if (model.runtime === runtime) ImageClientFactory.modelsByIdentifier.delete(identifier);
+    }
+    for (const model of models) ImageClientFactory.registerModel(model);
+    return models.length;
   }
 
   static listModels(): ImageModel[] {

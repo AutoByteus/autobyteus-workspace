@@ -34,6 +34,10 @@ import {
   getModelMetadataProvisioningService,
   type ModelMetadataProvisioningService,
 } from './model-metadata-provisioning-service.js';
+import {
+  getAutobyteusRemoteModelDiscoveryService,
+  type AutobyteusRemoteModelDiscoveryService,
+} from './autobyteus-remote-model-discovery-service.js';
 
 const DEFAULT_RUNTIME_KIND = RuntimeKind.AUTOBYTEUS;
 
@@ -47,6 +51,8 @@ export class ModelCatalogService {
     private readonly videoModelService: VideoModelService = getVideoModelService(),
     private readonly metadataProvisioningService: ModelMetadataProvisioningService =
       getModelMetadataProvisioningService(),
+    private readonly remoteDiscoveryService: AutobyteusRemoteModelDiscoveryService =
+      getAutobyteusRemoteModelDiscoveryService(),
   ) {}
 
   async listLlmModels(runtimeKind?: string | null): Promise<ModelInfo[]> {
@@ -143,6 +149,14 @@ export class ModelCatalogService {
     if (this.resolveRuntimeKind(runtimeKind) === RuntimeKind.AUTOBYTEUS) {
       await this.videoModelService.reloadModels();
     }
+  }
+
+  async clearAutobyteusRemoteModels(): Promise<void> {
+    await this.remoteDiscoveryService.clearAllWithoutLookup();
+    this.metadataProvisioningService.invalidate();
+    this.autobyteusModelCatalog.invalidate();
+    this.audioModelService.invalidate();
+    this.imageModelService.invalidate();
   }
 
   private resolveRuntimeKind(runtimeKind?: string | null): RuntimeKind {

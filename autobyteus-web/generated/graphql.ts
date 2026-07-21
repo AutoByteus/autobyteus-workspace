@@ -1065,6 +1065,7 @@ export type Mutation = {
   reloadToolSchema: ReloadToolSchemaResult;
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
+  removeLlmProviderApiKey: Scalars['String']['output'];
   removeSkillSource: Array<SkillSource>;
   removeWorkspace: RemoveWorkspaceResultInfo;
   renameFileOrFolder: Scalars['String']['output'];
@@ -1319,6 +1320,11 @@ export type MutationRemoveAgentPackageArgs = {
 
 export type MutationRemoveApplicationPackageArgs = {
   packageId: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveLlmProviderApiKeyArgs = {
+  providerId: Scalars['String']['input'];
 };
 
 
@@ -2883,6 +2889,13 @@ export type SetLlmProviderApiKeyMutationVariables = Exact<{
 
 
 export type SetLlmProviderApiKeyMutation = { __typename?: 'Mutation', setLlmProviderApiKey: string };
+
+export type RemoveLlmProviderApiKeyMutationVariables = Exact<{
+  providerId: Scalars['String']['input'];
+}>;
+
+
+export type RemoveLlmProviderApiKeyMutation = { __typename?: 'Mutation', removeLlmProviderApiKey: string };
 
 export type ReloadLlmModelsMutationVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
@@ -5171,6 +5184,33 @@ export function useSetLlmProviderApiKeyMutation(options: VueApolloComposable.Use
   return VueApolloComposable.useMutation<SetLlmProviderApiKeyMutation, SetLlmProviderApiKeyMutationVariables>(SetLlmProviderApiKeyDocument, options);
 }
 export type SetLlmProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetLlmProviderApiKeyMutation, SetLlmProviderApiKeyMutationVariables>;
+export const RemoveLlmProviderApiKeyDocument = gql`
+    mutation RemoveLLMProviderApiKey($providerId: String!) {
+  removeLlmProviderApiKey(providerId: $providerId)
+}
+    `;
+
+/**
+ * __useRemoveLlmProviderApiKeyMutation__
+ *
+ * To run a mutation, you first call `useRemoveLlmProviderApiKeyMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveLlmProviderApiKeyMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRemoveLlmProviderApiKeyMutation({
+ *   variables: {
+ *     providerId: // value for 'providerId'
+ *   },
+ * });
+ */
+export function useRemoveLlmProviderApiKeyMutation(options: VueApolloComposable.UseMutationOptions<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables>(RemoveLlmProviderApiKeyDocument, options);
+}
+export type RemoveLlmProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables>;
 export const ReloadLlmModelsDocument = gql`
     mutation ReloadLLMModels($runtimeKind: String) {
   reloadLlmModels(runtimeKind: $runtimeKind)

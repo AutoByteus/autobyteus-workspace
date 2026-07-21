@@ -3,6 +3,11 @@ import { ImageClientFactory } from "autobyteus-ts/multimedia/image/image-client-
 import { ImageModelProvider } from "../../../../src/multimedia-management/providers/image-model-provider.js";
 
 describe("ImageModelProvider", () => {
+  const remoteDiscovery = {
+    ensureDiscovered: vi.fn().mockResolvedValue(0),
+    refresh: vi.fn().mockResolvedValue(0),
+  };
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -11,7 +16,7 @@ describe("ImageModelProvider", () => {
     const listSpy = vi
       .spyOn(ImageClientFactory, "listModels")
       .mockReturnValue([{ id: "i1" }] as never[]);
-    const provider = new ImageModelProvider();
+    const provider = new ImageModelProvider(remoteDiscovery as any);
     const models = await provider.listModels();
     expect(models).toEqual([{ id: "i1" }]);
     expect(listSpy).toHaveBeenCalledTimes(1);
@@ -21,7 +26,7 @@ describe("ImageModelProvider", () => {
     vi.spyOn(ImageClientFactory, "listModels").mockImplementation(() => {
       throw new Error("boom");
     });
-    const provider = new ImageModelProvider();
+    const provider = new ImageModelProvider(remoteDiscovery as any);
     const models = await provider.listModels();
     expect(models).toEqual([]);
   });
@@ -30,16 +35,17 @@ describe("ImageModelProvider", () => {
     const reinitSpy = vi
       .spyOn(ImageClientFactory, "reinitialize")
       .mockImplementation(() => undefined);
-    const provider = new ImageModelProvider();
+    const provider = new ImageModelProvider(remoteDiscovery as any);
     await provider.refreshModels();
     expect(reinitSpy).toHaveBeenCalledTimes(1);
+    expect(remoteDiscovery.refresh).toHaveBeenCalledWith("image");
   });
 
   it("propagates refresh errors", async () => {
     vi.spyOn(ImageClientFactory, "reinitialize").mockImplementation(() => {
       throw new Error("fail");
     });
-    const provider = new ImageModelProvider();
+    const provider = new ImageModelProvider(remoteDiscovery as any);
     await expect(provider.refreshModels()).rejects.toThrow("fail");
   });
 });

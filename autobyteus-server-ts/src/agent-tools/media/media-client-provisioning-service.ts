@@ -6,33 +6,42 @@ import {
 } from 'autobyteus-ts';
 import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-binding.js';
 import { getSecretStorageConfigurationService } from '../../secret-management/configuration/secret-storage-configuration-service.js';
+import type { SecretManagementService } from '../../secret-management/services/secret-management-service.js';
 import { appConfigProvider } from '../../config/app-config-provider.js';
 
 type MediaKind = 'audio' | 'image' | 'video';
 
 export class MediaClientProvisioningService {
+  constructor(
+    private readonly audioFactory = AudioClientFactory,
+    private readonly imageFactory = ImageClientFactory,
+    private readonly videoFactory = VideoClientFactory,
+    private readonly managementProvider: () => SecretManagementService = () =>
+      getSecretStorageConfigurationService().requireManagementService(),
+  ) {}
+
   async createAudioClient(modelIdentifier: string) {
-    const model = AudioClientFactory.describeConstructionTarget(modelIdentifier);
+    const model = this.audioFactory.describeConstructionTarget(modelIdentifier);
     const authentication = await this.resolveAuthentication(
-      'audio', String(model.provider), model.authenticationRequirement,
+      'audio', model.credentialProviderId, model.authenticationRequirement,
     );
-    return AudioClientFactory.createAudioClient(modelIdentifier, { authentication });
+    return this.audioFactory.createAudioClient(modelIdentifier, { authentication });
   }
 
   async createImageClient(modelIdentifier: string) {
-    const model = ImageClientFactory.describeConstructionTarget(modelIdentifier);
+    const model = this.imageFactory.describeConstructionTarget(modelIdentifier);
     const authentication = await this.resolveAuthentication(
-      'image', String(model.provider), model.authenticationRequirement,
+      'image', model.credentialProviderId, model.authenticationRequirement,
     );
-    return ImageClientFactory.createImageClient(modelIdentifier, { authentication });
+    return this.imageFactory.createImageClient(modelIdentifier, { authentication });
   }
 
   async createVideoClient(modelIdentifier: string) {
-    const model = VideoClientFactory.describeConstructionTarget(modelIdentifier);
+    const model = this.videoFactory.describeConstructionTarget(modelIdentifier);
     const authentication = await this.resolveAuthentication(
-      'video', String(model.provider), model.authenticationRequirement,
+      'video', model.credentialProviderId, model.authenticationRequirement,
     );
-    return VideoClientFactory.createVideoClient(modelIdentifier, { authentication });
+    return this.videoFactory.createVideoClient(modelIdentifier, { authentication });
   }
 
   private async resolveAuthentication(
@@ -65,9 +74,7 @@ export class MediaClientProvisioningService {
   }
 
   private resolve(consumer: SecretConsumerIdentity) {
-    return getSecretStorageConfigurationService()
-      .requireManagementService()
-      .resolveForUse(consumer);
+    return this.managementProvider().resolveForUse(consumer);
   }
 }
 

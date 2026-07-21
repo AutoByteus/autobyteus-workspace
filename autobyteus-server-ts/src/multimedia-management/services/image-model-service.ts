@@ -39,6 +39,10 @@ export class ImageModelService {
     await this.provider.refreshModels();
     logger.info("ImageModelService: Model reload process completed.");
   }
+
+  invalidate(): void {
+    this.provider.invalidate();
+  }
 }
 
 export const getImageModelService = (): ImageModelService => ImageModelService.getInstance();

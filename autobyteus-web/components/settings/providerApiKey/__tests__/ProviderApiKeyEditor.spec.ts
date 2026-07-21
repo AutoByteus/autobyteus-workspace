@@ -8,6 +8,7 @@ const mountComponent = (configured = false, resetVersion = 0) =>
     props: {
       configured,
       saving: false,
+      removing: false,
       resetVersion,
     },
     global: {
@@ -17,6 +18,8 @@ const mountComponent = (configured = false, resetVersion = 0) =>
           'settings.components.settings.ProviderAPIKeyManager.enter_api_key': 'Enter API key...',
           'settings.components.settings.ProviderAPIKeyManager.saving': 'Saving...',
           'settings.components.settings.ProviderAPIKeyManager.save_key': 'Save Key',
+          'settings.components.settings.ProviderAPIKeyManager.remove_key': 'Remove Key',
+          'settings.components.settings.ProviderAPIKeyManager.removing': 'Removing...',
         }[key] ?? key),
       },
     },
@@ -41,5 +44,13 @@ describe('ProviderApiKeyEditor', () => {
 
     await wrapper.setProps({ resetVersion: 1 })
     expect((wrapper.get('input[placeholder="Enter new key to update..."]').element as HTMLInputElement).value).toBe('')
+  })
+
+  it('offers configured providers an idempotent remove action', async () => {
+    const wrapper = mountComponent(true)
+
+    await wrapper.findAll('button').find((button) => button.text().includes('Remove Key'))!.trigger('click')
+
+    expect(wrapper.emitted('remove')).toEqual([[]])
   })
 })

@@ -21,7 +21,7 @@ export class LLMProvisioningService {
   async createLLM(modelIdentifier: string, configInput?: LLMFactoryConfigInput): Promise<BaseLLM> {
     const target = await this.factory.describeConstructionTarget(modelIdentifier);
     const authentication = await this.resolveAuthentication(
-      target.providerId,
+      target.credentialProviderId,
       target.authenticationRequirement,
     );
     return this.factory.createLLM(modelIdentifier, { configInput, authentication });

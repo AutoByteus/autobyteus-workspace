@@ -18,6 +18,7 @@ import {
   type OpenAICompatibleEndpointReloadReport,
 } from './openai-compatible-endpoint-provider.js';
 import type {
+  LLMConstructionTarget,
   LLMFactoryConfigInput,
   LLMFactoryCreationInput,
 } from './llm-construction-context.js';
@@ -98,6 +99,7 @@ const buildSupportedModels = async (): Promise<LLMModel[]> => {
       return new LLMModel({
         ...definition,
         ...metadata,
+        credentialProviderId: String(definition.provider),
       });
     }),
   );
@@ -139,10 +141,14 @@ export class LLMFactory {
   }
 
   static async reinitialize(): Promise<void> {
-    LLMFactory.initialized = false;
+    await LLMFactory.ensureInitialized();
+    const retainedGatewayModels = Array.from(LLMFactory.modelsByIdentifier.values())
+      .filter((model) => model.runtime === LLMRuntime.AUTOBYTEUS);
     LLMFactory.modelsByProvider.clear();
     LLMFactory.modelsByIdentifier.clear();
-    await LLMFactory.ensureInitialized();
+    await LLMFactory.initializeRegistry();
+    for (const model of retainedGatewayModels) LLMFactory.registerModel(model);
+    LLMFactory.initialized = true;
   }
 
   static resetForTests(): void {
@@ -227,19 +233,35 @@ export class LLMFactory {
     return config;
   }
 
-  static async describeConstructionTarget(modelIdentifier: string): Promise<{
-    providerId: string;
-    authenticationRequirement: LLMModel['authenticationRequirement'];
-  }> {
+  static async describeConstructionTarget(modelIdentifier: string): Promise<LLMConstructionTarget> {
     await LLMFactory.ensureInitialized();
     const model = LLMFactory.modelsByIdentifier.get(modelIdentifier);
     if (!model) {
       throw new Error(`Model with identifier '${modelIdentifier}' not found.`);
     }
     return {
-      providerId: model.providerId,
+      credentialProviderId: model.credentialProviderId,
       authenticationRequirement: model.authenticationRequirement,
     };
+  }
+
+  static async syncRuntimeModels(runtime: LLMRuntime, models: LLMModel[]): Promise<number> {
+    await LLMFactory.ensureInitialized();
+    if (models.some((model) => model.runtime !== runtime)) {
+      throw new Error('LLM_RUNTIME_MODEL_SYNC_INVALID');
+    }
+    for (const current of Array.from(LLMFactory.modelsByIdentifier.values())) {
+      if (current.runtime !== runtime) continue;
+      LLMFactory.modelsByIdentifier.delete(current.modelIdentifier);
+      const providerModels = LLMFactory.modelsByProvider.get(current.provider);
+      if (!providerModels) continue;
+      LLMFactory.modelsByProvider.set(
+        current.provider,
+        providerModels.filter((model) => model !== current),
+      );
+    }
+    for (const model of models) LLMFactory.registerModel(model);
+    return models.length;
   }
 
   static async createLLM(

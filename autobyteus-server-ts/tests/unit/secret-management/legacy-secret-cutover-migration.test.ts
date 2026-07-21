@@ -22,6 +22,8 @@ describe('legacy secret cutover migration', () => {
     const root = await createRoot();
     await fs.writeFile(path.join(root, '.env'), [
       'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+      'AUTOBYTEUS_LLM_SERVER_HOSTS=https://gateway.example.invalid',
+      'AUTOBYTEUS_API_KEY=synthetic-legacy-gateway-value',
       'OPENAI_API_KEY=synthetic-legacy-value',
       'LOG_LEVEL=INFO',
     ].join('\n'));
@@ -44,7 +46,9 @@ describe('legacy secret cutover migration', () => {
 
     expect(environment).toContain('AUTOBYTEUS_SERVER_HOST=http://localhost:8000');
     expect(environment).toContain('LOG_LEVEL=INFO');
+    expect(environment).toContain('AUTOBYTEUS_LLM_SERVER_HOSTS=https://gateway.example.invalid');
     expect(environment).not.toContain('OPENAI_API_KEY');
+    expect(environment).not.toContain('AUTOBYTEUS_API_KEY');
     expect(providers).toEqual({
       version: 2,
       providers: [{
@@ -55,6 +59,7 @@ describe('legacy secret cutover migration', () => {
       }],
     });
     expect(ledger.reprovisionDefinitionIds).toEqual([
+      'provider.autobyteus.api-key',
       'provider.openai-compatible.provider_fixture.api-key',
       'provider.openai.api-key',
     ]);

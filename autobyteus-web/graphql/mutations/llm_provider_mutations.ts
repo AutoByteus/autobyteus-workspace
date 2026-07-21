@@ -6,6 +6,12 @@ export const SET_LLM_PROVIDER_API_KEY = gql`
   }
 `;
 
+export const REMOVE_LLM_PROVIDER_API_KEY = gql`
+  mutation RemoveLLMProviderApiKey($providerId: String!) {
+    removeLlmProviderApiKey(providerId: $providerId)
+  }
+`;
+
 export const RELOAD_LLM_MODELS = gql`
   mutation ReloadLLMModels($runtimeKind: String) {
     reloadLlmModels(runtimeKind: $runtimeKind)

@@ -39,6 +39,10 @@ export class AudioModelService {
     await this.provider.refreshModels();
     logger.info("AudioModelService: Model reload process completed.");
   }
+
+  invalidate(): void {
+    this.provider.invalidate();
+  }
 }
 
 export const getAudioModelService = (): AudioModelService => AudioModelService.getInstance();

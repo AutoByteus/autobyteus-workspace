@@ -33,6 +33,17 @@
         ? $t('settings.components.settings.ProviderAPIKeyManager.saving')
         : $t('settings.components.settings.ProviderAPIKeyManager.save_key') }}
     </button>
+    <button
+      v-if="configured"
+      class="px-4 py-2.5 text-sm border border-red-200 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center whitespace-nowrap"
+      type="button"
+      :disabled="disabled || saving || removing"
+      @click="emit('remove')"
+    >
+      {{ removing
+        ? $t('settings.components.settings.ProviderAPIKeyManager.removing')
+        : $t('settings.components.settings.ProviderAPIKeyManager.remove_key') }}
+    </button>
   </div>
 </template>
 
@@ -42,12 +53,14 @@ import { ref, watch } from 'vue'
 const props = defineProps<{
   configured: boolean
   saving: boolean
+  removing: boolean
   resetVersion: number
   disabled?: boolean
 }>()
 
 const emit = defineEmits<{
   (event: 'save', apiKey: string): void
+  (event: 'remove'): void
 }>()
 
 const apiKey = ref('')

@@ -9,6 +9,7 @@ import {
   CREATE_CUSTOM_LLM_PROVIDER,
   DELETE_CUSTOM_LLM_PROVIDER,
   PROBE_CUSTOM_LLM_PROVIDER,
+  REMOVE_LLM_PROVIDER_API_KEY,
   SET_LLM_PROVIDER_API_KEY,
   RELOAD_LLM_MODELS,
   RELOAD_LLM_PROVIDER_MODELS,
@@ -314,6 +315,23 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         console.error('Failed to set provider API key:', error)
         throw error
       }
+    },
+
+    async removeLLMProviderApiKey(providerId: string) {
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: REMOVE_LLM_PROVIDER_API_KEY,
+        variables: { providerId },
+      })
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+      const responseMessage = data?.removeLlmProviderApiKey
+      if (!responseMessage || !responseMessage.includes('successfully')) {
+        throw new Error(responseMessage || 'Failed to remove provider credential')
+      }
+      await this.reloadProvidersWithModels({ showLoading: false })
+      return true
     },
 
     async getLLMProviderCredentialStatus(providerId: string) {

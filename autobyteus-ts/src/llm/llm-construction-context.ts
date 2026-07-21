@@ -16,6 +16,11 @@ export type LLMAuthenticationRequirement =
   | { kind: 'googleAuthenticationMode' }
   | { kind: 'none' };
 
+export type LLMConstructionTarget = {
+  credentialProviderId: string;
+  authenticationRequirement: LLMAuthenticationRequirement;
+};
+
 export type ResolvedLLMAuthentication =
   | { kind: 'apiKey'; apiKey: SecretValue }
   | { kind: 'googleWorkloadIdentity'; project: string; location: string }

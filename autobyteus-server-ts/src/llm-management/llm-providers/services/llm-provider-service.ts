@@ -170,13 +170,40 @@ export class LlmProviderService {
   }
 
   async deleteCustomProvider(providerId: string, runtimeKind?: string | null): Promise<string> {
-    const provider = await this.getCustomProviderOrThrow(providerId, runtimeKind);
+    const normalizedProviderId = normalizeRequiredString(providerId, 'providerId');
+    if (this.builtInCatalog.isBuiltInProviderId(normalizedProviderId.toUpperCase())) {
+      throw new Error(`Deleting built-in providers is not supported in this ticket. Received '${providerId}'.`);
+    }
+    if (resolveRuntimeKind(runtimeKind) !== RuntimeKind.AUTOBYTEUS) {
+      throw new Error(`Provider '${providerId}' is not available for runtime '${runtimeKind ?? DEFAULT_RUNTIME_KIND}'.`);
+    }
+    const provider = await this.customProviderStore.getProviderById(normalizedProviderId);
+    if (!provider) {
+      await this.secretStorageConfiguration
+        .requireManagementService()
+        .removeForConsumer(this.customConsumer(normalizedProviderId));
+      return normalizedProviderId;
+    }
     await this.secretStorageConfiguration
       .requireManagementService()
       .removeForConsumer(this.customConsumer(provider.id));
     await this.customProviderStore.deleteProvider(provider.id);
     await this.modelCatalogService.reloadLlmModels(runtimeKind);
     return provider.name;
+  }
+
+  async removeProviderApiKey(providerId: string): Promise<LlmProviderRecord> {
+    const normalizedProviderId = normalizeRequiredString(providerId, 'providerId').toUpperCase();
+    if (!this.builtInCatalog.isBuiltInProviderId(normalizedProviderId)) {
+      throw new Error(`Removing API keys is only supported for built-in providers. Received '${providerId}'.`);
+    }
+    await this.secretStorageConfiguration
+      .requireManagementService()
+      .removeForConsumer(this.builtInConsumer(normalizedProviderId));
+    if (normalizedProviderId === LLMProvider.AUTOBYTEUS) {
+      await this.modelCatalogService.clearAutobyteusRemoteModels();
+    }
+    return this.withCredentialStatus(this.builtInCatalog.getProvider(normalizedProviderId));
   }
 
   async setProviderApiKey(providerId: string, apiKey: string): Promise<LlmProviderRecord> {
@@ -402,7 +429,7 @@ export class LlmProviderService {
   }
 
   private async withCredentialStatus(provider: LlmProviderRecord): Promise<LlmProviderRecord> {
-    if (provider.id === LLMProvider.OLLAMA || provider.id === LLMProvider.AUTOBYTEUS) return provider;
+    if (provider.id === LLMProvider.OLLAMA) return provider;
     if (provider.id === LLMProvider.GEMINI) {
       const mode = appConfigProvider.config.get('GEMINI_SETUP_MODE')?.trim().toUpperCase();
       if (mode === 'VERTEX_PROJECT') {

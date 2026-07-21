@@ -24,6 +24,7 @@ const mockLlmProviderService = vi.hoisted(() => ({
   setGeminiSetup: vi.fn(),
   listProvidersWithModels: vi.fn(),
   setProviderApiKey: vi.fn(),
+  removeProviderApiKey: vi.fn(),
   probeCustomProvider: vi.fn(),
   createCustomProvider: vi.fn(),
   deleteCustomProvider: vi.fn(),
@@ -91,6 +92,7 @@ describe('LlmProviderResolver', () => {
     mockLlmProviderService.setGeminiSetup.mockReset();
     mockLlmProviderService.listProvidersWithModels.mockReset();
     mockLlmProviderService.setProviderApiKey.mockReset();
+    mockLlmProviderService.removeProviderApiKey.mockReset();
     mockLlmProviderService.probeCustomProvider.mockReset();
     mockLlmProviderService.createCustomProvider.mockReset();
     mockLlmProviderService.deleteCustomProvider.mockReset();
@@ -313,6 +315,17 @@ describe('LlmProviderResolver', () => {
 
     expect(mockLlmProviderService.deleteCustomProvider).toHaveBeenCalledWith('provider_gateway', 'autobyteus');
     expect(result).toBe('Deleted custom provider Internal Gateway successfully.');
+  });
+
+  it('removes built-in provider credentials through the provider service', async () => {
+    mockLlmProviderService.removeProviderApiKey.mockResolvedValue({
+      id: 'AUTOBYTEUS', name: 'AutoByteus',
+    });
+
+    const resolver = new LlmProviderResolver();
+    await expect(resolver.removeLlmProviderApiKey('AUTOBYTEUS'))
+      .resolves.toBe('Credential for provider AutoByteus has been removed successfully.');
+    expect(mockLlmProviderService.removeProviderApiKey).toHaveBeenCalledWith('AUTOBYTEUS');
   });
 
   it('reloads provider models through the provider service', async () => {

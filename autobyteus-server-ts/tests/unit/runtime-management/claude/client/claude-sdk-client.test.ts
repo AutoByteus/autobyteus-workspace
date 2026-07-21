@@ -1,3 +1,5 @@
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { ClaudeSdkClient, type ClaudeSdkCanUseTool } from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { ClaudeRuntimeAuthenticationError } from "../../../../../src/runtime-management/claude/client/claude-runtime-authentication-service.js";
@@ -117,6 +119,12 @@ describe("ClaudeSdkClient", () => {
       options?: Record<string, unknown>;
     };
     expect(firstCall.options).not.toHaveProperty("tools");
+    expect(firstCall.options).not.toHaveProperty("strictMcpConfig");
+    expect(firstCall.options?.env).toEqual(expect.objectContaining({
+      HOME: os.homedir(),
+      CLAUDE_CONFIG_DIR: path.join(os.homedir(), ".claude"),
+    }));
+    expect(firstCall.options?.env).not.toHaveProperty("ANTHROPIC_API_KEY");
   });
 
   it("loads user, project, and local Claude Code settings for normal turns", async () => {

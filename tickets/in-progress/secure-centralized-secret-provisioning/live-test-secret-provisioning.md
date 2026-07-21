@@ -3,9 +3,9 @@
 ## Artifact Metadata
 
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
-- Purpose: define direct one-time provisioning of the physically separate host real-E2E Store, tracked non-secret test contract, per-worktree zero-copy flow, real execution modes including managed Claude SDK authentication, failure semantics, security boundary, and explicit non-impact on existing Docker deployment.
-- Scope: REQ-002–REQ-005, REQ-008, REQ-009, REQ-012, REQ-016–REQ-018 / AC-003, AC-004, AC-006, AC-010, AC-012, AC-013, AC-015, AC-016, AC-018.
-- Status: `User Approved — AR-007 / MP-002 Evidence Reassessment; Architecture Re-review Requested`.
+- Purpose: define direct one-time provisioning of the physically separate host real-E2E Store, tracked non-secret test contract, per-worktree zero-copy flow, real execution modes including managed Claude SDK authentication and preserved AutoByteus remote LLM/audio/image behavior, failure semantics, security boundary, and explicit non-impact on existing Docker deployment.
+- Scope: REQ-002–REQ-005, REQ-008, REQ-009, REQ-012, REQ-016–REQ-019 / AC-003, AC-004, AC-006, AC-010, AC-012, AC-013, AC-015, AC-016, AC-018, AC-019.
+- Status: `User Approved — CR-001 AutoByteus Remote Gateway Preservation; Architecture Re-review Required`.
 - Approval applicability: `Required`; this supplement defines intended developer, test, and operator behavior.
 - Core artifacts supported: [requirements.md](./requirements.md), [investigation-notes.md](./investigation-notes.md), [design-spec.md](./design-spec.md).
 - Related supplements: [use-case-spine-validation.md](./use-case-spine-validation.md), [secret-storage-architecture.md](./secret-storage-architecture.md), [secret-storage-backend-contract.md](./secret-storage-backend-contract.md), [credential-consumer-mapping.md](./credential-consumer-mapping.md), [threat-model-and-option-analysis.md](./threat-model-and-option-analysis.md).
@@ -80,6 +80,24 @@ Canonical file: `test-config/live-e2e.json`.
       "runtimeAuthMode": "managed-secret",
       "requiredSecrets": ["provider.anthropic.api-key"],
       "model": "configured-non-secret-model"
+    },
+    "autobyteus.remote-llm": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.autobyteus.api-key"],
+      "hosts": ["configured-non-secret-host"],
+      "expectedCapabilities": ["llm-discovery", "llm-invocation"]
+    },
+    "autobyteus.remote-audio": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.autobyteus.api-key"],
+      "hosts": ["configured-non-secret-host"],
+      "expectedCapabilities": ["audio-discovery", "audio-generation"]
+    },
+    "autobyteus.remote-image": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.autobyteus.api-key"],
+      "hosts": ["configured-non-secret-host"],
+      "expectedCapabilities": ["image-discovery", "image-generation"]
     }
   }
 }
@@ -90,7 +108,7 @@ Allowed tracked content:
 - schema version, backend kind, canonical Store filenames, and read-only access mode;
 - scenario IDs/modes and logical secret definition IDs;
 - non-secret models, timeouts, feature flags, expected capabilities, and explicit runtime mode such as `managed-secret`;
-- non-secret server/test ports and URLs.
+- non-secret server/test ports and URLs, including AutoByteus remote hosts.
 
 Forbidden tracked content:
 
@@ -136,6 +154,8 @@ pnpm secrets:local:e2e:setup
 ```
 
 Setup is repeated only for a new machine/Store/provider, rotation/revocation, expired credentials, or Store repair. AutoByteus cannot manufacture an upstream provider key. Provisioning must not run concurrently with host read-only provider execution.
+
+The setup definition set includes `provider.autobyteus.api-key` when any AutoByteus remote scenario is enabled. It is provisioned once, directly into the E2E Store, exactly like other provider definitions. The setup command never writes `AUTOBYTEUS_API_KEY` into `.env`, `.env.test`, process-wide environment, or tracked configuration.
 
 ### Per-worktree execution
 
@@ -205,10 +225,21 @@ Direct access is necessary for scenarios whose subject is credential delivery in
 - the Store-bound server invokes the normal `ClaudeSdkClient`; that client calls its injected `ClaudeRuntimeAuthenticationService`, which resolves the exact `agentRuntime/claude_agent_sdk/apiKey` consumer through `SecretManagementService` immediately before model-discovery/run child construction;
 - the runner, browser, parent server environment, sibling processes, and AutoByteus-owned tool children never receive the key;
 - `ClaudeSdkClient` supplies exactly `ANTHROPIC_API_KEY` to the exact Claude Code child through SDK `env`, with empty setting sources, `tools: []`, and strict explicitly materialized AutoByteus MCP configuration;
-- a real provider authentication plus one bounded Claude SDK request proves the actual Store-to-SDK-child path; the result may be skipped only when the declared real-E2E credential/capability is unavailable, never silently replaced with a fake;
+- a real provider authentication plus one bounded Claude SDK request proves the actual Store-to-SDK-child path; missing declared real-E2E credential/capability is reported as explicit unavailable/failure and is never counted as pass or silently replaced with a fake;
 - a synthetic spawn-capture test separately verifies the exact environment shape and parent/sibling/tool-child noninheritance without printing the value;
 - diagnostics are redacted before buffering; scanner coverage includes prompts, messages, tool I/O, stderr, session events, logs, reports, and artifacts;
 - cleanup drops AutoByteus references and closes/aborts the SDK query, without claiming deterministic deletion from the authorized child or SDK memory.
+
+### AutoByteus remote gateway direct-secret harness
+
+- tracked configuration supplies only non-secret hosts, expected capabilities, and `provider.autobyteus.api-key` as the required logical definition;
+- the Store-bound server follows the normal `AutobyteusRemoteModelDiscoveryService` path; the runner/browser receives neither the value nor a raw resolver;
+- with no configured hosts, a synthetic/product integration check proves zero management/backend calls, authoritative clear of only the matching AutoByteus runtime subset, and preservation of native/unrelated catalogs;
+- with configured hosts, the service resolves the exact model-kind discovery consumer and performs real LLM/audio/image discovery through the current AutoByteus remote provider/factory;
+- discovered targets must carry `credentialProviderId: "AUTOBYTEUS"`; a representative real LLM invocation and each advertised audio/image generation capability must traverse the generic construction path and resolve the same Store definition;
+- registry assertions prove replacement is scoped by model kind plus AutoByteus runtime ownership, including native same-provider coexistence, authoritative empty clear, last-known-good preservation on transient pre-authoritative failure, and all-AutoByteus-subset clear without lookup after explicit credential removal;
+- capability absence must be explicit in the tracked scenario or authoritative server response. A declared/advertised capability that cannot be discovered or invoked is a failure, not a skip or pass;
+- no server/test code reads `AUTOBYTEUS_API_KEY`, and safe synthetic leak controls cover request headers, logs, errors, catalog metadata, browser responses, reports, and artifacts.
 
 ### Real gateway harness
 
@@ -248,6 +279,9 @@ Where a CI platform can only expose a credential as a job secret, inject it dire
 | media formats/generation | real mode | fake bytes do not prove provider behavior |
 | live search | real mode | real service/schema behavior |
 | Claude Agent SDK managed authentication and one bounded request | `REAL_DIRECT_SECRET` with `runtimeAuthMode: managed-secret` | validates exact consumer authorization, Store resolution, child environment delivery, and current SDK/CLI authentication |
+| AutoByteus remote LLM discovery plus representative invocation | `REAL_DIRECT_SECRET` | validates host gate, discovery consumer, Store-backed AutoByteus credential ownership, scoped catalog update, and real construction/request |
+| AutoByteus remote audio discovery plus generation when advertised | `REAL_DIRECT_SECRET` | validates the current audio gateway contract and real artifact production; declared capability unavailability is not a fake-success path |
+| AutoByteus remote image discovery plus generation when advertised | `REAL_DIRECT_SECRET` | validates the current image gateway contract and real artifact production; declared capability unavailability is not a fake-success path |
 | isolation, denial, and canary absence | `SYNTHETIC`, plus selected real checks | safe exact negative assertions |
 
 The downstream coverage owner decides the precise durable test inventory after implementation, but may not remove the semantic real-provider intent defined here.
@@ -270,6 +304,12 @@ The downstream coverage owner decides the precise durable test inventory after i
 | Claude managed Store non-ready | map exactly to `CLAUDE_RUNTIME_SECRET_STORE_LOCKED`, `_UNAVAILABLE`, `_CORRUPT`, or `_INCOMPATIBLE`; no child spawn |
 | Claude managed binding invalid | fail `CLAUDE_RUNTIME_SECRET_BINDING_INVALID`; no backend resolve or child spawn |
 | Claude SDK child spawn/provider auth fails | fail `CLAUDE_RUNTIME_SPAWN_FAILED` or `CLAUDE_RUNTIME_AUTH_FAILED`; redact before buffering and never change mode/backend |
+| AutoByteus host list absent | discovery performs zero management/backend/provider calls and clears only the matching AutoByteus runtime subset; no remote scenario may report pass unless it explicitly tests this no-host contract |
+| AutoByteus credential explicitly removed | idempotent lifecycle success clears every AutoByteus runtime subset without discovery lookup and preserves native models |
+| AutoByteus definition missing or Store non-ready | configured-host discovery/invocation fails value-free; preserves last-known-good remote subset and never reads `AUTOBYTEUS_API_KEY` or another Store |
+| AutoByteus remote discovery/provider auth fails before authoritative response | preserve last-known-good matching runtime subset, keep native models, fail the declared scenario, redact provider details |
+| AutoByteus remote discovery returns authoritative empty | clear only matching model-kind AutoByteus runtime subset; a scenario requiring that capability fails unavailable |
+| AutoByteus advertises LLM/audio/image capability but representative operation fails | fail the exact scenario; do not skip, downgrade to synthetic, or count discovery alone as pass |
 | quota/model/provider issue | fail or classify via existing provider rules; never reinterpret as “secret missing” |
 | result/log/artifact canary hit | fail the run and restrict evidence; never attach the raw hit |
 
@@ -290,6 +330,9 @@ The downstream coverage owner decides the precise durable test inventory after i
 13. Empty-Store pair verification proves correct pair `READY`, swapped key/partial pair/verifier tamper `CORRUPT`, and unsupported format `INCOMPATIBLE` without writing or regenerating.
 14. Claude CLI-mode tests make zero management calls; managed-mode synthetic capture proves one resolve per child, no caller `env`, exact child-only alias delivery, empty settings/strict MCP/safe tools, and no fallback for the complete failure matrix.
 15. A real managed-Claude scenario authenticates and completes a bounded SDK request from the read-only real-E2E Store; evidence passes structural redaction checks without reading/exporting the real value. Separate synthetic exact/encoded-canary scans include a seeded negative leak proving the scanner fails correctly.
+16. AutoByteus remote tests prove no-host zero resolution/model-kind scoped clear, exact discovery/construction bindings, runtime-scoped catalog replacement, explicit-removal all-subset clear, native same-provider coexistence, and `credentialProviderId = AUTOBYTEUS` without serializing authentication.
+17. Real AutoByteus LLM/audio/image scenarios use the read-only E2E Store and real hosts; each advertised capability completes a representative operation or reports an explicit failure. Evidence and child/process environments contain no `AUTOBYTEUS_API_KEY` value or fallback alias.
+18. Migration tests prove a legacy `AUTOBYTEUS_API_KEY` is scrubbed after explicit Store reprovision/migration handling and normal runtime never dual-reads it.
 
 ## Why This Improves The Agent-Driven Workflow
 

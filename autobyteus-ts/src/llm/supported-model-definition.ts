@@ -2,5 +2,11 @@ import type { LLMModelOptions } from './models.js';
 
 export type SupportedModelDefinition = Omit<
   LLMModelOptions,
-  'maxContextTokens' | 'activeContextTokens' | 'maxInputTokens' | 'maxOutputTokens' | 'runtime' | 'hostUrl'
+  | 'credentialProviderId'
+  | 'maxContextTokens'
+  | 'activeContextTokens'
+  | 'maxInputTokens'
+  | 'maxOutputTokens'
+  | 'runtime'
+  | 'hostUrl'
 >;

@@ -48,7 +48,7 @@ export class StdioManagedMcpServer extends BaseManagedMcpServer {
     const transport = new sdk.Transport({
       command: config.command,
       args: config.args,
-      env: buildAgentChildEnvironment(config.env),
+      env: buildAgentChildEnvironment(process.env, config.env ?? {}),
       cwd: config.cwd ?? undefined
     });
 

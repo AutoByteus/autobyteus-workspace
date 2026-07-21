@@ -3,9 +3,9 @@
 ## Artifact Metadata
 
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-architecture.md`
-- Purpose: provide the reviewable target architecture and data-flow spines in Mermaid for the in-process Local backend, authenticated Store/key pairing, physically separate host default/real-E2E Stores, unchanged Docker persistence, first-delivery backend configuration, LLM construction, host real E2E, Claude two-mode authentication, and future extension boundary.
-- Scope: intended behavior and architecture for REQ-001 through REQ-018 and AC-001 through AC-018.
-- Status: `User Approved — AR-007 / MP-002 Evidence Reassessment; Architecture Re-review Requested`.
+- Purpose: provide the reviewable target architecture and data-flow spines in Mermaid for the in-process Local backend, authenticated Store/key pairing, physically separate host default/real-E2E Stores, unchanged Docker persistence, first-delivery backend configuration, LLM construction, AutoByteus remote gateway preservation, host real E2E, Claude two-mode authentication, and future extension boundary.
+- Scope: intended behavior and architecture for REQ-001 through REQ-019 and AC-001 through AC-019.
+- Status: `AR-008 Bounded Construction-Target Correction; User-Approved Behavior Unchanged; Architecture Re-review Required`.
 - Approval applicability: approval required as part of the requirements/design basis.
 - Core artifacts supported: [requirements.md](./requirements.md), [investigation-notes.md](./investigation-notes.md), [design-spec.md](./design-spec.md).
 - Related supplements: [use-case-spine-validation.md](./use-case-spine-validation.md), [secret-storage-backend-contract.md](./secret-storage-backend-contract.md), [credential-consumer-mapping.md](./credential-consumer-mapping.md), [live-test-secret-provisioning.md](./live-test-secret-provisioning.md), [threat-model-and-option-analysis.md](./threat-model-and-option-analysis.md).
@@ -27,6 +27,8 @@
 13. Local backend initialization authenticates a database/key pair verifier before `READY`, even for an empty Store. Wrong/swapped keys, partial pairs, or verifier failures are `CORRUPT`; unsupported formats are `INCOMPATIBLE`; neither is repaired silently.
 14. A local Docker container or single Kubernetes server Pod is one independent Local Store node with its own persistent-volume domain. Multiple server replicas cannot share one Local SQLite Store and require a future installed centralized adapter.
 15. Claude Agent SDK supports exactly default external `cli` and explicit `managed-secret`. Managed mode is one precise catalog consumer of the existing Anthropic definition, resolved just in time and delivered only through the exact Claude Code child environment. Legacy `auto`/ambient `api-key` modes and fallback are removed.
+16. Existing AutoByteus remote LLM/audio/image discovery and construction remain supported. One `AutobyteusRemoteModelDiscoveryService` resolves `provider.autobyteus.api-key` just in time, while non-secret hosts stay endpoint configuration.
+17. AutoByteus-discovered targets carry non-secret `credentialProviderId = AUTOBYTEUS`; displayed provider/model semantics remain independent. Successful catalog replacement is scoped by model kind plus AutoByteus runtime ownership, so native same-provider models remain.
 
 ## 1. System And Deployment Architecture
 
@@ -43,6 +45,9 @@ flowchart TB
     StorageConfig["SecretStorageConfigurationService"]
     ProviderServices["LLM and search provider services"]
     ConsumerProvisioning["Subject-specific LLM, metadata, search and media provisioning services"]
+    RemoteDiscovery["AutobyteusRemoteModelDiscoveryService"]
+    ModelRegistries["Existing LLM, audio and image registries"]
+    RemoteProvider["Credential-agnostic AutoByteus remote provider/factory"]
     ClaudeCallers["Claude session and model catalog"]
     ClaudeAuth["ClaudeRuntimeAuthenticationService"]
     SecretManager["SecretManagementService"]
@@ -71,11 +76,15 @@ flowchart TB
   BackendFactory --> ActiveBackend
   ProviderServices --> SecretManager
   ConsumerProvisioning --> SecretManager
+  RemoteDiscovery --> SecretManager
+  RemoteDiscovery --> RemoteProvider
+  RemoteDiscovery --> ModelRegistries
   ClaudeCallers --> ClaudeClient
   ClaudeClient --> ClaudeAuth
   ClaudeAuth -->|"managed-secret only"| SecretManager
   SecretManager --> ActiveBackend
   ConsumerProvisioning --> LLMFactory
+  ConsumerProvisioning --> RemoteProvider
   ClaudeClient --> ClaudeChild
 
   ActiveBackend -. "selected adapter" .-> LocalAdapter
@@ -87,6 +96,8 @@ flowchart TB
 
 The frontend is a configuration/provisioning client of the selected AutoByteus server. It never connects directly to external custody or Local Store files. First delivery accepts Local product configuration only; the selected adapter and database handle live inside Agent Server. An unregistered enterprise kind returns `SECRET_BACKEND_KIND_NOT_INSTALLED` and never falls back.
 
+The AutoByteus remote gateway is a normal server consumer, not another custody backend. It uses the same service-over-backend boundary as all other consumers. Its host list is non-secret endpoint configuration; its API key is one centrally managed definition.
+
 ## 2. Authoritative Dependency Direction
 
 ```mermaid
@@ -94,9 +105,11 @@ flowchart LR
   Transport["Settings or startup transport"] --> Subject["Provider or storage configuration service"]
   Runtime["Runtime consumer request"] --> Provisioning["Consumer provisioning service"]
   ClaudeRequest["Claude model-discovery or run"] --> ClaudeClient["ClaudeSdkClient public boundary"]
+  RemoteTrigger["AutoByteus startup or reload"] --> RemoteDiscovery["AutobyteusRemoteModelDiscoveryService"]
   ClaudeClient --> ClaudeAuth["ClaudeRuntimeAuthenticationService"]
   Subject --> Management["SecretManagementService"]
   Provisioning --> Management
+  RemoteDiscovery --> Management
   ClaudeAuth -->|"managed-secret only"| Management
   Management --> Port["SecretStorageBackend port"]
   Port --> Adapter["Selected adapter"]
@@ -104,12 +117,15 @@ flowchart LR
 
   Provisioning --> Factory["Credential-agnostic client factory"]
   Factory --> SDK["Trusted provider SDK client"]
+  RemoteDiscovery --> RemoteFactory["AutoByteus remote provider/factory"]
+  RemoteFactory --> Registries["Runtime-scoped LLM/audio/image catalog subsets"]
   ClaudeClient --> ClaudeChild["Claude Code child"]
 
   Bad1["Forbidden: consumer calls adapter"] -. "X" .-> Adapter
   Bad2["Forbidden: LLM resolves secrets"] -. "X" .-> Management
   Bad3["Forbidden: raw value in LLMConfig"] -. "X" .-> Factory
   Bad4["Forbidden: Claude client calls backend or accepts caller env"] -. "X" .-> Adapter
+  Bad5["Forbidden: AutoByteus discovery reads env or backend directly"] -. "X" .-> Adapter
 ```
 
 ## 3. Backend Configuration Plane
@@ -316,8 +332,8 @@ sequenceDiagram
 
   Run->>Provisioning: createLLM(modelIdentifier, configInput)
   Provisioning->>Factory: describeConstructionTarget(modelIdentifier)
-  Factory-->>Provisioning: provider ID and authentication requirement
-  Provisioning->>Manager: resolveForUse(semantic consumer and credential slot)
+  Factory-->>Provisioning: credentialProviderId and tagged authentication requirement only
+  Provisioning->>Manager: resolveForUse(credentialProviderId and credential slot)
   Manager->>Catalog: resolve allowed definition internally
   Catalog-->>Manager: validated definition ID
   Manager->>Backend: resolve validated definition ID in configured Store or namespace
@@ -342,10 +358,97 @@ type LLMFactoryCreationInput = {
   authentication: ResolvedLLMAuthentication;
 };
 
+type LLMConstructionTarget = {
+  credentialProviderId: string;
+  authenticationRequirement: LLMAuthenticationRequirement;
+};
+
 type LLMConstructionContext = {
   config: LLMConfig;
   authentication: ResolvedLLMAuthentication;
 };
+```
+
+The construction target deliberately omits displayed/creator `providerId`. Native registration materializes the required `credentialProviderId` once from its known credential owner. AutoByteus-discovered models set it explicitly to `AUTOBYTEUS`, even if their displayed/provider semantics are OpenAI, Gemini, or another provider. Provisioning may read only this field for consumer construction; the credential slot stays inside the tagged authentication requirement. No runtime fallback to displayed provider and no value, definition ID, backend, path, or host is embedded in the target.
+
+## 7A. AutoByteus Remote Gateway Preservation
+
+### Settings lifecycle and typed catalog refresh
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor User as Existing Settings user
+  participant UI as Existing AutoByteus provider row
+  participant Provider as LlmProviderService
+  participant Manager as SecretManagementService
+  participant Backend as Selected Store-bound backend
+  participant Discovery as AutobyteusRemoteModelDiscoveryService
+  participant Remote as AutoByteus remote provider/factory
+  participant Registries as LLM/audio/image registries
+
+  User->>UI: save or remove AutoByteus API key
+  UI->>Provider: existing write-only mutation
+  Provider->>Manager: save/remove llm/AUTOBYTEUS/apiKey
+  Manager->>Backend: atomic lifecycle on provider.autobyteus.api-key
+  Backend-->>Manager: value-free status
+  Manager-->>Provider: value-free status
+  alt successful remove
+    Provider->>Discovery: clear all AutoByteus runtime subsets
+    Discovery-->>Registries: authoritative scoped clear; zero secret lookup
+  else successful save or replace
+    Provider->>Discovery: existing provider reload plus full AutoByteus refresh
+    loop modelKind = llm, audio, image
+      Discovery->>Discovery: read configured non-secret hosts
+      alt host list empty
+        Discovery-->>Registries: zero lookup; authoritative clear of matching AutoByteus subset
+      else hosts configured
+        Discovery->>Manager: resolveForUse(modelDiscovery/modelKind/AUTOBYTEUS/apiKey)
+        Manager->>Backend: resolve provider.autobyteus.api-key
+        Backend-->>Manager: SecretValue
+        Manager-->>Discovery: SecretValue
+        Discovery->>Remote: discover(hosts, resolved authentication, modelKind)
+        Remote-->>Discovery: authoritative models or failure
+        alt authoritative success
+          Discovery->>Registries: replace only modelKind + runtimeProviderId=AUTOBYTEUS subset
+        else transient pre-authoritative failure
+          Discovery-->>Registries: preserve last-known-good subset
+        end
+        Discovery->>Discovery: drop secret references; redact diagnostics
+      end
+    end
+  end
+  Provider-->>UI: status and refreshed catalog only
+```
+
+An authoritative empty success clears only the matching AutoByteus runtime subset. Explicit successful credential removal clears all AutoByteus runtime subsets without discovery lookup. Native models with the same displayed provider are outside that ownership and remain. Missing/non-ready custody and remote failures never consult `AUTOBYTEUS_API_KEY` or another backend.
+
+### Discovered-model construction and use
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor Caller as Agent or media request
+  participant Registry as Existing model registry
+  participant Provisioning as Generic LLM/media provisioning service
+  participant Manager as SecretManagementService
+  participant Backend as Selected Store-bound backend
+  participant Factory as Credential-agnostic LLM/media factory
+  participant Remote as AutoByteus remote client
+
+  Caller->>Registry: select discovered model identifier
+  Registry-->>Caller: identifier plus displayed model metadata
+  Caller->>Provisioning: construct/use selected model identifier
+  Provisioning->>Factory: describeConstructionTarget(identifier)
+  Factory-->>Provisioning: credentialProviderId=AUTOBYTEUS plus tagged requirement only
+  Provisioning->>Manager: resolveForUse(llm|media/AUTOBYTEUS/apiKey)
+  Manager->>Backend: resolve provider.autobyteus.api-key
+  Backend-->>Manager: SecretValue
+  Manager-->>Provisioning: resolved authentication
+  Provisioning->>Factory: target plus authentication
+  Factory->>Remote: construct request; reveal only at trusted client boundary
+  Remote-->>Caller: normalized real response or artifact
+  Note over Registry,Remote: displayed provider never determines credential ownership
 ```
 
 ## 8. Zero-Touch Real E2E Spine
@@ -558,7 +661,7 @@ sequenceDiagram
     alt mode omitted or cli
       Auth-->>Client: {kind: cli}
       Note over Auth,Manager: zero secret lookups
-      Client->>Client: build empty-base CLI/account env
+      Client->>Client: build empty-base env mapped to actual node-local Claude account state
     else mode is managed-secret
       Auth->>Manager: resolveForUse(agentRuntime/claude_agent_sdk/apiKey)
       Manager->>Catalog: authorize exact consumer
@@ -577,7 +680,7 @@ sequenceDiagram
   end
 ```
 
-The exact Claude consumer and native `AnthropicLLM`/metadata consumers are independently authorized to the same stored definition. CLI mode never resolves it. Managed mode loads no user/project/local settings, hooks, plugins, API-key helper, or external MCP configuration; passes `tools: []`; uses strict explicitly materialized AutoByteus in-process MCP tools only; and does not accept caller `env`. Parent, siblings, unrelated children, and AutoByteus-owned tool children remain key-free. Missing/non-ready custody, invalid binding, spawn, or provider-auth failure returns an exact value-free code without fallback. The authorized Claude process/SDK can observe and retain its own key; this is the explicit recipient trust limit.
+The exact Claude consumer and native `AnthropicLLM`/metadata consumers are independently authorized to the same stored definition. CLI mode never resolves it and maps the actual external node-local login state; it does not create or default to a new empty account directory. An explicit account-state override, if supported, must be an existing absolute path. Managed mode loads no user/project/local settings, hooks, plugins, API-key helper, or external MCP configuration; passes `tools: []`; uses strict explicitly materialized AutoByteus in-process MCP tools only; and does not accept caller `env`. Parent, siblings, unrelated children, and AutoByteus-owned tool children remain key-free. Stdio MCP launches compose a sanitized operational base plus the exact explicitly authorized server `config.env` map; they never spread the broad parent environment and never discard the explicit map. Missing/non-ready custody, invalid binding, spawn, or provider-auth failure returns an exact value-free code without fallback. The authorized Claude process/SDK can observe and retain its own key; this is the explicit recipient trust limit.
 
 ## External Platform Contracts
 
@@ -608,4 +711,11 @@ The exact Claude consumer and native `AnthropicLLM`/metadata consumers are indep
 - [ ] `LLMConstructionContext` remains ephemeral and `LLMConfig` remains secret-free.
 - [ ] First delivery reports `LOCAL_HARDENED` only and does not claim strong same-user/process isolation.
 - [ ] Claude exact `cli|managed-secret` modes, runtime consumer binding, JIT exact-child delivery, failure mapping, managed tool/settings restrictions, and authorized-child trust limit are accepted.
-- [ ] UC-001–UC-017 spines and removal of unsupported generic scope/address/version attributes are accepted.
+- [ ] Claude CLI maps the actual external node-local account state; managed-only tool/settings restrictions are not applied to CLI.
+- [ ] Stdio MCP child environments use sanitized operational entries plus exact explicit server variables, never broad parent inheritance.
+- [ ] Existing AutoByteus remote LLM/audio/image discovery, Settings reload, and construction remain supported with `provider.autobyteus.api-key` as the sole managed definition.
+- [ ] AutoByteus discovery is host-gated, runtime/model-kind scoped, last-known-good on transient configured-host pre-authoritative failure, and zero-lookup/scoped-clear when hosts are absent.
+- [ ] Explicit successful AutoByteus credential removal idempotently clears all gateway runtime subsets without lookup and preserves native models.
+- [ ] Discovered models carry explicit `credentialProviderId = AUTOBYTEUS`; displayed provider does not select custody.
+- [ ] Construction targets expose only credential owner plus tagged authentication requirement; displayed provider and duplicate top-level slot are absent.
+- [ ] UC-001–UC-018 spines and removal of unsupported generic scope/address/version attributes are accepted.

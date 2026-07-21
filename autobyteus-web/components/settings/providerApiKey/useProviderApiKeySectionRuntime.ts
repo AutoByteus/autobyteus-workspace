@@ -1,6 +1,7 @@
 import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useLocalization } from '~/composables/useLocalization'
+import { createProviderApiKeyRemoval } from './providerApiKeyRemoval'
 import {
   useLLMProviderConfigStore,
   type CustomLlmProviderDraftInput,
@@ -51,6 +52,7 @@ export function useProviderApiKeySectionRuntime() {
 
   const loading = ref(import.meta.env.MODE === 'test' ? false : true)
   const saving = ref(false)
+  const removing = ref(false)
   const notification = ref<ProviderSectionNotification | null>(null)
   const providerConfigs = ref<Record<string, ProviderConfigState>>({})
   const selectedProviderId = ref('')
@@ -397,6 +399,17 @@ export function useProviderApiKeySectionRuntime() {
     }
   }
 
+  const removeProviderApiKey = createProviderApiKeyRemoval({
+    removing,
+    removeCredential: (providerId) => store.removeLLMProviderApiKey(providerId),
+    hydrateCredentialStatus: hydrateProviderConfigs,
+    resetEditor: () => { providerEditorResetVersion.value += 1 },
+    getProviderLabel: (providerId) =>
+      allProvidersWithModels.value.find((provider) => provider.id === providerId)?.label ?? providerId,
+    notify: showNotification,
+    translate: t,
+  })
+
   const probeCustomProviderDraft = async () => {
     if (!canProbeCustomProvider.value) return
 
@@ -478,6 +491,7 @@ export function useProviderApiKeySectionRuntime() {
   return {
     loading,
     saving,
+    removing,
     notification,
     providerConfigs,
     selectedProviderId,
@@ -520,6 +534,7 @@ export function useProviderApiKeySectionRuntime() {
     reloadSelectedProvider,
     saveGeminiSetup,
     saveProviderApiKey,
+    removeProviderApiKey,
     updateCustomProviderDraft,
     probeCustomProviderDraft,
     saveCustomProviderDraft,

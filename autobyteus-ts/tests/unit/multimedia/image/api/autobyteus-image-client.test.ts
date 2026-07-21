@@ -48,6 +48,8 @@ describe('AutobyteusImageClient', () => {
       name: 'remote-image',
       value: 'remote-image',
       provider: MultimediaProvider.OPENAI,
+      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
+      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusImageClient,
       runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl

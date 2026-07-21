@@ -36,6 +36,7 @@ const buildModel = (name: string, defaultConfig: LLMConfig) =>
     name,
     value: name,
     provider: LLMProvider.OPENAI,
+    credentialProviderId: LLMProvider.OPENAI,
     canonicalName: name,
     llmClass: CapturingLLM,
     authenticationRequirement: { kind: 'none' },

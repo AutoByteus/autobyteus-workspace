@@ -30,6 +30,8 @@ const { localizationState } = vi.hoisted(() => ({
       'settings.components.settings.ProviderAPIKeyManager.gemini_setup_saved_successfully': 'Gemini setup saved successfully',
       'settings.components.settings.ProviderAPIKeyManager.api_key_saved_successfully': 'API key for {{provider}} saved successfully',
       'settings.components.settings.ProviderAPIKeyManager.failed_to_save_api_key': 'Failed to save API key for {{provider}}',
+      'settings.components.settings.ProviderAPIKeyManager.api_key_removed_successfully': 'API key for {{provider}} removed successfully',
+      'settings.components.settings.ProviderAPIKeyManager.failed_to_remove_api_key': 'Failed to remove API key for {{provider}}',
       'settings.components.settings.ProviderAPIKeyManager.custom_provider_saved_successfully': 'Custom provider saved successfully',
       'settings.components.settings.ProviderAPIKeyManager.failed_to_save_custom_provider': 'Failed to save custom provider',
       'settings.components.settings.ProviderAPIKeyManager.custom_provider_deleted_successfully': 'Custom provider {{provider}} removed successfully',
@@ -172,6 +174,12 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
   store.fetchGeminiSetupConfig = vi.fn().mockResolvedValue(store.geminiSetup)
   store.getLLMProviderCredentialStatus = vi.fn().mockResolvedValue(false)
   store.setLLMProviderApiKey = vi.fn().mockResolvedValue(true)
+  store.removeLLMProviderApiKey = vi.fn().mockImplementation(async (providerId: string) => {
+    store.providersWithModels = store.providersWithModels.map((row) => row.provider.id === providerId
+      ? { ...row, provider: { ...row.provider, credentialStatus: missingCredentialStatus } }
+      : row)
+    return true
+  })
   store.setGeminiSetupConfig = vi.fn().mockResolvedValue(true)
   store.reloadModels = vi.fn().mockResolvedValue(true)
   store.reloadModelsForProvider = vi.fn().mockResolvedValue(true)
@@ -232,6 +240,20 @@ describe('useProviderApiKeySectionRuntime', () => {
 
     expect(store.setLLMProviderApiKey).toHaveBeenCalledWith('OPENAI', 'runtime-key')
     expect((wrapper.vm as any).notification.message).toBe('API key for OpenAI saved successfully')
+  })
+
+  it('removes built-in provider credentials and refreshes value-free configured state', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [anthropicRow],
+    })
+
+    await (wrapper.vm as any).initialize()
+    await (wrapper.vm as any).removeProviderApiKey('ANTHROPIC')
+    await flushPromises()
+
+    expect(store.removeLLMProviderApiKey).toHaveBeenCalledWith('ANTHROPIC')
+    expect((wrapper.vm as any).providerConfigs.ANTHROPIC.credentialStatus.storageState).toBe('MISSING')
+    expect((wrapper.vm as any).notification.message).toBe('API key for Anthropic removed successfully')
   })
 
   it('saves Gemini setup without mutating immutable provider query results in place', async () => {

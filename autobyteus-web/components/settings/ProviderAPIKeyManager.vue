@@ -89,6 +89,7 @@
                   v-else-if="selectedProviderId === 'GEMINI'"
                   :gemini-setup="geminiSetup"
                   :saving="saving"
+                  :removing="removing"
                   :disabled="!canWriteSelectedCredential"
                   @save="saveGeminiSetup"
                 />
@@ -99,6 +100,7 @@
                   :disabled="!canWriteSelectedCredential"
                   :reset-version="providerEditorResetVersion"
                   @save="saveProviderApiKey(selectedProviderId, $event)"
+                  @remove="removeProviderApiKey(selectedProviderId)"
                 />
                 <p
                   v-if="!canWriteSelectedCredential && credentialWriteInstruction"
@@ -137,6 +139,7 @@ import { useProviderApiKeySectionRuntime } from '~/components/settings/providerA
 const {
   loading,
   saving,
+  removing,
   notification,
   providerEditorResetVersion,
   isLoadingModels,
@@ -171,6 +174,7 @@ const {
   reloadSelectedProvider,
   saveGeminiSetup,
   saveProviderApiKey,
+  removeProviderApiKey,
   updateCustomProviderDraft,
   probeCustomProviderDraft,
   saveCustomProviderDraft,

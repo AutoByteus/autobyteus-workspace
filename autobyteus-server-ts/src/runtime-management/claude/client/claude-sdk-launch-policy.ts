@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import {
@@ -16,15 +17,29 @@ export const buildClaudeSdkSpawnEnvironment = (
   authentication: ClaudeRuntimeAuthentication,
 ): ClaudeSdkPreparedEnvironment => {
   const appDataDir = appConfigProvider.config.getAppDataDir();
+  const configuredCliHome = appConfigProvider.config.get("AUTOBYTEUS_CLAUDE_ACCOUNT_HOME")?.trim();
+  if (authentication.kind === "cli" && configuredCliHome && !path.isAbsolute(configuredCliHome)) {
+    throw new ClaudeRuntimeAuthenticationError("CLAUDE_CLI_ACCOUNT_HOME_INVALID");
+  }
   const accountHome = authentication.kind === "cli"
-    ? appConfigProvider.config.get("AUTOBYTEUS_CLAUDE_ACCOUNT_HOME")?.trim()
-      || path.join(appDataDir, "runtime", "claude-account")
+    ? path.resolve(configuredCliHome || os.homedir())
     : path.join(appDataDir, "runtime", "claude-managed");
-  const tempDirectory = path.join(accountHome, "tmp");
+  if (authentication.kind === "cli") {
+    try {
+      if (!fs.statSync(accountHome).isDirectory()) throw new Error("not a directory");
+    } catch {
+      throw new ClaudeRuntimeAuthenticationError("CLAUDE_CLI_ACCOUNT_HOME_INVALID");
+    }
+  } else {
+    fs.mkdirSync(accountHome, { recursive: true, mode: 0o700 });
+  }
+  const tempDirectory = authentication.kind === "cli"
+    ? path.join(appDataDir, "runtime", "claude-cli-tmp")
+    : path.join(accountHome, "tmp");
   fs.mkdirSync(tempDirectory, { recursive: true, mode: 0o700 });
   const env: Record<string, string> = {
     HOME: accountHome,
-    CLAUDE_CONFIG_DIR: accountHome,
+    CLAUDE_CONFIG_DIR: authentication.kind === "cli" ? path.join(accountHome, ".claude") : accountHome,
     TMPDIR: tempDirectory,
     PATH: [path.dirname(process.execPath), "/usr/local/bin", "/usr/bin", "/bin"].join(path.delimiter),
     LANG: "C.UTF-8",

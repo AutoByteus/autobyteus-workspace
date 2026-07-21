@@ -46,6 +46,10 @@ export class AutobyteusModelCatalog {
     logger.info(`AutobyteusModelCatalog: Provider ${providerId} reload completed with ${count} models.`);
     return count;
   }
+
+  invalidate(): void {
+    this.provider.invalidate();
+  }
 }
 
 export const getAutobyteusModelCatalog = (): AutobyteusModelCatalog =>

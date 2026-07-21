@@ -48,6 +48,8 @@ describe('AutobyteusAudioClient', () => {
       name: 'remote-tts',
       value: 'remote-tts',
       provider: MultimediaProvider.OPENAI,
+      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
+      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusAudioClient,
       runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl

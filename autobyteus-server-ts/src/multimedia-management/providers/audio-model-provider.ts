@@ -1,5 +1,9 @@
 import { AudioClientFactory } from "autobyteus-ts/multimedia/audio/audio-client-factory.js";
 import type { AudioModel } from "autobyteus-ts/multimedia/audio/audio-model.js";
+import {
+  getAutobyteusRemoteModelDiscoveryService,
+  type AutobyteusRemoteModelDiscoveryService,
+} from "../../llm-management/services/autobyteus-remote-model-discovery-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -7,9 +11,19 @@ const logger = {
 };
 
 export class AudioModelProvider {
+  constructor(
+    private readonly remoteDiscoveryService: AutobyteusRemoteModelDiscoveryService =
+      getAutobyteusRemoteModelDiscoveryService(),
+  ) {}
+
   async listModels(): Promise<AudioModel[]> {
     logger.info("Fetching list of available Audio models from AudioClientFactory...");
     try {
+      try {
+        await this.remoteDiscoveryService.ensureDiscovered("audio");
+      } catch {
+        logger.error("AUTOBYTEUS_AUDIO_DISCOVERY_FAILED");
+      }
       const models = AudioClientFactory.listModels();
       const byProvider = new Map<string, number>();
       const byRuntime = new Map<string, number>();
@@ -41,6 +55,7 @@ export class AudioModelProvider {
     logger.info("Triggering AudioClientFactory re-initialization to refresh models...");
     try {
       AudioClientFactory.reinitialize();
+      await this.remoteDiscoveryService.refresh("audio");
       logger.info("AudioClientFactory re-initialized successfully.");
     } catch (error) {
       logger.error(`Failed to re-initialize AudioClientFactory: ${String(error)}`);

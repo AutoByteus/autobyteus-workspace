@@ -330,6 +330,18 @@ export class LlmProviderResolver {
     }
   }
 
+  @Mutation(() => String)
+  async removeLlmProviderApiKey(
+    @Arg('providerId', () => String) providerId: string,
+  ): Promise<string> {
+    try {
+      const provider = await this.llmProviderService.removeProviderApiKey(providerId);
+      return `Credential for provider ${provider.name} has been removed successfully.`;
+    } catch {
+      return 'Error removing credential: PROVIDER_CREDENTIAL_REMOVE_REJECTED';
+    }
+  }
+
   @Mutation(() => CustomLlmProviderProbeResultObject)
   async probeCustomLlmProvider(
     @Arg('input', () => CustomLlmProviderInputObject) input: CustomLlmProviderInputObject,

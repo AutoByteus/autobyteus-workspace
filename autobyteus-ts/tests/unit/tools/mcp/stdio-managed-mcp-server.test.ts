@@ -71,7 +71,7 @@ describe('StdioManagedMcpServer', () => {
       },
       cwd: '/tmp'
     });
-    expect(MockTransport.lastInstance?.options.env).not.toHaveProperty('TEST_ENV');
+    expect(MockTransport.lastInstance?.options.env).toHaveProperty('TEST_ENV', '1');
 
     expect(MockClient.lastInstance?.connectCalledWith).toBe(MockTransport.lastInstance);
 

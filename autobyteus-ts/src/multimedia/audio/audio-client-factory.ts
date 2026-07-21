@@ -6,8 +6,11 @@ import { BaseAudioClient } from './base-audio-client.js';
 import { GeminiAudioClient } from './api/gemini-audio-client.js';
 import { OpenAIAudioClient } from './api/openai-audio-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { AutobyteusAudioModelProvider } from './autobyteus-audio-provider.js';
-import type { ResolvedMultimediaAuthentication } from '../multimedia-construction-context.js';
+import { MultimediaRuntime } from '../runtimes.js';
+import type {
+  MultimediaConstructionTarget,
+  ResolvedMultimediaAuthentication,
+} from '../multimedia-construction-context.js';
 
 const GEMINI_VOICE_DETAILS: Record<string, { gender: string; description: string }> = {
   Zephyr: { gender: 'female', description: 'Bright, Higher pitch' },
@@ -83,10 +86,13 @@ export class AudioClientFactory extends Singleton {
   }
 
   static reinitialize(): void {
-    AudioClientFactory.initialized = false;
-    AudioClientFactory.modelsByIdentifier.clear();
-    AutobyteusAudioModelProvider.resetDiscovery();
     AudioClientFactory.ensureInitialized();
+    const retainedGatewayModels = Array.from(AudioClientFactory.modelsByIdentifier.values())
+      .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
+    AudioClientFactory.modelsByIdentifier.clear();
+    AudioClientFactory.initializeRegistry();
+    for (const model of retainedGatewayModels) AudioClientFactory.registerModel(model);
+    AudioClientFactory.initialized = true;
   }
 
   private static initializeRegistry(): void {
@@ -141,7 +147,8 @@ export class AudioClientFactory extends Singleton {
         name,
         value,
         provider: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'googleAuthenticationMode' },
+        credentialProviderId: MultimediaProvider.GEMINI,
+        authenticationRequirement: { kind: 'googleAuthenticationMode' },
         clientClass: GeminiAudioClient,
         parameterSchema: geminiTtsSchema
       });
@@ -178,6 +185,7 @@ export class AudioClientFactory extends Singleton {
       name: 'gpt-4o-mini-tts',
       value: 'gpt-4o-mini-tts',
       provider: MultimediaProvider.OPENAI,
+      credentialProviderId: MultimediaProvider.OPENAI,
       authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIAudioClient,
       parameterSchema: openaiTtsSchema
@@ -195,7 +203,7 @@ export class AudioClientFactory extends Singleton {
     AudioClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
-  static describeConstructionTarget(modelIdentifier: string): AudioModel {
+  private static requireModel(modelIdentifier: string): AudioModel {
     AudioClientFactory.ensureInitialized();
     const model = AudioClientFactory.modelsByIdentifier.get(modelIdentifier);
     if (!model) {
@@ -208,11 +216,29 @@ export class AudioClientFactory extends Singleton {
     return model;
   }
 
+  static describeConstructionTarget(modelIdentifier: string): MultimediaConstructionTarget {
+    const model = AudioClientFactory.requireModel(modelIdentifier);
+    return {
+      credentialProviderId: model.credentialProviderId,
+      authenticationRequirement: model.authenticationRequirement,
+    };
+  }
+
   static createAudioClient(
     modelIdentifier: string,
     input: { configOverride?: MultimediaConfig | null; authentication: ResolvedMultimediaAuthentication },
   ): BaseAudioClient {
-    return AudioClientFactory.describeConstructionTarget(modelIdentifier).createClient(input);
+    return AudioClientFactory.requireModel(modelIdentifier).createClient(input);
+  }
+
+  static syncRuntimeModels(runtime: MultimediaRuntime, models: AudioModel[]): number {
+    AudioClientFactory.ensureInitialized();
+    if (models.some((model) => model.runtime !== runtime)) throw new Error('AUDIO_RUNTIME_MODEL_SYNC_INVALID');
+    for (const [identifier, model] of AudioClientFactory.modelsByIdentifier) {
+      if (model.runtime === runtime) AudioClientFactory.modelsByIdentifier.delete(identifier);
+    }
+    for (const model of models) AudioClientFactory.registerModel(model);
+    return models.length;
   }
 
   static listModels(): AudioModel[] {

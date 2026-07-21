@@ -24,6 +24,7 @@ describe('LlmProviderService', () => {
     listLlmModels: vi.fn(),
     reloadLlmModels: vi.fn(),
     reloadLlmModelsForProvider: vi.fn(),
+    clearAutobyteusRemoteModels: vi.fn(),
   };
 
   const discovery = {
@@ -66,7 +67,19 @@ describe('LlmProviderService', () => {
         statusMessage: null,
       },
     ]);
-    builtInCatalog.isBuiltInProviderId.mockImplementation((providerId: string) => providerId === 'OPENAI');
+    builtInCatalog.isBuiltInProviderId.mockImplementation(
+      (providerId: string) => providerId === 'OPENAI' || providerId === 'AUTOBYTEUS',
+    );
+    builtInCatalog.getProvider.mockImplementation((providerId: string) => ({
+      id: providerId,
+      name: providerId === 'AUTOBYTEUS' ? 'AutoByteus' : 'OpenAI',
+      providerType: providerId,
+      isCustom: false,
+      baseUrl: null,
+      credentialStatus: null,
+      status: 'NOT_APPLICABLE',
+      statusMessage: null,
+    }));
 
     customProviderStore.listProviders.mockReset();
     customProviderStore.getProviderById.mockReset();
@@ -88,6 +101,7 @@ describe('LlmProviderService', () => {
     modelCatalogService.listLlmModels.mockReset();
     modelCatalogService.reloadLlmModels.mockReset();
     modelCatalogService.reloadLlmModelsForProvider.mockReset();
+    modelCatalogService.clearAutobyteusRemoteModels.mockReset();
     modelCatalogService.listLlmModels.mockResolvedValue([]);
     modelCatalogService.reloadLlmModels.mockResolvedValue(undefined);
     modelCatalogService.reloadLlmModelsForProvider.mockResolvedValue(2);
@@ -221,5 +235,30 @@ describe('LlmProviderService', () => {
 
     expect(customProviderStore.deleteProvider).not.toHaveBeenCalled();
     expect(modelCatalogService.reloadLlmModels).not.toHaveBeenCalled();
+  });
+
+  it('treats repeated custom-provider deletion as success without mutating models', async () => {
+    customProviderStore.getProviderById.mockResolvedValue(null);
+    const service = createService();
+
+    await expect(service.deleteCustomProvider('provider_missing', 'autobyteus'))
+      .resolves.toBe('provider_missing');
+    expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
+      kind: 'llm', providerId: 'provider_missing', credentialSlot: 'apiKey',
+    });
+    expect(customProviderStore.deleteProvider).not.toHaveBeenCalled();
+    expect(modelCatalogService.reloadLlmModels).not.toHaveBeenCalled();
+  });
+
+  it('removes the AutoByteus credential and clears only gateway runtime catalogs', async () => {
+    const service = createService();
+
+    await expect(service.removeProviderApiKey('AUTOBYTEUS')).resolves.toEqual(
+      expect.objectContaining({ id: 'AUTOBYTEUS', name: 'AutoByteus' }),
+    );
+    expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
+      kind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey',
+    });
+    expect(modelCatalogService.clearAutobyteusRemoteModels).toHaveBeenCalledOnce();
   });
 });

@@ -8,6 +8,12 @@ export type SecretCredentialSlot =
 export type SecretConsumerIdentity =
   | { kind: 'llm'; providerId: string; credentialSlot: SecretCredentialSlot }
   | { kind: 'llmMetadata'; providerId: string; credentialSlot: SecretCredentialSlot }
+  | {
+      kind: 'modelDiscovery';
+      modelKind: 'llm' | 'audio' | 'image';
+      providerId: 'AUTOBYTEUS';
+      credentialSlot: 'apiKey';
+    }
   | { kind: 'search'; providerId: string; credentialSlot: 'apiKey' }
   | {
       kind: 'media';
@@ -48,6 +54,8 @@ export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity
       return `${consumer.kind}:${consumer.mediaKind}:${consumer.providerId}:${consumer.credentialSlot}`;
     case 'agentRuntime':
       return `${consumer.kind}:${consumer.runtimeKind}:${consumer.credentialSlot}`;
+    case 'modelDiscovery':
+      return `${consumer.kind}:${consumer.modelKind}:${consumer.providerId}:${consumer.credentialSlot}`;
     default:
       return `${consumer.kind}:${consumer.providerId}:${consumer.credentialSlot}`;
   }

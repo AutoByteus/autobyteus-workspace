@@ -5,6 +5,10 @@ import {
   getCustomLlmProviderRuntimeSyncService,
   type CustomLlmProviderRuntimeSyncService,
 } from '../llm-providers/services/custom-llm-provider-runtime-sync-service.js';
+import {
+  getAutobyteusRemoteModelDiscoveryService,
+  type AutobyteusRemoteModelDiscoveryService,
+} from '../services/autobyteus-remote-model-discovery-service.js';
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -16,11 +20,18 @@ export class AutobyteusLlmModelProvider {
   constructor(
     private readonly customLlmProviderRuntimeSyncService: CustomLlmProviderRuntimeSyncService =
       getCustomLlmProviderRuntimeSyncService(),
+    private readonly remoteDiscoveryService: AutobyteusRemoteModelDiscoveryService =
+      getAutobyteusRemoteModelDiscoveryService(),
   ) {}
 
   async listModels(): Promise<ModelInfo[]> {
     logger.info('Fetching list of available LLM models from LLMFactory...');
     try {
+      try {
+        await this.remoteDiscoveryService.ensureDiscovered('llm');
+      } catch {
+        logger.warn('AUTOBYTEUS_LLM_DISCOVERY_FAILED');
+      }
       await this.customLlmProviderRuntimeSyncService.ensureSyncedForCatalogRead();
       const models = await LLMFactory.listAvailableModels();
       logger.info(`Successfully fetched ${models.length} models from LLMFactory.`);
@@ -36,6 +47,7 @@ export class AutobyteusLlmModelProvider {
     try {
       await LLMFactory.reinitialize();
       await this.customLlmProviderRuntimeSyncService.syncSavedProviders();
+      await this.remoteDiscoveryService.refresh('llm');
       logger.info('LLMFactory re-initialized successfully.');
     } catch (error) {
       logger.error(`Failed to re-initialize LLMFactory: ${String(error)}`);
@@ -68,6 +80,10 @@ export class AutobyteusLlmModelProvider {
       );
       const models = await LLMFactory.listModelsByProvider(normalizedProviderId);
       return models.length;
+    }
+
+    if (normalizedProviderId === 'AUTOBYTEUS') {
+      return this.remoteDiscoveryService.refresh('llm');
     }
 
     logger.info(`Reloading models for provider ${normalizedProviderId} via LLMFactory...`);

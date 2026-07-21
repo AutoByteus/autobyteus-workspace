@@ -6,12 +6,12 @@
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `use-case-spine-validation.md`, `secret-storage-architecture.md`, `secret-storage-backend-contract.md`, `credential-consumer-mapping.md`, `live-test-secret-provisioning.md`, `threat-model-and-option-analysis.md`
-- Current Review Round: 4
-- Trigger: reassessment of AR-007/MP-002 after the user reaffirmed both Claude modes and the package supplied the complete conflicting current Anthropic source set plus a maintained external release dependency
-- Prior Review Round Reviewed: round 3 fail
-- Latest Authoritative Round: round 4
-- Current-State Evidence Basis: repository and complete nine-artifact solution package at `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`; direct reads of current configuration, provider/LLM construction, Electron reset, Local SQLite capability, process launch, Claude SDK client/session/diagnostics, Docker persistence, and Kubernetes-manifest absence; independent inspection of pinned `@anthropic-ai/claude-agent-sdk@0.2.71` public types; the current official Agent SDK overview, legal/authentication guidance, May 19 account-authentication Help Center page, and June 15–16 Agent SDK subscription-usage update; identifier, active-spine, link, fence, table, contradiction, branch, and worktree-state checks. No actual secret values or secret-bearing files were read.
-- Containment Evidence: `implementation_engineer` confirmed no implementation, Docker, test, or handoff changes after authority was withdrawn. HEAD remains `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`; only the ticket-artifact directory is untracked.
+- Current Review Round: 6
+- Trigger: bounded AR-008 correction of the construction-target identity contract after round-5 design review
+- Prior Review Round Reviewed: round 5 fail on AR-008
+- Latest Authoritative Round: round 6
+- Current-State Evidence Basis: reviewed base `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`, implementation commit `240d722070864e0ed960f552cdafc03d05d0ffeb`, the complete cumulative package including implementation and code-review handoffs, and direct comparison of base/current AutoByteus LLM/audio/image factory discovery, provider parsing, model/runtime identity, server Settings/reload, and current explicit-auth callers. Rechecked AR-008 first, then exact behavior/requirement/acceptance/use-case sets, all five authoritative `LLMConstructionTarget` declarations, corrected consumer expressions, the 28-spine inventory, supplement links/status, Markdown structure, and worktree state. No actual secret values or secret-bearing files were read.
+- Containment Evidence: implementation-source review remains failed/held. HEAD is `240d722070864e0ed960f552cdafc03d05d0ffeb`; the only working-tree changes are the nine solution-designer-owned intended-behavior artifacts, this reviewer-owned `design-review-report.md`, and the untracked reviewer-owned `code-review-report.md`. No implementation rework, Docker change, or test rework occurred before this gate decision.
 
 ## Round History
 
@@ -22,6 +22,8 @@
 | 2-Hold | User reopened AR-006 | AR-006 | AR-006 reopened | Blocked | No | Implementation was stopped before source changes. |
 | 3 | User-approved two-mode Claude revision and second design-principles audit | AR-001–AR-006 and MP-001 | AR-007 / MP-002 | Fail | No | This review relied primarily on the SDK-overview restriction and treated AutoByteus-specific prior approval as an implementation prerequisite. |
 | 4 | Complete current Anthropic source set, local/self-hosted context, explicit user reaffirmation, and external release dependency | AR-007 / MP-002 | None | Pass | Yes | The official sources are materially inconsistent. The two-mode implementation is technically reachable and structurally ready; external authorization remains an explicit delivery/release dependency rather than an unresolved design mechanism. |
+| 5 | User-approved CR-001 requirement-gap revision after implementation-source review | CR-001 plus prior architecture findings | AR-008 | Fail | No | The revised requirements and spines restore the AutoByteus gateway path, but the canonical LLM construction example still resolved `target.providerId`, contradicting the newly authoritative `credentialProviderId` boundary and recreating the exact wrong-key failure the revision is intended to prevent. |
+| 6 | Bounded AR-008 construction-target correction | AR-008 | None | Pass | Yes | Every authoritative construction target now contains exactly `credentialProviderId` and `authenticationRequirement`; provisioning uses only the credential owner and the requirement-owned slot, with no displayed-provider/runtime/client/host fallback. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -34,14 +36,16 @@
 | 1 | AR-005 / MP-001 | High | Resolved | REQ-012, AC-014/015, DS-UC005/011, and Local Store contract authenticate random `store_id` pair metadata on every open, including empty/read-only Stores. | Partial, swapped, tampered, and incompatible pairs have exact outcomes. |
 | 1 / 2-Hold | AR-006 | High | Resolved | BEH-012, REQ-018, AC-018, UC/DS-UC017, the backend contract, consumer mapping, threat model, live-test specification, and file map now define the user-approved exact two-mode behavior. | `cli` performs zero lookup; `managed-secret` uses the exact runtime consumer, generic JIT resolution, exact-child delivery, restricted settings/tools, early redaction, and no fallback. |
 | 3 | AR-007 / MP-002 | High | Resolved / Reclassified | The June 15–16 Help Center update says current Agent SDK, `claude -p`, and third-party application usage still draw from subscription limits, while the SDK overview and legal page retain API-key/prior-approval restrictions and the account page allows some third-party tools at Anthropic's discretion. The package now records all sides as `EXT-ANTHROPIC-AGENT-SDK-AUTH`; AutoByteus is local/self-hosted, supplies no login/broker/relay/pooling surface, and the existing path establishes technical reachability. | The sources do not establish blanket permission, but they also do not support the round-3 categorical implementation block. Authorization is not treated as proven; it is a maintained delivery/release dependency that must be rechecked before finalization or release. |
+| Source review round 1 | CR-001 | High | Resolved | BEH-013/REQ-019/AC-019/UC-018 and DS-UC018A–D define one AutoByteus definition, exact discovery/construction consumers, a server-owned discovery owner, runtime-scoped synchronization, migration, Settings lifecycle, and real coverage; AR-008 subsequently aligned the canonical target/example. | The approved behavior gap and its one remaining design contradiction are closed. |
+| 5 | AR-008 | Medium | Resolved | The design example now constructs the consumer with `providerId: target.credentialProviderId` and reads `credentialSlot` only from the tagged `requirement`. Design, spine validation, architecture, backend contract, and consumer mapping each declare exactly `{credentialProviderId, authenticationRequirement}`. | Displayed/creator provider, runtime, client, host, and a duplicate target-level slot are absent from the construction boundary and cannot act as fallback identity. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): Confirmed
-- Approved requirements / intended behavior understood: Yes. The package is internally coherent, user-approved for implementation review, and explicitly retains both Claude modes.
-- Relevant existing behavior and evidence confirmed: Yes. Current source still contains the ambient/plaintext paths being removed and the exact Claude paths described by the investigation.
-- Approved change, preserved behavior, and outside scope understood: Yes. Local/InMemory only, direct E2E provisioning, unchanged Docker, lower-tier hardening, future enterprise/strong isolation, and exact Claude two-mode behavior are explicit.
-- Remaining material ambiguity, if any: None that changes the implementation architecture. Anthropic's inconsistent authentication guidance remains a material release/compliance uncertainty under `EXT-ANTHROPIC-AGENT-SDK-AUTH`; the package does not claim authorization and requires delivery/release recheck.
+- Approved requirements / intended behavior understood: Yes. The user-approved basis preserves all existing AutoByteus remote LLM/audio/image discovery, reload, construction, and invocation while changing only key provisioning, and it retains all prior Local Store and Claude decisions.
+- Relevant existing behavior and evidence confirmed: Yes. The reviewed base invokes remote discovery for all three model kinds, reads non-secret `AUTOBYTEUS_LLM_SERVER_HOSTS`, and uses the AutoByteus gateway key for discovery and invocation. The implementation commit requires explicit key input but disconnected production discovery callers, matching CR-001.
+- Approved change, preserved behavior, and outside scope understood: Yes. BEH-013/REQ-019/AC-019/UC-018 and DS-UC018A–D define one managed definition, exact semantic consumers, runtime-aware credential ownership, scoped synchronization, migration, Settings/reload preservation, and real coverage. CR-002–CR-005 remain bounded implementation/packaging fixes. Enterprise adapters, strong isolation, and Docker topology changes remain outside scope.
+- Remaining material ambiguity, if any: None. The bounded AR-008 correction aligns the mandatory example and all authoritative target declarations with the approved credential-owner contract.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -57,6 +61,7 @@
 | BEH-010 | Operational | Pass | Pass | Pass | Confirmed | None. |
 | BEH-011 | Contract | Pass | Pass | Pass | Confirmed | None. |
 | BEH-012 | System | Pass | Pass | Pass | Confirmed | Preserve both modes exactly; carry `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release dependency without silent mode change. |
+| BEH-013 | User/System | Pass | Pass | Pass | Confirmed | Implement the exact reviewed construction-target contract; preserve CR-002–CR-005 and the complete AutoByteus gateway lifecycle. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -80,7 +85,7 @@
 
 ## Spine Inventory Verdict
 
-The active inventory contains 24 spines: 20 use-case paths, two return/event spines, and two bounded-local spines.
+The active inventory contains 28 spines: 24 use-case paths, two return/event spines, and two bounded-local spines.
 
 | Spine ID | Scope | Spine Is Readable? (`Pass`/`Fail`) | Narrative Is Clear? (`Pass`/`Fail`) | Facade Vs Governing Owner Is Clear? (`Pass`/`Fail`/`N/A`) | Main Domain Subject Naming Is Clear? (`Pass`/`Fail`) | Ownership Is Clear? (`Pass`/`Fail`) | Off-Spine Concerns Stay Off Main Line? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -95,6 +100,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | DS-UC013 / DS-UC014 | Settings/hardening | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-UC015 / DS-UC016 | Migration/conformance | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-UC017 | Claude two-mode authentication | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-UC018A / B / C / D | AutoByteus Settings, discovery, construction, and real evidence | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-RET001 / DS-RET002 | Status/provider return | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-LOC001 / DS-LOC002 | Encrypted write/exact reset | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
@@ -109,6 +115,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Local backend/repository/setup | Pass | Pass | Pass | Pass | One bootstrap-bound Store owns pair lifecycle, crypto, SQLite, and direct target setup. |
 | Agent execution security | Pass | Pass | Pass | Pass | Empty-base environments and file/descriptor controls remain one explicit lower-tier owner. |
 | ClaudeRuntimeAuthenticationService / ClaudeSdkClient | Pass | Pass | Pass | Pass | Mode/JIT resolution and child delivery/spawn are separate, closed owners with no caller env or backend bypass. |
+| AutobyteusRemoteModelDiscoveryService / core runtime registries | Pass | Pass | Pass | Pass | Discovery owns host gating/JIT catalog refresh; core providers/factories remain storage-neutral and runtime scoped. |
 | Migration coordinator | Pass | Pass | Pass | Pass | Historical shapes are pre-runtime only. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -121,6 +128,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Local persistence | Pass | Pass | Pass | Pass | No provider, GraphQL, profile, or deployment policy. |
 | Runtime launch security | Pass | Pass | Pass | Pass | Launchers consume explicit policy, not parent state. |
 | Claude runtime | Pass | Pass | Pass | Pass | CLI makes zero management calls; managed mode uses only the generic exact-consumer boundary. |
+| AutoByteus remote construction | Pass | Pass | Pass | Pass | Generic provisioning resolves only the required `credentialProviderId`; displayed provider and duplicate slot are absent from the target. |
 
 ## Interface Boundary Verdict
 
@@ -133,6 +141,8 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Live manifest/preflight | Pass | Pass | Pass | Low | Pass |
 | Agent launch policy | Pass | Pass | Pass | Low | Pass |
 | Claude `prepareForLaunch` and internal child builder | Pass | Pass | Pass | Low | Pass |
+| AutoByteus remote discovery `ensure/refresh` | Pass | Pass | Pass | Low | Pass |
+| `describeConstructionTarget` / generic provisioning | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -144,6 +154,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | App-data migration/reset | Pass | Pass | Pass | Pass | Pre-consumer cutover and Store-preserving reset extend existing owners. |
 | Runtime/process launchers | Pass | Pass | Pass | Pass | Repeated environment/descriptor policy justifies a shared execution owner. |
 | Claude SDK | Pass | Pass | Pass | Pass | Pinned public `env`, `tools`, `settingSources`, MCP, and diagnostics seams support the designed managed path. |
+| AutoByteus remote discovery and registries | Pass | Pass | Pass | Pass | Existing core protocols/parsers and server model-provider wrappers are extended; one server discovery owner supplies the missing resolution/publish boundary. |
 | Enterprise custody | Pass | Pass | N/A | Pass | Typed seam/test fixture is proportionate; adapters are deferred. |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -155,6 +166,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Local backend | Pass | Pass | Pass | Pass | In-process custody is cohesive without daemon/IPC. |
 | Subject provisioning | Pass | Pass | Pass | Pass | No generic provisioning coordinator. |
 | Claude runtime authentication/client | Pass | Pass | Pass | Pass | Specialized owner reuses generic management without a Claude resolver. |
+| AutoByteus remote gateway | Pass | Pass | Pass | Pass | One shared discovery owner plus generic construction provisioning avoids three resolvers and AutoByteus-specific factory branches. |
 | Migration/test/execution security | Pass | Pass | Pass | Pass | Operational and security owners are explicit. |
 | Enterprise extension | Pass | Pass | Pass | Pass | Contract only; no production placeholder. |
 
@@ -168,6 +180,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Consumer identity | Pass | Pass | Pass | Pass | Exact Claude runtime variant is justified and maps to the existing definition. |
 | Local metadata/crypto encoding | Pass | Pass | Pass | Pass | Pair/record domains and canonical AAD have one owner. |
 | Claude runtime auth union | Pass | Pass | Pass | Pass | Closed CLI/managed union avoids environment and option bags. |
+| Credential-provider identity / discovery consumer | Pass | Pass | Pass | Pass | The reusable concepts are narrow; the remaining defect is the canonical example's use of the wrong field. |
 | Conformance/launch policy | Pass | Pass | Pass | Pass | Reuse follows declared capability and launch families. |
 
 ## Shared Structure / Data Model Tightness Verdict
@@ -180,6 +193,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | ClaudeRuntimeAuthentication | Pass | Pass | Pass | Pass | Pass | Closed union contains no raw-string/environment/definition/backend selector. |
 | Local Store schema | Pass | Pass | Pass | Pass | Pass | Minimal records plus authenticated pair metadata; no profile. |
 | LiveE2EManifest | Pass | Pass | Pass | Pass | Pass | Secret-free and Store-bound. |
+| Credentialed construction target | Pass | Pass | Pass | Pass | Pass | Target contains only credential owner plus tagged authentication requirement; displayed provider remains on the authoritative model and cannot be used for resolution. |
 
 ## File Responsibility Mapping Verdict
 
@@ -190,6 +204,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Local initializer/repository/crypto files | Pass | Pass | Pass | Pass | Pair, persistence, and crypto concerns are separated. |
 | Subject provisioning files | Pass | Pass | Pass | Pass | Natural subject owners. |
 | Claude auth/client/policy/diagnostics files | Pass | Pass | Pass | Pass | Mode/JIT, exact environment, safe tools/settings, and early redaction are explicitly placed. |
+| AutoByteus provider/factory/discovery files | Pass | Pass | Pass | Pass | Core protocol/registry responsibilities and the server discovery owner are concrete. |
 | Migration/web/Electron/security/test files | Pass | Pass | Pass | Pass | Cutover, reset, launch, UI, and coverage ownership are concrete. |
 | Enterprise adapter files | Pass | Pass | N/A | Pass | Explicitly absent in first delivery. |
 
@@ -202,6 +217,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Subject provisioning folders | Pass | Pass | Low | Pass | Close to natural domains. |
 | Local backend folder | Pass | Pass | Low | Pass | No process/package/IPC split. |
 | `runtime-management/claude/authentication` and client policy | Pass | Pass | Low | Pass | Specialized runtime subject without generic option bag. |
+| core AutoByteus providers/factories plus server `llm-management` discovery service | Pass | Pass | Low | Pass | Storage-neutral protocol/registry code stays below one server application owner. |
 | `agent-execution/security` | Pass | Pass | Low | Pass | Cross-launch policy has one execution owner. |
 | Test config/support | Pass | Pass | Low | Pass | Tracked configuration and untracked custody remain separate. |
 
@@ -214,6 +230,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Test dotenv credential load/copy | Pass | Pass | Pass | Pass | Tracked secret-free config is canonical. |
 | Parent environment spreads | Pass | Pass | Pass | Pass | Empty-base launch policy replaces copies. |
 | Claude `auto`, raw `api-key`, caller env, broad settings/tools/raw diagnostics | Pass | Pass | Pass | Pass | Exact two-mode owner and managed controls replace legacy behavior. |
+| AutoByteus ambient key reads / disconnected discovery | Pass | Pass | Pass | Pass | The design names Store-backed discovery/construction as the replacement and forbids feature removal or fallback. |
 | Unsupported UI/public secret paths and old constructors | Pass | Pass | Pass | Pass | One write-only/current construction path remains. |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -226,6 +243,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Test credential dotenv/copy | No | Pass | Pass | No checkout discovery. |
 | Store copy/profile/IPC | No | Pass | Pass | Explicitly excluded. |
 | Claude `auto`/`api-key` | No | Pass | Pass | Invalid values fail before lookup/spawn; no compatibility mapping. |
+| `AUTOBYTEUS_API_KEY` runtime fallback | No | Pass | Pass | Alias is migration-only; BEH-013 must remain connected through managed custody. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
@@ -235,6 +253,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Custom provider v1 | Migrate to metadata-only v2 | Pass | Pass | Pass | Pass | IDs/metadata preserved and current runtime is v2-only. |
 | Ignored `.env.test` copies | Discard/manual cleanup; replace with tracked config | Pass | Pass | N/A | Pass | No credential loader or cross-checkout search. |
 | Claude legacy mode config | Reject legacy values; operator selects current mode | Pass | Pass | Pass | Pass | No implicit rewrite/fallback. |
+| AutoByteus credential alias | Migrate; scrub value, preserve hosts, record `provider.autobyteus.api-key` reprovision | Pass | Pass | Pass | Pass | Normal runtime never reads the alias. |
 | New Local Store | New current schema | Pass | Pass | N/A | Pass | Pair verifier and format states fail closed. |
 
 ## Change / Refactor Safety Verdict
@@ -247,6 +266,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Agent hardening and Claude two-mode cutover | Pass | Pass | Pass | Pass |
 | Enterprise extension without adapter | Pass | Pass | Pass | Pass |
 | External Claude authentication release dependency | Pass | Pass | Pass | Pass |
+| AutoByteus gateway reconnection | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
@@ -256,6 +276,7 @@ The active inventory contains 24 spines: 20 use-case paths, two return/event spi
 | Store/test selection and pair validation | Yes | Pass | Pass | Pass | Physical isolation and failure handling are precise. |
 | Health/status and assurance | Yes | Pass | Pass | Pass | Impossible state and overclaiming are avoided. |
 | Claude two-mode cutover | Yes | Pass | Pass | Pass | Exact consumer, child environment, failure, tool/settings, and trust limit are shown. |
+| AutoByteus gateway credential routing | Yes | Pass | Pass | Pass | The example uses `target.credentialProviderId`, reads the slot from the tagged requirement, and forbids every displayed-provider/runtime/client/host fallback. |
 
 ## Material Premise Validation (Only When Needed)
 
@@ -285,7 +306,7 @@ None.
 
 ## Review Decision
 
-Pass — the complete approved package is implementation-ready. AR-001–AR-007 and MP-001 are resolved; MP-002 is not reachable as the categorical implementation blocker asserted in round 3 and is proportionately retained as `EXT-ANTHROPIC-AGENT-SDK-AUTH`, an explicit delivery/release dependency.
+Pass — CR-001 is resolved in the approved requirements and reviewed architecture, AR-008 is corrected consistently across the package, and the cumulative design is ready for bounded implementation rework.
 
 ## Findings
 
@@ -301,6 +322,7 @@ N/A — Pass.
 
 ## Residual Risks
 
+- Implementation rework is authorized only against the complete round-6 package. CR-002–CR-005 remain mandatory bounded implementation/packaging fixes before source re-review.
 - `LOCAL_HARDENED` deliberately does not resist arbitrary equivalent-user or same-container process/filesystem inspection; the package correctly withholds `STRONG_AGENT_ISOLATION`.
 - The authorized managed Claude child can observe, retain, or exfiltrate its own credential; exact-child delivery is a bounded trust grant, not a secrecy or zeroization guarantee.
 - Pinned SDK option semantics are sufficient in `0.2.71`, but implementation/API-E2E must fail managed mode closed if a future pin cannot prove `tools: []`, empty setting sources, strict explicit MCP, child `env`, and pre-buffer diagnostics behavior.
@@ -313,5 +335,5 @@ N/A — Pass.
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): Pass. MP-001 is satisfied; MP-002 is not reachable as an implementation-blocking premise and is reclassified as an explicit delivery/release dependency.
-- Notes: AR-001–AR-007 and MP-001 are resolved. Implementation is authorized against the complete cumulative package. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` through every downstream handoff and final delivery/release review.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): Pass. MP-001 remains satisfied; MP-002 remains a release dependency rather than an implementation-blocking premise; AR-008 is resolved.
+- Notes: CR-001 is resolved in the reviewed architecture and implementation rework is authorized against this cumulative package. Preserve CR-002–CR-005 and `EXT-ANTHROPIC-AGENT-SDK-AUTH` in every handoff; return the implementation through full source review and API/E2E after rework.

@@ -30,6 +30,7 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
       value: discoveredModel.value,
       canonicalName: discoveredModel.canonicalName,
       provider: LLMProvider.OPENAI_COMPATIBLE,
+      credentialProviderId: endpoint.id,
       authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       providerId: endpoint.id,
       providerName: endpoint.name,

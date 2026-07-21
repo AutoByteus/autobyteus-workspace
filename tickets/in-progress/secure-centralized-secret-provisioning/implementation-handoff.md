@@ -13,99 +13,99 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
+- Prior implementation-source review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md`
 
 ## What Changed
 
-- Added a secret-management domain to the Agent Server: stable consumer identities/catalog binding, lifecycle/status/events, backend and configuration contracts, InMemory fixtures, and an encrypted in-process Local SQLite backend.
-- Implemented Local Store physical lifecycle safeguards: a separately staged database/key pair, authenticated empty-Store pair verifier, HKDF-derived AES-256-GCM record encryption, private owner/permission checks, Windows ACL hardening, full synchronous durability, WAL for writable use, bounded busy timeout, read-only open behavior, explicit checkpoint/reset paths, and value-free five-state health mapping.
-- Bootstrapped the selected backend before provider/model initialization. Normal Local storage defaults below `serverDataDir`; existing Docker Compose, launcher, port, and volume definitions are unchanged.
-- Added server-owned, just-in-time LLM, metadata, search, media, custom-provider, and Claude runtime provisioning. Core factories and SDK clients now accept explicit non-serializable authentication contexts and do not read provider credentials from the ambient environment.
-- Replaced broad child environment inheritance with empty-base, purpose-specific environments across shell, PTY, Codex, Claude, MCP, application-worker, watcher, ripgrep, messaging, and Electron embedded-server launch paths. Built-in file/cwd authorization is realpath-aware and denies configured Store roots. The reported tier is only `LOCAL_HARDENED`.
-- Implemented the exact Claude modes: default `cli` performs zero secret-management lookup; explicit `managed-secret` resolves `{kind:"agentRuntime", runtimeKind:"claude_agent_sdk", credentialSlot:"apiKey"}` just in time and delivers only `ANTHROPIC_API_KEY` to the exact child. Both modes use an empty base environment, `tools: []`, empty setting sources, strict explicit in-process AutoByteus MCP, early diagnostic redaction, distinct value-free failures, and no fallback.
-- Added the approved migration boundary: pre-consumer application `.env` alias scrubbing, current-process alias removal, custom-provider v1-to-v2 metadata-only atomic transformation, reprovision-required recording, legacy Claude mode rejection, and no plaintext import or backup path.
-- Added direct target-only real-E2E Store provisioning through `pnpm secrets:local:e2e:setup` and tracked non-secret `test-config/live-e2e.json`; runtime access is read-only and there is no default/source Store read or copy method.
-- Updated GraphQL and Settings to expose rich backend health, lifecycle capability, and value-free provider status while keeping saved inputs transient/write-only. Removed `apiKeyConfigured`, Google CSE credential UI, the public Google speech key field, and plaintext custom-provider credential persistence.
-- Added focused implementation-level unit coverage and split high-pressure implementation files so every changed hand-authored source file stays below 500 effective lines and no such file has a greater-than-220-line delta.
+- Retained the round-4 centralized-secret implementation: server-owned lifecycle/catalog/configuration boundaries, InMemory and encrypted Local SQLite custody, early backend bootstrap, pair-authenticated default/E2E Stores, explicit JIT provider construction, clean migration, empty-base execution policy, rich value-free health/status, and unchanged Docker topology.
+- Restored AutoByteus remote LLM/audio/image discovery and invocation through one managed definition, `provider.autobyteus.api-key`, without restoring an ambient `AUTOBYTEUS_API_KEY` read.
+- Added exact discovery consumers for `modelDiscovery/{llm|audio|image}/AUTOBYTEUS/apiKey`, server-owned JIT resolution, storage-neutral core discovery ports, runtime-scoped authoritative synchronization, zero-lookup clear for absent hosts or explicit credential removal, and last-known-good retention on transient pre-authoritative failure.
+- Tightened model construction routing. `LLMConstructionTarget` and the multimedia equivalent contain exactly `credentialProviderId` and `authenticationRequirement`. Native registrations materialize their known credential owner once; discovered AutoByteus-runtime registrations explicitly materialize `credentialProviderId=AUTOBYTEUS`. Generic LLM/media provisioning constructs its consumer only from that field and the tagged requirement-owned slot.
+- Preserved downstream provider identity for discovered models, native/remote same-provider coexistence, runtime/model-kind-scoped replacement, startup/list/full/provider reload paths, and LLM/audio/image discovery/invocation hooks.
+- Made the existing AutoByteus Settings provider row fully managed: write-only save/replace/status plus idempotent remove. Removal clears all AutoByteus-runtime LLM/audio/image subsets without resolving the removed definition. The web schema binding, generated GraphQL types, Pinia state, runtime notifications, localized controls, and component tests were updated.
+- Added `AUTOBYTEUS_API_KEY` only to the migration alias scrub/reprovision map. Current production reads remain absent; the unchanged core header name is a wire-protocol constant, not an environment lookup.
+- Completed retained source-review fixes: Claude CLI maps the actual node-local OS home (or a validated existing override) into its empty-base child; stdio MCP composes sanitized operational variables plus exact configured additions; absent custom-provider deletion succeeds idempotently while built-in deletion is still rejected.
+- Corrected Claude scope wording: both `cli` and `managed-secret` use an empty-base child environment and never fall back. Only `managed-secret` receives the exact child key and enforces `tools: []`, empty setting sources, and strict explicit AutoByteus in-process MCP. CLI uses the existing external account state and normal CLI tools/settings/MCP behavior while performing zero secret-management lookup.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Write-only Settings lifecycle through one server owner | `secret-management/services/secret-management-service.ts`; `api/graphql/types/{llm-provider,secret-storage}.ts`; web provider editor/store | Implemented save/remove/status without any value-return field; custom metadata is v2 and key-free. |
-| `BEH-002` | Empty-base children, authorized roots, `LOCAL_HARDENED` only | `autobyteus-ts/src/tools/terminal/agent-child-environment.ts`; shell/PTY/MCP paths; server process supervisors; `workspace-path-utils.ts` | Implemented across named launch paths; realpath/symlink escapes and Store roots fail closed. No same-user isolation claim. |
-| `BEH-003` | Explicit JIT LLM/search/media/metadata authentication | `llm-provisioning-service.ts`; `model-metadata-provisioning-service.ts`; `agent-tools/search/search-provisioning-service.ts`; `media-client-provisioning-service.ts`; core construction contexts/factories | Implemented semantic consumer resolution above credential-agnostic factories/clients; no ambient provider credential reads remain. |
-| `BEH-004` | Tracked non-secret real-test selection and direct target provisioning | `test-config/live-e2e.json`; `secret-management/cli/provision-real-e2e-store.ts`; root `package.json`; test setup changes | Implemented target-bound setup; global legacy credential dotenv loading/cross-worktree copy behavior removed. Remaining live scenario files still require downstream migration to the Store-backed harness; real-provider execution remains downstream. |
-| `BEH-005` | Separate five-state backend health and healthy-only secret state | `domain/secret-storage-types.ts`; backend/service status mapping; GraphQL schema/types; web stores/components | Implemented `READY/LOCKED/UNAVAILABLE/CORRUPT/INCOMPATIBLE` plus `MISSING/CONFIGURED` only when healthy; degraded control plane is value-free. |
-| `BEH-006` | Deployment-neutral early bootstrap with normal Store below data directory | `secret-storage-configuration*.ts`; `server-runtime.ts`; `app.ts`; Electron server managers | Implemented for direct/Electron/container-compatible server startup without Docker topology changes. |
-| `BEH-007` | First delivery only Local/InMemory and future registration contract | backend/configuration ports and tagged lifecycle/capability types | Implemented only approved backends; unsupported kinds fail value-free. No enterprise adapter, shared writable SQLite, or strong-isolation manifest was invented. |
-| `BEH-008` | Clean migration and reprovision, no runtime legacy branch | `migration/legacy-secret-cutover-migration.ts`; `custom-llm-provider-store.ts`; AppConfig/test setup cutover | Implemented atomic v1-to-v2 metadata preservation and known-alias scrub; malformed/unknown sources fail closed without overwrite. Values are discarded/reprovisioned. |
-| `BEH-009` | Preserve factory config composition while separating authentication | `autobyteus-ts/src/llm/llm-construction-context.ts`; `llm-factory.ts`; concrete LLMs | Implemented ephemeral construction authentication with preserved caller/default config merge semantics. |
-| `BEH-010` | Separate pair-authenticated default/E2E Stores, no fallback | `backends/local/local-secret-store-{initializer,provisioning-service,reset-service}.ts`; crypto/schema/repository modules | Implemented independent database/key selection, swapped-key detection even when empty, read-only runtime open, direct provisioning, and exact reset ownership. |
-| `BEH-011` | Typed neutral configuration and extension contract | `secret-storage-configuration.ts`; `secret-storage-backend.ts`; configuration service; GraphQL capability projection | Implemented tagged config/lifecycle capabilities with only Local and InMemory registered in this delivery. |
-| `BEH-012` | Exact Claude `cli` / `managed-secret` cutover | `claude-runtime-authentication-service.ts`; `claude-sdk-launch-policy.ts`; `claude-sdk-client.ts`; Claude session/MCP/diagnostics paths | Implemented exact consumer, JIT resolution, exact-child key, empty base, strict tools/settings/MCP, early redaction, distinct value-free failures, and no fallback. Native Anthropic LLM/metadata remain separate managed consumers. |
+| `BEH-001` | Write-only Settings lifecycle through one server owner | `secret-management/services/secret-management-service.ts`; `llm-provider-service.ts`; GraphQL; web provider editor/store | Save/remove/status remains value-free. Custom delete is now idempotent; built-in delete remains rejected. AutoByteus credential removal is idempotent and triggers authoritative scoped clear. |
+| `BEH-002` | Empty-base children, authorized roots, `LOCAL_HARDENED` only | `agent-child-environment.ts`; process/PTY/MCP/application launchers; workspace authorization | Named launch paths remain sanitized. Stdio MCP now uses the environment owner's additions boundary, preserving configured entries without broad parent inheritance. No same-user-isolation claim. |
+| `BEH-003` | Explicit JIT LLM/search/media/metadata authentication | server provisioning services; exact construction targets; core factories/clients | Generic LLM/media consumers use only `target.credentialProviderId` and the tagged requirement slot. No displayed provider/runtime/host/model fallback exists. |
+| `BEH-004` | Tracked non-secret real-test selection and direct target provisioning | `test-config/live-e2e.json`; real-E2E Store CLI; live-test supplement | Target-only setup remains implemented. AutoByteus real scenarios and remaining old live-suite gates are explicitly left for API/E2E-owned durable harness migration/execution. |
+| `BEH-005` | Five-state health plus healthy-only definition status | secret domain/backend/service status; GraphQL; web stores/components | Existing `READY/LOCKED/UNAVAILABLE/CORRUPT/INCOMPATIBLE` and `MISSING/CONFIGURED` behavior is preserved. |
+| `BEH-006` | Deployment-neutral early bootstrap below `serverDataDir` | configuration/bootstrap services; direct/Electron server entrypoints | Preserved; no Docker Compose/launcher/port/volume changes were made. |
+| `BEH-007` | First delivery only Local/InMemory; future registration contract | backend/configuration ports and tagged capabilities | Preserved; no enterprise adapter, shared writable SQLite, strong-isolation container, or Kubernetes production manifest was invented. |
+| `BEH-008` | Clean migration/reprovision; no runtime legacy path | `legacy-secret-cutover-migration.ts`; custom-provider migration | `AUTOBYTEUS_API_KEY` is now scrubbed and records `provider.autobyteus.api-key` for reprovision while hosts remain non-secret configuration. Runtime has no alias fallback. |
+| `BEH-009` | Preserve factory config composition while separating authentication | `llm-construction-context.ts`; `llm-factory.ts`; concrete LLMs | Preserved. The target shape is now the exact round-6 shape. |
+| `BEH-010` | Separate pair-authenticated default/E2E Stores | Local initializer/provisioning/reset/crypto/schema/repository | Preserved with read-only real-E2E runtime and no source/default Store access. |
+| `BEH-011` | Typed neutral configuration and extension contract | storage configuration/backend ports; GraphQL capability projection | Preserved with only approved first-delivery implementations. |
+| `BEH-012` | Exact Claude `cli` / `managed-secret` modes | Claude authentication service, launch policy, SDK client, diagnostics | CLI uses actual external account home, empty-base environment, and zero secret lookup. Managed mode alone gets exact-child `ANTHROPIC_API_KEY`, empty settings, `tools: []`, strict explicit MCP, and early redaction. Both modes are fallback-free. |
+| `BEH-013` | Preserve AutoByteus gateway Settings, discovery, reload, and LLM/audio/image invocation | `autobyteus-remote-model-discovery-service.ts`; secret catalog; core AutoByteus providers/factories; provisioning services; Settings GraphQL/web | Implemented one definition, exact discovery/construction identities, required credential ownership, per-kind runtime sync, last-known-good behavior, migration-only alias handling, and zero-lookup clears. Real remote execution remains a downstream API/E2E obligation. |
 
 ## Key Files Or Areas
 
-- `autobyteus-server-ts/src/secret-management/`
-- `autobyteus-server-ts/src/llm-management/services/`
-- `autobyteus-server-ts/src/agent-tools/search/`
+- `autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.ts`
+- `autobyteus-server-ts/src/llm-management/{providers,services,llm-providers}/`
+- `autobyteus-server-ts/src/multimedia-management/`
 - `autobyteus-server-ts/src/agent-tools/media/media-client-provisioning-service.ts`
-- `autobyteus-server-ts/src/runtime-management/claude/client/`
-- `autobyteus-server-ts/src/server-runtime.ts`
-- `autobyteus-ts/src/secrets/`
-- `autobyteus-ts/src/llm/llm-construction-context.ts`
-- `autobyteus-ts/src/multimedia/multimedia-construction-context.ts`
-- `autobyteus-ts/src/tools/terminal/agent-child-environment.ts`
-- `autobyteus-ts/src/tools/file/workspace-path-utils.ts`
+- `autobyteus-server-ts/src/secret-management/{catalog,domain,migration}/`
+- `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-launch-policy.ts`
+- `autobyteus-ts/src/llm/{llm-construction-context,llm-factory,models,autobyteus-provider}.ts`
+- `autobyteus-ts/src/multimedia/`
+- `autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts`
 - `autobyteus-web/components/settings/`
-- `autobyteus-web/stores/{llmProviderConfig,serverSettings}.ts`
-- `autobyteus-web/electron/server/`
-- `test-config/live-e2e.json`
+- `autobyteus-web/stores/llmProviderConfig.ts`
+- `autobyteus-web/graphql/mutations/llm_provider_mutations.ts`
+- `autobyteus-web/generated/graphql.ts`
 
 ## Important Assumptions
 
-- First delivery runs on the repository's Node 22/Electron runtime where `node:sqlite` is available. The build emits Node's current experimental SQLite warning but succeeds.
-- Local Store protection is explicitly `LOCAL_HARDENED`; the server and its agent workloads still share a host identity in supported all-in-one deployments.
-- Backend paths and adapter kind are non-secret deployment configuration. Store key bytes and provider values are never ordinary AppConfig values.
-- The generic `dataDir`/PVC design is preserved for a future single-Pod deployment; the repository still has no production Kubernetes manifest to modify.
-- Real-E2E setup receives a hidden trusted value directly for the configured target definition. It intentionally cannot inspect the normal Store.
+- First delivery runs on the repository's Node 22/Electron runtime where `node:sqlite` is available; the build emits Node's current experimental SQLite warning but succeeds.
+- Local Store protection is explicitly `LOCAL_HARDENED`; server and agent workloads can still share one host identity.
+- `AUTOBYTEUS_LLM_SERVER_HOSTS` is non-secret endpoint configuration. A configured host requires managed gateway custody; no host means an authoritative zero-lookup clear.
+- A successful provider response containing an empty model array is authoritative; transport/invalid-response/no-authoritative-host failure is transient and preserves the prior remote subset.
+- The generic `dataDir`/PVC design remains the single-Pod hook; the repository still has no production Kubernetes manifest in scope.
 
 ## Known Risks
 
 - `LOCAL_HARDENED` does not prevent arbitrary same-user filesystem/process inspection; `STRONG_AGENT_ISOLATION` remains deferred.
-- JavaScript/SDK memory cannot be reliably zeroized, and managed Claude intentionally entrusts one child/SDK with one Anthropic key.
-- Local backend cross-platform ACL/owner behavior, busy contention, unchanged-Docker persistence, and single-Pod/PVC restart/reopen still need realistic downstream execution evidence.
-- The full Nuxt repository typecheck is not a usable green gate in the current baseline because it reports hundreds of unrelated pre-existing errors. Production build, Electron transpilation, focused tests, and repository guards are green.
-- The full core test-tree TypeScript check is not green: 368 errors remain across broader integration/live tests and test-only typings. A material subset comes from this ticket's intentional explicit-authentication API cutover because those live suites still use old constructors and ambient credential gates; they require API/E2E migration to the Store-backed harness. The production core build is green, but no full test-tree typecheck pass is claimed.
-- Rich Settings states were unit-tested, but rendered self-validation had no live backend and therefore directly observed only the loading/unavailable presentation.
+- JavaScript/SDK memory cannot be reliably zeroized. Managed Claude intentionally entrusts one exact SDK child with one Anthropic key.
+- Local cross-platform ACL/owner behavior, busy contention, unchanged-Docker persistence, and single-Pod/PVC restart/reopen still need realistic downstream evidence.
+- The full core test-tree TypeScript check remains non-green at 365 errors, dominated by pre-existing broader integration/live constructor and test-only typing drift. Eight remaining errors are in AutoByteus audio/image live integration files that still call removed no-argument discovery APIs; API/E2E owns their durable Store-backed migration. Production core build and changed-path unit coverage are green.
+- The broad core unit suite remains 1,718/1,719 because the pre-existing `event-types.test.ts` expects 28 enum values while the reviewed base contains 29. This ticket does not change that source or test.
+- The full Nuxt repository typecheck remains non-green from broad pre-existing unrelated errors; production build, Electron transpilation, focused tests, and guards are green.
+- Rich configured/removal UI state was mounted and interacted with in focused component tests, but no live provider backend was connected for a full-page configured-state render.
 - `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release dependency, not legal clearance. Authentication modes must not be silently changed.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Larger Requirement` combining feature, cross-cutting refactor, migration, and security-boundary work.
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `Legacy Or Compatibility Pressure`.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` for the in-scope cutover; enterprise adapters and strong process isolation remain intentionally deferred.
+- Reviewed change posture: `Larger Requirement` plus bounded source-review rework.
+- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `Legacy Or Compatibility Pressure`; CR-001 additionally exposed an omitted reachable production spine.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` for the in-scope gateway/custody boundary; enterprise adapters and strong isolation remain deferred.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`.
-- Evidence / notes: one lifecycle authority and backend contract replaced generic-config custody; explicit provisioning replaced ambient lookup; launch policy replaced copied parent environments; migration-only decoders replaced normal old-shape reads. The Local initializer's filesystem/ACL/durability mechanics were split from pair/database coordination after the changed-line guardrail review.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes`; CR-001 returned through solution design and architecture review before this rework.
+- Evidence / notes: the server discovery owner resolves exact semantic identities and calls storage-neutral core discovery; factories own model registration; generic provisioning owns construction consumers. No caller bypasses secret management or infers custody from displayed provider metadata.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for implementation-owned source; remaining live-test migration is explicitly API/E2E-owned.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: removed Claude `auto`/raw-key materializer paths, ambient provider credential fallback, `apiKey` custom metadata/model fields, `apiKeyConfigured`, unsupported Google CSE credentials, public speech key config, and credential dotenv test gating. Historical v1/alias knowledge exists only in the approved migration boundary.
+- Notes: the target contains no displayed provider/runtime or duplicate credential slot. `AUTOBYTEUS_API_KEY` exists only as the wire header name and migration alias; no normal runtime environment read or optional fallback was added.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Migration Required` for product-managed `.env` scrubbing and custom-provider v1-to-v2 transformation; `Discard or Rebuild`/reprovision for credential values.
+- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Migration Required` for product-managed alias scrubbing and custom-provider v1-to-v2 transformation; `Discard or Rebuild`/reprovision for credential values.
 - Design-spec decision reference: `design-spec.md` -> “Persisted Data / State Transition Decision”.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: the new Local Store starts at the current schema; no old plaintext value import/copy path exists; removed identities report reprovision required.
-- Migration implementation and focused checks, only when `Migration Required`: `legacy-secret-cutover-migration.ts` performs earliest-startup known-alias scrub and current-process deletion, validates v1 metadata before atomic v2 replacement, preserves UUID/name/type/base URL, rejects malformed or unknown source shapes without overwriting, and never creates a plaintext backup. Focused tests pass (2/2).
+- Direct-use evidence or discard/rebuild result, when applicable: AutoByteus hosts remain ordinary non-secret configuration; the legacy key value is discarded and `provider.autobyteus.api-key` is recorded for reprovision.
+- Migration implementation and focused checks, only when `Migration Required`: the migration scrub map includes the AutoByteus alias and the focused migration suite passes 2/2 with synthetic input.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
@@ -113,54 +113,52 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Reviewed base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
+- Round-6 rework starting implementation HEAD: `240d722070864e0ed960f552cdafc03d05d0ffeb`
 - Recorded base/finalization branch: `origin/personal`
 - Local toolchain: Node `v22.23.1`, pnpm `10.28.2`.
-- Existing Docker Compose, launcher, ports, and volumes were not changed. The normal Local Store is derived below `serverDataDir`.
-- `EXT-ANTHROPIC-AGENT-SDK-AUTH` must be carried through code review, API/E2E, and delivery. Before release, delivery must recheck the official Agent SDK overview, legal/authentication page, account Help Center page, and the dated June 15–16 Agent SDK subscription-usage update. This dependency is not legal clearance. If authoritative guidance later unambiguously forbids this exact self-hosted path, return the behavior decision through solution design rather than silently changing modes.
+- Existing Docker Compose, launcher, ports, and volumes were not changed.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` must be carried through code review, API/E2E, and delivery. Before release, delivery must recheck the four official Anthropic sources recorded in the solution package. This is not legal clearance. If later authoritative guidance unambiguously forbids the exact self-hosted path, return the behavior decision through solution design rather than silently changing modes.
 
 ## Local Implementation Checks Run
 
-- `pnpm --filter autobyteus-ts run build` — passed, including runtime-dependency verification.
-- `pnpm --filter autobyteus-ts exec tsc -p tsconfig.json --noEmit` — not green: 368 test-tree errors, dominated by broader live/integration suites still using pre-cutover constructors or credential environment gates plus existing test-only typing failures. Production `tsconfig.build.json` compilation passes through the package build; the remaining suites must be migrated downstream and no full test-tree typecheck pass is claimed.
-- `pnpm --filter autobyteus-server-ts run build` — passed, including Prisma generation and built-in-agent bootstrap smoke; repeated after the final Local filesystem split.
-- `pnpm --filter autobyteus run build` — passed; Nuxt produced the static client successfully (existing large-chunk warnings only).
-- Focused core Vitest run covering secret redaction, LLM composition/authentication, search, media construction, shell environment, and workspace path authorization — 7 files / 22 tests passed.
-- Broader core unit run after updating affected tests to explicit synthetic authentication — 1,712 / 1,713 tests passed. The sole remaining failure is the pre-existing `tests/unit/events/event-types.test.ts` assertion that expects 28 enum values while the reviewed base already contains 29; neither source nor test is changed by this ticket.
-- Focused core search integration run — 7 files / 8 tests passed using explicit synthetic provisioning; no live provider or ambient credential path was invoked.
-- Focused server Vitest run covering secret Local backend and migration, rich GraphQL/service status, provider lifecycle, media provisioning, Claude runtime authentication/client policy, and diagnostic redaction — 10 files / 94 tests passed. The Local backend test was rerun after its final file split — 1 file / 3 tests passed.
-- A broader server unit run did not terminate within a bounded local run and was stopped; no repository-wide server-unit pass is claimed. The focused changed-path server suites above are green.
-- Focused web/Electron Vitest run covering provider/runtime Settings, server settings, embedded server launch environment/logging, and reset preservation — 9 files / 59 tests passed.
+- `pnpm --filter autobyteus-ts run build` — passed, including runtime dependency verification.
+- `pnpm --filter autobyteus-server-ts run build` — passed, including shared/core build, Prisma generation, TypeScript compilation, and built-in-agent bootstrap smoke.
+- `pnpm --filter autobyteus run build` — passed; static Nuxt client generated successfully with only existing large-chunk warnings.
+- GraphQL schema generation from the built server followed by `pnpm run codegen` — passed; generated web bindings include `removeLlmProviderApiKey`.
+- Focused core routing/MCP suite — 3 files / 7 tests passed.
+- Broader core unit suite — 326/327 files and 1,718/1,719 tests passed; sole failure is the unchanged baseline event-count assertion described above.
+- Focused non-live core reload suite — `llm-reloading.test.ts` 4/4 passed. The paired pre-existing metadata-resolution integration file remains non-green in three unrelated old-signature/live-metadata cases; no combined integration pass is claimed.
+- Focused server suite covering AutoByteus discovery/catalog/provisioning/provider lifecycle, media, migration, Claude CLI/managed policy, GraphQL removal, and token catalog — 13 files / 59 tests passed.
+- Focused web Settings suites — 3 files / 14 tests passed, including configured remove-button interaction and runtime credential-removal state refresh.
 - `pnpm --filter autobyteus transpile-electron` — passed.
 - `pnpm --filter autobyteus guard:web-boundary` — passed.
 - `pnpm --filter autobyteus guard:localization-boundary` — passed.
-- `pnpm --filter autobyteus audit:localization-literals` — passed with zero unresolved findings (existing package module-type warning only).
-- Static scans — passed: no approved provider/search credential ambient reads outside the migration scrub, no Docker source changes, no changed hand-authored implementation source over 500 effective lines or over a 220-line delta, and `git diff --check` clean.
-- Full Nuxt typecheck — not green due broad pre-existing repository errors outside this change; not claimed as a passing check.
-- No actual secret value, secret-bearing Store, or credential file was read during implementation or checks; tests use synthetic values only.
+- `pnpm --filter autobyteus audit:localization-literals` — passed with zero unresolved findings (existing module-type warning only).
+- `pnpm --filter autobyteus-ts exec tsc -p tsconfig.json --noEmit --pretty false` — not green: 365 broader test-tree errors; production build is green and no full test-tree typecheck pass is claimed.
+- Static checks — `git diff --check` passed; no Docker changes; normal production `AUTOBYTEUS_API_KEY` reads absent; no construction-target fallback scan hit; all changed hand-authored source remains below 500 effective non-empty lines and no changed source delta exceeds 220 lines.
+- No actual secret value, secret-bearing Store, or credential file was inspected. Tests use synthetic values only.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Settings -> API Key Management and Settings -> Server Settings.
+- Affected surfaces / journeys: Settings -> API Key Management -> configured built-in provider save/replace/remove.
 - Approved UI/UX, interaction, requirement, or design references: `requirements.md`, `design-spec.md`, `credential-consumer-mapping.md`, and the existing Settings component system.
-- Existing design system, shared components, and adjacent product surfaces reviewed: existing settings navigation, cards, controls, status/empty states, toasts, and nested Server Settings navigation.
-- Project development / preview instructions and rendered surface used: built Nuxt static output served locally in a browser-equivalent renderer at 1440x1000.
-- States, layouts, viewports, and interactions inspected: API Key Management provider list/empty-model state, backend-unavailable toast, settings navigation, Server Settings nested Basics/Advanced/Migrations navigation, and loading spinner.
-- Visual or interaction issues found and corrected: no remaining hierarchy, spacing, alignment, or navigation defect was observed after implementation.
-- Supporting evidence and remaining unverified states or limitations: direct interaction succeeded and screenshots were inspected locally as scratch evidence. No live server/provider data was connected, so configured/locked/corrupt/incompatible and successful write/remove states were not rendered directly; focused component/store tests cover those projections. This is implementation self-validation, not API/E2E sign-off.
+- Existing design system, shared components, and adjacent product surfaces reviewed: existing provider editor controls, destructive-action styling, configured/missing status, loading/disabled behavior, and notification patterns.
+- Project development / preview instructions and rendered surface used: production Nuxt build plus mounted Vue component/runtime surfaces under the repository's Nuxt test harness; prior full Settings browser-equivalent render remains applicable to the unchanged surrounding layout.
+- States, layouts, viewports, and interactions inspected: configured and missing editor states, configured-only remove control, removal click emission, disabled/saving/removing state bindings, runtime refresh, and success notification.
+- Visual or interaction issues found and corrected: added a configured-only destructive control using the existing spacing, border, focus, disabled, and localization conventions; added explicit removing state so save/remove cannot overlap.
+- Supporting evidence and remaining unverified states or limitations: mounted component interaction passed. A full-page configured provider state was not connected to a live backend during this bounded rework, so end-to-end focus/keyboard behavior and all degraded backend states remain downstream coverage work. This is implementation self-validation, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Exercise unchanged Docker Compose create -> save -> restart -> reopen using the existing data volume, and a realistic single server Pod/PVC equivalent using generic `dataDir`; verify no new port/volume/launcher dependency.
-- Validate Local Store initial creation, private ownership/modes or Windows ACLs, read-only reopen, WAL checkpoint before read-only use, bounded concurrent writer contention, exact reset, staged interruption recovery, missing half-pair, swapped key on an empty Store, corrupt metadata, and incompatible format.
-- Exercise all five health states and confirm `MISSING/CONFIGURED` appears only under `READY`; verify degraded status remains reachable and every error/event/log is value-free.
-- Validate built-in and custom provider save/remove/replace, Gemini mode-specific slots, LLM factory config merge, metadata fallback, search/media JIT resolution, and absence of secret material in serialized models/config/tool payloads.
-- Prove every named agent/process/PTY/Codex/Claude/MCP/application-worker child receives only its intended empty-base allowlist; attempt lexical traversal, symlink escape, denied Store-directory/file access, and unauthorized cwd.
-- Run Claude `cli` and `managed-secret` separately: assert CLI makes zero secret lookup, managed uses only the exact agent-runtime consumer and exact-child `ANTHROPIC_API_KEY`, both use empty settings/`tools: []`/strict in-process MCP, errors remain distinct and redacted, and there is no mode fallback.
-- Run the tracked live scenarios from a fresh worktree against the separately provisioned read-only real-E2E Store. Confirm setup is target-bound, the default Store is never opened/read, and no cross-Store copy/source option exists.
-- Migrate the remaining core real/live integration files from environment-based credential gates and pre-cutover constructors to the tracked Store-backed harness, then rerun their TypeScript check and executable scenarios without reintroducing ambient fallback.
-- Perform repository/output leakage scans using synthetic markers, including raw and encoded forms, across logs, GraphQL, diagnostics, event payloads, screenshots, generated config, and child environments.
-- Independently exercise the rich Settings UI with a live backend for READY/configured/missing and every degraded health state, including disabled writes, remove/retry, focus/keyboard behavior, and direct-browser versus Electron binding.
+- Prove Settings save/replace/status/remove for `provider.autobyteus.api-key`, including repeated remove, zero value readback, provider-scoped LLM refresh, full LLM/audio/image refresh, and authoritative all-kind clear without lookup after removal.
+- With no AutoByteus hosts, prove zero secret lookup and per-kind remote-subset clear. With configured hosts, prove only the exact model-kind discovery identity resolves, and failure output remains value-free.
+- Discover remote models whose displayed providers are OpenAI/Gemini, then assert `credentialProviderId=AUTOBYTEUS`, native same-provider coexistence, runtime/model-kind scoped replacement, transient last-known-good retention, and authoritative empty-response clear.
+- Run Store-backed real AutoByteus discovery plus representative LLM invocation, speech generation, and image generation. Migrate remaining old live integration files away from environment gates and removed no-argument discovery calls without adding fallback.
+- Re-run Claude `cli` and `managed-secret` separately: CLI maps existing account state and performs zero lookup with normal CLI tools/settings/MCP; managed alone receives the exact child key plus empty settings, `tools: []`, and strict explicit MCP. Both remain empty-base and fallback-free.
+- Validate stdio MCP configured additions alongside required operational variables while unrelated parent/provider/Store variables remain absent.
+- Exercise unchanged Docker create/save/restart/reopen and a realistic single server Pod/PVC equivalent. Validate Local ACL/owner modes, read-only reopen/checkpoint, bounded contention, staged pair recovery, swapped empty-Store key, and every five-state degraded path.
+- Scan logs, GraphQL, diagnostics, events, generated files, child environments, and artifacts with synthetic raw/encoded markers.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Implementation-scoped builds, unit checks, narrow integration checks, and frontend self-validation are complete. Independent API/E2E coverage investigation, durable test decisions, realistic unchanged-Docker and single-Pod/PVC execution, real-provider execution, percentage confidence scoring, and final evidence remain owned by `api_e2e_engineer` after source review passes.
+Implementation-scoped builds, focused unit checks, narrow non-live integration checks, and frontend self-validation are complete. Independent API/E2E coverage investigation, durable live-test migration, realistic deployment execution, real-provider execution, browser/live validation decisions, percentage confidence scoring, cleanup, and final evidence remain owned by `api_e2e_engineer` after source review passes.
