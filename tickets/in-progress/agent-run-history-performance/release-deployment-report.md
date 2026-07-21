@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Latest-base integration refresh, integrated-state verification, docs synchronization, user-verification handoff, repository finalization to `personal`, and conditional desktop release/publication. Integration, repeated review/validation, and docs sync are complete. Repository finalization and release remain on explicit user-verification hold.
+Latest-base integration refresh, integrated-state verification, docs synchronization, user-verification handoff, repository finalization to `personal`, and conditional desktop release/publication. Delivery is now on a `Design Impact` hold after the user rejected the Event Monitor control-layout treatment. The current candidate is retained as reproduction/build evidence only; repository finalization and release are prohibited pending revised design and a new reviewed implementation package.
 
 ## Handoff Summary
 
@@ -32,7 +32,7 @@ Latest-base integration refresh, integrated-state verification, docs synchroniza
 - Initial verification reference: Pending hands-on user confirmation.
 - Renewed verification required after later re-integration: `Yes`
 - Renewed verification received: `No`
-- Renewed verification reference: The user requested publication of a latest-`personal` ticket branch for host-side Electron verification.
+- Renewed verification reference: The user reported a material UX problem in the current candidate. Its acceptance validity is withdrawn; a new verification cycle is required after redesign and reimplementation.
 
 ## User-Requested Latest-Base Refresh — 2026-07-21
 
@@ -45,6 +45,19 @@ Latest-base integration refresh, integrated-state verification, docs synchroniza
 - Evidence: `tickets/in-progress/agent-run-history-performance/evidence/delivery-post-refresh-check-20260721.txt`.
 - Representative live snapshot status: remains `Blocked` pending permission to quiesce the user-owned port-8000 server; the user selected host-side verification instead.
 - Ticket-branch publication: `Pass` — the latest-base integrated state and post-refresh evidence were published through `02591f4af67536ad1e8c877b1a89b098fdfbd17f`, followed by this publication-record update on the same ticket branch. Target-branch finalization remains on hold.
+
+## Latest `origin/personal` Refresh And macOS Rebuild — 2026-07-21
+
+- Freshly fetched base: `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790`; it was five commits ahead of the prior integrated base.
+- Pre-integration local delivery checkpoint: `a16e49af66d38861c8f9e2c648469c5c5251dc88`.
+- Integration method/result: Merge completed without conflicts as `35fc7ca06481da6ff7933ca7c53d00212a80606f`.
+- Post-integration checks: `Pass` — server run-history GraphQL `1/6`, Event Monitor frontend `7/36`, and latest-base Mermaid viewer `1/5`.
+- Electron build: `Pass` — README-documented local macOS ARM64 no-notarization command produced version `1.4.23`.
+- Artifact integrity: DMG SHA-256 `e53e6b3d2bc0e031b39373c1cf8dd48081318a5445b7d5f5110509b5176cd7c4`; ZIP SHA-256 `8c7ab45f53151f27a2d082a75fc3791f5b75c28a873f86ab5aaf76d12637ac18`; DMG, ZIP, bundle-version, and ARM64 checks passed.
+- Post-build latest-base confirmation: A second fetch found `origin/personal` unchanged at `9b4e038a4`, contained in `35fc7ca06`.
+- Runtime evidence: The exact worktree candidate was restarted and later observed healthy on port `29695`; preserve `evidence/delivery-electron-macos-arm64-latest-personal-restart-20260721.txt` as operational evidence.
+- Evidence: `evidence/delivery-latest-personal-refresh-rebuild-20260721.txt`, `evidence/delivery-electron-macos-arm64-latest-personal-rebuild-20260721.log`, `evidence/delivery-electron-macos-arm64-latest-personal-verification-20260721.txt`, and `evidence/delivery-electron-macos-arm64-latest-personal-restart-20260721.txt`.
+- Subsequent disposition: The user reported a material control-layout UX problem. This build is now reproduction evidence only and cannot support final acceptance.
 
 ## Docs Sync Result
 
@@ -99,7 +112,11 @@ Not started. No version or tag is selected before user verification and reposito
 
 ## Escalation / Reroute
 
-Not applicable. The previous implementation-owned integration conflict was resolved and passed all repeated gates.
+- Classification: `Design Impact`
+- Recipient: `solution_designer`
+- Finding: Persistent earlier-history and jump-to-latest pills consume excessive layout height, expose the internal batch size, and clutter the center feed when shown together.
+- Required resolution: Revise the authoritative requirements and UI/UX supplement, complete architecture review, then return the resulting implementation through source review and API/E2E before delivery resumes.
+- Delivery restriction: Preserve current evidence, but do not archive, merge/push to `personal`, publish, release, deploy, clean up, or initiate another final rebuild.
 
 ## Release Notes Summary
 
@@ -134,6 +151,8 @@ None performed. A prior local Linux ARM64 verification package was built and sta
 - User-requested macOS ARM64 rebuild: `Pass` at source checkpoint `1f148ba5a0374aedaa3b83fbdec89e35623fc467` using the README-documented no-notarization command. The `1.4.22` DMG SHA-256 is `619ffd033bcfa79d251a5db3923e18f06cb28a5c48c436b151515d68c6392056`; the ZIP SHA-256 is `fd6eed0b6aa83054114b15faf3f284bfe8cc205a9d625fae8744ac4aaa75cc6f`.
 - macOS package verification: DMG checksum validation, ZIP archive validation, bundle-version inspection, and Mach-O ARM64 inspection passed. Evidence: `evidence/delivery-electron-macos-arm64-rebuild-20260721.log` and `evidence/delivery-electron-macos-arm64-rebuild-verification-20260721.txt`.
 - macOS runtime safety: The rebuild was artifact-only. The pre-existing `/Applications/AutoByteus.app` process and healthy port-`29695` backend were left running and untouched; the new candidate was not started to avoid a conflicting second backend.
+- Latest-base macOS ARM64 rebuild: `Pass` at `35fc7ca06481da6ff7933ca7c53d00212a80606f`, containing `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790`. The `1.4.23` DMG and ZIP integrity checks passed with the checksums recorded above.
+- Latest-base runtime result: The exact unpacked worktree app was restarted and its backend was observed healthy on port `29695`; this is operational/reproduction evidence only because the later design-impact finding invalidated acceptance.
 
 ## Rollback Criteria
 
@@ -141,4 +160,4 @@ Rollback or stop rollout if normal Event Monitor projection reads archives, retu
 
 ## Final Status
 
-`Ready for explicit user verification; repository finalization and release remain on hold.`
+`Blocked — Design Impact. Awaiting revised reviewed design and a new implementation/review/API-E2E package; the current candidate is not final verification evidence.`

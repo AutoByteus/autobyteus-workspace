@@ -1,146 +1,215 @@
-# Architecture Diagrams — Reopened Event Monitor Provider Boundary
+# Architecture Diagrams — Clean Event Monitor History Browsing
 
 ## Visualization Context
 
-- **Status:** Current
-- **Requested view/question:** Why reopened Software Engineering Team member Event Monitors often show **Provider context compaction boundary recorded** at the top.
-- **Design round or status:** Architecture review round 8 — `Pass` and latest authoritative design round; current implementation evidence inspected in the ticket worktree at `1f148ba5a0374aedaa3b83fbdec89e35623fc467` on 2026-07-21.
+- **Status:** Current derived view of the architecture round-12 textual package; architecture re-review and focused implementation rework remain pending.
+- **Requested view/question:** How does the design preserve the accepted bounded/direct-input and cross-feature ownership architecture while using one state-invariant neutral bottom-centered return arrow for ordinary unseen, frozen browse, released-page, and cursor-expired recovery?
+- **Design round or status:** `Refined for architecture round 12` (2026-07-21). Architecture round 11 accepted centered placement and independent Skill Improvement ownership but returned `AR-011` because stale guidance allowed an expired-only amber variant. The round-12 package removes that branch and requires one exact neutral treatment across every arrow state. The primary round-12 architecture review has been requested; no round-12 decision is recorded yet. API/E2E remains stopped before browser/live/page execution, and delivery remains on hold.
 - **Requirements:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
 - **Investigation notes:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - **Design spec:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
 - **Relevant supplemental artifacts:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- **Review evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md`
+- **Review and delivery-state evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-execution-coverage-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-test-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/docs-sync-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/delivery-live-validation-observation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/release-deployment-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/handoff-summary.md`
+- **Visual evidence of the rejected treatment:** `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8052345d87004850b782e66b7b129d55/solution_designer_cf42deda46f44bbbb6446758239df763/context_files/ctx_fc4e8615a19a__image.png`; `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8052345d87004850b782e66b7b129d55/solution_designer_cf42deda46f44bbbb6446758239df763/context_files/ctx_945120610f86__image.png`; `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8052345d87004850b782e66b7b129d55/solution_designer_cf42deda46f44bbbb6446758239df763/context_files/ctx_7268fea0d526__image.png`
+- **Round-10 implementation and centered-coexistence evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-zero-layout-event-monitor-20260721.json`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-zero-layout-loading-20260721.png`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-zero-layout-browse-20260721.png`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/PRE-SUPERSESSION-NOTICE.md`; `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8052345d87004850b782e66b7b129d55/implementation_engineer_167e2a5435a14f58a1d1f41b36078436/context_files/ctx_06983d851e91__image.png`; `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_8052345d87004850b782e66b7b129d55/implementation_engineer_167e2a5435a14f58a1d1f41b36078436/context_files/ctx_1f29624b2f2b__image.png`
 - **Authority:** Derived visualization. The textual solution package governs if this artifact diverges from it.
-
-### Primary Implementation Evidence
-
-- Codex normalization and provider provenance: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts`
-- Marker recording and rotation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts/src/agent-memory/services/provider-compaction-boundary-recorder.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts/src/agent-memory/store/run-memory-writer.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-ts/src/memory/store/run-memory-file-store.ts`
-- Active-only recent projection: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts/src/run-history/projection/recent-run-projection-policy.ts`
-- Replay and completed compaction activity conversion: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts`
-- Frontend hydration, merge, limit, and row rendering: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/services/runHydration/runProjectionActivityHydration.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/components/workspace/agent/AgentConversationFeed.vue`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/components/workspace/agent/CompactionStatusRow.vue`
-- Storage/provenance meaning: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/docs/memory.md`
 
 ## Diagram Inventory
 
 | Diagram | Type | Question answered | Source behavior / spine IDs |
 |---|---|---|---|
-| `provider-boundary-reopen-flow` | Component / data flow | How does an automatic Codex provider boundary become the first green row after reopen? | `BEH-001`, `BEH-009`, `DS-001`, `DS-002`, `DS-004` |
-| `boundary-retention-decision` | Focused state / decision | When does the row remain at the top, age out, or become reachable only through active-trace paging? | `REQ-002`, `REQ-010`–`REQ-012`, `BEH-006`, `BEH-007`, `DS-006`, `DS-007` |
+| `stable-bounds-and-feed-ownership` | Component / data flow | Which active-only, page, cursor, DTO, live, and browse boundaries remain unchanged, and what does the feed own in the clean refinement? | `BEH-001`–`BEH-003`, `BEH-006`–`BEH-010`; `DS-001`, `DS-004`, `DS-006`, `DS-007` |
+| `direct-input-paging-lifecycle` | Focused state / decision | What creates one-page authority, when is it consumed, and why can mount, programmatic work, queued events, momentum, or layout anchoring never chain requests? | `REQ-005`, `REQ-010`–`REQ-012`; `AC-011`–`AC-015`; `BEH-003`, `BEH-006`; `DS-004`, `DS-006`, `DS-007` |
+| `independent-arrow-and-skill-cta` | Focused component boundary | How does one neutral centered arrow cover every recovery state while coexisting with the lower-right Skill Improvement action without state, dependency, measurement, or positioning coupling? | `BEH-003`, `BEH-007`, `BEH-010`; `DS-004`, `DS-007`; `MP-CR-007`, `AR-011`; `PAGE-COEXIST-001` |
 
-## `provider-boundary-reopen-flow` — Automatic Provider Boundary to Green Event Monitor Row
+## `stable-bounds-and-feed-ownership` — Preserved Paging Architecture, Refined Feed Authority
 
-**Purpose:** Trace the production path that makes the provider boundary the oldest retained active event and therefore often the first row shown when a team member is reopened.
+**Purpose:** Show that storage, projection, page transport, cursor, DTO, and browse-state ownership stay intact while only the feed-local input and presentation boundary changes.
 
-**Source anchors:** `BEH-001`, `BEH-009`, `DS-001`, `DS-002`, `DS-004`; design spec sections **Current-State Read**, **Primary Execution Spines**, and **Run-History Relationship**; implementation evidence listed above.
+**Source anchors:** Design spec **Active-Trace Earlier-Paging Design**, **Frontend Browse State And Rendering**, **Zero-Layout Feed Control Design**, **Ownership Map**, and **Data Flow And Derived Data**; UI/UX spec **Visual Cleanliness Contract**, **Interaction States**, and **Accessibility And Keyboard Behavior**.
 
 ```mermaid
 flowchart TB
-    subgraph codex["Codex provider — owns its context window"]
-        provider_event["Automatic context compaction completed<br/><code>item/completed</code> + <code>contextCompaction</code><br/>provider trigger: auto"]
+    subgraph memory["Run memory — preserved data boundary"]
+        active[("Current active trace")]
+        archives[("Complete archive segments<br/>preserved and directly usable<br/>never queried by Event Monitor")]
     end
 
-    subgraph normalization["Server runtime normalization"]
-        converter["CodexThreadEventConverter<br/><code>kind=provider_compaction_boundary</code><br/><code>rotation_eligible=true</code><br/><code>semantic_compaction=false</code>"]
+    subgraph server["Business and server paging architecture — unchanged"]
+        latest["Normal run-history projection<br/>active only · newest 100 canonical events"]
+        page["Explicit standalone or team-member page API<br/>active-generation-bound opaque cursor<br/>closed central-only typed DTO"]
+        policy["Server-owned fixed page policy<br/>initial: latest 100 + up to 50 earlier<br/>continuation: up to 50 earlier"]
+        private_count["50 is an internal transport invariant<br/>no page-size input and no UI copy"]
     end
 
-    subgraph storage["Storage-only provenance and raw-trace rotation"]
-        recorder["ProviderCompactionBoundaryRecorder<br/>append one boundary marker"]
-        rotate["RunMemoryWriter → RunMemoryFileStore<br/>move every active record before the marker"]
-        archive["<code>raw_traces_NNNNNN.jsonl</code><br/>prior task history preserved<br/>not an Event Monitor input"]
-        active["<code>raw_traces_active.jsonl</code><br/>first record: retained boundary marker<br/>then: newer task-work records"]
-        recorder --> rotate
-        rotate --> archive
-        rotate --> active
+    subgraph web_state["Frontend data ownership — unchanged"]
+        live["Canonical live/latest state<br/>continues independently<br/>at most 100 visuals"]
+        controller["Active-trace browse controller<br/>request + in-flight coalescing<br/>generation/cursor lifecycle<br/>stable event and visual ID merge<br/>page-block turnover at 300 visuals"]
+        browse["Frozen isolated browse presentation<br/>never merged into live conversation or Activity"]
     end
 
-    subgraph meanings["Meaning boundary — three different concerns"]
-        provenance["Provider/storage provenance<br/>the automatic green boundary row"]
-        semantic["AutoByteus semantic memory compaction<br/>separate native path<br/>not invoked by this provider event"]
-        task_work["Solution designer's actual task work<br/>user, reasoning, tool, and assistant events<br/>separate content stream"]
+    subgraph feed["AgentConversationFeed — refined local authority and presentation"]
+        input["Bounded direct-input session<br/>trusted wheel · touch · keyboard · native scrollbar<br/>scroll events may advance but never create authority"]
+        scrollwork["Scroll-work epoch and blocked settling<br/>invalidate before every feed-owned scroll write<br/>cover request · anchor · queued events · layout work · quiet"]
+        viewport["Feed viewport and stable visual anchor<br/>24 px trigger · 96 px re-arm<br/>capture before request · restore after prepend"]
+        feedback["Zero-layout feedback<br/>delayed three dots while loading<br/>icon-only retry overlay on error"]
+        arrow["One state-invariant neutral bottom-centered arrow<br/>ordinary unseen · frozen browse · released page · cursor expired<br/>no amber/warning variant · sole explicit frozen-browse exit"]
+        bottom_rule["Mode-specific manual bottom<br/>latest: may clear unseen<br/>frozen browse: keeps pages, cursor, unseen, and arrow"]
     end
 
-    subgraph projection["Normal reopened run-history projection — performance boundary"]
-        active_only["LocalMemoryRunViewProjectionProvider<br/><code>getRunMemoryView(includeArchive=false)</code>"]
-        replay["buildHistoricalReplayEvents<br/>active marker → completed compaction event<br/>message: Provider context compaction boundary recorded"]
-        newest["selectRecentReplayEvents<br/>newest 100 canonical replay events"]
-        active_only --> replay --> newest
-    end
+    removed["Absent from the target UI<br/>persistent earlier-history/boundary row<br/>page count or status phrase<br/>visible explanatory tooltip<br/>wide Jump or Return pill"]
 
-    subgraph web["Frontend Event Monitor"]
-        hydrate["Activity projection + hydration<br/>completed CompactionActivity<br/>with center-timeline timestamp"]
-        presentation["buildRecentEventMonitorPresentation<br/>merge with center-feed visuals<br/>sort chronologically<br/>retain at most 100 visuals"]
-        row["CompactionStatusRow<br/>Completed → emerald / green row"]
-        hydrate --> presentation --> row
-    end
+    active --> latest --> live --> viewport
+    active --> policy --> page
+    private_count -. "governs only" .-> policy
+    controller <-->|typed page query and response| page
+    input -- "consume one session before request" --> controller
+    controller --> browse --> viewport
+    scrollwork -- "blocks or invalidates input authority" --> input
+    viewport --- feedback
+    viewport --- arrow
+    viewport --- bottom_rule
+    arrow -- "reset/discard browse" --> controller
+    arrow -. "reveal current live truth" .-> live
+    removed -. "replaced by interaction and overlays" .-> input
+    removed -. "replaced by interaction and overlays" .-> feedback
+    removed -. "replaced by interaction and overlays" .-> arrow
 
-    provider_event --> converter --> recorder
-    converter -. "classifies as" .-> provenance
-    task_work --> active
-    active --> active_only
-    newest --> hydrate
-
-    classDef provider fill:#eff6ff,stroke:#3b82f6,color:#1e3a8a;
-    classDef storage fill:#f8fafc,stroke:#64748b,color:#0f172a;
-    classDef archive fill:#f1f5f9,stroke:#94a3b8,color:#475569;
-    classDef distinction fill:#fff7ed,stroke:#f59e0b,color:#7c2d12;
-    classDef green fill:#ecfdf5,stroke:#10b981,color:#065f46;
-    class provider_event,converter provider;
-    class recorder,rotate,active,active_only,replay,newest,hydrate,presentation storage;
-    class archive archive;
-    class provenance,semantic,task_work distinction;
-    class row green;
+    classDef unchanged fill:#eff6ff,stroke:#3b82f6,color:#1e3a8a;
+    classDef refined fill:#ecfdf5,stroke:#10b981,color:#065f46;
+    classDef storageClass fill:#f8fafc,stroke:#64748b,color:#0f172a;
+    classDef excluded fill:#f1f5f9,stroke:#94a3b8,color:#475569,stroke-dasharray: 5 5;
+    classDef removedClass fill:#fff1f2,stroke:#e11d48,color:#881337,stroke-dasharray: 5 5;
+    class latest,page,policy,private_count,live,controller,browse unchanged;
+    class active storageClass;
+    class archives excluded;
+    class input,scrollwork,viewport,feedback,arrow,bottom_rule refined;
+    class removed removedClass;
 ```
 
 ### Reading Notes
 
-- Codex owns and automatically emits the completed context-compaction event. AutoByteus records it as **provider/storage provenance**; `semantic_compaction=false` means this path does not perform AutoByteus semantic-memory compaction.
-- The recorder appends the marker before rotating. Rotation archives every earlier active record and rewrites the active file from the marker forward, so the boundary becomes the first active record while all earlier task history remains preserved in complete segment files.
-- The solution designer's actual work is represented by the ordinary user/reasoning/tool/assistant records that follow the marker. The boundary row is not a task step authored by the solution designer and does not mean that prior work was deleted.
-- Reopen deliberately reads only `raw_traces_active.jsonl`, reconstructs canonical replay events, and selects the newest 100. Archive exclusion prevents archive-scale I/O, transport, hydration, and mounting; it is the performance boundary, not a retention policy.
-- The retained marker becomes a completed compaction activity. Frontend hydration supplies it to the center-timeline merge; chronological sorting places the oldest retained item first, the visual selector enforces the 100-item cap, and `CompactionStatusRow` renders completed status with the emerald/green treatment.
+- The accepted source and transport boundaries do not change. Normal history reads only the active trace and selects the newest 100 canonical events. Earlier pages remain fixed internally at 50, generation-bound, active-only, and closed to result/log/Activity/generic payload data. Archives have no Event Monitor edge or fallback.
+- The browse controller remains the network and data-lifecycle owner. It coalesces requests, validates cursor generation and structural IDs, performs ID-only merge, freezes browse separately from live state, releases farthest-newer page blocks at 300 resident visuals, and resets on explicit return.
+- The feed remains the scroll owner: only a bounded trusted direct-input session can qualify a top crossing. Feed-owned scroll work invalidates that authority before changing position and keeps it blocked through asynchronous settling.
+- Loading and error occupy one absolute top overlay slot; every return/recovery state shares the exact same neutral bottom-centered arrow treatment. There is no expired-only amber branch, persistent earlier/beginning/expiry row, count, status phrase, explanatory tooltip, reserved band, or wide text pill.
+- Latest and frozen browse have different bottom semantics. Manual bottom in latest mode may clear unseen because current live truth is rendered. Manual bottom inside a frozen snapshot cannot discard it; the arrow is the sole explicit browse exit.
 
-## `boundary-retention-decision` — Why It Is at the Top, Then Ages Out
+## `direct-input-paging-lifecycle` — Bounded Authority, Consume Before Request, Settle Before Re-arm
 
-**Purpose:** Show the small set of states governing visibility of the retained boundary in latest mode and the hard source boundary for **Load 50 earlier**.
+**Purpose:** Visualize the small feed-local lifecycle that admits one deliberate earlier-page request and denies authority to browser/programmatic position changes.
 
-**Source anchors:** `REQ-002`, `REQ-010`–`REQ-012`, `BEH-006`, `BEH-007`, `DS-001`, `DS-006`, `DS-007`; `selectRecentReplayEvents`; active-trace page policy; UI/UX journeys `UXJ-001`, `UXJ-007`, and `UXJ-008`.
+**Source anchors:** Design spec **Zero-Layout Feed Control Design**, `AR-009` / `MP-AR-009` resolution, `DS-006`, and the `AgentConversationFeed` bounded local spine; UI/UX journey `UXJ-007`; validation scenarios `PAGE-001` and `PAGE-GATE-001`.
 
 ```mermaid
 flowchart TD
-    reopen["Reopen member Event Monitor"] --> latest["Latest mode<br/>read current active trace only<br/>select newest 100 canonical replay events"]
-    latest --> size{"Canonical events in the active trace<br/>from the retained boundary forward"}
+    idle["IDLE<br/>no paging authority exists"]
 
-    size -- "100 or fewer total" --> top["Boundary is retained<br/>it is the oldest active event<br/>so the green row appears at the top"]
-    size -- "More than 100 total<br/>100+ newer events fill the window" --> aged["Boundary ages out of latest mode<br/>newer task work fills the newest-100 window"]
+    direct{"Trusted direct upward input<br/>on or for this feed?"}
+    sources["Eligible sources<br/>wheel up · touch toward earlier content<br/>ArrowUp/PageUp/Home/Shift+Space<br/>native scrollbar gutter press + upward drag"]
+    intent["INTENT session<br/>bounded source, time, direction, and position<br/>effect window 200 ms · maximum 5 s<br/>captures current scroll-work epoch"]
+    qualify{"Same current session and epoch?<br/>unconsumed · qualified upward samples<br/>away at 96 px · crosses top at 24 px<br/>earlier available · not loading?"}
+    consume["CONSUME BEFORE DISPATCH<br/>mark session used · increment epoch<br/>capture stable visual anchor · enter BLOCKED"]
+    request["One coalesced earlier-page request<br/>three dots only after about 150 ms"]
+    restore["ID merge and optional 300-visual turnover<br/>prepend · nextTick · restore exact visual anchor"]
+    settle{"Request and anchor work complete?<br/>queued scroll delivered · two stable frames<br/>no active touch/scrollbar pointer<br/>250 ms relevant-input quiet?"}
+    fresh["Return to IDLE<br/>a fresh post-quiet direct interaction<br/>must start outside the re-arm distance"]
 
-    top --> growth["New canonical task events arrive"]
-    growth --> size
+    noauthority["NO AUTHORITY<br/>scroll-position event alone · near-top residence<br/>queued API scroll callback · CSS scroll anchoring<br/>media/card reflow"]
+    blocked_input["Input during BLOCKED<br/>continued wheel/touch momentum or queued events<br/>may extend quiet but cannot pre-arm or fire"]
+    scrollwrite["Feed lifecycle or programmatic scroll work<br/>mount/selection · subject/reset · auto-bottom · jump<br/>prepend and anchor restoration"]
+    invalidate["Block/invalidate before reset or writing<br/>increment epoch · invalidate intent<br/>remain BLOCKED beyond the synchronous call"]
+    cancel["Intent expires or is invalidated<br/>interaction end/idle · blur/visibility loss<br/>cancel/lost capture · run/subject change<br/>retry, request start, jump, or cursor reset"]
 
-    aged --> choice{"User explicitly chooses<br/>Load 50 earlier?"}
-    choice -- "No" --> latest_only["Stay on fast latest-100 view"]
-    choice -- "Yes" --> page["Rebuild the same current active trace<br/>prepend at most 50 preceding canonical events"]
-    page --> earlier{"Earlier events remain<br/>in raw_traces_active.jsonl?"}
-    earlier -- "Yes" --> page
-    earlier -- "No" --> beginning["Beginning of current activity<br/>stop — no archive fallback"]
+    idle --> direct
+    sources --> direct
+    direct -- "Yes" --> intent
+    direct -- "No" --> idle
+    intent --> qualify
+    qualify -- "Not yet; still causally valid" --> intent
+    qualify -- "Yes" --> consume --> request --> restore --> settle
+    qualify -- "Expired or invalid" --> idle
+    intent --> cancel --> idle
+    settle -- "No" --> settle
+    settle -- "Yes" --> fresh --> idle
 
-    archive["Complete raw_traces_NNNNNN.jsonl segments<br/>preserved prior history<br/>intentionally outside Event Monitor latest and paging"]
+    noauthority -. "cannot create or reuse a session" .-> idle
+    noauthority -. "during work" .-> settle
+    blocked_input -. "no request; postpone quiet boundary" .-> settle
+    scrollwrite --> invalidate --> settle
 
-    classDef green fill:#ecfdf5,stroke:#10b981,color:#065f46;
-    classDef active fill:#eff6ff,stroke:#3b82f6,color:#1e3a8a;
-    classDef archive fill:#f1f5f9,stroke:#94a3b8,color:#475569;
-    class top green;
-    class reopen,latest,aged,latest_only,page,beginning active;
-    class archive archive;
+    classDef state fill:#eff6ff,stroke:#3b82f6,color:#1e3a8a;
+    classDef authority fill:#ecfdf5,stroke:#10b981,color:#065f46;
+    classDef decision fill:#fff7ed,stroke:#f59e0b,color:#7c2d12;
+    classDef blocked fill:#faf5ff,stroke:#a855f7,color:#581c87;
+    classDef denied fill:#fff1f2,stroke:#e11d48,color:#881337,stroke-dasharray: 5 5;
+    class idle,fresh state;
+    class sources,intent,consume,request,restore authority;
+    class direct,qualify,settle decision;
+    class blocked_input,scrollwrite,invalidate blocked;
+    class noauthority,cancel denied;
 ```
 
 ### Reading Notes
 
-- Immediately after a provider-boundary rotation, the marker is the first active record. If the active trace projects to at most 100 canonical events, all are retained and chronological sorting puts the completed boundary row at the top.
-- Once 100 newer canonical events occupy the newest-100 window, the boundary is no longer in normal latest mode. It has aged out of that view; it has not been deleted from the active trace unless a later supported rewrite changes the active generation.
-- **Load 50 earlier** may page backward to the marker while it remains in the current active trace. At that active trace's beginning, paging stops even when complete archive files exist. The archive files preserve prior history for storage/inspection purposes but are intentionally unreachable from the Event Monitor for performance.
+- A scroll event is geometry evidence, not user authority. Authority begins only with one trusted wheel, touch, supported keyboard, or native-scrollbar interaction observed for this feed; its later scroll samples must stay inside the session's causal/lifetime bounds and match the captured scroll-work epoch.
+- The feed consumes the session and changes the epoch before it captures the anchor or emits the request. Consequently, duplicate scroll delivery cannot spend the same interaction twice; controller in-flight coalescing remains a second defense rather than the proof of origin.
+- `BLOCKED` outlives the JavaScript scroll write. It spans the request, prepend, anchor restoration, queued scroll callbacks, two stable animation frames, active touch/scrollbar lifetime, and post-work input quiet. Continued momentum can delay quiet but cannot pre-authorize another page.
+- A continuation page requires an entirely fresh post-quiet direct interaction that starts outside the 96 px re-arm distance and intentionally crosses the 24 px top trigger. Mount, selection, top residence, programmatic scrolling, CSS anchoring, and dynamic layout changes remain inert even if they change `scrollTop`.
+- The lifecycle governs request authority only. The browse controller still owns request/result state and the feed's separate zero-layout presentation maps loading to delayed dots, recoverable error to the retry icon, and frozen-browse/expiry recovery to the single arrow.
+
+## `independent-arrow-and-skill-cta` — Centered Feed Recovery Beside an Unchanged Composer Action
+
+**Purpose:** Show the bounded `CR-007` / `MP-CR-007` ownership correction and `AR-011` treatment unification as two independent presentation paths under the existing parent composition, without turning styling into a subsystem.
+
+**Source anchors:** `BEH-007`, `BEH-010`; design spec **Zero-Layout Feed Control Design**, **Ownership Map**, and `AR-011` resolution; UI/UX spec **Visual Cleanliness Rules** and **Responsive And Platform Behavior**; validation scenarios `PAGE-GATE-001` and `PAGE-COEXIST-001`.
+
+```mermaid
+flowchart LR
+    subgraph composition["Existing Event Monitor parent composition — unchanged"]
+        subgraph feed_surface["Feed sibling — AgentConversationFeed owns recovery presentation"]
+            revision["Net presentation revision<br/>while latest is non-pinned"]
+            browse_state["Frozen browse, released-page, or<br/>cursor-expired state requires explicit return"]
+            one_arrow["Render exactly one absolute arrow<br/>centered against the feed itself<br/>same neutral base treatment in every state<br/>no right/center or expired-style branch"]
+            revision --> one_arrow
+            browse_state --> one_arrow
+        end
+
+        subgraph composer_surface["composerContext sibling — Skill Improvement owner unchanged"]
+            eligibility["Eligible standalone run or<br/>eligible focused team member"]
+            skill_cta["SkillImprovementComposerCta<br/>existing right-aligned action and behavior"]
+            eligibility --> skill_cta
+        end
+    end
+
+    separation["Hard ownership separation<br/>feed accepts/imports no skill eligibility<br/>no cross-sibling DOM measurement<br/>no offset, hiding, stacking, or position exchange"]
+    coexist["PAGE-GATE-001 + PAGE-COEXIST-001<br/>ordinary unseen · frozen browse · cursor expired<br/>wide + 390 px combined states<br/>prove identical neutral style, clearance, and geometry"]
+
+    separation -. "constrains" .-> one_arrow
+    separation -. "constrains" .-> skill_cta
+    coexist -. "observes both paths together" .-> one_arrow
+    coexist -. "observes both paths together" .-> skill_cta
+
+    classDef feedClass fill:#ecfdf5,stroke:#10b981,color:#065f46;
+    classDef skillClass fill:#eff6ff,stroke:#3b82f6,color:#1e3a8a;
+    classDef boundary fill:#fff7ed,stroke:#f59e0b,color:#7c2d12;
+    classDef evidence fill:#faf5ff,stroke:#a855f7,color:#581c87;
+    class revision,browse_state,one_arrow feedClass;
+    class eligibility,skill_cta skillClass;
+    class separation boundary;
+    class coexist evidence;
+```
+
+### Reading Notes
+
+- The two controls do not share a state path. Presentation revision or browse/released-page/expiry lifecycle makes `AgentConversationFeed` render one centered return arrow; run/member eligibility independently makes `SkillImprovementComposerCta` render its existing right-aligned composer action.
+- `AR-011` changes presentation, not recovery behavior: ordinary unseen, frozen browse, released-page, and cursor-expired states use the same quiet-white surface, neutral border/shadow, dark glyph, focus treatment, accessible name, geometry, and component path. The expired-only amber/warning branch is removed.
+- Centering is relative to the feed box, not the application window and not the free space left by the CTA. The CTA remains a sibling below the feed in `composerContext`; neither component calculates the other's coordinates.
+- No eligibility prop, import, DOM measurement, or responsive right/center branch enters the feed. The arrow therefore has identical placement whether Skill Improvement is absent, resolving, disabled, or visible, while the CTA's eligibility, action, and right alignment remain unchanged.
+- `PAGE-GATE-001` and `PAGE-COEXIST-001` are evidence, not runtime coordinators: they compare normalized arrow style across ordinary unseen, frozen browse, and cursor-expired states, and prove wide/narrow CTA coexistence, non-overlap, no horizontal overflow, zero feed-layout impact, and stable arrow geometry/style with and without the CTA.
 
 ## Source Ambiguities or Limitations
 
-- None material for the requested explanation. The diagrams intentionally omit provider-event de-duplication internals, tool lifecycle reconstruction, browse cursor encoding, live mutation revision handling, and native semantic-compaction mechanics because they do not change why this completed provider boundary appears at the top after reopen.
-- The exact row position is governed by canonical replay-event and final visual selection, not raw JSONL byte/line count. One canonical event may emit more than one visual elsewhere in the feed, so the backend newest-100 replay bound and frontend 100-visual bound are shown as separate gates.
+- No material ambiguity remains in the round-12 textual package for the preserved source bounds, direct-input lifecycle, independent sibling ownership, centered-arrow rule, or state-invariant neutral treatment.
+- Architecture round 11 is the latest recorded review and returned `Fail` only for bounded `AR-011`; it otherwise accepted centered placement and ownership separation. The round-12 package removes the stale expired-only warning variant and is awaiting its already-requested review. This diagram does not treat that correction as a passed gate.
+- Source commit `aa9705a28` remains baseline evidence for the round-10 direct-input and zero-layout behavior but renders the arrow at lower-right and retains the expired-only amber class branch. API/E2E round 5 stopped before browser/live/page execution and changed no durable tests. Neither the source nor preserved partial evidence proves the round-12 centered, state-invariant neutral treatment is implemented or accepted.

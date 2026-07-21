@@ -1,0 +1,14 @@
+{
+  "memory/agents/api-e2e-round6-live/raw_traces_000001.jsonl": {
+    "bytes": 153,
+    "sha256": "43752e991b86724a4e2fb2f0f525c42a0f0d52a4971d8246457ccc1d4734668c"
+  },
+  "memory/agents/api-e2e-round6-live/raw_traces_active.jsonl": {
+    "bytes": 5415892,
+    "sha256": "84a988fccc7f2d70a3c28c9149d43d5ceee3b79fce02009e5bde5f11db204970"
+  },
+  "memory/agents/api-e2e-round6-live/raw_traces_manifest.json": {
+    "bytes": 457,
+    "sha256": "0fcae9e57abb071f47e6643d35426bc4c30a3c660cf20378a99335a98fe74603"
+  }
+}

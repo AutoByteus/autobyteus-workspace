@@ -2,17 +2,17 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
-- Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
-- Design Spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
-- Supplemental Task Artifacts: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 8, Pass)
-- Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
-- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 5, Pass)
-- Current Investigation Round: `4`
-- Trigger: Fresh coverage investigation for active-trace paging implementation `a210ad1dfd00bbf76ca6f13cbc9ee02f012ab1be`, Local Fix source `9c188af7e`, and handoff HEAD `155d0eb192ffc0f5272813a514811cc15dcde821` after source-review round 5 Pass.
-- Prior Investigation Reviewed: `Round 2` — authoritative only for the pre-paging integrated candidate; round-3 corrected-live preflight stopped safely before quiescing the user-owned port-8000 server because explicit operator approval was not obtained.
-- Latest Authoritative Investigation: `4`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 12, Pass)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 9, Pass)
+- Current Investigation Round: `6`
+- Trigger: Fresh coverage investigation for the user-approved centered neutral arrow source/evidence commit `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7` and corrected handoff packaging commit `5eb12b42e` after source-review round 9 Pass.
+- Prior Investigation Reviewed: `Round 5` — paused when the lower-right placement basis was superseded. Its completed API checks are preserved as pre-supersession context only and cannot approve the centered-arrow source.
+- Latest Authoritative Investigation: `6 — Complete; Pass evidence recorded in the canonical execution report`
 
 ## Current Requirement And Design Basis
 
@@ -420,3 +420,232 @@ The new test's two initial failures and the browser probe's temporary failures w
 - Broader validation: `Blocked` only for corrected representative Mode S. Safe generated live/browser validation is complete and passing.
 - Critical missing dependency: explicit operator permission to quiesce supervised port 8000 for the full snapshot/validation/equality window.
 - Outcome routing: no teammate handoff while Blocked; ask the user for that dependency and resume the same canonical reports afterward.
+
+---
+
+## Investigation Round 5 — Zero-Layout Direct-Input Event Monitor
+
+> **Pre-supersession notice (2026-07-21):** Execution was stopped immediately after code review reported that the lower-right jump-arrow placement assumed by architecture round 10 and source commit `aa9705a28` had been superseded by a user-approved bottom-centered placement because the supported conditional “improve skills” composer action can occupy the lower-right area. This is an upstream Design Impact / requirement-basis supersession, not an API/E2E product failure. The results below are retained only as pre-supersession partial evidence and must not be used to declare Pass or Fail for the next implementation. No durable test code was changed. Real-browser/live execution did not begin.
+
+### Round-5 Requirement And Reviewed-Source Basis
+
+- Candidate source: `aa9705a28057b369fd63ed7199c1f1f5c655df0e`; implementation handoff: `a14fb9ec283b813293a3fbe5db4730b56b2baebf`; architecture round 10 and source-review round 6 are `Pass`.
+- Newly changed boundary: `AgentConversationFeed.vue` replaces the visible earlier-history control with one trusted direct-input session and zero-layout loading/recovery presentation. Wheel, touch, supported keyboard input, and a measured native-scrollbar gutter may authorize one top crossing; scroll position alone may not.
+- Critical round-5 proof: `PAGE-001` and `PAGE-GATE-001` must enter through the real feed input path, hold the first response, deliver queued restoration scroll after the write returns, apply delayed retained-content reflow/CSS anchoring, remain at one request until a post-quiet fresh away/re-enter interaction, and distinguish latest manual bottom from frozen-browse manual bottom/explicit arrow exit.
+- Preserved critical proof: active-only/latest-100, standalone/team fixed-50 pages, closed source-identity-preserving result/log-free transport, direct archive-read exclusion, <=300 turnover, representative >=5 MB/600-event timing, and raw-trace hash immutability remain active acceptance obligations and must be freshly executed against this source state.
+- UI states: ready, loading, success/browse, beginning, recoverable error, and expired must have identical top normal-flow geometry; loading is delayed three dots with `aria-busy`; retry and return are icon-only keyboard-operable controls; no visible or accessibility copy may expose `50` or explanatory page/status text.
+- Persisted data transition remains `Directly Usable — No Migration`; no server/storage source changed in round 10 and no compatibility fallback is permitted.
+
+### Round-5 Changed Surface Classification
+
+| Surface / Boundary | Classification | Material executable risk | Planned evidence |
+| --- | --- | --- | --- |
+| Feed input provenance and request gate | Changed frontend/browser boundary | Queued/programmatic/layout scroll may accidentally arm or chain; source adapters may not produce trusted events | Focused component suite plus real Chromium wheel/keyboard; CDP touch when exposed; measured non-zero native gutter path when exposed; position-only events asserted inert |
+| Feed paging/recovery presentation | Changed frontend/a11y/layout boundary | Persistent or count-bearing chrome, layout shift, missing icon/focus, composer overlap | Browser DOM/geometry/computed-style/accessibility checks across ready/loading/success/beginning/error/expired, desktop/narrow, en/zh-CN |
+| Browse/latest state transition | Changed frontend lifecycle | Browse manual bottom may incorrectly reveal live truth or clear the arrow | Browser frozen-browse/live revision/manual-bottom/explicit-arrow journey |
+| Page API, identity, result exclusion | Preserved backend/API boundary | Base refresh or generated-schema drift could regress fixed size/source identities/closed DTO | Fresh GraphQL E2E standalone/team traversal, append/rewrite, media/result-heavy cases |
+| Projection/latest/Activity bounds | Preserved backend/frontend boundary | Regression during base integration | Fresh relevant server/web suite including 1,001-message dispatch and latest/feed bounds |
+| Representative performance and storage safety | Preserved cross-boundary/persisted-data boundary | Full active reconstruction or browser work may exceed 2 s; archive reads or writes may recur | Fresh >=5 MB/620-event in-process and live HTTP cold/two warm metrics; active/archive/manifest hashes; instrumented active/archive opens |
+| Electron shell | Not changed | None beyond renderer equivalence | Prefer real Chromium renderer path per project guidance; actual Electron is unnecessary unless Chromium cannot close the renderer/platform gap |
+
+### Round-5 Project Execution Discovery
+
+| Instruction / configuration | Current authority / decision |
+| --- | --- |
+| `autobyteus-server-ts/AGENTS.md` and README | Run focused `vitest run ... --no-watch` first; built server is `node dist/app.js --data-dir <owned> --host <loopback> --port <owned>` |
+| `autobyteus-web/AGENTS.md`, README, `ARCHITECTURE.md` | Use `pnpm test:nuxt ... --run`; browser development path proves web-equivalent Electron renderer behavior; Electron-only tests are not a substitute for renderer input/layout proof |
+| Package manifests/Vitest configs | pnpm workspace; Nuxt component tests run with happy-dom, so broader Chromium remains mandatory |
+| `integrated-live-validation-plan.md` | Use isolated owned ports/data, sanitized data roots, aggregate evidence, direct input for `PAGE-001`, and exact safety/cleanup accounting |
+
+Environment plan: create only owned temporary fixture/data/probe paths; never reuse, stop, or modify an unknown running app/data owner. An isolated generated active/archive snapshot is sufficient for `AC-009` because the criterion permits a deterministic >=5 MB/600-event equivalent. No user-owned `/home/autobyteus/data` or existing desktop process is needed or touched. Raw response bodies are temporary and removed; retained evidence contains only counts, timings, identities, hashes, paths, and synthetic screenshots.
+
+### Round-5 Existing Durable Coverage Validity
+
+| Path / scenario | Decision | Evidence / round-5 action |
+| --- | --- | --- |
+| `autobyteus-web/components/workspace/agent/__tests__/AgentConversationFeed.spec.ts` | `Still Valid` | Directly covers all four trusted-input adapters, position-only rejection, consume-before-dispatch, blocked queued/layout behavior, post-work fresh input, zero-layout states, and latest-vs-browse manual bottom. Rerun; supplement with real Chromium because synthetic trusted-event construction is not browser scheduling proof. |
+| `autobyteus-web/localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts` | `Still Valid` | Exact English/Chinese non-visual names and obsolete count/status-key removal. Rerun and assert semantic DOM in both locales. |
+| `eventMonitorActiveTraceBrowse.spec.ts`, `eventMonitorActiveTraceBrowsePresentation.spec.ts`, `EventMonitorBrowseAssistantRow.spec.ts` | `Still Valid` | Controller coalescing, stable IDs, <=300 block turnover, result-free shallow mapping, retained disclosure identity. Rerun and supplement through real feed DOM. |
+| `recent-run-projection-graphql.e2e.test.ts` | `Still Valid` | Real-files standalone/team 275 traversal, archive-open instrumentation, append/rewrite, media/closed DTO, >=5 MB latest timing and byte preservation. Rerun all six scenarios. |
+| Server page policy/projector/provider/service unit suites | `Still Valid` | Direct fixed-page/cursor/generation/identity/result-heavy contracts. Rerun expanded server set. |
+| Prior latest-window production dispatch/window/witness/reopen/Activity/feed/disclosure coverage | `Still Valid` | Preserved `AC-001`–`AC-011`, 1,001-message, semantic no-op/change, bounds, copy removal. Rerun relevant expanded set. |
+| Historical API/E2E and delivery reports | `Out Of Scope` as pass evidence | Context only; they validate earlier source states and cannot authorize round 5. |
+
+No durable assertion is stale, unclear, or requires removal. The implementation round already added requirement-aligned component/catalog coverage, and the repository still has no durable production-seeded full-browser fixture system. Therefore round 5 plans **no durable test-code change**; the real-browser/live timing harness remains temporary execution scaffolding and will be removed after evidence capture.
+
+### Round-5 Repository And Broader Execution Plan
+
+| Order | Command / mode | Boundary / scenario | Initial result | Planned evidence |
+| ---: | --- | --- | --- | --- |
+| 1 | Focused seven-file Nuxt round-10 suite | Feed gate/zero-layout/controller/row/catalog/workspace | Planned | `evidence/api-e2e-round5-zero-layout/web-focused.txt` |
+| 2 | Focused + expanded server run-history/page GraphQL suites | Active-only/latest/page/identity/archive reads/result exclusion | Planned | `server-graphql-focused.txt`, `server-expanded.txt` |
+| 3 | Expanded relevant Nuxt suite | Latest/live stress/witness/Activity/reopen/disclosure/browse/feed regression | Planned | `web-expanded.txt` |
+| 4 | Web/localization guards, server production build, changed-path hygiene | Static/boundary/package integration | Planned | Round-5 evidence logs |
+| 5 | Owned >=5 MB/620-event built-server live HTTP, cold + two warm | `AC-009`, `AC-015`, payload/TTFB/total/cardinality/hash safety | Planned | `live-http-metrics.json`, process/config/hash audit |
+| 6 | Temporary Nuxt production-component probe + Playwright Chromium | `PAGE-001`, `PAGE-GATE-001`, zero-layout, accessibility, manual-bottom semantics, <=300 turnover, source identity | Planned | Browser metrics/log/screenshots |
+
+### Round-5 Pre-Execution Confidence Scorecard
+
+| Category | Score | Basis / gap before fresh execution |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 72% | Reviewed source/component checks exist, but historical API/E2E is not authoritative for `aa9705a28`. |
+| Changed-boundary execution directness | 70% | Real wheel/keyboard and queued/layout scheduling have not been freshly executed. |
+| Cross-boundary integration realism and mock gap | 68% | Round-10 source has not traversed current GraphQL/browser processes. |
+| Environment/configuration/identity/fixture fidelity | 82% | Deterministic owned fixture plan is established; current execution pending. |
+| Failure/edge/lifecycle/recovery | 72% | Component coverage exists; real slow response, retry, expiry, delayed layout, and fresh-session continuation remain. |
+| User-surface/browser/shell confidence | 65% | Implementation preview had 0 px overlay gutter and did not prove real scrollbar/touch/reflow. |
+| Durable regression coverage quality | 94% | Strong focused durable suite exists and matches approved behavior; fresh execution pending. |
+
+- Overall pre-execution confidence: `74.7%` (simple average).
+- Every critical acceptance criterion directly proven for the current source: `No`.
+- Applicable categories below 90%: requirement proof, directness, integration realism, fixture fidelity, lifecycle/recovery, and user surface.
+- Default clean-confidence target met: `No`.
+- Broader validation decision: `Required` — live API plus real Chromium renderer.
+- Native scrollbar decision: first record the default platform gutter. If it is zero, do not infer a pass and do not use a position-only fallback. Attempt a scoped Chromium run where the browser exposes a real non-zero native gutter and prove a trusted pointer/drag precedes the request; otherwise route measured design impact. Touch is executed through a real browser touch-enabled context only if Chromium exposes it, with the limitation recorded.
+- Reroute required before execution: `No`.
+- Proceed to execution: `Yes`.
+
+### Round-5 Supersession Stop Record
+
+- Stop instruction received from: `code_reviewer` after the round-6 source-review handoff.
+- Superseded premise: the compact jump-to-latest arrow at the feed's lower-right edge. The supported conditional “improve skills” action already uses that area; the user selected a quiet white circular arrow with a dark down icon at bottom center.
+- Classification: `Design Impact / requirement-basis supersession`; **not** an API/E2E failure and not a test-validity defect.
+- Execution stopped: `Yes`. The in-progress expanded web suite was interrupted and is explicitly `Incomplete / Not A Result`. No browser probe, live HTTP process, representative snapshot, or platform-gutter execution was started.
+- Pre-supersession commands that completed before the stop:
+  - Focused Nuxt round-10 suite: `Pass — 7 files / 38 tests` (`evidence/api-e2e-round5-zero-layout/web-focused.txt`).
+  - Focused real-files GraphQL suite: `Pass — 1 file / 6 tests`; >=5 MB/620-event fixture returned 100 conversation rows in `41.047 ms`; page closed-payload fixture returned 2,371 serialized central-event bytes in `8.56 ms` (`server-graphql-focused.txt`).
+  - Expanded server page/projection/tool-call suite completed before cancellation reached it: `Pass — 9 files / 43 tests`; >=5 MB/620-event fixture total `38.807 ms`; result-heavy closed payload `2,371 bytes` / `8.375 ms` (`server-expanded.txt`).
+  - Expanded Nuxt suite: `Interrupted / incomplete`, exit 130 after the stop instruction; individual partial passes in its log do not form an authoritative suite result (`web-expanded.txt`).
+- Durable test changes: `None`.
+- Broader-validation result: `Not Executed — design basis superseded before browser/live setup`.
+- Confidence score: not finalized; the pre-execution `74.7%` is planning context only and does not apply to the revised bottom-centered design.
+- Resume rule: a revised user-approved requirements/design package must pass architecture review, implementation, and implementation-source review before a new API/E2E round may start. The next round must treat all round-5 evidence as non-authoritative context and freshly validate the revised placement/collision behavior.
+- Preserved evidence marker: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/PRE-SUPERSESSION-NOTICE.md`.
+
+---
+
+## Investigation Round 6 — Centered Neutral Arrow
+
+### Round-6 Requirement And Reviewed-Source Basis
+
+- Candidate implementation identity: centered-arrow source/evidence commit `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7`; corrected handoff packaging commit `5eb12b42e`; architecture round 12 and source-review round 9 are `Pass`.
+- Round 5 is explicitly pre-supersession. Its logs are retained for history and safety accounting but are not reused as proof for this source.
+- The feed-owned paging gate remains direct-input-only and zero-layout. `PAGE-GATE-001` must start with actual feed input, consume the session before dispatch, hold the first response through restoration, observe a queued scroll after the programmatic write returns, tolerate continued momentum and delayed retained-content reflow/CSS anchoring without chaining, and request again only after input quiet plus a fresh away/re-enter interaction.
+- The return action is one absolute bottom-centered 44 px hit target with an 8 px lower inset, containing one 36 px quiet-white neutral circle and 16 px dark downward glyph. Ordinary unseen, frozen browse, released, and cursor-expired paths share one exact base style/accessibility signature. No visible title, tooltip, count, badge, status, or expired warning variant is permitted.
+- `PAGE-COEXIST-001` must exercise eligible standalone and focused-team-member surfaces with the actual `SkillImprovementComposerCta` visible at representative wide and 390 px widths, plus CTA-absent controls. The feed arrow must remain centered and invariant; the independent CTA must remain right-aligned; neither may overlap the other, composer, or viewport.
+- Preserved API obligations remain active-only newest-100 latest projection, standalone/team fixed pages of at most 50, stable source-to-DOM identities, closed result/log-free DTOs, generation/cursor behavior, resident browse turnover at or below 300, representative >=5 MB/600-event timing, archive-read exclusion, and raw-trace byte/hash preservation.
+- Persisted-data transition remains `Directly Usable — No Migration`; no compatibility fallback is authorized.
+
+### Round-6 Changed Surface Classification
+
+| Surface / Boundary | Classification | Material executable risk | Planned evidence |
+| --- | --- | --- | --- |
+| Feed input provenance and blocked lifecycle | Preserved from round 10 but freshly gated | Browser event scheduling, queued scroll delivery, momentum, and delayed layout could chain requests despite synthetic component coverage | Fresh focused component suite and real Chromium wheel/keyboard/touch/native-gutter paths |
+| Return-arrow placement/treatment | Changed in `70a2ddc62` | Center drift, responsive alternate placement, expired amber branch, layout reservation, focus/a11y mismatch | Exact DOMRect/computed-style/accessibility signatures across ordinary/browse/expired, wide/390, CTA visible/absent |
+| Skill Improvement coexistence | Newly explicit cross-feature acceptance boundary | CTA and feed arrow can collide or couple placement/eligibility | Real production feed plus actual `SkillImprovementComposerCta` in standalone and focused-team-member probe surfaces |
+| Backend projection/page contract | Preserved | Base refresh or transport drift could regress active-only/latest/page/result exclusion | Fresh focused and expanded real-files GraphQL execution |
+| Representative performance/storage safety | Preserved | Large active source may exceed 2 seconds or access/mutate archive/source | Fresh instrumented >=5 MB/620-event GraphQL plus built-server live HTTP and before/after hashes |
+| Electron shell | Not changed | None beyond shared Chromium renderer behavior | Real Google Chrome/Chromium renderer is preferred; no shell claim is needed |
+
+### Round-6 Current Durable Coverage Validity
+
+| Path / scenario | Decision | Evidence / action |
+| --- | --- | --- |
+| `autobyteus-web/components/workspace/agent/__tests__/AgentConversationFeed.spec.ts` | `Still Valid` | Covers trusted adapters, position-only rejection, consumed/blocked lifecycle, delayed zero-layout states, latest-vs-browse manual bottom, centered static classes, and ordinary/browse/released/expired signature equality. Rerun; browser scheduling remains separately mandatory. |
+| `AgentEventMonitor.spec.ts`, `AgentWorkspaceView.spec.ts`, `eventMonitorFeedCatalog.spec.ts` | `Still Valid` | Cover controller coalescing/transitions, removed copy, and localized accessible names. Rerun. |
+| Event Monitor dispatch/window/witness/browse/presentation service suites | `Still Valid` | Cover <=100 latest/Activity, 1,001-message scale, semantic no-op/visible revision, fixed-page merge/turnover/source identity/result exclusion. Rerun expanded set. |
+| `recent-run-projection-graphql.e2e.test.ts` | `Still Valid` | Real filesystem/GraphQL coverage instruments active/archive opens, >=5 MB/620 events, latest 100, fixed pages, team/standalone, expiry, production media, and multi-megabyte result exclusion. Rerun fresh. |
+| Implementation temporary preview evidence | `Out Of Scope as approval evidence` | Useful setup context only. Independent round-6 Chromium execution is required. |
+| Round-5 API/E2E evidence | `Stale for current approval / retained` | Placement premise was superseded. Do not delete; do not count toward round-6 Pass. |
+
+No current durable assertion is obsolete under the centered-arrow basis, and the reviewed durable suite already represents the approved behavior. **No repository-resident test-code change is planned.** Temporary browser/live harnesses will be removed after evidence capture.
+
+### Round-6 Repository And Broader Execution Plan
+
+| Order | Command / mode | Boundary / scenario | Initial result | Planned evidence |
+| ---: | --- | --- | --- | --- |
+| 1 | Focused seven-file Nuxt suite | Feed gate/centered signature/controller/row/catalog/workspace | Planned | `evidence/api-e2e-round6-centered-arrow/web-focused.txt` |
+| 2 | Focused real-files GraphQL and expanded server projection/page suite | Active-only/latest/page/identity/archive reads/result exclusion | Planned | `server-graphql-focused.txt`, `server-expanded.txt` |
+| 3 | Expanded relevant Nuxt suite | Live stress/witness/Activity/reopen/disclosure/browse/feed regression | Planned | `web-expanded.txt` |
+| 4 | Web/localization guards, production server build, changed-path hygiene | Boundary/package/static integration | Planned | Round-6 guard/build logs |
+| 5 | Owned >=5 MB/620-event built-server live HTTP, cold plus two warm | `AC-009`, `AC-015`, payload/TTFB/total/cardinality/hash safety | Planned | `live-http-metrics.json`, process/config/hash audit |
+| 6 | Temporary Nuxt production-component probe plus Playwright Google Chrome/Chromium | `PAGE-001`, `PAGE-GATE-001`, `PAGE-COEXIST-001`, geometry/style/a11y/manual-bottom/turnover/input sources | Planned | Browser metrics, event timeline, screenshots, availability record |
+
+### Round-6 Pre-Execution Confidence Scorecard
+
+| Category | Score | Basis / gap before fresh execution |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 76% | Architecture/source review and durable coverage map are strong; current executable proof is pending. |
+| Changed-boundary execution directness | 72% | The actual centered source has not yet received independent real-browser input/coexistence execution. |
+| Cross-boundary integration realism and mock gap | 70% | Backend and browser processes must be executed freshly; the browser fixture will intentionally emulate network response timing. |
+| Environment/configuration/identity/fixture fidelity | 84% | Owned deterministic fixtures and project-native browser/server paths are available; execution pending. |
+| Failure/edge/lifecycle/recovery | 74% | Durable edge coverage exists; held response, queued scroll, delayed reflow, expiry, retry, and fresh-session behavior require Chromium proof. |
+| User-surface/browser/shell confidence | 68% | Independent wide/390 standalone/team CTA coexistence, focus, touch, and gutter availability are pending. |
+| Durable regression coverage quality | 95% | Reviewed durable component/service/GraphQL coverage is broad and current; fresh execution pending. |
+
+- Overall pre-execution confidence: `77.0%` (simple average).
+- Every critical acceptance criterion directly proven for this source: `No`.
+- Applicable categories below 90%: requirement proof, directness, integration realism, fixture fidelity, lifecycle/recovery, and user surface.
+- Default clean-confidence target met: `No`.
+- Broader validation decision: `Required — Live API plus real Chromium web-equivalent Electron renderer`.
+- Native scrollbar rule: record the default platform gutter first. A scrollbar scenario is executable only when `offsetWidth - clientWidth > 0` and a trusted pointer session occurs within that measured gutter; no position-only fallback is accepted. A scoped browser/platform configuration may be used to expose a real gutter, but must be labeled and must not change global user settings.
+- Touch rule: execute only in a real browser context that advertises touch and produces trusted `touch*` events; label browser device emulation truthfully and do not claim physical hardware.
+- Reroute required before execution: `No`.
+- Proceed to execution: `Yes`.
+
+### Round-6 Repository Coverage Results
+
+| Order | Command / boundary | Result | Evidence |
+| ---: | --- | --- | --- |
+| 1 | Focused centered-arrow Nuxt suite | **Pass — 7 files / 38 tests** | `evidence/api-e2e-round6-centered-arrow/web-focused.txt` |
+| 2 | Focused real-files GraphQL projection/page suite | **Pass — 1 file / 6 tests** | `server-graphql-focused.txt`; 5,416,102-byte/620-event latest projection returned 100 rows in 39.722 ms; result-heavy closed page payload was 2,371 bytes in 8.685 ms |
+| 3 | Expanded server projection/page/tool-call suite | **Pass — 9 files / 43 tests** | `server-expanded.txt`; large fixture 45.747 ms; closed result-heavy page 2,371 bytes in 10.191 ms |
+| 4 | Expanded relevant Nuxt suite | **Pass — 26 files / 208 tests** | `web-expanded.txt`; includes 1,001-message production dispatch, witness, Activity, hydration, replacement, disclosure, browse, and feed paths |
+| 5 | Localization boundary, literal audit, web boundary | **Pass** | `web-guards.txt`; zero unresolved localization findings |
+| 6 | Server production build | **Pass** | `server-build.txt` |
+| 7 | Diff/source static guards | **Pass** | `diff-static-guards.txt`; 498 effective feed lines, exact centered classes, no Skill Improvement dependency, right-placement branch, or warning color |
+| 8 | `git diff --check` | **Pass** | `diff-static-guards.txt` and final cleanup check |
+
+No durable test file was added, updated, removed, disabled, or rebaselined. The existing reviewed suite was current and passed without correction.
+
+### Round-6 Post-Repository Confidence Scorecard
+
+| Confidence Category | Score | What supports the score | Remaining uncertainty before broader validation |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 94% | All durable requirement-linked server/frontend scenarios pass freshly. | Real browser scheduling/coexistence still required. |
+| Changed-boundary execution directness | 94% | Changed feed source is transformed and directly exercised in 15 component tests. | Synthetic DOM events do not prove browser scheduling. |
+| Cross-boundary integration realism and mock gap | 91% | Real files/schema and production dispatch paths pass. | HTTP transport and browser are not in repository tests. |
+| Environment, configuration, identity, and fixture fidelity | 95% | Deterministic real-files fixtures include standalone/team, generation, cursor, result-heavy, and >=5 MB cases. | Live process/browser configuration still pending. |
+| Failure, edge-case, lifecycle, and recovery evidence | 94% | Error/expiry, consumed/blocked gate, no-chain, manual-bottom modes, turnover, and source identity are durable. | Queued native scroll and delayed reflow timing remain browser-specific. |
+| User-surface, browser, and desktop-shell confidence | 89% | Component geometry/a11y signature assertions pass. | Independent real renderer, wide/390 coexistence, focus, touch, and gutter availability pending. |
+| Durable regression coverage quality and relevance | 98% | Current focused plus expanded tests cover every changed owner without stale premises. | Browser probe remains intentionally temporary. |
+
+- Overall post-repository confidence: `93.6%` (simple average).
+- Every critical acceptance criterion directly proven at this point: `No` — real `PAGE-GATE-001` and `PAGE-COEXIST-001` remained.
+- Any applicable category below 90%: `Yes — user-surface/browser confidence 89%`.
+- Default clean-confidence target of 95% met: `No`.
+- Broader validation decision: `Required`.
+- Selected modes: built-server Live API plus real Google Chrome as the web-equivalent Electron renderer; touch-enabled browser context for touch; native-gutter execution only if a non-zero measured gutter is exposed.
+
+### Round-6 Broader Validation Result
+
+- **Live API:** Pass. The built server ran on owned loopback port `31982` with sanitized environment, owned SQLite/memory, and a deterministic 5,415,892-byte/620-event active source. Cold plus two warm latest requests returned exactly 100 rows (`active-520` through `active-619`), zero Activity, no archive marker, and totals of 48.765/20.045/22.340 ms. The cold first page returned `loadedEarlierCount=50`, 150 unique baseline-plus-page events (`470` through `619`), no archive marker, and 18.989 ms total. Active/archive/manifest hashes were exactly equal before/after.
+- **Durable archive-open proof:** Pass. The fresh real-files GraphQL suite instrumented filesystem reads: latest opened the active file and zero archive/manifest paths; page traversal opened active/generation manifest and zero archive segments. Live HTTP did not have an independent OS path tracer and therefore does not claim process-level archive-open instrumentation; its archive marker exclusion and byte-equality are complementary.
+- **Real Chrome `PAGE-GATE-001`:** Pass on Google Chrome 150.0.7871.129/macOS. Actual trusted wheel created one request. The held response, continued wheel input, programmatic anchor restoration, a trusted queued scroll delivered 1.1 ms after the instrumented native `scrollTop` setter returned, and delayed retained-content reflow left the count at one. Only a post-quiet fresh away/re-enter wheel interaction created request two.
+- **Turnover/source identity:** Pass. Seven direct-input pages each reached next-tick stable presentation in 25.8–193.5 ms; residents and mounted DOM stopped at 300 with 300 unique source IDs and exact DOM membership.
+- **Keyboard/touch:** Pass where exposed. A trusted real `Home` key entered the feed gate. A real touch-enabled Chrome context advertised `maxTouchPoints=1`/`ontouchstart`; CDP browser input generated trusted `touchstart/move/end` events and exactly one request. This is browser device emulation, not physical touch hardware.
+- **Native scrollbar gutter:** Correctly **unavailable on this platform run**. Default headless macOS Chrome measured `offsetWidth-clientWidth=0 px`. Process-scoped `AppleShowScrollBars=Always`, overlay-feature disablement, their combination, and a controlled standards-based `scrollbar-gutter: stable` attempt still measured zero. No position-only fallback was used or accepted; the conditional adapter remains directly covered by the durable component test. This is not a failure because the approved gate is conditional on platform exposure.
+- **`PAGE-COEXIST-001`:** Pass. Sixteen independent measurements cover actual eligible `SkillImprovementComposerCta` plus the production feed in standalone and focused-team-member surfaces, 1280x900 and 390x844, ordinary unseen/frozen browse/cursor expired, plus CTA-absent controls. Every target/surface/glyph was exactly 44/36/16 px, feed-center delta 0 px, lower inset 8 px, CTA right-edge delta 0 px when visible, and no CTA/composer intersection or horizontal overflow. All normalized target/surface/glyph/accessibility signatures were byte-exact equal.
+- **Zero layout and accessibility:** Pass. Latest/loading/browse/beginning/error/expired retained the same feed/content/first-row geometry; loading alone reported `aria-busy=true` and its overlay was absolute. The arrow exposed no text/title/tooltip/badge/count. Real focus styling was visible, Enter exited browse, and names were exactly English `Jump to latest activity` and Simplified Chinese `跳到最新动态`.
+- **Manual bottom semantics:** Pass. Latest manual bottom cleared ordinary unseen; frozen-browse manual bottom retained the arrow/snapshot; explicit arrow activation exited browse.
+- **Safety/cleanup:** Pass. Owned ports `3108`/`31982` were stopped, Chrome closed, raw HTTP bodies, temporary Nuxt route/scripts, and disposable fixture were removed. The pre-existing packaged app on `29695` was observed and left untouched. Delivery hold remains active.
+- **Setup deviation:** An initial live-server start inherited the host `DATABASE_URL` and was stopped before validation requests; Prisma reported zero pending migrations. It is excluded from all test evidence. The authoritative live run used `env -i` plus the owned `.env`, confirmed the owned `live-validation.db`, owned memory/log paths, and correct loopback URL.
+
+### Round-6 Investigation Decision
+
+- Proceed to API/E2E execution: `Completed`.
+- Repository-resident durable coverage changed: `No`.
+- Final broader validation result: `Pass`.
+- Reroute required: `No`.
+- Residual limitations: default macOS overlay scrollbars did not expose a non-zero native gutter; physical touch hardware and Electron shell were not executed. These are non-blocking because touch was exercised in a real touch-enabled browser context, the gutter requirement is explicitly conditional, and the changed renderer behavior is web-equivalent with no Electron/preload/IPC boundary change.
+- Authoritative evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow`.

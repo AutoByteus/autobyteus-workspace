@@ -1,0 +1,414 @@
+REFRESH_START_UTC=2026-07-21T13:25:49Z
+WORKTREE=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance
+BRANCH=codex/agent-run-history-performance
+PRE_MERGE_HEAD=a16e49af66d38861c8f9e2c648469c5c5251dc88
+LATEST_ORIGIN_PERSONAL=9b4e038a40e0b6358fe53ca101406e0f6446e790
+PRE_MERGE_STATUS_BEGIN
+?? .local-build-logs/
+?? tickets/in-progress/agent-run-history-performance/evidence/delivery-latest-personal-refresh-rebuild-20260721.txt
+PRE_MERGE_STATUS_END
+MERGE_COMMAND=git merge --no-edit origin/personal
+Merge made by the 'ort' strategy.
+ .github/release-notes/release-notes.md             |   23 +-
+ autobyteus-message-gateway/package.json            |    2 +-
+ .../messaging-gateway/release-manifest.json        |   10 +-
+ autobyteus-web/README.md                           |    2 +-
+ .../segments/renderer/MermaidDiagramViewer.vue     |    3 +-
+ .../__tests__/MermaidDiagramViewer.spec.ts         |   14 +-
+ autobyteus-web/docs/content_rendering.md           |   11 +
+ autobyteus-web/package.json                        |    2 +-
+ .../tests/e2e/diagram-zoom-viewer-probe.mjs        |  188 +
+ .../e2e/fixtures/diagram-zoom-viewer.page.vue      |   37 +
+ .../api-e2e-coverage-investigation.md              |  207 +
+ .../api-e2e-execution-coverage-report.md           |  236 +
+ .../api-e2e-test-review-report.md                  |   56 +
+ .../code-review-report.md                          |  175 +
+ .../delivery-electron-mac-build.log                |  Bin 0 -> 103715 bytes
+ .../delivery-electron-mac-package-verification.log |   37 +
+ .../delivery-integration-verification.log          |   48 +
+ .../design-review-report.md                        |  217 +
+ .../diagram-maximize-nested-overlay/design-spec.md |  484 +++
+ .../docs-sync-report.md                            |   62 +
+ .../handoff-summary.md                             |  122 +
+ .../implementation-handoff.md                      |  119 +
+ .../investigation-notes.md                         |  148 +
+ .../01-artifact-maximized-before-diagram.png       |  Bin 0 -> 45983 bytes
+ .../probe-evidence/02-diagram-viewer-obscured.png  |  Bin 0 -> 35743 bytes
+ .../03-escape-closes-both-layers.png               |  Bin 0 -> 59666 bytes
+ .../browser/DZV-BR-001-inline-focus-light.png      |  Bin 0 -> 75656 bytes
+ .../browser/DZV-BR-001-inline-hover-light.png      |  Bin 0 -> 75164 bytes
+ .../browser/DZV-BR-001-inline-leave-light.png      |  Bin 0 -> 74155 bytes
+ .../browser/DZV-BR-001-inline-rest-light.png       |  Bin 0 -> 74155 bytes
+ .../browser/DZV-BR-001-viewer-wide-light.png       |  Bin 0 -> 36544 bytes
+ .../api-e2e/browser/DZV-BR-002-fit.png             |  Bin 0 -> 36272 bytes
+ .../browser/DZV-BR-005-en-inline-coarse.png        |  Bin 0 -> 36692 bytes
+ .../api-e2e/browser/DZV-BR-005-en.png              |  Bin 0 -> 19999 bytes
+ .../browser/DZV-BR-005-zh-CN-inline-coarse.png     |  Bin 0 -> 36692 bytes
+ .../api-e2e/browser/DZV-BR-005-zh-CN.png           |  Bin 0 -> 19894 bytes
+ .../api-e2e/browser/DZV-BR-006-malformed.png       |  Bin 0 -> 22805 bytes
+ .../api-e2e/browser/DZV-BR-006-missing.png         |  Bin 0 -> 23784 bytes
+ .../browser/DZV-BR-007-inline-hover-dark.png       |  Bin 0 -> 68741 bytes
+ .../browser/DZV-BR-007-viewer-wide-dark.png        |  Bin 0 -> 35391 bytes
+ .../browser/DZV-BR-008-inline-hybrid-cssom.png     |  Bin 0 -> 75579 bytes
+ .../browser/DZV-BR-008-inline-wide-coarse.png      |  Bin 0 -> 75585 bytes
+ .../browser/DZV-BR-008-viewer-hybrid-cssom.png     |  Bin 0 -> 36154 bytes
+ .../browser/DZV-BR-008-viewer-wide-coarse.png      |  Bin 0 -> 36807 bytes
+ .../DZV-BR-009-first-escape-host-retained.png      |  Bin 0 -> 38405 bytes
+ .../api-e2e/browser/DZV-BR-009-nested-open.png     |  Bin 0 -> 26578 bytes
+ .../probe-evidence/api-e2e/browser/evidence.json   | 4577 ++++++++++++++++++++
+ .../probe-evidence/api-e2e/browser/nuxt-dev.log    |   52 +
+ .../api-e2e/repository/artifact-host-tests.log     |   22 +
+ .../api-e2e/repository/focused-mermaid-tests.log   |   30 +
+ .../api-e2e/repository/git-diff-check.log          |    0
+ .../api-e2e/repository/renderer-suite.log          |   46 +
+ .../nested-overlay-reproduction.json               |  481 ++
+ .../release-command.log                            |   34 +
+ .../release-deployment-report.md                   |  168 +
+ .../release-notes.md                               |   11 +
+ .../release-publication-verification.log           |  323 ++
+ .../release-workflow-verification.log              |  344 ++
+ .../repository-finalization-and-cleanup.log        |   22 +
+ .../reproduction-evidence.md                       |   66 +
+ .../requirements.md                                |  142 +
+ .../diagram-maximize-nested-overlay/ui-ux-spec.md  |  163 +
+ .../user-verification-report.md                    |   25 +
+ 63 files changed, 8683 insertions(+), 26 deletions(-)
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/code-review-report.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-build.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-package-verification.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/delivery-integration-verification.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/design-review-report.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/design-spec.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/docs-sync-report.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/handoff-summary.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/implementation-handoff.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/investigation-notes.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/01-artifact-maximized-before-diagram.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/02-diagram-viewer-obscured.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/03-escape-closes-both-layers.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-001-inline-focus-light.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-001-inline-hover-light.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-001-inline-leave-light.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-001-inline-rest-light.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-001-viewer-wide-light.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-002-fit.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-005-en-inline-coarse.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-005-en.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-005-zh-CN-inline-coarse.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-005-zh-CN.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-006-malformed.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-006-missing.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-007-inline-hover-dark.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-007-viewer-wide-dark.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-008-inline-hybrid-cssom.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-008-inline-wide-coarse.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-008-viewer-hybrid-cssom.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-008-viewer-wide-coarse.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-009-first-escape-host-retained.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/DZV-BR-009-nested-open.png
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/evidence.json
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/browser/nuxt-dev.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/repository/artifact-host-tests.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/repository/focused-mermaid-tests.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/repository/git-diff-check.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/api-e2e/repository/renderer-suite.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/probe-evidence/nested-overlay-reproduction.json
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/release-command.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/release-deployment-report.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/release-notes.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/release-publication-verification.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/release-workflow-verification.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/repository-finalization-and-cleanup.log
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/reproduction-evidence.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/requirements.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/ui-ux-spec.md
+ create mode 100644 tickets/done/diagram-maximize-nested-overlay/user-verification-report.md
+MERGE_EXIT_STATUS=0
+POST_MERGE_HEAD=35fc7ca06481da6ff7933ca7c53d00212a80606f
+LATEST_PERSONAL_CONTAINED=yes
+POST_MERGE_STATUS_BEGIN
+?? .local-build-logs/
+?? tickets/in-progress/agent-run-history-performance/evidence/delivery-latest-personal-refresh-rebuild-20260721.txt
+POST_MERGE_STATUS_END
+POST_INTEGRATION_CHECK_START_UTC=2026-07-21T13:26:26Z
+POST_INTEGRATION_HEAD=35fc7ca06481da6ff7933ca7c53d00212a80606f
+SERVER_CHECK_COMMAND=(cd autobyteus-server-ts && pnpm exec vitest run tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts --no-watch --maxWorkers=1)
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:70236) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-O1RTDP
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-O1RTDP/.env
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+[recent-run-projection-metrics] {"fixtureBytes":5416102,"canonicalActiveEvents":620,"returnedConversationRows":100,"returnedActivityRows":0,"payloadBytes":868832,"totalMs":39.447}
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=46
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=37
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-O1RTDP/memory/agents/active-page-275-member/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=103
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=104
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Finished Autobyteus audio model discovery. Total models registered: 8
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-O1RTDP/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/recent-run-projection-gql-O1RTDP/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+[active-trace-page-closed-payload-metrics] {"fixtureBytes":4861018,"returnedEvents":3,"returnedVisuals":7,"serializedEventBytes":2371,"totalMs":8.939}
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (6 tests) 312ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  15:26:27
+   Duration  5.87s (transform 3.18s, setup 20ms, import 4.65s, tests 312ms, environment 0ms)
+
+SERVER_CHECK_EXIT_STATUS=0
+WEB_CHECK_COMMAND=(cd autobyteus-web && pnpm test:nuxt components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts graphql/queries/__tests__/runHistoryQueries.spec.ts services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts components/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts --run --maxWorkers=2)
+
+> autobyteus@1.4.23 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts graphql/queries/__tests__/runHistoryQueries.spec.ts services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts components/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (10 tests) 36ms
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (7 tests) 494ms
+stderr | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts (6 tests) 9ms
+stderr | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts (4 tests) 4ms
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (3 tests) 15ms
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts (5 tests) 3ms
+stderr | components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts (1 test) 9ms
+
+ Test Files  7 passed (7)
+      Tests  36 passed (36)
+   Start at  15:26:36
+   Duration  9.19s (transform 2.62s, setup 14.08s, collect 314ms, tests 570ms, environment 1.04s, prepare 650ms)
+
+WEB_CHECK_EXIT_STATUS=0
+POST_INTEGRATION_CHECK_END_UTC=2026-07-21T13:26:45Z
+POST_INTEGRATION_CHECK_RESULT=PASS
+LATEST_BASE_FOCUSED_COMMAND=(cd autobyteus-web && pnpm test:nuxt components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts --run --maxWorkers=1)
+
+> autobyteus@1.4.23 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts --run --maxWorkers=1
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts (5 tests) 49ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  15:27:00
+   Duration  4.04s (transform 2.42s, setup 3.63s, collect 14ms, tests 49ms, environment 120ms, prepare 97ms)
+
+LATEST_BASE_FOCUSED_EXIT_STATUS=0
+LATEST_BASE_FOCUSED_RESULT=PASS
+POST_BUILD_FETCH_UTC=2026-07-21T13:31:16Z
+ORIGIN_PERSONAL_BEFORE_POST_BUILD_FETCH=9b4e038a40e0b6358fe53ca101406e0f6446e790
+ORIGIN_PERSONAL_AFTER_POST_BUILD_FETCH=9b4e038a40e0b6358fe53ca101406e0f6446e790
+POST_BUILD_SOURCE_HEAD=35fc7ca06481da6ff7933ca7c53d00212a80606f
+POST_BUILD_LATEST_PERSONAL_CONTAINED=yes
