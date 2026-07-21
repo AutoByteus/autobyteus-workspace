@@ -47,7 +47,26 @@
 - Docs evidence: `tickets/in-progress/agent-run-history-performance/docs-sync-report.md`
 - Persisted-data decision: `Directly Usable — No Migration`. No trace file, archive, or manifest is rewritten, deleted, or version-migrated.
 
-## Testable Linux ARM64 Electron Build
+## macOS ARM64 Electron Test Candidate — Rebuilt 2026-07-21
+
+- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance`
+- Ticket branch/source checkpoint: `codex/agent-run-history-performance@1f148ba5a0374aedaa3b83fbdec89e35623fc467`
+- Host/target: macOS `26.5.2` (`25F84`), Apple Silicon `arm64`
+- Authoritative guidance: `autobyteus-web/README.md`, **Desktop Application Build** / **macOS Build With Logs (No Notarization)**
+- Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
+- Result: `Pass` (`BUILD_EXIT_STATUS=0`), completed at `2026-07-21T13:10:22Z`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.dmg`
+- DMG SHA-256: `619ffd033bcfa79d251a5db3923e18f06cb28a5c48c436b151515d68c6392056`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.zip`
+- ZIP SHA-256: `fd6eed0b6aa83054114b15faf3f284bfe8cc205a9d625fae8744ac4aaa75cc6f`
+- Package checks: bundle version `1.4.22`; unpacked executable is Mach-O `arm64`; `hdiutil verify` reported the DMG valid; `unzip -t` reported no compressed-data errors.
+- Build evidence: `evidence/delivery-electron-macos-arm64-rebuild-20260721.log`
+- Artifact verification/runtime-safety evidence: `evidence/delivery-electron-macos-arm64-rebuild-verification-20260721.txt`
+- Runtime safety: Artifact-only procedure. The existing `/Applications/AutoByteus.app` process and its healthy bundled backend on port `29695` were not stopped, replaced, or relaunched. The newly built `1.4.22` candidate was intentionally not auto-started because another AutoByteus instance is active.
+- Test launch: Quit the currently running AutoByteus application first, open the DMG above, and open its `AutoByteus.app` (use Finder **Open** if macOS asks you to confirm the local unsigned build). Do not run the old and new candidates concurrently because both use the bundled backend port `29695` and the normal AutoByteus profile.
+- Scope: Local hands-on verification only. The candidate is not installed, published, tagged, released, deployed, or committed.
+
+## Prior Linux ARM64 Electron Build
 
 - Build command: `pnpm build:electron:linux:arm64`
 - Result: `Pass` (`EXIT_STATUS: 0`) against integrated checkpoint `20fe710ef` plus delivery-only documentation edits.
@@ -69,7 +88,7 @@
 7. Confirm the old conversation-copy control is absent.
 8. If practical, switch to Simplified Chinese and confirm the jump action is localized.
 
-The Electron candidate is running with the normal profile and is ready for these checks. Please report whether it passes or describe any observed issue; delivery will remain on hold until explicit completion/verification is received.
+The newly rebuilt macOS candidate is ready at the DMG path above but was not auto-started, so the existing user-owned AutoByteus process remains undisturbed. Quit the existing app before opening the new candidate, perform the checks, and report whether it passes or describe any observed issue. Delivery remains on hold until explicit completion/verification is received.
 
 ## After Verification
 

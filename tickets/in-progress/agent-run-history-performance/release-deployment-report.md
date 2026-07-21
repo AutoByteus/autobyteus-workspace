@@ -109,7 +109,7 @@ Not applicable. The previous implementation-owned integration conflict was resol
 
 ## Deployment Steps
 
-None performed. A local Linux ARM64 verification package was built and started, but it is not a publication or deployment.
+None performed. A prior local Linux ARM64 verification package was built and started, and a fresh local macOS ARM64 verification package was built without being started; neither is a publication or deployment.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -131,6 +131,9 @@ None performed. A local Linux ARM64 verification package was built and started, 
 - Delivery documentation check: `git diff --check` and mirrored bounded-window section equality passed.
 - Local Electron verification build: `pnpm build:electron:linux:arm64` passed with `EXIT_STATUS: 0`; AppImage SHA-256 `c163c58519f05346741d6ba56e694e4b079abe403be112f34f615d67d5da0a99`.
 - Local Electron startup: Packaged unpacked executable passed an isolated-profile smoke start, then was relaunched at the user's explicit request with normal profile `/root/.autobyteus`. It is running as PID `17641` in persistent execution session `24451`; its visible window is named `autobyteus`, and bundled backend health returned `{"status":"ok","message":"Server is running"}` on `127.0.0.1:29695`.
+- User-requested macOS ARM64 rebuild: `Pass` at source checkpoint `1f148ba5a0374aedaa3b83fbdec89e35623fc467` using the README-documented no-notarization command. The `1.4.22` DMG SHA-256 is `619ffd033bcfa79d251a5db3923e18f06cb28a5c48c436b151515d68c6392056`; the ZIP SHA-256 is `fd6eed0b6aa83054114b15faf3f284bfe8cc205a9d625fae8744ac4aaa75cc6f`.
+- macOS package verification: DMG checksum validation, ZIP archive validation, bundle-version inspection, and Mach-O ARM64 inspection passed. Evidence: `evidence/delivery-electron-macos-arm64-rebuild-20260721.log` and `evidence/delivery-electron-macos-arm64-rebuild-verification-20260721.txt`.
+- macOS runtime safety: The rebuild was artifact-only. The pre-existing `/Applications/AutoByteus.app` process and healthy port-`29695` backend were left running and untouched; the new candidate was not started to avoid a conflicting second backend.
 
 ## Rollback Criteria
 
