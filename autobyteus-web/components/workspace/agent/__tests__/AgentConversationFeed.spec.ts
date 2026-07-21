@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, nextTick } from 'vue';
 import AgentConversationFeed from '../AgentConversationFeed.vue';
 import type { EventMonitorBrowseAssistantVisual } from '~/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation';
 
@@ -29,6 +29,47 @@ const browseAssistant = (visuals: EventMonitorBrowseAssistantVisual[]) => ({
   turnGroupId: 'turn-1',
   visuals,
 });
+
+const defineFeedGeometry = (element: HTMLElement, scrollTop = 120) => {
+  Object.defineProperties(element, {
+    scrollHeight: { configurable: true, value: 1_000 },
+    clientHeight: { configurable: true, value: 400 },
+    offsetWidth: { configurable: true, value: 300 },
+    clientWidth: { configurable: true, value: 280 },
+    scrollTop: { configurable: true, writable: true, value: scrollTop },
+  });
+  element.getBoundingClientRect = () => ({
+    x: 0, y: 0, left: 0, top: 0, right: 300, bottom: 400, width: 300, height: 400,
+    toJSON: () => ({}),
+  });
+};
+
+const dispatchTrusted = (
+  element: HTMLElement,
+  type: string,
+  properties: Record<string, unknown> = {},
+) => {
+  const event = new Event(type, { bubbles: true, cancelable: true });
+  Object.defineProperty(event, 'isTrusted', { configurable: true, value: true });
+  for (const [key, value] of Object.entries(properties)) {
+    Object.defineProperty(event, key, { configurable: true, value });
+  }
+  element.dispatchEvent(event);
+};
+
+const iconStub = { template: '<svg data-testid="stub-icon" />' };
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+const mockAnimationFramesWithTimers = () => {
+  const implementation = (callback: FrameRequestCallback) => setTimeout(() => callback(Date.now()), 16) as unknown as number;
+  vi.stubGlobal('requestAnimationFrame', implementation);
+  vi.spyOn(window, 'requestAnimationFrame').mockImplementation(implementation);
+};
 
 describe('AgentConversationFeed', () => {
   it('renders canonical user and ai message components in order', () => {
@@ -328,7 +369,7 @@ describe('AgentConversationFeed', () => {
     expect(wrapper.text()).not.toContain('Compaction queued');
   });
 
-  it('shows a keyboard-native jump action only for a post-baseline visible revision while non-pinned', async () => {
+  it('shows one compact non-visually-named jump action only for a post-baseline visible revision while non-pinned', async () => {
     const conversation = {
       id: 'run-scroll',
       createdAt: '2026-03-07T00:00:00.000Z',
@@ -339,8 +380,8 @@ describe('AgentConversationFeed', () => {
       props: { conversation, presentationRevision: 0 },
       attachTo: document.body,
       global: {
-        stubs: { UserMessage: { template: '<div />' } },
-        mocks: { $t: () => 'New activity · Jump to latest' },
+        stubs: { UserMessage: { template: '<div />' }, Icon: iconStub },
+        mocks: { $t: () => 'Jump to latest activity' },
       },
     });
     const feed = wrapper.get('[data-testid="agent-conversation-feed"]');
@@ -352,8 +393,12 @@ describe('AgentConversationFeed', () => {
     await feed.trigger('scroll');
 
     await wrapper.setProps({ presentationRevision: 1 });
-    const jump = wrapper.get('button');
-    expect(jump.text()).toBe('New activity · Jump to latest');
+    const jump = wrapper.get('[data-testid="event-monitor-jump-to-latest"]');
+    expect(jump.text()).toBe('');
+    expect(jump.attributes('aria-label')).toBe('Jump to latest activity');
+    expect(jump.attributes('title')).toBeUndefined();
+    expect(jump.classes()).toEqual(expect.arrayContaining(['absolute', 'bottom-2', 'right-2', 'h-11', 'w-11']));
+    expect(jump.get('span').classes()).toEqual(expect.arrayContaining(['h-9', 'w-9']));
 
     await jump.trigger('click');
     expect(wrapper.find('button').exists()).toBe(false);
@@ -364,7 +409,7 @@ describe('AgentConversationFeed', () => {
     wrapper.unmount();
   });
 
-  it('keeps an explicit keyboard-operable return to latest across every ordinary browse state', async () => {
+  it('keeps one native icon-only return action across every ordinary browse state', async () => {
     const wrapper = mount(AgentConversationFeed, {
       props: {
         conversation: emptyConversation('run-browse-exit'),
@@ -375,9 +420,10 @@ describe('AgentConversationFeed', () => {
       global: {
         stubs: {
           EventMonitorBrowseAssistantRow: { template: '<div />' },
+          Icon: iconStub,
         },
         mocks: {
-          $t: (key: string) => key.endsWith('return_to_latest') ? 'Return to latest' : key,
+          $t: () => 'Jump to latest activity',
         },
       },
     });
@@ -388,40 +434,242 @@ describe('AgentConversationFeed', () => {
       expect(exit.element.tagName).toBe('BUTTON');
       expect(exit.attributes('type')).toBe('button');
       expect(exit.classes()).toContain('focus-visible:ring-2');
-      expect(exit.text()).toBe('Return to latest');
+      expect(exit.text()).toBe('');
+      expect(exit.attributes('aria-label')).toBe('Jump to latest activity');
+      expect(exit.attributes('title')).toBeUndefined();
     }
 
     const exit = wrapper.get('[data-testid="event-monitor-jump-to-latest"]');
     (exit.element as HTMLButtonElement).focus();
     expect(document.activeElement).toBe(exit.element);
     await exit.trigger('click');
-    await exit.trigger('keydown', { key: 'Enter' });
-    await exit.trigger('keydown', { key: ' ' });
-    expect(wrapper.emitted('jump-to-latest')).toHaveLength(3);
+    expect(wrapper.emitted('jump-to-latest')).toHaveLength(1);
     wrapper.unmount();
   });
 
-  it('uses the expiry recovery as the sole return control and supports keyboard activation', async () => {
+  it('uses the same restrained arrow as the sole expired-state return control', async () => {
     const wrapper = mount(AgentConversationFeed, {
       props: {
         conversation: emptyConversation('run-expired-exit'),
         browseState: 'expired',
       },
       global: {
+        stubs: { Icon: iconStub },
         mocks: {
-          $t: (key: string) => key.endsWith('earlier_cursor_expired') ? 'History changed · Return to latest' : key,
+          $t: () => 'Jump to latest activity',
         },
       },
     });
 
-    expect(wrapper.find('[data-testid="event-monitor-jump-to-latest"]').exists()).toBe(false);
-    const recovery = wrapper.get('[data-testid="event-monitor-expired-return"]');
-    expect(recovery.text()).toBe('History changed · Return to latest');
+    expect(wrapper.find('[data-testid="event-monitor-expired-return"]').exists()).toBe(false);
+    const recovery = wrapper.get('[data-testid="event-monitor-jump-to-latest"]');
+    expect(recovery.text()).toBe('');
+    expect(recovery.attributes('aria-label')).toBe('Jump to latest activity');
+    expect(recovery.get('span').classes()).toEqual(expect.arrayContaining(['border-amber-300', 'text-amber-700']));
     expect(recovery.classes()).toContain('focus-visible:ring-2');
     await recovery.trigger('click');
-    await recovery.trigger('keydown', { key: 'Enter' });
-    await recovery.trigger('keydown', { key: ' ' });
-    expect(wrapper.emitted('jump-to-latest')).toHaveLength(3);
+    expect(wrapper.emitted('jump-to-latest')).toHaveLength(1);
+  });
+
+  it('renders zero-layout paging chrome with delayed dots, compact retry, and silent terminal states', async () => {
+    vi.useFakeTimers();
+    mockAnimationFramesWithTimers();
+    const conversation = {
+      ...emptyConversation('run-zero-layout'),
+      messages: [{ type: 'user', text: 'first retained event', timestamp: new Date() }],
+    } as any;
+    const wrapper = mount(AgentConversationFeed, {
+      props: { conversation, browseState: 'loading', canLoadEarlier: false },
+      global: {
+        stubs: { UserMessage: { template: '<div data-testid="first-event" />' }, Icon: iconStub },
+        mocks: {
+          $t: (key: string) => key.endsWith('retry_earlier') ? 'Retry' : 'Jump to latest activity',
+        },
+      },
+    });
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]');
+
+    expect(feed.attributes('aria-busy')).toBe('true');
+    expect(wrapper.find('[data-testid="event-monitor-loading-dots"]').exists()).toBe(false);
+    await vi.advanceTimersByTimeAsync(149);
+    expect(wrapper.find('[data-testid="event-monitor-loading-dots"]').exists()).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    const dots = wrapper.get('[data-testid="event-monitor-loading-dots"]');
+    expect(dots.findAll('span')).toHaveLength(3);
+    expect(dots.text()).toBe('');
+    expect(wrapper.get('[data-testid="event-monitor-top-overlay"]').classes()).toContain('absolute');
+    expect(feed.element.firstElementChild?.classList.contains('rounded-xl')).toBe(true);
+
+    await wrapper.setProps({ browseState: 'beginning' });
+    expect(feed.attributes('aria-busy')).toBeUndefined();
+    expect(wrapper.find('[data-testid="event-monitor-top-overlay"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Beginning');
+
+    await wrapper.setProps({ browseState: 'error' });
+    const retry = wrapper.get('[data-testid="event-monitor-retry-earlier"]');
+    expect(retry.element.tagName).toBe('BUTTON');
+    expect(retry.text()).toBe('');
+    expect(retry.attributes('aria-label')).toBe('Retry');
+    expect(retry.attributes('title')).toBeUndefined();
+    expect(retry.classes()).toEqual(expect.arrayContaining(['h-11', 'w-11', 'focus-visible:ring-2']));
+    await retry.trigger('click');
+    expect(wrapper.emitted('load-earlier')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
+  it('requires a trusted direct wheel, touch, keyboard, or native-scrollbar session before a top request', async () => {
+    vi.useFakeTimers();
+    mockAnimationFramesWithTimers();
+    const adapters = [
+      (feed: HTMLElement) => dispatchTrusted(feed, 'wheel', { deltaY: -24 }),
+      (feed: HTMLElement) => {
+        dispatchTrusted(feed, 'touchstart', { touches: [{ clientY: 100 }] });
+        dispatchTrusted(feed, 'touchmove', { touches: [{ clientY: 140 }] });
+      },
+      (feed: HTMLElement) => dispatchTrusted(feed, 'keydown', { key: 'PageUp', shiftKey: false }),
+      (feed: HTMLElement) => dispatchTrusted(feed, 'pointerdown', { pointerId: 7, clientX: 295 }),
+    ];
+
+    for (const startDirectInput of adapters) {
+      const wrapper = mount(AgentConversationFeed, {
+        props: { conversation: emptyConversation(`run-input-${Math.random()}`), canLoadEarlier: true },
+        global: { stubs: { Icon: iconStub }, mocks: { $t: (key: string) => key } },
+      });
+      const feed = wrapper.get('[data-testid="agent-conversation-feed"]').element as HTMLElement;
+      defineFeedGeometry(feed);
+      await nextTick();
+      await vi.runAllTimersAsync();
+
+      feed.scrollTop = 20;
+      feed.dispatchEvent(new Event('scroll'));
+      expect(wrapper.emitted('load-earlier')).toBeUndefined();
+
+      feed.scrollTop = 120;
+      startDirectInput(feed);
+      feed.scrollTop = 20;
+      feed.dispatchEvent(new Event('scroll'));
+      expect(wrapper.emitted('load-earlier')).toHaveLength(1);
+
+      feed.scrollTop = 10;
+      feed.dispatchEvent(new Event('scroll'));
+      expect(wrapper.emitted('load-earlier')).toHaveLength(1);
+      wrapper.unmount();
+    }
+  });
+
+  it('blocks queued scroll, anchor/layout changes, and continued near-top position until post-work quiet and fresh input', async () => {
+    vi.useFakeTimers();
+    mockAnimationFramesWithTimers();
+    const wrapper = mount(AgentConversationFeed, {
+      props: { conversation: emptyConversation('run-blocked-chain'), canLoadEarlier: true },
+      global: {
+        stubs: { EventMonitorBrowseAssistantRow: { template: '<div />' }, Icon: iconStub },
+        mocks: { $t: (key: string) => key },
+      },
+    });
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]').element as HTMLElement;
+    defineFeedGeometry(feed);
+    await nextTick();
+    await vi.runAllTimersAsync();
+
+    dispatchTrusted(feed, 'wheel', { deltaY: -20 });
+    feed.scrollTop = 20;
+    feed.dispatchEvent(new Event('scroll'));
+    expect(wrapper.emitted('load-earlier')).toHaveLength(1);
+
+    feed.scrollTop = 0;
+    feed.dispatchEvent(new Event('scroll'));
+    dispatchTrusted(feed, 'wheel', { deltaY: -20 });
+    feed.scrollTop = 10;
+    feed.dispatchEvent(new Event('scroll'));
+    expect(wrapper.emitted('load-earlier')).toHaveLength(1);
+
+    await wrapper.setProps({ browseState: 'loading' });
+    await wrapper.setProps({
+      browseState: 'browsing',
+      browseItems: [browseAssistant([browseTextVisual('visual:anchor')])],
+    });
+    for (let step = 0; step < 3; step += 1) {
+      await nextTick();
+      await vi.runAllTimersAsync();
+    }
+
+    feed.scrollTop = 120;
+    feed.dispatchEvent(new Event('scroll'));
+    feed.scrollTop = 20;
+    feed.dispatchEvent(new Event('scroll'));
+    expect(wrapper.emitted('load-earlier')).toHaveLength(1);
+
+    feed.scrollTop = 120;
+    dispatchTrusted(feed, 'wheel', { deltaY: -20 });
+    feed.scrollTop = 20;
+    feed.dispatchEvent(new Event('scroll'));
+    expect(wrapper.emitted('load-earlier')).toHaveLength(2);
+    wrapper.unmount();
+  });
+
+  it('expires a continuous direct-input session and requires its idle boundary before fresh authority', async () => {
+    vi.useFakeTimers();
+    mockAnimationFramesWithTimers();
+    const wrapper = mount(AgentConversationFeed, {
+      props: { conversation: emptyConversation('run-max-intent'), canLoadEarlier: true },
+      global: { stubs: { Icon: iconStub }, mocks: { $t: (key: string) => key } },
+    });
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]').element as HTMLElement;
+    defineFeedGeometry(feed);
+    await nextTick();
+    await vi.runAllTimersAsync();
+
+    for (let sample = 0; sample < 51; sample += 1) {
+      dispatchTrusted(feed, 'wheel', { deltaY: -1 });
+      await vi.advanceTimersByTimeAsync(100);
+    }
+    dispatchTrusted(feed, 'wheel', { deltaY: -1 });
+    feed.scrollTop = 20;
+    feed.dispatchEvent(new Event('scroll'));
+    expect(wrapper.emitted('load-earlier')).toBeUndefined();
+
+    await vi.advanceTimersByTimeAsync(251);
+    feed.scrollTop = 120;
+    dispatchTrusted(feed, 'wheel', { deltaY: -1 });
+    feed.scrollTop = 20;
+    feed.dispatchEvent(new Event('scroll'));
+    expect(wrapper.emitted('load-earlier')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
+  it('clears unseen on manual bottom only in latest mode and preserves frozen browse until arrow activation', async () => {
+    const wrapper = mount(AgentConversationFeed, {
+      props: { conversation: emptyConversation('run-manual-bottom'), presentationRevision: 0 },
+      attachTo: document.body,
+      global: {
+        stubs: { EventMonitorBrowseAssistantRow: { template: '<div />' }, Icon: iconStub },
+        mocks: { $t: () => 'Jump to latest activity' },
+      },
+    });
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]').element as HTMLElement;
+    defineFeedGeometry(feed, 100);
+    feed.dispatchEvent(new Event('scroll'));
+    await wrapper.setProps({ presentationRevision: 1 });
+    expect(wrapper.find('[data-testid="event-monitor-jump-to-latest"]').exists()).toBe(true);
+
+    feed.scrollTop = 600;
+    feed.dispatchEvent(new Event('scroll'));
+    await nextTick();
+    expect(wrapper.find('[data-testid="event-monitor-jump-to-latest"]').exists()).toBe(false);
+
+    await wrapper.setProps({
+      browseState: 'browsing',
+      browseItems: [browseAssistant([browseTextVisual('visual:frozen')])],
+    });
+    feed.scrollTop = 600;
+    feed.dispatchEvent(new Event('scroll'));
+    await nextTick();
+    const arrow = wrapper.get('[data-testid="event-monitor-jump-to-latest"]');
+    expect(wrapper.emitted('jump-to-latest')).toBeUndefined();
+    await arrow.trigger('click');
+    expect(wrapper.emitted('jump-to-latest')).toHaveLength(1);
+    wrapper.unmount();
   });
 
   it('preserves retained disclosure component identity across same-turn prepend and newer turnover', async () => {

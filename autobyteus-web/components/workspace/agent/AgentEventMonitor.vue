@@ -12,7 +12,6 @@
       :browse-items="browse.presentation.value"
       :browse-state="browse.state.value"
       :can-load-earlier="browse.canLoadEarlier.value"
-      :browse-error-message="browse.errorMessage.value"
       :newer-browse-content-released="browse.newerBrowseContentReleased.value"
       :browse-has-newer-live-activity="browse.hasNewerLiveActivity.value"
       :enable-event-monitor-file-actions="true"

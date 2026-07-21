@@ -196,21 +196,9 @@ const messages = {
   "workspace.components.workspace.agent.ArtifactList.agent_artifacts":
     "Agent Artifacts",
   "workspace.components.workspace.agent.AgentConversationFeed.jump_to_latest":
-    "New activity · Jump to latest",
-  "workspace.components.workspace.agent.AgentConversationFeed.load_50_earlier":
-    "Load 50 earlier",
-  "workspace.components.workspace.agent.AgentConversationFeed.loading_earlier":
-    "Loading earlier…",
+    "Jump to latest activity",
   "workspace.components.workspace.agent.AgentConversationFeed.retry_earlier":
     "Retry",
-  "workspace.components.workspace.agent.AgentConversationFeed.active_trace_beginning":
-    "Beginning of current activity · Earlier activity has been compacted",
-  "workspace.components.workspace.agent.AgentConversationFeed.earlier_cursor_expired":
-    "Activity was compacted · Return to latest",
-  "workspace.components.workspace.agent.AgentConversationFeed.return_to_latest":
-    "Jump to latest",
-  "workspace.components.workspace.agent.AgentConversationFeed.newer_browse_released":
-    "Newer browsed activity was released to keep this view responsive",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "Retry workspace load",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":
