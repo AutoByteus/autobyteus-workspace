@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `ui-ux-spec.md` and `reproduction-evidence.md`; the latter's raw JSON and three screenshots were also inspected.
 - Current Review Round: 2
 - Trigger: Recheck after `solution_designer` corrected the two stale UI/UX supplement status labels identified by `DR-001`.

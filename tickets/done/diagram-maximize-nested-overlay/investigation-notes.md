@@ -24,8 +24,8 @@ The user reports that maximizing a diagram from inside an already-maximized arti
 
 | Artifact | Canonical path | Purpose / scope | Status | Core-artifact relationship | Approval applicability |
 | --- | --- | --- | --- | --- | --- |
-| UI/UX specification | `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/ui-ux-spec.md` | Defines nested host/diagram overlay journeys, state transitions, layer-specific dismissal, responsive behavior, and accessibility expectations. | Refined | Supports `BEH-001`–`BEH-004`, `REQ-001`–`REQ-009`, and the later overlay design. | Required |
-| Reproduction evidence | `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/reproduction-evidence.md` | Records exact browser-equivalent reproduction, computed stack values, SVG ownership, dismissal behavior, screenshots, and raw metrics. | Complete | Evidence basis for current behavior, root-cause classification, recommendations, and target design. | N/A |
+| UI/UX specification | `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/ui-ux-spec.md` | Defines nested host/diagram overlay journeys, state transitions, layer-specific dismissal, responsive behavior, and accessibility expectations. | Refined | Supports `BEH-001`–`BEH-004`, `REQ-001`–`REQ-009`, and the later overlay design. | Required |
+| Reproduction evidence | `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/reproduction-evidence.md` | Records exact browser-equivalent reproduction, computed stack values, SVG ownership, dismissal behavior, screenshots, and raw metrics. | Complete | Evidence basis for current behavior, root-cause classification, recommendations, and target design. | N/A |
 
 ## Source Log
 

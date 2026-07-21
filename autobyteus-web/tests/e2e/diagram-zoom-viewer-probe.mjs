@@ -493,6 +493,35 @@ const clickHttpAnchor = async (root) => {
 
 const rootSvgCount = (page) => page.locator('.mermaid-svg-container > svg, .mermaid-diagram-stage > svg').count();
 
+const readNestedArtifactState = async (page) => await page.evaluate(() => {
+  const shell = document.querySelector('[data-testid="artifact-content-viewer-shell"]');
+  const toggle = shell?.querySelector('[data-testid="artifact-viewer-zen-toggle"]');
+  const previewButton = shell?.querySelector('button[title="Preview Mode"]');
+  const opener = shell?.querySelector('.mermaid-expand-button');
+  const inlineSvg = shell?.querySelector('.mermaid-svg-container > svg');
+  const inlineRect = inlineSvg?.getBoundingClientRect();
+  return {
+    shellClass: shell?.className || '',
+    shellZIndex: shell ? getComputedStyle(shell).zIndex : null,
+    shellFixed: Boolean(shell?.classList.contains('fixed')),
+    toggleTitle: toggle?.getAttribute('title') || null,
+    path: shell?.querySelector('[data-testid="artifact-path-display"]')?.textContent?.trim() || null,
+    previewSelected: Boolean(previewButton?.classList.contains('bg-blue-50')),
+    contentPreserved: Boolean(shell?.textContent?.includes('Nested artifact preserved heading')),
+    inlineSvgCount: shell?.querySelectorAll('.mermaid-svg-container > svg').length ?? 0,
+    inlineSvgId: inlineSvg?.getAttribute('id') || null,
+    inlineSvgRect: inlineRect
+      ? { width: inlineRect.width, height: inlineRect.height }
+      : null,
+    viewerSvgCount: document.querySelectorAll('.mermaid-diagram-stage > svg').length,
+    backdropCount: document.querySelectorAll('.mermaid-viewer-backdrop').length,
+    viewerCanvasCount: document.querySelectorAll('.mermaid-viewer-canvas').length,
+    bodyOverflow: document.body.style.overflow,
+    openerFocused: document.activeElement === opener,
+    underlayPresent: Boolean(document.querySelector('[data-test="artifact-underlying-heading"]')),
+  };
+});
+
 let devServer;
 let browser;
 const contexts = [];
@@ -1303,6 +1332,165 @@ try {
       hybridInline,
       hybridToolbar,
       restoredFine,
+    };
+  }, page);
+
+  await runScenario('DZV-BR-009', 'Real maximized ArtifactContentViewer nested stacking, one-layer dismissal, focus return, and repeated cleanup', async () => {
+    await gotoReady(page, baseUrl);
+    const shell = page.locator('[data-testid="artifact-content-viewer-shell"]');
+    const previewButton = shell.locator('button[title="Preview Mode"]');
+    const hostToggle = shell.locator('[data-testid="artifact-viewer-zen-toggle"]');
+
+    await shell.locator('[data-testid="artifact-path-display"]').waitFor({ state: 'visible', timeout: timeoutMs });
+    await previewButton.waitFor({ state: 'visible', timeout: timeoutMs });
+    await previewButton.click();
+    const component = shell.locator('.mermaid-diagram-component').first();
+    await component.locator('.mermaid-svg-container > svg').waitFor({ state: 'visible', timeout: timeoutMs });
+    const opener = component.locator('.mermaid-expand-button');
+    const originalSvgId = await component.locator('.mermaid-svg-container > svg').getAttribute('id');
+    const bodyOverflowBefore = await page.evaluate(() => document.body.style.overflow);
+    const beforeMaximize = await readNestedArtifactState(page);
+    assert(beforeMaximize.path === 'docs/nested-diagram-probe.md', 'Artifact fixture must select the expected Markdown path before maximize', beforeMaximize);
+    assert(beforeMaximize.previewSelected && beforeMaximize.contentPreserved, 'Artifact fixture must be in Preview Mode with its selected content rendered', beforeMaximize);
+    assert(beforeMaximize.inlineSvgCount === 1 && beforeMaximize.viewerSvgCount === 0, 'Artifact fixture must start with one inline current SVG', beforeMaximize);
+
+    await hostToggle.click();
+    await waitFor('artifact host tier-120 maximize', async () => {
+      const state = await readNestedArtifactState(page);
+      return state.shellFixed && state.shellZIndex === '120' && state.toggleTitle === 'Restore view';
+    });
+    const maximized = await readNestedArtifactState(page);
+    assert(maximized.path === beforeMaximize.path && maximized.previewSelected && maximized.contentPreserved, 'Host maximize must preserve path, content, and Preview Mode', { beforeMaximize, maximized });
+
+    const dialog = page.locator('.mermaid-viewer-dialog');
+    const openNestedViewer = async () => {
+      await revealAndClickExpand(component);
+      await dialog.waitFor({ state: 'visible', timeout: timeoutMs });
+      await waitForToolbarIcons(page);
+      await waitFor('nested viewer fitted layout', () => page.evaluate(() => {
+        const canvas = document.querySelector('.mermaid-viewer-canvas');
+        const stage = document.querySelector('.mermaid-diagram-stage');
+        if (!canvas || !stage) return false;
+        const canvasRect = canvas.getBoundingClientRect();
+        const stageRect = stage.getBoundingClientRect();
+        return stageRect.width > 0
+          && stageRect.height > 0
+          && stageRect.left >= canvasRect.left - 1
+          && stageRect.right <= canvasRect.right + 1
+          && stageRect.top >= canvasRect.top - 1
+          && stageRect.bottom <= canvasRect.bottom + 1;
+      }));
+    };
+
+    await openNestedViewer();
+    const nestedOpen = await page.evaluate(() => {
+      const shell = document.querySelector('[data-testid="artifact-content-viewer-shell"]');
+      const hostToggle = shell?.querySelector('[data-testid="artifact-viewer-zen-toggle"]');
+      const backdrop = document.querySelector('.mermaid-viewer-backdrop');
+      const dialog = document.querySelector('.mermaid-viewer-dialog');
+      const canvas = document.querySelector('.mermaid-viewer-canvas');
+      const stage = document.querySelector('.mermaid-diagram-stage');
+      const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      const centerHit = document.elementFromPoint(center.x, center.y);
+      const toggleRect = hostToggle?.getBoundingClientRect();
+      const hostControlPoint = toggleRect
+        ? { x: toggleRect.left + toggleRect.width / 2, y: toggleRect.top + toggleRect.height / 2 }
+        : null;
+      const hostControlHit = hostControlPoint
+        ? document.elementFromPoint(hostControlPoint.x, hostControlPoint.y)
+        : null;
+      const canvasRect = canvas?.getBoundingClientRect();
+      const stageRect = stage?.getBoundingClientRect();
+      return {
+        hostZIndex: shell ? getComputedStyle(shell).zIndex : null,
+        viewerZIndex: backdrop ? getComputedStyle(backdrop).zIndex : null,
+        hostFixed: Boolean(shell?.classList.contains('fixed')),
+        path: shell?.querySelector('[data-testid="artifact-path-display"]')?.textContent?.trim() || null,
+        previewSelected: Boolean(shell?.querySelector('button[title="Preview Mode"]')?.classList.contains('bg-blue-50')),
+        contentPreserved: Boolean(shell?.textContent?.includes('Nested artifact preserved heading')),
+        inlineSvgCount: shell?.querySelectorAll('.mermaid-svg-container > svg').length ?? 0,
+        viewerSvgCount: document.querySelectorAll('.mermaid-diagram-stage > svg').length,
+        viewerSvgId: document.querySelector('.mermaid-diagram-stage > svg')?.getAttribute('id') || null,
+        backdropCount: document.querySelectorAll('.mermaid-viewer-backdrop').length,
+        controls: document.querySelectorAll('.mermaid-viewer-action').length,
+        center,
+        centerHitClass: centerHit?.className?.baseVal || centerHit?.className || null,
+        centerHitInsideViewer: Boolean(dialog?.contains(centerHit)),
+        centerHitInsideHost: Boolean(shell?.contains(centerHit)),
+        hostControlPoint,
+        hostControlHitInsideViewer: Boolean(dialog?.contains(hostControlHit) || backdrop === hostControlHit),
+        hostControlHitInsideHost: Boolean(shell?.contains(hostControlHit)),
+        fitted: Boolean(canvasRect && stageRect
+          && stageRect.width > 0
+          && stageRect.height > 0
+          && stageRect.left >= canvasRect.left - 1
+          && stageRect.right <= canvasRect.right + 1
+          && stageRect.top >= canvasRect.top - 1
+          && stageRect.bottom <= canvasRect.bottom + 1),
+        activeLabel: document.activeElement?.getAttribute('aria-label') || null,
+        bodyOverflow: document.body.style.overflow,
+      };
+    });
+    assert(nestedOpen.hostZIndex === '120' && nestedOpen.viewerZIndex === '130', 'Nested viewer must compute above the real tier-120 artifact host', nestedOpen);
+    assert(Number(nestedOpen.viewerZIndex) > Number(nestedOpen.hostZIndex), 'Nested viewer z-index must numerically outrank the host', nestedOpen);
+    assert(nestedOpen.centerHitInsideViewer && !nestedOpen.centerHitInsideHost, 'Viewport-center hit-testing must belong to the viewer instead of the host', nestedOpen);
+    assert(nestedOpen.hostControlHitInsideViewer && !nestedOpen.hostControlHitInsideHost, 'Physical hit-testing over the lower host restore control must remain owned by the top viewer', nestedOpen);
+    assert(nestedOpen.hostFixed && nestedOpen.path === beforeMaximize.path && nestedOpen.previewSelected && nestedOpen.contentPreserved, 'Covered host must remain mounted, maximized, selected, and in Preview Mode', nestedOpen);
+    assert(nestedOpen.inlineSvgCount === 0 && nestedOpen.viewerSvgCount === 1 && nestedOpen.viewerSvgId === originalSvgId, 'Open nested viewer must own exactly one current SVG with stable identity', { nestedOpen, originalSvgId });
+    assert(nestedOpen.backdropCount === 1 && nestedOpen.controls === 4 && nestedOpen.fitted, 'Nested viewer must expose one fitted usable top layer with four controls', nestedOpen);
+    assert(nestedOpen.activeLabel === 'Close diagram viewer' && nestedOpen.bodyOverflow === 'hidden', 'Nested viewer must receive focus and lock body scrolling', nestedOpen);
+    await page.mouse.click(nestedOpen.center.x, nestedOpen.center.y);
+    assert(await dialog.isVisible(), 'Physical center interaction must not dismiss or activate through the viewer');
+    assert((await readNestedArtifactState(page)).shellFixed, 'Physical viewer interaction must not restore the lower host');
+    await page.screenshot({ path: path.join(outputDir, 'DZV-BR-009-nested-open.png'), fullPage: false });
+
+    const cycles = [];
+    const assertClosedCycle = async (method) => {
+      await dialog.waitFor({ state: 'detached', timeout: timeoutMs });
+      await waitFor(`${method} focus return after viewer close`, () => opener.evaluate((element) => document.activeElement === element));
+      const state = await readNestedArtifactState(page);
+      assert(state.shellFixed && state.shellZIndex === '120' && state.toggleTitle === 'Restore view', `${method} must leave the real artifact host maximized`, state);
+      assert(state.path === beforeMaximize.path && state.previewSelected && state.contentPreserved, `${method} must preserve selected content and Preview Mode`, state);
+      assert(state.inlineSvgCount === 1 && state.inlineSvgId === originalSvgId && state.viewerSvgCount === 0, `${method} must restore exactly one inline SVG with stable identity`, { state, originalSvgId });
+      assert(state.inlineSvgRect?.width > 0 && state.inlineSvgRect?.height > 0, `${method} must not leave a blank diagram region`, state);
+      assert(state.backdropCount === 0 && state.viewerCanvasCount === 0, `${method} must remove transient viewer DOM`, state);
+      assert(state.bodyOverflow === bodyOverflowBefore && state.openerFocused, `${method} must restore exact body overflow and focus after lifecycle completion`, { state, bodyOverflowBefore });
+      cycles.push({ method, state });
+    };
+
+    await page.locator('button[aria-label="Close diagram viewer"]').click();
+    await assertClosedCycle('Close button');
+
+    await openNestedViewer();
+    const backdropOwnsCorner = await page.locator('.mermaid-viewer-backdrop').evaluate((element) => document.elementFromPoint(3, 3) === element);
+    assert(backdropOwnsCorner, 'Backdrop must physically own the corner hit target above the artifact');
+    await page.mouse.click(3, 3);
+    await assertClosedCycle('Backdrop');
+
+    await openNestedViewer();
+    await page.keyboard.press('Escape');
+    await assertClosedCycle('First Escape');
+    await page.screenshot({ path: path.join(outputDir, 'DZV-BR-009-first-escape-host-retained.png'), fullPage: false });
+
+    await page.keyboard.press('Escape');
+    await waitFor('separate later artifact host dismissal', async () => {
+      const state = await readNestedArtifactState(page);
+      return !state.shellFixed && state.toggleTitle === 'Maximize view';
+    });
+    const afterHostDismissal = await readNestedArtifactState(page);
+    assert(afterHostDismissal.inlineSvgCount === 1 && afterHostDismissal.inlineSvgId === originalSvgId, 'Later host dismissal must retain the restored inline diagram', afterHostDismissal);
+    assert(afterHostDismissal.path === beforeMaximize.path && afterHostDismissal.previewSelected && afterHostDismissal.contentPreserved, 'Later host dismissal must return to the same selected Preview surface', afterHostDismissal);
+    assert(afterHostDismissal.backdropCount === 0 && afterHostDismissal.viewerCanvasCount === 0 && afterHostDismissal.bodyOverflow === bodyOverflowBefore, 'Repeated cycles and host dismissal must leave no overlay or body-lock residue', { afterHostDismissal, bodyOverflowBefore });
+    assert(afterHostDismissal.underlayPresent, 'Separate host dismissal must reveal the fixture surface underneath');
+
+    return {
+      beforeMaximize,
+      maximized,
+      originalSvgId,
+      bodyOverflowBefore,
+      nestedOpen,
+      cycles,
+      afterHostDismissal,
     };
   }, page);
 

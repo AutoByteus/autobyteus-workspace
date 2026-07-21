@@ -2,17 +2,17 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/design-spec.md`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/ui-ux-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/reproduction-evidence.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/probe-evidence/nested-overlay-reproduction.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/probe-evidence/01-artifact-maximized-before-diagram.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/probe-evidence/02-diagram-viewer-obscured.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/probe-evidence/03-escape-closes-both-layers.png`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/in-progress/diagram-maximize-nested-overlay/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/ui-ux-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/reproduction-evidence.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/probe-evidence/nested-overlay-reproduction.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/probe-evidence/01-artifact-maximized-before-diagram.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/probe-evidence/02-diagram-viewer-obscured.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/probe-evidence/03-escape-closes-both-layers.png`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/design-review-report.md`
 
 ## What Changed
 
