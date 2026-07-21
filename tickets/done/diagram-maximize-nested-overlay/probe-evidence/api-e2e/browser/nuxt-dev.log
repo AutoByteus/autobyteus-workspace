@@ -1,0 +1,52 @@
+
+> autobyteus@1.4.22 dev /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web
+> nuxt dev --host 0.0.0.0 --port 50236
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+
+              █▀▀▀▀▀▀▀████▀▀▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▄▄█▀█▀█▀█ █▀▀▀█ █
+              █ █   █ █ ▀██▄▄ ▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀█▀▄ █ █▀█ ▀▀▀▀▀ █
+              █▀▀███▀▀▀█▀▄ ▀▀▄ ▀███▀▀████
+              ██▀  █▀▀  ▄▀█▄▄█ ▄▄▀▀▄ ▄ ▀█
+              █ ██  ▀▀▀▄ █▄▀█▀▄ ▀▀█▄▄██ █
+              █ ██▀██▀▀█▀▀▄  ▄ █▀█▀█▀█ ▀█
+              █ █▀▀▄ ▀▄ ▄█▄█▀▄█ ▀▀▀ █ █▄█
+              █▀▀▀▀▀▀▀█ ▄▀ ▄▀▄▄ █▀█ ▀▄█▀█
+              █ █▀▀▀█ █▄▀█▄▄▀▄▀ ▀▀▀ ▀▀▄██
+              █ █   █ ██ ▀▄ ████▀▄▄█▄▀▄ █
+              █ ▀▀▀▀▀ █ █▀ ▄█▀  █ ▄▄▀██ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+  ➜ Local:    http://0.0.0.0:50236/
+  ➜ Network:  http://192.168.2.158:50236/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Re-optimizing dependencies because vite config has changed
+✔ Vite client built in 162ms
+✔ Vite server built in 154ms
+[nitro] ✔ Nuxt Nitro server built in 2382ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @iconify/vue, markdown-it, dompurify, katex, @mdit/plugin-katex, @monaco-editor/loader, vue-pdf-embed, xlsx, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json, crypto-js/sha256
+ℹ ✨ optimized dependencies changed. reloading
+
+ ERROR  http proxy error: /rest/health
+Error: connect ECONNREFUSED 127.0.0.1:9
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+
+
+ ERROR  http proxy error: /rest/health
+Error: connect ECONNREFUSED 127.0.0.1:9
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17) (x2)
+
+
+ ERROR  http proxy error: /rest/health
+Error: connect ECONNREFUSED 127.0.0.1:9
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1638:16)
+    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17) (x3)

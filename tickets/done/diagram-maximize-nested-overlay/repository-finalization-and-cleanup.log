@@ -1,0 +1,22 @@
+# Repository finalization and cleanup
+date=2026-07-21
+ticket_branch=codex/diagram-maximize-nested-overlay
+ticket_commit=b516d82990c09f0e615ab9c99344a274dcab2700
+ticket_branch_push=PASS
+finalization_target=origin/personal
+target_before_merge=534210b9e1dffff6c22855ae89ddb3d2afef5a9b
+target_advanced_after_user_verification=No
+merge_method=no-fast-forward merge
+merge_commit=092afe117a18ab7a1f33bce215de23eb0c64766f
+merge_push=PASS
+release_commit=54acfa29294d922f921c674c12ce7298da9b87e8
+release_tag=v1.4.23
+release_branch_push=PASS
+release_tag_push=PASS
+remote_personal_contains_ticket_commit=PASS
+ticket_worktree_cleanup=PASS
+worktree_prune=PASS
+local_ticket_branch_cleanup=PASS
+remote_ticket_branch_cleanup=PASS
+unrelated_superrepo_untracked_state_preserved=.article-work/
+overall=PASS
