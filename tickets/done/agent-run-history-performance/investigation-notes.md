@@ -49,7 +49,7 @@ Reference image: `/home/autobyteus/data/memory/agent_teams/software_engineering_
 
 - Project Type (`Git`/`Non-Git`): `Git` monorepo/workspace checkout
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance`
 - Current Branch: `codex/agent-run-history-performance`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance`
 - Bootstrap Base Branch: `origin/personal`
@@ -64,8 +64,8 @@ Reference image: `/home/autobyteus/data/memory/agent_teams/software_engineering_
 
 | Artifact Path | Purpose | Evidence Or Decision Captured | Related Requirement / Acceptance-Criteria IDs | Status | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md` | Authoritative user-visible rolling and active-trace-browse Event Monitor specification | Latest-100 semantics, internal fixed 50-event pages, 300-resident turnover, deliberate top-threshold paging, zero-layout loading/recovery, centered arrow / skill-action coexistence, one neutral base treatment including expiry, unchanged disclosures, copy removal | `REQ-001`–`REQ-012`; `AC-001`–`AC-015` | `Refined for round 12`; zero-layout, centered quiet-white arrow, and one-state-invariant neutral treatment user-approved 2026-07-21 | Architecture round 12 |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md` | Safe corrected live-validation topology and evidence contract | Mixed-version diagnosis, snapshot exclusivity, latest/page metric definitions, ordinary/browse/expired arrow-style equality, decision gates | `REQ-001`–`REQ-003`, `REQ-009`–`REQ-012`; `AC-001`–`AC-003`, `AC-008`–`AC-010`, `AC-012`–`AC-015` | `Design-ready for round 12`; approval `N/A` | Architecture review, then delivery/API-E2E execution as routed |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/history-window-ui-ux-spec.md` | Authoritative user-visible rolling and active-trace-browse Event Monitor specification | Latest-100 semantics, internal fixed 50-event pages, 300-resident turnover, deliberate top-threshold paging, zero-layout loading/recovery, centered arrow / skill-action coexistence, one neutral base treatment including expiry, unchanged disclosures, copy removal | `REQ-001`–`REQ-012`; `AC-001`–`AC-015` | `Refined for round 12`; zero-layout, centered quiet-white arrow, and one-state-invariant neutral treatment user-approved 2026-07-21 | Architecture round 12 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/integrated-live-validation-plan.md` | Safe corrected live-validation topology and evidence contract | Mixed-version diagnosis, snapshot exclusivity, latest/page metric definitions, ordinary/browse/expired arrow-style equality, decision gates | `REQ-001`–`REQ-003`, `REQ-009`–`REQ-012`; `AC-001`–`AC-003`, `AC-008`–`AC-010`, `AC-012`–`AC-015` | `Design-ready for round 12`; approval `N/A` | Architecture review, then delivery/API-E2E execution as routed |
 
 ## Source Log
 
@@ -214,7 +214,7 @@ Reference image: `/home/autobyteus/data/memory/agent_teams/software_engineering_
 | 2026-07-20 | Timing bound | Window creation timestamp to screenshot mtime | 212.893 s combined upper bound | Cannot assign time to bootstrap vs row request vs hydration without new markers |
 
 Evidence directory:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence`
 
 Retained files include projection metric summaries, the standalone dedupe benchmark script/results, and active-only metric/benchmark summaries. Sensitive raw response files were removed.
 

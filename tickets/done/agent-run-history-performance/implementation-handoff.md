@@ -2,13 +2,13 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/design-spec.md`
 - Supplemental task artifacts:
-  - UI/UX specification: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
-  - Integrated validation plan: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative architecture round 12 `Pass`)
+  - UI/UX specification: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/history-window-ui-ux-spec.md`
+  - Integrated validation plan: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/integrated-live-validation-plan.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/design-review-report.md` (authoritative architecture round 12 `Pass`)
 - Historical downstream reports and `api-e2e-round5-zero-layout` evidence remain pre-supersession reproduction/context evidence only. They do not approve the centered-arrow correction or authorize delivery finalization.
 
 ## What Changed
@@ -27,7 +27,7 @@ Implemented the focused round-10 zero-layout Event Monitor rework in source comm
 - Scoped manual near-bottom clearing to latest mode. Manual bottom in frozen browse leaves the browse snapshot, controller state, unseen state, and arrow intact; only arrow activation emits browse reset and reveals current live truth.
 - Added an element ref for the feed scroll owner so anchor/scroll work remains local and testable even when the component is not attached to the global document.
 - Added focused component and localization coverage for all four direct-input adapters, trusted-input/position separation, one consumed request, blocked queued/layout/near-top non-chaining, post-work fresh input, maximum-session expiry, delayed/zero-layout chrome, icon-only accessibility, latest-versus-browse manual bottom, obsolete-copy removal, exact centered geometry classes, and exact ordinary/browse/released/expired class/computed-style signature equality.
-- Added fresh round-12 implementation render evidence under `tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-*` using the real `SkillImprovementComposerCta`, then removed the temporary development preview route after inspection.
+- Added fresh round-12 implementation render evidence under `tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-*` using the real `SkillImprovementComposerCta`, then removed the temporary development preview route after inspection.
 
 No server/API/storage/page DTO/cursor/generation/browse-controller logic changed. The active-only/latest-100, fixed-50 server page, isolated browse, resident-300, stable source-to-DOM identity, closed result/log-free DTO, visible-presentation witness, Activity cap, copy removal, attachment handling, and collapsed-card implementation remain the reviewed baseline.
 
@@ -59,13 +59,13 @@ No server/API/storage/page DTO/cursor/generation/browse-controller logic changed
 - `autobyteus-web/localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts`
   - Guards exact accessible names and removal of visible/count/status keys.
 - Render evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-zero-layout-event-monitor-20260721.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-zero-layout-loading-20260721.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-zero-layout-browse-20260721.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-20260721.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-checks-20260721.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-wide-20260721.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-narrow-20260721.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/implementation-zero-layout-event-monitor-20260721.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/implementation-zero-layout-loading-20260721.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/implementation-zero-layout-browse-20260721.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-20260721.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-checks-20260721.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-wide-20260721.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-narrow-20260721.png`
 
 ## Important Assumptions
 

@@ -336,23 +336,45 @@ Activity projections. Selection must happen after lifecycle reconstruction;
 raw-record tail slicing can separate related tool-call and result evidence.
 
 When the active trace contains earlier events, the normal projection exposes
-that availability without expanding its latest-100 payload. The explicit
-`Load 50 earlier` action enters an ephemeral active-trace browse snapshot: the
-first request returns the current latest 100 plus at most 50 immediately
-preceding canonical events, and each opaque-cursor request prepends at most 50
-more. Standalone and team-member page queries use a dedicated central-only
-typed projection; raw tool results, logs, Activity detail, and generic payload
-objects are not transported. Cursors are bound to the authorized subject and
-active-trace generation, remain valid across ordinary appends, and expire on a
-rewrite or compaction instead of falling back to an archive.
+only availability and does not expand its latest-100 payload. Earlier paging is
+feed-native rather than a visible load control: one fresh bounded direct-input
+session that crosses the top threshold may request one server-fixed page. Wheel,
+touch, keyboard, and an actually exposed native scrollbar are supported input
+sources; mount, selection, automatic bottom-follow, anchor restoration, queued
+scroll delivery, layout reflow, continued momentum, or remaining near the top
+cannot request or chain another page. A 24 px entry / 96 px exit hysteresis,
+input-quiet period, and two stable frames keep each session single-use. The
+internal page size remains 50 but is not rendered or exposed through visible or
+accessibility copy.
+
+The first page response establishes one consistent snapshot containing the
+current latest 100 plus at most 50 immediately preceding canonical events, and
+each opaque-cursor continuation prepends at most 50 more. Standalone and
+team-member queries use a dedicated central-only typed projection; raw tool
+results, logs, Activity detail, and generic payload objects are not transported.
+Cursors are bound to the authorized subject and active-trace generation, remain
+valid across ordinary appends, and expire on rewrite or compaction instead of
+falling back to an archive.
 
 Browse presentation remains separate from canonical live conversation and
 Activity state while live updates continue independently. It retains and mounts
-at most 300 central visual events, releases the farthest newer 50-event page
-when necessary, and uses stable event/subvisual identities for scroll anchors,
-Vue keys, and disclosure ownership. Retry and cursor-expiry states are inline;
-`Jump to latest` discards the browse snapshot and restores the current live
-latest-100 presentation.
+at most 300 central visual events, releases the farthest newer page block when
+necessary, and uses stable event/subvisual identities for scroll anchors, Vue
+keys, and disclosure ownership. Paging states consume no normal-flow height: a
+delayed three-dot loading indicator and compact retry affordance occupy one
+absolute top overlay slot, the active-trace beginning is silent, and expiry
+keeps retained content while offering the same return-to-latest affordance.
+
+One icon-only downward arrow is the only persistent recovery overlay when an
+ordinary unseen update or frozen/released/expired browse state requires an
+explicit return to live truth. It is centered against the feed at an 8 px bottom
+inset, with a minimum 44 px target, a quiet neutral 36 px white circular surface,
+and a simple dark 16 px glyph. Ordinary, browse, released, and expired states
+share the same treatment: no visible label, tooltip, badge, count, pulse,
+warning color, or right-side fallback. The button keeps a localized non-visual
+accessible name and visible keyboard focus. It remains independent from the
+right-aligned conditional **improve skills** composer action and the two must not
+overlap or create horizontal overflow at wide or narrow widths.
 
 The frontend defensively applies the same `100`-visual-event bound during
 historical hydration and every standalone, team, or local-submission mutation.
@@ -377,14 +399,16 @@ presentation. Conversation replacement resets the revision baseline; an
 already-subscribed live team context preserves both its conversation and
 revision.
 
-When pinned, a real presentation change follows the bottom. When non-pinned,
-the viewport remains in place and the localized, keyboard-operable
-`New activity · Jump to latest` action appears until the user returns to the
-bottom. Net no-op protocol traffic does not show it, and streaming tokens are
-not exposed through a feed-wide live region. Thinking and tool disclosures
-remain collapsed by default. The former conversation-copy control and its eager
-full-conversation string were removed without a replacement export action, and
-usage totals shown in this surface describe only the retained recent window.
+When pinned, a real presentation change follows the bottom. In latest mode,
+manual return to the bottom clears ordinary unseen state. A frozen browse
+snapshot remains separate even if the user scrolls to its bottom; only explicit
+arrow activation discards its pages/cursors and restores the current live
+latest-100 presentation. Net no-op protocol traffic does not show the arrow,
+and streaming tokens are not exposed through a feed-wide live region. Thinking
+and tool disclosures remain collapsed by default. The former conversation-copy
+control and its eager full-conversation string were removed without a
+replacement export action, and usage totals shown in this surface describe only
+the retained recent window.
 
 ### Workspace History Row Titles
 

@@ -2,13 +2,13 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 12, Pass)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 9, Pass)
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/requirements-doc.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/integrated-live-validation-plan.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/design-review-report.md` (authoritative round 12, Pass)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/code-review-report.md` (authoritative round 9, Pass)
 - Current Investigation Round: `6`
 - Trigger: Fresh coverage investigation for the user-approved centered neutral arrow source/evidence commit `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7` and corrected handoff packaging commit `5eb12b42e` after source-review round 9 Pass.
 - Prior Investigation Reviewed: `Round 5` — paused when the lower-right placement basis was superseded. Its completed API checks are preserved as pre-supersession context only and cannot approve the centered-arrow source.
@@ -520,7 +520,7 @@ No durable assertion is stale, unclear, or requires removal. The implementation 
 - Broader-validation result: `Not Executed — design basis superseded before browser/live setup`.
 - Confidence score: not finalized; the pre-execution `74.7%` is planning context only and does not apply to the revised bottom-centered design.
 - Resume rule: a revised user-approved requirements/design package must pass architecture review, implementation, and implementation-source review before a new API/E2E round may start. The next round must treat all round-5 evidence as non-authoritative context and freshly validate the revised placement/collision behavior.
-- Preserved evidence marker: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/PRE-SUPERSESSION-NOTICE.md`.
+- Preserved evidence marker: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/PRE-SUPERSESSION-NOTICE.md`.
 
 ---
 
@@ -648,4 +648,4 @@ No durable test file was added, updated, removed, disabled, or rebaselined. The 
 - Final broader validation result: `Pass`.
 - Reroute required: `No`.
 - Residual limitations: default macOS overlay scrollbars did not expose a non-zero native gutter; physical touch hardware and Electron shell were not executed. These are non-blocking because touch was exercised in a real touch-enabled browser context, the gutter requirement is explicitly conditional, and the changed renderer behavior is web-equivalent with no Electron/preload/IPC boundary change.
-- Authoritative evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow`.
+- Authoritative evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow`.

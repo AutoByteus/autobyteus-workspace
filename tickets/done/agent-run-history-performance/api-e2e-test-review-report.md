@@ -4,11 +4,11 @@
 
 - Review Round: `3`
 - Trigger: Successful API/E2E execution round 5 for centered neutral-arrow source/evidence commit `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7` and corrected implementation-handoff packaging commit `5eb12b42e`; the execution package reports no durable test-code change.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (round 9, `Pass`)
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-coverage-investigation.md` (investigation round 6, complete)
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-execution-coverage-report.md` (execution round 5, `Pass`)
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/requirements-doc.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/integrated-live-validation-plan.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/code-review-report.md` (round 9, `Pass`)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/api-e2e-coverage-investigation.md` (investigation round 6, complete)
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/api-e2e-execution-coverage-report.md` (execution round 5, `Pass`)
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `97.4%`; all seven categories are at least 96%, and no critical acceptance criterion lacks direct proof.
 - Prior unresolved test-review findings rechecked: `None` — prior test-review rounds passed without findings.

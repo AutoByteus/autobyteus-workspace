@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 12 Pass)
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 9 Pass)
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-coverage-investigation.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/requirements-doc.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/history-window-ui-ux-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/integrated-live-validation-plan.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/design-review-report.md` (authoritative round 12 Pass)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/code-review-report.md` (authoritative round 9 Pass)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/api-e2e-coverage-investigation.md`
 - Current Execution Round: `5`
 - Trigger: Fresh API/E2E execution for centered neutral-arrow source/evidence commit `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7` and corrected handoff packaging commit `5eb12b42e` after source-review round 9 Pass.
 - Prior Round Reviewed: `Round 4` — authoritative only for the pre-zero-layout paging candidate. Round-5 investigation evidence for `aa9705a28` was paused pre-browser when its lower-right placement basis was superseded and is not counted here.
@@ -157,7 +157,7 @@ No test file was removed. The obsolete cross-file assertion was updated in place
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `tickets/in-progress/agent-run-history-performance/evidence/api-e2e/server-run-history.txt` | Expanded backend log/metrics | Retained | 4 files / 13 tests; in-process 37.637 ms |
+| `tickets/done/agent-run-history-performance/evidence/api-e2e/server-run-history.txt` | Expanded backend log/metrics | Retained | 4 files / 13 tests; in-process 37.637 ms |
 | `.../evidence/api-e2e/web-expanded.txt` | Expanded frontend log | Retained | 19 files / 174 tests |
 | `.../evidence/api-e2e/live-http-curl-metrics.txt` | Live timing | Retained | Three HTTP measurements |
 | `.../evidence/api-e2e/live-http-response-summary.json` | Live payload/hash summary | Retained | No raw content retained |
@@ -314,7 +314,7 @@ No implementation production file changed in round 2. Round-1 API/E2E durable fi
 - Synthetic app data/SQLite/memory, raw HTTP response/query, and temporary Nuxt route/browser script removed.
 - No matching owned process remains.
 - The reviewer-authored `code-review-report.md` modification was preserved.
-- Evidence root: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round2`.
+- Evidence root: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/api-e2e-round2`.
 
 ### Round-2 Result And Routing
 
@@ -414,7 +414,7 @@ The first two focused GraphQL attempts failed only because the new test initiall
 - The generated live HTTP fixture's active/archive/manifest hashes were unchanged. The browser fixture's active file was intentionally rewritten only for cursor-expiry control flow; its archive and manifest remained unchanged.
 - Backend ports `31249`/`31250`, Nuxt `31175`, Chromium, temporary route/script, SQLite, memory, and raw GraphQL bodies were removed. Aggregate metrics and synthetic screenshot only were retained.
 - Port 8000 remained healthy (`HTTP 200`) after cleanup and was never stopped.
-- Evidence root: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round4-active-trace`.
+- Evidence root: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace`.
 
 ### Round-4 Confidence Scorecard
 
