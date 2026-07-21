@@ -1,20 +1,11 @@
-# Mermaid renderer failure containment
+# Release Notes — Nested Diagram Overlay
 
-## Summary
+## Fixes
 
-- Suppress Mermaid's fallback error rendering for embedded diagrams so rejected
-  renders do not insert vendor-owned SVG nodes into `document.body`.
-- Keep rejected renders in the existing `MermaidDiagram.vue` local error card.
-- Constrain long parser messages with local width, min-width, overflow, and
-  wrapping rules so malformed Mermaid cannot widen Markdown or workspace
-  surfaces.
-- Preserve valid SVG, viewer, focus, link, generation, and unmount behavior.
+- Mermaid diagrams now open above an already-maximized artifact or Markdown preview instead of appearing blank or hidden behind the host.
+- Closing the diagram with its close action, backdrop, or `Escape` now dismisses only the diagram and keeps the underlying preview maximized with its path, content, and Preview selection intact.
+- A separate later `Escape` can still exit the underlying maximized preview.
 
-## Verification note
+## Quality
 
-- API/E2E passed at 96% final confidence and proportional durable-test review
-  was Not Applicable / accepted because no durable API/E2E tests changed.
-- User confirmed the rebuilt artifact is working. The delivery record retains
-  the bounded residuals: no packaged Electron launch, Windows runtime,
-  authenticated Event Monitor feed, or exact production malformed payload was
-  independently exercised.
+- Extended the existing real-browser diagram probe with the full artifact-preview-to-Mermaid component path, pointer-layer checks, repeated dismissal cycles, focus and single-SVG restoration, and owned-resource cleanup.
