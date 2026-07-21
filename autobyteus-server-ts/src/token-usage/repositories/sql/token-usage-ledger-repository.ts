@@ -226,16 +226,26 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
   };
 };
 
+class TokenUsagePrismaClientOwner {
+  private prisma: PrismaClient | null = null;
+
+  get client(): PrismaClient {
+    this.prisma ??= createConfiguredPrismaClient();
+    return this.prisma;
+  }
+}
+
+const defaultPrismaClientOwner = new TokenUsagePrismaClientOwner();
+
 export class SqlTokenUsageLedgerRepository {
-  private prisma: PrismaClient | null;
+  private readonly injectedPrisma: PrismaClient | null;
 
   constructor(prisma?: PrismaClient) {
-    this.prisma = prisma ?? null;
+    this.injectedPrisma = prisma ?? null;
   }
 
   private get client(): PrismaClient {
-    this.prisma ??= createConfiguredPrismaClient();
-    return this.prisma;
+    return this.injectedPrisma ?? defaultPrismaClientOwner.client;
   }
 
   async appendUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
