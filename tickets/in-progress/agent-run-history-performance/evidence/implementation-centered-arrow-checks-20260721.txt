@@ -15,7 +15,7 @@ Result: INCONCLUSIVE — Node exhausted the default ~4 GiB heap during repositor
 
 Retry command:
   NODE_OPTIONS=--max-old-space-size=8192 pnpm exec nuxi typecheck
-Result: FAIL — repository-wide baseline contains 4,889 TypeScript diagnostics across unrelated build scripts, legacy components/tests, stores, missing/generated modules, and setup utilities. Examples include build/scripts/afterPack.ts type-only imports, components/agents/MarketplaceFilter.vue missing ~/stores/agents, generated GraphQL member mismatches, and tests/setup/websocket.ts missing ws declarations. No diagnostic referenced either changed file:
+Result: FAIL — the current repository-wide check reports 4,889 TypeScript diagnostics across unrelated build scripts, legacy components/tests, stores, missing/generated modules, and setup utilities. Examples include build/scripts/afterPack.ts type-only imports, components/agents/MarketplaceFilter.vue missing ~/stores/agents, generated GraphQL member mismatches, and tests/setup/websocket.ts missing ws declarations. No diagnostic referenced either changed file:
   - autobyteus-web/components/workspace/agent/AgentConversationFeed.vue
   - autobyteus-web/components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
 The focused Vitest transform/execution for both changed files passed. This is not recorded as a typecheck pass.
