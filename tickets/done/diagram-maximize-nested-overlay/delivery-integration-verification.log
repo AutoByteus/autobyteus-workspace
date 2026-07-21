@@ -1,0 +1,48 @@
+# Delivery integration verification
+timestamp=2026-07-21T10:34:39Z
+ticket=diagram-maximize-nested-overlay
+
+## Refresh latest tracked base
+$ git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+HEAD=425ca42974b7e213c08033480b3301446aae1366
+origin/personal=534210b9e1dffff6c22855ae89ddb3d2afef5a9b
+merge-base=534210b9e1dffff6c22855ae89ddb3d2afef5a9b
+left-right=1	0
+base-current-check=PASS
+
+## Tracked patch whitespace
+$ git diff --check
+git-diff-check=PASS
+
+## Durable probe syntax
+$ node --check autobyteus-web/tests/e2e/diagram-zoom-viewer-probe.mjs
+probe-syntax=PASS
+
+## Structured browser evidence and cleanup
+$ node <delivery evidence assertions>
+overallResult=PASS
+scenarioIds=PASS
+scenariosPass=PASS
+failuresEmpty=PASS
+pageErrorsEmpty=PASS
+contextsClosed=PASS
+browserClosed=PASS
+serverStopped=PASS
+devLogClosed=PASS
+temporaryPageRemoved=PASS
+scenario-count=9
+
+## Temporary fixture route absence
+$ test ! -e autobyteus-web/pages/api-e2e-diagram-zoom-viewer.vue
+temporary-route-absence=PASS
+
+## Delivery-owned artifact whitespace/newline check
+$ node <delivery artifact text assertions>
+tickets/in-progress/diagram-maximize-nested-overlay/docs-sync-report.md=PASS
+tickets/in-progress/diagram-maximize-nested-overlay/handoff-summary.md=PASS
+tickets/in-progress/diagram-maximize-nested-overlay/release-notes.md=PASS
+tickets/in-progress/diagram-maximize-nested-overlay/release-deployment-report.md=PASS
+
+overall=PASS

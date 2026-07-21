@@ -272,6 +272,17 @@ closes through its close action, backdrop, or `Escape`, and returns focus to the
 inline expand control. Controls remain reachable at narrow widths and increased
 app/browser text sizes.
 
+The viewer is also the top dialog when it is opened from Markdown inside an
+already-maximized host such as an artifact or Files preview. Supported maximized
+Markdown hosts use overlay tier `120`, while `MermaidDiagramViewer.vue` owns tier
+`130`; changes to either side must preserve that ordering so the transferred SVG
+and viewer controls remain visible and receive pointer input. Dismissal is
+layer-scoped: close, backdrop, or the first `Escape` closes only the diagram,
+restores its single live SVG and focus, and leaves the host's path, content,
+Preview selection, and maximize state intact. The viewer consumes its handled
+`Escape` before it can reach host-level listeners; a later, distinct `Escape`
+may then dismiss the still-maximized host.
+
 Mermaid links remain interactive rather than becoming expand or pan gestures.
 HTTP(S) anchors, including SVG `xlink:href` forms, use the shared
 `MarkdownRenderer.vue` external-link authority in both inline and expanded

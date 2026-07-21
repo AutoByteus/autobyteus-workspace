@@ -386,7 +386,7 @@ The probe uses Chrome/Chromium through Playwright Core. If automatic discovery d
 
 ### Diagram Zoom Viewer Browser Probe
 
-The shared Markdown Mermaid viewer has a self-starting browser probe covering inline sizing; fine-pointer rest/hover/focus chrome; no-hover, coarse-pointer, and hybrid fine-primary/coarse-secondary fallbacks; the four uniform icon-only viewer actions; open/fit/zoom/pan; keyboard and touch input; link routing; render lifecycle; localization; focus containment; and narrow/200%-text layouts. It installs a temporary Nuxt fixture route, starts an owned development server, runs Chrome through Playwright Core, and removes owned resources before returning:
+The shared Markdown Mermaid viewer has a self-starting browser probe covering inline sizing; fine-pointer rest/hover/focus chrome; no-hover, coarse-pointer, and hybrid fine-primary/coarse-secondary fallbacks; the four uniform icon-only viewer actions; open/fit/zoom/pan; keyboard and touch input; link routing; render lifecycle; localization; focus containment; narrow/200%-text layouts; and a diagram opened from an already-maximized artifact preview. The nested scenario checks viewer-over-host stacking and hit ownership, retained artifact path/content/Preview/maximize state, one-live-SVG restoration, layer-scoped close/backdrop/first-`Escape` dismissal, later host dismissal by a distinct `Escape`, and repeated-cycle cleanup. It installs a temporary Nuxt fixture route, starts an owned development server, runs Chrome through Playwright Core, and removes owned resources before returning:
 
 ```bash
 pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer

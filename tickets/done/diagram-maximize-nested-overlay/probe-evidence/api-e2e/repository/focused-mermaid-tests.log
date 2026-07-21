@@ -1,0 +1,30 @@
+
+> autobyteus@1.4.22 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts (5 tests) 52ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts (7 tests) 58ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  12:18:59
+   Duration  4.58s (transform 2.47s, setup 7.91s, collect 45ms, tests 110ms, environment 327ms, prepare 306ms)
