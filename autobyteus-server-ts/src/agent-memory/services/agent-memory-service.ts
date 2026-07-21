@@ -7,6 +7,7 @@ import type {
 import { MemoryFileStore } from "../store/memory-file-store.js";
 import { RawTraceFileSourceService } from "./raw-trace-file-source-service.js";
 import { normalizeRawTraceRecords } from "./raw-trace-record-normalizer.js";
+import type { ActiveRawTraceSnapshot } from "../store/memory-file-store.js";
 
 type AgentMemoryViewOptions = {
   includeWorkingContext?: boolean;
@@ -84,6 +85,14 @@ export class AgentMemoryService {
       rawTraces,
       rawTraceFiles,
       selectedRawTraceFileName,
+    };
+  }
+
+  getActiveRawTraceSnapshot(runId: string): ActiveRawTraceSnapshot & { rawTraces: MemoryTraceEvent[] } {
+    const snapshot = this.store.readRawTracesActiveSnapshot(runId);
+    return {
+      ...snapshot,
+      rawTraces: normalizeRawTraceRecords(snapshot.records, null),
     };
   }
 

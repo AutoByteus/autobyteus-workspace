@@ -1,0 +1,4 @@
+$ git diff --check
+$ centered source static checks
+78:      class="absolute bottom-2 left-1/2 z-20 flex h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+static no-dependency/no-alternate/no-warning: PASS

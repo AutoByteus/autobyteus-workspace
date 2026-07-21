@@ -10,7 +10,12 @@ import type { AIMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolCallSegment, WriteFileSegment, TerminalCommandSegment, EditFileSegment, ThinkSegment, AIResponseTextSegment, ToolInvocationLifecycle } from '~/types/segments';
 import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } from '../protocol/messageTypes';
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
-import { hasStreamSegmentId, matchesStreamSegmentIdentity, setStreamSegmentIdentity } from './segmentIdentity';
+import {
+  hasStreamSegmentId,
+  markStreamSegmentPresentationComplete,
+  matchesStreamSegmentIdentity,
+  setStreamSegmentIdentity,
+} from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { isProjectableToolSegment, upsertActivityFromToolSegment } from './toolActivityProjection';
 
@@ -54,7 +59,7 @@ function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): R
 export function handleSegmentStart(
   payload: SegmentStartPayload,
   context: AgentContext
-): void {
+) {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_START with invalid id', payload);
     return;
@@ -171,7 +176,7 @@ function mergeSegmentStartMetadata(
 export function handleSegmentContent(
   payload: SegmentContentPayload,
   context: AgentContext
-): void {
+) {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_CONTENT with invalid id', payload);
     return;
@@ -194,7 +199,7 @@ export function handleSegmentContent(
 export function handleSegmentEnd(
   payload: SegmentEndPayload,
   context: AgentContext
-): void {
+) {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_END with invalid id', payload);
     return;
@@ -204,6 +209,8 @@ export function handleSegmentEnd(
     console.warn(`Segment not found for end event: ${payload.id}`);
     return;
   }
+
+  markStreamSegmentPresentationComplete(segment);
 
   if (segment.type === 'think') {
     const thinkSegment = segment as ThinkSegment;
@@ -279,35 +286,36 @@ export function findSegmentById(
 /**
  * Append content delta to a segment based on its type.
  */
-function appendContentToSegment(segment: AIResponseSegment, delta: string): void {
+function appendContentToSegment(segment: AIResponseSegment, delta: string): boolean {
   switch (segment.type) {
     case 'text':
       (segment as AIResponseTextSegment).content += delta;
-      break;
+      return true;
 
     case 'think':
       (segment as ThinkSegment).content += delta;
-      break;
+      return true;
 
     case 'tool_call':
       const toolSegment = segment as ToolCallSegment;
       toolSegment.rawContent = (toolSegment.rawContent || '') + delta;
-      break;
+      return true;
 
     case 'write_file':
       (segment as WriteFileSegment).originalContent += delta;
-      break;
+      return true;
 
     case 'terminal_command':
       (segment as TerminalCommandSegment).command += delta;
-      break;
+      return true;
 
     case 'edit_file':
       (segment as EditFileSegment).originalContent += delta;
-      break;
+      return true;
 
     default:
       console.warn(`Unknown segment type for content append: ${segment.type}`);
+      return false;
   }
 }
 
@@ -328,7 +336,7 @@ function createSyntheticSegmentFromContent(
   return segment;
 }
 
-function removeSegmentById(context: AgentContext, segmentId: string): void {
+function removeSegmentById(context: AgentContext, segmentId: string): boolean {
   for (let i = context.conversation.messages.length - 1; i >= 0; i--) {
     const message = context.conversation.messages[i];
     if (message.type !== 'ai') {
@@ -337,9 +345,10 @@ function removeSegmentById(context: AgentContext, segmentId: string): void {
     const segmentIndex = message.segments.findIndex((segment) => hasStreamSegmentId(segment, segmentId));
     if (segmentIndex >= 0) {
       message.segments.splice(segmentIndex, 1);
-      return;
+      return true;
     }
   }
+  return false;
 }
 
 /**

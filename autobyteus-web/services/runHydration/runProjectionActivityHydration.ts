@@ -216,7 +216,10 @@ const toCompactionActivity = (entry: RunProjectionCompactionActivityEntry): Comp
     errorMessage: entry.errorMessage ?? null,
     timestamp,
     updatedAt: toDate(entry.updatedTs ?? entry.ts),
-    centerTimelineTimestamp: null,
+    centerTimelineTimestamp:
+      phase === 'started' || phase === 'completed' || phase === 'failed'
+        ? timestamp
+        : null,
   };
 };
 

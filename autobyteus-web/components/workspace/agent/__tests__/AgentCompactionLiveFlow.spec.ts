@@ -38,6 +38,7 @@ const mountMonitor = (conversation: Conversation, runId: string) => mount(AgentE
     conversation,
     runId,
     agentName: 'Validation Agent',
+    browseSubject: { kind: 'run' as const, runId },
   },
   global: {
     plugins: [pinia],

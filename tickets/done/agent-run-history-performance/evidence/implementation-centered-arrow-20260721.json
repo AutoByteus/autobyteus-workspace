@@ -1,0 +1,779 @@
+{
+  "wideBrowseWithSkillCta": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "arrowRect": {
+      "left": 779.5,
+      "right": 823.5,
+      "top": 653,
+      "bottom": 697,
+      "width": 44,
+      "height": 44
+    },
+    "feedRootRect": {
+      "left": 368.5,
+      "right": 1234.5,
+      "top": 41,
+      "bottom": 705,
+      "width": 866,
+      "height": 664
+    },
+    "surfaceRect": {
+      "left": 783.5,
+      "right": 819.5,
+      "top": 657,
+      "bottom": 693,
+      "width": 36,
+      "height": 36
+    },
+    "glyphRect": {
+      "left": 793.5,
+      "right": 809.5,
+      "top": 667,
+      "bottom": 683,
+      "width": 16,
+      "height": 16
+    },
+    "ctaRect": {
+      "left": 1088.25,
+      "right": 1234.5,
+      "top": 717,
+      "bottom": 755,
+      "width": 146.25,
+      "height": 38
+    },
+    "composerRect": {
+      "left": 368.5,
+      "right": 1234.5,
+      "top": 763,
+      "bottom": 859,
+      "width": 866,
+      "height": 96
+    },
+    "centerDeltaPx": 0,
+    "bottomInsetPx": 8,
+    "overlapsCta": false,
+    "overlapsComposer": false,
+    "ctaRightDeltaFromFeedPx": 0,
+    "bodyHasHorizontalOverflow": false,
+    "feedScrollWidth": 866,
+    "feedClientWidth": 866,
+    "targetClasses": [
+      "-translate-x-1/2",
+      "absolute",
+      "bottom-2",
+      "flex",
+      "focus-visible:ring-2",
+      "focus-visible:ring-indigo-500",
+      "focus-visible:ring-offset-2",
+      "focus:outline-none",
+      "h-11",
+      "items-center",
+      "justify-center",
+      "left-1/2",
+      "rounded-full",
+      "w-11",
+      "z-20"
+    ],
+    "surfaceClasses": [
+      "bg-white",
+      "border",
+      "border-slate-200",
+      "flex",
+      "h-9",
+      "items-center",
+      "justify-center",
+      "motion-reduce:transition-none",
+      "rounded-full",
+      "shadow-sm",
+      "text-slate-700",
+      "transition-colors",
+      "w-9"
+    ],
+    "glyphClasses": [
+      "h-4",
+      "iconify",
+      "iconify--heroicons",
+      "w-4"
+    ],
+    "styleSignature": {
+      "target": {
+        "position": "absolute",
+        "bottom": "8px",
+        "width": "44px",
+        "height": "44px",
+        "transform": "matrix(1, 0, 0, 1, -22, 0)"
+      },
+      "surface": {
+        "width": "36px",
+        "height": "36px",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(226, 232, 240)",
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderRadius": "9999px",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "glyph": {
+        "width": "16px",
+        "height": "16px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "accessibleName": "Jump to latest activity",
+      "title": null,
+      "text": "",
+      "roleTooltipCount": 0,
+      "badgeCount": 0
+    }
+  },
+  "wideExpiredWithSkillCta": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "arrowRect": {
+      "left": 779.5,
+      "right": 823.5,
+      "top": 653,
+      "bottom": 697,
+      "width": 44,
+      "height": 44
+    },
+    "feedRootRect": {
+      "left": 368.5,
+      "right": 1234.5,
+      "top": 41,
+      "bottom": 705,
+      "width": 866,
+      "height": 664
+    },
+    "surfaceRect": {
+      "left": 783.5,
+      "right": 819.5,
+      "top": 657,
+      "bottom": 693,
+      "width": 36,
+      "height": 36
+    },
+    "glyphRect": {
+      "left": 793.5,
+      "right": 809.5,
+      "top": 667,
+      "bottom": 683,
+      "width": 16,
+      "height": 16
+    },
+    "ctaRect": {
+      "left": 1088.25,
+      "right": 1234.5,
+      "top": 717,
+      "bottom": 755,
+      "width": 146.25,
+      "height": 38
+    },
+    "composerRect": {
+      "left": 368.5,
+      "right": 1234.5,
+      "top": 763,
+      "bottom": 859,
+      "width": 866,
+      "height": 96
+    },
+    "centerDeltaPx": 0,
+    "bottomInsetPx": 8,
+    "overlapsCta": false,
+    "overlapsComposer": false,
+    "ctaRightDeltaFromFeedPx": 0,
+    "bodyHasHorizontalOverflow": false,
+    "feedScrollWidth": 866,
+    "feedClientWidth": 866,
+    "targetClasses": [
+      "-translate-x-1/2",
+      "absolute",
+      "bottom-2",
+      "flex",
+      "focus-visible:ring-2",
+      "focus-visible:ring-indigo-500",
+      "focus-visible:ring-offset-2",
+      "focus:outline-none",
+      "h-11",
+      "items-center",
+      "justify-center",
+      "left-1/2",
+      "rounded-full",
+      "w-11",
+      "z-20"
+    ],
+    "surfaceClasses": [
+      "bg-white",
+      "border",
+      "border-slate-200",
+      "flex",
+      "h-9",
+      "items-center",
+      "justify-center",
+      "motion-reduce:transition-none",
+      "rounded-full",
+      "shadow-sm",
+      "text-slate-700",
+      "transition-colors",
+      "w-9"
+    ],
+    "glyphClasses": [
+      "h-4",
+      "iconify",
+      "iconify--heroicons",
+      "w-4"
+    ],
+    "styleSignature": {
+      "target": {
+        "position": "absolute",
+        "bottom": "8px",
+        "width": "44px",
+        "height": "44px",
+        "transform": "matrix(1, 0, 0, 1, -22, 0)"
+      },
+      "surface": {
+        "width": "36px",
+        "height": "36px",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(226, 232, 240)",
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderRadius": "9999px",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "glyph": {
+        "width": "16px",
+        "height": "16px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "accessibleName": "Jump to latest activity",
+      "title": null,
+      "text": "",
+      "roleTooltipCount": 0,
+      "badgeCount": 0
+    }
+  },
+  "wideBrowseWithoutSkillCta": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "arrowRect": {
+      "left": 779.5,
+      "right": 823.5,
+      "top": 699,
+      "bottom": 743,
+      "width": 44,
+      "height": 44
+    },
+    "feedRootRect": {
+      "left": 368.5,
+      "right": 1234.5,
+      "top": 41,
+      "bottom": 751,
+      "width": 866,
+      "height": 710
+    },
+    "surfaceRect": {
+      "left": 783.5,
+      "right": 819.5,
+      "top": 703,
+      "bottom": 739,
+      "width": 36,
+      "height": 36
+    },
+    "glyphRect": {
+      "left": 793.5,
+      "right": 809.5,
+      "top": 713,
+      "bottom": 729,
+      "width": 16,
+      "height": 16
+    },
+    "ctaRect": null,
+    "composerRect": {
+      "left": 368.5,
+      "right": 1234.5,
+      "top": 763,
+      "bottom": 859,
+      "width": 866,
+      "height": 96
+    },
+    "centerDeltaPx": 0,
+    "bottomInsetPx": 8,
+    "overlapsCta": false,
+    "overlapsComposer": false,
+    "ctaRightDeltaFromFeedPx": null,
+    "bodyHasHorizontalOverflow": false,
+    "feedScrollWidth": 866,
+    "feedClientWidth": 866,
+    "targetClasses": [
+      "-translate-x-1/2",
+      "absolute",
+      "bottom-2",
+      "flex",
+      "focus-visible:ring-2",
+      "focus-visible:ring-indigo-500",
+      "focus-visible:ring-offset-2",
+      "focus:outline-none",
+      "h-11",
+      "items-center",
+      "justify-center",
+      "left-1/2",
+      "rounded-full",
+      "w-11",
+      "z-20"
+    ],
+    "surfaceClasses": [
+      "bg-white",
+      "border",
+      "border-slate-200",
+      "flex",
+      "h-9",
+      "items-center",
+      "justify-center",
+      "motion-reduce:transition-none",
+      "rounded-full",
+      "shadow-sm",
+      "text-slate-700",
+      "transition-colors",
+      "w-9"
+    ],
+    "glyphClasses": [
+      "h-4",
+      "iconify",
+      "iconify--heroicons",
+      "w-4"
+    ],
+    "styleSignature": {
+      "target": {
+        "position": "absolute",
+        "bottom": "8px",
+        "width": "44px",
+        "height": "44px",
+        "transform": "matrix(1, 0, 0, 1, -22, 0)"
+      },
+      "surface": {
+        "width": "36px",
+        "height": "36px",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(226, 232, 240)",
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderRadius": "9999px",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "glyph": {
+        "width": "16px",
+        "height": "16px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "accessibleName": "Jump to latest activity",
+      "title": null,
+      "text": "",
+      "roleTooltipCount": 0,
+      "badgeCount": 0
+    }
+  },
+  "narrowBrowseWithSkillCta": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "arrowRect": {
+      "left": 198,
+      "right": 242,
+      "top": 597,
+      "bottom": 641,
+      "width": 44,
+      "height": 44
+    },
+    "feedRootRect": {
+      "left": 91,
+      "right": 349,
+      "top": 41,
+      "bottom": 649,
+      "width": 258,
+      "height": 608
+    },
+    "surfaceRect": {
+      "left": 202,
+      "right": 238,
+      "top": 601,
+      "bottom": 637,
+      "width": 36,
+      "height": 36
+    },
+    "glyphRect": {
+      "left": 212,
+      "right": 228,
+      "top": 611,
+      "bottom": 627,
+      "width": 16,
+      "height": 16
+    },
+    "ctaRect": {
+      "left": 202.75,
+      "right": 349,
+      "top": 661,
+      "bottom": 699,
+      "width": 146.25,
+      "height": 38
+    },
+    "composerRect": {
+      "left": 91,
+      "right": 349,
+      "top": 707,
+      "bottom": 803,
+      "width": 258,
+      "height": 96
+    },
+    "centerDeltaPx": 0,
+    "bottomInsetPx": 8,
+    "overlapsCta": false,
+    "overlapsComposer": false,
+    "ctaRightDeltaFromFeedPx": 0,
+    "bodyHasHorizontalOverflow": false,
+    "feedScrollWidth": 258,
+    "feedClientWidth": 258,
+    "targetClasses": [
+      "-translate-x-1/2",
+      "absolute",
+      "bottom-2",
+      "flex",
+      "focus-visible:ring-2",
+      "focus-visible:ring-indigo-500",
+      "focus-visible:ring-offset-2",
+      "focus:outline-none",
+      "h-11",
+      "items-center",
+      "justify-center",
+      "left-1/2",
+      "rounded-full",
+      "w-11",
+      "z-20"
+    ],
+    "surfaceClasses": [
+      "bg-white",
+      "border",
+      "border-slate-200",
+      "flex",
+      "h-9",
+      "items-center",
+      "justify-center",
+      "motion-reduce:transition-none",
+      "rounded-full",
+      "shadow-sm",
+      "text-slate-700",
+      "transition-colors",
+      "w-9"
+    ],
+    "glyphClasses": [
+      "h-4",
+      "iconify",
+      "iconify--heroicons",
+      "w-4"
+    ],
+    "styleSignature": {
+      "target": {
+        "position": "absolute",
+        "bottom": "8px",
+        "width": "44px",
+        "height": "44px",
+        "transform": "matrix(1, 0, 0, 1, -22, 0)"
+      },
+      "surface": {
+        "width": "36px",
+        "height": "36px",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(226, 232, 240)",
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderRadius": "9999px",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "glyph": {
+        "width": "16px",
+        "height": "16px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "accessibleName": "Jump to latest activity",
+      "title": null,
+      "text": "",
+      "roleTooltipCount": 0,
+      "badgeCount": 0
+    }
+  },
+  "narrowExpiredWithSkillCta": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "arrowRect": {
+      "left": 198,
+      "right": 242,
+      "top": 597,
+      "bottom": 641,
+      "width": 44,
+      "height": 44
+    },
+    "feedRootRect": {
+      "left": 91,
+      "right": 349,
+      "top": 41,
+      "bottom": 649,
+      "width": 258,
+      "height": 608
+    },
+    "surfaceRect": {
+      "left": 202,
+      "right": 238,
+      "top": 601,
+      "bottom": 637,
+      "width": 36,
+      "height": 36
+    },
+    "glyphRect": {
+      "left": 212,
+      "right": 228,
+      "top": 611,
+      "bottom": 627,
+      "width": 16,
+      "height": 16
+    },
+    "ctaRect": {
+      "left": 202.75,
+      "right": 349,
+      "top": 661,
+      "bottom": 699,
+      "width": 146.25,
+      "height": 38
+    },
+    "composerRect": {
+      "left": 91,
+      "right": 349,
+      "top": 707,
+      "bottom": 803,
+      "width": 258,
+      "height": 96
+    },
+    "centerDeltaPx": 0,
+    "bottomInsetPx": 8,
+    "overlapsCta": false,
+    "overlapsComposer": false,
+    "ctaRightDeltaFromFeedPx": 0,
+    "bodyHasHorizontalOverflow": false,
+    "feedScrollWidth": 258,
+    "feedClientWidth": 258,
+    "targetClasses": [
+      "-translate-x-1/2",
+      "absolute",
+      "bottom-2",
+      "flex",
+      "focus-visible:ring-2",
+      "focus-visible:ring-indigo-500",
+      "focus-visible:ring-offset-2",
+      "focus:outline-none",
+      "h-11",
+      "items-center",
+      "justify-center",
+      "left-1/2",
+      "rounded-full",
+      "w-11",
+      "z-20"
+    ],
+    "surfaceClasses": [
+      "bg-white",
+      "border",
+      "border-slate-200",
+      "flex",
+      "h-9",
+      "items-center",
+      "justify-center",
+      "motion-reduce:transition-none",
+      "rounded-full",
+      "shadow-sm",
+      "text-slate-700",
+      "transition-colors",
+      "w-9"
+    ],
+    "glyphClasses": [
+      "h-4",
+      "iconify",
+      "iconify--heroicons",
+      "w-4"
+    ],
+    "styleSignature": {
+      "target": {
+        "position": "absolute",
+        "bottom": "8px",
+        "width": "44px",
+        "height": "44px",
+        "transform": "matrix(1, 0, 0, 1, -22, 0)"
+      },
+      "surface": {
+        "width": "36px",
+        "height": "36px",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(226, 232, 240)",
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderRadius": "9999px",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "glyph": {
+        "width": "16px",
+        "height": "16px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "accessibleName": "Jump to latest activity",
+      "title": null,
+      "text": "",
+      "roleTooltipCount": 0,
+      "badgeCount": 0
+    }
+  },
+  "narrowBrowseWithoutSkillCta": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "arrowRect": {
+      "left": 198,
+      "right": 242,
+      "top": 643,
+      "bottom": 687,
+      "width": 44,
+      "height": 44
+    },
+    "feedRootRect": {
+      "left": 91,
+      "right": 349,
+      "top": 41,
+      "bottom": 695,
+      "width": 258,
+      "height": 654
+    },
+    "surfaceRect": {
+      "left": 202,
+      "right": 238,
+      "top": 647,
+      "bottom": 683,
+      "width": 36,
+      "height": 36
+    },
+    "glyphRect": {
+      "left": 212,
+      "right": 228,
+      "top": 657,
+      "bottom": 673,
+      "width": 16,
+      "height": 16
+    },
+    "ctaRect": null,
+    "composerRect": {
+      "left": 91,
+      "right": 349,
+      "top": 707,
+      "bottom": 803,
+      "width": 258,
+      "height": 96
+    },
+    "centerDeltaPx": 0,
+    "bottomInsetPx": 8,
+    "overlapsCta": false,
+    "overlapsComposer": false,
+    "ctaRightDeltaFromFeedPx": null,
+    "bodyHasHorizontalOverflow": false,
+    "feedScrollWidth": 258,
+    "feedClientWidth": 258,
+    "targetClasses": [
+      "-translate-x-1/2",
+      "absolute",
+      "bottom-2",
+      "flex",
+      "focus-visible:ring-2",
+      "focus-visible:ring-indigo-500",
+      "focus-visible:ring-offset-2",
+      "focus:outline-none",
+      "h-11",
+      "items-center",
+      "justify-center",
+      "left-1/2",
+      "rounded-full",
+      "w-11",
+      "z-20"
+    ],
+    "surfaceClasses": [
+      "bg-white",
+      "border",
+      "border-slate-200",
+      "flex",
+      "h-9",
+      "items-center",
+      "justify-center",
+      "motion-reduce:transition-none",
+      "rounded-full",
+      "shadow-sm",
+      "text-slate-700",
+      "transition-colors",
+      "w-9"
+    ],
+    "glyphClasses": [
+      "h-4",
+      "iconify",
+      "iconify--heroicons",
+      "w-4"
+    ],
+    "styleSignature": {
+      "target": {
+        "position": "absolute",
+        "bottom": "8px",
+        "width": "44px",
+        "height": "44px",
+        "transform": "matrix(1, 0, 0, 1, -22, 0)"
+      },
+      "surface": {
+        "width": "36px",
+        "height": "36px",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(226, 232, 240)",
+        "borderWidth": "1px",
+        "borderStyle": "solid",
+        "borderRadius": "9999px",
+        "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "glyph": {
+        "width": "16px",
+        "height": "16px",
+        "color": "rgb(51, 65, 85)"
+      },
+      "accessibleName": "Jump to latest activity",
+      "title": null,
+      "text": "",
+      "roleTooltipCount": 0,
+      "badgeCount": 0
+    }
+  },
+  "assertions": {
+    "wideBrowseExpiredSignatureEqual": true,
+    "narrowBrowseExpiredSignatureEqual": true,
+    "wideCtaPresenceDoesNotChangeArrow": true,
+    "narrowCtaPresenceDoesNotChangeArrow": true,
+    "everyTargetCenteredAndInset": true,
+    "everyTargetAndSurfaceAndGlyphSized": true,
+    "noCtaOrComposerOverlap": true,
+    "noHorizontalOverflow": true
+  },
+  "consoleErrors": []
+}

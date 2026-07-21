@@ -62,6 +62,8 @@ const mergeHydratedMembers = (
     if (!options.preserveLiveRuntimeState) {
       existingMemberContext.state.runId = memberContext.state.runId;
       existingMemberContext.state.conversation = memberContext.state.conversation;
+      existingMemberContext.state.hasEarlierActiveTraceEvents = memberContext.state.hasEarlierActiveTraceEvents;
+      existingMemberContext.state.resetEventMonitorPresentationRevision();
       applyMemberOrHistoryStatusSnapshot(
         existingMemberContext,
         options.preserveMemberStatus

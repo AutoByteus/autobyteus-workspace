@@ -48,6 +48,33 @@ describe("raw trace to historical replay events", () => {
     });
   });
 
+  it("carries collision-safe raw, tool lifecycle, orphan, and legacy identity", () => {
+    const equalRaw = buildHistoricalReplayEvents([
+      { id: "r17", traceType: "assistant", content: "Done", turnId: "t", seq: 1, ts: 1 },
+      { id: "r18", traceType: "assistant", content: "Done", turnId: "t", seq: 2, ts: 1 },
+      { id: "orphan", traceType: "tool_result", toolResult: null, turnId: "t", seq: 3, ts: 2 },
+      { traceType: "reasoning", content: "same", turnId: "", seq: 4, ts: 3 },
+      { traceType: "reasoning", content: "same", turnId: "", seq: 4, ts: 3 },
+    ]);
+
+    expect(equalRaw[0].eventId).toBe("raw:v1:3:r17");
+    expect(equalRaw[1].eventId).toBe("raw:v1:3:r18");
+    expect(equalRaw[2].eventId).toBe("raw:v1:6:orphan");
+    expect(equalRaw[3].eventId).toMatch(/^legacy:v1:[a-f0-9]{64}:0$/);
+    expect(equalRaw[4].eventId).toMatch(/^legacy:v1:[a-f0-9]{64}:1$/);
+    expect(equalRaw[3].turnGroupId).toBe(`ungrouped:${equalRaw[3].eventId}`);
+
+    const callOnly = buildHistoricalReplayEvents([
+      { id: "call", traceType: "tool_call", toolCallId: "c", toolName: "x", turnId: "t", seq: 1, ts: 1 },
+    ]);
+    const completed = buildHistoricalReplayEvents([
+      { id: "call", traceType: "tool_call", toolCallId: "c", toolName: "x", turnId: "t", seq: 1, ts: 1 },
+      { id: "result", traceType: "tool_result", toolCallId: "c", toolResult: "ok", turnId: "t", seq: 2, ts: 2 },
+    ]);
+    expect(callOnly[0].eventId).toBe("tool:v1:1:t:1:c");
+    expect(completed[0].eventId).toBe(callOnly[0].eventId);
+  });
+
   it("emits orphan tool results as standalone tool replay events", () => {
     const events = buildHistoricalReplayEvents([
       {

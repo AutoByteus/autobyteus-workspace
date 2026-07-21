@@ -28,7 +28,6 @@ const messages = {
   'workspace.components.progress.ToolActivityItem.error': '错误',
   'workspace.components.progress.ToolActivityItem.result': '结果',
   'workspace.components.workspace.agent.AgentStatusDisplay.agent_status': '`智能体状态：${visuals.text}`',
-  'workspace.components.workspace.agent.AgentWorkspaceView.copy_full_conversation': '复制完整对话',
   'workspace.components.workspace.agent.AgentWorkspaceView.headertitle': '页眉标题',
   'workspace.components.workspace.agent.AgentWorkspaceView.select_an_agent_or_start_a': '选择一个智能体或开始新的智能体。',
   'workspace.components.workspace.agent.ArtifactContentViewer.edit_mode': '编辑模式',

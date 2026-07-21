@@ -1,3 +1,5 @@
+import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
+
 export type MemoryMessage = {
   role: string;
   content?: string | null;
@@ -16,7 +18,7 @@ export type MemoryTraceEvent = {
   toolArgs?: Record<string, unknown> | null;
   toolResult?: unknown | null;
   toolError?: string | null;
-  media?: Record<string, string[]> | null;
+  media?: RawTraceMedia | null;
   turnId: string;
   seq: number;
   ts: number;

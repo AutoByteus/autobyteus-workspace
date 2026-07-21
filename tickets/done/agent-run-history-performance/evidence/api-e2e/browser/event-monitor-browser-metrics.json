@@ -1,0 +1,58 @@
+{
+  "status": 200,
+  "usableWallMs": 929,
+  "readyMs": 859.5,
+  "navigation": {
+    "responseStart": 7.2000000000116415,
+    "domContentLoaded": 481.79999999998836,
+    "load": 483.4000000000233
+  },
+  "initial": {
+    "rows": 100,
+    "scrollTop": 6006,
+    "scrollHeight": 6524,
+    "clientHeight": 518,
+    "presentationRevision": 0,
+    "conversationMessages": 100
+  },
+  "afterRoll": {
+    "rows": 100,
+    "scrollTop": 0,
+    "scrollHeight": 6466,
+    "clientHeight": 518,
+    "presentationRevision": 1,
+    "conversationMessages": 100
+  },
+  "nonPinned": {
+    "rows": 100,
+    "scrollTop": 0,
+    "scrollHeight": 6466,
+    "clientHeight": 518,
+    "presentationRevision": 2,
+    "conversationMessages": 100
+  },
+  "afterEnter": {
+    "rows": 100,
+    "scrollTop": 5948,
+    "scrollHeight": 6466,
+    "clientHeight": 518,
+    "presentationRevision": 2,
+    "conversationMessages": 100
+  },
+  "finalMetrics": {
+    "rows": 100,
+    "scrollTop": 5938,
+    "scrollHeight": 6456,
+    "clientHeight": 518,
+    "presentationRevision": 3,
+    "conversationMessages": 100
+  },
+  "focusStyle": {
+    "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+    "outline": "rgba(0, 0, 0, 0) solid 2px",
+    "outlineWidth": "2px"
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "browserVersion": "149.0.7827.196"
+}

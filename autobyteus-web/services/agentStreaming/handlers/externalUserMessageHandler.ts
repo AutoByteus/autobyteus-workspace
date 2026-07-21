@@ -8,7 +8,7 @@ import {
 export const handleExternalUserMessage = (
   payload: ExternalUserMessagePayload,
   context: AgentContext,
-): void => {
+) => {
   upsertUserMessageByIdentity({
     context,
     userMessage: buildUserMessageFromProjectionPayload(payload),

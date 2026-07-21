@@ -312,7 +312,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
     });
   });
 
-  it("projects an archived call with an active name-bearing result exactly once through GraphQL", async () => {
+  it("projects an active name-bearing result without recovering archived call arguments", async () => {
     const metadataStore = new AgentRunMetadataStore(memoryDir);
     const runId = "run-codex-cross-file-toolcalls-graphql";
     const runDir = path.join(memoryDir, "agents", runId);
@@ -410,12 +410,12 @@ describe("Run projection tool-call GraphQL e2e", () => {
     expect(conversationRows[0]).toMatchObject({
       kind: "tool_call",
       toolName: "functions.exec_command",
-      toolArgs: { cmd: "printf cross-file" },
+      toolArgs: null,
       toolResult: { stdout: "cross-file", exit_code: 0 },
     });
     expect(activityRows[0]).toMatchObject({
       toolName: "functions.exec_command",
-      arguments: { cmd: "printf cross-file" },
+      arguments: {},
       result: { stdout: "cross-file", exit_code: 0 },
       status: "success",
     });

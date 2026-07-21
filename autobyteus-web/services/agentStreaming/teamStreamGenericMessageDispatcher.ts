@@ -27,11 +27,16 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
+import {
+  beginRecentEventMonitorMutation,
+  commitRecentEventMonitorMutation,
+} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
 
 export const dispatchGenericTeamMemberMessage = (
   message: ServerMessage,
   memberContext: AgentContext,
 ): void => {
+  const presentationBaseline = beginRecentEventMonitorMutation(memberContext);
   memberContext.conversation.updatedAt = new Date().toISOString();
   switch (message.type) {
     case 'SEGMENT_START':
@@ -114,4 +119,5 @@ export const dispatchGenericTeamMemberMessage = (
     default:
       console.warn('Unhandled team message type:', (message as any).type);
   }
+  commitRecentEventMonitorMutation(memberContext, presentationBaseline);
 };

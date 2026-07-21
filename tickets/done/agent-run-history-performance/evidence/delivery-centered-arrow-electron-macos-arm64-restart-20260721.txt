@@ -1,0 +1,29 @@
+STOP_START_UTC=2026-07-21T18:50:35Z
+WORKTREE=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance
+TARGET_APP=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+SOURCE_HEAD=096a60418c8747f8741ecd2909794247b244270f
+REVIEWED_SOURCE_COMMIT=70a2ddc626d9e9e834b3b6b322fb09183f5b76e7
+INTEGRATED_ORIGIN_PERSONAL=9b4e038a40e0b6358fe53ca101406e0f6446e790
+PRE_STOP_LISTENER_PID=70849
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 70849 normy   27u  IPv4 0xc6b558b2b342b97f      0t0  TCP *:29695 (LISTEN)
+70849 70244 03:35:38 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+PRE_STOP_APP_PID=70244
+PRE_STOP_APP_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+STOP_COMMAND=kill -TERM 70244
+RECOVERY_UTC=2026-07-21T18:53:22Z
+USER_DIRECTION=Do not stop the existing app; user will start the rebuilt candidate manually.
+ACTION=Artifact-only rebuild; no stop and no restart.
+PRESERVED_LISTENER_PID=20763
+PRESERVED_LISTENER_COMMAND=/Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+PRESERVED_PARENT_PID=20156
+PRESERVED_PARENT_COMMAND=/Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+
+POST_BUILD_UTC=2026-07-21T19:00:32Z
+POST_BUILD_ACTION=no stop; no launch; candidate available for manual user start
+CANDIDATE_APP=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+POST_BUILD_LISTENER_PID=20763
+POST_BUILD_LISTENER_COMMAND=/Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+POST_BUILD_PARENT_PID=20156
+POST_BUILD_PARENT_COMMAND=/Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+CANDIDATE_RUNNING=no

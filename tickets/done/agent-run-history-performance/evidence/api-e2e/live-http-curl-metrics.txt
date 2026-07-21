@@ -1,0 +1,3 @@
+run=1 http=200 dns=0.000014 connect=0.000074 ttfb=0.052627 total=0.053084 bytes=868855
+run=2 http=200 dns=0.000015 connect=0.000061 ttfb=0.026614 total=0.027057 bytes=868855
+run=3 http=200 dns=0.000014 connect=0.000071 ttfb=0.030529 total=0.031127 bytes=868855

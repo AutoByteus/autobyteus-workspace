@@ -1,0 +1,22 @@
+Implementation latest-base integration browser feedback loop
+Date: 2026-07-20 UTC
+Renderer: Nuxt dev + headless Chromium/Playwright
+Viewport: 1280x900
+Integrated base: origin/personal 8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+Merge commit: c13ba233a
+
+Composed surface exercised:
+- AgentEventMonitor -> bounded AgentConversationFeed recent presentation
+- presentationRevision non-pinned unseen/jump behavior
+- newly integrated explicit absolute-file-path action routing and status feedback
+
+Observed results:
+- Explicit activation of the retained Markdown absolute-path control produced the host-context status: "This file is available only on the host workspace."
+- Before visible revision while non-pinned: scrollTop=0, scrollHeight=1990, clientHeight=590.
+- After visible revision: scrollTop=0, scrollHeight=1990, clientHeight=590; viewport remained stable.
+- Localized "New activity · Jump to latest" action was visible and accepted focus.
+- After activation: scrollTop=1400, scrollHeight=1990, clientHeight=590; action hidden.
+- Browser page/console errors: none.
+
+Screenshot: implementation-post-integration-browser.png
+Temporary preview route and Playwright probe were removed immediately after inspection.

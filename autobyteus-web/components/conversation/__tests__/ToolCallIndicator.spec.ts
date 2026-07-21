@@ -39,20 +39,29 @@ vi.mock('~/stores/agentActivityStore', () => ({
 }));
 
 import ToolCallIndicator from '../ToolCallIndicator.vue';
+import { buildToolCardPresentation } from '~/utils/toolCardPresentation';
 
-const baseProps = {
+const baseSegment = {
+  type: 'tool_call' as const,
   invocationId: 'abc123def456',
   toolName: 'ReadFile',
-  args: {
+  arguments: {
     path: '/tmp/project/report.md',
   },
+  status: 'success' as const,
+  approvalTarget: null,
+  logs: [],
+  result: null,
+  error: null,
 };
 
-const mountIndicator = (props: Record<string, unknown>) => mount(ToolCallIndicator, {
-  props: {
-    ...baseProps,
-    ...props,
-  },
+const mountIndicator = (overrides: Record<string, unknown>) => mount(ToolCallIndicator, {
+  props: { presentation: buildToolCardPresentation({
+    ...baseSegment,
+    ...overrides,
+    arguments: overrides.args ?? baseSegment.arguments,
+    error: overrides.errorMessage ?? baseSegment.error,
+  } as any) },
   global: {
     mocks: {
       $t: (key: string) => {

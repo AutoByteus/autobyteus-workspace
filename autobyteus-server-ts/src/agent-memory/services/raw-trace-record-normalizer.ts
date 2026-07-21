@@ -1,4 +1,5 @@
 import type { MemoryTraceEvent } from "../domain/models.js";
+import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 export type RawTraceRecord = Record<string, unknown>;
 
@@ -12,6 +13,22 @@ const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
     ? value as Record<string, unknown>
     : null;
+
+const toRawTraceMedia = (value: unknown): RawTraceMedia | null => {
+  const record = asRecord(value);
+  if (!record) return null;
+  const media: RawTraceMedia = {};
+  for (const key of ["images", "audio", "video"] as const) {
+    const locators = record[key];
+    if (Array.isArray(locators)) {
+      const normalized = locators.filter((locator): locator is string => (
+        typeof locator === "string" && locator.trim().length > 0
+      ));
+      if (normalized.length) media[key] = normalized;
+    }
+  }
+  return Object.keys(media).length ? media : null;
+};
 
 const traceId = (item: RawTraceRecord): string =>
   asString(item["id"]) ?? "";
@@ -54,7 +71,7 @@ export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTraceEvent => {
     toolName: asString(trace["tool_name"]),
     toolCallId: asString(trace["tool_call_id"]),
     toolArgs: asRecord(trace["tool_args"]),
-    media: asRecord(trace["media"]) as Record<string, string[]> | null,
+    media: toRawTraceMedia(trace["media"]),
     turnId: asString(trace["turn_id"]) ?? "",
     seq: traceSeq(trace),
     ts: traceTs(trace),
