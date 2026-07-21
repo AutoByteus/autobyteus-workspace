@@ -8,7 +8,7 @@
 - Latest integrated base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
 - Integration merge: `1470cb353e07a1de8b38cbb131ae49108478bcf0`
 - Integrated validation checkpoint: `b7be67c591b93c32121e62102305beb5eb72d39a`
-- Host-validation publication: `487ea715bcaf9ccaa1a3fce4b415d3abc9afdcc4` pushed to `origin/codex/agent-run-history-performance` at the user's explicit request.
+- Host-validation publication: the latest-base refresh was pushed to `origin/codex/agent-run-history-performance` through docs/evidence commit `02591f4af67536ad1e8c877b1a89b098fdfbd17f`, followed by the publication-record update on the same branch.
 - Latest-base post-integration check: server focused GraphQL 1 file / 6 tests and frontend focused Event Monitor 7 files / 36 tests passed; see `evidence/delivery-post-refresh-check-20260721.txt`.
 - Unresolved implementation/source-review findings: None. Representative live snapshot API/E2E remains blocked pending permission to quiesce the user-owned port-8000 server; host verification is the selected path.
 - Finalization hold: The ticket branch is available for host testing. Explicit user completion/verification is still required before archival, merge/push to `origin/personal`, tag, release, deployment, or cleanup.
