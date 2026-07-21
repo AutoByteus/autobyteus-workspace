@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.19 test:e2e:diagram-zoom-viewer /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web
+> node tests/e2e/diagram-zoom-viewer-probe.mjs -- --output-dir ../tickets/in-progress/diagram-zoom-viewer/api-e2e-evidence/browser
+
+Diagram zoom viewer probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/api-e2e-evidence/browser/evidence.json

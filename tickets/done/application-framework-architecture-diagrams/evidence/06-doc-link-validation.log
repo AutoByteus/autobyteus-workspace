@@ -1,0 +1,14 @@
+# Changed Long-Lived Documentation Link Validation
+command=python3 tickets/in-progress/application-framework-architecture-diagrams/.tmp-link-check.py
+files=10 local_links=86
+PASS file autobyteus-application-sdk-contracts/README.md
+PASS file autobyteus-server-ts/docs/modules/README.md
+PASS file autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+PASS file autobyteus-server-ts/docs/modules/application_communication_model.md
+PASS file autobyteus-server-ts/docs/modules/application_engine.md
+PASS file autobyteus-server-ts/docs/modules/application_orchestration.md
+PASS file autobyteus-server-ts/docs/modules/application_sessions.md
+PASS file autobyteus-server-ts/docs/modules/application_storage.md
+PASS file autobyteus-server-ts/docs/modules/applications.md
+PASS file autobyteus-web/docs/applications.md
+RESULT links=86/86

@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
+import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import {
   buildCanonicalApplicationId,
 } from "../../../src/application-bundles/utils/application-bundle-identity.js";
@@ -112,7 +112,7 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     moduleFormat: "esm",
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
-    sdkCompatibility: { backendDefinitionContractVersion: "2", frontendSdkContractVersion: "3" },
+    sdkCompatibility: { backendDefinitionContractVersion: "3", frontendSdkContractVersion: "3" },
     supportedExposures: { queries: true, commands: true, routes: true, graphql: true, notifications: true, eventHandlers: true },
     migrationsDir: "backend/migrations",
     assetsDir: "backend/assets",
@@ -632,7 +632,7 @@ describe("ApplicationPackageService", () => {
     });
     expect(availability?.detail).toContain("Persisted platform state still exists");
 
-    const backendGatewayService = new ApplicationBackendGatewayService({
+    const backendApiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: applicationBundleService as never,
       availabilityService: availabilityService as never,
       engineHostService: {
@@ -642,7 +642,7 @@ describe("ApplicationPackageService", () => {
     });
 
     await expect(
-      backendGatewayService.ensureApplicationReady(linkedApplicationId),
+      backendApiGatewayService.ensureApplicationReady(linkedApplicationId),
     ).rejects.toThrow("currently quarantined");
   });
 

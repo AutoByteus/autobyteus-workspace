@@ -6,12 +6,12 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 - application manifest v3 types and version constants
 - backend bundle manifest v1 types and version constants
-- backend definition contract v2 types
+- backend definition contract v3 types
 - frontend SDK contract v3 constants
 - iframe/bootstrap contract v3 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
 - execution-resource, resource-slot, and host-managed launch-default configuration types
-- runtime-control, run-binding, execution-event envelope, and published-artifact callback/query types
+- named agent-execution, agent-resource, published-artifact, run-binding, and execution-event types
 - application engine status types
 
 
@@ -23,7 +23,7 @@ New external custom applications should start with `@autobyteus/application-devk
 
 - `APPLICATION_MANIFEST_VERSION_V3`
 - `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1`
-- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2`
+- `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3`
 - `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3`
 - `APPLICATION_EVENT_DELIVERY_SEMANTICS` (`AT_LEAST_ONCE`)
 
@@ -50,7 +50,7 @@ New external custom applications should start with `@autobyteus/application-devk
   - request context (or `null` for lifecycle hooks)
   - storage context
   - notification publisher
-  - `runtimeControl`
+  - `agentExecution`, `agentResources`, and `publishedArtifacts`
 - `ApplicationRouteRequest` / `ApplicationRouteResponse`
 - `ApplicationGraphqlRequest`
 
@@ -76,18 +76,18 @@ New external custom applications should start with `@autobyteus/application-devk
 
 ### Runtime-orchestration contracts
 
-- `ApplicationRuntimeControl`
+- `ApplicationAgentExecution` / `ApplicationAgentResources` / `ApplicationPublishedArtifacts`
 - `ApplicationExecutionResourceRef` / `ApplicationExecutionResourceSummary`
 - `ApplicationExecutionResourceSlotDeclaration`
 - `ApplicationConfiguredExecutionResource` / `ApplicationConfiguredLaunchDefaults`
-- `ApplicationStartRunInput`
+- `ApplicationStartAgentInput` / `ApplicationStartAgentTeamInput`
 - `ApplicationRunBindingSummary`
 - `ApplicationExecutionEventEnvelope`
 - `ApplicationPublishedArtifactEvent`
 
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
 
-`ApplicationRuntimeControl` includes durable published-artifact reads through `getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
+`ApplicationPublishedArtifacts` includes durable reads through `list(runId)` and `readRevision({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
 
 `ApplicationSkillAccessMode` is intentionally narrow: `PRELOADED_ONLY` means
 the host launches with the target agent definition's configured skills, and
@@ -97,7 +97,7 @@ contract. External application code should configure broad/orchestrator agents
 by assigning the desired skill names to the agent definition rather than by
 requesting a broader launch-time mode.
 
-The execution-resource rename is a clean break. SDK consumers should use the `ApplicationExecutionResource*` types, `source`, `executionResourceRef`, `executionResourceSlots[]`, and the `listAvailableExecutionResources(...)` / `getConfiguredExecutionResource(...)` runtime-control methods. Old runtime-resource names and old `owner` / `resourceRef` shapes are not compatibility aliases and are not migrated by the platform.
+SDK consumers use the `ApplicationExecutionResource*` types, `source`, `executionResourceRef`, `executionResourceSlots[]`, and `agentResources.listAvailable(...)` / `agentResources.getConfigured(...)`.
 
 ### Engine status
 
@@ -122,15 +122,15 @@ It demonstrates:
 - backend bundle manifest v1
 - shared iframe/bootstrap contract v3
 - request context `{ applicationId }`
-- application-authored `runtimeControl.getConfiguredExecutionResource(...)` + `startRun(...)`
-- published-artifact reads via `runtimeControl.getRunPublishedArtifacts(...)`
+- application-authored `agentResources.getConfigured(...)` + `agentExecution.startAgentTeam(...)`
+- published-artifact reads via `publishedArtifacts.list(...)`
 - durable execution-event dispatch envelopes with stable `eventId` and `journalSequence`
 
 ## Related docs
 
 - `../autobyteus-server-ts/docs/modules/applications.md`
 - `../autobyteus-server-ts/docs/modules/application_orchestration.md`
-- `../autobyteus-server-ts/docs/modules/application_backend_gateway.md`
+- `../autobyteus-server-ts/docs/modules/application_backend_api_gateway.md`
 - `../autobyteus-server-ts/docs/modules/application_engine.md`
 - `../autobyteus-server-ts/docs/modules/application_storage.md`
 - `../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`

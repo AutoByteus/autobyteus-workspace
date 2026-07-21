@@ -1,0 +1,22 @@
+=== unsuppressed control (vendor leak baseline) ===
+caught-0: No diagram type detected matching given configuration for text: this is not a valid mermaid diagram
+caught-1: No diagram type detected matching given configuration for text: this is not a valid mermaid diagram
+caught-2: No diagram type detected matching given configuration for text: this is not a valid mermaid diagram
+beforeChildren: 4
+afterChildren: 4
+bodyHTML: <main id="app"></main><div id="dprobe-invalid-0"><svg id="probe-invalid-0" width="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2412 512" style="max-width: 512px;" role="graphics-document document" aria-roledescription="error"><style>#probe-invalid-0{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#probe-invalid-0 .edge-animation-slow{stroke-dasharray:9,5!impo
+leakedIds: [
+  'app',
+  'dprobe-invalid-0',
+  'probe-invalid-0',
+  'dprobe-invalid-1',
+  'probe-invalid-1',
+  'dprobe-invalid-2',
+  'probe-invalid-2'
+]
+=== suppressed current pinned Mermaid probe ===
+caught: No diagram type detected matching given configuration for text: this is not a valid mermaid diagram
+beforeChildren: 1
+afterChildren: 1
+bodyHTML: <main id="app"></main>
+leakedIds: [ 'app' ]

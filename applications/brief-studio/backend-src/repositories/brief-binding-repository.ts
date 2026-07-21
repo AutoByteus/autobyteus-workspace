@@ -3,7 +3,7 @@ import type { DatabaseSync } from "node:sqlite";
 export type BriefBindingRecord = {
   briefId: string;
   bindingId: string;
-  bindingIntentId: string;
+  launchRequestId: string;
   runId: string;
   createdAt: string;
   updatedAt: string;
@@ -13,7 +13,7 @@ export type BriefBindingRecord = {
 type BriefBindingRow = {
   brief_id: string;
   binding_id: string;
-  binding_intent_id: string;
+  launch_request_id: string;
   run_id: string;
   created_at: string;
   updated_at: string;
@@ -23,7 +23,7 @@ type BriefBindingRow = {
 const mapRow = (row: BriefBindingRow): BriefBindingRecord => ({
   briefId: row.brief_id,
   bindingId: row.binding_id,
-  bindingIntentId: row.binding_intent_id,
+  launchRequestId: row.launch_request_id,
   runId: row.run_id,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
@@ -34,7 +34,7 @@ export const createBriefBindingRepository = (db: DatabaseSync) => ({
   getByBindingId(bindingId: string): BriefBindingRecord | null {
     const row = db
       .prepare(
-        `SELECT brief_id, binding_id, binding_intent_id, run_id, created_at, updated_at, artifact_catchup_completed_at
+        `SELECT brief_id, binding_id, launch_request_id, run_id, created_at, updated_at, artifact_catchup_completed_at
            FROM brief_bindings
           WHERE binding_id = ?`,
       )
@@ -45,7 +45,7 @@ export const createBriefBindingRepository = (db: DatabaseSync) => ({
   listByBriefId(briefId: string): BriefBindingRecord[] {
     const rows = db
       .prepare(
-        `SELECT brief_id, binding_id, binding_intent_id, run_id, created_at, updated_at, artifact_catchup_completed_at
+        `SELECT brief_id, binding_id, launch_request_id, run_id, created_at, updated_at, artifact_catchup_completed_at
            FROM brief_bindings
           WHERE brief_id = ?
           ORDER BY datetime(created_at) DESC, binding_id DESC`,
@@ -59,7 +59,7 @@ export const createBriefBindingRepository = (db: DatabaseSync) => ({
       `INSERT INTO brief_bindings (
          brief_id,
          binding_id,
-         binding_intent_id,
+         launch_request_id,
          run_id,
          created_at,
          updated_at,
@@ -67,7 +67,7 @@ export const createBriefBindingRepository = (db: DatabaseSync) => ({
        ) VALUES (?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(binding_id) DO UPDATE SET
          brief_id = excluded.brief_id,
-         binding_intent_id = excluded.binding_intent_id,
+         launch_request_id = excluded.launch_request_id,
          run_id = excluded.run_id,
          created_at = excluded.created_at,
          updated_at = excluded.updated_at,
@@ -75,7 +75,7 @@ export const createBriefBindingRepository = (db: DatabaseSync) => ({
     ).run(
       input.briefId,
       input.bindingId,
-      input.bindingIntentId,
+      input.launchRequestId,
       input.runId,
       input.createdAt,
       input.updatedAt,

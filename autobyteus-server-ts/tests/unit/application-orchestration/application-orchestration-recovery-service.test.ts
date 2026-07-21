@@ -15,7 +15,7 @@ const applicationId = "bundle-app__pkg__brief-studio";
 const buildBinding = (): ApplicationRunBindingSummary => ({
   bindingId: "binding-1",
   applicationId,
-  bindingIntentId: "binding-intent-1",
+  launchRequestId: "launch-request-1",
   status: "ATTACHED",
   executionResourceRef: {
     source: "bundle",

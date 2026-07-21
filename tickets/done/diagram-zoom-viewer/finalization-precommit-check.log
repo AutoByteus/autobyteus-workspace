@@ -1,0 +1,23 @@
+$ git diff --cached --check -- . ':(glob,exclude)**/*.log' ':(glob,exclude)**/*.result'
+PASS
+NOTE: retained raw execution logs/results are excluded from whitespace normalization so their captured evidence remains byte-faithful.
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 15567
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+$ node --check autobyteus-web/tests/e2e/diagram-zoom-viewer-probe.mjs
+PASS
+$ verify authoritative gates and user verification
+tickets/done/diagram-zoom-viewer/user-verification-report.md:10:- Result: `Pass`
+tickets/done/diagram-zoom-viewer/api-e2e-test-review-report.md:12:- API/E2E Result: `Pass` — `DZV-BR-001` through `DZV-BR-008` passed in installed Chrome with zero evidence failures/page errors; all owned cleanup passed. Successful round-3 focused repository, consumer, preload, guard, and production-build evidence remains applicable because round-4 rework changed only the browser harness.
+tickets/done/diagram-zoom-viewer/api-e2e-test-review-report.md:13:- Final Validation Confidence: `97.0%`
+tickets/done/diagram-zoom-viewer/api-e2e-test-review-report.md:55:## Latest Authoritative Result
+tickets/done/diagram-zoom-viewer/api-e2e-test-review-report.md:57:- Result: `Pass`
+tickets/done/diagram-zoom-viewer/api-e2e-test-review-report.md:59:- Unresolved finding IDs: None
+tickets/done/diagram-zoom-viewer/code-review-report.md:176:## Latest Authoritative Result
+tickets/done/diagram-zoom-viewer/api-e2e-execution-coverage-report.md:249:## Latest Authoritative Result
+tickets/done/diagram-zoom-viewer/api-e2e-execution-coverage-report.md:251:- Result: `Pass`
+tickets/done/diagram-zoom-viewer/design-review-report.md:230:## Latest Authoritative Result
+tickets/done/diagram-zoom-viewer/design-review-report.md:463:## Latest Authoritative Result
+PASS

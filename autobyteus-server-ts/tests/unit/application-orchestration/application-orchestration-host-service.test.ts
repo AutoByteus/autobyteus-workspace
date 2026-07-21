@@ -27,7 +27,7 @@ const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBind
 const buildBinding = (): ApplicationRunBindingSummary => ({
   bindingId,
   applicationId,
-  bindingIntentId: "binding-intent-1",
+  launchRequestId: "launch-request-1",
   status: "ATTACHED",
   executionResourceRef: {
     source: "bundle",
@@ -58,7 +58,7 @@ const buildBinding = (): ApplicationRunBindingSummary => ({
 const buildTeamBinding = (): ApplicationRunBindingSummary => ({
   bindingId,
   applicationId,
-  bindingIntentId: "binding-intent-1",
+  launchRequestId: "launch-request-1",
   status: "ATTACHED",
   executionResourceRef: {
     source: "bundle",
@@ -86,7 +86,7 @@ const buildTeamBinding = (): ApplicationRunBindingSummary => ({
   lastErrorMessage: null,
 });
 
-describe("ApplicationOrchestrationHostService startRun", () => {
+describe("ApplicationOrchestrationHostService startAgent", () => {
   it("waits for RUN_STARTED journaling before initialInput is forwarded to the runtime", async () => {
     const bindings = new Map<string, ApplicationRunBindingSummary>();
     const lookups = new Map<string, ApplicationRunLookupRecord>();
@@ -181,7 +181,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
 
     const binding = buildBinding();
     const runBindingLaunchService = {
-      startRunBinding: vi.fn(async () => {
+      startAgentRunBinding: vi.fn(async () => {
         await bindingStore.persistBinding(binding);
         lookupStore.replaceBindingLookups(applicationId, binding.bindingId, [binding.runtime.runId]);
         return cloneBinding(binding);
@@ -202,8 +202,8 @@ describe("ApplicationOrchestrationHostService startRun", () => {
       agentRunService: agentRunService as never,
     });
 
-    const startRunPromise = hostService.startRun(applicationId, {
-      bindingIntentId: "binding-intent-1",
+    const startAgentPromise = hostService.startAgent(applicationId, {
+      launchRequestId: "launch-request-1",
       executionResourceRef: {
         source: "bundle",
         kind: "AGENT",
@@ -228,17 +228,17 @@ describe("ApplicationOrchestrationHostService startRun", () => {
 
     runStartedCommit.resolve();
 
-    await startRunPromise;
+    await startAgentPromise;
 
     expect(fakeRun.postUserMessage).toHaveBeenCalledTimes(1);
     expect(committedFamilies).toEqual(["RUN_STARTED"]);
   });
 
-  it("resolves bindings by bindingIntentId through the host boundary", async () => {
+  it("resolves bindings by launchRequestId through the host boundary", async () => {
     const binding = buildBinding();
     const bindingStore = {
-      getBindingByIntentId: vi.fn(async (nextApplicationId: string, nextBindingIntentId: string) => {
-        if (nextApplicationId === applicationId && nextBindingIntentId === binding.bindingIntentId) {
+      findBindingByLaunchRequestId: vi.fn(async (nextApplicationId: string, nextLaunchRequestId: string) => {
+        if (nextApplicationId === applicationId && nextLaunchRequestId === binding.launchRequestId) {
           return cloneBinding(binding);
         }
         return null;
@@ -256,9 +256,9 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     });
 
     await expect(
-      hostService.getRunBindingByIntentId(applicationId, binding.bindingIntentId),
+      hostService.findRunBindingByLaunchRequestId(applicationId, binding.launchRequestId),
     ).resolves.toEqual(binding);
-    expect(bindingStore.getBindingByIntentId).toHaveBeenCalledWith(applicationId, binding.bindingIntentId);
+    expect(bindingStore.findBindingByLaunchRequestId).toHaveBeenCalledWith(applicationId, binding.launchRequestId);
   });
 
   it("reads published artifacts for bound team-member runs through the binding-owned member runtime path", async () => {
@@ -326,7 +326,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     });
 
     await expect(
-      hostService.getRunPublishedArtifacts(applicationId, "researcher-member-run-1"),
+      hostService.listRunPublishedArtifacts(applicationId, "researcher-member-run-1"),
     ).resolves.toEqual([
       expect.objectContaining({
         runId: "researcher-member-run-1",
@@ -335,7 +335,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     ]);
 
     await expect(
-      hostService.getPublishedArtifactRevisionText(applicationId, {
+      hostService.readPublishedArtifactRevision(applicationId, {
         runId: "researcher-member-run-1",
         revisionId: "revision-1",
       }),
@@ -422,7 +422,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
       publishedArtifactProjectionService: publishedArtifactProjectionService as never,
     });
 
-    await hostService.getRunPublishedArtifacts(applicationId, "reviewer-member-run-1");
+    await hostService.listRunPublishedArtifacts(applicationId, "reviewer-member-run-1");
 
     expect(publishedArtifactProjectionService.getPublishedArtifactsFromMemoryDir).toHaveBeenCalledWith(
       expect.stringContaining("agent_teams/team-run-1/child-review-team-run/reviewer-member-run-1"),
@@ -450,7 +450,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
       } as never,
     });
 
-    await hostService.postRunInput(applicationId, {
+    await hostService.sendRunInput(applicationId, {
       bindingId,
       text: "please research",
       targetMemberRouteKey: "researcher",
@@ -481,7 +481,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     });
 
     await expect(
-      hostService.postRunInput(applicationId, {
+      hostService.sendRunInput(applicationId, {
         bindingId,
         text: "please research",
         targetMemberName: "researcher",

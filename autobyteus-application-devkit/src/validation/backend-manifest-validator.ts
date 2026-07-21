@@ -1,7 +1,7 @@
 import path from 'node:path';
 import {
   APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
   APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
 } from '@autobyteus/application-sdk-contracts';
 import { errorDiagnostic, type ValidationDiagnostic } from './validation-result.js';
@@ -43,7 +43,7 @@ const validateBackendSdkCompatibility = (
   pushVersionDiagnostic(
     diagnostics,
     sdkCompatibility.backendDefinitionContractVersion,
-    APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
+    APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
     'sdkCompatibility.backendDefinitionContractVersion',
   );
   pushVersionDiagnostic(

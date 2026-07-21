@@ -1,0 +1,31 @@
+Diagram Zoom Viewer API/E2E final hygiene — execution round 4
+Generated: 2026-07-20T08:59:41Z
+
+[source hygiene]
+node --check: Pass
+git diff --check: Pass
+durable/report trailing-whitespace audit: Pass
+
+[structured browser evidence]
+result/scenarios/failures: Pass (8/8, zero failures)
+DZV-BR-008 semantic media predicate: Pass (2 exact-standalone inline rules; 1 viewer rule with exact independent branch)
+  - viewer: (hover: none), (pointer: coarse), (any-pointer: coarse), (max-width: 480px); accepted=true; standaloneBranch=true; exactSole=false
+  - inline: (any-pointer: coarse); accepted=true; standaloneBranch=true; exactSole=true
+  - inline: (any-pointer: coarse); accepted=true; standaloneBranch=true; exactSole=true
+bounded maximum zoom: Pass (12/20 attempts)
+current screenshots: Pass (18)
+failure screenshots: absent
+unexpected page errors: zero (authoritative evidence failures array empty; known backend/malformed-fixture console noise retained in browserEvents)
+
+[cleanup/isolation]
+owned browser/process/log cleanup: Pass (5 contexts, browser/log closed, child/process group exited, final exit 0)
+temporary Nuxt route: absent
+owned port 56170: no listener
+
+[authoritative command]
+pnpm -C autobyteus-web test:e2e:diagram-zoom-viewer -- --output-dir ../tickets/in-progress/diagram-zoom-viewer/api-e2e-evidence/browser
+command result: Pass / exit 0
+command log: tickets/in-progress/diagram-zoom-viewer/api-e2e-evidence/browser-rerun-test-review-round-4.log
+
+[post-report confirmation]
+node syntax, git diff check, and durable/report trailing-whitespace audit rerun after canonical report refresh: Pass

@@ -12,7 +12,9 @@ import {
   findAbsoluteFilePathCodeCandidates,
   findAbsoluteFilePathCandidates,
   normalizeAbsoluteFilePath,
+  resolveEventMonitorMarkdownFileDestination,
   type AbsoluteFilePathAction,
+  type AbsoluteFilePathActionCandidate,
 } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 export interface MarkdownSegment {
@@ -45,12 +47,12 @@ const actionLink = (actionId: string, label: string): string => (
   `<a href="#" role="button" class="event-monitor-file-action-link" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">${escapeHtml(label)}</a>`
 );
 
-const normalizeMarkdownLinkPath = (href: string): string | null => {
-  try {
-    return normalizeAbsoluteFilePath(decodeURIComponent(href));
-  } catch {
-    return null;
-  }
+const allowFileUriLinkTokens = (markdown: MarkdownIt, enabled: boolean): void => {
+  if (!enabled) return;
+  const defaultValidateLink = markdown.validateLink.bind(markdown);
+  markdown.validateLink = (url: string): boolean => (
+    /^file:/i.test(url.trim()) || defaultValidateLink(url)
+  );
 };
 
 export const useMarkdownSegments = (
@@ -71,6 +73,7 @@ export const useMarkdownSegments = (
     linkify: true,
     typographer: true,
   });
+  allowFileUriLinkTokens(md, options.enableEventMonitorFileActions === true);
 
   // Enable KaTeX on the tokenizer
   md.use(katex, katexOptions);
@@ -103,6 +106,7 @@ export const useMarkdownSegments = (
   })
   .use(markdownItPrism) // Prism for syntax highlighting of normal code blocks
   .use(katex, katexOptions); // KaTeX for rendering math tokens
+  allowFileUriLinkTokens(mdWithPrism, options.enableEventMonitorFileActions === true);
 
   // Custom fence rule for "panel-like" blocks: render markdown (incl. KaTeX) inside a styled container
   const prismFenceRule = mdWithPrism.renderer.rules.fence;
@@ -140,7 +144,7 @@ export const useMarkdownSegments = (
     let nextFileActionId = 0;
 
     const registerFileAction = (
-      candidate: { rawCandidate: string; normalizedCandidate: string },
+      candidate: AbsoluteFilePathActionCandidate,
       sourceKind: AbsoluteFilePathAction['sourceKind'],
     ): string | null => {
       const id = `event-monitor-file-action-${nextFileActionId++}`;
@@ -190,15 +194,25 @@ export const useMarkdownSegments = (
 
     const decorateInlineTokens = (children: any[]): any[] => {
       const decorated: any[] = [];
-      let linkDepth = 0;
+      const linkStates: Array<'ordinary' | 'action' | 'invalid-file'> = [];
 
       for (const child of children) {
         if (child.type === 'link_open') {
           const href = child.attrGet?.('href') || '';
-          const normalizedCandidate = normalizeMarkdownLinkPath(href);
-          if (normalizedCandidate) {
+          const destination = resolveEventMonitorMarkdownFileDestination(href);
+          const linkState = destination.kind === 'invalid-file'
+            ? 'invalid-file'
+            : destination.kind === 'valid'
+              ? 'action'
+              : 'ordinary';
+          linkStates.push(linkState);
+          if (destination.kind === 'valid') {
             const actionId = registerFileAction(
-              { rawCandidate: href.trim(), normalizedCandidate },
+              {
+                rawCandidate: href.trim(),
+                normalizedCandidate: destination.normalizedCandidate,
+                rawDestination: destination.rawDestination,
+              },
               'markdown-link',
             );
             if (actionId) {
@@ -207,19 +221,28 @@ export const useMarkdownSegments = (
                 eventMonitorFileActionId: actionId,
               };
             }
+          } else if (destination.kind === 'invalid-file') {
+            child.meta = {
+              ...(child.meta || {}),
+              eventMonitorInvalidFileLink: true,
+            };
           }
-          linkDepth += 1;
           decorated.push(child);
           continue;
         }
 
         if (child.type === 'link_close') {
-          linkDepth = Math.max(0, linkDepth - 1);
+          if (linkStates.pop() === 'invalid-file') {
+            child.meta = {
+              ...(child.meta || {}),
+              eventMonitorInvalidFileLink: true,
+            };
+          }
           decorated.push(child);
           continue;
         }
 
-        if (child.type === 'code_inline' && linkDepth === 0) {
+        if (child.type === 'code_inline' && linkStates.length === 0) {
           const normalizedCandidate = normalizeAbsoluteFilePath(child.content || '');
           if (normalizedCandidate) {
             const actionId = registerFileAction(
@@ -237,7 +260,7 @@ export const useMarkdownSegments = (
           continue;
         }
 
-        if (child.type !== 'text' || linkDepth > 0) {
+        if (child.type !== 'text' || linkStates.length > 0) {
           decorated.push(child);
           continue;
         }
@@ -304,10 +327,20 @@ export const useMarkdownSegments = (
       mdWithPrism.renderer.rules.link_open = (renderTokens, idx, renderOptions, env, self) => {
         const token = renderTokens[idx];
         const actionId = token.meta?.eventMonitorFileActionId as string | undefined;
+        if (token.meta?.eventMonitorInvalidFileLink) {
+          return '<span data-event-monitor-invalid-file-link="true">';
+        }
         if (!actionId) {
           return self.renderToken(renderTokens, idx, renderOptions);
         }
         return `<a href="#" role="button" class="event-monitor-file-action-link" data-event-monitor-file-action-id="${escapeHtml(actionId)}" data-event-monitor-file-action-control="true">`;
+      };
+      mdWithPrism.renderer.rules.link_close = (renderTokens, idx, renderOptions, env, self) => {
+        const token = renderTokens[idx];
+        if (token.meta?.eventMonitorInvalidFileLink) {
+          return '</span>';
+        }
+        return self.renderToken(renderTokens, idx, renderOptions);
       };
       mdWithPrism.renderer.rules.event_monitor_file_action_text = (renderTokens, idx) => {
         const token = renderTokens[idx];
@@ -343,6 +376,7 @@ export const useMarkdownSegments = (
               'data-markdown-image-error',
               'data-event-monitor-file-action-id',
               'data-event-monitor-file-action-control',
+              'data-event-monitor-invalid-file-link',
             ],
             ADD_TAGS: ['math', 'semantics', 'mrow', 'mi', 'mo', 'mn', 'msup', 'msub', 'annotation', 'mtext'], // Allow MathML tags if KaTeX outputs them
             USE_PROFILES: { html: true } 

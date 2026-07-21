@@ -9,7 +9,7 @@ import { withAppDatabase, withTransaction } from "../repositories/app-database.j
 import { createArtifactRepository } from "../repositories/artifact-repository.js";
 import { createBriefBindingRepository } from "../repositories/brief-binding-repository.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
-import { createPendingBindingIntentRepository } from "../repositories/pending-binding-intent-repository.js";
+import { createPendingLaunchRequestRepository } from "../repositories/pending-launch-request-repository.js";
 import { createReviewNoteRepository } from "../repositories/review-note-repository.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
@@ -95,7 +95,7 @@ const resolveLaunchProjection = (input: {
 
 const resolveDraftingTeamConfiguration = async (context: ApplicationHandlerContext) => {
   return resolveConfiguredTeamLaunchProfile({
-    configuredResource: await context.runtimeControl.getConfiguredExecutionResource(DRAFTING_TEAM_SLOT_KEY),
+    configuredResource: await context.agentResources.getConfigured(DRAFTING_TEAM_SLOT_KEY),
     fallbackExecutionResourceRef: BRIEF_STUDIO_TEAM_RESOURCE,
   });
 };
@@ -164,13 +164,13 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
     });
 
     const launchedAt = new Date().toISOString();
-    const pendingIntent = correlationService.createPendingBindingIntent(briefId);
+    const pendingLaunchRequest = correlationService.createPendingLaunchRequest(briefId);
     const draftingTeam = await resolveDraftingTeamConfiguration(context);
     const workspaceRootPath = draftingTeam.launchProfile?.defaults?.workspaceRootPath ?? context.storage.runtimePath;
 
     try {
-      const binding = await context.runtimeControl.startRun({
-        bindingIntentId: pendingIntent.bindingIntentId,
+      const binding = await context.agentExecution.startAgentTeam({
+        launchRequestId: pendingLaunchRequest.launchRequestId,
         executionResourceRef: draftingTeam.executionResourceRef,
         launch: buildConfiguredTeamRunLaunch({
           launchProfile: draftingTeam.launchProfile,
@@ -194,15 +194,15 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
       withAppDatabase(context.storage.appDatabasePath, (db) => {
         withTransaction(db, () => {
           const briefRepository = createBriefRepository(db);
-          createPendingBindingIntentRepository(db).markCommitted({
-            bindingIntentId: binding.bindingIntentId,
+          createPendingLaunchRequestRepository(db).markCommitted({
+            launchRequestId: binding.launchRequestId,
             bindingId: binding.bindingId,
             committedAt: launchedAt,
           });
           createBriefBindingRepository(db).upsertBinding({
             briefId,
             bindingId: binding.bindingId,
-            bindingIntentId: binding.bindingIntentId,
+            launchRequestId: binding.launchRequestId,
             runId: binding.runtime.runId,
             createdAt: binding.createdAt,
             updatedAt: launchedAt,
@@ -242,7 +242,7 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      const reconciled = await correlationService.reconcileBindingIntent(pendingIntent.bindingIntentId);
+      const reconciled = await correlationService.reconcileLaunchRequest(pendingLaunchRequest.launchRequestId);
       withAppDatabase(context.storage.appDatabasePath, (db) => {
         withTransaction(db, () => {
           createBriefRepository(db).upsertProjectedBrief({

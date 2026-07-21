@@ -1,0 +1,140 @@
+
+> @autobyteus/application-sdk-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/autobyteus-application-sdk-contracts
+> pnpm build && node --test tests/application-iframe-contract.test.mjs
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: readApplicationIframeLaunchHints parses a valid v3 iframe launch-hint query string
+ok 1 - readApplicationIframeLaunchHints parses a valid v3 iframe launch-hint query string
+  ---
+  duration_ms: 1.225958
+  type: 'test'
+  ...
+# Subtest: readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+ok 2 - readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input
+  ---
+  duration_ms: 0.237708
+  type: 'test'
+  ...
+# Subtest: packaged host-origin normalization preserves the file/null equivalence rule
+ok 3 - packaged host-origin normalization preserves the file/null equivalence rule
+  ---
+  duration_ms: 0.127459
+  type: 'test'
+  ...
+# Subtest: ready and bootstrap validators accept tight v3 envelopes and reject malformed variants
+ok 4 - ready and bootstrap validators accept tight v3 envelopes and reject malformed variants
+  ---
+  duration_ms: 0.285917
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 52.608541
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 16.561833
+  type: 'test'
+  ...
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 84.874417
+  type: 'test'
+  ...
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 3 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 62.180167
+  type: 'test'
+  ...
+# Subtest: validator rejects an explicit v2 backend-definition compatibility fixture
+ok 4 - validator rejects an explicit v2 backend-definition compatibility fixture
+  ---
+  duration_ms: 49.440208
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 13.420916
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 13.655916
+      type: 'test'
+      ...
+    1..2
+ok 5 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 27.570667
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 6 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 16.259292
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 17.415375
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 16.407083
+      type: 'test'
+      ...
+    1..2
+ok 7 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 34.51325
+  type: 'test'
+  ...
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 8 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 47.804125
+  type: 'test'
+  ...
+# Subtest: dev bootstrap session uses v3 launch hints and one real-backend application identity
+ok 9 - dev bootstrap session uses v3 launch hints and one real-backend application identity
+  ---
+  duration_ms: 0.313958
+  type: 'test'
+  ...
+1..9
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 423.312875

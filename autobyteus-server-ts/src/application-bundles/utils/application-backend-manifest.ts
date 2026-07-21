@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
   APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
   type ApplicationBackendBundleManifestV1,
 } from "@autobyteus/application-sdk-contracts";
@@ -151,7 +151,7 @@ export const parseApplicationBackendManifest = (
     sdkCompatibility.backendDefinitionContractVersion,
     "sdkCompatibility.backendDefinitionContractVersion",
   );
-  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2) {
+  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3) {
     throw new ApplicationBackendManifestParseError(
       `Unsupported backendDefinitionContractVersion '${backendDefinitionContractVersion}'.`,
     );
@@ -189,7 +189,7 @@ export const parseApplicationBackendManifest = (
       semver,
     },
     sdkCompatibility: {
-      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
+      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
       frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
     },
     supportedExposures: normalizeBooleanRecord(manifest.supportedExposures, "supportedExposures"),

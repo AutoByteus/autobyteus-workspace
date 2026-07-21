@@ -1,0 +1,860 @@
+{
+  "inspectedAt": "2026-07-20T08:10:56.006Z",
+  "surface": "http://127.0.0.1:3418/implementation-diagram-hybrid-review",
+  "browser": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "desktop": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "input": "hover:hover, pointer:fine"
+  },
+  "coarse": {
+    "viewport": {
+      "width": 360,
+      "height": 740
+    },
+    "input": "hasTouch mobile context",
+    "rootFontSize": "200%"
+  },
+  "screenshots": [
+    {
+      "file": "01-desktop-rest-light.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/01-desktop-rest-light.png"
+    },
+    {
+      "file": "02-desktop-hover-light.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/02-desktop-hover-light.png"
+    },
+    {
+      "file": "03-desktop-keyboard-focus-light.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/03-desktop-keyboard-focus-light.png"
+    },
+    {
+      "file": "04-viewer-wide-light.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/04-viewer-wide-light.png"
+    },
+    {
+      "file": "05-desktop-hover-dark.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/05-desktop-hover-dark.png"
+    },
+    {
+      "file": "06-viewer-wide-dark.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/06-viewer-wide-dark.png"
+    },
+    {
+      "file": "07-coarse-inline-360-200.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/07-coarse-inline-360-200.png"
+    },
+    {
+      "file": "08-viewer-narrow-360-200-coarse.png",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/tickets/in-progress/diagram-zoom-viewer/implementation-evidence/visual-refinement-round-2/08-viewer-narrow-360-200-coarse.png"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "desktop-fine-hover-capability",
+      "pass": true,
+      "details": {
+        "fineHover": true,
+        "coarse": false,
+        "noHover": false
+      }
+    },
+    {
+      "id": "desktop-rest-is-quiet-and-non-trapping",
+      "pass": true,
+      "details": {
+        "opacity": "0",
+        "pointerEvents": "none",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      }
+    },
+    {
+      "id": "desktop-hidden-button-remains-in-tab-order",
+      "pass": true,
+      "details": {
+        "tabIndex": 0
+      }
+    },
+    {
+      "id": "desktop-preview-hover-reveals-button",
+      "pass": true,
+      "details": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      }
+    },
+    {
+      "id": "desktop-hover-does-not-move-diagram",
+      "pass": true,
+      "details": {
+        "rest": {
+          "x": 492.5,
+          "y": 381.984375,
+          "width": 778,
+          "height": 175.71875,
+          "top": 381.984375,
+          "right": 1270.5,
+          "bottom": 557.703125,
+          "left": 492.5
+        },
+        "hover": {
+          "x": 492.5,
+          "y": 381.984375,
+          "width": 778,
+          "height": 175.71875,
+          "top": 381.984375,
+          "right": 1270.5,
+          "bottom": 557.703125,
+          "left": 492.5
+        }
+      }
+    },
+    {
+      "id": "desktop-pointer-leave-restores-quiet-state",
+      "pass": true,
+      "details": {
+        "opacity": "0",
+        "pointerEvents": "none",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      }
+    },
+    {
+      "id": "desktop-pointer-leave-does-not-move-diagram",
+      "pass": true,
+      "details": {
+        "rest": {
+          "x": 492.5,
+          "y": 381.984375,
+          "width": 778,
+          "height": 175.71875,
+          "top": 381.984375,
+          "right": 1270.5,
+          "bottom": 557.703125,
+          "left": 492.5
+        },
+        "leave": {
+          "x": 492.5,
+          "y": 381.984375,
+          "width": 778,
+          "height": 175.71875,
+          "top": 381.984375,
+          "right": 1270.5,
+          "bottom": 557.703125,
+          "left": 492.5
+        }
+      }
+    },
+    {
+      "id": "keyboard-tab-reveals-focused-button",
+      "pass": true,
+      "details": {
+        "preview": {
+          "x": 484.5,
+          "y": 373.984375,
+          "width": 794,
+          "height": 191.71875,
+          "top": 373.984375,
+          "right": 1278.5,
+          "bottom": 565.703125,
+          "left": 484.5
+        },
+        "button": {
+          "x": 1240.5,
+          "y": 377.984375,
+          "width": 34,
+          "height": 34,
+          "top": 377.984375,
+          "right": 1274.5,
+          "bottom": 411.984375,
+          "left": 1240.5
+        },
+        "svg": {
+          "x": 492.5,
+          "y": 381.984375,
+          "width": 778,
+          "height": 175.71875,
+          "top": 381.984375,
+          "right": 1270.5,
+          "bottom": 557.703125,
+          "left": 492.5
+        },
+        "buttonStyle": {
+          "opacity": "1",
+          "pointerEvents": "auto",
+          "color": "rgb(51, 65, 85)",
+          "outlineStyle": "solid",
+          "outlineWidth": "2px",
+          "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+          "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+          "surfaceInset": "2px"
+        },
+        "tabIndex": 0,
+        "active": true,
+        "media": {
+          "fineHover": true,
+          "coarse": false,
+          "noHover": false
+        }
+      }
+    },
+    {
+      "id": "keyboard-focus-ring-is-visible",
+      "pass": true,
+      "details": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      }
+    },
+    {
+      "id": "desktop-focus-does-not-move-diagram",
+      "pass": true,
+      "details": {
+        "rest": {
+          "x": 492.5,
+          "y": 381.984375,
+          "width": 778,
+          "height": 175.71875,
+          "top": 381.984375,
+          "right": 1270.5,
+          "bottom": 557.703125,
+          "left": 492.5
+        },
+        "focused": {
+          "x": 492.5,
+          "y": 381.984375,
+          "width": 778,
+          "height": 175.71875,
+          "top": 381.984375,
+          "right": 1270.5,
+          "bottom": 557.703125,
+          "left": 492.5
+        }
+      }
+    },
+    {
+      "id": "wide-viewer-has-exactly-four-actions",
+      "pass": true,
+      "details": [
+        {
+          "text": "",
+          "ariaLabel": "Zoom out",
+          "title": "Zoom out",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        },
+        {
+          "text": "",
+          "ariaLabel": "Fit diagram",
+          "title": "Fit diagram",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        },
+        {
+          "text": "",
+          "ariaLabel": "Zoom in",
+          "title": "Zoom in",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        },
+        {
+          "text": "",
+          "ariaLabel": "Close diagram viewer",
+          "title": "Close diagram viewer",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        }
+      ]
+    },
+    {
+      "id": "wide-toolbar-is-uniform-and-icon-only",
+      "pass": true,
+      "details": [
+        {
+          "text": "",
+          "ariaLabel": "Zoom out",
+          "title": "Zoom out",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        },
+        {
+          "text": "",
+          "ariaLabel": "Fit diagram",
+          "title": "Fit diagram",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        },
+        {
+          "text": "",
+          "ariaLabel": "Zoom in",
+          "title": "Zoom in",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        },
+        {
+          "text": "",
+          "ariaLabel": "Close diagram viewer",
+          "title": "Close diagram viewer",
+          "width": 36,
+          "height": 36,
+          "className": "mermaid-viewer-action"
+        }
+      ]
+    },
+    {
+      "id": "wide-toolbar-is-compact",
+      "pass": true,
+      "details": {
+        "text": "",
+        "ariaLabel": "Zoom out",
+        "title": "Zoom out",
+        "width": 36,
+        "height": 36,
+        "className": "mermaid-viewer-action"
+      }
+    },
+    {
+      "id": "zoom-in-regression",
+      "pass": true,
+      "details": {
+        "fittedWidth": 1406,
+        "zoomedWidth": 1757.5
+      }
+    },
+    {
+      "id": "fit-regression",
+      "pass": true,
+      "details": {
+        "fittedWidth": 1406,
+        "resetWidth": 1406
+      }
+    },
+    {
+      "id": "expanded-link-regression",
+      "pass": true,
+      "details": [
+        [
+          "https://example.com/diagram-docs",
+          "_blank",
+          "noopener,noreferrer"
+        ]
+      ]
+    },
+    {
+      "id": "close-focus-return-regression",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "dark-hover-control-visible",
+      "pass": true,
+      "details": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(226, 232, 240)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(30, 41, 59, 0.68)",
+        "surfaceBorder": "rgba(100, 116, 139, 0.7)",
+        "surfaceInset": "2px"
+      }
+    },
+    {
+      "id": "coarse-no-hover-capability",
+      "pass": true,
+      "details": {
+        "fineHover": false,
+        "coarse": true,
+        "noHover": true
+      }
+    },
+    {
+      "id": "coarse-inline-control-visible-and-tappable",
+      "pass": true,
+      "details": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "5px"
+      }
+    },
+    {
+      "id": "coarse-inline-target-size",
+      "pass": true,
+      "details": {
+        "x": 250,
+        "y": 343.953125,
+        "width": 44,
+        "height": 44,
+        "top": 343.953125,
+        "right": 294,
+        "bottom": 387.953125,
+        "left": 250
+      }
+    },
+    {
+      "id": "narrow-200-toolbar-reachable-icon-only",
+      "pass": true,
+      "details": {
+        "narrow": [
+          {
+            "text": "",
+            "x": 41,
+            "y": 89,
+            "right": 85,
+            "bottom": 133,
+            "width": 44,
+            "height": 44
+          },
+          {
+            "text": "",
+            "x": 101,
+            "y": 89,
+            "right": 145,
+            "bottom": 133,
+            "width": 44,
+            "height": 44
+          },
+          {
+            "text": "",
+            "x": 161,
+            "y": 89,
+            "right": 205,
+            "bottom": 133,
+            "width": 44,
+            "height": 44
+          },
+          {
+            "text": "",
+            "x": 221,
+            "y": 89,
+            "right": 265,
+            "bottom": 133,
+            "width": 44,
+            "height": 44
+          }
+        ],
+        "canvasHeight": 573
+      }
+    },
+    {
+      "id": "narrow-200-retains-useful-canvas",
+      "pass": true,
+      "details": {
+        "canvasHeight": 573
+      }
+    }
+  ],
+  "metrics": {
+    "desktopRest": {
+      "preview": {
+        "x": 484.5,
+        "y": 373.984375,
+        "width": 794,
+        "height": 191.71875,
+        "top": 373.984375,
+        "right": 1278.5,
+        "bottom": 565.703125,
+        "left": 484.5
+      },
+      "button": {
+        "x": 1241.179931640625,
+        "y": 376.66436767578125,
+        "width": 32.64013671875,
+        "height": 32.6400146484375,
+        "top": 376.66436767578125,
+        "right": 1273.820068359375,
+        "bottom": 409.30438232421875,
+        "left": 1241.179931640625
+      },
+      "svg": {
+        "x": 492.5,
+        "y": 381.984375,
+        "width": 778,
+        "height": 175.71875,
+        "top": 381.984375,
+        "right": 1270.5,
+        "bottom": 557.703125,
+        "left": 492.5
+      },
+      "buttonStyle": {
+        "opacity": "0",
+        "pointerEvents": "none",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      },
+      "tabIndex": 0,
+      "active": false,
+      "media": {
+        "fineHover": true,
+        "coarse": false,
+        "noHover": false
+      }
+    },
+    "desktopHover": {
+      "preview": {
+        "x": 484.5,
+        "y": 373.984375,
+        "width": 794,
+        "height": 191.71875,
+        "top": 373.984375,
+        "right": 1278.5,
+        "bottom": 565.703125,
+        "left": 484.5
+      },
+      "button": {
+        "x": 1240.5,
+        "y": 377.984375,
+        "width": 34,
+        "height": 34,
+        "top": 377.984375,
+        "right": 1274.5,
+        "bottom": 411.984375,
+        "left": 1240.5
+      },
+      "svg": {
+        "x": 492.5,
+        "y": 381.984375,
+        "width": 778,
+        "height": 175.71875,
+        "top": 381.984375,
+        "right": 1270.5,
+        "bottom": 557.703125,
+        "left": 492.5
+      },
+      "buttonStyle": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      },
+      "tabIndex": 0,
+      "active": false,
+      "media": {
+        "fineHover": true,
+        "coarse": false,
+        "noHover": false
+      }
+    },
+    "desktopLeave": {
+      "preview": {
+        "x": 484.5,
+        "y": 373.984375,
+        "width": 794,
+        "height": 191.71875,
+        "top": 373.984375,
+        "right": 1278.5,
+        "bottom": 565.703125,
+        "left": 484.5
+      },
+      "button": {
+        "x": 1241.179931640625,
+        "y": 376.66436767578125,
+        "width": 32.64013671875,
+        "height": 32.6400146484375,
+        "top": 376.66436767578125,
+        "right": 1273.820068359375,
+        "bottom": 409.30438232421875,
+        "left": 1241.179931640625
+      },
+      "svg": {
+        "x": 492.5,
+        "y": 381.984375,
+        "width": 778,
+        "height": 175.71875,
+        "top": 381.984375,
+        "right": 1270.5,
+        "bottom": 557.703125,
+        "left": 492.5
+      },
+      "buttonStyle": {
+        "opacity": "0",
+        "pointerEvents": "none",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      },
+      "tabIndex": 0,
+      "active": false,
+      "media": {
+        "fineHover": true,
+        "coarse": false,
+        "noHover": false
+      }
+    },
+    "desktopKeyboardFocus": {
+      "preview": {
+        "x": 484.5,
+        "y": 373.984375,
+        "width": 794,
+        "height": 191.71875,
+        "top": 373.984375,
+        "right": 1278.5,
+        "bottom": 565.703125,
+        "left": 484.5
+      },
+      "button": {
+        "x": 1240.5,
+        "y": 377.984375,
+        "width": 34,
+        "height": 34,
+        "top": 377.984375,
+        "right": 1274.5,
+        "bottom": 411.984375,
+        "left": 1240.5
+      },
+      "svg": {
+        "x": 492.5,
+        "y": 381.984375,
+        "width": 778,
+        "height": 175.71875,
+        "top": 381.984375,
+        "right": 1270.5,
+        "bottom": 557.703125,
+        "left": 492.5
+      },
+      "buttonStyle": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "2px"
+      },
+      "tabIndex": 0,
+      "active": true,
+      "media": {
+        "fineHover": true,
+        "coarse": false,
+        "noHover": false
+      }
+    },
+    "wideToolbar": [
+      {
+        "text": "",
+        "ariaLabel": "Zoom out",
+        "title": "Zoom out",
+        "width": 36,
+        "height": 36,
+        "className": "mermaid-viewer-action"
+      },
+      {
+        "text": "",
+        "ariaLabel": "Fit diagram",
+        "title": "Fit diagram",
+        "width": 36,
+        "height": 36,
+        "className": "mermaid-viewer-action"
+      },
+      {
+        "text": "",
+        "ariaLabel": "Zoom in",
+        "title": "Zoom in",
+        "width": 36,
+        "height": 36,
+        "className": "mermaid-viewer-action"
+      },
+      {
+        "text": "",
+        "ariaLabel": "Close diagram viewer",
+        "title": "Close diagram viewer",
+        "width": 36,
+        "height": 36,
+        "className": "mermaid-viewer-action"
+      }
+    ],
+    "darkHover": {
+      "preview": {
+        "x": 484.5,
+        "y": 373.984375,
+        "width": 794,
+        "height": 191.71875,
+        "top": 373.984375,
+        "right": 1278.5,
+        "bottom": 565.703125,
+        "left": 484.5
+      },
+      "button": {
+        "x": 1240.5,
+        "y": 377.984375,
+        "width": 34,
+        "height": 34,
+        "top": 377.984375,
+        "right": 1274.5,
+        "bottom": 411.984375,
+        "left": 1240.5
+      },
+      "svg": {
+        "x": 492.5,
+        "y": 381.984375,
+        "width": 778,
+        "height": 175.71875,
+        "top": 381.984375,
+        "right": 1270.5,
+        "bottom": 557.703125,
+        "left": 492.5
+      },
+      "buttonStyle": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(226, 232, 240)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(30, 41, 59, 0.68)",
+        "surfaceBorder": "rgba(100, 116, 139, 0.7)",
+        "surfaceInset": "2px"
+      },
+      "tabIndex": 0,
+      "active": true,
+      "media": {
+        "fineHover": true,
+        "coarse": false,
+        "noHover": false
+      }
+    },
+    "darkToolbar": {
+      "background": "rgb(30, 41, 59)",
+      "border": "rgb(71, 85, 105)",
+      "color": "rgb(226, 232, 240)"
+    },
+    "coarseInline": {
+      "preview": {
+        "x": 108,
+        "y": 335.953125,
+        "width": 194,
+        "height": 68.578125,
+        "top": 335.953125,
+        "right": 302,
+        "bottom": 404.53125,
+        "left": 108
+      },
+      "button": {
+        "x": 250,
+        "y": 343.953125,
+        "width": 44,
+        "height": 44,
+        "top": 343.953125,
+        "right": 294,
+        "bottom": 387.953125,
+        "left": 250
+      },
+      "svg": {
+        "x": 124,
+        "y": 351.953125,
+        "width": 162,
+        "height": 36.578125,
+        "top": 351.953125,
+        "right": 286,
+        "bottom": 388.53125,
+        "left": 124
+      },
+      "buttonStyle": {
+        "opacity": "1",
+        "pointerEvents": "auto",
+        "color": "rgb(51, 65, 85)",
+        "outlineStyle": "none",
+        "outlineWidth": "3px",
+        "surfaceBackground": "rgba(255, 255, 255, 0.68)",
+        "surfaceBorder": "rgba(203, 213, 225, 0.65)",
+        "surfaceInset": "5px"
+      },
+      "tabIndex": 0,
+      "active": false,
+      "media": {
+        "fineHover": false,
+        "coarse": true,
+        "noHover": true
+      }
+    },
+    "narrowToolbar": {
+      "actions": [
+        {
+          "text": "",
+          "x": 41,
+          "y": 89,
+          "right": 85,
+          "bottom": 133,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "text": "",
+          "x": 101,
+          "y": 89,
+          "right": 145,
+          "bottom": 133,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "text": "",
+          "x": 161,
+          "y": 89,
+          "right": 205,
+          "bottom": 133,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "text": "",
+          "x": 221,
+          "y": 89,
+          "right": 265,
+          "bottom": 133,
+          "width": 44,
+          "height": 44
+        }
+      ],
+      "canvasHeight": 573
+    }
+  },
+  "completedAt": "2026-07-20T08:11:00.264Z",
+  "status": "Pass"
+}

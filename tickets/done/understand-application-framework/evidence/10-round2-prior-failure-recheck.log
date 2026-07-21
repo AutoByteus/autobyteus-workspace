@@ -1,0 +1,11 @@
+# Round 2 Prior-Failure Recheck
+
+- Revision: ef1e083678e8966c5a30936000442d679dd14191
+- Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/understand-application-framework
+
+== Exact previously failing conceptual inventory ==
+command: rg -n -i 'runtime[- ]control|pending[- ]binding[- ]intent' autobyteus-web/docs/applications.md autobyteus-server-ts/docs/modules/application_backend_gateway.md
+PASS: no matches; INV-001 / AC-005 prior failure is resolved.
+
+== Broader active removed-identifier inventory ==
+PASS: no active exact removed identifier/terminology matches.

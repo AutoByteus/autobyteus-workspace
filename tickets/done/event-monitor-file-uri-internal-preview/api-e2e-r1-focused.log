@@ -1,0 +1,33 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-file-uri-internal-preview/autobyteus-web
+
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useMarkdownSegments.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useMarkdownSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··························································
+
+ Test Files  3 passed (3)
+      Tests  58 passed (58)
+   Start at  14:56:03
+   Duration  7.11s (transform 3.09s, setup 18.63s, collect 133ms, tests 146ms, environment 832ms, prepare 524ms)
+

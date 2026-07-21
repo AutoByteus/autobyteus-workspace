@@ -1,0 +1,3925 @@
+{
+  "startedAt": "2026-07-20T08:55:43.610Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/tests/e2e/fixtures/diagram-zoom-viewer.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-zoom-viewer/autobyteus-web/pages/api-e2e-diagram-zoom-viewer.vue",
+  "routePath": "/api-e2e-diagram-zoom-viewer",
+  "scenarios": {
+    "DZV-BR-001": {
+      "id": "DZV-BR-001",
+      "description": "Shared consumers, refined fine-pointer chrome, inline sizing, one-mounted-SVG transfer, and open paths",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:50.269Z",
+      "finishedAt": "2026-07-20T08:55:53.352Z",
+      "details": {
+        "layout": {
+          "viewport": {
+            "width": 1280,
+            "height": 900
+          },
+          "documentScrollWidth": 1280,
+          "conversationSurface": {
+            "rect": {
+              "x": 391.5,
+              "y": 281,
+              "width": 820,
+              "height": 313.703125,
+              "right": 1211.5,
+              "bottom": 594.703125
+            },
+            "scrollWidth": 818
+          },
+          "filePreviewSurface": {
+            "rect": {
+              "x": 391.5,
+              "y": 712,
+              "width": 820,
+              "height": 720,
+              "right": 1211.5,
+              "bottom": 1432
+            },
+            "scrollWidth": 818
+          },
+          "components": [
+            {
+              "index": 0,
+              "shell": {
+                "x": 404.5,
+                "y": 373.984375,
+                "width": 794,
+                "height": 191.71875,
+                "right": 1198.5,
+                "bottom": 565.703125
+              },
+              "host": {
+                "x": 412.5,
+                "y": 381.984375,
+                "width": 778,
+                "height": 175.71875,
+                "right": 1190.5,
+                "bottom": 557.703125
+              },
+              "svg": {
+                "x": 412.5,
+                "y": 381.984375,
+                "width": 778,
+                "height": 175.71875,
+                "right": 1190.5,
+                "bottom": 557.703125
+              },
+              "svgId": "mermaid-42716"
+            },
+            {
+              "index": 1,
+              "shell": {
+                "x": 408.5,
+                "y": 880.984375,
+                "width": 786,
+                "height": 336.375,
+                "right": 1194.5,
+                "bottom": 1217.359375
+              },
+              "host": {
+                "x": 416.5,
+                "y": 888.984375,
+                "width": 770,
+                "height": 320.375,
+                "right": 1186.5,
+                "bottom": 1209.359375
+              },
+              "svg": {
+                "x": 416.5,
+                "y": 888.984375,
+                "width": 770,
+                "height": 320.375,
+                "right": 1186.5,
+                "bottom": 1209.359375
+              },
+              "svgId": "mermaid-67314"
+            },
+            {
+              "index": 2,
+              "shell": {
+                "x": 408.5,
+                "y": 1277.359375,
+                "width": 786,
+                "height": 86,
+                "right": 1194.5,
+                "bottom": 1363.359375
+              },
+              "host": {
+                "x": 416.5,
+                "y": 1285.359375,
+                "width": 770,
+                "height": 70,
+                "right": 1186.5,
+                "bottom": 1355.359375
+              },
+              "svg": {
+                "x": 699.25,
+                "y": 1285.359375,
+                "width": 204.5,
+                "height": 70,
+                "right": 903.75,
+                "bottom": 1355.359375
+              },
+              "svgId": "mermaid-12917"
+            }
+          ]
+        },
+        "finePointerPresentation": {
+          "rest": {
+            "preview": {
+              "x": 404.5,
+              "y": 373.984375,
+              "width": 794,
+              "height": 191.71875,
+              "right": 1198.5,
+              "bottom": 565.703125
+            },
+            "button": {
+              "x": 1161.179931640625,
+              "y": 376.66436767578125,
+              "width": 32.64013671875,
+              "height": 32.6400146484375,
+              "right": 1193.820068359375,
+              "bottom": 409.30438232421875
+            },
+            "host": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "svg": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "previewStyle": {
+              "paddingTop": "8px",
+              "paddingBottom": "8px"
+            },
+            "buttonStyle": {
+              "position": "absolute",
+              "opacity": "0",
+              "pointerEvents": "none",
+              "transform": "matrix(0.96, 0, 0, 0.96, 0, -2)",
+              "color": "rgb(51, 65, 85)",
+              "outlineStyle": "none",
+              "outlineWidth": "3px",
+              "visibility": "visible",
+              "display": "flex"
+            },
+            "surfaceStyle": {
+              "inset": "2px",
+              "top": "2px",
+              "background": "rgba(255, 255, 255, 0.68)",
+              "borderColor": "rgba(203, 213, 225, 0.65)",
+              "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+            },
+            "rightGap": 4.679931640625,
+            "topGap": 2.67999267578125,
+            "normalFlowChildren": [
+              {
+                "tag": "DIV",
+                "className": "mermaid-svg-container flex w-full justify-center"
+              }
+            ],
+            "text": "",
+            "ariaLabel": "Expand diagram",
+            "title": "Expand diagram",
+            "iconPaths": 1,
+            "active": false,
+            "media": {
+              "fineHover": true,
+              "pointerCoarse": false,
+              "anyCoarse": false,
+              "noHover": false,
+              "dark": false
+            }
+          },
+          "hover": {
+            "preview": {
+              "x": 404.5,
+              "y": 373.984375,
+              "width": 794,
+              "height": 191.71875,
+              "right": 1198.5,
+              "bottom": 565.703125
+            },
+            "button": {
+              "x": 1160.5,
+              "y": 377.984375,
+              "width": 34,
+              "height": 34,
+              "right": 1194.5,
+              "bottom": 411.984375
+            },
+            "host": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "svg": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "previewStyle": {
+              "paddingTop": "8px",
+              "paddingBottom": "8px"
+            },
+            "buttonStyle": {
+              "position": "absolute",
+              "opacity": "1",
+              "pointerEvents": "auto",
+              "transform": "none",
+              "color": "rgb(51, 65, 85)",
+              "outlineStyle": "none",
+              "outlineWidth": "3px",
+              "visibility": "visible",
+              "display": "flex"
+            },
+            "surfaceStyle": {
+              "inset": "2px",
+              "top": "2px",
+              "background": "rgba(255, 255, 255, 0.68)",
+              "borderColor": "rgba(203, 213, 225, 0.65)",
+              "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+            },
+            "rightGap": 4,
+            "topGap": 4,
+            "normalFlowChildren": [
+              {
+                "tag": "DIV",
+                "className": "mermaid-svg-container flex w-full justify-center"
+              }
+            ],
+            "text": "",
+            "ariaLabel": "Expand diagram",
+            "title": "Expand diagram",
+            "iconPaths": 1,
+            "active": false,
+            "media": {
+              "fineHover": true,
+              "pointerCoarse": false,
+              "anyCoarse": false,
+              "noHover": false,
+              "dark": false
+            }
+          },
+          "leave": {
+            "preview": {
+              "x": 404.5,
+              "y": 373.984375,
+              "width": 794,
+              "height": 191.71875,
+              "right": 1198.5,
+              "bottom": 565.703125
+            },
+            "button": {
+              "x": 1161.179931640625,
+              "y": 376.66436767578125,
+              "width": 32.64013671875,
+              "height": 32.6400146484375,
+              "right": 1193.820068359375,
+              "bottom": 409.30438232421875
+            },
+            "host": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "svg": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "previewStyle": {
+              "paddingTop": "8px",
+              "paddingBottom": "8px"
+            },
+            "buttonStyle": {
+              "position": "absolute",
+              "opacity": "0",
+              "pointerEvents": "none",
+              "transform": "matrix(0.96, 0, 0, 0.96, 0, -2)",
+              "color": "rgb(51, 65, 85)",
+              "outlineStyle": "none",
+              "outlineWidth": "3px",
+              "visibility": "visible",
+              "display": "flex"
+            },
+            "surfaceStyle": {
+              "inset": "2px",
+              "top": "2px",
+              "background": "rgba(255, 255, 255, 0.68)",
+              "borderColor": "rgba(203, 213, 225, 0.65)",
+              "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+            },
+            "rightGap": 4.679931640625,
+            "topGap": 2.67999267578125,
+            "normalFlowChildren": [
+              {
+                "tag": "DIV",
+                "className": "mermaid-svg-container flex w-full justify-center"
+              }
+            ],
+            "text": "",
+            "ariaLabel": "Expand diagram",
+            "title": "Expand diagram",
+            "iconPaths": 1,
+            "active": false,
+            "media": {
+              "fineHover": true,
+              "pointerCoarse": false,
+              "anyCoarse": false,
+              "noHover": false,
+              "dark": false
+            }
+          },
+          "keyboardFocus": {
+            "preview": {
+              "x": 404.5,
+              "y": 373.984375,
+              "width": 794,
+              "height": 191.71875,
+              "right": 1198.5,
+              "bottom": 565.703125
+            },
+            "button": {
+              "x": 1160.5,
+              "y": 377.984375,
+              "width": 34,
+              "height": 34,
+              "right": 1194.5,
+              "bottom": 411.984375
+            },
+            "host": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "svg": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "previewStyle": {
+              "paddingTop": "8px",
+              "paddingBottom": "8px"
+            },
+            "buttonStyle": {
+              "position": "absolute",
+              "opacity": "1",
+              "pointerEvents": "auto",
+              "transform": "none",
+              "color": "rgb(51, 65, 85)",
+              "outlineStyle": "solid",
+              "outlineWidth": "2px",
+              "visibility": "visible",
+              "display": "flex"
+            },
+            "surfaceStyle": {
+              "inset": "2px",
+              "top": "2px",
+              "background": "rgba(255, 255, 255, 0.68)",
+              "borderColor": "rgba(203, 213, 225, 0.65)",
+              "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+            },
+            "rightGap": 4,
+            "topGap": 4,
+            "normalFlowChildren": [
+              {
+                "tag": "DIV",
+                "className": "mermaid-svg-container flex w-full justify-center"
+              }
+            ],
+            "text": "",
+            "ariaLabel": "Expand diagram",
+            "title": "Expand diagram",
+            "iconPaths": 1,
+            "active": true,
+            "media": {
+              "fineHover": true,
+              "pointerCoarse": false,
+              "anyCoarse": false,
+              "noHover": false,
+              "dark": false
+            }
+          },
+          "focusTabs": 4,
+          "lightToolbar": {
+            "toolbar": {
+              "x": 1079,
+              "y": 25,
+              "width": 168,
+              "height": 36,
+              "right": 1247,
+              "bottom": 61
+            },
+            "actions": [
+              {
+                "rect": {
+                  "x": 1079,
+                  "y": 25,
+                  "width": 36,
+                  "height": 36,
+                  "right": 1115,
+                  "bottom": 61
+                },
+                "text": "",
+                "ariaLabel": "Zoom out",
+                "title": "Zoom out",
+                "disabled": true,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1088,
+                  "y": 34,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1106,
+                  "bottom": 52
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "0.45",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 1123,
+                  "y": 25,
+                  "width": 36,
+                  "height": 36,
+                  "right": 1159,
+                  "bottom": 61
+                },
+                "text": "",
+                "ariaLabel": "Fit diagram",
+                "title": "Fit diagram",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1132,
+                  "y": 34,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1150,
+                  "bottom": 52
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 1167,
+                  "y": 25,
+                  "width": 36,
+                  "height": 36,
+                  "right": 1203,
+                  "bottom": 61
+                },
+                "text": "",
+                "ariaLabel": "Zoom in",
+                "title": "Zoom in",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1176,
+                  "y": 34,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1194,
+                  "bottom": 52
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 1211,
+                  "y": 25,
+                  "width": 36,
+                  "height": 36,
+                  "right": 1247,
+                  "bottom": 61
+                },
+                "text": "",
+                "ariaLabel": "Close diagram viewer",
+                "title": "Close diagram viewer",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1220,
+                  "y": 34,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1238,
+                  "bottom": 52
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              }
+            ],
+            "media": {
+              "fineHover": true,
+              "pointerCoarse": false,
+              "anyCoarse": false,
+              "noHover": false,
+              "dark": false
+            }
+          }
+        }
+      }
+    },
+    "DZV-BR-002": {
+      "id": "DZV-BR-002",
+      "description": "Fitted view, focal wheel zoom, 4x clamp, pointer/touch pan, native edges, and Fit",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:53.352Z",
+      "finishedAt": "2026-07-20T08:55:54.459Z",
+      "details": {
+        "initial": {
+          "canvas": {
+            "x": 17,
+            "y": 70,
+            "width": 1246,
+            "height": 813,
+            "right": 1263,
+            "bottom": 883
+          },
+          "stage": {
+            "x": 17,
+            "y": 335.78125,
+            "width": 1246,
+            "height": 281.421875,
+            "right": 1263,
+            "bottom": 617.203125
+          },
+          "plane": {
+            "x": 17,
+            "y": 70,
+            "width": 1246,
+            "height": 813,
+            "right": 1263,
+            "bottom": 883
+          }
+        },
+        "beforeFocal": {
+          "clientX": 453.09999999999997,
+          "clientY": 448.35,
+          "ratioX": 0.35,
+          "ratioY": 0.4000000000000001,
+          "canvas": {
+            "left": 17,
+            "top": 70
+          },
+          "width": 1246
+        },
+        "afterFocal": {
+          "ratioX": 0.349712665612562,
+          "ratioY": 0.4130449476174384,
+          "width": 1432.890625
+        },
+        "zoomInAttempts": 12,
+        "maximumZoomAttempts": 20,
+        "maximum": {
+          "stage": {
+            "width": 4984,
+            "height": 1125.703125
+          },
+          "plane": {
+            "width": 4984,
+            "height": 1125.703125
+          },
+          "canvas": {
+            "width": 1246,
+            "height": 813,
+            "scrollWidth": 4984,
+            "scrollHeight": 1126
+          }
+        },
+        "nativeEdges": {
+          "maxX": 3738,
+          "maxY": 313,
+          "points": [
+            {
+              "left": 0,
+              "top": 0
+            },
+            {
+              "left": 3738,
+              "top": 0
+            },
+            {
+              "left": 0,
+              "top": 313
+            },
+            {
+              "left": 3738,
+              "top": 313
+            }
+          ],
+          "userSelect": "none"
+        },
+        "beforeMousePan": {
+          "left": 1869,
+          "top": 157
+        },
+        "afterMousePan": {
+          "left": 1779,
+          "top": 87
+        },
+        "beforeTouchPan": {
+          "left": 1779,
+          "top": 87
+        },
+        "afterTouchPan": {
+          "left": 1859,
+          "top": 147
+        },
+        "fitted": {
+          "left": 0,
+          "top": 0
+        }
+      }
+    },
+    "DZV-BR-003": {
+      "id": "DZV-BR-003",
+      "description": "Dismissal, focus, exact body/background isolation, source replacement, and context return",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:54.459Z",
+      "finishedAt": "2026-07-20T08:55:55.263Z",
+      "details": {
+        "initialScrollY": 0,
+        "initialSourceScrollTop": 120,
+        "backgroundRect": {
+          "x": 618.578125,
+          "y": 96,
+          "width": 149.796875,
+          "height": 24
+        },
+        "bodyOverflowRestored": "clip",
+        "sourceRevision": 2
+      }
+    },
+    "DZV-BR-004": {
+      "id": "DZV-BR-004",
+      "description": "Real Mermaid browser/Electron HTTP dispatch and non-HTTP preservation",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:55.263Z",
+      "finishedAt": "2026-07-20T08:55:56.035Z",
+      "details": {
+        "inlineInventory": [
+          {
+            "index": 0,
+            "text": "HTTP documentation",
+            "href": null,
+            "xlink": "https://example.com/diagram-docs"
+          },
+          {
+            "index": 1,
+            "text": "Local fragment",
+            "href": null,
+            "xlink": "mailto:diagram-probe@example.com"
+          }
+        ],
+        "expandedInventory": [
+          {
+            "index": 0,
+            "text": "HTTP documentation",
+            "href": null,
+            "xlink": "https://example.com/diagram-docs"
+          },
+          {
+            "index": 1,
+            "text": "Local fragment",
+            "href": null,
+            "xlink": "mailto:diagram-probe@example.com"
+          }
+        ],
+        "inlineHttp": {
+          "index": 0,
+          "text": "HTTP documentation",
+          "href": null,
+          "xlink": "https://example.com/diagram-docs"
+        },
+        "expandedHttp": {
+          "index": 0,
+          "text": "HTTP documentation",
+          "href": null,
+          "xlink": "https://example.com/diagram-docs"
+        },
+        "localResult": {
+          "dispatched": true,
+          "defaultPrevented": false
+        },
+        "expandedLocalResult": {
+          "dispatched": true,
+          "defaultPrevented": false
+        },
+        "browserCalls": [
+          [
+            "https://example.com/diagram-docs",
+            "_blank",
+            "noopener,noreferrer"
+          ],
+          [
+            "https://example.com/diagram-docs",
+            "_blank",
+            "noopener,noreferrer"
+          ]
+        ],
+        "electronCalls": [
+          "https://example.com/diagram-docs",
+          "https://example.com/diagram-docs"
+        ]
+      }
+    },
+    "DZV-BR-005": {
+      "id": "DZV-BR-005",
+      "description": "Pure coarse/no-hover at 360 CSS px and 200% text scale in English and Simplified Chinese",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:56.035Z",
+      "finishedAt": "2026-07-20T08:55:57.992Z",
+      "details": [
+        {
+          "locale": "en",
+          "rootFontSize": "32px",
+          "viewport": {
+            "width": 360,
+            "height": 740
+          },
+          "dialog": {
+            "x": 16,
+            "y": 16,
+            "width": 328,
+            "height": 708,
+            "right": 344,
+            "bottom": 724
+          },
+          "canvas": {
+            "x": 17,
+            "y": 150,
+            "width": 326,
+            "height": 573,
+            "right": 343,
+            "bottom": 723
+          },
+          "bodyOverflow": "hidden",
+          "coarseInline": {
+            "preview": {
+              "x": 108,
+              "y": 335.953125,
+              "width": 194,
+              "height": 68.578125,
+              "right": 302,
+              "bottom": 404.53125
+            },
+            "button": {
+              "x": 250,
+              "y": 343.953125,
+              "width": 44,
+              "height": 44,
+              "right": 294,
+              "bottom": 387.953125
+            },
+            "host": {
+              "x": 124,
+              "y": 351.953125,
+              "width": 162,
+              "height": 36.578125,
+              "right": 286,
+              "bottom": 388.53125
+            },
+            "svg": {
+              "x": 124,
+              "y": 351.953125,
+              "width": 162,
+              "height": 36.578125,
+              "right": 286,
+              "bottom": 388.53125
+            },
+            "previewStyle": {
+              "paddingTop": "16px",
+              "paddingBottom": "16px"
+            },
+            "buttonStyle": {
+              "position": "absolute",
+              "opacity": "1",
+              "pointerEvents": "auto",
+              "transform": "none",
+              "color": "rgb(51, 65, 85)",
+              "outlineStyle": "none",
+              "outlineWidth": "3px",
+              "visibility": "visible",
+              "display": "flex"
+            },
+            "surfaceStyle": {
+              "inset": "5px",
+              "top": "5px",
+              "background": "rgba(255, 255, 255, 0.68)",
+              "borderColor": "rgba(203, 213, 225, 0.65)",
+              "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+            },
+            "rightGap": 8,
+            "topGap": 8,
+            "normalFlowChildren": [
+              {
+                "tag": "DIV",
+                "className": "mermaid-svg-container flex w-full justify-center"
+              }
+            ],
+            "text": "",
+            "ariaLabel": "Expand diagram",
+            "title": "Expand diagram",
+            "iconPaths": 1,
+            "active": false,
+            "media": {
+              "fineHover": false,
+              "pointerCoarse": true,
+              "anyCoarse": true,
+              "noHover": true,
+              "dark": false
+            }
+          },
+          "toolbar": {
+            "toolbar": {
+              "x": 41,
+              "y": 89,
+              "width": 224,
+              "height": 44,
+              "right": 265,
+              "bottom": 133
+            },
+            "actions": [
+              {
+                "rect": {
+                  "x": 41,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 85,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "Zoom out",
+                "title": "Zoom out",
+                "disabled": true,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 54,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 72,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "0.45",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 101,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 145,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "Fit diagram",
+                "title": "Fit diagram",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 114,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 132,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 161,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 205,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "Zoom in",
+                "title": "Zoom in",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 174,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 192,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 221,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 265,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "Close diagram viewer",
+                "title": "Close diagram viewer",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 234,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 252,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              }
+            ],
+            "media": {
+              "fineHover": false,
+              "pointerCoarse": true,
+              "anyCoarse": true,
+              "noHover": true,
+              "dark": false
+            }
+          }
+        },
+        {
+          "locale": "zh-CN",
+          "rootFontSize": "32px",
+          "viewport": {
+            "width": 360,
+            "height": 740
+          },
+          "dialog": {
+            "x": 16,
+            "y": 16,
+            "width": 328,
+            "height": 708,
+            "right": 344,
+            "bottom": 724
+          },
+          "canvas": {
+            "x": 17,
+            "y": 150,
+            "width": 326,
+            "height": 573,
+            "right": 343,
+            "bottom": 723
+          },
+          "bodyOverflow": "hidden",
+          "coarseInline": {
+            "preview": {
+              "x": 108,
+              "y": 335.953125,
+              "width": 194,
+              "height": 68.578125,
+              "right": 302,
+              "bottom": 404.53125
+            },
+            "button": {
+              "x": 250,
+              "y": 343.953125,
+              "width": 44,
+              "height": 44,
+              "right": 294,
+              "bottom": 387.953125
+            },
+            "host": {
+              "x": 124,
+              "y": 351.953125,
+              "width": 162,
+              "height": 36.578125,
+              "right": 286,
+              "bottom": 388.53125
+            },
+            "svg": {
+              "x": 124,
+              "y": 351.953125,
+              "width": 162,
+              "height": 36.578125,
+              "right": 286,
+              "bottom": 388.53125
+            },
+            "previewStyle": {
+              "paddingTop": "16px",
+              "paddingBottom": "16px"
+            },
+            "buttonStyle": {
+              "position": "absolute",
+              "opacity": "1",
+              "pointerEvents": "auto",
+              "transform": "none",
+              "color": "rgb(51, 65, 85)",
+              "outlineStyle": "none",
+              "outlineWidth": "3px",
+              "visibility": "visible",
+              "display": "flex"
+            },
+            "surfaceStyle": {
+              "inset": "5px",
+              "top": "5px",
+              "background": "rgba(255, 255, 255, 0.68)",
+              "borderColor": "rgba(203, 213, 225, 0.65)",
+              "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+            },
+            "rightGap": 8,
+            "topGap": 8,
+            "normalFlowChildren": [
+              {
+                "tag": "DIV",
+                "className": "mermaid-svg-container flex w-full justify-center"
+              }
+            ],
+            "text": "",
+            "ariaLabel": "放大图表",
+            "title": "放大图表",
+            "iconPaths": 1,
+            "active": false,
+            "media": {
+              "fineHover": false,
+              "pointerCoarse": true,
+              "anyCoarse": true,
+              "noHover": true,
+              "dark": false
+            }
+          },
+          "toolbar": {
+            "toolbar": {
+              "x": 41,
+              "y": 89,
+              "width": 224,
+              "height": 44,
+              "right": 265,
+              "bottom": 133
+            },
+            "actions": [
+              {
+                "rect": {
+                  "x": 41,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 85,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "缩小",
+                "title": "缩小",
+                "disabled": true,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 54,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 72,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "0.45",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 101,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 145,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "适应窗口",
+                "title": "适应窗口",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 114,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 132,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 161,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 205,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "放大",
+                "title": "放大",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 174,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 192,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 221,
+                  "y": 89,
+                  "width": 44,
+                  "height": 44,
+                  "right": 265,
+                  "bottom": 133
+                },
+                "text": "",
+                "ariaLabel": "关闭图表查看器",
+                "title": "关闭图表查看器",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 234,
+                  "y": 102,
+                  "width": 18,
+                  "height": 18,
+                  "right": 252,
+                  "bottom": 120
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              }
+            ],
+            "media": {
+              "fineHover": false,
+              "pointerCoarse": true,
+              "anyCoarse": true,
+              "noHover": true,
+              "dark": false
+            }
+          }
+        }
+      ]
+    },
+    "DZV-BR-006": {
+      "id": "DZV-BR-006",
+      "description": "Controlled missing/malformed-viewBox rendered bounds fallbacks",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:57.992Z",
+      "finishedAt": "2026-07-20T08:55:58.478Z",
+      "details": [
+        {
+          "fixture": {
+            "trigger": "[data-test=\"open-missing-viewbox\"]",
+            "expectedAspect": 2.0588235294117645,
+            "kind": "missing"
+          },
+          "geometry": {
+            "stage": {
+              "width": 1246,
+              "height": 605.1875
+            },
+            "canvas": {
+              "width": 1246,
+              "height": 813
+            },
+            "bbox": {
+              "x": 10,
+              "y": 10,
+              "width": 700,
+              "height": 340
+            },
+            "viewBox": null,
+            "width": "720",
+            "height": "360"
+          },
+          "inventory": [
+            {
+              "index": 0,
+              "text": "Email fixture link",
+              "href": "mailto:fallback-probe@example.com",
+              "xlink": null
+            }
+          ]
+        },
+        {
+          "fixture": {
+            "trigger": "[data-test=\"open-malformed-viewbox\"]",
+            "expectedAspect": 2.142857142857143,
+            "kind": "malformed"
+          },
+          "geometry": {
+            "stage": {
+              "width": 1246,
+              "height": 581.453125
+            },
+            "canvas": {
+              "width": 1246,
+              "height": 813
+            },
+            "bbox": {
+              "x": 20,
+              "y": 20,
+              "width": 600,
+              "height": 280
+            },
+            "viewBox": "invalid view box",
+            "width": "640",
+            "height": "320"
+          },
+          "inventory": [
+            {
+              "index": 0,
+              "text": "HTTP fixture link",
+              "href": "https://example.com/fallback-docs",
+              "xlink": null
+            }
+          ]
+        }
+      ]
+    },
+    "DZV-BR-007": {
+      "id": "DZV-BR-007",
+      "description": "Representative dark-surface inline and wide viewer contrast",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:58.478Z",
+      "finishedAt": "2026-07-20T08:55:59.588Z",
+      "details": {
+        "rest": {
+          "preview": {
+            "x": 404.5,
+            "y": 373.984375,
+            "width": 794,
+            "height": 191.71875,
+            "right": 1198.5,
+            "bottom": 565.703125
+          },
+          "button": {
+            "x": 1161.179931640625,
+            "y": 376.66436767578125,
+            "width": 32.64013671875,
+            "height": 32.6400146484375,
+            "right": 1193.820068359375,
+            "bottom": 409.30438232421875
+          },
+          "host": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "svg": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "previewStyle": {
+            "paddingTop": "8px",
+            "paddingBottom": "8px"
+          },
+          "buttonStyle": {
+            "position": "absolute",
+            "opacity": "0",
+            "pointerEvents": "none",
+            "transform": "matrix(0.96, 0, 0, 0.96, 0, -2)",
+            "color": "rgb(226, 232, 240)",
+            "outlineStyle": "none",
+            "outlineWidth": "3px",
+            "visibility": "visible",
+            "display": "flex"
+          },
+          "surfaceStyle": {
+            "inset": "2px",
+            "top": "2px",
+            "background": "rgba(30, 41, 59, 0.68)",
+            "borderColor": "rgba(100, 116, 139, 0.7)",
+            "boxShadow": "rgba(0, 0, 0, 0.28) 0px 1px 5px 0px"
+          },
+          "rightGap": 4.679931640625,
+          "topGap": 2.67999267578125,
+          "normalFlowChildren": [
+            {
+              "tag": "DIV",
+              "className": "mermaid-svg-container flex w-full justify-center"
+            }
+          ],
+          "text": "",
+          "ariaLabel": "Expand diagram",
+          "title": "Expand diagram",
+          "iconPaths": 1,
+          "active": false,
+          "media": {
+            "fineHover": true,
+            "pointerCoarse": false,
+            "anyCoarse": false,
+            "noHover": false,
+            "dark": true
+          }
+        },
+        "hover": {
+          "preview": {
+            "x": 404.5,
+            "y": 373.984375,
+            "width": 794,
+            "height": 191.71875,
+            "right": 1198.5,
+            "bottom": 565.703125
+          },
+          "button": {
+            "x": 1160.5,
+            "y": 377.984375,
+            "width": 34,
+            "height": 34,
+            "right": 1194.5,
+            "bottom": 411.984375
+          },
+          "host": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "svg": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "previewStyle": {
+            "paddingTop": "8px",
+            "paddingBottom": "8px"
+          },
+          "buttonStyle": {
+            "position": "absolute",
+            "opacity": "1",
+            "pointerEvents": "auto",
+            "transform": "none",
+            "color": "rgb(226, 232, 240)",
+            "outlineStyle": "none",
+            "outlineWidth": "3px",
+            "visibility": "visible",
+            "display": "flex"
+          },
+          "surfaceStyle": {
+            "inset": "2px",
+            "top": "2px",
+            "background": "rgba(30, 41, 59, 0.68)",
+            "borderColor": "rgba(100, 116, 139, 0.7)",
+            "boxShadow": "rgba(0, 0, 0, 0.28) 0px 1px 5px 0px"
+          },
+          "rightGap": 4,
+          "topGap": 4,
+          "normalFlowChildren": [
+            {
+              "tag": "DIV",
+              "className": "mermaid-svg-container flex w-full justify-center"
+            }
+          ],
+          "text": "",
+          "ariaLabel": "Expand diagram",
+          "title": "Expand diagram",
+          "iconPaths": 1,
+          "active": false,
+          "media": {
+            "fineHover": true,
+            "pointerCoarse": false,
+            "anyCoarse": false,
+            "noHover": false,
+            "dark": true
+          }
+        },
+        "toolbar": {
+          "toolbar": {
+            "x": 1079,
+            "y": 25,
+            "width": 168,
+            "height": 36,
+            "right": 1247,
+            "bottom": 61
+          },
+          "actions": [
+            {
+              "rect": {
+                "x": 1079,
+                "y": 25,
+                "width": 36,
+                "height": 36,
+                "right": 1115,
+                "bottom": 61
+              },
+              "text": "",
+              "ariaLabel": "Zoom out",
+              "title": "Zoom out",
+              "disabled": true,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1088,
+                "y": 34,
+                "width": 18,
+                "height": 18,
+                "right": 1106,
+                "bottom": 52
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "0.45",
+                "color": "rgb(226, 232, 240)",
+                "background": "rgb(30, 41, 59)",
+                "borderColor": "rgb(71, 85, 105)"
+              }
+            },
+            {
+              "rect": {
+                "x": 1123,
+                "y": 25,
+                "width": 36,
+                "height": 36,
+                "right": 1159,
+                "bottom": 61
+              },
+              "text": "",
+              "ariaLabel": "Fit diagram",
+              "title": "Fit diagram",
+              "disabled": false,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1132,
+                "y": 34,
+                "width": 18,
+                "height": 18,
+                "right": 1150,
+                "bottom": 52
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "1",
+                "color": "rgb(226, 232, 240)",
+                "background": "rgb(30, 41, 59)",
+                "borderColor": "rgb(71, 85, 105)"
+              }
+            },
+            {
+              "rect": {
+                "x": 1167,
+                "y": 25,
+                "width": 36,
+                "height": 36,
+                "right": 1203,
+                "bottom": 61
+              },
+              "text": "",
+              "ariaLabel": "Zoom in",
+              "title": "Zoom in",
+              "disabled": false,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1176,
+                "y": 34,
+                "width": 18,
+                "height": 18,
+                "right": 1194,
+                "bottom": 52
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "1",
+                "color": "rgb(226, 232, 240)",
+                "background": "rgb(30, 41, 59)",
+                "borderColor": "rgb(71, 85, 105)"
+              }
+            },
+            {
+              "rect": {
+                "x": 1211,
+                "y": 25,
+                "width": 36,
+                "height": 36,
+                "right": 1247,
+                "bottom": 61
+              },
+              "text": "",
+              "ariaLabel": "Close diagram viewer",
+              "title": "Close diagram viewer",
+              "disabled": false,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1220,
+                "y": 34,
+                "width": 18,
+                "height": 18,
+                "right": 1238,
+                "bottom": 52
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "1",
+                "color": "rgb(226, 232, 240)",
+                "background": "rgb(30, 41, 59)",
+                "borderColor": "rgb(71, 85, 105)"
+              }
+            }
+          ],
+          "media": {
+            "fineHover": true,
+            "pointerCoarse": false,
+            "anyCoarse": false,
+            "noHover": false,
+            "dark": true
+          }
+        }
+      }
+    },
+    "DZV-BR-008": {
+      "id": "DZV-BR-008",
+      "description": "Wide pure-coarse fallback and deterministic fine-primary/coarse-secondary cascade",
+      "status": "Pass",
+      "startedAt": "2026-07-20T08:55:59.588Z",
+      "finishedAt": "2026-07-20T08:56:01.587Z",
+      "details": {
+        "realWideCoarse": {
+          "inline": {
+            "preview": {
+              "x": 404.5,
+              "y": 373.984375,
+              "width": 794,
+              "height": 191.71875,
+              "right": 1198.5,
+              "bottom": 565.703125
+            },
+            "button": {
+              "x": 1150.5,
+              "y": 377.984375,
+              "width": 44,
+              "height": 44,
+              "right": 1194.5,
+              "bottom": 421.984375
+            },
+            "host": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "svg": {
+              "x": 412.5,
+              "y": 381.984375,
+              "width": 778,
+              "height": 175.71875,
+              "right": 1190.5,
+              "bottom": 557.703125
+            },
+            "previewStyle": {
+              "paddingTop": "8px",
+              "paddingBottom": "8px"
+            },
+            "buttonStyle": {
+              "position": "absolute",
+              "opacity": "1",
+              "pointerEvents": "auto",
+              "transform": "none",
+              "color": "rgb(51, 65, 85)",
+              "outlineStyle": "none",
+              "outlineWidth": "3px",
+              "visibility": "visible",
+              "display": "flex"
+            },
+            "surfaceStyle": {
+              "inset": "5px",
+              "top": "5px",
+              "background": "rgba(255, 255, 255, 0.68)",
+              "borderColor": "rgba(203, 213, 225, 0.65)",
+              "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+            },
+            "rightGap": 4,
+            "topGap": 4,
+            "normalFlowChildren": [
+              {
+                "tag": "DIV",
+                "className": "mermaid-svg-container flex w-full justify-center"
+              }
+            ],
+            "text": "",
+            "ariaLabel": "Expand diagram",
+            "title": "Expand diagram",
+            "iconPaths": 1,
+            "active": false,
+            "media": {
+              "fineHover": false,
+              "pointerCoarse": true,
+              "anyCoarse": true,
+              "noHover": true,
+              "dark": false
+            }
+          },
+          "toolbar": {
+            "toolbar": {
+              "x": 1047,
+              "y": 25,
+              "width": 200,
+              "height": 44,
+              "right": 1247,
+              "bottom": 69
+            },
+            "actions": [
+              {
+                "rect": {
+                  "x": 1047,
+                  "y": 25,
+                  "width": 44,
+                  "height": 44,
+                  "right": 1091,
+                  "bottom": 69
+                },
+                "text": "",
+                "ariaLabel": "Zoom out",
+                "title": "Zoom out",
+                "disabled": true,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1060,
+                  "y": 38,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1078,
+                  "bottom": 56
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "0.45",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 1099,
+                  "y": 25,
+                  "width": 44,
+                  "height": 44,
+                  "right": 1143,
+                  "bottom": 69
+                },
+                "text": "",
+                "ariaLabel": "Fit diagram",
+                "title": "Fit diagram",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1112,
+                  "y": 38,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1130,
+                  "bottom": 56
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 1151,
+                  "y": 25,
+                  "width": 44,
+                  "height": 44,
+                  "right": 1195,
+                  "bottom": 69
+                },
+                "text": "",
+                "ariaLabel": "Zoom in",
+                "title": "Zoom in",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1164,
+                  "y": 38,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1182,
+                  "bottom": 56
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              },
+              {
+                "rect": {
+                  "x": 1203,
+                  "y": 25,
+                  "width": 44,
+                  "height": 44,
+                  "right": 1247,
+                  "bottom": 69
+                },
+                "text": "",
+                "ariaLabel": "Close diagram viewer",
+                "title": "Close diagram viewer",
+                "disabled": false,
+                "iconPaths": 1,
+                "iconRect": {
+                  "x": 1216,
+                  "y": 38,
+                  "width": 18,
+                  "height": 18,
+                  "right": 1234,
+                  "bottom": 56
+                },
+                "style": {
+                  "display": "flex",
+                  "visibility": "visible",
+                  "opacity": "1",
+                  "color": "rgb(51, 65, 85)",
+                  "background": "rgb(255, 255, 255)",
+                  "borderColor": "rgb(203, 213, 225)"
+                }
+              }
+            ],
+            "media": {
+              "fineHover": false,
+              "pointerCoarse": true,
+              "anyCoarse": true,
+              "noHover": true,
+              "dark": false
+            }
+          }
+        },
+        "hybridLimitation": "Installed Chrome/CDP contexts expose either fine-primary or coarse-primary, not simultaneous fine-primary/coarse-secondary capabilities.",
+        "hybridMethod": {
+          "method": "Deterministic test-only cascade of exact emitted CSSOM any-pointer:coarse declarations while real fine-primary media remains active; not real hybrid hardware.",
+          "realCapabilities": {
+            "fineHover": true,
+            "anyCoarse": false
+          },
+          "extracted": [
+            {
+              "condition": "(hover: none), (pointer: coarse), (any-pointer: coarse), (max-width: 480px)",
+              "normalizedCondition": "(hover: none), (pointer: coarse), (any-pointer: coarse), (max-width: 480px)",
+              "mediaBranches": [
+                "(hover: none)",
+                "(pointer: coarse)",
+                "(any-pointer: coarse)",
+                "(max-width: 480px)"
+              ],
+              "hasStandaloneAnyCoarseBranch": true,
+              "isExactStandaloneAnyCoarse": false,
+              "sourceKind": "viewer",
+              "acceptedBySemanticPolicy": true,
+              "selector": ".mermaid-viewer-action[data-v-5d462ee6]",
+              "declarations": "flex-basis: 44px; height: 44px; width: 44px;",
+              "order": 1
+            },
+            {
+              "condition": "(any-pointer: coarse)",
+              "normalizedCondition": "(any-pointer: coarse)",
+              "mediaBranches": [
+                "(any-pointer: coarse)"
+              ],
+              "hasStandaloneAnyCoarseBranch": true,
+              "isExactStandaloneAnyCoarse": true,
+              "sourceKind": "inline",
+              "acceptedBySemanticPolicy": true,
+              "selector": ".mermaid-expand-button",
+              "declarations": "height: 44px; opacity: 1; pointer-events: auto; transform: none; width: 44px;",
+              "order": 2
+            },
+            {
+              "condition": "(any-pointer: coarse)",
+              "normalizedCondition": "(any-pointer: coarse)",
+              "mediaBranches": [
+                "(any-pointer: coarse)"
+              ],
+              "hasStandaloneAnyCoarseBranch": true,
+              "isExactStandaloneAnyCoarse": true,
+              "sourceKind": "inline",
+              "acceptedBySemanticPolicy": true,
+              "selector": ".mermaid-expand-button::before",
+              "declarations": "inset: 5px;",
+              "order": 3
+            }
+          ]
+        },
+        "fineBaseline": {
+          "preview": {
+            "x": 404.5,
+            "y": 373.984375,
+            "width": 794,
+            "height": 191.71875,
+            "right": 1198.5,
+            "bottom": 565.703125
+          },
+          "button": {
+            "x": 1161.179931640625,
+            "y": 376.66436767578125,
+            "width": 32.64013671875,
+            "height": 32.6400146484375,
+            "right": 1193.820068359375,
+            "bottom": 409.30438232421875
+          },
+          "host": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "svg": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "previewStyle": {
+            "paddingTop": "8px",
+            "paddingBottom": "8px"
+          },
+          "buttonStyle": {
+            "position": "absolute",
+            "opacity": "0",
+            "pointerEvents": "none",
+            "transform": "matrix(0.96, 0, 0, 0.96, 0, -2)",
+            "color": "rgb(51, 65, 85)",
+            "outlineStyle": "none",
+            "outlineWidth": "3px",
+            "visibility": "visible",
+            "display": "flex"
+          },
+          "surfaceStyle": {
+            "inset": "2px",
+            "top": "2px",
+            "background": "rgba(255, 255, 255, 0.68)",
+            "borderColor": "rgba(203, 213, 225, 0.65)",
+            "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+          },
+          "rightGap": 4.679931640625,
+          "topGap": 2.67999267578125,
+          "normalFlowChildren": [
+            {
+              "tag": "DIV",
+              "className": "mermaid-svg-container flex w-full justify-center"
+            }
+          ],
+          "text": "",
+          "ariaLabel": "Expand diagram",
+          "title": "Expand diagram",
+          "iconPaths": 1,
+          "active": false,
+          "media": {
+            "fineHover": true,
+            "pointerCoarse": false,
+            "anyCoarse": false,
+            "noHover": false,
+            "dark": false
+          }
+        },
+        "hybridInline": {
+          "preview": {
+            "x": 404.5,
+            "y": 373.984375,
+            "width": 794,
+            "height": 191.71875,
+            "right": 1198.5,
+            "bottom": 565.703125
+          },
+          "button": {
+            "x": 1150.5,
+            "y": 377.984375,
+            "width": 44,
+            "height": 44,
+            "right": 1194.5,
+            "bottom": 421.984375
+          },
+          "host": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "svg": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "previewStyle": {
+            "paddingTop": "8px",
+            "paddingBottom": "8px"
+          },
+          "buttonStyle": {
+            "position": "absolute",
+            "opacity": "1",
+            "pointerEvents": "auto",
+            "transform": "none",
+            "color": "rgb(51, 65, 85)",
+            "outlineStyle": "none",
+            "outlineWidth": "3px",
+            "visibility": "visible",
+            "display": "flex"
+          },
+          "surfaceStyle": {
+            "inset": "5px",
+            "top": "5px",
+            "background": "rgba(255, 255, 255, 0.68)",
+            "borderColor": "rgba(203, 213, 225, 0.65)",
+            "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+          },
+          "rightGap": 4,
+          "topGap": 4,
+          "normalFlowChildren": [
+            {
+              "tag": "DIV",
+              "className": "mermaid-svg-container flex w-full justify-center"
+            }
+          ],
+          "text": "",
+          "ariaLabel": "Expand diagram",
+          "title": "Expand diagram",
+          "iconPaths": 1,
+          "active": false,
+          "media": {
+            "fineHover": true,
+            "pointerCoarse": false,
+            "anyCoarse": false,
+            "noHover": false,
+            "dark": false
+          }
+        },
+        "hybridToolbar": {
+          "toolbar": {
+            "x": 1047,
+            "y": 25,
+            "width": 200,
+            "height": 44,
+            "right": 1247,
+            "bottom": 69
+          },
+          "actions": [
+            {
+              "rect": {
+                "x": 1047,
+                "y": 25,
+                "width": 44,
+                "height": 44,
+                "right": 1091,
+                "bottom": 69
+              },
+              "text": "",
+              "ariaLabel": "Zoom out",
+              "title": "Zoom out",
+              "disabled": true,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1060,
+                "y": 38,
+                "width": 18,
+                "height": 18,
+                "right": 1078,
+                "bottom": 56
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "0.45",
+                "color": "rgb(51, 65, 85)",
+                "background": "rgb(255, 255, 255)",
+                "borderColor": "rgb(203, 213, 225)"
+              }
+            },
+            {
+              "rect": {
+                "x": 1099,
+                "y": 25,
+                "width": 44,
+                "height": 44,
+                "right": 1143,
+                "bottom": 69
+              },
+              "text": "",
+              "ariaLabel": "Fit diagram",
+              "title": "Fit diagram",
+              "disabled": false,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1112,
+                "y": 38,
+                "width": 18,
+                "height": 18,
+                "right": 1130,
+                "bottom": 56
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "1",
+                "color": "rgb(51, 65, 85)",
+                "background": "rgb(255, 255, 255)",
+                "borderColor": "rgb(203, 213, 225)"
+              }
+            },
+            {
+              "rect": {
+                "x": 1151,
+                "y": 25,
+                "width": 44,
+                "height": 44,
+                "right": 1195,
+                "bottom": 69
+              },
+              "text": "",
+              "ariaLabel": "Zoom in",
+              "title": "Zoom in",
+              "disabled": false,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1164,
+                "y": 38,
+                "width": 18,
+                "height": 18,
+                "right": 1182,
+                "bottom": 56
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "1",
+                "color": "rgb(51, 65, 85)",
+                "background": "rgb(255, 255, 255)",
+                "borderColor": "rgb(203, 213, 225)"
+              }
+            },
+            {
+              "rect": {
+                "x": 1203,
+                "y": 25,
+                "width": 44,
+                "height": 44,
+                "right": 1247,
+                "bottom": 69
+              },
+              "text": "",
+              "ariaLabel": "Close diagram viewer",
+              "title": "Close diagram viewer",
+              "disabled": false,
+              "iconPaths": 1,
+              "iconRect": {
+                "x": 1216,
+                "y": 38,
+                "width": 18,
+                "height": 18,
+                "right": 1234,
+                "bottom": 56
+              },
+              "style": {
+                "display": "flex",
+                "visibility": "visible",
+                "opacity": "1",
+                "color": "rgb(51, 65, 85)",
+                "background": "rgb(255, 255, 255)",
+                "borderColor": "rgb(203, 213, 225)"
+              }
+            }
+          ],
+          "media": {
+            "fineHover": true,
+            "pointerCoarse": false,
+            "anyCoarse": false,
+            "noHover": false,
+            "dark": false
+          }
+        },
+        "restoredFine": {
+          "preview": {
+            "x": 404.5,
+            "y": 373.984375,
+            "width": 794,
+            "height": 191.71875,
+            "right": 1198.5,
+            "bottom": 565.703125
+          },
+          "button": {
+            "x": 1161.179931640625,
+            "y": 376.66436767578125,
+            "width": 32.64013671875,
+            "height": 32.6400146484375,
+            "right": 1193.820068359375,
+            "bottom": 409.30438232421875
+          },
+          "host": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "svg": {
+            "x": 412.5,
+            "y": 381.984375,
+            "width": 778,
+            "height": 175.71875,
+            "right": 1190.5,
+            "bottom": 557.703125
+          },
+          "previewStyle": {
+            "paddingTop": "8px",
+            "paddingBottom": "8px"
+          },
+          "buttonStyle": {
+            "position": "absolute",
+            "opacity": "0",
+            "pointerEvents": "none",
+            "transform": "matrix(0.96, 0, 0, 0.96, 0, -2)",
+            "color": "rgb(51, 65, 85)",
+            "outlineStyle": "none",
+            "outlineWidth": "3px",
+            "visibility": "visible",
+            "display": "flex"
+          },
+          "surfaceStyle": {
+            "inset": "2px",
+            "top": "2px",
+            "background": "rgba(255, 255, 255, 0.68)",
+            "borderColor": "rgba(203, 213, 225, 0.65)",
+            "boxShadow": "rgba(15, 23, 42, 0.12) 0px 1px 5px 0px"
+          },
+          "rightGap": 4.679931640625,
+          "topGap": 2.67999267578125,
+          "normalFlowChildren": [
+            {
+              "tag": "DIV",
+              "className": "mermaid-svg-container flex w-full justify-center"
+            }
+          ],
+          "text": "",
+          "ariaLabel": "Expand diagram",
+          "title": "Expand diagram",
+          "iconPaths": 1,
+          "active": false,
+          "media": {
+            "fineHover": true,
+            "pointerCoarse": false,
+            "anyCoarse": false,
+            "noHover": false,
+            "dark": false
+          }
+        }
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET mailto:diagram-probe@example.com net::ERR_ABORTED"
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "Launched external handler for 'mailto:diagram-probe@example.com'."
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET mailto:diagram-probe@example.com net::ERR_ABORTED"
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "Launched external handler for 'mailto:diagram-probe@example.com'."
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "narrow-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-en",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-en",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "narrow-zh-CN",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET mailto:fallback-probe@example.com net::ERR_ABORTED"
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "Launched external handler for 'mailto:fallback-probe@example.com'."
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Error: <svg> attribute viewBox: Expected number, \"invalid view box\"."
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "dark-fine",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "wide-coarse",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "label": "primary",
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "label": "primary",
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "label": "primary",
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "label": "primary",
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "contexts": [
+      {
+        "index": 4,
+        "status": "closed"
+      },
+      {
+        "index": 3,
+        "status": "closed"
+      },
+      {
+        "index": 2,
+        "status": "closed"
+      },
+      {
+        "index": 1,
+        "status": "closed"
+      },
+      {
+        "index": 0,
+        "status": "closed"
+      }
+    ],
+    "browser": "closed",
+    "devServer": {
+      "status": "terminated",
+      "pid": 74306,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "childExited": true,
+      "processGroupExited": true
+    },
+    "devLog": "closed",
+    "temporaryPage": "removed"
+  },
+  "port": 56170,
+  "baseUrl": "http://127.0.0.1:56170",
+  "finishedAt": "2026-07-20T08:56:01.726Z",
+  "result": "Pass"
+}

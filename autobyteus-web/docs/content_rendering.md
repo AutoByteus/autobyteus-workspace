@@ -28,6 +28,7 @@ flowchart TD
     subgraph "Markdown Rendering"
         MarkdownRenderer[MarkdownRenderer.vue]
         MermaidDiagram[MermaidDiagram.vue]
+        MermaidDiagramViewer[MermaidDiagramViewer.vue]
     end
 
     FileContentViewer -->|Code/Text| MonacoEditor
@@ -41,6 +42,7 @@ flowchart TD
 
     MarkdownPreviewer --> MarkdownRenderer
     MarkdownRenderer --> MermaidDiagram
+    MermaidDiagram --> MermaidDiagramViewer
 ```
 
 ## Supported File Types
@@ -106,6 +108,17 @@ scoped action ID, so browser-resolved `href` values are never treated as file
 authorization. HTTP(S), relative paths, and ordinary non-Event-Monitor Markdown
 behavior retain their existing handling.
 
+The same Event Monitor-only capability recognizes valid `file:` URI tokens from
+raw Markdown destinations without trusting the browser-resolved anchor URL.
+Valid local URIs preserve their raw destination transiently for the activation
+contract, while the rendered DOM contains only the render-scoped action ID and
+display label. Empty-authority absolute URIs such as `file:///tmp/report.md`
+can become actions; authorities, query strings, fragments, malformed escapes,
+relative/empty paths, and unsupported file types remain inert. A valid URI may
+still be unavailable in a browser/remote runtime, in which case the existing
+localized host-only/unavailable state is shown before Files, mobile, workspace,
+or filesystem access.
+
 Path recognition rejects incomplete or placeholder components such as `.`, `..`,
 `...`, and the Unicode ellipsis `…` before action/type classification. Complete
 dotted filenames such as `release...notes.md` remain eligible. This keeps
@@ -133,6 +146,12 @@ Runtime access remains environment-specific: embedded Electron may use the
 trusted local boundary, while browser/remote/mobile clients must map the host
 path inside the active workspace to a workspace-relative locator. Unmapped
 paths remain copyable and show a localized host-only/unavailable state.
+
+For embedded Electron binary previews, the action path uses the shared
+`local-file://local/<encoded-absolute-path>` codec and trusted default-session
+protocol gate described in the Electron packaging documentation. The original
+`file:` URI is never used as an authorization URL, persisted locator, DOM
+attribute, artifact/reference record, or API request.
 
 Action eligibility and File Explorer type routing share the pure
 `utils/fileExplorer/fileTypePolicy.ts` policy. Supported text/code/Markdown/HTML
@@ -224,14 +243,66 @@ graph TD;
 **Implementation Details:**
 
 1.  **Parsing**: `useMarkdownSegments.ts` detects code fences with the language `mermaid` or `mmd`.
-2.  **Rendering**: The `MermaidDiagram.vue` component receives the diagram text.
+2.  **Rendering**: The shared `MermaidDiagram.vue` component receives the diagram text. Its successful inline preview uses the available Markdown width without stretching beyond Mermaid's intrinsic maximum.
 3.  **Service**: `mermaidService.ts` wraps the `mermaid` library to initialize settings (theme, security) and generate the SVG.
+4.  **Inspection**: Every successful render provides one localized expand action as an absolute top-right overlay that reserves no diagram layout space. On hover-capable fine-pointer input it stays visually quiet at rest and appears when the preview is hovered or the control receives keyboard focus. On no-hover/coarse input, including a fine-primary device with any coarse secondary pointer, it stays visible with a touch-safe target. The action, or a primary click/tap on non-interactive diagram space, opens `MermaidDiagramViewer.vue` as a teleported modal. Loading and error states cannot open the viewer.
+
+Mermaid failures are contained at the renderer boundary. `mermaidService.initialize()`
+sets `suppressErrorRendering: true`, so a rejected parse/render returns to
+`MermaidDiagram.vue` without Mermaid inserting its fallback error SVG into the
+document body. The component renders the localized, app-owned error card inside
+the Markdown segment; its `min-w-0`/`max-w-full`/horizontal containment and
+wrapping rules keep long parser messages from widening the feed or workspace.
+Error state cannot open the viewer, navigate, call backend/persistence paths, or
+be fixed by hiding global body overflow. Repeated renders and unmounts continue
+to use the existing generation invalidation, so stale failures and vendor nodes
+cannot accumulate outside the component.
+
+The viewer mounts the current live SVG only once, initially fits the complete
+diagram to its canvas, and supports toolbar, keyboard, wheel/trackpad, pointer,
+touch, and native-scroll interaction. Its persistent toolbar contains exactly
+four uniform icon-only actions: zoom out, fit-to-view, zoom in, and close. The
+fit action uses the inward-corners counterpart to the inline outward-corners
+expand icon; localized names remain in `aria-label` and `title`, not visible
+button text. Fine-pointer desktop uses compact square controls, while no-hover,
+coarse/any-coarse, and narrow layouts retain uniform 44-pixel touch targets.
+Zoom is clamped from the fitted overview through 4x; fit-to-view returns to the
+overview and scroll origin. The modal traps focus, locks background scrolling,
+closes through its close action, backdrop, or `Escape`, and returns focus to the
+inline expand control. Controls remain reachable at narrow widths and increased
+app/browser text sizes.
+
+Mermaid links remain interactive rather than becoming expand or pan gestures.
+HTTP(S) anchors, including SVG `xlink:href` forms, use the shared
+`MarkdownRenderer.vue` external-link authority in both inline and expanded
+views. Other link schemes retain their native/sanitized behavior. A source
+change invalidates any open viewer and renders a fresh SVG, so stale diagram
+content and viewport state are not retained.
+
+The inline overlay remains in the successful-state tab order even when hidden
+at fine-pointer rest. Focus reveals it immediately, reduced-motion preferences
+remove decorative transition timing, and the capability fallback favors visible
+usable chrome whenever a coarse pointer is available.
+
+`MarkdownRenderer.vue` is reused by conversation, team/task, file-preview, and
+other rich-text surfaces. Mermaid inspection therefore belongs at this shared
+renderer boundary; consumers should not add diagram-specific modal state or
+reuse the image/gallery modal, whose raster URL, copy, download, and gallery
+contract is different.
 
 This architecture ensures that diagram rendering is:
 
 - **Fast**: Client-side only, no network requests to generate images.
 - **Secure**: Uses `securityLevel: 'loose'` but runs in the browser sandbox (note: 'loose' allows HTML in labels).
 - **Theme-aware**: Can adapt to the application's light/dark mode.
+
+Focused unit/component coverage is colocated under
+`components/conversation/segments/renderer/__tests__/`. The durable real-browser
+probe starts its own temporary Nuxt route and Chrome session, then removes both:
+
+```bash
+pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer
+```
 
 ## Related Documentation
 

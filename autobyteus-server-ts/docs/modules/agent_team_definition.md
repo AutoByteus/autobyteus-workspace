@@ -44,7 +44,7 @@ Team-local identity is subject-specific and nested-safe:
 
 - Team definitions persist optional `defaultLaunchConfig` at the team config layer.
 - Shared teams and application-owned teams both parse and write that field through the same shared normalizer.
-- Those defaults seed direct team launches and application-authored backend orchestration flows that decide to start a team through `context.runtimeControl.startRun(...)`.
+- Those defaults seed direct team launches and application-authored backend orchestration flows that decide to start a team through `context.agentExecution.startAgentTeam(...)`.
 
 The generic Applications host no longer treats one embedded team as the mandatory launch-time runtime target.
 

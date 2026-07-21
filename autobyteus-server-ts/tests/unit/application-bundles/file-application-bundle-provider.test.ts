@@ -176,7 +176,7 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "2",
+            backendDefinitionContractVersion: "3",
             frontendSdkContractVersion: "3",
           },
           supportedExposures: {
@@ -196,7 +196,7 @@ describe("FileApplicationBundleProvider", () => {
     );
     await writeFile(
       path.join(bundleRoot, "backend", "dist", "entry.mjs"),
-      "export default { definitionContractVersion: '2' }\n",
+      "export default { definitionContractVersion: '3' }\n",
     );
     await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
     await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
@@ -423,7 +423,7 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "2",
+            backendDefinitionContractVersion: "3",
             frontendSdkContractVersion: retiredFrontendSdkVersion,
           },
           supportedExposures: {
@@ -446,6 +446,28 @@ describe("FileApplicationBundleProvider", () => {
     expect(snapshot.diagnostics).toHaveLength(1);
     expect(snapshot.diagnostics[0]?.message).toContain(
       `Unsupported frontendSdkContractVersion '${retiredFrontendSdkVersion}'.`,
+    );
+  });
+
+  it("rejects an explicit v2 backend-definition compatibility fixture during discovery", async () => {
+    await writeBundle();
+    const backendManifestPath = path.join(
+      builtInRoot,
+      "applications",
+      "sample-app",
+      "backend",
+      "bundle.json",
+    );
+    const manifest = JSON.parse(await fs.readFile(backendManifestPath, "utf8"));
+    manifest.sdkCompatibility.backendDefinitionContractVersion = "2";
+    await writeFile(backendManifestPath, JSON.stringify(manifest, null, 2));
+
+    const snapshot = await buildProvider().getCatalogSnapshot();
+
+    expect(snapshot.applications).toHaveLength(0);
+    expect(snapshot.diagnostics).toHaveLength(1);
+    expect(snapshot.diagnostics[0]?.message).toContain(
+      "Unsupported backendDefinitionContractVersion '2'.",
     );
   });
 

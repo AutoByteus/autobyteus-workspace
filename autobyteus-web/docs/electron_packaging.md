@@ -184,6 +184,13 @@ described as proof of the raw authored URL; the exact-frame gate and filesystem
 validation remain authoritative. Do not add a second inline serializer or
 response-local path decoder.
 
+Event Monitor `file:` Markdown URIs are input tokens, not trusted local URLs.
+The renderer classifies the raw token and emits only a transient action ID plus
+the preserved raw provenance needed by the existing launcher. Electron binary
+preview assignment then uses the canonical `local-file://local/...` builder
+above; the authored `file:` URI is never assigned directly to a viewer or
+persisted as a File Explorer locator.
+
 The scheme has exactly four Electron privileges:
 
 - `standard: true` for stable URL parsing and relative-resolution semantics;

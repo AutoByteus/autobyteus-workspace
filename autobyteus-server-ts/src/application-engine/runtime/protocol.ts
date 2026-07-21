@@ -5,6 +5,12 @@ import type {
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteRequest,
+  ApplicationRunBindingListFilter,
+  ApplicationRuntimeInputContextFile,
+  ApplicationExecutionResourceKind,
+  ApplicationExecutionResourceSource,
+  ApplicationStartAgentInput,
+  ApplicationStartAgentTeamInput,
   ApplicationStorageContext,
 } from "@autobyteus/application-sdk-contracts";
 
@@ -17,7 +23,7 @@ export const APPLICATION_ENGINE_METHOD_ROUTE_REQUEST = "routeApplicationRequest"
 export const APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL = "executeApplicationGraphql" as const;
 export const APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER = "invokeApplicationEventHandler" as const;
 export const APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER = "invokeApplicationArtifactHandler" as const;
-export const APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL = "invokeRuntimeControl" as const;
+export const APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY = "invokeContextCapability" as const;
 export const APPLICATION_ENGINE_METHOD_STOP = "stopApplication" as const;
 
 export type ApplicationWorkerLoadDefinitionInput = {
@@ -61,20 +67,43 @@ export type ApplicationWorkerInvokeArtifactHandlerInput = {
   event: ApplicationPublishedArtifactEvent;
 };
 
-export type ApplicationWorkerRuntimeControlInput = {
-  action:
-    | "listAvailableExecutionResources"
-    | "getConfiguredExecutionResource"
-    | "startRun"
-    | "getRunBinding"
-    | "getRunBindingByIntentId"
-    | "listRunBindings"
-    | "getRunPublishedArtifacts"
-    | "getPublishedArtifactRevisionText"
-    | "postRunInput"
-    | "terminateRunBinding";
-  input?: unknown;
-};
+export type ApplicationWorkerContextCapabilityInput =
+  | { capability: "agentExecution"; operation: "startAgent"; input: ApplicationStartAgentInput }
+  | { capability: "agentExecution"; operation: "startAgentTeam"; input: ApplicationStartAgentTeamInput }
+  | {
+      capability: "agentExecution";
+      operation: "sendInput";
+      input: {
+        bindingId: string;
+        text: string;
+        targetMemberRouteKey?: string | null;
+        targetMemberPath?: string[] | null;
+        contextFiles?: ApplicationRuntimeInputContextFile[] | null;
+        metadata?: Record<string, unknown> | null;
+      };
+    }
+  | { capability: "agentExecution"; operation: "terminate"; input: { bindingId: string } }
+  | { capability: "agentExecution"; operation: "get"; input: { bindingId: string } }
+  | { capability: "agentExecution"; operation: "list"; input: ApplicationRunBindingListFilter | null }
+  | { capability: "agentExecution"; operation: "findByLaunchRequestId"; input: { launchRequestId: string } }
+  | {
+      capability: "agentResources";
+      operation: "listAvailable";
+      input: {
+        source?: ApplicationExecutionResourceSource | null;
+        kind?: ApplicationExecutionResourceKind | null;
+      } | null;
+    }
+  | { capability: "agentResources"; operation: "getConfigured"; input: { slotKey: string } }
+  | { capability: "publishedArtifacts"; operation: "list"; input: { runId: string } }
+  | {
+      capability: "publishedArtifacts";
+      operation: "readRevision";
+      input: {
+        runId: string;
+        revisionId: string;
+      };
+    };
 
 export type ApplicationWorkerNotificationParams = {
   topic: string;
