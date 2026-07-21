@@ -1,0 +1,22 @@
+
+> autobyteus@1.4.22 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (17 tests) 82ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  12:19:16
+   Duration  4.59s (transform 2.47s, setup 3.90s, collect 49ms, tests 82ms, environment 144ms, prepare 157ms)

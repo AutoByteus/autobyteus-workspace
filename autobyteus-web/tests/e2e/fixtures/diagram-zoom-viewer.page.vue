@@ -39,6 +39,18 @@
       <MarkdownPreviewer :content="filePreviewMarkdown" path="docs/diagram-probe.md" />
     </section>
 
+    <section
+      data-test="artifact-host-surface"
+      class="mx-auto mb-8 flex h-[720px] w-full max-w-[820px] flex-col overflow-hidden rounded-lg border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900"
+    >
+      <h2 data-test="artifact-underlying-heading" class="px-4 pt-3 font-semibold">
+        Production ArtifactContentViewer nested overlay
+      </h2>
+      <div class="min-h-0 flex-1">
+        <ArtifactContentViewer :artifact="nestedArtifact" />
+      </div>
+    </section>
+
     <section class="mx-auto mb-8 max-w-[820px] rounded-lg bg-white p-4 dark:bg-slate-900">
       <h2 class="font-semibold">Controlled SVG bounds fallbacks</h2>
       <div class="mt-2 flex flex-wrap gap-2">
@@ -61,6 +73,8 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import TextSegment from '~/components/conversation/segments/TextSegment.vue';
 import MarkdownPreviewer from '~/components/fileExplorer/viewers/MarkdownPreviewer.vue';
 import MermaidDiagramViewer from '~/components/conversation/segments/renderer/MermaidDiagramViewer.vue';
+import ArtifactContentViewer from '~/components/workspace/agent/ArtifactContentViewer.vue';
+import { toAgentArtifactViewerItem } from '~/components/workspace/agent/artifactViewerItem';
 import { useLocalization } from '~/composables/useLocalization';
 
 const { resolvedLocale, setPreference } = useLocalization();
@@ -126,6 +140,29 @@ flowchart LR
   SmallA[A] --> SmallB[B]
 \`\`\`
 `;
+
+const nestedArtifact = toAgentArtifactViewerItem({
+  id: 'diagram-probe-run:docs/nested-diagram-probe.md',
+  runId: 'diagram-probe-run',
+  path: 'docs/nested-diagram-probe.md',
+  type: 'file',
+  status: 'streaming',
+  sourceTool: 'write_file',
+  content: `
+# Nested artifact preserved heading
+
+Nested artifact context must remain selected and in Preview Mode while its diagram viewer is open.
+
+\`\`\`mermaid
+flowchart LR
+  HOST[Maximized artifact tier 120] --> VIEWER[Diagram viewer tier 130]
+  VIEWER --> RETURN[Restore one SVG and focus]
+  RETURN --> HOST
+\`\`\`
+`,
+  createdAt: '2026-07-21T00:00:00.000Z',
+  updatedAt: '2026-07-21T00:00:00.000Z',
+});
 
 const missingViewBoxSvg = `
 <svg width="720" height="360" xmlns="http://www.w3.org/2000/svg">

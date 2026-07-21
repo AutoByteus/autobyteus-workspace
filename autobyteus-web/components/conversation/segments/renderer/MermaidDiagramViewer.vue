@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div
-      class="mermaid-viewer-backdrop fixed inset-0 z-[100] flex bg-slate-950/80 p-2 sm:p-4"
+      class="mermaid-viewer-backdrop fixed inset-0 z-[130] flex bg-slate-950/80 p-2 sm:p-4"
       @click.self="requestClose"
     >
       <section
@@ -356,6 +356,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
   if (event.key === 'Escape') {
     event.preventDefault();
+    event.stopPropagation();
     requestClose();
     return;
   }

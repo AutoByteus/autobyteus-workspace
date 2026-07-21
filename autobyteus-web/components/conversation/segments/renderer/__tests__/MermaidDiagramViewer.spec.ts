@@ -92,6 +92,7 @@ describe('MermaidDiagramViewer', () => {
 
     expect(dialog.attributes('role')).toBe('dialog');
     expect(dialog.attributes('aria-modal')).toBe('true');
+    expect(getDom('.mermaid-viewer-backdrop').classes()).toContain('z-[130]');
     expect(getDom(`#${dialog.attributes('aria-labelledby')}`).text()).toBe('Diagram viewer');
     expect(getDom('.mermaid-viewer-canvas').attributes('aria-label')).toBe('Diagram viewer');
     expect(actions).toHaveLength(4);
@@ -202,8 +203,19 @@ describe('MermaidDiagramViewer', () => {
     await actions[1].trigger('keydown', { key: 'Tab', shiftKey: true });
     expect(document.activeElement).toBe(lastLink.element);
 
-    await getDom('.mermaid-viewer-dialog').trigger('keydown', { key: 'Escape' });
+    const lowerLayerEscapeListener = vi.fn();
+    window.addEventListener('keydown', lowerLayerEscapeListener);
+    const escapeEvent = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      bubbles: true,
+      cancelable: true,
+    });
+    getDom('.mermaid-viewer-dialog').element.dispatchEvent(escapeEvent);
+    window.removeEventListener('keydown', lowerLayerEscapeListener);
+
+    expect(escapeEvent.defaultPrevented).toBe(true);
     expect(mounted.emitted('close')).toHaveLength(1);
+    expect(lowerLayerEscapeListener).not.toHaveBeenCalled();
     await getDom('.mermaid-viewer-backdrop').trigger('click');
     expect(mounted.emitted('close')).toHaveLength(2);
   });

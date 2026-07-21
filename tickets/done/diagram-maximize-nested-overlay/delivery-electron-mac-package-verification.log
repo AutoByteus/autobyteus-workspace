@@ -1,0 +1,37 @@
+# Local Electron package verification
+timestamp=2026-07-21T11:42:48Z
+source-head=425ca42974b7e213c08033480b3301446aae1366
+
+$ hdiutil verify electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.dmg
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $D1B03984
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $645B90CA
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $DAD47DA6
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $1CAAA912
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $DAD47DA6
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $0C0B7542
+Die überprüfte CRC32-Prüfsumme ist $B2C32952
+hdiutil: verify: checksum of "electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.dmg" is VALID
+dmg-verify=PASS
+
+$ unzip -tq electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.zip
+No errors detected in compressed data of electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.zip.
+zip-verify=PASS
+
+$ bundle metadata / architecture / hashes
+bundle-version=1.4.22
+bundle-build=1.4.22
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+1766bdc0fe53ea102fade8bab4152bc29a6d9802cff371d001e69f2687489b62  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.dmg
+d514c0505ea4f7891147e9a1c94a35e91f776c998fb36864fb69ebc239596a1f  electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.zip
+
+overall=PASS
