@@ -17,7 +17,7 @@ import type { ApplicationBundle } from "../../../src/application-bundles/domain/
 
 const applicationBackendState = vi.hoisted(() => ({
   apiGatewayService: null as ApplicationBackendApiGatewayService | null,
-  notificationStreamService: null as ApplicationBackendNotificationHub | null,
+  notificationHub: null as ApplicationBackendNotificationHub | null,
 }));
 
 vi.mock("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", async () => {
@@ -42,15 +42,16 @@ vi.mock("../../../src/application-backend-api-gateway/notifications/application-
   return {
     ...actual,
     getApplicationBackendNotificationHub: () => {
-      if (!applicationBackendState.notificationStreamService) {
-        throw new Error("Integration test notification stream service was not initialized.");
+      if (!applicationBackendState.notificationHub) {
+        throw new Error("Integration test notification hub was not initialized.");
       }
-      return applicationBackendState.notificationStreamService;
+      return applicationBackendState.notificationHub;
     },
   };
 });
 
 import { registerApplicationBackendRoutes } from "../../../src/api/rest/application-backends.js";
+import { registerApplicationAvailabilityRoutes } from "../../../src/api/rest/application-availability.js";
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
 
 const APPLICATION_ID = "app-1";
@@ -339,16 +340,17 @@ export default {
       applicationBundleService: bundleService as never,
       storageLifecycleService,
     });
-    applicationBackendState.notificationStreamService = new ApplicationBackendNotificationHub();
+    applicationBackendState.notificationHub = new ApplicationBackendNotificationHub();
     applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       engineHostService,
-      notificationStreamService: applicationBackendState.notificationStreamService,
+      notificationHub: applicationBackendState.notificationHub,
     });
 
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(websocket);
     await app.register(async (restApp) => {
+      await registerApplicationAvailabilityRoutes(restApp);
       await registerApplicationBackendRoutes(restApp);
     }, { prefix: "/rest" });
     await registerApplicationBackendNotificationWebsocket(app);
@@ -366,7 +368,7 @@ export default {
     await app.close();
     await fs.rm(tempRoot, { recursive: true, force: true });
     applicationBackendState.apiGatewayService = null;
-    applicationBackendState.notificationStreamService = null;
+    applicationBackendState.notificationHub = null;
   });
 
   it("starts the app worker through the REST boundary and streams backend notifications over websocket", async () => {
@@ -586,6 +588,7 @@ export default {
         graphql: true,
         notifications: true,
         eventHandlers: [],
+        webSocketRoutes: [],
       },
     });
   }, 20_000);

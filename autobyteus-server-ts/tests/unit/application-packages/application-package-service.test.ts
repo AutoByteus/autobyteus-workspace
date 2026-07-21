@@ -638,7 +638,7 @@ describe("ApplicationPackageService", () => {
       engineHostService: {
         ensureApplicationEngine: vi.fn(),
       } as never,
-      notificationStreamService: { publish: vi.fn() } as never,
+      notificationHub: { publish: vi.fn() } as never,
     });
 
     await expect(

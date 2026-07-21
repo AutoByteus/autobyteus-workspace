@@ -169,7 +169,7 @@ describe("Application backend mount route transport integration", () => {
     applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       engineHostService,
-      notificationStreamService: new ApplicationBackendNotificationHub(),
+      notificationHub: new ApplicationBackendNotificationHub(),
     });
 
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });

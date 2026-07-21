@@ -42,6 +42,7 @@ import { ApplicationRunBindingStore } from "../../../src/application-orchestrati
 import { ApplicationRunLookupStore } from "../../../src/application-orchestration/stores/application-run-lookup-store.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import { registerApplicationBackendRoutes } from "../../../src/api/rest/application-backends.js";
+import { registerApplicationAvailabilityRoutes } from "../../../src/api/rest/application-availability.js";
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
@@ -52,7 +53,7 @@ import { buildPublishedArtifactId } from "../../../src/services/published-artifa
 
 const applicationBackendState = vi.hoisted(() => ({
   apiGatewayService: null as ApplicationBackendApiGatewayService | null,
-  notificationStreamService: null as ApplicationBackendNotificationHub | null,
+  notificationHub: null as ApplicationBackendNotificationHub | null,
 }));
 
 vi.mock("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", async () => {
@@ -77,10 +78,10 @@ vi.mock("../../../src/application-backend-api-gateway/notifications/application-
   return {
     ...actual,
     getApplicationBackendNotificationHub: () => {
-      if (!applicationBackendState.notificationStreamService) {
-        throw new Error("Integration test notification stream service was not initialized.");
+      if (!applicationBackendState.notificationHub) {
+        throw new Error("Integration test notification hub was not initialized.");
       }
-      return applicationBackendState.notificationStreamService;
+      return applicationBackendState.notificationHub;
     },
   };
 });
@@ -707,12 +708,12 @@ describe("Brief Studio imported package integration", () => {
     });
     engineHostServiceRef = engineHostService;
 
-    applicationBackendState.notificationStreamService = new ApplicationBackendNotificationHub();
+    applicationBackendState.notificationHub = new ApplicationBackendNotificationHub();
     applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       availabilityService,
       engineHostService,
-      notificationStreamService: applicationBackendState.notificationStreamService,
+      notificationHub: applicationBackendState.notificationHub,
     });
 
     availabilityService.synchronizeWithCatalogSnapshot(await bundleService.getCatalogSnapshot());
@@ -723,6 +724,7 @@ describe("Brief Studio imported package integration", () => {
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(websocket);
     await app.register(async (restApp) => {
+      await registerApplicationAvailabilityRoutes(restApp);
       await registerApplicationBackendRoutes(restApp);
     }, { prefix: "/rest" });
     await registerApplicationBackendNotificationWebsocket(app);
@@ -744,7 +746,7 @@ describe("Brief Studio imported package integration", () => {
     }
     await fs.rm(tempRoot, { recursive: true, force: true });
     applicationBackendState.apiGatewayService = null;
-    applicationBackendState.notificationStreamService = null;
+    applicationBackendState.notificationHub = null;
     appConfigProvider.resetForTests();
   });
 

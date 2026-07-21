@@ -62,7 +62,7 @@ describe("ApplicationBackendApiGatewayService", () => {
         requireApplicationActive: vi.fn(async () => undefined),
       } as never,
       engineHostService: engineHostService as never,
-      notificationStreamService: { publish: vi.fn() } as never,
+      notificationHub: { publish: vi.fn() } as never,
     });
 
     const result = await service.invokeApplicationQuery(
@@ -95,7 +95,7 @@ describe("ApplicationBackendApiGatewayService", () => {
       engineHostService: {
         invokeApplicationCommand: vi.fn(),
       } as never,
-      notificationStreamService: { publish: vi.fn() } as never,
+      notificationHub: { publish: vi.fn() } as never,
     });
 
     await expect(service.invokeApplicationCommand(
@@ -189,7 +189,7 @@ describe("ApplicationBackendApiGatewayService", () => {
       engineHostService: {
         ensureApplicationEngine: vi.fn(),
       } as never,
-      notificationStreamService: { publish: vi.fn() } as never,
+      notificationHub: { publish: vi.fn() } as never,
     });
 
     await expect(service.ensureApplicationReady("app-1")).rejects.toThrow(
@@ -325,7 +325,7 @@ describe("ApplicationBackendApiGatewayService", () => {
       } as never,
       availabilityService: availabilityService as never,
       engineHostService: engineHostService as never,
-      notificationStreamService: { publish: vi.fn() } as never,
+      notificationHub: { publish: vi.fn() } as never,
     });
 
     const reentryPromise = availabilityService.reloadAndReenter("app-1");
