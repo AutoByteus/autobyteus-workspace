@@ -75,12 +75,11 @@
     </div>
 
     <button v-if="showJumpToLatest" type="button"
-      class="absolute bottom-2 right-2 z-20 flex h-11 w-11 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+      class="absolute bottom-2 left-1/2 z-20 flex h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
       data-testid="event-monitor-jump-to-latest"
       :aria-label="$t('workspace.components.workspace.agent.AgentConversationFeed.jump_to_latest')"
       @click="jumpToLatest">
-      <span class="flex h-9 w-9 items-center justify-center rounded-full border bg-white shadow-md transition-colors motion-reduce:transition-none"
-        :class="browseState === 'expired' ? 'border-amber-300 text-amber-700' : 'border-slate-200 text-slate-700'">
+      <span class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-colors motion-reduce:transition-none">
         <Icon icon="heroicons:arrow-down" class="h-4 w-4" aria-hidden="true" />
       </span>
     </button>

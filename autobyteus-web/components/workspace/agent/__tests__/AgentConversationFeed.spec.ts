@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, nextTick } from 'vue';
+import { Icon } from '@iconify/vue';
 import AgentConversationFeed from '../AgentConversationFeed.vue';
 import type { EventMonitorBrowseAssistantVisual } from '~/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation';
 
@@ -58,6 +59,34 @@ const dispatchTrusted = (
 };
 
 const iconStub = { template: '<svg data-testid="stub-icon" />' };
+
+const sortedClasses = (element: Element): string[] => Array.from(element.classList).sort();
+
+const computedStyles = (element: Element, properties: string[]): Record<string, string> => {
+  const style = window.getComputedStyle(element);
+  return Object.fromEntries(properties.map(property => [property, style.getPropertyValue(property)]));
+};
+
+const returnArrowSignature = (container: Element) => {
+  const target = container.querySelector<HTMLButtonElement>('[data-testid="event-monitor-jump-to-latest"]');
+  const surface = target?.querySelector<HTMLSpanElement>('span');
+  const glyph = target?.querySelector<SVGElement>('svg');
+  if (!target || !surface || !glyph) throw new Error('Expected complete jump-to-latest control');
+  return {
+    targetClasses: sortedClasses(target),
+    surfaceClasses: sortedClasses(surface),
+    glyphClasses: sortedClasses(glyph),
+    targetStyles: computedStyles(target, ['position', 'bottom', 'left', 'transform', 'width', 'height']),
+    surfaceStyles: computedStyles(surface, ['width', 'height', 'background-color', 'border-color', 'box-shadow', 'color']),
+    glyphStyles: computedStyles(glyph, ['width', 'height', 'color']),
+    type: target.type,
+    accessibleName: target.getAttribute('aria-label'),
+    title: target.getAttribute('title'),
+    text: target.textContent,
+    glyphViewBox: glyph.getAttribute('viewBox'),
+    hasTooltipOrBadge: Boolean(target.querySelector('[role="tooltip"], [data-badge], .badge')),
+  };
+};
 
 afterEach(() => {
   vi.useRealTimers();
@@ -397,7 +426,8 @@ describe('AgentConversationFeed', () => {
     expect(jump.text()).toBe('');
     expect(jump.attributes('aria-label')).toBe('Jump to latest activity');
     expect(jump.attributes('title')).toBeUndefined();
-    expect(jump.classes()).toEqual(expect.arrayContaining(['absolute', 'bottom-2', 'right-2', 'h-11', 'w-11']));
+    expect(jump.classes()).toEqual(expect.arrayContaining(['absolute', 'bottom-2', 'left-1/2', '-translate-x-1/2', 'h-11', 'w-11']));
+    expect(jump.classes()).not.toContain('right-2');
     expect(jump.get('span').classes()).toEqual(expect.arrayContaining(['h-9', 'w-9']));
 
     await jump.trigger('click');
@@ -447,12 +477,13 @@ describe('AgentConversationFeed', () => {
     wrapper.unmount();
   });
 
-  it('uses the same restrained arrow as the sole expired-state return control', async () => {
+  it('keeps one exact centered neutral arrow signature across ordinary, browse, released, and expired states', async () => {
     const wrapper = mount(AgentConversationFeed, {
       props: {
-        conversation: emptyConversation('run-expired-exit'),
-        browseState: 'expired',
+        conversation: emptyConversation('run-arrow-signature'),
+        presentationRevision: 0,
       },
+      attachTo: document.body,
       global: {
         stubs: { Icon: iconStub },
         mocks: {
@@ -461,14 +492,54 @@ describe('AgentConversationFeed', () => {
       },
     });
 
+    const feed = wrapper.get('[data-testid="agent-conversation-feed"]').element as HTMLElement;
+    defineFeedGeometry(feed, 100);
+    feed.dispatchEvent(new Event('scroll'));
+    await wrapper.setProps({ presentationRevision: 1 });
+
+    const targetClasses = [
+      '-translate-x-1/2', 'absolute', 'bottom-2', 'flex', 'focus-visible:ring-2',
+      'focus-visible:ring-indigo-500', 'focus-visible:ring-offset-2', 'focus:outline-none',
+      'h-11', 'items-center', 'justify-center', 'left-1/2', 'rounded-full', 'w-11', 'z-20',
+    ].sort();
+    const surfaceClasses = [
+      'bg-white', 'border', 'border-slate-200', 'flex', 'h-9', 'items-center',
+      'justify-center', 'motion-reduce:transition-none', 'rounded-full', 'shadow-sm',
+      'text-slate-700', 'transition-colors', 'w-9',
+    ].sort();
+    const ordinarySignature = returnArrowSignature(wrapper.element);
+    expect(ordinarySignature.targetClasses).toEqual(targetClasses);
+    expect(ordinarySignature.surfaceClasses).toEqual(surfaceClasses);
+    expect(ordinarySignature.glyphClasses).toEqual(['h-4', 'w-4']);
+    expect(ordinarySignature).toMatchObject({
+      type: 'button',
+      accessibleName: 'Jump to latest activity',
+      title: null,
+      text: '',
+      glyphViewBox: '0 0 16 16',
+      hasTooltipOrBadge: false,
+    });
+    expect(wrapper.getComponent(Icon).props('icon')).toBe('heroicons:arrow-down');
+
+    await wrapper.setProps({
+      browseState: 'browsing',
+      browseItems: [browseAssistant([browseTextVisual('visual:retained')])],
+    });
+    expect(returnArrowSignature(wrapper.element)).toEqual(ordinarySignature);
+
+    await wrapper.setProps({ newerBrowseContentReleased: true });
+    expect(returnArrowSignature(wrapper.element)).toEqual(ordinarySignature);
+
+    await wrapper.setProps({ browseState: 'expired' });
     expect(wrapper.find('[data-testid="event-monitor-expired-return"]').exists()).toBe(false);
+    expect(returnArrowSignature(wrapper.element)).toEqual(ordinarySignature);
+    expect(wrapper.html()).not.toContain('amber');
+
     const recovery = wrapper.get('[data-testid="event-monitor-jump-to-latest"]');
-    expect(recovery.text()).toBe('');
-    expect(recovery.attributes('aria-label')).toBe('Jump to latest activity');
-    expect(recovery.get('span').classes()).toEqual(expect.arrayContaining(['border-amber-300', 'text-amber-700']));
     expect(recovery.classes()).toContain('focus-visible:ring-2');
     await recovery.trigger('click');
     expect(wrapper.emitted('jump-to-latest')).toHaveLength(1);
+    wrapper.unmount();
   });
 
   it('renders zero-layout paging chrome with delayed dots, compact retry, and silent terminal states', async () => {
