@@ -30,9 +30,21 @@ Latest-base integration refresh, integrated-state verification, docs synchroniza
 
 - Initial explicit user completion/verification received: `No`
 - Initial verification reference: Pending hands-on user confirmation.
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
-- Renewed verification reference: Not applicable.
+- Renewed verification required after later re-integration: `Yes`
+- Renewed verification received: `No`
+- Renewed verification reference: The user requested publication of a latest-`personal` ticket branch for host-side Electron verification.
+
+## User-Requested Latest-Base Refresh — 2026-07-21
+
+- Latest tracked remote base: `origin/personal@534210b9e1dffff6c22855ae89ddb3d2afef5a9b`.
+- Pre-integration safety checkpoint: `b7be67c591b93c32121e62102305beb5eb72d39a`.
+- Integration method: merge latest `origin/personal` into `codex/agent-run-history-performance`.
+- Integration merge: `1470cb353e07a1de8b38cbb131ae49108478bcf0`.
+- Conflict result: none; the merge completed automatically.
+- Post-integration executable check: `Pass` — server focused GraphQL 1 file / 6 tests and frontend focused Event Monitor 7 files / 36 tests.
+- Evidence: `tickets/in-progress/agent-run-history-performance/evidence/delivery-post-refresh-check-20260721.txt`.
+- Representative live snapshot status: remains `Blocked` pending permission to quiesce the user-owned port-8000 server; the user selected host-side verification instead.
+- Ticket-branch publication: pending the documentation/report commit containing this refresh record; target-branch finalization remains on hold.
 
 ## Docs Sync Result
 

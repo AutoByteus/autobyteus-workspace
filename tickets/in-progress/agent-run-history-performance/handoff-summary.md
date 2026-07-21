@@ -5,17 +5,20 @@
 - Current status: `Ready for user verification`
 - Ticket state: `tickets/in-progress/agent-run-history-performance/`
 - Finalization target: `origin/personal`
-- Latest integrated base: `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`
-- Integration merge: `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`
-- Integrated validation checkpoint: `20fe710ef`
+- Latest integrated base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
+- Integration merge: `1470cb353e07a1de8b38cbb131ae49108478bcf0`
+- Integrated validation checkpoint: `b7be67c591b93c32121e62102305beb5eb72d39a`
 - Host-validation publication: `487ea715bcaf9ccaa1a3fce4b415d3abc9afdcc4` pushed to `origin/codex/agent-run-history-performance` at the user's explicit request.
-- Unresolved implementation/review/API-E2E findings: None.
+- Latest-base post-integration check: server focused GraphQL 1 file / 6 tests and frontend focused Event Monitor 7 files / 36 tests passed; see `evidence/delivery-post-refresh-check-20260721.txt`.
+- Unresolved implementation/source-review findings: None. Representative live snapshot API/E2E remains blocked pending permission to quiesce the user-owned port-8000 server; host verification is the selected path.
 - Finalization hold: The ticket branch is available for host testing. Explicit user completion/verification is still required before archival, merge/push to `origin/personal`, tag, release, deployment, or cleanup.
 
 ## Delivered Behavior
 
 - Normal standalone and team-member Event Monitor projection reads only the active raw-trace file, reconstructs its complete active lifecycle, and returns the newest 100 canonical replay events in deterministic order.
 - Archived segments and manifests remain untouched and directly usable; the Event Monitor does not load, search, or page archived history.
+- An explicit `Load 50 earlier` action can browse backward only through the current active trace. The first request establishes a consistent latest-100 plus up-to-50-earlier snapshot; later requests add at most 50 and never cross into archives.
+- Browse state stays separate from canonical live conversation and Activity state, retains at most 300 central visuals, preserves stable anchor/disclosure identity, and returns to current live latest state through `Jump to latest`.
 - Hydrated and live center presentation stays at or below 100 visual events. Completed candidates are evicted before mutable candidates, with a deterministic oldest-mutable hard-cap fallback.
 - Per-run Activity state stays at or below 100 records and repairs derived approval/highlight state after eviction.
 - Standalone, team, and local submission mutation owners increment the semantic presentation revision only when the final bounded visible/interactive witness changes.
