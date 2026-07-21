@@ -13,7 +13,7 @@
 
 ## What Changed
 
-Implemented the focused round-10 zero-layout Event Monitor rework in source commit `aa9705a28057b369fd63ed7199c1f1f5c655df0e`, then applied the architecture round-12 centered-arrow correction in source/evidence commit `70a2ddc62e6043b9575ecc3c14b2f047dd904cf7`:
+Implemented the focused round-10 zero-layout Event Monitor rework in source commit `aa9705a28057b369fd63ed7199c1f1f5c655df0e`, then applied the architecture round-12 centered-arrow correction in source/evidence commit `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7`:
 
 - Removed the sticky padded paging wrapper, `Load 50 earlier` control, visible loading/beginning/expiry/released/error copy, count-bearing localization, expired top button, and wide centered Jump/Return pill.
 - Added one feed-local trusted direct-input session for wheel, touch, supported keyboard keys, and a measured native-scrollbar gutter pointer path. Scroll events only observe current authority; they never create it.
@@ -116,7 +116,7 @@ No server/API/storage/page DTO/cursor/generation/browse-controller logic changed
 - Branch: `codex/agent-run-history-performance`
 - Reproduction/build checkpoint retained from delivery context: `35fc7ca06481da6ff7933ca7c53d00212a80606f`
 - Focused round-10 implementation source commit: `aa9705a28057b369fd63ed7199c1f1f5c655df0e`
-- Focused round-12 centered-arrow source/evidence commit: `70a2ddc62e6043b9575ecc3c14b2f047dd904cf7`
+- Focused round-12 centered-arrow source/evidence commit: `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7`
 - No dependency or lockfile change.
 - Delivery hold respected: no integrated rebuild, push, release, deployment, archive, or cleanup was performed.
 
