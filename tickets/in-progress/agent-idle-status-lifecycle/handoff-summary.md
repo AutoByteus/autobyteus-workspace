@@ -3,7 +3,7 @@
 ## Summary Meta
 
 - Ticket: `agent-idle-status-lifecycle`
-- Date: `2026-07-17`
+- Date: `2026-07-20`
 - Current Status: `Ready for explicit user verification; repository finalization and release are on hold`
 - Workflow State Source: `tickets/in-progress/agent-idle-status-lifecycle/`
 - Ticket branch: `codex/agent-idle-status-lifecycle`
@@ -13,22 +13,22 @@
 
 - Bootstrap/finalization base: `origin/personal` / local target branch `personal`
 - Bootstrap base revision: `fbd7b6764bd43751956d69ffe22b943d06188444`
-- Latest tracked remote base checked: `origin/personal@dbc83fdb51c1e158b5707c219dd8574dc49fa493` (`v1.4.17`) at `2026-07-17T15:47:03Z`.
-- Base advanced since bootstrap/API/E2E validation: `Yes`, by 79 commits.
-- Integration method/result: checkpoint `d88dd1e7345a70e0f923384e5f615011e5da3ad4`, then clean merge into `af78a9307611f58c383ea5b5c9d8dd727deeb918`; no conflicts.
-- Base relationship at the latest audit: ticket branch ahead 9 / behind 0 and contains the latest `origin/personal`.
+- Latest tracked remote base checked: `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`, release baseline `v1.4.19`, at `2026-07-20T04:31:46Z`.
+- Base advanced since the prior `v1.4.17` integration: `Yes`, by 25 commits (104 since bootstrap).
+- Integration method/result: checkpoint `a4f92249f59a9a24e00eb1ce2047eae7933a441f`, clean merge `9cffe5dd36279df7736c77058b83930636fb0eb4`, then a second checkpoint `99fc83570c7863a8b27bf35ee35c04629f327105` and clean final merge `8052f9d777dcdb30443af068159760ed0c14ec7f` after the remote advanced during the first build attempt. No conflicts.
+- Base relationship at the latest audit: ticket branch ahead 13 / behind 0 and contains the latest `origin/personal`.
 - Base-refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/32-delivery-base-refresh.txt`
-- Delivery confirmation smoke: 6 files / 38 tests passed on the refreshed integrated state; evidence at `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/49-post-latest-base-lifecycle-smoke.log`.
+- Delivery confirmation smoke: 6 files / 38 tests passed on final refreshed head `8052f9d777dcdb30443af068159760ed0c14ec7f`; evidence at `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/59-post-latest-v1.4.19-lifecycle-smoke.log`.
 - Repository artifact hygiene: passed across 14,693 tracked paths at the 200-character threshold; evidence at `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/33-delivery-artifact-hygiene.log`.
-- Latest-base integration record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/53-latest-base-integration-record.txt`.
-- Final refreshed handoff audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/54-latest-base-delivery-audit.txt`.
+- Latest-base integration record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/64-v1.4.19-latest-base-integration-record.txt`.
+- Final refreshed handoff audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/65-v1.4.19-latest-base-delivery-audit.txt`.
 
 ## Electron User-Test Build
 
 - User-requested local macOS ARM64 `personal` package build: `Pass`, exit status `0`.
-- App/version/runtime: `AutoByteus_personal` `1.4.17`, Electron `42.4.1`, ARM64, with the integrated backend server.
-- Artifacts: `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.17.dmg`, matching ZIP, and unpacked `mac-arm64/AutoByteus.app`.
-- Integrity/runtime verification: ZIP and DMG passed; staged and packaged `node-pty` helpers plus real spawn probes passed; output is intentionally unsigned/not notarized.
+- App/version/runtime: `AutoByteus_personal` `1.4.19`, Electron `42.4.1`, ARM64, with the integrated backend server.
+- Artifacts: `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.19.dmg`, matching ZIP, and unpacked `mac-arm64/AutoByteus.app`.
+- Integrity/runtime verification: ZIP/DMG, staged and packaged `node-pty` helpers/real spawn probes, and all noVNC third-party notice projections passed; output is intentionally unsigned/not notarized.
 - The build was not launched because the user's existing AutoByteus process owns embedded port `29695`; quit that instance before testing this package.
 - Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/electron-build-report.md`
 
@@ -82,14 +82,14 @@
 - Round 1 recorded a Claude HTTP 401 from a revoked OAuth token. After the credential refresh, round 2 passed the unchanged live Claude standalone scenario and round 3 passed two unchanged live Claude team scenarios, so Claude timing/team coverage is not a residual; the earlier 401 remains round-history evidence only.
 - Round 4 recorded a DeepSeek HTTP 401 from the then-invalid external credential. After the user refreshed it, round 5 returned HTTP 200 and live AutoByteus standalone/team coverage passed. A first forced-tool team attempt then exposed stale DeepSeek-specific test setup (`tool_choice: required` with thinking enabled); a narrow test-only correction passed proportional review and the unchanged assertions passed on rerun. Both failed attempts remain execution history, not product failures.
 - Broad server command baseline: 2,426 tests passed and 64 failed in 27 unchanged files. Broad web command baseline: 1,885 tests passed and 4 failed in unchanged unrelated files. These non-green baselines are preserved as evidence and are not claimed as passes or ticket regressions.
-- Remaining bounded material residual: retired identified turn ids are retained for the runtime-context lifetime and were not production-duration stress-tested. Electron-specific behavior was not required in upstream API/E2E because no preload, IPC, native-module, window, or packaging boundary changed; nevertheless, the later user-requested Electron package build and native runtime verification passed. Interactive app execution remains for user verification.
+- Remaining bounded material residual: retired identified turn ids are retained for the runtime-context lifetime and were not production-duration stress-tested. The later base added separately delivered Electron local-file/video and noVNC packaging work; the refreshed package build, native runtime, archive integrity, and notice projections passed without changing this ticket's lifecycle semantics. Interactive app execution remains for user verification.
 
 ## Release Notes And Release Scope
 
 - Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/release-notes.md`
 - Release notes status: `Prepared before verification`.
 - Release/version/tag/publication/deployment: `Not started`; conditional on explicit user instruction after verification.
-- Current workspace release version/tag baseline: `1.4.17` / `v1.4.17`.
+- Current workspace release version/tag baseline: `1.4.19` / `v1.4.19`.
 
 ## User Verification Hold
 
@@ -113,11 +113,11 @@
 - Round-3 live Claude team evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/35-live-claude-team-roundtrip.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/36-live-claude-team-restore.log`
 - Round-4/round-5 AutoByteus + DeepSeek evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/37-live-autobyteus-deepseek-lifecycle.log` through `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/45-round5-final-audit.log`
 - Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/electron-build-report.md`
-- Latest-base/Electron evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/49-post-latest-base-lifecycle-smoke.log` through `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/54-latest-base-delivery-audit.txt`. Earlier Electron `1.4.14` logs `46`-`48` are retained as superseded build history.
+- Latest-base/Electron evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/55-post-v1.4.19-base-lifecycle-smoke.log` through `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/65-v1.4.19-latest-base-delivery-audit.txt`. Logs `57`-`58` record an intentional first-attempt interruption after the remote advanced; log `61` records a verifier-key assumption corrected by authoritative passing rerun `63`. Earlier Electron builds remain superseded history.
 - Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/docs-sync-report.md`
 - Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/release-notes.md`
 - Delivery report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/release-deployment-report.md`
-- Delivery evidence: refreshed base record `32`, historical hygiene/audit records `33`-`34`, and latest integrated-state records `49`-`54` under `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/`.
+- Delivery evidence: refreshed base record `32`, historical hygiene/audit records `33`-`34`, and latest integrated-state records `55`-`65` under `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/`.
 
 ## Blockers / Notes
 
