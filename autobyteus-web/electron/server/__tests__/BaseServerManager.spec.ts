@@ -10,7 +10,8 @@ vi.mock('fs', () => ({
   copyFileSync: vi.fn(),
   readdirSync: vi.fn(),
   promises: {
-    rm: vi.fn()
+    rm: vi.fn(),
+    readdir: vi.fn()
   }
 }))
 
@@ -82,15 +83,15 @@ describe('BaseServerManager', () => {
     appDataExists = true
     envExists = true
     dataDirPaths.forEach((p) => existingDataDirs.add(p))
-    mockedFs.promises.rm.mockImplementationOnce(async () => {
-      appDataExists = false
-      envExists = false
-      existingDataDirs.clear()
-    })
+    mockedFs.promises.readdir.mockResolvedValue(['db', 'logs', 'download', '.env', 'secret-store'] as never)
+    mockedFs.promises.rm.mockResolvedValue(undefined)
     await manager.resetAppDataDir()
 
-    expect(mockedFs.promises.rm).toHaveBeenCalledWith(manager.getAppDataDir(), { recursive: true, force: true })
-    expect(mockedFs.mkdirSync).toHaveBeenCalledWith(manager.getAppDataDir(), { recursive: true })
+    expect(mockedFs.promises.rm).toHaveBeenCalledTimes(4)
+    expect(mockedFs.promises.rm).not.toHaveBeenCalledWith(
+      path.join(manager.getAppDataDir(), 'secret-store'),
+      expect.anything(),
+    )
     expect(manager.getFirstRun()).toBe(true)
   })
 })

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "backend": {
+    "kind": "local-store",
+    "databaseFile": "real-e2e-secret-store.db",
+    "keyFile": "real-e2e-secret-store.key",
+    "accessMode": "READ_ONLY"
+  },
+  "scenarios": {
+    "openai.llm": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.openai.api-key"],
+      "model": "configured-non-secret-model"
+    },
+    "openai.agent-flow": {
+      "mode": "REAL_GATEWAY",
+      "requiredSecrets": ["provider.openai.api-key"]
+    },
+    "serper.search": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["search.serper.api-key"]
+    },
+    "anthropic.claude-agent-sdk": {
+      "mode": "REAL_DIRECT_SECRET",
+      "runtimeAuthMode": "managed-secret",
+      "requiredSecrets": ["provider.anthropic.api-key"],
+      "model": "configured-non-secret-model"
+    }
+  }
+}

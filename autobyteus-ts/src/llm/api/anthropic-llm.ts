@@ -14,6 +14,10 @@ import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-conv
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createAnthropicPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import {
+  requireApiKeyAuthentication,
+  type LLMConstructionContext,
+} from '../llm-construction-context.js';
+import {
   applySafeProviderRequestKwargs,
   cloneSafeProviderRequestKwargs,
 } from './provider-request-kwargs.js';
@@ -188,20 +192,11 @@ export class AnthropicLLM extends BaseLLM {
   protected maxTokens: number;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, llmConfig?: LLMConfig) {
-    if (!llmConfig) {
-      llmConfig = new LLMConfig();
-    }
-    
-    super(model, llmConfig);
-
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      throw new Error("ANTHROPIC_API_KEY environment variable is not set.");
-    }
-
+  constructor(model: LLMModel, context: LLMConstructionContext) {
+    super(model, context.config);
+    const apiKey = requireApiKeyAuthentication(context.authentication, 'Anthropic');
     this.client = new Anthropic({ apiKey });
-    this.maxTokens = llmConfig.maxTokens ?? 8192;
+    this.maxTokens = context.config.maxTokens ?? 8192;
     this._renderer = createAnthropicPromptRendererForToolFormat();
   }
 

@@ -16,6 +16,7 @@ import {
   type LlmProviderService,
 } from '../../../llm-management/llm-providers/services/llm-provider-service.js';
 import { getModelCatalogService } from '../../../llm-management/services/model-catalog-service.js';
+import type { CredentialStatusProjection } from '../../../llm-management/llm-providers/domain/models.js';
 
 const GEMINI_SETUP_MODES = {
   AI_STUDIO: 'AI_STUDIO',
@@ -74,6 +75,21 @@ class ModelDetail {
 }
 
 @ObjectType()
+class CredentialStatusObject implements CredentialStatusProjection {
+  @Field(() => String)
+  backendHealth!: CredentialStatusProjection['backendHealth'];
+
+  @Field(() => String, { nullable: true })
+  storageState!: CredentialStatusProjection['storageState'];
+
+  @Field(() => String, { nullable: true })
+  lifecycle!: CredentialStatusProjection['lifecycle'];
+
+  @Field(() => String, { nullable: true })
+  instructionCode!: string | null;
+}
+
+@ObjectType()
 class LlmProviderObject {
   @Field(() => String)
   id!: string;
@@ -90,8 +106,8 @@ class LlmProviderObject {
   @Field(() => String, { nullable: true })
   baseUrl!: string | null;
 
-  @Field(() => Boolean)
-  apiKeyConfigured!: boolean;
+  @Field(() => CredentialStatusObject, { nullable: true })
+  credentialStatus!: CredentialStatusObject | null;
 
   @Field(() => String)
   status!: string;
@@ -114,11 +130,11 @@ class GeminiSetupConfig {
   @Field(() => String)
   mode!: GeminiSetupMode;
 
-  @Field(() => Boolean)
-  geminiApiKeyConfigured!: boolean;
+  @Field(() => CredentialStatusObject)
+  geminiCredentialStatus!: CredentialStatusObject;
 
-  @Field(() => Boolean)
-  vertexApiKeyConfigured!: boolean;
+  @Field(() => CredentialStatusObject)
+  vertexCredentialStatus!: CredentialStatusObject;
 
   @Field(() => String, { nullable: true })
   vertexProject!: string | null;
@@ -167,43 +183,6 @@ class CustomLlmProviderInputObject {
 }
 
 const normalizeText = (value: string | null | undefined): string => value?.trim() ?? '';
-
-const getCurrentGeminiSetup = (): GeminiSetupConfig => {
-  const config = appConfigProvider.config;
-  const geminiApiKey = normalizeText(config.get('GEMINI_API_KEY'));
-  const vertexApiKey = normalizeText(config.get('VERTEX_AI_API_KEY'));
-  const vertexProject = normalizeText(config.get('VERTEX_AI_PROJECT'));
-  const vertexLocation = normalizeText(config.get('VERTEX_AI_LOCATION'));
-
-  let mode: GeminiSetupMode = GEMINI_SETUP_MODES.AI_STUDIO;
-  if (vertexApiKey) {
-    mode = GEMINI_SETUP_MODES.VERTEX_EXPRESS;
-  } else if (vertexProject || vertexLocation) {
-    mode = GEMINI_SETUP_MODES.VERTEX_PROJECT;
-  }
-
-  return {
-    mode,
-    geminiApiKeyConfigured: Boolean(geminiApiKey),
-    vertexApiKeyConfigured: Boolean(vertexApiKey),
-    vertexProject: vertexProject || null,
-    vertexLocation: vertexLocation || null,
-  };
-};
-
-const clearGeminiModeFields = (mode: GeminiSetupMode): void => {
-  const config = appConfigProvider.config;
-  if (mode !== GEMINI_SETUP_MODES.AI_STUDIO) {
-    config.set('GEMINI_API_KEY', '');
-  }
-  if (mode !== GEMINI_SETUP_MODES.VERTEX_EXPRESS) {
-    config.set('VERTEX_AI_API_KEY', '');
-  }
-  if (mode !== GEMINI_SETUP_MODES.VERTEX_PROJECT) {
-    config.set('VERTEX_AI_PROJECT', '');
-    config.set('VERTEX_AI_LOCATION', '');
-  }
-};
 
 const mapLlmModel = (model: ModelInfo): ModelDetail => ({
   modelIdentifier: model.model_identifier,
@@ -269,19 +248,20 @@ export class LlmProviderResolver {
     return getBuiltInLlmProviderCatalog();
   }
 
-  @Query(() => Boolean)
-  async getLlmProviderApiKeyConfigured(@Arg('providerId', () => String) providerId: string): Promise<boolean> {
+  @Query(() => CredentialStatusObject, { nullable: true })
+  async getLlmProviderCredentialStatus(
+    @Arg('providerId', () => String) providerId: string,
+  ): Promise<CredentialStatusObject | null> {
     try {
-      return await this.llmProviderService.getProviderApiKeyConfigured(providerId);
-    } catch (error) {
-      console.error(`Error retrieving API key configured status: ${String(error)}`);
-      return false;
+      return await this.llmProviderService.getProviderCredentialStatus(providerId);
+    } catch {
+      return null;
     }
   }
 
   @Query(() => GeminiSetupConfig)
-  getGeminiSetupConfig(): GeminiSetupConfig {
-    return getCurrentGeminiSetup();
+  async getGeminiSetupConfig(): Promise<GeminiSetupConfig> {
+    return this.llmProviderService.getGeminiCredentialStatus();
   }
 
   @Query(() => [ProviderWithModels])
@@ -344,9 +324,9 @@ export class LlmProviderResolver {
   ): Promise<string> {
     try {
       const provider = await this.llmProviderService.setProviderApiKey(providerId, apiKey);
-      return `API key for provider ${provider.name} has been set successfully.`;
-    } catch (error) {
-      return `Error setting API key: ${String(error)}`;
+      return `Credential for provider ${provider.name} has been set successfully.`;
+    } catch {
+      return 'Error setting credential: PROVIDER_CREDENTIAL_REJECTED';
     }
   }
 
@@ -373,19 +353,19 @@ export class LlmProviderResolver {
     try {
       const providerName = await this.llmProviderService.deleteCustomProvider(providerId, runtimeKind);
       return `Deleted custom provider ${providerName} successfully.`;
-    } catch (error) {
-      return `Error deleting custom provider ${providerId}: ${String(error)}`;
+    } catch {
+      return 'Error deleting custom provider: CUSTOM_PROVIDER_DELETE_REJECTED';
     }
   }
 
   @Mutation(() => String)
-  setGeminiSetupConfig(
+  async setGeminiSetupConfig(
     @Arg('mode', () => String) mode: string,
     @Arg('geminiApiKey', () => String, { nullable: true }) geminiApiKey?: string | null,
     @Arg('vertexApiKey', () => String, { nullable: true }) vertexApiKey?: string | null,
     @Arg('vertexProject', () => String, { nullable: true }) vertexProject?: string | null,
     @Arg('vertexLocation', () => String, { nullable: true }) vertexLocation?: string | null,
-  ): string {
+  ): Promise<string> {
     try {
       const normalizedMode = normalizeText(mode).toUpperCase();
       if (!Object.values(GEMINI_SETUP_MODES).includes(normalizedMode as GeminiSetupMode)) {
@@ -395,7 +375,6 @@ export class LlmProviderResolver {
       }
 
       const selectedMode = normalizedMode as GeminiSetupMode;
-      const config = appConfigProvider.config;
       const normalizedGeminiApiKey = normalizeText(geminiApiKey);
       const normalizedVertexApiKey = normalizeText(vertexApiKey);
       const normalizedVertexProject = normalizeText(vertexProject);
@@ -405,26 +384,33 @@ export class LlmProviderResolver {
         if (!normalizedGeminiApiKey) {
           throw new Error('GEMINI_API_KEY is required for AI_STUDIO mode.');
         }
-        config.set('GEMINI_API_KEY', normalizedGeminiApiKey);
+        await this.llmProviderService.setGeminiSetup({
+          mode: selectedMode,
+          apiKey: normalizedGeminiApiKey,
+        });
       } else if (selectedMode === GEMINI_SETUP_MODES.VERTEX_EXPRESS) {
         if (!normalizedVertexApiKey) {
           throw new Error('VERTEX_AI_API_KEY is required for VERTEX_EXPRESS mode.');
         }
-        config.set('VERTEX_AI_API_KEY', normalizedVertexApiKey);
+        await this.llmProviderService.setGeminiSetup({
+          mode: selectedMode,
+          apiKey: normalizedVertexApiKey,
+        });
       } else {
         if (!normalizedVertexProject || !normalizedVertexLocation) {
           throw new Error(
             'Both VERTEX_AI_PROJECT and VERTEX_AI_LOCATION are required for VERTEX_PROJECT mode.',
           );
         }
-        config.set('VERTEX_AI_PROJECT', normalizedVertexProject);
-        config.set('VERTEX_AI_LOCATION', normalizedVertexLocation);
+        await this.llmProviderService.setGeminiSetup({
+          mode: selectedMode,
+          project: normalizedVertexProject,
+          location: normalizedVertexLocation,
+        });
       }
-
-      clearGeminiModeFields(selectedMode);
       return `Gemini setup for mode ${selectedMode} has been saved successfully.`;
-    } catch (error) {
-      return `Error saving Gemini setup: ${String(error)}`;
+    } catch {
+      return 'Error saving Gemini setup: GEMINI_SETUP_REJECTED';
     }
   }
 
@@ -438,8 +424,8 @@ export class LlmProviderResolver {
       await this.runtimeModelCatalogService.reloadImageModels(runtimeKind);
       await this.runtimeModelCatalogService.reloadVideoModels(runtimeKind);
       return 'All models (LLM and Multimedia) reloaded successfully.';
-    } catch (error) {
-      return `Error reloading models: ${String(error)}`;
+    } catch {
+      return 'Error reloading models: MODEL_RELOAD_FAILED';
     }
   }
 
@@ -455,8 +441,8 @@ export class LlmProviderResolver {
     try {
       const count = await this.llmProviderService.reloadProviderModels(providerId, runtimeKind);
       return `Reloaded ${count} models for provider ${providerId} successfully.`;
-    } catch (error) {
-      return `Error reloading models for provider ${providerId}: ${String(error)}`;
+    } catch {
+      return 'Error reloading models for provider: PROVIDER_MODEL_RELOAD_FAILED';
     }
   }
 }

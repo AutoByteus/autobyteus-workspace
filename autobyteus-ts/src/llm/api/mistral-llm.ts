@@ -11,6 +11,10 @@ import { LLMProvider } from '../providers.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createMistralPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import { applySafeProviderRequestKwargs } from './provider-request-kwargs.js';
+import {
+  requireApiKeyAuthentication,
+  type LLMConstructionContext,
+} from '../llm-construction-context.js';
 
 const MISTRAL_CONTROLLED_KWARG_KEYS = new Set(['stream']);
 
@@ -19,26 +23,11 @@ export class MistralLLM extends BaseLLM {
   protected maxTokens: number | null;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model?: LLMModel, llmConfig?: LLMConfig) {
-    const effectiveModel =
-      model ??
-      new LLMModel({
-        name: 'mistral-large-3',
-        value: 'mistral-large-2512',
-        canonicalName: 'mistral-large-3',
-        provider: LLMProvider.MISTRAL
-      });
-
-    const config = llmConfig ?? new LLMConfig();
-    super(effectiveModel, config);
-
-    const apiKey = process.env.MISTRAL_API_KEY;
-    if (!apiKey) {
-      throw new Error('MISTRAL_API_KEY environment variable is not set.');
-    }
-
+  constructor(model: LLMModel, context: LLMConstructionContext) {
+    super(model, context.config);
+    const apiKey = requireApiKeyAuthentication(context.authentication, 'Mistral');
     this.client = new Mistral({ apiKey });
-    this.maxTokens = config.maxTokens ?? null;
+    this.maxTokens = context.config.maxTokens ?? null;
     this._renderer = createMistralPromptRendererForToolFormat();
   }
 

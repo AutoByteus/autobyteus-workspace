@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { pathToFileURL } from "node:url";
 import { appConfigProvider } from "./config/app-config-provider.js";
+import { runLegacySecretCutoverMigration } from "./secret-management/migration/legacy-secret-cutover-migration.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -57,6 +58,7 @@ function initializeConfig(options: ServerOptions) {
   const config = appConfigProvider.initialize({
     appDataDir: options.dataDir,
   });
+  runLegacySecretCutoverMigration(config.getAppDataDir());
   config.initialize();
   return config;
 }

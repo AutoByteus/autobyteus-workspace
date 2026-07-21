@@ -10,6 +10,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('settings.components.settings.ProviderAPIKeyManager.custom_provider_name') }}</label>
         <input
           :value="draft.name"
+          :disabled="disabled"
           type="text"
           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
           :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.custom_provider_name_placeholder')"
@@ -21,6 +22,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('settings.components.settings.ProviderAPIKeyManager.base_url') }}</label>
         <input
           :value="draft.baseUrl"
+          :disabled="disabled"
           type="text"
           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
           :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.base_url_placeholder')"
@@ -32,6 +34,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('settings.components.settings.ProviderAPIKeyManager.api_key') }}</label>
         <input
           :value="draft.apiKey"
+          :disabled="disabled"
           type="password"
           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
           :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.api_key_placeholder')"
@@ -43,7 +46,7 @@
         <button
           type="button"
           class="inline-flex items-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="!canProbe || probing"
+          :disabled="disabled || !canProbe || probing"
           @click="emit('probe')"
         >
           <span v-if="probing" class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 mr-2"></span>
@@ -54,7 +57,7 @@
         <button
           type="button"
           class="inline-flex items-center rounded-lg border border-green-200 bg-green-50 text-green-700 px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="!canSave || saving"
+          :disabled="disabled || !canSave || saving"
           @click="emit('save')"
         >
           <span v-if="saving" class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-700 mr-2"></span>
@@ -83,6 +86,7 @@ const props = defineProps<{
   canProbe: boolean
   canSave: boolean
   isProbeStale: boolean
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{

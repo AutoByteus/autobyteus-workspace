@@ -7,6 +7,7 @@ import { OpenAIImageClient } from './api/openai-image-client.js';
 import { GeminiImageClient } from './api/gemini-image-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { AutobyteusImageModelProvider } from './autobyteus-image-provider.js';
+import type { ResolvedMultimediaAuthentication } from '../multimedia-construction-context.js';
 
 export class ImageClientFactory extends Singleton {
   protected static instance?: ImageClientFactory;
@@ -100,6 +101,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gpt-image-1.5',
       value: 'gpt-image-1.5',
       provider: MultimediaProvider.OPENAI,
+      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIImageClient,
       parameterSchema: gptImageSchema,
       description:
@@ -110,6 +112,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gpt-image-2',
       value: 'gpt-image-2',
       provider: MultimediaProvider.OPENAI,
+      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIImageClient,
       parameterSchema: gptImage2Schema,
       description:
@@ -120,6 +123,7 @@ export class ImageClientFactory extends Singleton {
       name: 'imagen-4',
       value: 'imagen-4.0-generate-001',
       provider: MultimediaProvider.GEMINI,
+      authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'High-fidelity stateless model; text-to-image only.'
@@ -129,6 +133,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-2.5-flash-image',
       value: 'gemini-2.5-flash-image',
       provider: MultimediaProvider.GEMINI,
+      authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'Fast conversational multimodal image model.'
@@ -138,6 +143,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3.1-flash-lite-image',
       value: 'gemini-3.1-flash-lite-image',
       provider: MultimediaProvider.GEMINI,
+      authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description:
@@ -148,6 +154,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3.1-flash-image',
       value: 'gemini-3.1-flash-image',
       provider: MultimediaProvider.GEMINI,
+      authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'GA Nano Banana 2 / Gemini 3.1 Flash Image model for versatile image generation and editing.'
@@ -157,6 +164,7 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3-pro-image',
       value: 'gemini-3-pro-image',
       provider: MultimediaProvider.GEMINI,
+      authenticationRequirement: { kind: 'googleAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'GA Nano Banana Pro / Gemini 3 Pro Image model for high-quality complex image tasks.'
@@ -175,7 +183,6 @@ export class ImageClientFactory extends Singleton {
       ImageClientFactory.registerModel(model);
     }
 
-    void AutobyteusImageModelProvider.ensureDiscovered();
   }
 
   static registerModel(model: ImageModel): void {
@@ -183,7 +190,7 @@ export class ImageClientFactory extends Singleton {
     ImageClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
-  static createImageClient(modelIdentifier: string, configOverride?: MultimediaConfig | null): BaseImageClient {
+  static describeConstructionTarget(modelIdentifier: string): ImageModel {
     ImageClientFactory.ensureInitialized();
     const model = ImageClientFactory.modelsByIdentifier.get(modelIdentifier);
     if (!model) {
@@ -193,7 +200,14 @@ export class ImageClientFactory extends Singleton {
         )}`
       );
     }
-    return model.createClient(configOverride ?? undefined);
+    return model;
+  }
+
+  static createImageClient(
+    modelIdentifier: string,
+    input: { configOverride?: MultimediaConfig | null; authentication: ResolvedMultimediaAuthentication },
+  ): BaseImageClient {
+    return ImageClientFactory.describeConstructionTarget(modelIdentifier).createClient(input);
   }
 
   static listModels(): ImageModel[] {

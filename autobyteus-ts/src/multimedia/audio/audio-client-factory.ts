@@ -7,6 +7,7 @@ import { GeminiAudioClient } from './api/gemini-audio-client.js';
 import { OpenAIAudioClient } from './api/openai-audio-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { AutobyteusAudioModelProvider } from './autobyteus-audio-provider.js';
+import type { ResolvedMultimediaAuthentication } from '../multimedia-construction-context.js';
 
 const GEMINI_VOICE_DETAILS: Record<string, { gender: string; description: string }> = {
   Zephyr: { gender: 'female', description: 'Bright, Higher pitch' },
@@ -140,6 +141,7 @@ export class AudioClientFactory extends Singleton {
         name,
         value,
         provider: MultimediaProvider.GEMINI,
+      authenticationRequirement: { kind: 'googleAuthenticationMode' },
         clientClass: GeminiAudioClient,
         parameterSchema: geminiTtsSchema
       });
@@ -176,6 +178,7 @@ export class AudioClientFactory extends Singleton {
       name: 'gpt-4o-mini-tts',
       value: 'gpt-4o-mini-tts',
       provider: MultimediaProvider.OPENAI,
+      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIAudioClient,
       parameterSchema: openaiTtsSchema
     });
@@ -185,7 +188,6 @@ export class AudioClientFactory extends Singleton {
       AudioClientFactory.registerModel(model);
     }
 
-    void AutobyteusAudioModelProvider.ensureDiscovered();
   }
 
   static registerModel(model: AudioModel): void {
@@ -193,7 +195,7 @@ export class AudioClientFactory extends Singleton {
     AudioClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
-  static createAudioClient(modelIdentifier: string, configOverride?: MultimediaConfig | null): BaseAudioClient {
+  static describeConstructionTarget(modelIdentifier: string): AudioModel {
     AudioClientFactory.ensureInitialized();
     const model = AudioClientFactory.modelsByIdentifier.get(modelIdentifier);
     if (!model) {
@@ -203,7 +205,14 @@ export class AudioClientFactory extends Singleton {
         )}`
       );
     }
-    return model.createClient(configOverride ?? undefined);
+    return model;
+  }
+
+  static createAudioClient(
+    modelIdentifier: string,
+    input: { configOverride?: MultimediaConfig | null; authentication: ResolvedMultimediaAuthentication },
+  ): BaseAudioClient {
+    return AudioClientFactory.describeConstructionTarget(modelIdentifier).createClient(input);
   }
 
   static listModels(): AudioModel[] {

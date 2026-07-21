@@ -38,7 +38,7 @@ describe('replace_in_file tool', () => {
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
 
     const result = await getTool().execute(
-      { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+      { agentId: 'agent', workspaceRootPath: tmpDir } satisfies MockContext,
       { path: filePath, old_text: 'line2\n', new_text: 'line2 updated\n' }
     );
 
@@ -53,7 +53,7 @@ describe('replace_in_file tool', () => {
 
     await expect(
       getTool().execute(
-        { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+        { agentId: 'agent', workspaceRootPath: tmpDir } satisfies MockContext,
         { path: filePath, old_text: 'same\n', new_text: 'changed\n' }
       )
     ).rejects.toThrow('[multiple_matches]');
@@ -79,6 +79,6 @@ describe('replace_in_file tool', () => {
         { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
         { path: 'relative.txt', old_text: 'a', new_text: 'b' }
       )
-    ).rejects.toThrow('but no workspace root is configured');
+    ).rejects.toThrow('no workspace root is configured');
   });
 });

@@ -38,7 +38,7 @@ describe('runBash', () => {
     expect(result.stderr).toBe('');
     expect(result.exitCode).toBe(0);
     expect(result.timedOut).toBe(false);
-    expect(result.effectiveCwd).toBe(cwd);
+    expect(result.effectiveCwd).toBe(fs.realpathSync(cwd));
     expect(result.backgroundProcesses).toEqual([]);
   });
 
@@ -85,12 +85,12 @@ describe('runBash', () => {
     const result = await runBash(context, 'pwd', path.join('packages', 'api'));
 
     expect(fs.realpathSync(result.stdout.trim())).toBe(fs.realpathSync(path.join(workspaceRoot, 'packages', 'api')));
-    expect(result.effectiveCwd).toBe(path.join(workspaceRoot, 'packages', 'api'));
+    expect(result.effectiveCwd).toBe(fs.realpathSync(path.join(workspaceRoot, 'packages', 'api')));
   });
 
   it('rejects relative cwd paths when no workspace is configured', async () => {
     const context: any = { workspaceRootPath: null };
 
-    await expect(runBash(context, 'echo nope', 'relative/path')).rejects.toThrow(/must be absolute when no workspace root is configured/);
+    await expect(runBash(context, 'echo nope', 'relative/path')).rejects.toThrow(/requires an authorized workspace root/);
   });
 });

@@ -7,6 +7,18 @@ vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
 }))
 
+
+const configuredCredentialStatus = {
+  backendHealth: 'READY' as const,
+  storageState: 'CONFIGURED' as const,
+  lifecycle: 'WRITABLE' as const,
+  instructionCode: null,
+}
+const missingCredentialStatus = {
+  ...configuredCredentialStatus,
+  storageState: 'MISSING' as const,
+}
+
 const openAiRow = {
   provider: {
     id: 'OPENAI',
@@ -14,7 +26,7 @@ const openAiRow = {
     providerType: 'OPENAI',
     isCustom: false,
     baseUrl: null,
-    apiKeyConfigured: true,
+    credentialStatus: configuredCredentialStatus,
     status: 'NOT_APPLICABLE',
     statusMessage: null,
   },
@@ -45,7 +57,7 @@ const geminiRow = {
     providerType: 'GEMINI',
     isCustom: false,
     baseUrl: null,
-    apiKeyConfigured: false,
+    credentialStatus: missingCredentialStatus,
     status: 'NOT_APPLICABLE',
     statusMessage: null,
   },
@@ -120,8 +132,8 @@ describe('llmProviderConfig store', () => {
       data: {
         getGeminiSetupConfig: {
           mode: 'VERTEX_PROJECT',
-          geminiApiKeyConfigured: false,
-          vertexApiKeyConfigured: false,
+          geminiCredentialStatus: missingCredentialStatus,
+          vertexCredentialStatus: missingCredentialStatus,
           vertexProject: 'project-1',
           vertexLocation: 'us-central1',
         },
@@ -158,7 +170,7 @@ describe('llmProviderConfig store', () => {
     expect(store.providersWithModels[0]?.provider).toEqual(expect.objectContaining({
       id: 'OPENAI',
       name: 'OpenAI',
-      apiKeyConfigured: true,
+      credentialStatus: configuredCredentialStatus,
     }))
     expect(store.providersWithModels[0]?.models[0]).toEqual(expect.objectContaining({
       providerId: 'OPENAI',
@@ -170,18 +182,18 @@ describe('llmProviderConfig store', () => {
     expect(store.videoModels).toEqual(['gemini-omni-flash-preview'])
   })
 
-  it('getLLMProviderApiKeyConfigured uses hydrated provider booleans before querying', async () => {
+  it('getLLMProviderCredentialStatus uses hydrated provider booleans before querying', async () => {
     const queryMock = vi.fn()
     vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any)
 
     const store = useLLMProviderConfigStore()
     store.providersWithModels = [openAiRow as any]
 
-    const configured = await store.getLLMProviderApiKeyConfigured('OPENAI')
+    const configured = await store.getLLMProviderCredentialStatus('OPENAI')
 
-    expect(configured).toBe(true)
+    expect(configured?.storageState).toBe('CONFIGURED')
     expect(queryMock).not.toHaveBeenCalled()
-    expect(store.providerConfigs.OPENAI?.apiKeyConfigured).toBe(true)
+    expect(store.providerConfigs.OPENAI?.credentialStatus.storageState).toBe('CONFIGURED')
   })
 
   it('setLLMProviderApiKey updates configured state after a successful write-only save', async () => {
@@ -199,7 +211,7 @@ describe('llmProviderConfig store', () => {
         ...openAiRow,
         provider: {
           ...openAiRow.provider,
-          apiKeyConfigured: false,
+          credentialStatus: missingCredentialStatus,
         },
       } as any,
     ]
@@ -210,8 +222,8 @@ describe('llmProviderConfig store', () => {
     expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
       variables: { providerId: 'OPENAI', apiKey: 'runtime-key' },
     }))
-    expect(store.providerConfigs.OPENAI?.apiKeyConfigured).toBe(true)
-    expect(store.providersWithModels[0]?.provider.apiKeyConfigured).toBe(true)
+    expect(store.providerConfigs.OPENAI?.credentialStatus.storageState).toBe('CONFIGURED')
+    expect(store.providersWithModels[0]?.provider.credentialStatus.storageState).toBe('CONFIGURED')
   })
 
   it('setLLMProviderApiKey replaces immutable provider rows instead of mutating Apollo query results in place', async () => {
@@ -228,7 +240,7 @@ describe('llmProviderConfig store', () => {
       ...openAiRow,
       provider: {
         ...openAiRow.provider,
-        apiKeyConfigured: false,
+        credentialStatus: missingCredentialStatus,
       },
     }) as any
     store.providersWithModels = [frozenRow]
@@ -236,7 +248,7 @@ describe('llmProviderConfig store', () => {
     const success = await store.setLLMProviderApiKey('OPENAI', 'runtime-key')
 
     expect(success).toBe(true)
-    expect(store.providersWithModels[0]?.provider.apiKeyConfigured).toBe(true)
+    expect(store.providersWithModels[0]?.provider.credentialStatus.storageState).toBe('CONFIGURED')
     expect(store.providersWithModels[0]).not.toBe(frozenRow)
     expect(store.providersWithModels[0]?.provider).not.toBe(frozenRow.provider)
   })
@@ -250,7 +262,7 @@ describe('llmProviderConfig store', () => {
           providerType: 'OPENAI_COMPATIBLE',
           isCustom: true,
           baseUrl: 'https://gateway.example.com/v1',
-          apiKeyConfigured: true,
+          credentialStatus: configuredCredentialStatus,
           status: 'READY',
           statusMessage: null,
         },
@@ -321,8 +333,8 @@ describe('llmProviderConfig store', () => {
 
     const store = useLLMProviderConfigStore()
     store.providerConfigs = {
-      OPENAI: { apiKeyConfigured: true },
-      provider_gateway: { apiKeyConfigured: true },
+      OPENAI: { credentialStatus: configuredCredentialStatus },
+      provider_gateway: { credentialStatus: configuredCredentialStatus },
     }
 
     const success = await store.deleteCustomProvider('provider_gateway', 'autobyteus')
@@ -349,8 +361,8 @@ describe('llmProviderConfig store', () => {
       data: {
         getGeminiSetupConfig: {
           mode: 'AI_STUDIO',
-          geminiApiKeyConfigured: true,
-          vertexApiKeyConfigured: false,
+          geminiCredentialStatus: configuredCredentialStatus,
+          vertexCredentialStatus: missingCredentialStatus,
           vertexProject: null,
           vertexLocation: null,
         },
@@ -380,7 +392,7 @@ describe('llmProviderConfig store', () => {
     }))
     expect(queryMock).toHaveBeenCalledTimes(1)
     expect(store.geminiSetup.mode).toBe('AI_STUDIO')
-    expect(store.geminiSetup.geminiApiKeyConfigured).toBe(true)
+    expect(store.geminiSetup.geminiCredentialStatus.storageState).toBe('CONFIGURED')
   })
 
   it('setGeminiSetupConfig replaces immutable Gemini provider rows instead of mutating hydrated query results in place', async () => {
@@ -394,8 +406,8 @@ describe('llmProviderConfig store', () => {
       data: {
         getGeminiSetupConfig: {
           mode: 'AI_STUDIO',
-          geminiApiKeyConfigured: true,
-          vertexApiKeyConfigured: false,
+          geminiCredentialStatus: configuredCredentialStatus,
+          vertexCredentialStatus: missingCredentialStatus,
           vertexProject: null,
           vertexLocation: null,
         },
@@ -417,8 +429,8 @@ describe('llmProviderConfig store', () => {
     })
 
     expect(success).toBe(true)
-    expect(store.providerConfigs.GEMINI?.apiKeyConfigured).toBe(true)
-    expect(store.providersWithModels[0]?.provider.apiKeyConfigured).toBe(true)
+    expect(store.providerConfigs.GEMINI?.credentialStatus.storageState).toBe('CONFIGURED')
+    expect(store.providersWithModels[0]?.provider.credentialStatus.storageState).toBe('CONFIGURED')
     expect(store.providersWithModels[0]).not.toBe(frozenRow)
     expect(store.providersWithModels[0]?.provider).not.toBe(frozenRow.provider)
     expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({

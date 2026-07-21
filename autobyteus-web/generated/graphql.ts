@@ -472,6 +472,14 @@ export type CreateWorkspaceInput = {
   rootPath: Scalars['String']['input'];
 };
 
+export type CredentialStatusObject = {
+  __typename?: 'CredentialStatusObject';
+  backendHealth: Scalars['String']['output'];
+  instructionCode?: Maybe<Scalars['String']['output']>;
+  lifecycle?: Maybe<Scalars['String']['output']>;
+  storageState?: Maybe<Scalars['String']['output']>;
+};
+
 export type CustomLlmProviderInputObject = {
   apiKey: Scalars['String']['input'];
   baseUrl: Scalars['String']['input'];
@@ -624,9 +632,9 @@ export type ExternalChannelTeamLaunchPresetInput = {
 
 export type GeminiSetupConfig = {
   __typename?: 'GeminiSetupConfig';
-  geminiApiKeyConfigured: Scalars['Boolean']['output'];
+  geminiCredentialStatus: CredentialStatusObject;
   mode: Scalars['String']['output'];
-  vertexApiKeyConfigured: Scalars['Boolean']['output'];
+  vertexCredentialStatus: CredentialStatusObject;
   vertexLocation?: Maybe<Scalars['String']['output']>;
   vertexProject?: Maybe<Scalars['String']['output']>;
 };
@@ -751,8 +759,8 @@ export type ImportMcpServerConfigsResult = {
 
 export type LlmProviderObject = {
   __typename?: 'LlmProviderObject';
-  apiKeyConfigured: Scalars['Boolean']['output'];
   baseUrl?: Maybe<Scalars['String']['output']>;
+  credentialStatus?: Maybe<CredentialStatusObject>;
   id: Scalars['String']['output'];
   isCustom: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
@@ -1377,8 +1385,6 @@ export type MutationSetLlmProviderApiKeyArgs = {
 
 
 export type MutationSetSearchConfigArgs = {
-  googleCseApiKey?: InputMaybe<Scalars['String']['input']>;
-  googleCseId?: InputMaybe<Scalars['String']['input']>;
   provider: Scalars['String']['input'];
   serpapiApiKey?: InputMaybe<Scalars['String']['input']>;
   serperApiKey?: InputMaybe<Scalars['String']['input']>;
@@ -1520,13 +1526,15 @@ export type Query = {
   getAgentRunSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
   getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
+  getEffectiveWorkingContextCompactionStrategyId: Scalars['String']['output'];
   getGeminiSetupConfig: GeminiSetupConfig;
-  getLlmProviderApiKeyConfigured: Scalars['Boolean']['output'];
+  getLlmProviderCredentialStatus?: Maybe<CredentialStatusObject>;
   getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
   getMemorySyncStatus: MemorySyncStatusGql;
   getRunFileChanges: Array<RunFileChangeEntryObject>;
   getRunProjection: RunProjectionPayload;
   getSearchConfig: SearchConfig;
+  getSecretStorageStatus: SecretStorageStatus;
   getServerSettings: Array<ServerSetting>;
   getSkillImprovementRunRecord?: Maybe<GraphqlSkillImprovementRunRecord>;
   getTaskDelegationRecords: Array<TaskDelegationRecordObject>;
@@ -1537,6 +1545,7 @@ export type Query = {
   getTeamMemberTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
+  getWorkingContextCompactionStrategies: Array<WorkingContextCompactionStrategyOption>;
   health: HealthStatus;
   listAgentRunsWithMemory: AgentRunMemoryPage;
   listAgentTeamRunsWithMemory: AgentTeamRunMemoryPage;
@@ -1653,7 +1662,7 @@ export type QueryGetAgentRunTokenUsageSummaryArgs = {
 };
 
 
-export type QueryGetLlmProviderApiKeyConfiguredArgs = {
+export type QueryGetLlmProviderCredentialStatusArgs = {
   providerId: Scalars['String']['input'];
 };
 
@@ -1978,13 +1987,24 @@ export type RuntimeAvailabilityObject = {
 
 export type SearchConfig = {
   __typename?: 'SearchConfig';
-  googleCseApiKeyConfigured: Scalars['Boolean']['output'];
-  googleCseId?: Maybe<Scalars['String']['output']>;
+  backendHealth: Scalars['String']['output'];
+  instructionCode?: Maybe<Scalars['String']['output']>;
+  lifecycle?: Maybe<Scalars['String']['output']>;
   provider: Scalars['String']['output'];
-  serpapiApiKeyConfigured: Scalars['Boolean']['output'];
-  serperApiKeyConfigured: Scalars['Boolean']['output'];
-  vertexAiSearchApiKeyConfigured: Scalars['Boolean']['output'];
+  serpapiStorageState?: Maybe<Scalars['String']['output']>;
+  serperStorageState?: Maybe<Scalars['String']['output']>;
   vertexAiSearchServingConfig?: Maybe<Scalars['String']['output']>;
+  vertexAiSearchStorageState?: Maybe<Scalars['String']['output']>;
+};
+
+export type SecretStorageStatus = {
+  __typename?: 'SecretStorageStatus';
+  assurance: Scalars['String']['output'];
+  health: Scalars['String']['output'];
+  instructionCode?: Maybe<Scalars['String']['output']>;
+  lifecycle?: Maybe<Scalars['String']['output']>;
+  restartRequired: Scalars['Boolean']['output'];
+  selectedKind: Scalars['String']['output'];
 };
 
 export type ServerAddressCandidateGql = {
@@ -2533,6 +2553,12 @@ export type UsageStatistics = {
   totalCost?: Maybe<Scalars['Float']['output']>;
 };
 
+export type WorkingContextCompactionStrategyOption = {
+  __typename?: 'WorkingContextCompactionStrategyOption';
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type WorkspaceHistoryTeamDefinitionObject = {
   __typename?: 'WorkspaceHistoryTeamDefinitionObject';
   runs: Array<WorkspaceHistoryTeamRunItemObject>;
@@ -2886,7 +2912,7 @@ export type CreateCustomLlmProviderMutationVariables = Exact<{
 }>;
 
 
-export type CreateCustomLlmProviderMutation = { __typename?: 'Mutation', createCustomLlmProvider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null } };
+export type CreateCustomLlmProviderMutation = { __typename?: 'Mutation', createCustomLlmProvider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null } };
 
 export type DeleteCustomLlmProviderMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
@@ -3031,8 +3057,6 @@ export type SetSearchConfigMutationVariables = Exact<{
   provider: Scalars['String']['input'];
   serperApiKey?: InputMaybe<Scalars['String']['input']>;
   serpapiApiKey?: InputMaybe<Scalars['String']['input']>;
-  googleCseApiKey?: InputMaybe<Scalars['String']['input']>;
-  googleCseId?: InputMaybe<Scalars['String']['input']>;
   vertexAiSearchApiKey?: InputMaybe<Scalars['String']['input']>;
   vertexAiSearchServingConfig?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -3166,24 +3190,24 @@ export type GetFolderChildrenQueryVariables = Exact<{
 
 export type GetFolderChildrenQuery = { __typename?: 'Query', folderChildren: string };
 
-export type GetLlmProviderApiKeyConfiguredQueryVariables = Exact<{
+export type GetLlmProviderCredentialStatusQueryVariables = Exact<{
   providerId: Scalars['String']['input'];
 }>;
 
 
-export type GetLlmProviderApiKeyConfiguredQuery = { __typename?: 'Query', getLlmProviderApiKeyConfigured: boolean };
+export type GetLlmProviderCredentialStatusQuery = { __typename?: 'Query', getLlmProviderCredentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null };
 
 export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupConfig', mode: string, geminiApiKeyConfigured: boolean, vertexApiKeyConfigured: boolean, vertexProject?: string | null, vertexLocation?: string | null } };
+export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupConfig', mode: string, vertexProject?: string | null, vertexLocation?: string | null, geminiCredentialStatus: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null }, vertexCredentialStatus: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } } };
 
 export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3387,12 +3411,12 @@ export type GetRuntimeAvailabilitiesQuery = { __typename?: 'Query', runtimeAvail
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetServerSettingsQuery = { __typename?: 'Query', getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
+export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
 
 export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, serperApiKeyConfigured: boolean, serpapiApiKeyConfigured: boolean, googleCseApiKeyConfigured: boolean, googleCseId?: string | null, vertexAiSearchApiKeyConfigured: boolean, vertexAiSearchServingConfig?: string | null } };
+export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, backendHealth: string, lifecycle?: string | null, instructionCode?: string | null, serperStorageState?: string | null, serpapiStorageState?: string | null, vertexAiSearchStorageState?: string | null, vertexAiSearchServingConfig?: string | null } };
 
 export type SkillImprovementCapabilityFieldsFragment = { __typename?: 'SkillImprovementCapability', enabled: boolean, settingKey: string, source: string };
 
@@ -3490,6 +3514,11 @@ export type GetToolsGroupedByCategoryQueryVariables = Exact<{
 
 
 export type GetToolsGroupedByCategoryQuery = { __typename?: 'Query', toolsGroupedByCategory: Array<{ __typename: 'ToolCategoryGroup', categoryName: string, tools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null, jsonSchema?: any | null }> } | null }> }> };
+
+export type GetWorkingContextCompactionStrategiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetWorkingContextCompactionStrategiesQuery = { __typename?: 'Query', getWorkingContextCompactionStrategies: Array<{ __typename?: 'WorkingContextCompactionStrategyOption', id: string, name: string }> };
 
 export type GetAllWorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5240,7 +5269,12 @@ export const CreateCustomLlmProviderDocument = gql`
     providerType
     isCustom
     baseUrl
-    apiKeyConfigured
+    credentialStatus {
+      backendHealth
+      storageState
+      lifecycle
+      instructionCode
+    }
     status
     statusMessage
   }
@@ -5909,13 +5943,11 @@ export function useDeleteServerSettingMutation(options: VueApolloComposable.UseM
 }
 export type DeleteServerSettingMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteServerSettingMutation, DeleteServerSettingMutationVariables>;
 export const SetSearchConfigDocument = gql`
-    mutation SetSearchConfig($provider: String!, $serperApiKey: String, $serpapiApiKey: String, $googleCseApiKey: String, $googleCseId: String, $vertexAiSearchApiKey: String, $vertexAiSearchServingConfig: String) {
+    mutation SetSearchConfig($provider: String!, $serperApiKey: String, $serpapiApiKey: String, $vertexAiSearchApiKey: String, $vertexAiSearchServingConfig: String) {
   setSearchConfig(
     provider: $provider
     serperApiKey: $serperApiKey
     serpapiApiKey: $serpapiApiKey
-    googleCseApiKey: $googleCseApiKey
-    googleCseId: $googleCseId
     vertexAiSearchApiKey: $vertexAiSearchApiKey
     vertexAiSearchServingConfig: $vertexAiSearchServingConfig
   )
@@ -5938,8 +5970,6 @@ export const SetSearchConfigDocument = gql`
  *     provider: // value for 'provider'
  *     serperApiKey: // value for 'serperApiKey'
  *     serpapiApiKey: // value for 'serpapiApiKey'
- *     googleCseApiKey: // value for 'googleCseApiKey'
- *     googleCseId: // value for 'googleCseId'
  *     vertexAiSearchApiKey: // value for 'vertexAiSearchApiKey'
  *     vertexAiSearchServingConfig: // value for 'vertexAiSearchServingConfig'
  *   },
@@ -6626,34 +6656,39 @@ export function useGetFolderChildrenLazyQuery(variables?: GetFolderChildrenQuery
   return VueApolloComposable.useLazyQuery<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>(GetFolderChildrenDocument, variables, options);
 }
 export type GetFolderChildrenQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>;
-export const GetLlmProviderApiKeyConfiguredDocument = gql`
-    query GetLLMProviderApiKeyConfigured($providerId: String!) {
-  getLlmProviderApiKeyConfigured(providerId: $providerId)
+export const GetLlmProviderCredentialStatusDocument = gql`
+    query GetLLMProviderCredentialStatus($providerId: String!) {
+  getLlmProviderCredentialStatus(providerId: $providerId) {
+    backendHealth
+    storageState
+    lifecycle
+    instructionCode
+  }
 }
     `;
 
 /**
- * __useGetLlmProviderApiKeyConfiguredQuery__
+ * __useGetLlmProviderCredentialStatusQuery__
  *
- * To run a query within a Vue component, call `useGetLlmProviderApiKeyConfiguredQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetLlmProviderApiKeyConfiguredQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetLlmProviderCredentialStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLlmProviderCredentialStatusQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetLlmProviderApiKeyConfiguredQuery({
+ * const { result, loading, error } = useGetLlmProviderCredentialStatusQuery({
  *   providerId: // value for 'providerId'
  * });
  */
-export function useGetLlmProviderApiKeyConfiguredQuery(variables: GetLlmProviderApiKeyConfiguredQueryVariables | VueCompositionApi.Ref<GetLlmProviderApiKeyConfiguredQueryVariables> | ReactiveFunction<GetLlmProviderApiKeyConfiguredQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables>(GetLlmProviderApiKeyConfiguredDocument, variables, options);
+export function useGetLlmProviderCredentialStatusQuery(variables: GetLlmProviderCredentialStatusQueryVariables | VueCompositionApi.Ref<GetLlmProviderCredentialStatusQueryVariables> | ReactiveFunction<GetLlmProviderCredentialStatusQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>(GetLlmProviderCredentialStatusDocument, variables, options);
 }
-export function useGetLlmProviderApiKeyConfiguredLazyQuery(variables?: GetLlmProviderApiKeyConfiguredQueryVariables | VueCompositionApi.Ref<GetLlmProviderApiKeyConfiguredQueryVariables> | ReactiveFunction<GetLlmProviderApiKeyConfiguredQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables>(GetLlmProviderApiKeyConfiguredDocument, variables, options);
+export function useGetLlmProviderCredentialStatusLazyQuery(variables?: GetLlmProviderCredentialStatusQueryVariables | VueCompositionApi.Ref<GetLlmProviderCredentialStatusQueryVariables> | ReactiveFunction<GetLlmProviderCredentialStatusQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>(GetLlmProviderCredentialStatusDocument, variables, options);
 }
-export type GetLlmProviderApiKeyConfiguredQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetLlmProviderApiKeyConfiguredQuery, GetLlmProviderApiKeyConfiguredQueryVariables>;
+export type GetLlmProviderCredentialStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>;
 export const GetAvailableLlmProvidersWithModelsDocument = gql`
     query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
   availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
@@ -6665,7 +6700,12 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       providerType
       isCustom
       baseUrl
-      apiKeyConfigured
+      credentialStatus {
+        backendHealth
+        storageState
+        lifecycle
+        instructionCode
+      }
       status
       statusMessage
     }
@@ -6697,7 +6737,12 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       providerType
       isCustom
       baseUrl
-      apiKeyConfigured
+      credentialStatus {
+        backendHealth
+        storageState
+        lifecycle
+        instructionCode
+      }
       status
       statusMessage
     }
@@ -6723,7 +6768,12 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       providerType
       isCustom
       baseUrl
-      apiKeyConfigured
+      credentialStatus {
+        backendHealth
+        storageState
+        lifecycle
+        instructionCode
+      }
       status
       statusMessage
     }
@@ -6749,7 +6799,12 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       providerType
       isCustom
       baseUrl
-      apiKeyConfigured
+      credentialStatus {
+        backendHealth
+        storageState
+        lifecycle
+        instructionCode
+      }
       status
       statusMessage
     }
@@ -6795,8 +6850,18 @@ export const GetGeminiSetupConfigDocument = gql`
     query GetGeminiSetupConfig {
   getGeminiSetupConfig {
     mode
-    geminiApiKeyConfigured
-    vertexApiKeyConfigured
+    geminiCredentialStatus {
+      backendHealth
+      storageState
+      lifecycle
+      instructionCode
+    }
+    vertexCredentialStatus {
+      backendHealth
+      storageState
+      lifecycle
+      instructionCode
+    }
     vertexProject
     vertexLocation
   }
@@ -8178,6 +8243,7 @@ export const GetServerSettingsDocument = gql`
     isEditable
     isDeletable
   }
+  getEffectiveWorkingContextCompactionStrategyId
 }
     `;
 
@@ -8204,11 +8270,12 @@ export const GetSearchConfigDocument = gql`
     query GetSearchConfig {
   getSearchConfig {
     provider
-    serperApiKeyConfigured
-    serpapiApiKeyConfigured
-    googleCseApiKeyConfigured
-    googleCseId
-    vertexAiSearchApiKeyConfigured
+    backendHealth
+    lifecycle
+    instructionCode
+    serperStorageState
+    serpapiStorageState
+    vertexAiSearchStorageState
     vertexAiSearchServingConfig
   }
 }
@@ -8645,6 +8712,34 @@ export function useGetToolsGroupedByCategoryLazyQuery(variables?: GetToolsGroupe
   return VueApolloComposable.useLazyQuery<GetToolsGroupedByCategoryQuery, GetToolsGroupedByCategoryQueryVariables>(GetToolsGroupedByCategoryDocument, variables, options);
 }
 export type GetToolsGroupedByCategoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetToolsGroupedByCategoryQuery, GetToolsGroupedByCategoryQueryVariables>;
+export const GetWorkingContextCompactionStrategiesDocument = gql`
+    query GetWorkingContextCompactionStrategies {
+  getWorkingContextCompactionStrategies {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetWorkingContextCompactionStrategiesQuery__
+ *
+ * To run a query within a Vue component, call `useGetWorkingContextCompactionStrategiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWorkingContextCompactionStrategiesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetWorkingContextCompactionStrategiesQuery();
+ */
+export function useGetWorkingContextCompactionStrategiesQuery(options: VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>(GetWorkingContextCompactionStrategiesDocument, {}, options);
+}
+export function useGetWorkingContextCompactionStrategiesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>(GetWorkingContextCompactionStrategiesDocument, {}, options);
+}
+export type GetWorkingContextCompactionStrategiesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>;
 export const GetAllWorkspacesDocument = gql`
     query GetAllWorkspaces {
   workspaces {

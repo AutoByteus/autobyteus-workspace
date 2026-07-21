@@ -4,18 +4,23 @@ import { BaseImageClient } from '../base-image-client.js';
 import { ImageGenerationResponse } from '../../utils/response-types.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
+import { requireApiKeyAuthentication } from '../../../llm/llm-construction-context.js';
 
 export class AutobyteusImageClient extends BaseImageClient {
   private autobyteusClient: AutobyteusClient;
   sessionId: string;
 
-  constructor(model: ImageModel, config: MultimediaConfig) {
-    super(model, config);
+  constructor(model: ImageModel, context: MultimediaConstructionContext) {
+    super(model, context.config);
     if (!model.hostUrl) {
       throw new Error('AutobyteusImageClient requires a hostUrl in its ImageModel.');
     }
 
-    this.autobyteusClient = new AutobyteusClient(model.hostUrl);
+    this.autobyteusClient = new AutobyteusClient(
+      model.hostUrl,
+      requireApiKeyAuthentication(context.authentication, 'AutoByteus image'),
+    );
     this.sessionId = crypto.randomUUID();
   }
 

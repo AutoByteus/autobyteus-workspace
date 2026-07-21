@@ -21,15 +21,11 @@ const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, '');
 
 export class MistralModelMetadataProvider implements ProviderModelMetadataProvider {
   constructor(
-    private readonly apiKey: string | null = process.env.MISTRAL_API_KEY ?? null,
-    private readonly baseUrl: string = process.env.MISTRAL_API_BASE_URL ?? 'https://api.mistral.ai/v1'
+    private readonly apiKey: string,
+    private readonly baseUrl: string = 'https://api.mistral.ai/v1'
   ) {}
 
   async loadMetadata(): Promise<Map<string, PartialResolvedModelMetadata>> {
-    if (!this.apiKey) {
-      return new Map();
-    }
-
     const response = await fetch(`${trimTrailingSlash(this.baseUrl)}/models`, {
       headers: {
         Authorization: `Bearer ${this.apiKey}`

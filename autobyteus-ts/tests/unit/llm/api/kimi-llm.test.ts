@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { KimiLLM } from '../../../../src/llm/api/kimi-llm.js';
+import { KimiLLM as ProductionKimiLLM } from '../../../../src/llm/api/kimi-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -9,6 +9,7 @@ import {
   ToolCallPayload,
   ToolResultPayload,
 } from '../../../../src/llm/utils/messages.js';
+import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 
@@ -30,10 +31,15 @@ const buildModel = (value = 'kimi-k2.6') =>
     provider: LLMProvider.KIMI
   });
 
+class KimiLLM extends ProductionKimiLLM {
+  constructor(model = buildModel(), config = new LLMConfig()) {
+    super(model, llmApiKeyContext(config, 'synthetic-kimi-key'));
+  }
+}
+
 describe('KimiLLM', () => {
   beforeEach(() => {
     mockCreate.mockReset();
-    process.env.KIMI_API_KEY = 'kimi-test-key';
     mockCreate.mockResolvedValue({
       choices: [{ message: { role: 'assistant', content: 'ok' } }],
       usage: {

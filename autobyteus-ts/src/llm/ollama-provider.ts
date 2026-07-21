@@ -174,6 +174,7 @@ export class OllamaModelProvider {
             name: modelName,
             value: modelName,
             provider: LLMProvider.OLLAMA,
+            authenticationRequirement: { kind: 'none' },
             llmClass: OllamaLLM,
             canonicalName: modelName,
             runtime: LLMRuntime.OLLAMA,

@@ -8,6 +8,7 @@ import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
 
 function guessMimeType(source: string): string {
   const mimeType = mime.lookup(source);
@@ -18,9 +19,9 @@ export class GeminiImageClient extends BaseImageClient {
   private client: GoogleGenAI;
   private runtimeInfo: GeminiRuntimeInfo | null;
 
-  constructor(model: ImageModel, config: MultimediaConfig) {
-    super(model, config);
-    const { client, runtimeInfo } = initializeGeminiClientWithRuntime();
+  constructor(model: ImageModel, context: MultimediaConstructionContext) {
+    super(model, context.config);
+    const { client, runtimeInfo } = initializeGeminiClientWithRuntime(context.authentication);
     this.client = client;
     this.runtimeInfo = runtimeInfo;
   }

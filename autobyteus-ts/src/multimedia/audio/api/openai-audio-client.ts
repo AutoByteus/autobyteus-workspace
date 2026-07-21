@@ -8,6 +8,8 @@ import { BaseAudioClient } from '../base-audio-client.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
 import type { AudioModel } from '../audio-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
+import { requireApiKeyAuthentication } from '../../../llm/llm-construction-context.js';
 
 const AUDIO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_audio');
 
@@ -22,12 +24,9 @@ async function saveAudioBytes(audioBytes: Uint8Array, fileExtension?: string | n
   export class OpenAIAudioClient extends BaseAudioClient {
   private client: OpenAI;
 
-  constructor(model: AudioModel, config: MultimediaConfig) {
-    super(model, config);
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is not set.');
-    }
+  constructor(model: AudioModel, context: MultimediaConstructionContext) {
+    super(model, context.config);
+    const apiKey = requireApiKeyAuthentication(context.authentication, 'OpenAI audio');
 
     try {
       this.client = new OpenAI({ apiKey, baseURL: 'https://api.openai.com/v1' });

@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { ClaudeSdkClient, type ClaudeSdkCanUseTool } from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { ClaudeRuntimeAuthenticationError } from "../../../../../src/runtime-management/claude/client/claude-runtime-authentication-service.js";
+import { SecretValue } from "autobyteus-ts";
 
 const createMockQuery = () => {
   const query = {
@@ -13,6 +15,52 @@ const createMockQuery = () => {
 };
 
 describe("ClaudeSdkClient", () => {
+  it("preserves distinct value-free managed-secret setup failures", () => {
+    const client = new ClaudeSdkClient();
+    const failure = new ClaudeRuntimeAuthenticationError("CLAUDE_RUNTIME_SECRET_STORE_LOCKED");
+    expect(client.normalizeProviderFailure(null, failure)).toBe(failure);
+  });
+
+  it("applies exact managed-secret child environment, settings, tools, MCP, and stderr policy", async () => {
+    const rawValue = "synthetic-managed-claude-key";
+    const client = new ClaudeSdkClient({
+      prepareForLaunch: vi.fn(async () => ({
+        kind: "managedApiKey" as const,
+        apiKey: SecretValue.fromString(rawValue),
+      })),
+    });
+    const queryFn = vi.fn(async () => createMockQuery());
+    const stderr = vi.fn();
+    const mcpServer = { type: "sdk", name: "autobyteus-agent-tools" };
+    client.setCachedModuleForTesting({ query: queryFn });
+
+    await client.startQueryTurn({
+      prompt: "managed turn",
+      model: "haiku",
+      workingDirectory: "/tmp/claude-managed-policy",
+      mcpServers: { autobyteus_agent_tools: mcpServer },
+      allowedTools: ["Bash", "mcp__autobyteus_agent_tools__read_file"],
+      stderr,
+    });
+
+    const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    expect(call.options).toEqual(expect.objectContaining({
+      tools: [],
+      strictMcpConfig: true,
+      settingSources: [],
+      mcpServers: { autobyteus_agent_tools: mcpServer },
+      allowedTools: ["mcp__autobyteus_agent_tools__read_file"],
+    }));
+    expect(call.options.env).toEqual(expect.objectContaining({ ANTHROPIC_API_KEY: rawValue }));
+    expect(Object.keys(call.options.env as object).sort()).toEqual([
+      "ANTHROPIC_API_KEY", "CLAUDE_CONFIG_DIR", "HOME", "LANG", "PATH", "TMPDIR",
+    ]);
+    (call.options.stderr as (data: string) => void)(
+      `${rawValue} ${Buffer.from(rawValue).toString("base64")}`,
+    );
+    expect(stderr).toHaveBeenCalledWith("[redacted] [redacted]");
+  });
+
   it("passes stable query options for project skills, resume, MCP, and send_message_to tooling", async () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();
@@ -139,9 +187,12 @@ describe("ClaudeSdkClient", () => {
     expect(queryFn).toHaveBeenCalledWith({
       prompt: "diagnostic turn",
       options: expect.objectContaining({
-        stderr,
+        stderr: expect.any(Function),
       }),
     });
+    const call = queryFn.mock.calls[0]?.[0] as { options?: { stderr?: (data: string) => void } };
+    call.options?.stderr?.("value-free diagnostic");
+    expect(stderr).toHaveBeenCalledWith("value-free diagnostic");
   });
 
   it("uses user settings-source policy for model discovery", async () => {

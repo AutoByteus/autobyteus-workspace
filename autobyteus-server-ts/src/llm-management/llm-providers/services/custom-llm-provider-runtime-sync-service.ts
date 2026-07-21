@@ -1,9 +1,10 @@
-import { LLMFactory } from 'autobyteus-ts';
+import { LLMFactory, OpenAICompatibleEndpointDiscovery } from 'autobyteus-ts';
 import type {
   OpenAICompatibleEndpointReloadReport,
   OpenAICompatibleEndpointReloadStatus,
 } from 'autobyteus-ts';
 import type { CustomProviderReloadStatus } from '../domain/models.js';
+import { getSecretStorageConfigurationService } from '../../../secret-management/configuration/secret-storage-configuration-service.js';
 import {
   getCustomLlmProviderStore,
   type CustomLlmProviderStore,
@@ -56,7 +57,21 @@ export class CustomLlmProviderRuntimeSyncService {
 
   private async performSync(): Promise<OpenAICompatibleEndpointReloadReport> {
     const savedProviders = await this.customProviderStore.listProviders();
-    const report = await LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders);
+    const discoveryResults = await Promise.all(savedProviders.map(async (endpoint) => {
+      try {
+        const apiKey = await getSecretStorageConfigurationService()
+          .requireManagementService()
+          .resolveForUse({ kind: 'llmMetadata', providerId: endpoint.id, credentialSlot: 'apiKey' });
+        const discoveredModels = await OpenAICompatibleEndpointDiscovery.probeEndpoint({
+          baseUrl: endpoint.baseUrl,
+          apiKey: apiKey.revealToTrustedConsumer(),
+        });
+        return { endpoint, discoveredModels };
+      } catch {
+        return { endpoint, errorMessage: 'CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE' };
+      }
+    }));
+    const report = await LLMFactory.syncOpenAICompatibleEndpointModels(discoveryResults);
     this.hasEverSynced = true;
     this.lastStatusesByProviderId = new Map(
       report.statuses.map((status) => {

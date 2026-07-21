@@ -8,6 +8,10 @@ import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observat
 import { AutobyteusClient } from '../../clients/autobyteus-client.js';
 import { AutobyteusPromptRenderer } from '../prompt-renderers/autobyteus-prompt-renderer.js';
 import { AutobyteusConversationPayload } from './autobyteus-conversation-payload.js';
+import {
+  requireApiKeyAuthentication,
+  type LLMConstructionContext,
+} from '../llm-construction-context.js';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -25,14 +29,17 @@ export class AutobyteusLLM extends BaseLLM {
   private usedConversationIds: Set<string>;
   private _renderer: AutobyteusPromptRenderer;
 
-  constructor(model: LLMModel, llmConfig: LLMConfig) {
+  constructor(model: LLMModel, context: LLMConstructionContext) {
     if (!model.hostUrl) {
       throw new Error('AutobyteusLLM requires a hostUrl to be set on the LLMModel.');
     }
 
-    super(model, llmConfig);
+    super(model, context.config);
 
-    this.client = new AutobyteusClient(model.hostUrl);
+    this.client = new AutobyteusClient(
+      model.hostUrl,
+      requireApiKeyAuthentication(context.authentication, 'AutoByteus'),
+    );
     this.usedConversationIds = new Set();
     this._renderer = new AutobyteusPromptRenderer();
   }

@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ImageClientFactory } from '../../../../src/multimedia/image/image-client-factory.js';
 import { BaseImageClient } from '../../../../src/multimedia/image/base-image-client.js';
 import { GeminiImageClient } from '../../../../src/multimedia/image/api/gemini-image-client.js';
+import { apiKeyAuthentication } from '../../explicit-auth-test-helpers.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
   initializeGeminiClientWithRuntime: () => ({
@@ -16,7 +17,6 @@ vi.mock('../../../../src/multimedia/utils/api-utils.js', () => ({
 
 describe('ImageClientFactory', () => {
   beforeEach(() => {
-    process.env.OPENAI_API_KEY = 'test-key';
     ImageClientFactory.reinitialize();
   });
 
@@ -34,13 +34,17 @@ describe('ImageClientFactory', () => {
   });
 
   it('creates image client for valid identifier', () => {
-    const client = ImageClientFactory.createImageClient('gpt-image-1.5');
+    const client = ImageClientFactory.createImageClient('gpt-image-1.5', {
+      authentication: apiKeyAuthentication('synthetic-openai-key'),
+    });
     expect(client).toBeInstanceOf(BaseImageClient);
     expect(client.model.modelIdentifier).toBe('gpt-image-1.5');
   });
 
   it('creates OpenAI gpt-image-2 client with flexible image defaults', () => {
-    const client = ImageClientFactory.createImageClient('gpt-image-2');
+    const client = ImageClientFactory.createImageClient('gpt-image-2', {
+      authentication: apiKeyAuthentication('synthetic-openai-key'),
+    });
 
     expect(client).toBeInstanceOf(BaseImageClient);
     expect(client.model.modelIdentifier).toBe('gpt-image-2');
@@ -65,7 +69,9 @@ describe('ImageClientFactory', () => {
     expect(model?.name).toBe(modelId);
     expect(model?.value).toBe(modelId);
 
-    const client = ImageClientFactory.createImageClient(modelId);
+    const client = ImageClientFactory.createImageClient(modelId, {
+      authentication: apiKeyAuthentication('synthetic-gemini-key'),
+    });
     expect(client).toBeInstanceOf(GeminiImageClient);
     expect(client.model.modelIdentifier).toBe(modelId);
   });

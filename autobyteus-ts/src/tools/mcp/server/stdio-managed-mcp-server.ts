@@ -1,5 +1,6 @@
 import { BaseManagedMcpServer } from './base-managed-mcp-server.js';
 import type { StdioMcpServerConfig } from '../types.js';
+import { buildAgentChildEnvironment } from '../../terminal/agent-child-environment.js';
 
 type ClientLike = {
   connect?: (transport: unknown) => Promise<void>;
@@ -47,7 +48,7 @@ export class StdioManagedMcpServer extends BaseManagedMcpServer {
     const transport = new sdk.Transport({
       command: config.command,
       args: config.args,
-      env: config.env,
+      env: buildAgentChildEnvironment(config.env),
       cwd: config.cwd ?? undefined
     });
 

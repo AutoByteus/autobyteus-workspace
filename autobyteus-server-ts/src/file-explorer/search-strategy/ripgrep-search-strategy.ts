@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { buildAgentChildEnvironment } from "autobyteus-ts/tools/terminal/agent-child-environment.js";
 import { BaseFileSearchStrategy } from "./base-search-strategy.js";
 
 const logger = {
@@ -83,7 +84,7 @@ export class RipgrepSearchStrategy extends BaseFileSearchStrategy {
       const child = spawn(
         this.rgPath as string,
         ["--files", "--ignore-case", "--glob", globPattern],
-        { cwd: rootPath },
+        { cwd: rootPath, env: buildAgentChildEnvironment() },
       );
 
       let stdout = "";

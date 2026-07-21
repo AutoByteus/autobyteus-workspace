@@ -43,7 +43,7 @@ export class AutobyteusAudioModelProvider {
     AutobyteusAudioModelProvider.lastHostsKey = null;
   }
 
-  static async ensureDiscovered(): Promise<void> {
+  static async ensureDiscovered(apiKey: string): Promise<void> {
     const hostsKey = parseHosts().join(',');
     if (!hostsKey) {
       if (AutobyteusAudioModelProvider.lastHostsKey !== '') {
@@ -65,7 +65,7 @@ export class AutobyteusAudioModelProvider {
 
     if (!AutobyteusAudioModelProvider.discoveryPromise) {
       AutobyteusAudioModelProvider.discoveryPromise = AutobyteusAudioModelProvider
-        .discoverAndRegister()
+        .discoverAndRegister(apiKey)
         .catch((error) => {
           console.warn(`Autobyteus audio model discovery failed: ${String(error)}`);
         });
@@ -73,7 +73,7 @@ export class AutobyteusAudioModelProvider {
     return AutobyteusAudioModelProvider.discoveryPromise;
   }
 
-  static async discoverAndRegister(): Promise<void> {
+  static async discoverAndRegister(apiKey: string): Promise<void> {
     const hosts = parseHosts();
     if (hosts.length === 0) {
       console.info('No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.');
@@ -89,7 +89,7 @@ export class AutobyteusAudioModelProvider {
         continue;
       }
 
-      const client = new AutobyteusClient(hostUrl);
+      const client = new AutobyteusClient(hostUrl, apiKey);
       try {
         const response = await client.getAvailableAudioModelsSync();
         const models = isRecord(response) ? response.models : null;
@@ -140,6 +140,7 @@ export class AutobyteusAudioModelProvider {
             name,
             value,
             provider,
+            authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
             clientClass: AutobyteusAudioClient,
             runtime: MultimediaRuntime.AUTOBYTEUS,
             hostUrl: hostUrl,

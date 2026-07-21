@@ -39,7 +39,7 @@ describe('insert_in_file tool', () => {
     await fs.writeFile(filePath, 'alpha\nbeta\ngamma\n', 'utf-8');
 
     const result = await getTool().execute(
-      { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+      { agentId: 'agent', workspaceRootPath: tmpDir } satisfies MockContext,
       { path: filePath, after_text: 'beta\n', new_text: 'inserted\n' }
     );
 
@@ -54,7 +54,7 @@ describe('insert_in_file tool', () => {
 
     await expect(
       getTool().execute(
-        { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+        { agentId: 'agent', workspaceRootPath: tmpDir } satisfies MockContext,
         { path: filePath, before_text: 'alpha\n', after_text: 'alpha\n', new_text: 'inserted\n' }
       )
     ).rejects.toThrow('[invalid_anchor_selection]');
@@ -67,7 +67,7 @@ describe('insert_in_file tool', () => {
 
     await expect(
       getTool().execute(
-        { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+        { agentId: 'agent', workspaceRootPath: tmpDir } satisfies MockContext,
         { path: filePath, after_text: 'missing\n', new_text: 'inserted\n' }
       )
     ).rejects.toThrow('[anchor_not_found]');
@@ -93,6 +93,6 @@ describe('insert_in_file tool', () => {
         { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
         { path: 'relative.txt', after_text: 'alpha\n', new_text: 'inserted\n' }
       )
-    ).rejects.toThrow('but no workspace root is configured');
+    ).rejects.toThrow('no workspace root is configured');
   });
 });

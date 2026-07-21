@@ -64,6 +64,7 @@
                     :can-probe="canProbeCustomProvider"
                     :can-save="canSaveCustomProvider"
                     :is-probe-stale="isCustomProviderProbeStale"
+                    :disabled="!canWriteSelectedCredential"
                     @update:draft="updateCustomProviderDraft"
                     @probe="probeCustomProviderDraft"
                     @save="saveCustomProviderDraft"
@@ -80,6 +81,7 @@
                   v-else-if="selectedProviderSummary?.isCustom"
                   :provider="selectedProviderSummary"
                   :deleting="isDeletingCustomProvider"
+                  :disabled="!canWriteSelectedCredential"
                   @delete="deleteCustomProvider(selectedProviderId)"
                 />
 
@@ -87,15 +89,24 @@
                   v-else-if="selectedProviderId === 'GEMINI'"
                   :gemini-setup="geminiSetup"
                   :saving="saving"
+                  :disabled="!canWriteSelectedCredential"
                   @save="saveGeminiSetup"
                 />
                 <ProviderApiKeyEditor
                   v-else-if="selectedProviderId"
                   :configured="selectedProviderConfigured"
                   :saving="saving"
+                  :disabled="!canWriteSelectedCredential"
                   :reset-version="providerEditorResetVersion"
                   @save="saveProviderApiKey(selectedProviderId, $event)"
                 />
+                <p
+                  v-if="!canWriteSelectedCredential && credentialWriteInstruction"
+                  class="mt-3 text-sm text-amber-700"
+                  role="status"
+                >
+                  Credential changes are unavailable: {{ credentialWriteInstruction }}.
+                </p>
               </template>
             </ProviderModelBrowser>
           </div>
@@ -140,6 +151,8 @@ const {
   selectedProviderImageModels,
   selectedProviderVideoModels,
   selectedProviderConfigured,
+  canWriteSelectedCredential,
+  credentialWriteInstruction,
   canReloadSelectedProvider,
   isReloadingSelectedProvider,
   isProviderConfigured,

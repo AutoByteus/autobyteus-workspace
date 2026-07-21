@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AutobyteusLLM } from '../../../../src/llm/api/autobyteus-llm.js';
+import { AutobyteusLLM as ProductionAutobyteusLLM } from '../../../../src/llm/api/autobyteus-llm.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
 
 const buildModel = () =>
   new LLMModel({
@@ -14,11 +15,17 @@ const buildModel = () =>
     hostUrl: 'https://rpa.example.test'
   });
 
+class AutobyteusLLM extends ProductionAutobyteusLLM {
+  constructor(model: LLMModel, config = new LLMConfig()) {
+    super(model, llmApiKeyContext(config, 'synthetic-autobyteus-key'));
+  }
+}
+
 describe('AutobyteusLLM', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
-    process.env = { ...originalEnv, AUTOBYTEUS_API_KEY: 'test-key' };
+    process.env = { ...originalEnv };
     vi.spyOn(console, 'warn').mockImplementation(() => {});
   });
 

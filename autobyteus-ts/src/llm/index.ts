@@ -1,4 +1,6 @@
 export * from './llm-factory.js';
+export * from './base.js';
+export * from './llm-construction-context.js';
 export * from './models.js';
 export * from './providers.js';
 export * from './provider-display-names.js';

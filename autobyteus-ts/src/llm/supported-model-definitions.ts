@@ -1,4 +1,5 @@
-import type { LLMModelOptions } from './models.js';
+import type { SupportedModelDefinition } from './supported-model-definition.js';
+export type { SupportedModelDefinition } from './supported-model-definition.js';
 import { LLMConfig, TokenPricingConfig, type TokenPricingConfigInput } from './utils/llm-config.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 
@@ -14,11 +15,6 @@ import { QwenLLM } from './api/qwen-llm.js';
 import { GlmLLM } from './api/glm-llm.js';
 import { MinimaxLLM } from './api/minimax-llm.js';
 import { LLMProvider } from './providers.js';
-
-export type SupportedModelDefinition = Omit<
-  LLMModelOptions,
-  'maxContextTokens' | 'activeContextTokens' | 'maxInputTokens' | 'maxOutputTokens' | 'runtime' | 'hostUrl'
->;
 
 const pricing = (input: number, output: number, options: Omit<TokenPricingConfigInput, 'inputTokenPricing' | 'outputTokenPricing'> = {}) =>
   new TokenPricingConfig({
@@ -189,6 +185,9 @@ const grokReasoningSchema = new ParameterSchema([
   })
 ]);
 
+const requiredApiKeyAuthentication = { kind: 'apiKey', credentialSlot: 'apiKey', required: true } as const;
+const googleAuthenticationMode = { kind: 'googleAuthenticationMode' } as const;
+
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
   ...([
     ['gpt-5.6-sol', 5.0, 30.0],
@@ -198,6 +197,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: modelId,
     value: modelId,
     provider: LLMProvider.OPENAI,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: OpenAILLM,
     canonicalName: modelId,
     defaultConfig: new LLMConfig({ pricingConfig: createOpenAIGpt56Pricing(inputPrice, outputPrice) }),
@@ -207,6 +207,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gpt-5.5',
     value: 'gpt-5.5',
     provider: LLMProvider.OPENAI,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: OpenAILLM,
     canonicalName: 'gpt-5.5',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 30.0, { cachedInputReadTokenPricing: 0.5 }) }),
@@ -216,6 +217,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gpt-5.4',
     value: 'gpt-5.4',
     provider: LLMProvider.OPENAI,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: OpenAILLM,
     canonicalName: 'gpt-5.4',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(2.5, 15.0, { cachedInputReadTokenPricing: 0.25 }) }),
@@ -225,6 +227,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gpt-5.4-mini',
     value: 'gpt-5.4-mini',
     provider: LLMProvider.OPENAI,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: OpenAILLM,
     canonicalName: 'gpt-5.4-mini',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.75, 4.5, { cachedInputReadTokenPricing: 0.075 }) }),
@@ -234,6 +237,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'mistral-large-3',
     value: 'mistral-large-2512',
     provider: LLMProvider.MISTRAL,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: MistralLLM,
     canonicalName: 'mistral-large-3',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(2.0, 6.0) })
@@ -242,6 +246,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'devstral-2',
     value: 'devstral-2512',
     provider: LLMProvider.MISTRAL,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: MistralLLM,
     canonicalName: 'devstral-2',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.4, 2.0) })
@@ -250,6 +255,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'grok-4.5',
     value: 'grok-4.5',
     provider: LLMProvider.GROK,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: GrokLLM,
     canonicalName: 'grok-4.5',
     defaultConfig: new LLMConfig({
@@ -265,6 +271,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'claude-fable-5',
     value: 'claude-fable-5',
     provider: LLMProvider.ANTHROPIC,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-fable-5',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(10.0, 50.0, {
@@ -279,6 +286,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'claude-opus-4.8',
     value: 'claude-opus-4-8',
     provider: LLMProvider.ANTHROPIC,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-opus-4.8',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
@@ -293,6 +301,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'claude-opus-4.7',
     value: 'claude-opus-4-7',
     provider: LLMProvider.ANTHROPIC,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-opus-4.7',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
@@ -306,6 +315,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'claude-sonnet-5',
     value: 'claude-sonnet-5',
     provider: LLMProvider.ANTHROPIC,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-sonnet-5',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
@@ -320,6 +330,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'claude-sonnet-4.6',
     value: 'claude-sonnet-4-6',
     provider: LLMProvider.ANTHROPIC,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: AnthropicLLM,
     canonicalName: 'claude-sonnet-4.6',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
@@ -333,6 +344,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'deepseek-v4-flash',
     value: 'deepseek-v4-flash',
     provider: LLMProvider.DEEPSEEK,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: DeepSeekLLM,
     canonicalName: 'deepseek-v4-flash',
     defaultConfig: new LLMConfig({
@@ -345,6 +357,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'deepseek-v4-pro',
     value: 'deepseek-v4-pro',
     provider: LLMProvider.DEEPSEEK,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: DeepSeekLLM,
     canonicalName: 'deepseek-v4-pro',
     defaultConfig: new LLMConfig({
@@ -357,6 +370,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gemini-3.1-pro-preview',
     value: 'gemini-3.1-pro-preview',
     provider: LLMProvider.GEMINI,
+    authenticationRequirement: googleAuthenticationMode,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.1-pro-preview',
     defaultConfig: new LLMConfig({
@@ -386,6 +400,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gemini-3-flash-preview',
     value: 'gemini-3-flash-preview',
     provider: LLMProvider.GEMINI,
+    authenticationRequirement: googleAuthenticationMode,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3-flash-preview',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.5, 3.0) }),
@@ -395,6 +410,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gemini-3.5-flash',
     value: 'gemini-3.5-flash',
     provider: LLMProvider.GEMINI,
+    authenticationRequirement: googleAuthenticationMode,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.5-flash',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(1.5, 9.0, { cachedInputReadTokenPricing: 0.15 }) }),
@@ -404,6 +420,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'kimi-k2.6',
     value: 'kimi-k2.6',
     provider: LLMProvider.KIMI,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: KimiLLM,
     canonicalName: 'kimi-k2.6',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.95, 4.0, { cachedInputReadTokenPricing: 0.16 }) })
@@ -412,6 +429,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'kimi-k2.7-code',
     value: 'kimi-k2.7-code',
     provider: LLMProvider.KIMI,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: KimiLLM,
     canonicalName: 'kimi-k2.7-code',
     defaultConfig: createKimiK27CodeDefaultConfig(
@@ -422,6 +440,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'kimi-k2.7-code-highspeed',
     value: 'kimi-k2.7-code-highspeed',
     provider: LLMProvider.KIMI,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: KimiLLM,
     canonicalName: 'kimi-k2.7-code-highspeed',
     defaultConfig: createKimiK27CodeDefaultConfig(
@@ -432,6 +451,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'qwen3.7-max',
     value: 'qwen3.7-max',
     provider: LLMProvider.QWEN,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: QwenLLM,
     canonicalName: 'qwen3.7-max'
   },
@@ -439,6 +459,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'qwen3-max',
     value: 'qwen3-max',
     provider: LLMProvider.QWEN,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: QwenLLM,
     canonicalName: 'qwen3-max'
   },
@@ -446,6 +467,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'glm-5.2',
     value: 'glm-5.2',
     provider: LLMProvider.GLM,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: GlmLLM,
     canonicalName: 'glm-5.2',
     defaultConfig: new LLMConfig({
@@ -461,6 +483,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'minimax-m3',
     value: 'MiniMax-M3',
     provider: LLMProvider.MINIMAX,
+    authenticationRequirement: requiredApiKeyAuthentication,
     llmClass: MinimaxLLM,
     canonicalName: 'minimax-m3',
     defaultConfig: new LLMConfig({

@@ -47,12 +47,13 @@ describe('serverSettings store', () => {
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         getSearchConfig: {
-          provider: 'google_cse',
-          serperApiKeyConfigured: false,
-          serpapiApiKeyConfigured: false,
-          googleCseApiKeyConfigured: true,
-          googleCseId: 'my-cse-id',
-          vertexAiSearchApiKeyConfigured: false,
+          provider: 'serper',
+          backendHealth: 'READY',
+          lifecycle: 'WRITABLE',
+          instructionCode: null,
+          serperStorageState: 'CONFIGURED',
+          serpapiStorageState: 'MISSING',
+          vertexAiSearchStorageState: 'MISSING',
           vertexAiSearchServingConfig: null,
         },
       },
@@ -67,8 +68,8 @@ describe('serverSettings store', () => {
 
     expect(useWindowNodeContextStore().waitForBoundBackendReady).toHaveBeenCalledOnce()
     expect(queryMock).toHaveBeenCalledTimes(1)
-    expect(result.provider).toBe('google_cse')
-    expect(store.searchConfig.googleCseId).toBe('my-cse-id')
+    expect(result.provider).toBe('serper')
+    expect(store.searchConfig.serperStorageState).toBe('CONFIGURED')
   })
 
   it('waits for bound backend readiness before fetching server settings', async () => {
@@ -265,12 +266,13 @@ describe('serverSettings store', () => {
       .mockResolvedValueOnce({
         data: {
           getSearchConfig: {
-            provider: 'google_cse',
-            serperApiKeyConfigured: false,
-            serpapiApiKeyConfigured: false,
-            googleCseApiKeyConfigured: true,
-            googleCseId: 'embedded-cse-id',
-            vertexAiSearchApiKeyConfigured: false,
+            provider: 'serper',
+            backendHealth: 'READY',
+            lifecycle: 'WRITABLE',
+            instructionCode: null,
+            serperStorageState: 'CONFIGURED',
+            serpapiStorageState: 'MISSING',
+            vertexAiSearchStorageState: 'MISSING',
             vertexAiSearchServingConfig: null,
           },
         },
@@ -279,11 +281,12 @@ describe('serverSettings store', () => {
         data: {
           getSearchConfig: {
             provider: 'serpapi',
-            serperApiKeyConfigured: false,
-            serpapiApiKeyConfigured: true,
-            googleCseApiKeyConfigured: false,
-            googleCseId: null,
-            vertexAiSearchApiKeyConfigured: false,
+            backendHealth: 'READY',
+            lifecycle: 'WRITABLE',
+            instructionCode: null,
+            serperStorageState: 'MISSING',
+            serpapiStorageState: 'CONFIGURED',
+            vertexAiSearchStorageState: 'MISSING',
             vertexAiSearchServingConfig: null,
           },
         },
@@ -298,7 +301,7 @@ describe('serverSettings store', () => {
 
     await store.fetchSearchConfig()
     expect(queryMock).toHaveBeenCalledTimes(1)
-    expect(store.searchConfig.provider).toBe('google_cse')
+    expect(store.searchConfig.provider).toBe('serper')
 
     windowNodeContextStore.bindNodeContext('remote-node', 'http://127.0.0.1:3900')
     await nextTick()
@@ -308,7 +311,7 @@ describe('serverSettings store', () => {
     await store.fetchSearchConfig()
     expect(queryMock).toHaveBeenCalledTimes(2)
     expect(store.searchConfig.provider).toBe('serpapi')
-    expect(store.searchConfig.serpapiApiKeyConfigured).toBe(true)
+    expect(store.searchConfig.serpapiStorageState).toBe('CONFIGURED')
   })
 
   it('setSearchConfig saves and refreshes search and server settings', async () => {
@@ -324,11 +327,12 @@ describe('serverSettings store', () => {
         data: {
           getSearchConfig: {
             provider: 'serper',
-            serperApiKeyConfigured: true,
-            serpapiApiKeyConfigured: false,
-            googleCseApiKeyConfigured: false,
-            googleCseId: null,
-            vertexAiSearchApiKeyConfigured: false,
+            backendHealth: 'READY',
+            lifecycle: 'WRITABLE',
+            instructionCode: null,
+            serperStorageState: 'CONFIGURED',
+            serpapiStorageState: 'MISSING',
+            vertexAiSearchStorageState: 'MISSING',
             vertexAiSearchServingConfig: null,
           },
         },

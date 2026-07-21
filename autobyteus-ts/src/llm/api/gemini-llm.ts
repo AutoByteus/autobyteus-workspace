@@ -12,6 +12,7 @@ import { resolveModelForRuntime } from '../../utils/gemini-model-mapping.js';
 import { convertGeminiToolCalls } from '../converters/gemini-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createGeminiPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import type { LLMConstructionContext } from '../llm-construction-context.js';
 
 const THINKING_LEVEL_BUDGETS: Record<string, number> = {
   minimal: 0,
@@ -45,20 +46,10 @@ export class GeminiLLM extends BaseLLM {
   private runtimeInfo: { runtime: string; project: string | null; location: string | null } | null = null;
   private _renderer: BasePromptRenderer;
 
-  constructor(model?: LLMModel, llmConfig?: LLMConfig) {
-    const effectiveModel =
-      model ??
-      new LLMModel({
-        name: 'gemini-3-flash-preview',
-        value: 'gemini-3-flash-preview',
-        canonicalName: 'gemini-3-flash-preview',
-        provider: LLMProvider.GEMINI
-      });
+  constructor(model: LLMModel, context: LLMConstructionContext) {
+    super(model, context.config);
 
-    const config = llmConfig ?? new LLMConfig();
-    super(effectiveModel, config);
-
-    const init = initializeGeminiClientWithRuntime();
+    const init = initializeGeminiClientWithRuntime(context.authentication);
     this.client = init.client;
     this.runtimeInfo = init.runtimeInfo;
     this._renderer = createGeminiPromptRendererForToolFormat();

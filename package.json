@@ -2,6 +2,7 @@
   "name": "autobyteus-workspace",
   "private": true,
   "scripts": {
+    "secrets:local:e2e:setup": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/provision-real-e2e-store.js --config test-config/live-e2e.json",
     "verify:android-profile": "bash scripts/verify-android-profile.sh",
     "android:bootstrap": "bash scripts/android-bootstrap-termux.sh",
     "android:bootstrap:check": "bash scripts/android-bootstrap-termux.sh --check-only",

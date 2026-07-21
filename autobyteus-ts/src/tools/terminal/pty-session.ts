@@ -1,5 +1,6 @@
 import type { IPty } from 'node-pty';
 import { ensureNodePtySpawnHelperExecutable } from './node-pty-bootstrap.js';
+import { buildAgentChildEnvironment } from './agent-child-environment.js';
 
 const DEFAULT_COLS = 80;
 const DEFAULT_ROWS = 24;
@@ -59,11 +60,10 @@ export class PtySession {
     this.closed = false;
     this.alive = true;
 
-    const env = {
-      ...process.env,
+    const env = buildAgentChildEnvironment(process.env, {
       TERM: 'xterm-256color',
       PS1: '\\w $ '
-    };
+    });
 
     await ensureNodePtySpawnHelperExecutable();
     if (this.closed) {

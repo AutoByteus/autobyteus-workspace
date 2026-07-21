@@ -21,16 +21,12 @@ const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, '');
 
 export class AnthropicModelMetadataProvider implements ProviderModelMetadataProvider {
   constructor(
-    private readonly apiKey: string | null = process.env.ANTHROPIC_API_KEY ?? null,
-    private readonly baseUrl: string = process.env.ANTHROPIC_API_BASE_URL ?? 'https://api.anthropic.com/v1',
-    private readonly apiVersion: string = process.env.ANTHROPIC_API_VERSION ?? '2023-06-01'
+    private readonly apiKey: string,
+    private readonly baseUrl: string = 'https://api.anthropic.com/v1',
+    private readonly apiVersion: string = '2023-06-01'
   ) {}
 
   async loadMetadata(): Promise<Map<string, PartialResolvedModelMetadata>> {
-    if (!this.apiKey) {
-      return new Map();
-    }
-
     const response = await fetch(`${trimTrailingSlash(this.baseUrl)}/models`, {
       headers: {
         'x-api-key': this.apiKey,

@@ -136,9 +136,7 @@ export class OpenAICompatibleEndpointDiscovery {
       });
 
       if (!response.ok) {
-        const responseText = truncateMessage(await response.text().catch(() => ''));
-        const suffix = responseText ? `: ${responseText}` : '';
-        throw new Error(`Model discovery failed with status ${response.status}${suffix}`);
+        throw new Error(`Model discovery failed with status ${response.status}.`);
       }
 
       const payload = await response.json();

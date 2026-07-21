@@ -13,7 +13,8 @@ vi.mock('fs', () => ({
   writeFileSync: vi.fn(),
   readdirSync: vi.fn(),
   promises: {
-    rm: vi.fn()
+    rm: vi.fn(),
+    readdir: vi.fn()
   }
 }))
 
@@ -246,6 +247,7 @@ describe('AppDataService', () => {
     it('retries on busy deletion', async () => {
       vi.useFakeTimers()
       mockedFs.existsSync.mockReturnValue(true)
+      mockedFs.promises.readdir.mockResolvedValue(['db'] as never)
       let callCount = 0
       mockedFs.promises.rm.mockImplementation(async () => {
         callCount += 1

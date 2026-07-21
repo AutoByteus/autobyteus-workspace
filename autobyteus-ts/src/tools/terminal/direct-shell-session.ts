@@ -1,6 +1,7 @@
 import { accessSync, constants as fsConstants, statSync } from 'node:fs';
 import path from 'node:path';
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { buildAgentChildEnvironment } from './agent-child-environment.js';
 
 const STARTUP_DELAY_MS = 100;
 
@@ -114,11 +115,10 @@ export class DirectShellSession {
     const selected = selectShellForEnvironment();
     this.shellName = selected.shellName;
 
-    const env = {
-      ...process.env,
+    const env = buildAgentChildEnvironment(process.env, {
       TERM: 'xterm-256color',
       PS1: '\\w $ '
-    };
+    });
 
     this.child = spawn(selected.shell, selected.args, {
       cwd,

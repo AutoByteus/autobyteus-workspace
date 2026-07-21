@@ -418,7 +418,8 @@ export class ClaudeSession {
       agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
     });
     const mcpServers = await buildClaudeSessionMcpServerConfig({
-      agentToolsMcpDescriptor,
+      agentToolsMcpSession: this.agentToolsMcpSessionState.getSession(),
+      sdkClient: this.dependencies.sdkClient,
     });
     const processDiagnostics = new ClaudeProcessDiagnostics();
     let query: ClaudeActiveTurnExecution["query"] = null;
@@ -501,7 +502,8 @@ export class ClaudeSession {
         }
       }
     } catch (error) {
-      throw enrichClaudeRuntimeErrorWithDiagnostics(error, processDiagnostics);
+      const redacted = enrichClaudeRuntimeErrorWithDiagnostics(error, processDiagnostics);
+      throw this.dependencies.sdkClient.normalizeProviderFailure(query, redacted);
     } finally {
       if (activeTurn) {
         if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {

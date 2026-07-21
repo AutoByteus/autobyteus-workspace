@@ -20,7 +20,6 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
   readonly endpointId: string;
   readonly endpointDisplayName: string;
   readonly endpointBaseUrl: string;
-  readonly endpointApiKey: string;
 
   constructor(input: OpenAICompatibleEndpointModelInput) {
     const { endpoint, discoveredModel } = input;
@@ -31,6 +30,7 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
       value: discoveredModel.value,
       canonicalName: discoveredModel.canonicalName,
       provider: LLMProvider.OPENAI_COMPATIBLE,
+      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       providerId: endpoint.id,
       providerName: endpoint.name,
       runtime: LLMRuntime.OPENAI_COMPATIBLE,
@@ -43,6 +43,5 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
     this.endpointId = endpoint.id;
     this.endpointDisplayName = endpoint.name;
     this.endpointBaseUrl = endpoint.baseUrl;
-    this.endpointApiKey = endpoint.apiKey;
   }
 }

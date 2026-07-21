@@ -3,8 +3,7 @@ import fsPromises from 'node:fs/promises';
 import https from 'node:https';
 import path from 'node:path';
 import { Readable } from 'node:stream';
-import { fileURLToPath, URL } from 'node:url';
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { getMimeType, isBase64, mediaSourceToDataUri } from '../llm/utils/media-payload-formatter.js';
 import {
   assertValidAutobyteusConversationPayload,
@@ -12,12 +11,23 @@ import {
   AutobyteusConversationPayload,
   AutobyteusSendMessageRequest
 } from '../llm/api/autobyteus-conversation-payload.js';
+import {
+  estimateBase64DecodedBytes,
+  formatAutobyteusHttpError,
+  getFilenameFromUrl,
+  getInlineMediaMaxBytes,
+  getLocalFilePathFromSource,
+  isDataUri,
+  isHttpMediaUrl,
+  isMediaUri,
+  joinAutobyteusUrl,
+  parseDataUri,
+  type AutobyteusMediaKind as MediaKind,
+} from './autobyteus-client-utils.js';
 
 export class CertificateError extends Error {}
 
 type JsonRecord = Record<string, unknown>;
-type MediaKind = 'image' | 'audio' | 'video';
-
 type StageMediaBody = {
   body: Buffer | NodeJS.ReadableStream;
   filename: string;
@@ -27,22 +37,6 @@ type StageMediaBody = {
 export type AutobyteusRequestOptions = {
   signal?: AbortSignal | null;
 };
-
-const DEFAULT_INLINE_MEDIA_MAX_BYTES: Record<MediaKind, number> = {
-  image: 10 * 1024 * 1024,
-  audio: 50 * 1024 * 1024,
-  video: 25 * 1024 * 1024
-};
-
-const INLINE_MEDIA_MAX_BYTES_ENV: Record<MediaKind, string> = {
-  image: 'AUTOBYTEUS_INLINE_IMAGE_MAX_BYTES',
-  audio: 'AUTOBYTEUS_INLINE_AUDIO_MAX_BYTES',
-  video: 'AUTOBYTEUS_INLINE_VIDEO_MAX_BYTES'
-};
-
-function joinUrl(baseUrl: string, path: string): string {
-  return new URL(path, baseUrl).toString();
-}
 
 function getDefaultServerUrlFromEnv(): string {
   const hosts = process.env.AUTOBYTEUS_LLM_SERVER_HOSTS;
@@ -54,114 +48,9 @@ function getDefaultServerUrlFromEnv(): string {
   return firstHost ?? AutobyteusClient.DEFAULT_SERVER_URL;
 }
 
-function formatHttpError(error: AxiosError): Error {
-  const response = error.response;
-  const status = response?.status;
-  const statusText = response?.statusText ?? '';
-  let detail = '';
-
-  if (response?.data) {
-    if (typeof response.data === 'string') {
-      detail = response.data;
-    } else {
-      try {
-        detail = JSON.stringify(response.data);
-      } catch {
-        detail = String(response.data);
-      }
-    }
-  }
-
-  let message = status ? `HTTP ${status} ${statusText}`.trim() : 'HTTP error';
-  if (detail) {
-    message = `${message}: ${detail}`;
-  } else if (error.message) {
-    message = `${message}: ${error.message}`;
-  }
-
-  const wrapped = new Error(message);
-  Object.assign(wrapped, { cause: error });
-  return wrapped;
-}
-
-function getInlineMaxBytes(kind: MediaKind): number {
-  const envName = INLINE_MEDIA_MAX_BYTES_ENV[kind];
-  const configuredValue = process.env[envName];
-  if (!configuredValue) {
-    return DEFAULT_INLINE_MEDIA_MAX_BYTES[kind];
-  }
-
-  const parsed = Number(configuredValue);
-  return Number.isFinite(parsed) && parsed >= 0
-    ? parsed
-    : DEFAULT_INLINE_MEDIA_MAX_BYTES[kind];
-}
-
-function isHttpUrl(source: string): boolean {
-  return source.startsWith('http://') || source.startsWith('https://');
-}
-
-function isDataUri(source: string): boolean {
-  return source.startsWith('data:');
-}
-
-function isMediaUri(source: string): boolean {
-  return source.startsWith('media://');
-}
-
-function estimateBase64DecodedBytes(base64Data: string): number {
-  const normalized = base64Data.replace(/\s/g, '');
-  const padding = normalized.endsWith('==') ? 2 : normalized.endsWith('=') ? 1 : 0;
-  return Math.max(0, Math.floor((normalized.length * 3) / 4) - padding);
-}
-
-function parseDataUri(mediaSource: string): { mimeType: string; payload: string; isBase64Payload: boolean } {
-  const commaIndex = mediaSource.indexOf(',');
-  if (commaIndex < 0) {
-    throw new Error('Invalid data URI media source: missing payload separator.');
-  }
-
-  const header = mediaSource.slice(0, commaIndex);
-  const payload = mediaSource.slice(commaIndex + 1);
-  const mimeType = header.slice(5).split(';', 1)[0] || 'application/octet-stream';
-
-  return {
-    mimeType,
-    payload,
-    isBase64Payload: header.toLowerCase().includes(';base64')
-  };
-}
-
-function getFilenameFromUrl(mediaUrl: string, fallback: string): string {
-  try {
-    const parsed = new URL(mediaUrl);
-    const basename = path.basename(parsed.pathname);
-    return basename || fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function getLocalFilePathFromSource(source: string): string | null {
-  if (source.startsWith('file://')) {
-    try {
-      return fileURLToPath(source);
-    } catch {
-      return null;
-    }
-  }
-
-  if (isHttpUrl(source) || isDataUri(source) || isMediaUri(source)) {
-    return null;
-  }
-
-  return source;
-}
-
 export class AutobyteusClient {
   static DEFAULT_SERVER_URL = 'https://api.autobyteus.com';
   static API_KEY_HEADER = 'AUTOBYTEUS_API_KEY';
-  static API_KEY_ENV_VAR = 'AUTOBYTEUS_API_KEY';
   static SSL_CERT_FILE_ENV_VAR = 'AUTOBYTEUS_SSL_CERT_FILE';
 
   serverUrl: string;
@@ -172,16 +61,15 @@ export class AutobyteusClient {
   private asyncAgent?: https.Agent;
   private syncAgent?: https.Agent;
 
-  constructor(serverUrl?: string) {
+  constructor(serverUrl: string | undefined, apiKey: string) {
     this.serverUrl =
       serverUrl ??
       getDefaultServerUrlFromEnv();
-    this.apiKey = process.env[AutobyteusClient.API_KEY_ENV_VAR] ?? '';
+    this.apiKey = apiKey;
 
     if (!this.apiKey) {
       throw new Error(
-        `${AutobyteusClient.API_KEY_ENV_VAR} environment variable is required. ` +
-        'Please set it before initializing the client.'
+        'AutobyteusClient requires explicitly provisioned API-key authentication.'
       );
     }
 
@@ -239,7 +127,7 @@ export class AutobyteusClient {
 
   async getAvailableLlmModels(): Promise<JsonRecord> {
     try {
-      const response = await this.asyncClient.get(joinUrl(this.serverUrl, '/models/llm'));
+      const response = await this.asyncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/llm'));
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Async LLM model fetch error');
@@ -248,7 +136,7 @@ export class AutobyteusClient {
 
   async getAvailableLlmModelsSync(): Promise<JsonRecord> {
     try {
-      const response = await this.syncClient.get(joinUrl(this.serverUrl, '/models/llm'));
+      const response = await this.syncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/llm'));
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Sync LLM model fetch error');
@@ -257,7 +145,7 @@ export class AutobyteusClient {
 
   async getAvailableImageModels(): Promise<JsonRecord> {
     try {
-      const response = await this.asyncClient.get(joinUrl(this.serverUrl, '/models/image'));
+      const response = await this.asyncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/image'));
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Async image model fetch error');
@@ -266,7 +154,7 @@ export class AutobyteusClient {
 
   async getAvailableImageModelsSync(): Promise<JsonRecord> {
     try {
-      const response = await this.syncClient.get(joinUrl(this.serverUrl, '/models/image'));
+      const response = await this.syncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/image'));
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Sync image model fetch error');
@@ -275,7 +163,7 @@ export class AutobyteusClient {
 
   async getAvailableAudioModels(): Promise<JsonRecord> {
     try {
-      const response = await this.asyncClient.get(joinUrl(this.serverUrl, '/models/audio'));
+      const response = await this.asyncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/audio'));
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Async audio model fetch error');
@@ -284,7 +172,7 @@ export class AutobyteusClient {
 
   async getAvailableAudioModelsSync(): Promise<JsonRecord> {
     try {
-      const response = await this.syncClient.get(joinUrl(this.serverUrl, '/models/audio'));
+      const response = await this.syncClient.get(joinAutobyteusUrl(this.serverUrl, '/models/audio'));
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Sync audio model fetch error');
@@ -304,7 +192,7 @@ export class AutobyteusClient {
         current_message_index: normalizedPayload.current_message_index,
         generation_config: request.generationConfig ?? {}
       };
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/send-message'), payload, {
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/send-message'), payload, {
         signal: options.signal ?? undefined
       });
       return response.data;
@@ -327,7 +215,7 @@ export class AutobyteusClient {
     };
 
     try {
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/stream-message'), payload, {
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/stream-message'), payload, {
         responseType: 'stream',
         signal: options.signal ?? undefined
       });
@@ -380,7 +268,7 @@ export class AutobyteusClient {
         generation_config: generationConfig ?? {},
         session_id: sessionId ?? null
       };
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/generate-image'), payload);
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/generate-image'), payload);
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Error generating image');
@@ -400,7 +288,7 @@ export class AutobyteusClient {
         generation_config: generationConfig ?? {},
         session_id: sessionId ?? null
       };
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/generate-speech'), payload);
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/generate-speech'), payload);
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Error generating speech');
@@ -409,7 +297,7 @@ export class AutobyteusClient {
 
   async cleanup(conversationId: string): Promise<JsonRecord> {
     try {
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/cleanup'), {
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/cleanup'), {
         conversation_id: conversationId
       });
       return response.data;
@@ -420,7 +308,7 @@ export class AutobyteusClient {
 
   async cleanupImageSession(sessionId: string): Promise<JsonRecord> {
     try {
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/cleanup/image'), {
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/cleanup/image'), {
         session_id: sessionId
       });
       return response.data;
@@ -431,7 +319,7 @@ export class AutobyteusClient {
 
   async cleanupAudioSession(sessionId: string): Promise<JsonRecord> {
     try {
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/cleanup/audio'), {
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/cleanup/audio'), {
         session_id: sessionId
       });
       return response.data;
@@ -455,7 +343,7 @@ export class AutobyteusClient {
 
   private handleAxiosError(error: unknown, logPrefix: string): Error {
     if (axios.isAxiosError(error) && error.response) {
-      return formatHttpError(error);
+      return formatAutobyteusHttpError(error);
     }
     if (error instanceof Error) {
       return new Error(error.message);
@@ -533,11 +421,11 @@ export class AutobyteusClient {
     }
 
     const sourceSizeBytes = await this.getMediaSourceSizeBytes(source, signal);
-    const inlineMaxBytes = getInlineMaxBytes(kind);
+    const inlineMaxBytes = getInlineMediaMaxBytes(kind);
     if (sourceSizeBytes !== null && sourceSizeBytes > inlineMaxBytes) {
       return this.stageMediaSource(source, kind, signal);
     }
-    if (sourceSizeBytes === null && isHttpUrl(source)) {
+    if (sourceSizeBytes === null && isHttpMediaUrl(source)) {
       return this.stageMediaSource(source, kind, signal);
     }
 
@@ -556,7 +444,7 @@ export class AutobyteusClient {
       return estimateBase64DecodedBytes(source);
     }
 
-    if (isHttpUrl(source)) {
+    if (isHttpMediaUrl(source)) {
       try {
         const response = await axios.head(source, { signal: signal ?? undefined });
         const contentLength = response.headers?.['content-length'];
@@ -585,7 +473,7 @@ export class AutobyteusClient {
 
   private async stageMediaSource(source: string, kind: MediaKind, signal: AbortSignal | null): Promise<string> {
     const mediaBody = await this.createStageMediaBody(source, kind, signal);
-    const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/media/stage'), mediaBody.body, {
+    const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/media/stage'), mediaBody.body, {
       headers: {
         'Content-Type': mediaBody.mimeType,
         'X-Autobyteus-Media-Filename': mediaBody.filename,
@@ -629,7 +517,7 @@ export class AutobyteusClient {
       };
     }
 
-    if (isHttpUrl(source)) {
+    if (isHttpMediaUrl(source)) {
       const response = await axios.get<NodeJS.ReadableStream>(source, {
         responseType: 'stream',
         signal: signal ?? undefined

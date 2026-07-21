@@ -1,44 +1,33 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { SearchClientFactory } from '../../../../src/tools/search/factory.js';
-
-const originalEnv = { ...process.env };
+import { SearchProvider } from '../../../../src/tools/search/providers.js';
+import { SecretValue } from '../../../../src/secrets/secret-value.js';
 
 const resetFactory = () => {
   (SearchClientFactory as any).instance = undefined;
 };
 
 describe('SearchClientFactory (integration)', () => {
-  beforeEach(() => {
-    process.env = {
-      ...originalEnv,
-      DEFAULT_SEARCH_PROVIDER: '',
-      SERPER_API_KEY: 'serper-key',
-      SERPAPI_API_KEY: '',
-      VERTEX_AI_SEARCH_API_KEY: '',
-      VERTEX_AI_SEARCH_SERVING_CONFIG: ''
-    };
-    resetFactory();
-  });
-
-  afterEach(() => {
-    process.env = { ...originalEnv };
-    resetFactory();
-  });
+  afterEach(resetFactory);
 
   it('returns a singleton factory instance', () => {
-    const first = new SearchClientFactory();
-    const second = new SearchClientFactory();
-
-    expect(first).toBe(second);
+    expect(new SearchClientFactory()).toBe(new SearchClientFactory());
   });
 
-  it('returns the same client across factory instances', () => {
+  it('creates isolated clients from each explicit provisioning input', () => {
     const firstFactory = new SearchClientFactory();
     const secondFactory = new SearchClientFactory();
+    const clientA = firstFactory.createSearchClient({
+      provider: SearchProvider.SERPER,
+      apiKey: SecretValue.fromString('synthetic-first-key'),
+    });
+    const clientB = secondFactory.createSearchClient({
+      provider: SearchProvider.SERPER,
+      apiKey: SecretValue.fromString('synthetic-second-key'),
+    });
 
-    const clientA = firstFactory.createSearchClient();
-    const clientB = secondFactory.createSearchClient();
-
-    expect(clientA).toBe(clientB);
+    expect(clientA).not.toBe(clientB);
+    expect((clientA as any).strategy.apiKey).toBe('synthetic-first-key');
+    expect((clientB as any).strategy.apiKey).toBe('synthetic-second-key');
   });
 });

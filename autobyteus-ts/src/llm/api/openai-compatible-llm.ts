@@ -2,6 +2,10 @@ import type { ClientOptions as OpenAIClientOptions, OpenAI } from 'openai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
+import {
+  requireApiKeyAuthentication,
+  type LLMConstructionContext,
+} from '../llm-construction-context.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { Message } from '../utils/messages.js';
 import { convertOpenAIToolCalls } from '../converters/openai-tool-call-converter.js';
@@ -23,31 +27,18 @@ export class OpenAICompatibleLLM extends BaseLLM {
 
   constructor(
     model: LLMModel,
-    apiKeyEnvVar: string,
     baseUrl: string,
-    llmConfig?: LLMConfig,
-    apiKeyDefault?: string,
-    clientOptions?: Pick<OpenAIClientOptions, 'fetch' | 'fetchOptions' | 'timeout'>
+    context: LLMConstructionContext,
+    clientOptions?: Pick<OpenAIClientOptions, 'fetch' | 'fetchOptions' | 'timeout'>,
+    allowUnauthenticated = false,
   ) {
-    let effectiveConfig = model.defaultConfig ? model.defaultConfig.clone() : new LLMConfig();
-    if (llmConfig) {
-      effectiveConfig.mergeWith(llmConfig);
-    }
-    
-    // Pass to super
-    super(model, effectiveConfig);
-
-    let apiKey = process.env[apiKeyEnvVar];
-    if ((!apiKey || apiKey === "") && apiKeyDefault) {
-       apiKey = apiKeyDefault;
-    }
-
-    if (!apiKey) {
-      throw new Error(`${apiKeyEnvVar} environment variable is not set.`);
-    }
+    super(model, context.config);
+    const apiKey = context.authentication.kind === 'none' && allowUnauthenticated
+      ? 'not-required'
+      : requireApiKeyAuthentication(context.authentication, model.providerName);
 
     this.client = new OpenAIClient({
-      apiKey: apiKey,
+      apiKey,
       baseURL: baseUrl,
       ...(clientOptions ?? {})
     });

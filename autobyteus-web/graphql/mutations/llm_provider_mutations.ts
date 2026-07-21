@@ -40,7 +40,12 @@ export const CREATE_CUSTOM_LLM_PROVIDER = gql`
       providerType
       isCustom
       baseUrl
-      apiKeyConfigured
+      credentialStatus {
+        backendHealth
+        storageState
+        lifecycle
+        instructionCode
+      }
       status
       statusMessage
     }

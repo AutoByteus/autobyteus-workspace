@@ -46,14 +46,12 @@ export class CustomLlmProviderStore {
     name: string;
     providerType: LLMProvider.OPENAI_COMPATIBLE;
     baseUrl: string;
-    apiKey: string;
   }): Promise<CustomLlmProviderRecord> {
     const nextRecord: CustomLlmProviderRecord = {
       id: `provider_${randomUUID().replace(/-/g, '')}`,
       name: input.name,
       providerType: input.providerType,
       baseUrl: input.baseUrl,
-      apiKey: input.apiKey,
     };
 
     await updateJsonFile<CustomLlmProviderConfigFile>(
@@ -62,7 +60,7 @@ export class CustomLlmProviderStore {
       (existing) => {
         const parsed = parseCustomLlmProviderConfigFile(existing);
         return {
-          version: 1,
+          version: 2,
           providers: sortProviders([...parsed.providers, nextRecord]),
         };
       },
@@ -78,7 +76,7 @@ export class CustomLlmProviderStore {
       (existing) => {
         const parsed = parseCustomLlmProviderConfigFile(existing);
         return {
-          version: 1,
+          version: 2,
           providers: sortProviders(parsed.providers.filter((provider) => provider.id !== providerId)),
         };
       },

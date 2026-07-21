@@ -96,6 +96,7 @@ export class LMStudioModelProvider {
             name: modelId,
             value: modelId,
             provider: LLMProvider.LMSTUDIO,
+            authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: false },
             llmClass: LMStudioLLM,
             canonicalName: modelId,
             runtime: LLMRuntime.LMSTUDIO,

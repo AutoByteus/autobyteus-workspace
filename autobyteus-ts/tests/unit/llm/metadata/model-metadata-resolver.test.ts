@@ -1,205 +1,135 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ModelMetadataResolver } from '../../../../src/llm/metadata/model-metadata-resolver.js';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  ModelMetadataResolver,
+  type PartialResolvedModelMetadata,
+} from '../../../../src/llm/metadata/model-metadata-resolver.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 
-const mockFetch = vi.hoisted(() => vi.fn());
-
-const ENV_KEYS = ['ANTHROPIC_API_KEY', 'KIMI_API_KEY', 'MISTRAL_API_KEY', 'GEMINI_API_KEY', 'VERTEX_AI_API_KEY'] as const;
+const resolverWith = (
+  provider: LLMProvider,
+  entries: Array<[string, PartialResolvedModelMetadata]>,
+) => {
+  const loadMetadata = vi.fn().mockResolvedValue(new Map(entries));
+  return {
+    resolver: new ModelMetadataResolver({ [provider]: { loadMetadata } }),
+    loadMetadata,
+  };
+};
 
 describe('ModelMetadataResolver', () => {
-  const originalEnv = new Map<string, string | undefined>();
-
-  beforeEach(() => {
-    for (const key of ENV_KEYS) {
-      originalEnv.set(key, process.env[key]);
-      delete process.env[key];
-    }
-    mockFetch.mockReset();
-    vi.stubGlobal('fetch', mockFetch);
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    for (const key of ENV_KEYS) {
-      const value = originalEnv.get(key);
-      if (value === undefined) {
-        delete process.env[key];
-      } else {
-        process.env[key] = value;
-      }
-    }
-  });
-
-  it('returns curated metadata for docs-only providers without performing live requests', async () => {
-    const resolver = new ModelMetadataResolver();
-
-    const metadata = await resolver.resolve({
+  it('returns curated metadata for docs-only providers without a live resolver', async () => {
+    const metadata = await new ModelMetadataResolver().resolve({
       provider: LLMProvider.OPENAI,
       name: 'gpt-5.5',
       value: 'gpt-5.5',
-      canonicalName: 'gpt-5.5'
+      canonicalName: 'gpt-5.5',
     });
-
     expect(metadata.maxContextTokens).toBe(1050000);
     expect(metadata.maxOutputTokens).toBe(128000);
-    expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it('returns the official GPT-5.6 limits for every canonical model without live requests', async () => {
+  it('returns the official GPT-5.6 limits for every canonical model', async () => {
     const resolver = new ModelMetadataResolver();
-
     for (const modelId of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna']) {
-      const metadata = await resolver.resolve({
+      await expect(resolver.resolve({
         provider: LLMProvider.OPENAI,
         name: modelId,
         value: modelId,
         canonicalName: modelId,
-      });
-
-      expect(metadata).toMatchObject({
-        maxContextTokens: 1050000,
-        maxOutputTokens: 128000,
-      });
+      })).resolves.toMatchObject({ maxContextTokens: 1050000, maxOutputTokens: 128000 });
     }
-    expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it('prefers live Anthropic metadata when available and falls back to curated values for missing models', async () => {
-    process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        data: [{ id: 'claude-sonnet-4-6', max_input_tokens: 1200000, max_tokens: 64000 }]
-      })
-    });
-
-    const resolver = new ModelMetadataResolver();
-
+  it('prefers injected Anthropic metadata and falls back to curated values for missing models', async () => {
+    const { resolver, loadMetadata } = resolverWith(LLMProvider.ANTHROPIC, [[
+      'claude-sonnet-4-6',
+      { maxContextTokens: 1200000, maxInputTokens: 1200000, maxOutputTokens: 64000 },
+    ]]);
     const liveMetadata = await resolver.resolve({
       provider: LLMProvider.ANTHROPIC,
       name: 'claude-sonnet-4.6',
       value: 'claude-sonnet-4-6',
-      canonicalName: 'claude-sonnet-4.6'
+      canonicalName: 'claude-sonnet-4.6',
     });
     const curatedFallback = await resolver.resolve({
       provider: LLMProvider.ANTHROPIC,
       name: 'claude-opus-4.7',
       value: 'claude-opus-4-7',
-      canonicalName: 'claude-opus-4.7'
+      canonicalName: 'claude-opus-4.7',
     });
-
-    expect(liveMetadata.maxContextTokens).toBe(1200000);
-    expect(liveMetadata.maxInputTokens).toBe(1200000);
-    expect(liveMetadata.maxOutputTokens).toBe(64000);
-    expect(curatedFallback.maxContextTokens).toBe(1000000);
-    expect(curatedFallback.maxOutputTokens).toBe(128000);
-    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(liveMetadata).toMatchObject({
+      maxContextTokens: 1200000,
+      maxInputTokens: 1200000,
+      maxOutputTokens: 64000,
+    });
+    expect(curatedFallback).toMatchObject({ maxContextTokens: 1000000, maxOutputTokens: 128000 });
+    expect(loadMetadata).toHaveBeenCalledTimes(1);
   });
 
-  it('prefers live Kimi metadata when available and falls back to curated values for missing retained models', async () => {
-    process.env.KIMI_API_KEY = 'test-kimi-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        data: [{ id: 'kimi-k2.6', context_length: 262144 }]
-      })
-    });
-
-    const resolver = new ModelMetadataResolver();
-
+  it('prefers injected Kimi metadata and retains curated fallback', async () => {
+    const { resolver, loadMetadata } = resolverWith(LLMProvider.KIMI, [[
+      'kimi-k2.6',
+      { maxContextTokens: 262144 },
+    ]]);
     const liveMetadata = await resolver.resolve({
       provider: LLMProvider.KIMI,
       name: 'kimi-k2.6',
       value: 'kimi-k2.6',
-      canonicalName: 'kimi-k2.6'
+      canonicalName: 'kimi-k2.6',
     });
     const curatedFallback = await resolver.resolve({
       provider: LLMProvider.KIMI,
       name: 'kimi-k2.7-code',
       value: 'kimi-k2.7-code',
-      canonicalName: 'kimi-k2.7-code'
+      canonicalName: 'kimi-k2.7-code',
     });
-
     expect(liveMetadata.maxContextTokens).toBe(262144);
     expect(curatedFallback.maxContextTokens).toBe(256000);
-    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(loadMetadata).toHaveBeenCalledTimes(1);
   });
 
-  it('returns curated metadata for DeepSeek V4 models without live requests', async () => {
+  it('returns curated metadata for DeepSeek V4 models without a live resolver', async () => {
     const resolver = new ModelMetadataResolver();
-
-    const flashMetadata = await resolver.resolve({
-      provider: LLMProvider.DEEPSEEK,
-      name: 'deepseek-v4-flash',
-      value: 'deepseek-v4-flash',
-      canonicalName: 'deepseek-v4-flash'
-    });
-    const proMetadata = await resolver.resolve({
-      provider: LLMProvider.DEEPSEEK,
-      name: 'deepseek-v4-pro',
-      value: 'deepseek-v4-pro',
-      canonicalName: 'deepseek-v4-pro'
-    });
-
-    expect(flashMetadata.maxContextTokens).toBe(1000000);
-    expect(flashMetadata.maxOutputTokens).toBe(384000);
-    expect(proMetadata.maxContextTokens).toBe(1000000);
-    expect(proMetadata.maxOutputTokens).toBe(384000);
-    expect(mockFetch).not.toHaveBeenCalled();
+    for (const modelId of ['deepseek-v4-flash', 'deepseek-v4-pro']) {
+      await expect(resolver.resolve({
+        provider: LLMProvider.DEEPSEEK,
+        name: modelId,
+        value: modelId,
+        canonicalName: modelId,
+      })).resolves.toMatchObject({ maxContextTokens: 1000000, maxOutputTokens: 384000 });
+    }
   });
 
-  it('parses Mistral model-list metadata from the official models endpoint', async () => {
-    process.env.MISTRAL_API_KEY = 'test-mistral-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ([
-        {
-          id: 'mistral-large-2512',
-          max_context_length: 320000
-        }
-      ])
-    });
-
-    const resolver = new ModelMetadataResolver();
-
+  it('uses injected Mistral metadata from the server-owned enrichment boundary', async () => {
+    const { resolver } = resolverWith(LLMProvider.MISTRAL, [[
+      'mistral-large-2512',
+      { maxContextTokens: 320000 },
+    ]]);
     const metadata = await resolver.resolve({
       provider: LLMProvider.MISTRAL,
       name: 'mistral-large-3',
       value: 'mistral-large-2512',
-      canonicalName: 'mistral-large-3'
+      canonicalName: 'mistral-large-3',
     });
-
     expect(metadata.maxContextTokens).toBe(320000);
     expect(metadata.maxOutputTokens).toBeNull();
   });
 
-  it('parses Gemini model limits from the official model list endpoint', async () => {
-    process.env.GEMINI_API_KEY = 'test-gemini-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        models: [
-          {
-            name: 'models/gemini-3-flash-preview',
-            baseModelId: 'gemini-3-flash-preview',
-            inputTokenLimit: 1048576,
-            outputTokenLimit: 65536
-          }
-        ]
-      })
-    });
-
-    const resolver = new ModelMetadataResolver();
-
+  it('uses injected Gemini metadata from the server-owned enrichment boundary', async () => {
+    const { resolver } = resolverWith(LLMProvider.GEMINI, [[
+      'gemini-3-flash-preview',
+      { maxContextTokens: 1048576, maxInputTokens: 1048576, maxOutputTokens: 65536 },
+    ]]);
     const metadata = await resolver.resolve({
       provider: LLMProvider.GEMINI,
       name: 'gemini-3-flash-preview',
       value: 'gemini-3-flash-preview',
-      canonicalName: 'gemini-3-flash-preview'
+      canonicalName: 'gemini-3-flash-preview',
     });
-
-    expect(metadata.maxContextTokens).toBe(1048576);
-    expect(metadata.maxInputTokens).toBe(1048576);
-    expect(metadata.maxOutputTokens).toBe(65536);
+    expect(metadata).toMatchObject({
+      maxContextTokens: 1048576,
+      maxInputTokens: 1048576,
+      maxOutputTokens: 65536,
+    });
   });
 });

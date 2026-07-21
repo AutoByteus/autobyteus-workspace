@@ -4,18 +4,23 @@ import { BaseAudioClient } from '../base-audio-client.js';
 import type { AudioModel } from '../audio-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
+import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
+import { requireApiKeyAuthentication } from '../../../llm/llm-construction-context.js';
 
 export class AutobyteusAudioClient extends BaseAudioClient {
   private autobyteusClient: AutobyteusClient;
   sessionId: string;
 
-  constructor(model: AudioModel, config: MultimediaConfig) {
-    super(model, config);
+  constructor(model: AudioModel, context: MultimediaConstructionContext) {
+    super(model, context.config);
     if (!model.hostUrl) {
       throw new Error('AutobyteusAudioClient requires a hostUrl in its AudioModel.');
     }
 
-    this.autobyteusClient = new AutobyteusClient(model.hostUrl);
+    this.autobyteusClient = new AutobyteusClient(
+      model.hostUrl,
+      requireApiKeyAuthentication(context.authentication, 'AutoByteus audio'),
+    );
     this.sessionId = crypto.randomUUID();
   }
 

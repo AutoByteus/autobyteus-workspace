@@ -228,7 +228,13 @@ export class AppDataService {
   async resetAppDataDir(): Promise<void> {
     try {
       if (fs.existsSync(this.appDataDir)) {
-        await this.removeDirWithRetries(this.appDataDir)
+        const preservedDirectory = path.join(this.appDataDir, 'secret-store')
+        const entries = await fs.promises.readdir(this.appDataDir)
+        for (const entry of entries) {
+          const entryPath = path.join(this.appDataDir, entry)
+          if (path.resolve(entryPath) === path.resolve(preservedDirectory)) continue
+          await this.removeDirWithRetries(entryPath)
+        }
       }
       this.firstRun = true
       this.initialize()

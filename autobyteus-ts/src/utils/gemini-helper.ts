@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import type { ResolvedLLMAuthentication } from '../llm/llm-construction-context.js';
 
 type GeminiRuntime = 'vertex' | 'api_key';
 
@@ -8,20 +9,11 @@ export interface GeminiRuntimeInfo {
   location: string | null;
 }
 
-export function initializeGeminiClientWithRuntime(): { client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo } {
-  const vertexApiKey = process.env.VERTEX_AI_API_KEY ?? null;
-  if (vertexApiKey) {
-    const client = new GoogleGenAI({ vertexai: true, apiKey: vertexApiKey });
-    return {
-      client,
-      runtimeInfo: { runtime: 'vertex', project: null, location: null }
-    };
-  }
-
-  const project = process.env.VERTEX_AI_PROJECT ?? null;
-  const location = process.env.VERTEX_AI_LOCATION ?? null;
-
-  if (project && location) {
+export function initializeGeminiClientWithRuntime(
+  authentication: ResolvedLLMAuthentication,
+): { client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo } {
+  if (authentication.kind === 'googleWorkloadIdentity') {
+    const { project, location } = authentication;
     const client = new GoogleGenAI({ vertexai: true, project, location });
     return {
       client,
@@ -29,8 +21,8 @@ export function initializeGeminiClientWithRuntime(): { client: GoogleGenAI; runt
     };
   }
 
-  const apiKey = process.env.GEMINI_API_KEY ?? null;
-  if (apiKey) {
+  if (authentication.kind === 'apiKey') {
+    const apiKey = authentication.apiKey.revealToTrustedConsumer();
     const client = new GoogleGenAI({ apiKey });
     return {
       client,
@@ -38,9 +30,5 @@ export function initializeGeminiClientWithRuntime(): { client: GoogleGenAI; runt
     };
   }
 
-  throw new Error(
-    "Failed to initialize Gemini Client: Missing configuration. Please set 'VERTEX_AI_API_KEY' for Vertex AI Express, " +
-      "OR set both 'VERTEX_AI_PROJECT' and 'VERTEX_AI_LOCATION' for Vertex AI mode, " +
-      "OR set 'GEMINI_API_KEY' for AI Studio mode."
-  );
+  throw new Error('Gemini requires explicitly resolved API-key or workload-identity authentication.');
 }

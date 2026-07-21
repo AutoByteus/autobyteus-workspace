@@ -3,16 +3,19 @@ import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseAudioClient } from './base-audio-client.js';
+import type { MultimediaConstructionContext } from '../multimedia-construction-context.js';
+import type { LLMAuthenticationRequirement } from '../../llm/llm-construction-context.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type AudioClientConstructor = new (model: AudioModel, config: MultimediaConfig) => BaseAudioClient;
+type AudioClientConstructor = new (model: AudioModel, context: MultimediaConstructionContext) => BaseAudioClient;
 
 export interface AudioModelOptions {
   name: string;
   value: string;
   provider: MultimediaProvider;
   clientClass: AudioClientConstructor;
+  authenticationRequirement: LLMAuthenticationRequirement;
   parameterSchema?: ParameterSchemaInput;
   runtime?: MultimediaRuntime;
   hostUrl?: string | null;
@@ -23,6 +26,7 @@ export class AudioModel {
   value: string;
   provider: MultimediaProvider;
   clientClass: AudioClientConstructor;
+  authenticationRequirement: LLMAuthenticationRequirement;
   runtime: MultimediaRuntime;
   hostUrl?: string | null;
   parameterSchema: ParameterSchema;
@@ -33,6 +37,7 @@ export class AudioModel {
     this.value = options.value;
     this.provider = options.provider;
     this.clientClass = options.clientClass;
+    this.authenticationRequirement = options.authenticationRequirement;
     this.runtime = options.runtime ?? MultimediaRuntime.API;
     this.hostUrl = options.hostUrl;
 
@@ -68,15 +73,18 @@ export class AudioModel {
     return this.name;
   }
 
-  createClient(configOverride?: MultimediaConfig | null): BaseAudioClient {
+  createClient(context: {
+    configOverride?: MultimediaConfig | null;
+    authentication: MultimediaConstructionContext['authentication'];
+  }): BaseAudioClient {
     let configToUse = this.defaultConfig;
-    if (configOverride) {
+    if (context.configOverride) {
       const cloned = new MultimediaConfig({ ...this.defaultConfig.params });
-      cloned.mergeWith(configOverride);
+      cloned.mergeWith(context.configOverride);
       configToUse = cloned;
     }
 
-    return new this.clientClass(this, configToUse);
+    return new this.clientClass(this, { config: configToUse, authentication: context.authentication });
   }
 
   toString(): string {

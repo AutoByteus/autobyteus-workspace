@@ -7,7 +7,17 @@ import {
   MODEL_DISCOVERY_PROBE_PROMPT,
   type ClaudeSdkPermissionMode,
 } from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
-import { buildClaudeSdkSpawnEnvironment } from "./claude-sdk-auth-environment.js";
+import {
+  ClaudeRuntimeAuthenticationError,
+  getClaudeRuntimeAuthenticationService,
+  type ClaudeRuntimeAuthentication,
+  type ClaudeRuntimeAuthenticationService,
+} from "./claude-runtime-authentication-service.js";
+import {
+  buildClaudeSdkSpawnEnvironment,
+  requireExplicitAutoByteusMcpServers,
+  wrapClaudeSdkStderr,
+} from "./claude-sdk-launch-policy.js";
 import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
 import {
   normalizeModelDescriptors,
@@ -54,7 +64,6 @@ export type ClaudeSdkStartQueryTurnOptions = {
   sessionId?: string | null;
   model: string;
   workingDirectory: string | null;
-  env?: Record<string, string | undefined>;
   mcpServers?: Record<string, unknown> | null;
   allowedTools?: Iterable<string> | null;
   permissionMode?: ClaudeSdkPermissionMode;
@@ -188,6 +197,12 @@ const closeQueryControl = async (controlLike: Record<string, unknown> | null): P
 
 export class ClaudeSdkClient {
   private cachedSdkModule: ClaudeSdkModuleLike | null = null;
+  private readonly authenticationByQuery = new WeakMap<object, ClaudeRuntimeAuthentication["kind"]>();
+
+  constructor(
+    private readonly authenticationService: Pick<ClaudeRuntimeAuthenticationService, "prepareForLaunch"> =
+      getClaudeRuntimeAuthenticationService(),
+  ) {}
 
   setCachedModuleForTesting(module: unknown): void {
     this.cachedSdkModule = (module as ClaudeSdkModuleLike | null) ?? null;
@@ -195,10 +210,13 @@ export class ClaudeSdkClient {
 
   async listModels(): Promise<ModelInfo[]> {
     const sdk = await this.loadModuleSafe();
-    const supportedRows = await this.tryGetSupportedModelsFromQueryControl(
-      sdk,
-      buildClaudeSdkSpawnEnvironment(),
-    );
+    let authentication: ClaudeRuntimeAuthentication;
+    try {
+      authentication = await this.authenticationService.prepareForLaunch();
+    } catch {
+      return [];
+    }
+    const supportedRows = await this.tryGetSupportedModelsFromQueryControl(sdk, authentication);
     if (supportedRows.length > 0) {
       return supportedRows.map((row) => toModelInfo(row));
     }
@@ -232,12 +250,32 @@ export class ClaudeSdkClient {
       throw new Error("Claude SDK query API is unavailable.");
     }
 
-    const queryOptions = this.buildQueryOptions(options);
-    return this.createSdkQuery(options.workingDirectory, () =>
-      queryFn({
-        prompt: options.prompt,
-        options: queryOptions,
-      }),
+    const authentication = await this.authenticationService.prepareForLaunch();
+    const queryOptions = this.buildQueryOptions(options, authentication);
+    try {
+      const query = await this.createSdkQuery(options.workingDirectory, () =>
+        queryFn({
+          prompt: options.prompt,
+          options: queryOptions,
+        }),
+      );
+      this.authenticationByQuery.set(query, authentication.kind);
+      return query;
+    } catch (cause) {
+      if (cause instanceof ClaudeRuntimeAuthenticationError) throw cause;
+      throw new ClaudeRuntimeAuthenticationError("CLAUDE_RUNTIME_SPAWN_FAILED", { cause });
+    }
+  }
+
+  normalizeProviderFailure(query: ClaudeSdkQueryLike | null, error: unknown): Error {
+    if (error instanceof ClaudeRuntimeAuthenticationError) return error;
+    const message = error instanceof Error ? error.message : String(error);
+    if (!/(auth|unauthori[sz]ed|forbidden|credential|login|subscription|api.?key|401|403)/i.test(message)) {
+      return new ClaudeRuntimeAuthenticationError("CLAUDE_RUNTIME_TURN_FAILED");
+    }
+    const kind = query ? this.authenticationByQuery.get(query) : null;
+    return new ClaudeRuntimeAuthenticationError(
+      kind === "cli" ? "CLAUDE_RUNTIME_CLI_AUTH_UNAVAILABLE" : "CLAUDE_RUNTIME_AUTH_FAILED",
     );
   }
 
@@ -355,14 +393,21 @@ export class ClaudeSdkClient {
     return null;
   }
 
-  private buildQueryOptions(options: ClaudeSdkStartQueryTurnOptions): Record<string, unknown> {
+  private buildQueryOptions(
+    options: ClaudeSdkStartQueryTurnOptions,
+    authentication: ClaudeRuntimeAuthentication,
+  ): Record<string, unknown> {
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
-    const sdkSpawnEnvironment = options.env ?? buildClaudeSdkSpawnEnvironment();
-    const settingSources = getClaudeRuntimeSettingSources();
+    const preparedEnvironment = buildClaudeSdkSpawnEnvironment(authentication);
+    const managed = authentication.kind === "managedApiKey";
+    const settingSources = managed ? [] : getClaudeRuntimeSettingSources();
     const allowedTools = new Set<string>();
     for (const toolName of options.allowedTools ?? []) {
       const normalizedToolName = asString(toolName)?.trim();
       if (!normalizedToolName) {
+        continue;
+      }
+      if (managed && !normalizedToolName.startsWith("mcp__autobyteus_agent_tools__")) {
         continue;
       }
       allowedTools.add(normalizedToolName);
@@ -372,13 +417,18 @@ export class ClaudeSdkClient {
       pathToClaudeCodeExecutable,
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
-      env: sdkSpawnEnvironment,
+      env: preparedEnvironment.env,
+      ...(managed ? { tools: [], strictMcpConfig: true } : {}),
       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionId ? { resume: options.sessionId } : {}),
-      ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
+      ...(managed
+        ? { mcpServers: requireExplicitAutoByteusMcpServers(options.mcpServers) }
+        : options.mcpServers ? { mcpServers: options.mcpServers } : {}),
       ...(options.abortController ? { abortController: options.abortController } : {}),
-      ...(options.stderr ? { stderr: options.stderr } : {}),
+      ...(options.stderr
+        ? { stderr: wrapClaudeSdkStderr(options.stderr, preparedEnvironment.redactionValues) }
+        : {}),
       settingSources,
       ...(options.canUseTool
         ? { canUseTool: options.canUseTool }
@@ -411,7 +461,7 @@ export class ClaudeSdkClient {
 
   private async tryGetSupportedModelsFromQueryControl(
     sdk: ClaudeSdkModuleLike | null,
-    env?: Record<string, string | undefined>,
+    authentication: ClaudeRuntimeAuthentication,
   ): Promise<NormalizedModelDescriptor[]> {
     const queryFn = this.resolveFunction(sdk, "query");
     if (!queryFn) {
@@ -419,7 +469,9 @@ export class ClaudeSdkClient {
     }
 
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
-    const settingSources = getClaudeCatalogSettingSources();
+    const managed = authentication.kind === "managedApiKey";
+    const settingSources = managed ? [] : getClaudeCatalogSettingSources();
+    const preparedEnvironment = buildClaudeSdkSpawnEnvironment(authentication);
 
     let controlLike: Record<string, unknown> | null = null;
     try {
@@ -431,7 +483,8 @@ export class ClaudeSdkClient {
           cwd: process.cwd(),
           pathToClaudeCodeExecutable,
           settingSources,
-          ...(env ? { env } : {}),
+          env: preparedEnvironment.env,
+          ...(managed ? { tools: [], strictMcpConfig: true, mcpServers: {} } : {}),
         },
       });
 
@@ -459,6 +512,7 @@ export class ClaudeSdkClient {
       await closeQueryControl(controlLike);
     }
   }
+
 }
 
 export const getClaudeSdkClient = (): ClaudeSdkClient => {

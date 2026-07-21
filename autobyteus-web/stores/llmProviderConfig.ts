@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { getApolloClient } from '~/utils/apolloClient'
 import {
-  GET_LLM_PROVIDER_API_KEY_CONFIGURED,
+  GET_LLM_PROVIDER_CREDENTIAL_STATUS,
   GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
   GET_GEMINI_SETUP_CONFIG,
 } from '~/graphql/queries/llm_provider_queries'
@@ -16,134 +16,20 @@ import {
 } from '~/graphql/mutations/llm_provider_mutations'
 import type { LLMProvider } from '~/types/llm'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
-
-interface LLMProviderConfig {
-  apiKeyConfigured?: boolean
-}
-
-export type LlmProviderStatus = 'READY' | 'STALE_ERROR' | 'ERROR' | 'NOT_APPLICABLE'
-
-export interface LlmProviderRecord {
-  id: string
-  name: string
-  providerType: LLMProvider
-  isCustom: boolean
-  baseUrl?: string | null
-  apiKeyConfigured: boolean
-  status: LlmProviderStatus
-  statusMessage?: string | null
-}
-
-export interface ModelInfo {
-  modelIdentifier: string
-  name: string
-  description?: string | null
-  value: string
-  canonicalName: string
-  providerId: string
-  providerName: string
-  providerType: LLMProvider
-  runtime: string
-  hostUrl?: string | null
-  configSchema?: Record<string, unknown> | null
-  maxContextTokens?: number | null
-  activeContextTokens?: number | null
-  maxInputTokens?: number | null
-  maxOutputTokens?: number | null
-}
-
-export interface ProviderWithModels {
-  provider: LlmProviderRecord
-  models: ModelInfo[]
-}
-
-export interface CustomLlmProviderDraftInput {
-  name: string
-  providerType: LLMProvider | string
-  baseUrl: string
-  apiKey: string
-}
-
-export interface CustomLlmProviderProbeModel {
-  id: string
-  name: string
-}
-
-export interface CustomLlmProviderProbeResult {
-  name: string
-  providerType: LLMProvider
-  baseUrl: string
-  discoveredModels: CustomLlmProviderProbeModel[]
-}
-
-export type GeminiSetupMode = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT'
-
-export interface GeminiSetupConfigState {
-  mode: GeminiSetupMode
-  geminiApiKeyConfigured: boolean
-  vertexApiKeyConfigured: boolean
-  vertexProject: string | null
-  vertexLocation: string | null
-}
-
-export interface GeminiSetupConfigInput {
-  mode: GeminiSetupMode
-  geminiApiKey?: string | null
-  vertexApiKey?: string | null
-  vertexProject?: string | null
-  vertexLocation?: string | null
-}
-
-const defaultGeminiSetup = (): GeminiSetupConfigState => ({
-  mode: 'AI_STUDIO',
-  geminiApiKeyConfigured: false,
-  vertexApiKeyConfigured: false,
-  vertexProject: null,
-  vertexLocation: null,
-})
-
-const syncProviderConfiguredState = (
-  rows: ProviderWithModels[],
-  providerConfigs: Record<string, LLMProviderConfig>,
-): Record<string, LLMProviderConfig> => {
-  const nextConfigs = { ...providerConfigs }
-  for (const row of rows) {
-    nextConfigs[row.provider.id] = {
-      ...(nextConfigs[row.provider.id] ?? {}),
-      apiKeyConfigured: row.provider.apiKeyConfigured,
-    }
-  }
-  return nextConfigs
-}
-
-const replaceProviderConfiguredState = (
-  rows: ProviderWithModels[],
-  providerId: string,
-  apiKeyConfigured: boolean,
-): ProviderWithModels[] =>
-  rows.map((row) =>
-    row.provider.id === providerId
-      ? {
-          ...row,
-          provider: {
-            ...row.provider,
-            apiKeyConfigured,
-          },
-        }
-      : row,
-  )
-
-const resolveGeminiProviderConfiguredState = (setup: GeminiSetupConfigState): boolean => {
-  if (setup.mode === 'VERTEX_EXPRESS') {
-    return setup.vertexApiKeyConfigured
-  }
-
-  if (setup.mode === 'VERTEX_PROJECT') {
-    return Boolean((setup.vertexProject ?? '').trim() && (setup.vertexLocation ?? '').trim())
-  }
-
-  return setup.geminiApiKeyConfigured
-}
+import {
+  defaultGeminiSetup,
+  replaceProviderConfiguredState,
+  resolveGeminiProviderConfiguredState,
+  syncProviderConfiguredState,
+  type CredentialStatus,
+  type CustomLlmProviderDraftInput,
+  type CustomLlmProviderProbeResult,
+  type GeminiSetupConfigInput,
+  type LLMProviderConfig,
+  type ModelInfo,
+  type ProviderWithModels,
+} from './llmProviderConfigSupport'
+export type * from './llmProviderConfigSupport'
 
 export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
   state: () => ({
@@ -404,8 +290,18 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         const responseMessage = data?.setLlmProviderApiKey
 
         if (responseMessage && responseMessage.includes('successfully')) {
-          this.providerConfigs[providerId] = { apiKeyConfigured: true }
-          this.providersWithModels = replaceProviderConfiguredState(this.providersWithModels, providerId, true)
+          const existing = this.providersWithModels
+            .find((row) => row.provider.id === providerId)?.provider.credentialStatus
+          const credentialStatus: CredentialStatus = {
+            backendHealth: 'READY',
+            storageState: 'CONFIGURED',
+            lifecycle: existing?.lifecycle ?? 'WRITABLE',
+            instructionCode: null,
+          }
+          this.providerConfigs[providerId] = { credentialStatus }
+          this.providersWithModels = replaceProviderConfiguredState(
+            this.providersWithModels, providerId, credentialStatus,
+          )
 
           if (providerId === 'AUTOBYTEUS') {
             await this.reloadModels()
@@ -420,10 +316,10 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       }
     },
 
-    async getLLMProviderApiKeyConfigured(providerId: string) {
-      const currentValue = this.providersWithModels.find((row) => row.provider.id === providerId)?.provider.apiKeyConfigured
-      if (typeof currentValue === 'boolean') {
-        this.providerConfigs[providerId] = { apiKeyConfigured: currentValue }
+    async getLLMProviderCredentialStatus(providerId: string) {
+      const currentValue = this.providersWithModels.find((row) => row.provider.id === providerId)?.provider.credentialStatus
+      if (currentValue) {
+        this.providerConfigs[providerId] = { credentialStatus: currentValue }
         return currentValue
       }
 
@@ -431,13 +327,13 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
 
       try {
         const { data } = await client.query({
-          query: GET_LLM_PROVIDER_API_KEY_CONFIGURED,
+          query: GET_LLM_PROVIDER_CREDENTIAL_STATUS,
           variables: { providerId },
         })
 
-        const apiKeyConfigured = Boolean(data?.getLlmProviderApiKeyConfigured)
-        this.providerConfigs[providerId] = { apiKeyConfigured }
-        return apiKeyConfigured
+        const credentialStatus = data?.getLlmProviderCredentialStatus as CredentialStatus | null
+        this.providerConfigs[providerId] = { credentialStatus }
+        return credentialStatus
       } catch (error) {
         console.error(`Failed to get provider API key configured status for ${providerId}:`, error)
         throw error
@@ -544,9 +440,13 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         }
 
         await this.fetchGeminiSetupConfig()
-        const geminiConfigured = resolveGeminiProviderConfiguredState(this.geminiSetup)
-        this.providerConfigs.GEMINI = { apiKeyConfigured: geminiConfigured }
-        this.providersWithModels = replaceProviderConfiguredState(this.providersWithModels, 'GEMINI', geminiConfigured)
+        const credentialStatus = this.geminiSetup.mode === 'VERTEX_EXPRESS'
+          ? this.geminiSetup.vertexCredentialStatus
+          : this.geminiSetup.geminiCredentialStatus
+        this.providerConfigs.GEMINI = { credentialStatus }
+        this.providersWithModels = replaceProviderConfiguredState(
+          this.providersWithModels, 'GEMINI', credentialStatus,
+        )
         return true
       } catch (error) {
         console.error('Failed to set Gemini setup config:', error)

@@ -11,6 +11,7 @@ import {
   isKimiK27CodeModel,
   isKimiK27FixedSamplingKey,
 } from './kimi-k2-7-code-policy.js';
+import type { LLMConstructionContext } from '../llm-construction-context.js';
 
 const KIMI_K2_6_MODEL = 'kimi-k2.6';
 const KIMI_DEFAULT_TEMPERATURE = 1;
@@ -25,19 +26,8 @@ function requestUsesToolWorkflow(messages: Message[], kwargs: Record<string, unk
 }
 
 export class KimiLLM extends OpenAICompatibleLLM {
-  constructor(model?: LLMModel, llmConfig?: LLMConfig) {
-    const effectiveModel =
-      model ??
-      new LLMModel({
-        name: KIMI_K2_6_MODEL,
-        value: KIMI_K2_6_MODEL,
-        canonicalName: KIMI_K2_6_MODEL,
-        provider: LLMProvider.KIMI
-      });
-
-    const config = llmConfig ?? new LLMConfig();
-
-    super(effectiveModel, 'KIMI_API_KEY', 'https://api.moonshot.ai/v1', config);
+  constructor(model: LLMModel, context: LLMConstructionContext) {
+    super(model, 'https://api.moonshot.ai/v1', context);
   }
 
   private normalizeKimiKwargs(messages: Message[], kwargs: Record<string, unknown>): Record<string, unknown> {

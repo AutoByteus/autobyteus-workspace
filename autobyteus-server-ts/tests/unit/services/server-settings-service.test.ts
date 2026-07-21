@@ -477,7 +477,7 @@ describe("ServerSettingsService", () => {
     );
 
     expect(ok).toBe(false);
-    expect(message).toContain("boom");
+    expect(message).toBe("Error updating server setting: SERVER_SETTING_UPDATE_REJECTED");
     expect(mockReloadMediaToolSchemas).not.toHaveBeenCalled();
   });
 
@@ -490,7 +490,7 @@ describe("ServerSettingsService", () => {
     const [ok, message] = service.updateSetting("CUSTOM_SETTING", "next");
 
     expect(ok).toBe(false);
-    expect(message).toContain("boom");
+    expect(message).toBe("Error updating server setting: SERVER_SETTING_UPDATE_REJECTED");
   });
 
   it("rejects updating system-managed settings", () => {

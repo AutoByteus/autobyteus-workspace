@@ -12,11 +12,12 @@ const flushPromises = async () => {
 
 const defaultSearchConfig = (): SearchConfigState => ({
   provider: '',
-  serperApiKeyConfigured: false,
-  serpapiApiKeyConfigured: false,
-  googleCseApiKeyConfigured: false,
-  googleCseId: null,
-  vertexAiSearchApiKeyConfigured: false,
+  backendHealth: 'READY',
+  lifecycle: 'WRITABLE',
+  instructionCode: null,
+  serperStorageState: 'MISSING',
+  serpapiStorageState: 'MISSING',
+  vertexAiSearchStorageState: 'MISSING',
   vertexAiSearchServingConfig: null,
 })
 
@@ -97,12 +98,6 @@ describe('WebSearchConfigurationCard', () => {
       expected: { serpapiApiKey: 'serpapi-test-key' },
     },
     {
-      name: 'google_cse',
-      provider: 'google_cse',
-      formPatch: { googleCseApiKey: 'google-test-key', googleCseId: 'google-cse-id' },
-      expected: { googleCseApiKey: 'google-test-key', googleCseId: 'google-cse-id' },
-    },
-    {
       name: 'vertex_ai_search',
       provider: 'vertex_ai_search',
       formPatch: {
@@ -124,8 +119,6 @@ describe('WebSearchConfigurationCard', () => {
     Object.assign(setupState.searchForm, {
       serperApiKey: '',
       serpapiApiKey: '',
-      googleCseApiKey: '',
-      googleCseId: '',
       vertexAiSearchApiKey: '',
       vertexAiSearchServingConfig: '',
       ...formPatch,
@@ -161,12 +154,6 @@ describe('WebSearchConfigurationCard', () => {
       expectedMessage: 'SerpApi API key is required.',
     },
     {
-      name: 'google_cse missing id',
-      provider: 'google_cse',
-      formPatch: { googleCseApiKey: 'google-key-only' },
-      expectedMessage: 'Google CSE API key and Google CSE ID are required.',
-    },
-    {
       name: 'vertex_ai_search missing serving config',
       provider: 'vertex_ai_search',
       formPatch: { vertexAiSearchApiKey: 'vertex-key-only' },
@@ -180,8 +167,6 @@ describe('WebSearchConfigurationCard', () => {
     Object.assign(setupState.searchForm, {
       serperApiKey: '',
       serpapiApiKey: '',
-      googleCseApiKey: '',
-      googleCseId: '',
       vertexAiSearchApiKey: '',
       vertexAiSearchServingConfig: '',
       ...formPatch,

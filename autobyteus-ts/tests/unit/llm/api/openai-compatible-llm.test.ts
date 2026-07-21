@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { DeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
-import { OpenAICompatibleLLM } from '../../../../src/llm/api/openai-compatible-llm.js';
+import { DeepSeekLLM as ProductionDeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
+import { OpenAICompatibleLLM as ProductionOpenAICompatibleLLM } from '../../../../src/llm/api/openai-compatible-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages.js';
+import { llmApiKeyContext, llmNoAuthContext } from '../../explicit-auth-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 const mockOpenAIConstructor = vi.hoisted(
@@ -32,14 +33,31 @@ async function* createStream(parts: any[]) {
   }
 }
 
+class OpenAICompatibleLLM extends ProductionOpenAICompatibleLLM {
+  constructor(model: LLMModel, _legacyAlias: string, baseUrl: string, config = new LLMConfig()) {
+    super(model, baseUrl, llmApiKeyContext(config, 'synthetic-openai-compatible-key'));
+  }
+}
+
+const buildDeepSeekModel = () => new LLMModel({
+  name: 'deepseek-v4-flash',
+  value: 'deepseek-v4-flash',
+  canonicalName: 'deepseek-v4-flash',
+  provider: LLMProvider.DEEPSEEK,
+});
+
+class DeepSeekLLM extends ProductionDeepSeekLLM {
+  constructor() {
+    super(buildDeepSeekModel(), llmApiKeyContext(undefined, 'synthetic-deepseek-key'));
+  }
+}
+
 describe('OpenAICompatibleLLM', () => {
   let llm: OpenAICompatibleLLM;
   
   beforeEach(() => {
     mockCreate.mockReset();
     mockOpenAIConstructor.mockClear();
-    process.env.TEST_API_KEY = 'sk-test';
-    process.env.DEEPSEEK_API_KEY = 'sk-deepseek-test';
     const model = new LLMModel({
       name: 'gpt-4o',
       value: 'gpt-4o',
@@ -58,13 +76,12 @@ describe('OpenAICompatibleLLM', () => {
     // Construction successful if no error thrown
     expect(llm).toBeDefined();
     expect(mockOpenAIConstructor).toHaveBeenCalledWith({
-      apiKey: 'sk-test',
+      apiKey: 'synthetic-openai-compatible-key',
       baseURL: 'https://api.openai.com/v1',
     });
   });
 
-  it('should throw if API key missing', () => {
-    delete process.env.MISSING_KEY;
+  it('should throw if explicit API-key authentication is missing', () => {
     const model = new LLMModel({
       name: 'gpt-4o',
       value: 'gpt-4o',
@@ -73,12 +90,12 @@ describe('OpenAICompatibleLLM', () => {
     });
     
     expect(() => {
-      new OpenAICompatibleLLM(
+      new ProductionOpenAICompatibleLLM(
         model,
-        'MISSING_KEY',
-        'url'
+        'url',
+        llmNoAuthContext(),
       );
-    }).toThrow(/environment variable is not set/);
+    }).toThrow(/requires explicitly resolved API-key authentication/);
   });
 
   it('maps reasoning_content on sync responses into CompleteResponse.reasoning', async () => {
@@ -330,7 +347,7 @@ describe('OpenAICompatibleLLM', () => {
     const [clientOptions] = mockOpenAIConstructor.mock.calls.at(0) ?? [];
 
     expect(clientOptions).toEqual({
-      apiKey: 'sk-test',
+      apiKey: 'synthetic-openai-compatible-key',
       baseURL: 'https://api.openai.com/v1',
     });
     expect(clientOptions).not.toHaveProperty('timeout');

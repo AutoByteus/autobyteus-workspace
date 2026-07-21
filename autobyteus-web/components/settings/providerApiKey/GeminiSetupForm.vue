@@ -8,6 +8,7 @@
         v-for="modeOption in geminiModeOptions"
         :key="modeOption.value"
         type="button"
+        :disabled="disabled"
         class="px-3 py-1.5 text-xs rounded-full border transition-colors"
         :class="mode === modeOption.value
           ? 'bg-blue-50 text-blue-700 border-blue-200'
@@ -21,6 +22,7 @@
     <div v-if="mode === 'AI_STUDIO'" class="relative">
       <input
         v-model="geminiApiKey"
+        :disabled="disabled"
         :type="showApiKey ? 'text' : 'password'"
         class="w-full p-2.5 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
         :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.enter_gemini_api_key')"
@@ -28,6 +30,7 @@
       <button
         class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
         type="button"
+        :disabled="disabled"
         @click="showApiKey = !showApiKey"
       >
         <span v-if="showApiKey" class="i-heroicons-eye-slash-20-solid w-4 h-4"></span>
@@ -38,6 +41,7 @@
     <div v-if="mode === 'VERTEX_EXPRESS'" class="relative">
       <input
         v-model="vertexApiKey"
+        :disabled="disabled"
         :type="showApiKey ? 'text' : 'password'"
         class="w-full p-2.5 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
         :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.enter_vertex_api_key')"
@@ -45,6 +49,7 @@
       <button
         class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
         type="button"
+        :disabled="disabled"
         @click="showApiKey = !showApiKey"
       >
         <span v-if="showApiKey" class="i-heroicons-eye-slash-20-solid w-4 h-4"></span>
@@ -55,12 +60,14 @@
     <div v-if="mode === 'VERTEX_PROJECT'" class="grid grid-cols-1 md:grid-cols-2 gap-2">
       <input
         v-model="vertexProject"
+        :disabled="disabled"
         type="text"
         class="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
         :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.vertex_project_id')"
       />
       <input
         v-model="vertexLocation"
+        :disabled="disabled"
         type="text"
         class="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
         :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.vertex_location_e_g_us_central1')"
@@ -69,7 +76,7 @@
 
     <button
       class="px-4 py-2.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center whitespace-nowrap"
-      :disabled="!canSave || saving"
+      :disabled="disabled || !canSave || saving"
       @click="submit"
     >
       <span
@@ -91,6 +98,7 @@ import type { GeminiSetupConfigInput, GeminiSetupMode, GeminiSetupConfigState } 
 const props = defineProps<{
   geminiSetup: GeminiSetupConfigState
   saving: boolean
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{

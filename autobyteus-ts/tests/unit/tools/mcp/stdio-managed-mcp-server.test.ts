@@ -61,12 +61,17 @@ describe('StdioManagedMcpServer', () => {
     const server = new StdioManagedMcpServer(config);
     await server.connect();
 
-    expect(MockTransport.lastInstance?.options).toEqual({
+    expect(MockTransport.lastInstance?.options).toMatchObject({
       command: 'node',
       args: ['--version'],
-      env: { TEST_ENV: '1' },
+      env: {
+        HOME: expect.any(String),
+        USERPROFILE: expect.any(String),
+        TMPDIR: expect.any(String),
+      },
       cwd: '/tmp'
     });
+    expect(MockTransport.lastInstance?.options.env).not.toHaveProperty('TEST_ENV');
 
     expect(MockClient.lastInstance?.connectCalledWith).toBe(MockTransport.lastInstance);
 

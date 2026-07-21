@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AudioClientFactory } from '../../../../src/multimedia/audio/audio-client-factory.js';
 import { BaseAudioClient } from '../../../../src/multimedia/audio/base-audio-client.js';
+import { SecretValue } from '../../../../src/secrets/secret-value.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
   initializeGeminiClientWithRuntime: () => ({
@@ -11,8 +12,11 @@ vi.mock('../../../../src/utils/gemini-helper.js', () => ({
 
 describe('AudioClientFactory', () => {
   beforeEach(() => {
-    process.env.OPENAI_API_KEY = 'test-key';
     AudioClientFactory.reinitialize();
+  });
+
+  const explicitApiKey = () => ({
+    authentication: { kind: 'apiKey' as const, apiKey: SecretValue.fromString('synthetic-test-key') },
   });
 
   it('lists available models', () => {
@@ -28,14 +32,17 @@ describe('AudioClientFactory', () => {
   });
 
   it('creates audio client for valid identifier', () => {
-    const client = AudioClientFactory.createAudioClient('gpt-4o-mini-tts');
+    const client = AudioClientFactory.createAudioClient('gpt-4o-mini-tts', explicitApiKey());
     expect(client).toBeInstanceOf(BaseAudioClient);
     expect(client.model.modelIdentifier).toBe('gpt-4o-mini-tts');
   });
 
   it('creates Gemini audio clients with user-facing identifiers and API values', () => {
-    const latestClient = AudioClientFactory.createAudioClient('gemini-3.1-flash-tts-preview');
-    const proClient = AudioClientFactory.createAudioClient('gemini-2.5-pro-tts');
+    const latestClient = AudioClientFactory.createAudioClient(
+      'gemini-3.1-flash-tts-preview',
+      explicitApiKey(),
+    );
+    const proClient = AudioClientFactory.createAudioClient('gemini-2.5-pro-tts', explicitApiKey());
 
     expect(latestClient).toBeInstanceOf(BaseAudioClient);
     expect(latestClient.model.value).toBe('gemini-3.1-flash-tts-preview');
@@ -44,7 +51,7 @@ describe('AudioClientFactory', () => {
   });
 
   it('throws for invalid identifier', () => {
-    expect(() => AudioClientFactory.createAudioClient('unsupported-audio-model-xyz'))
+    expect(() => AudioClientFactory.createAudioClient('unsupported-audio-model-xyz', explicitApiKey()))
       .toThrow('No audio model registered');
   });
 });

@@ -5,8 +5,13 @@ import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../src/llm/utils/response-types.js';
+import type { LLMConstructionContext } from '../../../src/llm/llm-construction-context.js';
 
 class CapturingLLM extends BaseLLM {
+  constructor(model: LLMModel, context: LLMConstructionContext) {
+    super(model, context.config);
+  }
+
   protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
     return new CompleteResponse({ content: 'ok' });
   }
@@ -33,6 +38,7 @@ const buildModel = (name: string, defaultConfig: LLMConfig) =>
     provider: LLMProvider.OPENAI,
     canonicalName: name,
     llmClass: CapturingLLM,
+    authenticationRequirement: { kind: 'none' },
     defaultConfig,
   });
 
@@ -70,7 +76,8 @@ describe('LLMFactory config composition', () => {
     );
 
     const llm = await LLMFactory.createLLM('model-default-temperature', {
-      provider_specific_flag: 'kept',
+      configInput: { provider_specific_flag: 'kept' },
+      authentication: { kind: 'none' },
     });
 
     expect(llm.config.temperature).toBe(1);
@@ -94,9 +101,12 @@ describe('LLMFactory config composition', () => {
     );
 
     const llm = await LLMFactory.createLLM('configurable-temperature', {
-      temperature: 0.2,
-      max_tokens: 512,
-      unknown_provider_option: 'kept',
+      configInput: {
+        temperature: 0.2,
+        max_tokens: 512,
+        unknown_provider_option: 'kept',
+      },
+      authentication: { kind: 'none' },
     });
 
     expect(llm.config.temperature).toBe(0.2);
@@ -107,7 +117,7 @@ describe('LLMFactory config composition', () => {
     });
   });
 
-  it('keeps existing effective LLMConfig callers supported', async () => {
+  it('accepts an explicitly supplied effective LLMConfig', async () => {
     LLMFactory.registerModel(
       buildModel(
         'effective-config-input',
@@ -120,10 +130,13 @@ describe('LLMFactory config composition', () => {
 
     const llm = await LLMFactory.createLLM(
       'effective-config-input',
-      new LLMConfig({
-        temperature: 0.3,
-        extraParams: { explicit_effective_extra: true },
-      }),
+      {
+        configInput: new LLMConfig({
+          temperature: 0.3,
+          extraParams: { explicit_effective_extra: true },
+        }),
+        authentication: { kind: 'none' },
+      },
     );
 
     expect(llm.config.temperature).toBe(0.3);

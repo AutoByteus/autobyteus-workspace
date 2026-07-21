@@ -57,7 +57,7 @@ describe('edit_file tool', () => {
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
     const result = await tool.execute(context, { path: filePath, patch });
 
     expect(result).toBe(`File edited successfully at ${filePath}`);
@@ -82,7 +82,7 @@ index 1111111..2222222 100644
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
     const result = await tool.execute(context, { path: filePath, patch });
 
     expect(result).toBe(`File edited successfully at ${filePath}`);
@@ -103,7 +103,7 @@ index 1111111..2222222 100644
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
 
     await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow(PatchApplicationError);
     await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow('replace_in_file / insert_in_file');
@@ -122,7 +122,7 @@ index 1111111..2222222 100644
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
     const result = await tool.execute(context, { path: filePath, patch });
 
     expect(result).toBe(`File edited successfully at ${filePath}`);
@@ -135,7 +135,7 @@ index 1111111..2222222 100644
     const filePath = path.join(tmpDir, 'nonexistent.txt');
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
     await expect(tool.execute(context, { path: filePath, patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })).rejects.toThrow('does not exist');
   });
 
@@ -167,7 +167,7 @@ index 1111111..2222222 100644
         path: 'rel_patch.txt',
         patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n'
       }
-    )).rejects.toThrow('but no workspace root is configured');
+    )).rejects.toThrow('no workspace root is configured');
   });
 
   it('read then patch flow', async () => {
@@ -177,7 +177,7 @@ index 1111111..2222222 100644
 
     const patchTool = getPatchTool();
     const readTool = getReadTool();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
 
     const content = await readTool.execute(context, { path: filePath });
     expect(content).toBe('1: line1\n2: line2\n');

@@ -1,5 +1,4 @@
 import { ImageClientFactory } from "autobyteus-ts/multimedia/image/image-client-factory.js";
-import { AutobyteusImageModelProvider } from "autobyteus-ts/multimedia/image/autobyteus-image-provider.js";
 import type { ImageModel } from "autobyteus-ts/multimedia/image/image-model.js";
 
 const logger = {
@@ -11,8 +10,6 @@ export class ImageModelProvider {
   async listModels(): Promise<ImageModel[]> {
     logger.info("Fetching list of available Image models from ImageClientFactory...");
     try {
-      logger.info("Awaiting Autobyteus image model discovery before listing models...");
-      await AutobyteusImageModelProvider.ensureDiscovered();
       const models = ImageClientFactory.listModels();
       const byProvider = new Map<string, number>();
       const byRuntime = new Map<string, number>();

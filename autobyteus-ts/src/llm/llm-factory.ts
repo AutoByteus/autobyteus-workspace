@@ -6,7 +6,6 @@ import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
 import { applyRawLlmConfigOverrides, type RawLlmConfigOverrides } from './utils/llm-config-overrides.js';
 import { OllamaModelProvider } from './ollama-provider.js';
 import { LMStudioModelProvider } from './lmstudio-provider.js';
-import { AutobyteusModelProvider } from './autobyteus-provider.js';
 import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
 import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
 import type { CustomLlmProviderRecord } from './custom-llm-provider-config.js';
@@ -15,8 +14,13 @@ import {
 } from './openai-compatible-endpoint-model.js';
 import {
   OpenAICompatibleEndpointModelProvider,
+  type OpenAICompatibleEndpointDiscoveryResult,
   type OpenAICompatibleEndpointReloadReport,
 } from './openai-compatible-endpoint-provider.js';
+import type {
+  LLMFactoryConfigInput,
+  LLMFactoryCreationInput,
+} from './llm-construction-context.js';
 
 
 export type PricingStatus = 'trusted' | 'missing' | 'placeholder';
@@ -78,8 +82,6 @@ export type ModelPricingLookupInput = {
   canonicalName?: string | null;
   modelProvider?: LLMProvider | string | null;
 };
-
-export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
 
 const buildSupportedModels = async (): Promise<LLMModel[]> => {
   const metadataResolver = new ModelMetadataResolver();
@@ -159,7 +161,6 @@ export class LLMFactory {
 
     await OllamaModelProvider.discoverAndRegister();
     await LMStudioModelProvider.discoverAndRegister();
-    await AutobyteusModelProvider.discoverAndRegister();
   }
 
   private static replaceProviderModels(provider: LLMProvider, models: LLMModel[]): void {
@@ -195,12 +196,12 @@ export class LLMFactory {
   }
 
   static async syncOpenAICompatibleEndpointModels(
-    savedEndpoints: CustomLlmProviderRecord[],
+    discoveryResults: OpenAICompatibleEndpointDiscoveryResult[],
   ): Promise<OpenAICompatibleEndpointReloadReport> {
     await LLMFactory.ensureInitialized();
 
     const report = await LLMFactory.openAICompatibleEndpointProvider.reloadSavedEndpoints(
-      savedEndpoints,
+      discoveryResults,
       LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint,
     );
 
@@ -226,7 +227,25 @@ export class LLMFactory {
     return config;
   }
 
-  static async createLLM(modelIdentifier: string, configInput?: LLMFactoryConfigInput): Promise<BaseLLM> {
+  static async describeConstructionTarget(modelIdentifier: string): Promise<{
+    providerId: string;
+    authenticationRequirement: LLMModel['authenticationRequirement'];
+  }> {
+    await LLMFactory.ensureInitialized();
+    const model = LLMFactory.modelsByIdentifier.get(modelIdentifier);
+    if (!model) {
+      throw new Error(`Model with identifier '${modelIdentifier}' not found.`);
+    }
+    return {
+      providerId: model.providerId,
+      authenticationRequirement: model.authenticationRequirement,
+    };
+  }
+
+  static async createLLM(
+    modelIdentifier: string,
+    input: LLMFactoryCreationInput,
+  ): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();
 
     const model = LLMFactory.modelsByIdentifier.get(modelIdentifier);
@@ -235,8 +254,8 @@ export class LLMFactory {
       if (!LLMClass) {
         throw new Error(`Model '${model.modelIdentifier}' does not have an LLM class registered yet.`);
       }
-      const config = LLMFactory.composeEffectiveConfig(model, configInput);
-      return new LLMClass(model, config);
+      const config = LLMFactory.composeEffectiveConfig(model, input.configInput);
+      return new LLMClass(model, { config, authentication: input.authentication });
     }
 
     const foundByName = Array.from(LLMFactory.modelsByIdentifier.values()).filter(
@@ -478,7 +497,6 @@ export class LLMFactory {
 
     const providerHandlers: Partial<Record<LLMProvider, { getModels: () => Promise<LLMModel[]> }>> = {
       [LLMProvider.LMSTUDIO]: LMStudioModelProvider,
-      [LLMProvider.AUTOBYTEUS]: AutobyteusModelProvider,
       [LLMProvider.OLLAMA]: OllamaModelProvider,
     };
 

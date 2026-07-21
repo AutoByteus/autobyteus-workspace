@@ -48,7 +48,11 @@ const closePty = (exitCode = 0) => {
 try {
   const cwd = process.cwd();
   const env = {
-    ...process.env,
+    PATH: process.env.PATH,
+    HOME: process.env.HOME,
+    USERPROFILE: process.env.USERPROFILE,
+    TMPDIR: process.env.TMPDIR,
+    LANG: process.env.LANG,
     TERM: process.env.TERM || 'xterm-256color',
     PS1: process.env.PS1 || '\\w $ '
   };

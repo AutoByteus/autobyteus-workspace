@@ -1,10 +1,16 @@
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
+import { SecretValue } from 'autobyteus-ts';
 import {
   OpenAICompatibleEndpointDiscovery,
   normalizeOpenAICompatibleEndpointBaseUrl,
 } from 'autobyteus-ts';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { appConfigProvider } from '../../../config/app-config-provider.js';
+import {
+  getSecretStorageConfigurationService,
+  type SecretStorageConfigurationService,
+} from '../../../secret-management/configuration/secret-storage-configuration-service.js';
+import type { SecretConsumerIdentity } from '../../../secret-management/domain/secret-binding.js';
 import {
   RuntimeKind,
   runtimeKindFromString,
@@ -16,6 +22,7 @@ import {
 } from '../builtins/built-in-llm-provider-catalog.js';
 import type {
   CustomLlmProviderDraftInput,
+  CredentialStatusProjection,
   CustomLlmProviderProbeResult,
   LlmProviderRecord,
   LlmProviderWithModels,
@@ -62,6 +69,8 @@ export class LlmProviderService {
     private readonly modelCatalogService: ModelCatalogService = getModelCatalogService(),
     private readonly discovery: Pick<typeof OpenAICompatibleEndpointDiscovery, 'probeEndpoint'> =
       OpenAICompatibleEndpointDiscovery,
+    private readonly secretStorageConfiguration: SecretStorageConfigurationService =
+      getSecretStorageConfigurationService(),
   ) {}
 
   async listProvidersWithModels<TModel extends { providerId: string; name: string; modelIdentifier: string }>(
@@ -69,7 +78,9 @@ export class LlmProviderService {
     mapModel?: (model: ModelInfo) => TModel,
   ): Promise<LlmProviderWithModels<TModel>[]> {
     const modelsInfo = await this.modelCatalogService.listLlmModels(runtimeKind);
-    const builtInProviders = this.builtInCatalog.listProviders();
+    const builtInProviders = await Promise.all(
+      this.builtInCatalog.listProviders().map((provider) => this.withCredentialStatus(provider)),
+    );
     const customProviders = await this.listCustomProviders(runtimeKind);
     const providerById = new Map<string, LlmProviderRecord>([
       ...builtInProviders.map((provider) => [provider.id, provider] as const),
@@ -90,7 +101,7 @@ export class LlmProviderService {
           providerType: model.provider_type,
           isCustom: model.provider_type === LLMProvider.OPENAI_COMPATIBLE,
           baseUrl: null,
-          apiKeyConfigured: model.provider_type !== LLMProvider.OPENAI_COMPATIBLE,
+          credentialStatus: null,
           status: model.provider_type === LLMProvider.OPENAI_COMPATIBLE ? 'ERROR' : 'NOT_APPLICABLE',
           statusMessage: null,
         });
@@ -134,19 +145,35 @@ export class LlmProviderService {
       apiKey: draft.apiKey,
     });
 
-    const createdProvider = await this.customProviderStore.createProvider(draft);
+    const createdProvider = await this.customProviderStore.createProvider({
+      name: draft.name,
+      providerType: draft.providerType,
+      baseUrl: draft.baseUrl,
+    });
+    try {
+      await this.secretStorageConfiguration.requireManagementService().saveForConsumer({
+        consumer: this.customConsumer(createdProvider.id),
+        value: SecretValue.fromString(draft.apiKey),
+      });
+    } catch (error) {
+      await this.customProviderStore.deleteProvider(createdProvider.id);
+      throw error;
+    }
     await this.modelCatalogService.reloadLlmModelsForProvider(createdProvider.id, runtimeKind);
     return this.mapCustomProvider(
       createdProvider.id,
       createdProvider.name,
       createdProvider.providerType,
       createdProvider.baseUrl,
-      true,
+      await this.getCredentialStatus(this.customConsumer(createdProvider.id)),
     );
   }
 
   async deleteCustomProvider(providerId: string, runtimeKind?: string | null): Promise<string> {
     const provider = await this.getCustomProviderOrThrow(providerId, runtimeKind);
+    await this.secretStorageConfiguration
+      .requireManagementService()
+      .removeForConsumer(this.customConsumer(provider.id));
     await this.customProviderStore.deleteProvider(provider.id);
     await this.modelCatalogService.reloadLlmModels(runtimeKind);
     return provider.name;
@@ -160,19 +187,24 @@ export class LlmProviderService {
       throw new Error(`Setting API keys is only supported for built-in providers in this ticket. Received '${providerId}'.`);
     }
 
-    appConfigProvider.config.setLlmApiKey(normalizedProviderId, normalizedApiKey);
-    return this.builtInCatalog.getProvider(normalizedProviderId);
+    await this.secretStorageConfiguration.requireManagementService().saveForConsumer({
+      consumer: this.builtInConsumer(normalizedProviderId),
+      value: SecretValue.fromString(normalizedApiKey),
+    });
+    return this.withCredentialStatus(this.builtInCatalog.getProvider(normalizedProviderId));
   }
 
-  async getProviderApiKeyConfigured(providerId: string): Promise<boolean> {
+  async getProviderCredentialStatus(providerId: string): Promise<CredentialStatusProjection | null> {
     const normalizedProviderId = normalizeRequiredString(providerId, 'providerId');
     const uppercasedProviderId = normalizedProviderId.toUpperCase();
     if (this.builtInCatalog.isBuiltInProviderId(uppercasedProviderId)) {
-      return this.builtInCatalog.getProvider(uppercasedProviderId).apiKeyConfigured;
+      return (await this.withCredentialStatus(this.builtInCatalog.getProvider(uppercasedProviderId)))
+        .credentialStatus;
     }
 
     const customProvider = await this.customProviderStore.getProviderById(normalizedProviderId);
-    return Boolean(customProvider?.apiKey);
+    if (!customProvider) return null;
+    return this.getCredentialStatus(this.customConsumer(customProvider.id));
   }
 
   async reloadProviderModels(providerId: string, runtimeKind?: string | null): Promise<number> {
@@ -181,15 +213,67 @@ export class LlmProviderService {
     return this.modelCatalogService.reloadLlmModelsForProvider(normalizedProviderId, runtimeKind);
   }
 
+  async getGeminiCredentialStatus(): Promise<{
+    mode: 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT';
+    geminiCredentialStatus: CredentialStatusProjection;
+    vertexCredentialStatus: CredentialStatusProjection;
+    vertexProject: string | null;
+    vertexLocation: string | null;
+  }> {
+    const configuredMode = appConfigProvider.config.get('GEMINI_SETUP_MODE')?.trim().toUpperCase();
+    const mode = configuredMode === 'VERTEX_EXPRESS' || configuredMode === 'VERTEX_PROJECT'
+      ? configuredMode
+      : 'AI_STUDIO';
+    return {
+      mode,
+      geminiCredentialStatus: await this.getCredentialStatus({
+        kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot: 'geminiAiStudioApiKey',
+      }),
+      vertexCredentialStatus: await this.getCredentialStatus({
+        kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot: 'geminiVertexExpressApiKey',
+      }),
+      vertexProject: appConfigProvider.config.get('VERTEX_AI_PROJECT')?.trim() || null,
+      vertexLocation: appConfigProvider.config.get('VERTEX_AI_LOCATION')?.trim() || null,
+    };
+  }
+
+  async setGeminiSetup(input: {
+    mode: 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT';
+    apiKey?: string | null;
+    project?: string | null;
+    location?: string | null;
+  }): Promise<void> {
+    if (input.mode === 'AI_STUDIO' || input.mode === 'VERTEX_EXPRESS') {
+      const apiKey = normalizeRequiredString(input.apiKey ?? '', 'apiKey');
+      const credentialSlot = input.mode === 'AI_STUDIO'
+        ? 'geminiAiStudioApiKey'
+        : 'geminiVertexExpressApiKey';
+      await this.secretStorageConfiguration.requireManagementService().saveForConsumer({
+        consumer: { kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot },
+        value: SecretValue.fromString(apiKey),
+      });
+    } else {
+      appConfigProvider.config.set('VERTEX_AI_PROJECT', normalizeRequiredString(input.project ?? '', 'project'));
+      appConfigProvider.config.set('VERTEX_AI_LOCATION', normalizeRequiredString(input.location ?? '', 'location'));
+    }
+    appConfigProvider.config.set('GEMINI_SETUP_MODE', input.mode);
+  }
+
   private async listCustomProviders(runtimeKind?: string | null): Promise<LlmProviderRecord[]> {
     if (resolveRuntimeKind(runtimeKind) !== RuntimeKind.AUTOBYTEUS) {
       return [];
     }
 
     const customProviders = await this.customProviderStore.listProviders();
-    return customProviders.map((provider) =>
-      this.mapCustomProvider(provider.id, provider.name, provider.providerType, provider.baseUrl, Boolean(provider.apiKey)),
-    );
+    return Promise.all(customProviders.map(async (provider) =>
+      this.mapCustomProvider(
+        provider.id,
+        provider.name,
+        provider.providerType,
+        provider.baseUrl,
+        await this.getCredentialStatus(this.customConsumer(provider.id)),
+      ),
+    ));
   }
 
   private mapCustomProvider(
@@ -197,7 +281,7 @@ export class LlmProviderService {
     providerName: string,
     providerType: LLMProvider.OPENAI_COMPATIBLE,
     baseUrl: string,
-    apiKeyConfigured: boolean,
+    credentialStatus: CredentialStatusProjection,
   ): LlmProviderRecord {
     const status = this.customProviderRuntimeSyncService.getStatus(providerId);
     return {
@@ -206,7 +290,7 @@ export class LlmProviderService {
       providerType,
       isCustom: true,
       baseUrl,
-      apiKeyConfigured,
+      credentialStatus,
       status: status.status,
       statusMessage: status.message ?? null,
     };
@@ -272,6 +356,90 @@ export class LlmProviderService {
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       baseUrl: normalizeOpenAICompatibleEndpointBaseUrl(input.baseUrl),
       apiKey: normalizeRequiredString(input.apiKey, 'apiKey'),
+    };
+  }
+
+  private customConsumer(providerId: string): SecretConsumerIdentity {
+    return { kind: 'llm', providerId, credentialSlot: 'apiKey' };
+  }
+
+  private builtInConsumer(providerId: string): SecretConsumerIdentity {
+    if (providerId === LLMProvider.GEMINI) {
+      const mode = appConfigProvider.config.get('GEMINI_SETUP_MODE')?.trim().toUpperCase();
+      if (mode === 'AI_STUDIO') {
+        return { kind: 'llm', providerId, credentialSlot: 'geminiAiStudioApiKey' };
+      }
+      if (mode === 'VERTEX_EXPRESS') {
+        return { kind: 'llm', providerId, credentialSlot: 'geminiVertexExpressApiKey' };
+      }
+      throw new Error('GEMINI_SETUP_MODE_REQUIRES_EXPLICIT_CREDENTIAL_SLOT');
+    }
+    return { kind: 'llm', providerId, credentialSlot: 'apiKey' };
+  }
+
+  private async getCredentialStatus(consumer: SecretConsumerIdentity): Promise<CredentialStatusProjection> {
+    const configuration = this.secretStorageConfiguration;
+    const snapshot = await configuration.snapshot();
+    if (snapshot.health.state !== 'READY') {
+      return {
+        backendHealth: snapshot.health.state,
+        storageState: null,
+        lifecycle: snapshot.lifecycle?.kind ?? null,
+        instructionCode: snapshot.health.instructionCode,
+      };
+    }
+    const status = await this.secretStorageConfiguration
+      .requireManagementService()
+      .getStatusForConsumer(consumer);
+    return {
+      backendHealth: 'READY',
+      storageState: status.secret?.storageState ?? null,
+      lifecycle: status.secret?.lifecycle.kind ?? snapshot.lifecycle?.kind ?? null,
+      instructionCode: status.secret?.lifecycle.kind === 'EXTERNALLY_MANAGED'
+        ? status.secret.lifecycle.instructionCode
+        : null,
+    };
+  }
+
+  private async withCredentialStatus(provider: LlmProviderRecord): Promise<LlmProviderRecord> {
+    if (provider.id === LLMProvider.OLLAMA || provider.id === LLMProvider.AUTOBYTEUS) return provider;
+    if (provider.id === LLMProvider.GEMINI) {
+      const mode = appConfigProvider.config.get('GEMINI_SETUP_MODE')?.trim().toUpperCase();
+      if (mode === 'VERTEX_PROJECT') {
+        return {
+          ...provider,
+          credentialStatus: await this.workloadCredentialStatus(Boolean(
+            appConfigProvider.config.get('VERTEX_AI_PROJECT')?.trim()
+            && appConfigProvider.config.get('VERTEX_AI_LOCATION')?.trim(),
+          )),
+        };
+      }
+    }
+    try {
+      return { ...provider, credentialStatus: await this.getCredentialStatus(this.builtInConsumer(provider.id)) };
+    } catch {
+      const snapshot = await this.secretStorageConfiguration.snapshot();
+      return {
+        ...provider,
+        credentialStatus: {
+          backendHealth: snapshot.health.state,
+          storageState: null,
+          lifecycle: snapshot.lifecycle?.kind ?? null,
+          instructionCode: 'instructionCode' in snapshot.health
+            ? snapshot.health.instructionCode
+            : 'SECRET_CONSUMER_BINDING_INVALID',
+        },
+      };
+    }
+  }
+
+  private async workloadCredentialStatus(configured: boolean): Promise<CredentialStatusProjection> {
+    const snapshot = await this.secretStorageConfiguration.snapshot();
+    return {
+      backendHealth: snapshot.health.state,
+      storageState: configured ? 'CONFIGURED' : 'MISSING',
+      lifecycle: snapshot.lifecycle?.kind ?? null,
+      instructionCode: 'instructionCode' in snapshot.health ? snapshot.health.instructionCode : null,
     };
   }
 }

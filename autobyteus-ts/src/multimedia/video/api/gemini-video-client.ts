@@ -12,6 +12,7 @@ import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { VideoModel } from '../video-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
 
 const VIDEO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_video');
 const SUPPORTED_ASPECT_RATIOS = new Set(['16:9', '9:16']);
@@ -242,9 +243,9 @@ export class GeminiVideoClient extends BaseVideoClient {
   private runtimeInfo: GeminiRuntimeInfo | null;
   private tempFiles: string[] = [];
 
-  constructor(model: VideoModel, config: MultimediaConfig) {
-    super(model, config);
-    const { client, runtimeInfo } = initializeGeminiClientWithRuntime();
+  constructor(model: VideoModel, context: MultimediaConstructionContext) {
+    super(model, context.config);
+    const { client, runtimeInfo } = initializeGeminiClientWithRuntime(context.authentication);
     this.client = client;
     this.runtimeInfo = runtimeInfo;
   }

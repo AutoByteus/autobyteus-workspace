@@ -1,199 +1,97 @@
 import "reflect-metadata";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const mockConfig = vi.hoisted(() => ({
-  get: vi.fn<(key: string) => string>(),
-  set: vi.fn<(key: string, value: string) => void>(),
-}));
-
 const mockServerSettingsService = vi.hoisted(() => ({
   getAvailableSettings: vi.fn(),
   updateSetting: vi.fn(),
   deleteSetting: vi.fn(),
 }));
 
-vi.mock("../../../../../src/config/app-config-provider.js", () => ({
-  appConfigProvider: {
-    get config() {
-      return mockConfig;
-    },
-  },
+const mockSearchProvisioningService = vi.hoisted(() => ({
+  getConfigurationStatus: vi.fn(),
+  saveConfiguration: vi.fn(),
 }));
 
 vi.mock("../../../../../src/services/server-settings-service.js", () => ({
   getServerSettingsService: () => mockServerSettingsService,
 }));
 
+vi.mock("../../../../../src/agent-tools/search/search-provisioning-service.js", () => ({
+  getSearchProvisioningService: () => mockSearchProvisioningService,
+}));
+
 import { ServerSettingsResolver } from "../../../../../src/api/graphql/types/server-settings.js";
 
-describe("ServerSettingsResolver search config", () => {
+describe("ServerSettingsResolver", () => {
   beforeEach(() => {
-    mockConfig.get.mockReset();
-    mockConfig.set.mockReset();
-    mockServerSettingsService.getAvailableSettings.mockReset();
-    mockServerSettingsService.updateSetting.mockReset();
-    mockServerSettingsService.deleteSetting.mockReset();
-    mockConfig.get.mockImplementation(() => "");
+    vi.clearAllMocks();
+    mockSearchProvisioningService.saveConfiguration.mockResolvedValue(undefined);
   });
 
   it("maps available server settings from service", () => {
-    mockServerSettingsService.getAvailableSettings.mockReturnValue([
-      {
-        key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
-        value: "localhost:6080",
-        description: "desc",
-        isEditable: true,
-        isDeletable: false,
-      },
-    ]);
-
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.getServerSettings();
-
-    expect(result).toEqual([
-      {
-        key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
-        value: "localhost:6080",
-        description: "desc",
-        isEditable: true,
-        isDeletable: false,
-      },
-    ]);
+    mockServerSettingsService.getAvailableSettings.mockReturnValue([{
+      key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
+      value: "localhost:6080",
+      description: "desc",
+      isEditable: true,
+      isDeletable: false,
+    }]);
+    expect(new ServerSettingsResolver().getServerSettings()).toEqual([{
+      key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
+      value: "localhost:6080",
+      description: "desc",
+      isEditable: true,
+      isDeletable: false,
+    }]);
   });
 
   it("forwards updateServerSetting to service", () => {
     mockServerSettingsService.updateSetting.mockReturnValue([true, "updated"]);
-
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.updateServerSetting("AUTOBYTEUS_VNC_SERVER_HOSTS", "localhost:6081");
-
-    expect(result).toBe("updated");
-    expect(mockServerSettingsService.updateSetting).toHaveBeenCalledWith(
-      "AUTOBYTEUS_VNC_SERVER_HOSTS",
-      "localhost:6081",
-    );
+    expect(new ServerSettingsResolver().updateServerSetting("SETTING", "value")).toBe("updated");
+    expect(mockServerSettingsService.updateSetting).toHaveBeenCalledWith("SETTING", "value");
   });
 
   it("forwards deleteServerSetting to service", () => {
     mockServerSettingsService.deleteSetting.mockReturnValue([true, "deleted"]);
-
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.deleteServerSetting("CUSTOM_SETTING");
-
-    expect(result).toBe("deleted");
+    expect(new ServerSettingsResolver().deleteServerSetting("CUSTOM_SETTING")).toBe("deleted");
     expect(mockServerSettingsService.deleteSetting).toHaveBeenCalledWith("CUSTOM_SETTING");
   });
 
-  it("returns normalized getSearchConfig snapshot", () => {
-    mockConfig.get.mockImplementation((key: string) => ({
-      DEFAULT_SEARCH_PROVIDER: " Google_CSE ",
-      SERPER_API_KEY: "",
-      SERPAPI_API_KEY: "serp-key",
-      GOOGLE_CSE_API_KEY: "g-key",
-      GOOGLE_CSE_ID: " my-cse-id ",
-      VERTEX_AI_SEARCH_API_KEY: "",
-      VERTEX_AI_SEARCH_SERVING_CONFIG: "",
-    }[key] ?? ""));
-
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.getSearchConfig();
-
-    expect(result).toEqual({
-      provider: "google_cse",
-      serperApiKeyConfigured: false,
-      serpapiApiKeyConfigured: true,
-      googleCseApiKeyConfigured: true,
-      googleCseId: "my-cse-id",
-      vertexAiSearchApiKeyConfigured: false,
+  it("returns the rich, value-free search configuration status", async () => {
+    const status = {
+      provider: "serpapi",
+      backendHealth: "READY",
+      lifecycle: "WRITABLE",
+      instructionCode: null,
+      serperStorageState: "MISSING",
+      serpapiStorageState: "CONFIGURED",
+      vertexAiSearchStorageState: "MISSING",
       vertexAiSearchServingConfig: null,
+    };
+    mockSearchProvisioningService.getConfigurationStatus.mockResolvedValue(status);
+    await expect(new ServerSettingsResolver().getSearchConfig()).resolves.toEqual(status);
+  });
+
+  it("rejects removed or unsupported search providers without provisioning", async () => {
+    await expect(new ServerSettingsResolver().setSearchConfig("google_cse"))
+      .resolves.toBe("Error updating search configuration: SEARCH_PROVIDER_UNSUPPORTED");
+    expect(mockSearchProvisioningService.saveConfiguration).not.toHaveBeenCalled();
+  });
+
+  it("forwards only the selected provider credential and serving configuration", async () => {
+    await expect(new ServerSettingsResolver().setSearchConfig(
+      " vertex_ai_search ", null, null, "synthetic-test-key", " serving/config ",
+    )).resolves.toBe("Search configuration updated successfully.");
+    expect(mockSearchProvisioningService.saveConfiguration).toHaveBeenCalledWith({
+      provider: "vertex_ai_search",
+      apiKey: "synthetic-test-key",
+      vertexServingConfig: "serving/config",
     });
   });
 
-  it("rejects unsupported provider", () => {
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.setSearchConfig("unknown_provider");
-
-    expect(result).toContain("Unsupported provider");
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it("requires SERPER_API_KEY for serper when not already configured", () => {
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.setSearchConfig("serper");
-
-    expect(result).toContain("SERPER_API_KEY is required");
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it("accepts serper with already configured key", () => {
-    mockConfig.get.mockImplementation((key: string) => ({
-      SERPER_API_KEY: "existing-serper-key",
-    }[key] ?? ""));
-
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.setSearchConfig("serper");
-
-    expect(result).toContain("updated successfully");
-    expect(mockConfig.set).toHaveBeenCalledTimes(1);
-    expect(mockConfig.set).toHaveBeenCalledWith("DEFAULT_SEARCH_PROVIDER", "serper");
-  });
-
-  it("requires GOOGLE_CSE_ID for google_cse", () => {
-    mockConfig.get.mockImplementation((key: string) => ({
-      GOOGLE_CSE_API_KEY: "existing-google-key",
-      GOOGLE_CSE_ID: "",
-    }[key] ?? ""));
-
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.setSearchConfig("google_cse");
-
-    expect(result).toContain("GOOGLE_CSE_API_KEY and GOOGLE_CSE_ID are required");
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it("saves google_cse provider and fields", () => {
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.setSearchConfig("google_cse", null, null, "google-key", "cse-id");
-
-    expect(result).toContain("updated successfully");
-    expect(mockConfig.set).toHaveBeenCalledWith("DEFAULT_SEARCH_PROVIDER", "google_cse");
-    expect(mockConfig.set).toHaveBeenCalledWith("GOOGLE_CSE_API_KEY", "google-key");
-    expect(mockConfig.set).toHaveBeenCalledWith("GOOGLE_CSE_ID", "cse-id");
-  });
-
-  it("requires vertex serving config for vertex_ai_search", () => {
-    mockConfig.get.mockImplementation((key: string) => ({
-      VERTEX_AI_SEARCH_API_KEY: "vertex-key",
-      VERTEX_AI_SEARCH_SERVING_CONFIG: "",
-    }[key] ?? ""));
-
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.setSearchConfig("vertex_ai_search");
-
-    expect(result).toContain(
-      "VERTEX_AI_SEARCH_API_KEY and VERTEX_AI_SEARCH_SERVING_CONFIG are required",
-    );
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it("saves vertex_ai_search provider and fields", () => {
-    const resolver = new ServerSettingsResolver();
-    const result = resolver.setSearchConfig(
-      "vertex_ai_search",
-      null,
-      null,
-      null,
-      null,
-      "vertex-key",
-      "projects/p/locations/l/collections/default_collection/engines/e/servingConfigs/default_search",
-    );
-
-    expect(result).toContain("updated successfully");
-    expect(mockConfig.set).toHaveBeenCalledWith("DEFAULT_SEARCH_PROVIDER", "vertex_ai_search");
-    expect(mockConfig.set).toHaveBeenCalledWith("VERTEX_AI_SEARCH_API_KEY", "vertex-key");
-    expect(mockConfig.set).toHaveBeenCalledWith(
-      "VERTEX_AI_SEARCH_SERVING_CONFIG",
-      "projects/p/locations/l/collections/default_collection/engines/e/servingConfigs/default_search",
-    );
+  it("returns a value-free stable rejection when provisioning fails", async () => {
+    mockSearchProvisioningService.saveConfiguration.mockRejectedValue(new Error("sensitive provider detail"));
+    await expect(new ServerSettingsResolver().setSearchConfig("serper", "synthetic-test-key"))
+      .resolves.toBe("Error updating search configuration: SEARCH_CONFIGURATION_REJECTED");
   });
 });

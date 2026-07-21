@@ -1,38 +1,14 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Search } from '../../../src/tools/search-tool.js';
-import { SearchClientFactory } from '../../../src/tools/search/factory.js';
-import { SearchClient } from '../../../src/tools/search/client.js';
-import { SerperSearchStrategy } from '../../../src/tools/search/serper-strategy.js';
-
-const originalEnv = { ...process.env };
-
-const resetFactory = () => {
-  (SearchClientFactory as any).instance = undefined;
-};
 
 describe('Search tool (integration)', () => {
-  beforeEach(() => {
-    process.env = {
-      ...originalEnv,
-      DEFAULT_SEARCH_PROVIDER: '',
-      SERPER_API_KEY: 'serper-key',
-      SERPAPI_API_KEY: '',
-      VERTEX_AI_SEARCH_API_KEY: '',
-      VERTEX_AI_SEARCH_SERVING_CONFIG: ''
-    };
-    resetFactory();
-  });
+  it('uses the injected server-owned search executor', async () => {
+    const search = vi.fn().mockResolvedValue('synthetic results');
+    const tool = new Search(undefined, { search });
 
-  afterEach(() => {
-    process.env = { ...originalEnv };
-    resetFactory();
-  });
-
-  it('initializes using the configured search client', () => {
-    const tool = new Search();
-    const client = (tool as any).searchClient;
-
-    expect(client).toBeInstanceOf(SearchClient);
-    expect((client as any).strategy).toBeInstanceOf(SerperSearchStrategy);
+    await expect((tool as any)._execute({}, { query: 'hello', num_results: 2 })).resolves.toBe(
+      'synthetic results',
+    );
+    expect(search).toHaveBeenCalledWith('hello', 2);
   });
 });

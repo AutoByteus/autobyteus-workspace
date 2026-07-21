@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { OpenAIAudioClient } from '../../../../../src/multimedia/audio/api/openai-audio-client.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
+import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
 
 const createMock = vi.fn();
 
@@ -19,7 +20,6 @@ vi.mock('openai', () => {
 
 describe('OpenAIAudioClient', () => {
   beforeEach(() => {
-    process.env.OPENAI_API_KEY = 'test-key';
     createMock.mockReset();
   });
 
@@ -34,7 +34,10 @@ describe('OpenAIAudioClient', () => {
     });
 
     const model = { name: 'test-model', value: 'gpt-4o-mini-tts' } as any;
-    const client = new OpenAIAudioClient(model, new MultimediaConfig());
+    const client = new OpenAIAudioClient(
+      model,
+      multimediaApiKeyContext(new MultimediaConfig(), 'synthetic-openai-key'),
+    );
 
     const response = await client.generateSpeech('hello world');
     expect(response.audio_urls.length).toBe(1);

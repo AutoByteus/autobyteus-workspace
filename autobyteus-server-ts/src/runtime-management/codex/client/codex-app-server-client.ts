@@ -8,6 +8,7 @@ import type {
   JsonRpcId,
 } from "./codex-app-server-client-types.js";
 import { DEFAULT_REQUEST_TIMEOUT_MS } from "./codex-app-server-launch-config.js";
+import { buildAgentChildEnvironment } from "autobyteus-ts/tools/terminal/agent-child-environment.js";
 
 type JsonRpcResponseError = {
   code?: number;
@@ -44,7 +45,7 @@ export class CodexAppServerClient {
     try {
       this.process = spawn(this.options.command, this.options.args, {
         cwd: this.options.cwd,
-        env: this.options.env ?? process.env,
+        env: buildAgentChildEnvironment(this.options.env),
         stdio: ["pipe", "pipe", "pipe"],
       });
     } catch (error) {

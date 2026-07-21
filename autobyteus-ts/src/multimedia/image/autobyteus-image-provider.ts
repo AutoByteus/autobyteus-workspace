@@ -43,7 +43,7 @@ export class AutobyteusImageModelProvider {
     AutobyteusImageModelProvider.lastHostsKey = null;
   }
 
-  static async ensureDiscovered(): Promise<void> {
+  static async ensureDiscovered(apiKey: string): Promise<void> {
     const hostsKey = parseHosts().join(',');
     if (!hostsKey) {
       if (AutobyteusImageModelProvider.lastHostsKey !== '') {
@@ -65,7 +65,7 @@ export class AutobyteusImageModelProvider {
 
     if (!AutobyteusImageModelProvider.discoveryPromise) {
       AutobyteusImageModelProvider.discoveryPromise = AutobyteusImageModelProvider
-        .discoverAndRegister()
+        .discoverAndRegister(apiKey)
         .catch((error) => {
           console.warn(`Autobyteus image model discovery failed: ${String(error)}`);
         });
@@ -73,7 +73,7 @@ export class AutobyteusImageModelProvider {
     return AutobyteusImageModelProvider.discoveryPromise;
   }
 
-  static async discoverAndRegister(): Promise<void> {
+  static async discoverAndRegister(apiKey: string): Promise<void> {
     const hosts = parseHosts();
     if (hosts.length === 0) {
       console.info('No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.');
@@ -89,7 +89,7 @@ export class AutobyteusImageModelProvider {
         continue;
       }
 
-      const client = new AutobyteusClient(hostUrl);
+      const client = new AutobyteusClient(hostUrl, apiKey);
       try {
         const response = await client.getAvailableImageModelsSync();
         const models = isRecord(response) ? response.models : null;
@@ -140,6 +140,7 @@ export class AutobyteusImageModelProvider {
             name,
             value,
             provider,
+            authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
             clientClass: AutobyteusImageClient,
             runtime: MultimediaRuntime.AUTOBYTEUS,
             hostUrl: hostUrl,

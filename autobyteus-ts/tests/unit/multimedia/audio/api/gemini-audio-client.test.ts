@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import fs from 'node:fs/promises';
 import { GeminiAudioClient } from '../../../../../src/multimedia/audio/api/gemini-audio-client.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
+import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
 
 const generateContentMock = vi.fn();
 
@@ -41,7 +42,10 @@ describe('GeminiAudioClient', () => {
     });
 
     const model = { name: 'gemini-tts', value: 'gemini-2.5-flash-preview-tts' } as any;
-    const client = new GeminiAudioClient(model, new MultimediaConfig());
+    const client = new GeminiAudioClient(
+      model,
+      multimediaApiKeyContext(new MultimediaConfig(), 'synthetic-gemini-key'),
+    );
 
     const response = await client.generateSpeech('hello');
     expect(response.audio_urls.length).toBe(1);

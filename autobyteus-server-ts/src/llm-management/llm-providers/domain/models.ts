@@ -2,13 +2,20 @@ import type { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 
 export type LlmProviderStatus = 'READY' | 'STALE_ERROR' | 'ERROR' | 'NOT_APPLICABLE';
 
+export type CredentialStatusProjection = {
+  backendHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE';
+  storageState: 'MISSING' | 'CONFIGURED' | null;
+  lifecycle: 'WRITABLE' | 'EXTERNALLY_MANAGED' | null;
+  instructionCode: string | null;
+};
+
 export type LlmProviderRecord = {
   id: string;
   name: string;
   providerType: LLMProvider;
   isCustom: boolean;
   baseUrl: string | null;
-  apiKeyConfigured: boolean;
+  credentialStatus: CredentialStatusProjection | null;
   status: LlmProviderStatus;
   statusMessage: string | null;
 };

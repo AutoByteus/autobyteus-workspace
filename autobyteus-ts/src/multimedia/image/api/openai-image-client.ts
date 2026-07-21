@@ -10,6 +10,8 @@ import { ImageGenerationResponse } from '../../utils/response-types.js';
 import { downloadFileFromUrl } from '../../../utils/download-utils.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
+import { requireApiKeyAuthentication } from '../../../llm/llm-construction-context.js';
 
 function mimeTypeFromFormat(outputFormat: string | null | undefined): string {
   const fmt = (outputFormat ?? 'png').toLowerCase();
@@ -57,12 +59,9 @@ async function makeTempFile(extension = 'png'): Promise<string> {
 export class OpenAIImageClient extends BaseImageClient {
   private client: OpenAI;
 
-  constructor(model: ImageModel, config: MultimediaConfig) {
-    super(model, config);
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is not set.');
-    }
+  constructor(model: ImageModel, context: MultimediaConstructionContext) {
+    super(model, context.config);
+    const apiKey = requireApiKeyAuthentication(context.authentication, 'OpenAI image');
 
     this.client = new OpenAI({ apiKey, baseURL: 'https://api.openai.com/v1' });
   }

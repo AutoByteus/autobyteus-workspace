@@ -10,6 +10,10 @@ import {
   parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
+import { LEGACY_SECRET_ALIASES } from "../secret-management/migration/legacy-secret-cutover-migration.js";
+
+const forbiddenGenericSettingNames = new Set<string>(LEGACY_SECRET_ALIASES);
+const sensitiveSettingNamePattern = /(?:API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -214,15 +218,10 @@ export class AppConfig {
 
   private loadEnvironmentInternal(): void {
     const envPath = this.getConfigFilePath();
-    console.info(`Loading environment from: ${envPath}`);
-    const result = dotenv.config({ path: envPath });
-    if (result.error) {
-      const message = `Failed to load environment variables from ${envPath}`;
-      console.error(`ERROR: ${message}`);
-      throw new Error(message);
-    }
+    console.info(`Loading non-secret configuration from: ${envPath}`);
+    if (!fs.existsSync(envPath)) throw new Error("Configuration file does not exist");
     process.env.LOG_LEVEL ??= "INFO";
-    console.info("Environment variables loaded successfully");
+    console.info("Non-secret configuration parsed without process-wide injection");
   }
 
   private initializeBaseUrl(): void {
@@ -459,6 +458,9 @@ export class AppConfig {
   }
 
   set(key: string, value: string): void {
+    if (forbiddenGenericSettingNames.has(key) || sensitiveSettingNamePattern.test(key)) {
+      throw new AppConfigError("Sensitive values must be written through a subject-specific secret service.");
+    }
     this.configData[key] = value;
     process.env[key] = value;
 
@@ -488,14 +490,6 @@ export class AppConfig {
         );
       }
     }
-  }
-
-  setLlmApiKey(provider: string, apiKey: string): void {
-    this.set(`${provider.toUpperCase()}_API_KEY`, apiKey);
-  }
-
-  getLlmApiKey(provider: string): string | undefined {
-    return this.get(`${provider.toUpperCase()}_API_KEY`);
   }
 
   isInitialized(): boolean {

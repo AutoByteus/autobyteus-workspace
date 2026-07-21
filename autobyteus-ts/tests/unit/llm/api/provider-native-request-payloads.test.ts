@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
-import { GeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
-import { MistralLLM } from '../../../../src/llm/api/mistral-llm.js';
-import { OllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
-import { OpenAIResponsesLLM } from '../../../../src/llm/api/openai-responses-llm.js';
+import { AnthropicLLM as ProductionAnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
+import { GeminiLLM as ProductionGeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
+import { MistralLLM as ProductionMistralLLM } from '../../../../src/llm/api/mistral-llm.js';
+import { OllamaLLM as ProductionOllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
+import { OpenAIResponsesLLM as ProductionOpenAIResponsesLLM } from '../../../../src/llm/api/openai-responses-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -17,6 +17,7 @@ import {
   ToolResultPayload,
   type ToolCallSpec
 } from '../../../../src/llm/utils/messages.js';
+import { llmApiKeyContext, llmNoAuthContext } from '../../explicit-auth-test-helpers.js';
 
 const originalEnv = { ...process.env };
 
@@ -40,6 +41,42 @@ const model = (
     provider,
     ...extra
   });
+
+class GeminiLLM extends ProductionGeminiLLM {
+  constructor(inputModel = model(LLMProvider.GEMINI, 'gemini-2.5-pro'), config = new LLMConfig()) {
+    super(inputModel, llmApiKeyContext(config, 'synthetic-gemini-key'));
+  }
+}
+
+class OllamaLLM extends ProductionOllamaLLM {
+  constructor(inputModel: LLMModel, config = new LLMConfig()) {
+    super(inputModel, llmNoAuthContext(config));
+  }
+}
+
+class AnthropicLLM extends ProductionAnthropicLLM {
+  constructor(inputModel: LLMModel, config = new LLMConfig()) {
+    super(inputModel, llmApiKeyContext(config, 'synthetic-anthropic-key'));
+  }
+}
+
+class MistralLLM extends ProductionMistralLLM {
+  constructor(inputModel: LLMModel, config = new LLMConfig()) {
+    super(inputModel, llmApiKeyContext(config, 'synthetic-mistral-key'));
+  }
+}
+
+class OpenAIResponsesLLM extends ProductionOpenAIResponsesLLM {
+  constructor(
+    inputModel: LLMModel,
+    _legacyAlias: string,
+    baseUrl: string,
+    config = new LLMConfig(),
+    _legacyApiKeyDefault?: string,
+  ) {
+    super(inputModel, baseUrl, llmApiKeyContext(config, 'synthetic-openai-key'));
+  }
+}
 
 const callA: ToolCallSpec = {
   id: 'call_a',
@@ -281,13 +318,6 @@ describe('provider-native API request payloads', () => {
     process.env = {
       ...originalEnv,
       AUTOBYTEUS_STREAM_PARSER: 'api_tool_call',
-      VERTEX_AI_API_KEY: '',
-      VERTEX_AI_PROJECT: '',
-      VERTEX_AI_LOCATION: '',
-      GEMINI_API_KEY: 'test-gemini-key',
-      ANTHROPIC_API_KEY: 'test-anthropic-key',
-      MISTRAL_API_KEY: 'test-mistral-key',
-      OPENAI_API_KEY: 'test-openai-key'
     };
   });
 

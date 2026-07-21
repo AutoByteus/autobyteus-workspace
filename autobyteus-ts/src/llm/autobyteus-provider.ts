@@ -107,7 +107,7 @@ export class AutobyteusModelProvider {
     }
   }
 
-  static async getModels(): Promise<LLMModel[]> {
+  static async getModels(apiKey: string): Promise<LLMModel[]> {
     const hosts = AutobyteusModelProvider.getHosts();
     if (!hosts.length) {
       console.info('No Autobyteus LLM server hosts configured. Skipping discovery.');
@@ -126,7 +126,7 @@ export class AutobyteusModelProvider {
       let client: AutobyteusClient | null = null;
 
       try {
-        client = new AutobyteusClient(hostUrl);
+        client = new AutobyteusClient(hostUrl, apiKey);
         const response = await client.getAvailableLlmModelsSync();
 
         if (!AutobyteusModelProvider.validateServerResponse(response)) {
@@ -160,6 +160,7 @@ export class AutobyteusModelProvider {
               name: String(modelInfo.name),
               value: String(modelInfo.value),
               provider,
+              authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
               llmClass: AutobyteusLLM,
               canonicalName: (modelInfo.canonical_name as string | undefined) ?? String(modelInfo.name),
               runtime: LLMRuntime.AUTOBYTEUS,
@@ -198,10 +199,10 @@ export class AutobyteusModelProvider {
     return allModels;
   }
 
-  static async discoverAndRegister(): Promise<number> {
+  static async discoverAndRegister(apiKey: string): Promise<number> {
     try {
       const { LLMFactory } = await import('./llm-factory.js');
-      const discoveredModels = await AutobyteusModelProvider.getModels();
+      const discoveredModels = await AutobyteusModelProvider.getModels(apiKey);
       let registeredCount = 0;
 
       for (const model of discoveredModels) {

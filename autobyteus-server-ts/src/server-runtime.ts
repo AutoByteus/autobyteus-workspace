@@ -45,6 +45,8 @@ import { getManagedMessagingGatewayService } from "./managed-capabilities/messag
 import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
 import { stopMemorySyncWorker } from "./memory-sync/source/memory-sync-worker.js";
 import type { ServerOptions } from "./app.js";
+import { getSecretStorageConfigurationService } from "./secret-management/configuration/secret-storage-configuration-service.js";
+import { registerProvisionedSearchTool } from "./agent-tools/search/register-search-tool.js";
 
 const logger = createServerLogger("server.runtime");
 
@@ -53,6 +55,7 @@ export type BuildAppOptions = {
 };
 
 export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstance> {
+  registerProvisionedSearchTool();
   const loggingConfig = options?.loggingConfig ?? getLoggingConfigFromEnv(process.env);
   const app = fastify({
     logger: getFastifyLoggerOptions(loggingConfig),
@@ -88,6 +91,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
     await stopChannelRunOutputDeliveryRuntime();
     await stopGatewayCallbackDeliveryRuntime();
     await getManagedMessagingGatewayService().close();
+    await getSecretStorageConfigurationService().close();
   });
 
   return app;
@@ -130,6 +134,11 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     logger.error(`Failed to initialize runtime logging: ${String(error)}`);
     process.exit(1);
   }
+
+  await getSecretStorageConfigurationService().bootstrap({
+    serverDataDir: appConfigProvider.config.getAppDataDir(),
+    configurationFile: appConfigProvider.config.get("AUTOBYTEUS_SECRET_STORAGE_CONFIG_FILE"),
+  });
 
   try {
     runMigrations();

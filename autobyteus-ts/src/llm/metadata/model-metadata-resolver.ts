@@ -1,9 +1,5 @@
 import { LLMProvider } from '../providers.js';
-import { AnthropicModelMetadataProvider } from './anthropic-model-metadata-provider.js';
 import { getCuratedModelMetadata } from './curated-model-metadata.js';
-import { GeminiModelMetadataProvider } from './gemini-model-metadata-provider.js';
-import { KimiModelMetadataProvider } from './kimi-model-metadata-provider.js';
-import { MistralModelMetadataProvider } from './mistral-model-metadata-provider.js';
 
 export interface ResolvedModelMetadata {
   maxContextTokens: number | null;
@@ -101,15 +97,8 @@ export class ModelMetadataResolver {
     providerResolvers?: Partial<Record<LLMProvider, ProviderModelMetadataProvider>>,
     options?: ModelMetadataResolverOptions
   ) {
-    this.providerResolvers = providerResolvers ?? {
-      [LLMProvider.ANTHROPIC]: new AnthropicModelMetadataProvider(),
-      [LLMProvider.GEMINI]: new GeminiModelMetadataProvider(),
-      [LLMProvider.KIMI]: new KimiModelMetadataProvider(),
-      [LLMProvider.MISTRAL]: new MistralModelMetadataProvider()
-    };
-    this.providerLoadTimeoutMs = normalizeTimeoutMs(
-      options?.providerLoadTimeoutMs ?? process.env.LLM_MODEL_METADATA_TIMEOUT_MS
-    );
+    this.providerResolvers = providerResolvers ?? {};
+    this.providerLoadTimeoutMs = normalizeTimeoutMs(options?.providerLoadTimeoutMs);
   }
 
   async resolve(lookup: SupportedModelMetadataLookup): Promise<ResolvedModelMetadata> {

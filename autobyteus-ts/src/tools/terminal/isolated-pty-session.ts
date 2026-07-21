@@ -6,6 +6,7 @@ import {
   formatNodePtySpawnHelperDiagnostics,
   getNodePtySpawnHelperDiagnostics,
 } from './node-pty-bootstrap.js';
+import { buildAgentChildEnvironment } from './agent-child-environment.js';
 
 const DEFAULT_COLS = 80;
 const DEFAULT_ROWS = 24;
@@ -71,14 +72,13 @@ export class IsolatedPtySession {
 
     const child = spawn(process.execPath, ['--input-type=module', '--eval', ISOLATED_PTY_BRIDGE_SOURCE], {
       cwd,
-      env: {
-        ...process.env,
+      env: buildAgentChildEnvironment(process.env, {
         TERM: 'xterm-256color',
         PS1: '\\w $ ',
         AUTOBYTEUS_PTY_BRIDGE_COLS: String(DEFAULT_COLS),
         AUTOBYTEUS_PTY_BRIDGE_ROWS: String(DEFAULT_ROWS),
         AUTOBYTEUS_PTY_BRIDGE_REQUIRE_FROM: fileURLToPath(import.meta.url)
-      },
+      }),
       stdio: ['pipe', 'pipe', 'pipe', 'ipc']
     });
 

@@ -1,21 +1,16 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import axios from 'axios';
 import { SerpApiSearchStrategy } from '../../../../src/tools/search/serpapi-strategy.js';
 
-const originalEnv = { ...process.env };
 
 describe('SerpApiSearchStrategy', () => {
-  beforeEach(() => {
-    process.env.SERPAPI_API_KEY = 'test-key';
-  });
 
   afterEach(() => {
-    process.env = { ...originalEnv };
     vi.restoreAllMocks();
   });
 
   it('formats organic results', () => {
-    const strategy = new SerpApiSearchStrategy();
+    const strategy = new SerpApiSearchStrategy('synthetic-test-key');
     const output = (strategy as any).formatResults({
       organic_results: [
         { title: 'Result 1', link: 'http://example.com', snippet: 'Snippet 1' }
@@ -27,7 +22,7 @@ describe('SerpApiSearchStrategy', () => {
   });
 
   it('returns fallback when no organic results', () => {
-    const strategy = new SerpApiSearchStrategy();
+    const strategy = new SerpApiSearchStrategy('synthetic-test-key');
     const output = (strategy as any).formatResults({});
     expect(output).toBe('No relevant information found for the query via SerpApi.');
   });
@@ -38,7 +33,7 @@ describe('SerpApiSearchStrategy', () => {
       data: { organic_results: [{ title: 'Title', link: 'Link', snippet: 'Snippet' }] }
     } as any);
 
-    const strategy = new SerpApiSearchStrategy();
+    const strategy = new SerpApiSearchStrategy('synthetic-test-key');
     await expect(strategy.search('query', 3)).resolves.toContain('Search Results:');
   });
 
@@ -48,7 +43,7 @@ describe('SerpApiSearchStrategy', () => {
       data: { error: 'server error' }
     } as any);
 
-    const strategy = new SerpApiSearchStrategy();
+    const strategy = new SerpApiSearchStrategy('synthetic-test-key');
     await expect(strategy.search('query', 3)).rejects.toThrow(
       'SerpApi API request failed with status 500:'
     );

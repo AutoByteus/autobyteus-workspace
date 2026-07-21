@@ -3,16 +3,19 @@ import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseVideoClient } from './base-video-client.js';
+import type { MultimediaConstructionContext } from '../multimedia-construction-context.js';
+import type { LLMAuthenticationRequirement } from '../../llm/llm-construction-context.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type VideoClientConstructor = new (model: VideoModel, config: MultimediaConfig) => BaseVideoClient;
+type VideoClientConstructor = new (model: VideoModel, context: MultimediaConstructionContext) => BaseVideoClient;
 
 export interface VideoModelOptions {
   name: string;
   value: string;
   provider: MultimediaProvider;
   clientClass: VideoClientConstructor;
+  authenticationRequirement: LLMAuthenticationRequirement;
   parameterSchema?: ParameterSchemaInput;
   runtime?: MultimediaRuntime;
   hostUrl?: string | null;
@@ -24,6 +27,7 @@ export class VideoModel {
   value: string;
   provider: MultimediaProvider;
   clientClass: VideoClientConstructor;
+  authenticationRequirement: LLMAuthenticationRequirement;
   runtime: MultimediaRuntime;
   hostUrl?: string | null;
   description?: string | null;
@@ -35,6 +39,7 @@ export class VideoModel {
     this.value = options.value;
     this.provider = options.provider;
     this.clientClass = options.clientClass;
+    this.authenticationRequirement = options.authenticationRequirement;
     this.runtime = options.runtime ?? MultimediaRuntime.API;
     this.hostUrl = options.hostUrl;
     this.description = options.description ?? null;
@@ -71,15 +76,18 @@ export class VideoModel {
     return this.name;
   }
 
-  createClient(configOverride?: MultimediaConfig | null): BaseVideoClient {
+  createClient(context: {
+    configOverride?: MultimediaConfig | null;
+    authentication: MultimediaConstructionContext['authentication'];
+  }): BaseVideoClient {
     let configToUse = this.defaultConfig;
-    if (configOverride) {
+    if (context.configOverride) {
       const cloned = new MultimediaConfig({ ...this.defaultConfig.params });
-      cloned.mergeWith(configOverride);
+      cloned.mergeWith(context.configOverride);
       configToUse = cloned;
     }
 
-    return new this.clientClass(this, configToUse);
+    return new this.clientClass(this, { config: configToUse, authentication: context.authentication });
   }
 
   toString(): string {

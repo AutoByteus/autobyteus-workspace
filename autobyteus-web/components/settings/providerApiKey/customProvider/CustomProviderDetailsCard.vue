@@ -9,7 +9,7 @@
       <button
         type="button"
         class="inline-flex items-center rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-        :disabled="deleting"
+        :disabled="disabled || deleting"
         data-testid="delete-custom-provider-button"
         @click="emit('delete')"
       >
@@ -50,6 +50,7 @@ import type { ProviderSummary } from '~/components/settings/providerApiKey/usePr
 defineProps<{
   provider: ProviderSummary
   deleting: boolean
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{

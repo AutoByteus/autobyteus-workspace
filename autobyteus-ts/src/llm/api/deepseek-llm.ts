@@ -3,6 +3,7 @@ import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { LLMProvider } from '../providers.js';
 import { DeepSeekChatRenderer } from '../prompt-renderers/deepseek-chat-renderer.js';
+import type { LLMConstructionContext } from '../llm-construction-context.js';
 
 type DeepSeekThinkingType = 'enabled' | 'disabled';
 
@@ -49,19 +50,8 @@ function normalizeDeepSeekExtraParams(extraParams?: Record<string, unknown>): Re
 }
 
 export class DeepSeekLLM extends OpenAICompatibleLLM {
-  constructor(model?: LLMModel, llmConfig?: LLMConfig) {
-    const effectiveModel =
-      model ??
-      new LLMModel({
-        name: 'deepseek-v4-flash',
-        value: 'deepseek-v4-flash',
-        canonicalName: 'deepseek-v4-flash',
-        provider: LLMProvider.DEEPSEEK
-      });
-
-    const config = llmConfig ?? new LLMConfig();
-
-    super(effectiveModel, 'DEEPSEEK_API_KEY', 'https://api.deepseek.com', config);
+  constructor(model: LLMModel, context: LLMConstructionContext) {
+    super(model, 'https://api.deepseek.com', context);
     this.config.extraParams = normalizeDeepSeekExtraParams(this.config.extraParams);
     this._renderer = new DeepSeekChatRenderer();
   }

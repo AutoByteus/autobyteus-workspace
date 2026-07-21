@@ -7,6 +7,18 @@ import { setActivePinia } from 'pinia'
 import { useProviderApiKeySectionRuntime } from '../useProviderApiKeySectionRuntime'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 
+
+const configuredCredentialStatus = {
+  backendHealth: 'READY' as const,
+  storageState: 'CONFIGURED' as const,
+  lifecycle: 'WRITABLE' as const,
+  instructionCode: null,
+}
+const missingCredentialStatus = {
+  ...configuredCredentialStatus,
+  storageState: 'MISSING' as const,
+}
+
 const { localizationState } = vi.hoisted(() => ({
   localizationState: {
     translations: {
@@ -58,7 +70,7 @@ const openAiRow = {
     providerType: 'OPENAI',
     isCustom: false,
     baseUrl: null,
-    apiKeyConfigured: false,
+    credentialStatus: missingCredentialStatus,
     status: 'NOT_APPLICABLE',
     statusMessage: null,
   },
@@ -72,7 +84,7 @@ const anthropicRow = {
     providerType: 'ANTHROPIC',
     isCustom: false,
     baseUrl: null,
-    apiKeyConfigured: true,
+    credentialStatus: configuredCredentialStatus,
     status: 'NOT_APPLICABLE',
     statusMessage: null,
   },
@@ -86,7 +98,7 @@ const customProviderRow = {
     providerType: 'OPENAI_COMPATIBLE',
     isCustom: true,
     baseUrl: 'https://gateway.example.com/v1',
-    apiKeyConfigured: true,
+    credentialStatus: configuredCredentialStatus,
     status: 'READY',
     statusMessage: null,
   },
@@ -100,7 +112,7 @@ const geminiRow = {
     providerType: 'GEMINI',
     isCustom: false,
     baseUrl: null,
-    apiKeyConfigured: false,
+    credentialStatus: missingCredentialStatus,
     status: 'NOT_APPLICABLE',
     statusMessage: null,
   },
@@ -139,8 +151,8 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
         videoProvidersWithModels: [],
         geminiSetup: {
           mode: 'AI_STUDIO',
-          geminiApiKeyConfigured: false,
-          vertexApiKeyConfigured: false,
+          geminiCredentialStatus: missingCredentialStatus,
+          vertexCredentialStatus: missingCredentialStatus,
           vertexProject: null,
           vertexLocation: null,
         },
@@ -158,7 +170,7 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
   const store = useLLMProviderConfigStore()
   store.fetchProvidersWithModels = vi.fn().mockResolvedValue(store.providersWithModels)
   store.fetchGeminiSetupConfig = vi.fn().mockResolvedValue(store.geminiSetup)
-  store.getLLMProviderApiKeyConfigured = vi.fn().mockResolvedValue(false)
+  store.getLLMProviderCredentialStatus = vi.fn().mockResolvedValue(false)
   store.setLLMProviderApiKey = vi.fn().mockResolvedValue(true)
   store.setGeminiSetupConfig = vi.fn().mockResolvedValue(true)
   store.reloadModels = vi.fn().mockResolvedValue(true)
@@ -175,7 +187,7 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
     providerType: 'OPENAI_COMPATIBLE',
     isCustom: true,
     baseUrl: 'https://gateway.example.com/v1',
-    apiKeyConfigured: true,
+    credentialStatus: configuredCredentialStatus,
     status: 'READY',
     statusMessage: null,
   })
@@ -205,8 +217,8 @@ describe('useProviderApiKeySectionRuntime', () => {
     await flushPromises()
 
     expect((wrapper.vm as any).selectedProviderId).toBe('ANTHROPIC')
-    expect((wrapper.vm as any).providerConfigs.ANTHROPIC.apiKeyConfigured).toBe(true)
-    expect(store.getLLMProviderApiKeyConfigured).not.toHaveBeenCalled()
+    expect((wrapper.vm as any).providerConfigs.ANTHROPIC.credentialStatus.storageState).toBe('CONFIGURED')
+    expect(store.getLLMProviderCredentialStatus).not.toHaveBeenCalled()
   })
 
   it('keeps built-in provider API-key save orchestration in the runtime', async () => {
@@ -227,8 +239,8 @@ describe('useProviderApiKeySectionRuntime', () => {
       providersWithModels: [deepFreeze(geminiRow)],
       geminiSetup: {
         mode: 'AI_STUDIO',
-        geminiApiKeyConfigured: false,
-        vertexApiKeyConfigured: false,
+        geminiCredentialStatus: missingCredentialStatus,
+        vertexCredentialStatus: missingCredentialStatus,
         vertexProject: null,
         vertexLocation: null,
       },
@@ -236,8 +248,8 @@ describe('useProviderApiKeySectionRuntime', () => {
     store.setGeminiSetupConfig = vi.fn().mockImplementation(async () => {
       store.geminiSetup = {
         mode: 'AI_STUDIO',
-        geminiApiKeyConfigured: true,
-        vertexApiKeyConfigured: false,
+        geminiCredentialStatus: configuredCredentialStatus,
+        vertexCredentialStatus: missingCredentialStatus,
         vertexProject: null,
         vertexLocation: null,
       }

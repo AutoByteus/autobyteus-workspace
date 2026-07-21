@@ -1,8 +1,13 @@
 import gql from 'graphql-tag';
 
-export const GET_LLM_PROVIDER_API_KEY_CONFIGURED = gql`
-  query GetLLMProviderApiKeyConfigured($providerId: String!) {
-    getLlmProviderApiKeyConfigured(providerId: $providerId)
+export const GET_LLM_PROVIDER_CREDENTIAL_STATUS = gql`
+  query GetLLMProviderCredentialStatus($providerId: String!) {
+    getLlmProviderCredentialStatus(providerId: $providerId) {
+      backendHealth
+      storageState
+      lifecycle
+      instructionCode
+    }
   }
 `;
 
@@ -17,7 +22,12 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         providerType
         isCustom
         baseUrl
-        apiKeyConfigured
+        credentialStatus {
+          backendHealth
+          storageState
+          lifecycle
+          instructionCode
+        }
         status
         statusMessage
       }
@@ -49,7 +59,12 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         providerType
         isCustom
         baseUrl
-        apiKeyConfigured
+        credentialStatus {
+          backendHealth
+          storageState
+          lifecycle
+          instructionCode
+        }
         status
         statusMessage
       }
@@ -75,7 +90,12 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         providerType
         isCustom
         baseUrl
-        apiKeyConfigured
+        credentialStatus {
+          backendHealth
+          storageState
+          lifecycle
+          instructionCode
+        }
         status
         statusMessage
       }
@@ -101,7 +121,12 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         providerType
         isCustom
         baseUrl
-        apiKeyConfigured
+        credentialStatus {
+          backendHealth
+          storageState
+          lifecycle
+          instructionCode
+        }
         status
         statusMessage
       }
@@ -125,8 +150,18 @@ export const GET_GEMINI_SETUP_CONFIG = gql`
   query GetGeminiSetupConfig {
     getGeminiSetupConfig {
       mode
-      geminiApiKeyConfigured
-      vertexApiKeyConfigured
+      geminiCredentialStatus {
+        backendHealth
+        storageState
+        lifecycle
+        instructionCode
+      }
+      vertexCredentialStatus {
+        backendHealth
+        storageState
+        lifecycle
+        instructionCode
+      }
       vertexProject
       vertexLocation
     }

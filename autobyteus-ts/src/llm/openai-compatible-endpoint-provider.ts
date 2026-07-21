@@ -1,8 +1,5 @@
 import type { CustomLlmProviderRecord } from './custom-llm-provider-config.js';
-import {
-  OpenAICompatibleEndpointDiscovery,
-  type OpenAICompatibleEndpointDiscoveredModel,
-} from './openai-compatible-endpoint-discovery.js';
+import type { OpenAICompatibleEndpointDiscoveredModel } from './openai-compatible-endpoint-discovery.js';
 import { OpenAICompatibleEndpointModel } from './openai-compatible-endpoint-model.js';
 
 export type OpenAICompatibleEndpointReloadStatusKind =
@@ -22,6 +19,12 @@ export type OpenAICompatibleEndpointReloadStatus = {
 export type OpenAICompatibleEndpointReloadReport = {
   models: OpenAICompatibleEndpointModel[];
   statuses: OpenAICompatibleEndpointReloadStatus[];
+};
+
+export type OpenAICompatibleEndpointDiscoveryResult = {
+  endpoint: CustomLlmProviderRecord;
+  discoveredModels?: OpenAICompatibleEndpointDiscoveredModel[];
+  errorMessage?: string | null;
 };
 
 const truncateStatusMessage = (message: string | null | undefined): string | null => {
@@ -51,24 +54,20 @@ const sortModels = <T extends { endpointDisplayName: string; name: string; model
     });
 
 export class OpenAICompatibleEndpointModelProvider {
-  constructor(
-    private readonly discovery: Pick<typeof OpenAICompatibleEndpointDiscovery, 'probeEndpoint'> =
-      OpenAICompatibleEndpointDiscovery,
-  ) {}
-
   async reloadSavedEndpoints(
-    endpoints: CustomLlmProviderRecord[],
+    results: OpenAICompatibleEndpointDiscoveryResult[],
     previousModelsByEndpoint: ReadonlyMap<string, OpenAICompatibleEndpointModel[]> = new Map(),
   ): Promise<OpenAICompatibleEndpointReloadReport> {
     const aggregatedModels: OpenAICompatibleEndpointModel[] = [];
     const statuses: OpenAICompatibleEndpointReloadStatus[] = [];
 
-    for (const endpoint of endpoints) {
+    for (const result of results) {
+      const endpoint = result.endpoint;
       try {
-        const discoveredModels = await this.discovery.probeEndpoint({
-          baseUrl: endpoint.baseUrl,
-          apiKey: endpoint.apiKey,
-        });
+        if (!result.discoveredModels) {
+          throw new Error(result.errorMessage ?? 'Credential-backed discovery was unavailable.');
+        }
+        const discoveredModels = result.discoveredModels;
         const nextModels = this.createModelsForEndpoint(endpoint, discoveredModels);
         aggregatedModels.push(...nextModels);
         statuses.push({
@@ -80,7 +79,7 @@ export class OpenAICompatibleEndpointModelProvider {
         });
       } catch (error) {
         const previousModels = previousModelsByEndpoint.get(endpoint.id) ?? [];
-        const message = truncateStatusMessage(error instanceof Error ? error.message : String(error));
+        const message = truncateStatusMessage(result.errorMessage ?? (error instanceof Error ? error.message : String(error)));
 
         if (previousModels.length > 0) {
           aggregatedModels.push(...previousModels);

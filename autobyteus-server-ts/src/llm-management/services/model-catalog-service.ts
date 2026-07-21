@@ -30,6 +30,10 @@ import {
   getAutobyteusModelCatalog,
   type AutobyteusModelCatalog,
 } from './autobyteus-model-catalog.js';
+import {
+  getModelMetadataProvisioningService,
+  type ModelMetadataProvisioningService,
+} from './model-metadata-provisioning-service.js';
 
 const DEFAULT_RUNTIME_KIND = RuntimeKind.AUTOBYTEUS;
 
@@ -41,6 +45,8 @@ export class ModelCatalogService {
     private readonly audioModelService: AudioModelService = getAudioModelService(),
     private readonly imageModelService: ImageModelService = getImageModelService(),
     private readonly videoModelService: VideoModelService = getVideoModelService(),
+    private readonly metadataProvisioningService: ModelMetadataProvisioningService =
+      getModelMetadataProvisioningService(),
   ) {}
 
   async listLlmModels(runtimeKind?: string | null): Promise<ModelInfo[]> {
@@ -51,13 +57,16 @@ export class ModelCatalogService {
         return this.codexModelCatalog.listModels();
       case RuntimeKind.AUTOBYTEUS:
       default:
-        return this.autobyteusModelCatalog.listModels();
+        return this.metadataProvisioningService.enrich(
+          await this.autobyteusModelCatalog.listModels(),
+        );
     }
   }
 
   async reloadLlmModels(runtimeKind?: string | null): Promise<void> {
     switch (this.resolveRuntimeKind(runtimeKind)) {
       case RuntimeKind.AUTOBYTEUS:
+        this.metadataProvisioningService.invalidate();
         await this.autobyteusModelCatalog.reloadModels();
         return;
       case RuntimeKind.CLAUDE_AGENT_SDK:
@@ -73,6 +82,7 @@ export class ModelCatalogService {
   ): Promise<number> {
     switch (this.resolveRuntimeKind(runtimeKind)) {
       case RuntimeKind.AUTOBYTEUS:
+        this.metadataProvisioningService.invalidate();
         return this.autobyteusModelCatalog.reloadModelsForProvider(providerId);
       case RuntimeKind.CLAUDE_AGENT_SDK:
       case RuntimeKind.CODEX_APP_SERVER: {

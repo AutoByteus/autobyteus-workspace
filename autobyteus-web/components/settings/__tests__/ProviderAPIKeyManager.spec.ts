@@ -3,6 +3,18 @@ import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import ProviderAPIKeyManager from '../ProviderAPIKeyManager.vue'
 
+
+const configuredCredentialStatus = {
+  backendHealth: 'READY' as const,
+  storageState: 'CONFIGURED' as const,
+  lifecycle: 'WRITABLE' as const,
+  instructionCode: null,
+}
+const missingCredentialStatus = {
+  ...configuredCredentialStatus,
+  storageState: 'MISSING' as const,
+}
+
 const flushPromises = async () => {
   await Promise.resolve()
   await new Promise<void>((resolve) => setTimeout(resolve, 0))
@@ -38,8 +50,8 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   isReloadingModels: ref(false),
   geminiSetup: ref({
     mode: 'AI_STUDIO',
-    geminiApiKeyConfigured: false,
-    vertexApiKeyConfigured: false,
+    geminiCredentialStatus: missingCredentialStatus,
+    vertexCredentialStatus: missingCredentialStatus,
     vertexProject: null,
     vertexLocation: null,
   }),
@@ -52,7 +64,7 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
       isCustom: false,
       providerType: 'OPENAI',
       baseUrl: null,
-      apiKeyConfigured: true,
+      credentialStatus: configuredCredentialStatus,
       status: 'NOT_APPLICABLE',
       statusMessage: null,
     },
@@ -66,7 +78,7 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
     isCustom: false,
     providerType: 'OPENAI',
     baseUrl: null,
-    apiKeyConfigured: true,
+    credentialStatus: configuredCredentialStatus,
     status: 'NOT_APPLICABLE',
     statusMessage: null,
   }),
@@ -75,6 +87,8 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   selectedProviderAudioModels: ref([]),
   selectedProviderImageModels: ref([]),
   selectedProviderConfigured: ref(true),
+  canWriteSelectedCredential: ref(true),
+  credentialWriteInstruction: ref(null),
   canReloadSelectedProvider: ref(true),
   isReloadingSelectedProvider: ref(false),
   isProviderConfigured: vi.fn().mockReturnValue(true),
@@ -156,7 +170,7 @@ describe('ProviderAPIKeyManager', () => {
           isDraft: true,
           providerType: 'OPENAI_COMPATIBLE',
           baseUrl: null,
-          apiKeyConfigured: false,
+          credentialStatus: missingCredentialStatus,
           status: 'NOT_APPLICABLE',
           statusMessage: null,
         },
@@ -171,7 +185,7 @@ describe('ProviderAPIKeyManager', () => {
         isDraft: true,
         providerType: 'OPENAI_COMPATIBLE',
         baseUrl: null,
-        apiKeyConfigured: false,
+        credentialStatus: missingCredentialStatus,
         status: 'NOT_APPLICABLE',
         statusMessage: null,
       }),
@@ -196,7 +210,7 @@ describe('ProviderAPIKeyManager', () => {
         isCustom: true,
         providerType: 'OPENAI_COMPATIBLE',
         baseUrl: 'https://gateway.example.com/v1',
-        apiKeyConfigured: true,
+        credentialStatus: configuredCredentialStatus,
         status: 'READY',
         statusMessage: 'Loaded 2 models',
       }),
@@ -223,7 +237,7 @@ describe('ProviderAPIKeyManager', () => {
         isCustom: false,
         providerType: 'GEMINI',
         baseUrl: null,
-        apiKeyConfigured: false,
+        credentialStatus: missingCredentialStatus,
         status: 'NOT_APPLICABLE',
         statusMessage: null,
       }),

@@ -16,6 +16,7 @@ export * from './task-management/schemas/index.js';
 export * from './task-management/tools/index.js';
 export * from './external-channel/index.js';
 export * from './llm/index.js';
+export * from './secrets/index.js';
 export * from './memory/index.js';
 export * from './agent/context/index.js';
 export * from './agent/factory/index.js';

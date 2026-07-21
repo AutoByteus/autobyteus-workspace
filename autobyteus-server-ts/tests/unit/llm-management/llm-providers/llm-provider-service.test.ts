@@ -30,12 +30,24 @@ describe('LlmProviderService', () => {
     probeEndpoint: vi.fn(),
   };
 
+  const secretManagement = {
+    saveForConsumer: vi.fn(),
+    removeForConsumer: vi.fn(),
+    getStatusForConsumer: vi.fn(),
+  };
+
+  const secretStorageConfiguration = {
+    requireManagementService: vi.fn(() => secretManagement),
+    snapshot: vi.fn(),
+  };
+
   const createService = () => new LlmProviderService(
     builtInCatalog as any,
     customProviderStore as any,
     customProviderRuntimeSyncService as any,
     modelCatalogService as any,
     discovery as any,
+    secretStorageConfiguration as any,
   );
 
   beforeEach(() => {
@@ -84,6 +96,19 @@ describe('LlmProviderService', () => {
     discovery.probeEndpoint.mockResolvedValue([
       { id: 'model-a', name: 'Model A' },
     ]);
+    secretManagement.saveForConsumer.mockReset();
+    secretManagement.removeForConsumer.mockReset();
+    secretManagement.getStatusForConsumer.mockReset();
+    secretManagement.getStatusForConsumer.mockResolvedValue({
+      health: { state: 'READY' },
+      secret: { storageState: 'CONFIGURED', lifecycle: { kind: 'WRITABLE' } },
+    });
+    secretStorageConfiguration.requireManagementService.mockClear();
+    secretStorageConfiguration.snapshot.mockReset();
+    secretStorageConfiguration.snapshot.mockResolvedValue({
+      health: { state: 'READY' },
+      lifecycle: { kind: 'WRITABLE' },
+    });
   });
 
   it('rejects built-in provider name collisions after normalization', async () => {
@@ -93,7 +118,7 @@ describe('LlmProviderService', () => {
       name: '  OpenAI  ',
       providerType: 'OPENAI_COMPATIBLE',
       baseUrl: 'https://gateway.example.com/v1/',
-      apiKey: 'secret',
+      apiKey: 'synthetic-test-key',
     })).rejects.toThrow("Provider name 'OpenAI' conflicts with existing provider 'OpenAI'.");
 
     expect(discovery.probeEndpoint).not.toHaveBeenCalled();
@@ -116,7 +141,7 @@ describe('LlmProviderService', () => {
       name: '  my   gateway ',
       providerType: 'OPENAI_COMPATIBLE',
       baseUrl: 'https://gateway.example.com/v1/',
-      apiKey: 'secret',
+      apiKey: 'synthetic-test-key',
     })).rejects.toThrow("Provider name 'my gateway' conflicts with existing provider 'My Gateway'.");
 
     expect(discovery.probeEndpoint).not.toHaveBeenCalled();
@@ -147,7 +172,10 @@ describe('LlmProviderService', () => {
       name: 'Internal Gateway',
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'secret',
+    });
+    expect(secretManagement.saveForConsumer).toHaveBeenCalledWith({
+      consumer: { kind: 'llm', providerId: 'provider_gateway', credentialSlot: 'apiKey' },
+      value: expect.anything(),
     });
     expect(modelCatalogService.reloadLlmModelsForProvider).toHaveBeenCalledWith('provider_gateway', 'autobyteus');
     expect(result).toEqual(expect.objectContaining({
@@ -156,7 +184,9 @@ describe('LlmProviderService', () => {
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       isCustom: true,
       baseUrl: 'https://gateway.example.com/v1',
-      apiKeyConfigured: true,
+      credentialStatus: {
+        backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
+      },
       status: 'READY',
       statusMessage: null,
     }));
@@ -168,13 +198,15 @@ describe('LlmProviderService', () => {
       name: 'Internal Gateway',
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'secret',
     });
 
     const service = createService();
     const deletedName = await service.deleteCustomProvider('provider_gateway', 'autobyteus');
 
     expect(customProviderStore.deleteProvider).toHaveBeenCalledWith('provider_gateway');
+    expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
+      kind: 'llm', providerId: 'provider_gateway', credentialSlot: 'apiKey',
+    });
     expect(modelCatalogService.reloadLlmModels).toHaveBeenCalledWith('autobyteus');
     expect(modelCatalogService.reloadLlmModelsForProvider).not.toHaveBeenCalled();
     expect(deletedName).toBe('Internal Gateway');

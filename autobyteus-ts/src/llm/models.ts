@@ -4,6 +4,10 @@ import { LLMConfig } from './utils/llm-config.js';
 import { ParameterSchema } from '../utils/parameter-schema.js';
 import { BaseLLM } from './base.js';
 import { getLlmProviderDisplayName } from './provider-display-names.js';
+import type {
+  LLMAuthenticationRequirement,
+  LLMConstructionContext,
+} from './llm-construction-context.js';
 
 export interface LLMModelOptions {
   name: string;
@@ -11,7 +15,8 @@ export interface LLMModelOptions {
   provider: LLMProvider;
   providerId?: string;
   providerName?: string;
-  llmClass?: new (model: LLMModel, config: LLMConfig) => BaseLLM;
+  llmClass?: new (model: LLMModel, context: LLMConstructionContext) => BaseLLM;
+  authenticationRequirement: LLMAuthenticationRequirement;
   canonicalName: string;
   defaultConfig?: LLMConfig;
   maxContextTokens?: number | null;
@@ -51,7 +56,8 @@ export class LLMModel {
   public provider: LLMProvider;
   public providerId: string;
   public providerName: string;
-  public llmClass?: new (model: LLMModel, config: LLMConfig) => BaseLLM;
+  public llmClass?: new (model: LLMModel, context: LLMConstructionContext) => BaseLLM;
+  public authenticationRequirement: LLMAuthenticationRequirement;
   public defaultConfig: LLMConfig;
   public maxContextTokens: number | null;
   public activeContextTokens: number | null;
@@ -73,6 +79,7 @@ export class LLMModel {
     this.providerId = options.providerId?.trim() || String(this.provider);
     this.providerName = options.providerName?.trim() || getLlmProviderDisplayName(this.provider);
     this.llmClass = options.llmClass;
+    this.authenticationRequirement = options.authenticationRequirement;
     this.defaultConfig = options.defaultConfig || new LLMConfig();
     this.maxContextTokens = options.maxContextTokens ?? this.defaultConfig.tokenLimit ?? null;
     this.activeContextTokens = options.activeContextTokens ?? null;

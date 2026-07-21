@@ -3,111 +3,66 @@ import { SearchClientFactory } from '../../../../src/tools/search/factory.js';
 import { SerperSearchStrategy } from '../../../../src/tools/search/serper-strategy.js';
 import { SerpApiSearchStrategy } from '../../../../src/tools/search/serpapi-strategy.js';
 import { VertexAISearchStrategy } from '../../../../src/tools/search/vertex-ai-search-strategy.js';
-
-const originalEnv = { ...process.env };
+import { SearchProvider } from '../../../../src/tools/search/providers.js';
+import { SecretValue } from '../../../../src/secrets/secret-value.js';
 
 const resetFactory = () => {
   (SearchClientFactory as any).instance = undefined;
 };
 
-const clearSearchEnv = () => {
-  process.env.DEFAULT_SEARCH_PROVIDER = '';
-  process.env.SERPER_API_KEY = '';
-  process.env.SERPAPI_API_KEY = '';
-  process.env.VERTEX_AI_SEARCH_API_KEY = '';
-  process.env.VERTEX_AI_SEARCH_SERVING_CONFIG = '';
-};
+const syntheticApiKey = () => SecretValue.fromString('synthetic-test-key');
 
 describe('SearchClientFactory', () => {
   beforeEach(() => {
-    process.env = { ...originalEnv };
-    clearSearchEnv();
     resetFactory();
   });
 
   afterEach(() => {
-    process.env = { ...originalEnv };
     resetFactory();
   });
 
-  it('creates Serper strategy when configured explicitly', () => {
-    process.env.DEFAULT_SEARCH_PROVIDER = 'serper';
-    process.env.SERPER_API_KEY = 'serper-key';
-
+  it('creates Serper strategy from an explicit resolved credential', () => {
     const factory = new SearchClientFactory();
-    const client = factory.createSearchClient();
+    const client = factory.createSearchClient({
+      provider: SearchProvider.SERPER,
+      apiKey: syntheticApiKey(),
+    });
 
     expect((client as any).strategy).toBeInstanceOf(SerperSearchStrategy);
   });
 
-  it('creates SerpApi strategy when configured explicitly', () => {
-    process.env.DEFAULT_SEARCH_PROVIDER = 'serpapi';
-    process.env.SERPAPI_API_KEY = 'serpapi-key';
-
+  it('creates SerpApi strategy from an explicit resolved credential', () => {
     const factory = new SearchClientFactory();
-    const client = factory.createSearchClient();
+    const client = factory.createSearchClient({
+      provider: SearchProvider.SERPAPI,
+      apiKey: syntheticApiKey(),
+    });
 
     expect((client as any).strategy).toBeInstanceOf(SerpApiSearchStrategy);
   });
 
-  it('creates Vertex AI Search strategy when configured explicitly', () => {
-    process.env.DEFAULT_SEARCH_PROVIDER = 'vertex_ai_search';
-    process.env.VERTEX_AI_SEARCH_API_KEY = 'vertex-key';
-    process.env.VERTEX_AI_SEARCH_SERVING_CONFIG =
-      'projects/p/locations/global/collections/default_collection/engines/e/servingConfigs/default_search';
-
+  it('creates Vertex AI Search strategy from explicit credential and serving config', () => {
     const factory = new SearchClientFactory();
-    const client = factory.createSearchClient();
+    const client = factory.createSearchClient({
+      provider: SearchProvider.VERTEX_AI_SEARCH,
+      apiKey: syntheticApiKey(),
+      servingConfig:
+        'projects/p/locations/global/collections/default_collection/engines/e/servingConfigs/default_search',
+    });
 
     expect((client as any).strategy).toBeInstanceOf(VertexAISearchStrategy);
   });
 
-  it('defaults to Serper when available and no provider specified', () => {
-    process.env.SERPER_API_KEY = 'serper-key';
-
+  it('returns a new client instance for each explicit resolution', () => {
     const factory = new SearchClientFactory();
-    const client = factory.createSearchClient();
-
-    expect((client as any).strategy).toBeInstanceOf(SerperSearchStrategy);
-  });
-
-  it('falls back to SerpApi when Serper unavailable', () => {
-    process.env.SERPAPI_API_KEY = 'serpapi-key';
-
-    const factory = new SearchClientFactory();
-    const client = factory.createSearchClient();
-
-    expect((client as any).strategy).toBeInstanceOf(SerpApiSearchStrategy);
-  });
-
-  it('falls back to Vertex AI Search when Serper and SerpApi unavailable', () => {
-    process.env.VERTEX_AI_SEARCH_API_KEY = 'vertex-key';
-    process.env.VERTEX_AI_SEARCH_SERVING_CONFIG =
-      'projects/p/locations/global/collections/default_collection/engines/e/servingConfigs/default_search';
-
-    const factory = new SearchClientFactory();
-    const client = factory.createSearchClient();
-
-    expect((client as any).strategy).toBeInstanceOf(VertexAISearchStrategy);
-  });
-
-  it('throws when no provider is configured', () => {
-    const factory = new SearchClientFactory();
-    expect(() => factory.createSearchClient()).toThrow('No search provider is configured');
-  });
-
-  it('throws for removed google_cse provider', () => {
-    process.env.DEFAULT_SEARCH_PROVIDER = 'google_cse';
-    const factory = new SearchClientFactory();
-    expect(() => factory.createSearchClient()).toThrow("DEFAULT_SEARCH_PROVIDER 'google_cse' is no longer supported");
-  });
-
-  it('returns a new client instance on subsequent calls (ensures fresh config)', () => {
-    process.env.SERPER_API_KEY = 'serper-key';
-
-    const factory = new SearchClientFactory();
-    const first = factory.createSearchClient();
-    const second = factory.createSearchClient();
+    const first = factory.createSearchClient({
+      provider: SearchProvider.SERPER,
+      apiKey: syntheticApiKey(),
+    });
+    const second = factory.createSearchClient({
+      provider: SearchProvider.SERPER,
+      apiKey: syntheticApiKey(),
+    });
 
     expect(first).not.toBe(second);
   });

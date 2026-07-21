@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { AutobyteusImageClient } from '../../../../../src/multimedia/image/api/autobyteus-image-client.js';
+import { AutobyteusImageClient as ProductionAutobyteusImageClient } from '../../../../../src/multimedia/image/api/autobyteus-image-client.js';
 import { ImageModel } from '../../../../../src/multimedia/image/image-model.js';
 import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
 import { MultimediaRuntime } from '../../../../../src/multimedia/runtimes.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
 import { ImageGenerationResponse } from '../../../../../src/multimedia/utils/response-types.js';
+import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
 
 const { generateImageMock, cleanupImageSessionMock, closeMock, MockAutobyteusClient } = vi.hoisted(() => {
   const generateImageMock = vi.fn();
@@ -28,6 +29,12 @@ const { generateImageMock, cleanupImageSessionMock, closeMock, MockAutobyteusCli
 vi.mock('../../../../../src/clients/autobyteus-client.js', () => ({
   AutobyteusClient: MockAutobyteusClient
 }));
+
+class AutobyteusImageClient extends ProductionAutobyteusImageClient {
+  constructor(model: ImageModel, config = new MultimediaConfig()) {
+    super(model, multimediaApiKeyContext(config, 'synthetic-autobyteus-key'));
+  }
+}
 
 describe('AutobyteusImageClient', () => {
   beforeEach(() => {

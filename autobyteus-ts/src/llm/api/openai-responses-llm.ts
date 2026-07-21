@@ -10,6 +10,10 @@ import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js'
 import { createOpenAIResponsesRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
+import {
+  requireApiKeyAuthentication,
+  type LLMConstructionContext,
+} from '../llm-construction-context.js';
 
 type ResponseInputItem = Record<string, unknown>;
 type ResponseOutputItem = Record<string, unknown>;
@@ -30,29 +34,14 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
   constructor(
     model: LLMModel,
-    apiKeyEnvVar: string,
     baseUrl: string,
-    llmConfig?: LLMConfig,
-    apiKeyDefault?: string
+    context: LLMConstructionContext,
   ) {
-    const effectiveConfig = model.defaultConfig ? model.defaultConfig.clone() : new LLMConfig();
-    if (llmConfig) {
-      effectiveConfig.mergeWith(llmConfig);
-    }
-
-    let apiKey = process.env[apiKeyEnvVar];
-    if ((!apiKey || apiKey === '') && apiKeyDefault) {
-      apiKey = apiKeyDefault;
-    }
-
-    if (!apiKey) {
-      throw new Error(`Missing API key. Set env var ${apiKeyEnvVar} or provide apiKeyDefault.`);
-    }
-
-    super(model, effectiveConfig);
+    const apiKey = requireApiKeyAuthentication(context.authentication, model.providerName);
+    super(model, context.config);
 
     this.client = new OpenAIClient({ apiKey, baseURL: baseUrl });
-    this.maxTokens = effectiveConfig.maxTokens ?? null;
+    this.maxTokens = context.config.maxTokens ?? null;
     this._renderer = createOpenAIResponsesRendererForToolFormat();
   }
 

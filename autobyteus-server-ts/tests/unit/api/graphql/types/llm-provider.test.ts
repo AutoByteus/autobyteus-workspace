@@ -19,7 +19,9 @@ const mockModelCatalogService = vi.hoisted(() => ({
 }));
 
 const mockLlmProviderService = vi.hoisted(() => ({
-  getProviderApiKeyConfigured: vi.fn(),
+  getProviderCredentialStatus: vi.fn(),
+  getGeminiCredentialStatus: vi.fn(),
+  setGeminiSetup: vi.fn(),
   listProvidersWithModels: vi.fn(),
   setProviderApiKey: vi.fn(),
   probeCustomProvider: vi.fn(),
@@ -35,7 +37,9 @@ const mockBuiltInCatalog = vi.hoisted(() => ({
     providerType: providerId,
     isCustom: false,
     baseUrl: null,
-    apiKeyConfigured: providerId === 'OPENAI',
+    credentialStatus: providerId === 'OPENAI' ? {
+      backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
+    } : null,
     status: 'NOT_APPLICABLE',
     statusMessage: null,
   })),
@@ -82,7 +86,9 @@ describe('LlmProviderResolver', () => {
     mockModelCatalogService.listImageModels.mockResolvedValue([]);
     mockModelCatalogService.listVideoModels.mockResolvedValue([]);
 
-    mockLlmProviderService.getProviderApiKeyConfigured.mockReset();
+    mockLlmProviderService.getProviderCredentialStatus.mockReset();
+    mockLlmProviderService.getGeminiCredentialStatus.mockReset();
+    mockLlmProviderService.setGeminiSetup.mockReset();
     mockLlmProviderService.listProvidersWithModels.mockReset();
     mockLlmProviderService.setProviderApiKey.mockReset();
     mockLlmProviderService.probeCustomProvider.mockReset();
@@ -94,27 +100,27 @@ describe('LlmProviderResolver', () => {
     mockBuiltInCatalog.getProvider.mockClear();
   });
 
-  it('infers AI_STUDIO when only Gemini API key is present', () => {
-    mockConfig.get.mockImplementation((key: string) => ({
-      GEMINI_API_KEY: 'gemini-key',
-      VERTEX_AI_API_KEY: '',
-      VERTEX_AI_PROJECT: '',
-      VERTEX_AI_LOCATION: '',
-    }[key] ?? ''));
-
+  it('returns the rich Gemini setup status through the provider service', async () => {
+    const status = {
+      mode: 'AI_STUDIO',
+      geminiCredentialStatus: {
+        backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
+      },
+      vertexCredentialStatus: {
+        backendHealth: 'READY', storageState: 'MISSING', lifecycle: 'WRITABLE', instructionCode: null,
+      },
+      vertexProject: null,
+      vertexLocation: null,
+    };
+    mockLlmProviderService.getGeminiCredentialStatus.mockResolvedValue(status);
     const resolver = new LlmProviderResolver();
-    const setup = resolver.getGeminiSetupConfig();
-
-    expect(setup.mode).toBe('AI_STUDIO');
-    expect(setup.geminiApiKeyConfigured).toBe(true);
-    expect(setup.vertexApiKeyConfigured).toBe(false);
-    expect(setup.vertexProject).toBeNull();
-    expect(setup.vertexLocation).toBeNull();
+    await expect(resolver.getGeminiSetupConfig()).resolves.toEqual(status);
   });
 
-  it('saves VERTEX_PROJECT mode and clears non-selected Gemini fields', () => {
+  it('saves VERTEX_PROJECT mode through the provider service without raw-key aliases', async () => {
+    mockLlmProviderService.setGeminiSetup.mockResolvedValue(undefined);
     const resolver = new LlmProviderResolver();
-    const result = resolver.setGeminiSetupConfig(
+    const result = await resolver.setGeminiSetupConfig(
       'VERTEX_PROJECT',
       null,
       null,
@@ -123,20 +129,22 @@ describe('LlmProviderResolver', () => {
     );
 
     expect(result).toContain('saved successfully');
-    expect(mockConfig.set).toHaveBeenCalledWith('VERTEX_AI_PROJECT', 'project-id');
-    expect(mockConfig.set).toHaveBeenCalledWith('VERTEX_AI_LOCATION', 'europe-west4');
-    expect(mockConfig.set).toHaveBeenCalledWith('GEMINI_API_KEY', '');
-    expect(mockConfig.set).toHaveBeenCalledWith('VERTEX_AI_API_KEY', '');
+    expect(mockLlmProviderService.setGeminiSetup).toHaveBeenCalledWith({
+      mode: 'VERTEX_PROJECT', project: 'project-id', location: 'europe-west4',
+    });
   });
 
-  it('returns configured status through the provider service', async () => {
-    mockLlmProviderService.getProviderApiKeyConfigured.mockResolvedValue(true);
+  it('returns rich credential status through the provider service', async () => {
+    const status = {
+      backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
+    };
+    mockLlmProviderService.getProviderCredentialStatus.mockResolvedValue(status);
 
     const resolver = new LlmProviderResolver();
-    const configured = await resolver.getLlmProviderApiKeyConfigured('OPENAI');
+    const configured = await resolver.getLlmProviderCredentialStatus('OPENAI');
 
-    expect(configured).toBe(true);
-    expect(mockLlmProviderService.getProviderApiKeyConfigured).toHaveBeenCalledWith('OPENAI');
+    expect(configured).toEqual(status);
+    expect(mockLlmProviderService.getProviderCredentialStatus).toHaveBeenCalledWith('OPENAI');
   });
 
   it('returns provider objects for availableLlmProvidersWithModels', async () => {
@@ -148,7 +156,9 @@ describe('LlmProviderResolver', () => {
           providerType: 'OPENAI_COMPATIBLE',
           isCustom: true,
           baseUrl: 'https://gateway.example.com/v1',
-          apiKeyConfigured: true,
+          credentialStatus: {
+            backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
+          },
           status: 'READY',
           statusMessage: null,
         },
@@ -267,7 +277,9 @@ describe('LlmProviderResolver', () => {
       providerType: 'OPENAI_COMPATIBLE',
       isCustom: true,
       baseUrl: 'https://gateway.example.com/v1',
-      apiKeyConfigured: true,
+      credentialStatus: {
+        backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
+      },
       status: 'READY',
       statusMessage: null,
     });
@@ -277,14 +289,14 @@ describe('LlmProviderResolver', () => {
       name: 'Internal Gateway',
       providerType: 'OPENAI_COMPATIBLE',
       baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'secret',
+      apiKey: 'synthetic-test-key',
     }, 'autobyteus');
 
     expect(mockLlmProviderService.createCustomProvider).toHaveBeenCalledWith({
       name: 'Internal Gateway',
       providerType: 'OPENAI_COMPATIBLE',
       baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'secret',
+      apiKey: 'synthetic-test-key',
     }, 'autobyteus');
     expect(result).toEqual(expect.objectContaining({
       id: 'provider_gateway',
