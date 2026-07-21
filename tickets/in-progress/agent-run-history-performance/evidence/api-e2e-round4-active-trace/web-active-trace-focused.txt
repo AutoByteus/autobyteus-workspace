@@ -1,0 +1,77 @@
+command=pnpm test:nuxt components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts graphql/queries/__tests__/runHistoryQueries.spec.ts services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts --run --maxWorkers=2
+started_utc=2026-07-20T14:53:05Z
+
+> autobyteus@1.4.19 test:nuxt /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts graphql/queries/__tests__/runHistoryQueries.spec.ts services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (10 tests) 57ms
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (7 tests) 929ms
+   ✓ recent Event Monitor production dispatch coverage > keeps standalone center and Activity state bounded and duplicate-free after 1,001 mixed live messages  493ms
+   ✓ recent Event Monitor production dispatch coverage > keeps team-member center and Activity state bounded and duplicate-free after 1,001 mixed live messages  427ms
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (3 tests) 22ms
+stdout | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts (6 tests) 16ms
+stderr | components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts (1 test) 12ms
+stdout | services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts (4 tests) 6ms
+stderr | graphql/queries/__tests__/runHistoryQueries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | graphql/queries/__tests__/runHistoryQueries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ graphql/queries/__tests__/runHistoryQueries.spec.ts (5 tests) 4ms
+
+ Test Files  7 passed (7)
+      Tests  36 passed (36)
+   Start at  14:53:10
+   Duration  18.16s (transform 5.11s, setup 26.28s, collect 587ms, tests 1.05s, environment 3.54s, prepare 1.80s)
+
+finished_utc=2026-07-20T14:53:29Z
+exit_code=0

@@ -1,0 +1,159 @@
+command=pnpm exec vitest run tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts --no-watch --maxWorkers=1
+cwd=/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-server-ts
+head=155d0eb192ffc0f5272813a514811cc15dcde821
+started_utc=2026-07-20T14:51:46Z
+
+ RUN  v4.0.18 /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:65742) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e
+Platform detection: Windows=false
+App root directory: /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-server-ts
+App data directory: /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-server-ts
+Custom app data directory set to: /tmp/recent-run-projection-gql-CLlTzZ
+Updated config file path to /tmp/recent-run-projection-gql-CLlTzZ/.env
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.
+No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive
+[recent-run-projection-metrics] {"fixtureBytes":5416102,"canonicalActiveEvents":620,"returnedConversationRows":100,"returnedActivityRows":0,"payloadBytes":868832,"totalMs":32.229}
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+Memory file missing: /tmp/recent-run-projection-gql-CLlTzZ/memory/agents/active-page-275-member/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /tmp/recent-run-projection-gql-CLlTzZ/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stderr | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+Memory file missing: /tmp/recent-run-projection-gql-CLlTzZ/memory/agents/active-page-closed-payload/raw_traces_manifest.json
+
+stdout | tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log payload
+[active-trace-page-closed-payload-metrics] {"fixtureBytes":4861018,"returnedEvents":3,"returnedVisuals":7,"serializedEventBytes":2371,"totalMs":11.43}
+
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (6 tests | 2 failed) 346ms
+     ✓ projects the newest 100 events from a >=5 MB active file without reading or changing its standalone archive 102ms
+     ✓ projects a team member from active traces only and preserves its archive bytes 10ms
+     × traverses exactly 275 standalone active events in fixed pages without opening archives 49ms
+     × traverses exactly 275 team-member active events and rejects its cursor for another subject 33ms
+     ✓ keeps a cursor valid across append and expires it after an atomic active rewrite 24ms
+     ✓ serializes production media and shallow tool state without multi-megabyte result or log payload 59ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives
+AssertionError: expected [ …(5) ] to not include '/tmp/recent-run-projection-gql-CLlTzZ…'
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:495:29
+    493|     expect(reads.paths).toContain(path.resolve(files.activePath));
+    494|     expect(reads.paths).not.toContain(path.resolve(files.archivePath));
+    495|     expect(reads.paths).not.toContain(path.resolve(files.manifestPath)…
+       |                             ^
+    496|     expect(await Promise.all([
+    497|       sha256(files.activePath), sha256(files.archivePath), sha256(file…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject
+AssertionError: expected [ …(5) ] to not include '/tmp/recent-run-projection-gql-CLlTzZ…'
+ ❯ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts:550:29
+    548|     expect(reads.paths).toContain(path.resolve(files.activePath));
+    549|     expect(reads.paths).not.toContain(path.resolve(files.archivePath));
+    550|     expect(reads.paths).not.toContain(path.resolve(files.manifestPath)…
+       |                             ^
+    551|     expect(await sha256(files.archivePath)).toBe(archiveHashBefore);
+    552|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  14:51:47
+   Duration  8.34s (transform 4.78s, setup 28ms, import 7.17s, tests 346ms, environment 0ms)

@@ -5,10 +5,10 @@
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
 - Supplemental Task Artifacts Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
-- Current Review Round: `4`
-- Trigger: Fresh full source/structural review of the architecture-round-8 active-trace-only `Load 50 earlier` refinement at `a210ad1dfd00bbf76ca6f13cbc9ee02f012ab1be` relative to reviewed checkpoint `a391b0222f1fdfa38ce26df4d239277e09b506f7`.
-- Prior Review Round Reviewed: `3`
-- Latest Authoritative Round: `4`
+- Current Review Round: `5`
+- Trigger: Source rereview of the round-4 Local Fix at source commit `9c188af7e` and handoff HEAD `155d0eb192ffc0f5272813a514811cc15dcde821`, relative to paging implementation `a210ad1dfd00bbf76ca6f13cbc9ee02f012ab1be`.
+- Prior Review Round Reviewed: `4`
+- Latest Authoritative Round: `5`
 - Investigation Notes Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Design Spec Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
 - Design Review Report Reviewed As Context: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 8 `Pass`)
@@ -16,108 +16,100 @@
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - Failing Scenario IDs: `N/A`
-- Exact Failing Commands / Execution Mode: Reviewer focused server suite passed 4 files / 17 tests. Two disposable reviewer probes then exposed the findings: a server production-media-shape probe failed because `{images:[...]}` projected `[]`; a Nuxt component probe failed because prepending an older same-turn visual remounted the keyed assistant row and changed its state from `open` to `closed`. Both probes were removed; the only working-tree change is this report.
-- Failure Evidence Paths: Source and command evidence are recorded below; disposable probe files were intentionally not retained as durable tests.
+- Exact Failing Commands / Execution Mode: Reviewer reran the three changed server media/projection/provider specs (3 files / 13 tests passed) and four changed/relevant Nuxt browse/feed specs (4 files / 21 tests passed, `maxWorkers=2`). `git diff --check a210ad1df..HEAD` and the changed-source size audit passed.
+- Failure Evidence Paths: `N/A`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial implementation at `d50cf2cc` | N/A | `CR-001`, `CR-002` | Fail | No | Transient mutation could falsely revise an unchanged bounded presentation; team reopen replacement omitted baseline reset. |
-| 2 | Rework at `0b35f3c5` | `CR-001`, `CR-002`, architecture `AR-003` | None | Pass | No | Net bounded witness and lifecycle reset fixes resolved the findings. |
-| 3 | Latest-base composition at `c13ba233a` | Prior resolutions preserved | None | Pass | No | Integrated file-action/attachment work preserved the reviewed revision path. |
-| 4 | Fresh active-trace paging implementation at `a210ad1df` | `CR-001`, `CR-002`, `AR-003` | `CR-003`–`CR-006` | Fail | Yes | Paging structure is generally sound, but production images are dropped, browse attachment semantics drift, browse mode can lack an exit, and a reachable page-boundary regroup remounts retained disclosure state. |
+| 1 | Initial implementation at `d50cf2cc` | N/A | `CR-001`, `CR-002` | Fail | No | Transient mutation could falsely revise an unchanged presentation; team reopen omitted baseline reset. |
+| 2 | Rework at `0b35f3c5` | `CR-001`, `CR-002`, architecture `AR-003` | None | Pass | No | Net witness and lifecycle reset fixes resolved the findings. |
+| 3 | Latest-base composition at `c13ba233a` | Prior resolutions preserved | None | Pass | No | Integrated file-action/attachment work preserved the reviewed path. |
+| 4 | Active-trace paging at `a210ad1df` | `CR-001`, `CR-002`, `AR-003` | `CR-003`–`CR-006` | Fail | No | Production media, attachment semantics, browse exit, and keyed disclosure identity required Local Fix. |
+| 5 | Local Fix at `9c188af7e` / handoff `155d0eb19` | `CR-003`–`CR-006` plus prior resolutions | None | Pass | Yes | Production media is typed end to end, attachment semantics are shared, every browse state has one exit, and stable turn-group/visual keys preserve disclosure state. |
 
-## Prior Findings Resolution Check (Mandatory On Round >1)
+## Prior Findings Resolution Check
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `CR-001` | High / Design Impact | Remains resolved | The new delta does not alter the bounded pre/post witness authority; `recentEventMonitorMutationCommit.ts` only adds earlier-availability on actual retention. | No effect-OR or deep snapshot path was restored. |
-| 1 | `CR-002` | Medium / Local Fix | Remains resolved | Non-live replacement still resets presentation revision and now copies earlier-availability; subscribed-live preservation remains intact. | No lifecycle regression found. |
-| Architecture round 4 | `AR-003` | High / Design Impact | Remains resolved | Page projection is separate and shallow; the existing latest-mode witness/tool derivations remain unchanged. | Result/log recursion is still excluded. |
+| 1 | `CR-001` | High / Design Impact | Remains resolved | The fix does not alter bounded pre/post witness authority. | No effect-OR/deep snapshot restored. |
+| 1 | `CR-002` | Medium / Local Fix | Remains resolved | Non-live replacement reset and subscribed-live preservation remain intact. | No lifecycle regression. |
+| Architecture round 4 | `AR-003` | High / Design Impact | Remains resolved | Page projection remains shallow and result/log-free; latest witness path is unchanged. | No recursive page conversion. |
+| 4 | `CR-003` | High / Local Fix | Resolved | `MemoryTraceEvent` and replay/page types now use shared `RawTraceMedia`; normalizer accepts only `images/audio/video`; projector maps `images -> image`. Raw-normalizer, projector, and provider tests prove user/assistant/tool images and stable IDs. | Reviewer server rerun passed 3 files / 13 tests. |
+| 4 | `CR-004` | Medium / Local Fix | Resolved | Browse conversion calls `hydrateContextAttachment` and then restores the server `attachmentId`. Tests cover workspace, external, REST, uploaded, canonical-local, and duplicate locators. | Established open/preview classification is shared without broad conversation hydration. |
+| 4 | `CR-005` | Medium / Local Fix | Resolved | The bottom Jump action is shown for every non-latest, non-expired state; expiry uses one top recovery control. Both paths are real focused buttons with click/Enter/Space coverage. | No duplicate expiry control. |
+| 4 | `CR-006` | Medium / Local Fix | Resolved | Assistant parent identity now uses stable source `turnGroupId`; each subvisual remains keyed/anchored by `visualId`. Feed-level tests prove the same retained disclosure DOM/component survives prepend and newer turnover with equal-content neighbors distinct. | Reviewer Nuxt rerun passed. |
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: active-trace identity construction; active snapshot/generation/cursor selection; standalone/team GraphQL page APIs; closed central DTO projection; page query adapter; isolated browse controller; 300-visual turnover; browse conversion/rendering; boundary/retry/beginning/expiry/jump behavior; stable anchor/disclosure identity; hydration/live availability propagation; preservation of latest-mode behavior.
-- Files / areas reviewed: all implementation-source files in `a391b0222..a210ad1df`, relevant focused tests, generated GraphQL shape, and the cumulative approved artifact chain.
-- Explicit exclusions: historical pre-round-8 API/E2E and delivery reports are context only; fresh API/E2E must not start until these source findings are resolved and source review passes. Tests/generated code are excluded from source-size thresholds.
+- Changed implementation and behavior reviewed: only the Local Fix delta plus the affected production paths for `CR-003`–`CR-006`; preservation of the complete active-trace paging architecture and prior latest-mode resolutions was rechecked.
+- Files / areas reviewed: shared raw media model; raw normalizer; replay identity/types; page projector; browse attachment/group conversion; feed browse/expiry controls; changed provider/converter/feed tests; updated implementation handoff and rendered evidence.
+- Explicit exclusions: historical pre-refinement API/E2E and delivery reports remain context only. Fresh API/E2E against this source state is still mandatory downstream. Tests/generated code remain excluded from source-size thresholds.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `REQ-010`–`REQ-012` and `AC-012`–`AC-015` add explicit active-only fixed paging while preserving `REQ-001`–`REQ-009` latest/live behavior.
-- Design-spec behavior map verified against the implementation: server active-source, cursor, DTO, subject, controller, and feed paths exist as mapped. Four local implementation contradictions occur after those boundaries.
-- Design review report and round confirmed: round 8 `Pass`, including resolved `AR-006`/`AR-007` and material premises `MP-AR-006`/`MP-AR-007`.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. Findings concern approved behavior already in the package.
+- Approved requirements basis understood: `REQ-010`–`REQ-012`, `AC-012`–`AC-015`, while preserving `REQ-001`–`REQ-009`.
+- Design-spec behavior map verified against the implementation: active snapshot -> replay identity/lifecycle -> fixed selector -> closed DTO -> explicit subject query -> isolated controller -> stable page presentation/feed remains the implemented path.
+- Design review report and round confirmed: architecture round 8 `Pass`.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: None.
 - Remaining material ambiguity, if any: None.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Evidence |
 | --- | --- | --- | --- |
-| `DS-006` | Contradicted | Active snapshot -> replay identity/lifecycle -> fixed selector -> closed central projector -> GraphQL. | The projector reads `media.image`, while the production `RawTraceMedia` contract writes `media.images`, so image visuals/attachments disappear (`CR-003`). |
-| `DS-007` | Contradicted | Explicit subject -> page fetch -> ID validation/block turnover -> presentation -> keyed feed/anchor/reset. | Attachment locator classification is replaced with `external_url` (`CR-004`); ordinary browse/beginning/error can lack Return to latest (`CR-005`); same-turn prepend changes the assistant parent key and remounts disclosure state (`CR-006`). |
-| `DS-001`–`DS-005` | Confirmed | Normal active-only latest projection, completed-first central/Activity bounds, semantic revision, scroll, and reset owners remain present and are not structurally displaced by browse state. | None. |
+| `DS-006` | Confirmed | Canonical `RawTraceMedia` normalization -> replay carrier -> fixed page projector mapping `images` to typed image attachments/media -> closed GraphQL union. | None. |
+| `DS-007` | Confirmed | Explicit subject fetch -> validated blocks/turnover -> shared attachment classification -> stable turn-group parent and visual child keys -> anchor/exit/reset feed. | None. |
+| `DS-001`–`DS-005` | Confirmed | Normal active-only latest projection, lifecycle-aware bounds, semantic revision, scrolling, Activity cap, and reset paths remain unchanged except additive earlier-availability propagation. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The round-8 package has explicit identity, DTO, paging, turnover, and live-validation decisions. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | UI/UX requires a browse exit and retained disclosure identity; current feed violates both. | Resolve `CR-005`, `CR-006`. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | The spine is clear, but the production raw-media key is lost at the central projector. | Resolve `CR-003`. |
-| Ownership boundary preservation and clarity | Pass | Snapshot, selection, projection, service, controller, conversion, and scroll owners are separated. | None. |
-| Off-spine concern clarity | Pass | Localization, accessibility, generation, and file actions remain explicit supporting concerns. | None. |
-| Existing capability/subsystem reuse check | Fail | Browse attachment conversion bypasses the established context-attachment classification owner. | Resolve `CR-004`. |
-| Reusable owned structures check | Fail | Raw media is represented as a loose `Record<string,string[]>` at the new projector boundary, allowing `image`/`images` contract drift. | Use the production media contract or a narrow canonical adapter and cross-boundary tests. |
-| Shared-structure/data-model tightness check | Fail | Closed DTO shape is good, but its media input boundary is not tight enough to preserve production data. | Resolve `CR-003`; keep output union closed. |
-| Repeated coordination ownership check | Pass | Page state/merge/turnover is singular in the browse controller; request routing is singular in the page service. | None. |
-| Empty indirection check | Pass | New layers own meaningful I/O, policy, conversion, or rendering work. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Network/page state stays out of the feed; DOM anchoring stays in the feed. | None. |
-| Ownership-driven dependency check | Pass | No archive/file-browser shortcut or canonical-store page merge is introduced. | None. |
-| Authoritative Boundary Rule check | Pass | Resolvers use services; feed receives prepared browse state; callers do not recompute cursor/turnover policy. | None. |
-| File placement check | Pass | Files live under run-history, GraphQL, Event Monitor, or workspace component owners. | None. |
-| Flat-vs-over-split layout judgment | Pass | The new capability is split by real responsibilities without excessive pass-through files. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | Separate standalone/team subjects, no client limit/archive/path input, opaque cursor, and closed response are explicit. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Names accurately describe active trace, page, browse, generation, and presentation roles. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Shared projector/policy/controller serve both standalone and team paths. | None. |
-| Patch-on-patch complexity control | Pass | Browse state is isolated rather than layered into canonical conversation/Activity. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No temporary probe, archive fallback, old copy path, or duplicate page owner remains. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Existing media tests use the non-production `image` key; row test mutates a child directly and misses parent-key remount; no browse-state exit test exists. | Add production-shape and feed-level regressions for `CR-003`–`CR-006`. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing builders are focused and reusable; the issue is missing/incorrect vectors rather than test organization. | Correct vectors while preserving structure. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Fail | The projector test's singular image fixture asserts behavior the production raw contract cannot produce. | Replace it with the actual `RawTraceMedia.images` shape. |
-| API/E2E readiness for the next workflow stage | Fail | Two reviewer probes fail and two additional source contradictions are direct. | Local fix, source rereview, then fresh API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved | Pass | Round-8 identity, closed DTO, paging, turnover, and live-separation decisions are preserved. | None. |
+| Implementation matches behavior-defining supplemental artifacts | Pass | Browse exits, beginning/expiry states, keyboard focus, stable disclosure, and source boundary now match the UI/UX spec. | None. |
+| Data-flow spine inventory clarity and preservation | Pass | Production media now stays typed through normalization/replay/projector; page IDs continue to DOM. | None. |
+| Ownership boundary preservation and clarity | Pass | Snapshot, selection, projection, service, controller, conversion, and feed owners remain distinct. | None. |
+| Off-spine concern clarity | Pass | Localization, accessibility, generation, file actions, and attachment interaction serve clear owners. | None. |
+| Existing capability/subsystem reuse check | Pass | Browse attachments reuse the context-attachment model rather than duplicating classification. | None. |
+| Reusable owned structures check | Pass | Shared `RawTraceMedia`, attachment hydrator, page projector, and browse controller own repeated semantics. | None. |
+| Shared-structure/data-model tightness check | Pass | Raw media is no longer a loose page-boundary record; the output DTO remains closed and result/log-free. | None. |
+| Repeated coordination ownership check | Pass | Page merge/turnover/reset and fixed server policy remain singular. | None. |
+| Empty indirection check | Pass | Each new layer performs meaningful I/O, policy, conversion, state, or rendering work. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The fix stays in canonical media, conversion, and feed owners. | None. |
+| Ownership-driven dependency check | Pass | The narrow shared media/attachment imports introduce no bypass or cycle. | None. |
+| Authoritative Boundary Rule check | Pass | Resolvers use services; feed receives prepared state; no caller reaches filesystem/cursor internals. | None. |
+| File placement check | Pass | Fixes reside with domain normalization, projection, Event Monitor conversion, and feed rendering. | None. |
+| Flat-vs-over-split layout judgment | Pass | No new artificial file split or kitchen-sink owner. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Explicit standalone/team identity and opaque fixed page contracts remain unchanged. | None. |
+| Naming quality and naming-to-responsibility alignment | Pass | Canonical `RawTraceMedia`, `turnGroupId`, `visualId`, and Jump/recovery names match behavior. | None. |
+| No unjustified duplication of code / repeated structures | Pass | Attachment/media semantics use existing shared owners. | None. |
+| Patch-on-patch complexity control | Pass | Findings were corrected at their owning boundaries rather than hidden with fallbacks. | None. |
+| Dead/obsolete code cleanup completeness | Pass | Singular-image test vectors and disposable probes are absent; no compatibility branch added. | None. |
+| Relevant test scenarios and assertions are requirement-aligned | Pass | Tests now exercise actual raw media, source IDs, attachment kinds, every exit state, equal-content prepend, and turnover. | None. |
+| Test fixtures/helpers are reasonably reusable and coherent | Pass | Focused helpers keep the new feed scenarios readable; provider fixture crosses the actual projector path. | None. |
+| No stale, duplicated, or compatibility-only tests retained | Pass | Non-production singular `image` fixtures were replaced with canonical `images`. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Reviewer reruns pass; source/structure is ready for fresh broader execution. | Proceed to `api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit
 
-Effective lines are current non-empty lines. Delta is additions plus deletions in `a391b0222..a210ad1df`. No tests or generated files are thresholded.
+Effective lines are current non-empty lines. Delta is additions plus deletions across the full refinement `a391b0222..HEAD`. Tests and generated files are excluded.
 
-| Source File / Group | Effective Non-Empty Lines | `>500` | `>220` Delta | SoC / Placement | Preliminary Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- |
-| `agent-memory-service.ts` | 113 | Pass | Pass (9) | Pass | Pass | None. |
-| `memory-file-store.ts` | 184 | Pass | Pass (54) | Pass | Pass | None. |
-| `api/graphql/types/event-monitor-active-trace-page.ts` | 123 | Pass | Pass (131) | Pass | Pass | None. |
-| `api/graphql/types/{run-history,team-run-history}.ts` | 270 / 108 | Pass | Pass (12 / 14) | Pass | Pass | None. |
-| `active-trace-event-page-policy.ts` | 99 | Pass | Pass (107) | Pass | Pass | None. |
-| `event-monitor-active-trace-page-projection.ts` | 128 | Pass | Pass (138) | Fail: production media input drift | `Local Fix` | `CR-003`. |
-| `event-monitor-active-trace-page-types.ts` | 85 | Pass | Pass (91) | Pass | Pass | Keep closed DTO. |
-| `historical-replay-event-{identity,types}.ts` | 76 / 70 | Pass | Pass (87 / 10) | Pass | Pass | None. |
-| provider files: `claude`, `codex`, `local-memory` | 140 / 293 / 92 | Pass | Pass (20 / 27 / 61) | Pass | Pass | None. |
-| `run-projection-{types,utils}.ts` | 107 / 79 | Pass | Pass (1 / 1) | Pass | Pass | None. |
-| `raw-trace-to-historical-replay-events.ts` | 215 | Pass | Pass (44) | Pass | Pass | None. |
-| run-view service files: standalone / team member | 136 / 187 | Pass | Pass (59 / 32) | Pass | Pass | None. |
-| `MobileChat.vue` | 94 | Pass | Pass (3) | Pass | Pass | None. |
-| `AgentConversationFeed.vue` | 322 | Pass | Pass (171) | Fail: exit and keyed-ancestor behavior | `Local Fix` | `CR-005`, `CR-006`. |
-| `AgentEventMonitor.vue` | 78 | Pass | Pass (23) | Pass | Pass | None. |
-| `AgentWorkspaceView.vue` | 145 | Pass | Pass (2) | Pass | Pass | None. |
-| `EventMonitorBrowseAssistantRow.vue` | 62 | Pass | Pass (64) | Locally correct child keys; parent key invalidates them | `Local Fix` | Resolve with `CR-006` owner. |
-| `AgentTeamEventMonitor.vue` | 128 | Pass | Pass (9) | Pass | Pass | None. |
-| `graphql/queries/runHistoryQueries.ts` | 357 | Pass | Pass (61) | Pass | Pass | None. |
-| English / zh-CN workspace catalogs | 225 / 224 | Pass | Pass (14 / 14) | Pass | Pass | None. |
-| `eventMonitorActiveTraceBrowse.ts` | 188 | Pass | Pass (203) | Pass | Pass | None. |
-| `eventMonitorActiveTraceBrowsePresentation.ts` | 134 | Pass | Pass (142) | Fail: attachment classification and row-key policy | `Local Fix` | `CR-004`, `CR-006`. |
-| `eventMonitorActiveTracePageService.ts` | 42 | Pass | Pass (44) | Pass | Pass | None. |
-| `recentEventMonitorMutationCommit.ts` | 37 | Pass | Pass (1) | Pass | Pass | None. |
-| hydration/open/store/type propagation files | max 300 | Pass | Pass (max 4) | Pass | Pass | None. |
-| `toolCardPresentation.ts` | 134 | Pass | Pass (24) | Pass | Pass | None. |
+| Source File / Group | Effective Lines | `>500` | `>220` Delta | SoC / Placement | Result |
+| --- | ---: | --- | --- | --- | --- |
+| `agent-memory/domain/models.ts` | 110 | Pass | Pass (4) | Pass | Pass |
+| `raw-trace-record-normalizer.ts` | 76 | Pass | Pass (19) | Pass | Pass |
+| active snapshot service/store | 113 / 184 | Pass | Pass (9 / 54) | Pass | Pass |
+| GraphQL active-page/run/team types | max 270 | Pass | Pass (max 131) | Pass | Pass |
+| page policy/projector/DTO types | 99 / 131 / 85 | Pass | Pass (107 / 141 / 91) | Pass | Pass |
+| replay identity/types/transformer | 79 / 71 / 215 | Pass | Pass (90 / 17 / 44) | Pass | Pass |
+| projection providers/services | max 293 | Pass | Pass (max 61) | Pass | Pass |
+| `AgentConversationFeed.vue` | 333 | Pass | Pass (183) | Pass | Pass |
+| `AgentEventMonitor.vue` / browse row / parent shells | max 145 | Pass | Pass (max 64) | Pass | Pass |
+| page query/service/controller/presentation | max 357 | Pass | Pass (max 203) | Pass | Pass |
+| localization catalogs | 225 / 224 | Pass | Pass (14 / 14) | Pass | Pass |
+| hydration/open/store/type propagation | max 300 | Pass | Pass (max 4) | Pass | Pass |
+| `toolCardPresentation.ts` | 134 | Pass | Pass (24) | Pass | Pass |
 
 No changed implementation-source file exceeds 500 effective non-empty lines, and no changed implementation-source delta exceeds 220 lines.
 
@@ -125,12 +117,12 @@ No changed implementation-source file exceeds 500 effective non-empty lines, and
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No archive/full-history fallback or version-specific page branch. |
-| No legacy old-behavior retention in changed scope | Pass | Normal latest behavior remains one active-only path. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No dormant probe or obsolete page adapter remains. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Paging is read-only; no migration/rewrite. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None found. |
-| Approved transition mechanics match the reviewed design | Pass | Existing traces are read directly and archive files are not used by paging. |
+| No backward-compatibility mechanisms in changed scope | Pass | No archive/full-history or old-media dual path. |
+| No legacy old-behavior retention in changed scope | Pass | One canonical `images/audio/video` raw contract. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Singular test shape and reviewer probes are gone. |
+| Approved persisted-data decision followed without migration | Pass | Existing records normalize directly; no write/rewrite. |
+| No version-specific dual reads/writes or request-time fallback | Pass | None found. |
+| Approved transition mechanics match the reviewed design | Pass | Read/display-only change; archive bytes remain untouched. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -139,8 +131,8 @@ None.
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Active-trace page APIs, identity/cursor contract, closed page DTO, and bounded browse lifecycle are durable architectural behavior.
-- Files or areas likely affected: existing Event Monitor architecture documentation and release/handoff records after implementation and fresh API/E2E pass. Delivery remains the documentation owner.
+- Why: Active-trace page APIs, identity/cursor contract, canonical media projection, and bounded browse lifecycle are durable architecture.
+- Files or areas likely affected: Event Monitor architecture documentation and delivery records after fresh API/E2E. Delivery remains the documentation owner.
 
 ## Material Premise Validation
 
@@ -148,113 +140,63 @@ None.
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-001` | Confirmed | Completed-first/latest behavior remains unchanged. |
+| `MP-001` | Confirmed | Completed-first/latest behavior is unchanged. |
 | `MP-CR-001` | Confirmed | Net witness authority remains resolved. |
 | `MP-AR-003` | Confirmed | Result/log/deep state remains excluded. |
-| `MP-AR-006` | Reclassified | Source identity exists, but a keyed assistant ancestor changes when an older same-turn visual crosses the page boundary, so the intended disclosure guarantee is not achieved. See `MP-CR-006`. |
-| `MP-AR-007` | Confirmed | Closed result/log-free DTO remains structurally present. |
+| `MP-AR-006` | Confirmed | Stable turn-group parent plus visual child keys now achieve the approved prepend/turnover disclosure guarantee. |
+| `MP-AR-007` | Confirmed | Page DTO remains structurally result/log-free. |
+| `MP-CR-004` | Confirmed | Reachable locator variants now use the established classifier while retaining server identity. |
+| `MP-CR-006` | Confirmed | Reachable same-turn page-boundary prepend preserves the same retained disclosure element and state. |
 
-### `MP-CR-004` — Production active-trace attachment locators require the existing locator classifier
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-010`; the central page contains fields used by retained interaction; the existing `UserMessage` attachment behavior is reused.
-- Relevant behavior ID(s): `DS-006`, `DS-007`.
-- Product-supported initiating trigger or governing contract, with evidence: `extractAcceptedMessageMedia` writes accepted user context-file URIs into `RawTraceMedia`; repository tests and media preprocessing support relative workspace locators such as `images/out.png`, while `hydrateContextAttachment` classifies workspace, upload, canonical-local, REST, data, and external locators.
-- Actual production caller/event path: accepted user message -> raw trace `media` -> replay event -> page attachment DTO -> `toAttachment` -> `UserMessage` -> `contextAttachmentPresentation.openAttachment`.
-- Lifecycle preconditions and material consequence: In browse mode `toAttachment` forces every locator to `external_url`; a relative workspace locator therefore bypasses workspace-file handling/preview and is opened as a browser-relative URL.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-004`, bounded local correction and regression coverage.
-
-### `MP-CR-006` — A fixed canonical-event page boundary can split one assistant turn group
-
-- Origin: `Reclassified from MP-AR-006`
-- Related approved requirement or established contract: `REQ-011`, `REQ-012`, `AC-014` stable subvisual/disclosure identity.
-- Relevant behavior ID(s): `DS-006`, `DS-007`.
-- Product-supported initiating trigger or governing contract, with evidence: page selection slices every 50 canonical replay events without turn alignment, and a supported turn may emit more than 50 reasoning/tool/assistant events sharing one `turnGroupId`.
-- Actual production caller/event path: active raw records -> replay events with common turn ID -> fixed page slice -> controller prepend -> presentation regroup by adjacent `turnGroupId` -> feed `v-for :key="item.key"` -> assistant row/Thinking component.
-- Lifecycle preconditions and material consequence: The retained row initially uses its first retained visual ID as key; prepending an older same-turn visual changes that key. Vue replaces the keyed ancestor, so the retained Thinking/tool component is remounted and loses its explicit disclosure state. A disposable Nuxt reviewer probe observed `open -> closed` after this exact prepend.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-006`, bounded local key/grouping correction plus feed-level prepend/turnover regression.
+No new or reclassified material premise was needed in round 5.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `8.9`
-- Overall score (`/100`): `89`
-- Score calculation note: simple average rounded for trend visibility; categories below `9.0` are blocking gaps.
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95`
+- Score calculation note: simple average rounded for summary; every category meets the clean-pass target.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 8.5 | Owners and flow are explicit. | Production image data is dropped at the projector. | Align the page input contract and prove it through real raw normalization. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.3 | Server and web owners are well separated. | Attachment conversion bypasses one established narrow owner. | Reuse the context-attachment classifier without importing broad hydration. |
-| 3 | API / Interface / Query / Command Clarity | 9.4 | Subject-bound fixed APIs and closed union are strong. | Media input shape is looser than the production contract. | Tighten the projector boundary type. |
-| 4 | Separation of Concerns and File Placement | 9.4 | Files have coherent responsibilities and placement. | No material structural split problem. | Preserve current allocation while fixing behavior locally. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 8.6 | Output DTO is tight and result-free. | `Record<string,string[]>` permits `image`/`images` drift; attachment classification is duplicated incorrectly. | Use canonical/narrow shared contracts. |
-| 6 | Naming Quality and Local Readability | 9.3 | Names make the paging lifecycle readable. | No significant naming defect. | Preserve naming through rework. |
-| 7 | API/E2E Readiness | 7.8 | Broad implementation checks are green. | Two reviewer probes fail and ordinary browse exit has no regression test. | Fix, add durable tests, and repeat source review before API/E2E. |
-| 8 | Runtime Correctness And Behavioral Fidelity | 7.5 | Cursor, archive exclusion, turnover, and isolation are largely correct. | Images disappear, attachment actions drift, browse can trap the user, and disclosure state can reset. | Resolve `CR-003`–`CR-006`. |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | One current active-only path; no migration or fallback. | No material weakness. | Preserve. |
-| 10 | Cleanup Completeness | 9.5 | No obsolete path or reviewer probe remains. | Durable regressions are incomplete. | Add the missing production-shape/component tests. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Canonical media and identity now remain explicit from source to DOM. | Fresh realistic execution is downstream. | Confirm with live GraphQL/browser evidence. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | Fixes use canonical normalization, attachment, conversion, and feed owners. | Browse identity remains a deliberate cross-layer seam. | Preserve source-carried IDs in future variants. |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Subject-bound fixed queries and closed types remain narrow. | String GraphQL status/media discriminants rely on generated union validation. | Keep cross-layer contract tests current. |
+| 4 | Separation of Concerns and File Placement | 9.6 | The Local Fix adds no competing state or broad helper. | Feed remains a moderately sized scroll/render owner. | Avoid unrelated growth. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | Shared `RawTraceMedia` and attachment classification remove both drifts. | Page DTO intentionally duplicates a narrow server display allowlist. | Update cross-layer vectors together when semantics change. |
+| 6 | Naming Quality and Local Readability | 9.4 | Names match active page, group, visual, and recovery concepts. | Some compact projector formatting remains dense but readable. | Preserve local clarity during future extensions. |
+| 7 | API/E2E Readiness | 9.2 | Focused source tests/typechecks/render evidence are green and prior blockers are closed. | Fresh authoritative API/E2E has not run on this refinement. | Execute the round-8 coverage plan. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Production images, locator interaction, exits, and retained disclosure now match approved behavior. | Dynamic media/network timing is not source-provable. | Validate under realistic execution. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | One canonical active-only/current media path; no migration/fallback. | No material weakness. | Preserve. |
+| 10 | Cleanup Completeness | 9.7 | Incorrect fixtures and temporary probes are removed; no obsolete branch remains. | Historical reports still await downstream refresh. | Delivery refreshes after API/E2E. |
 
 ## Findings
 
-### `CR-003` — High — Production image media is silently omitted from active-trace pages
+None in round 5.
 
-- Affected behavior: `REQ-010`–`REQ-012`; `AC-012`, `AC-014`, `AC-015`; `DS-006`.
-- Evidence: `autobyteus-ts/src/memory/models/raw-trace-item.ts:3-7`, `autobyteus-ts/src/memory/memory-manager.ts:125-129`, and `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-payload.ts:74-83` define/write `media.images`. `event-monitor-active-trace-page-projection.ts:52-57` reads only `media.image`. The existing projector test uses the non-production singular key. A disposable focused probe passed `{images:["media://images/proof.png"]}` and received no visuals.
-- Consequence: user image attachments and assistant/reasoning/tool image visuals vanish from earlier pages; visual counts and mixed-event traversal evidence are false for the production shape.
-- Required action: consume the actual `images` input key (while emitting DTO `mediaType: image`), tighten the input contract or canonical adapter so TypeScript can catch drift, and add normalized raw-trace/provider tests for user and assistant/tool image cases with stable IDs/counts.
-- Classification: `Local Fix`
-- Owner: `implementation_engineer`
-
-### `CR-004` — Medium — Browse attachment conversion changes retained open/preview semantics
-
-- Affected behavior: `REQ-010` central render/retained interaction; `DS-007`; `MP-CR-004`.
-- Evidence: `eventMonitorActiveTraceBrowsePresentation.ts:29-37` constructs every attachment as `kind: external_url`; normal presentation uses the established `hydrateContextAttachment` classifier (`runProjectionConversation.ts:143-153`). `UserMessage.vue` routes open/preview behavior from that kind.
-- Consequence: supported relative workspace media can be opened as a browser-relative URL rather than through workspace file/preview handling, and canonical/uploaded/unsupported classifications can drift between latest and browse modes.
-- Required action: reuse the narrow context-attachment classification owner (or an equivalent shared canonical adapter) while preserving the server-carried `attachmentId` as stable render identity; cover relative workspace, external/REST, canonical/uploaded, and duplicate-locator cases proportionately.
-- Classification: `Local Fix`
-- Owner: `implementation_engineer`
-
-### `CR-005` — Medium — Ordinary browse, beginning, and retry states can provide no way back to latest
-
-- Affected behavior: `REQ-011`; UI/UX `UXJ-007`, `UXJ-008`, component/interaction tables; `DS-007`.
-- Evidence: `AgentConversationFeed.vue:211-212` shows the bottom return control only for unseen activity or released newer blocks. After a successful first load with no subsequent live revision/turnover, `browsing` or `beginning` has no Return/Jump action; `error` likewise only exposes Retry. The expiry state is the sole unconditional return action.
-- Consequence: a user can enter the frozen browse view and have no explicit exit until unrelated live activity occurs, despite the approved jump-to-latest exit contract.
-- Required action: expose a localized keyboard-operable Return/Jump action throughout non-latest browse states (without duplicating the expiry control), make it reset pages/cursors and restore latest, and add component tests for browsing, beginning, retry/error, expiry, click, Enter/Space, and focus visibility.
-- Classification: `Local Fix`
-- Owner: `implementation_engineer`
-
-### `CR-006` — Medium — Same-turn prepend changes the keyed assistant ancestor and resets retained disclosure state
-
-- Affected behavior: `REQ-011`, `REQ-012`, `AC-014`; resolved design premise `MP-AR-006`; `MP-CR-006`.
-- Evidence: `eventMonitorActiveTraceBrowsePresentation.ts:130-137` merges adjacent same-turn visuals and assigns the row key from the first visual. `AgentConversationFeed.vue:54-68` keys the assistant-row component by that value. When an earlier page adds an older visual in the same turn, the key changes. The existing row test only changes props on an already-mounted child and does not exercise the parent key. A disposable feed-level Nuxt probe observed retained state reset from `open` to `closed`.
-- Consequence: the stable subvisual key does not protect `ThinkSegment`/tool local state because its keyed ancestor is replaced; the approved disclosure identity guarantee fails at a reachable fixed-page boundary.
-- Required action: choose a parent grouping/key strategy that remains stable across both prepend and farthest-newer turnover, or keep each stable subvisual under a stable ancestor; add a feed-level page-boundary and turnover test proving the same retained DOM/component disclosure identity survives while equal-content neighbors remain distinct.
-- Classification: `Local Fix`
-- Owner: `implementation_engineer`
+`CR-003`–`CR-006` are resolved. `CR-001`, `CR-002`, and architecture `AR-003` remain resolved.
 
 ## Classification
 
-`Local Fix` — all four findings are bounded implementation/test corrections within the reviewed architecture; no requirement or design revision is needed.
+N/A — passing review.
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- Full active reconstruction remains O(active-source size) and still requires fresh API/E2E timing evidence after source passes.
-- A single retained markdown/media value can remain byte-heavy despite cardinality bounds.
-- Dynamic media/layout changes can still produce normal anchor tolerance after the stable-ID defects are corrected.
-- Page generation uses the approved manifest/inode/earliest evidence and should be revalidated against actual compaction in API/E2E.
-- Historical pre-refinement API/E2E/delivery reports are not authoritative for `a210ad1df` or its rework.
+- Complete active reconstruction per explicit page remains O(active-source size); `AC-015` timing is downstream.
+- One visible markdown/media locator can still be byte-heavy despite cardinality bounds.
+- Dynamic media/Markdown reflow remains subject to the approved anchor tolerance.
+- Page generation evidence should be validated against actual supported compaction/rewrite.
+- Historical pre-refinement API/E2E and delivery reports are not authoritative for this source state.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Fail`
-- Score Summary: `8.9/10` (`89/100`); API/E2E readiness and runtime correctness are below the clean-pass threshold.
-- Failure Origin (when applicable): Implementation-owned source/test gaps in the new paging refinement.
-- Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: Round 4 is authoritative. Resolve `CR-003`–`CR-006`, preserve the prior CR-001/CR-002/AR-003 resolutions, and return the complete cumulative package for source rereview. Fresh API/E2E remains mandatory only after source review passes.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.5/10` (`95/100`); every category is at least `9.0`.
+- Failure Origin (when applicable): `N/A`
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: Round 5 is authoritative. The round-4 Local Fix resolves `CR-003`–`CR-006` without reopening the reviewed architecture or prior latest-mode findings. Proceed through fresh API/E2E with source commit `9c188af7e` / handoff HEAD `155d0eb19` and the complete cumulative package.

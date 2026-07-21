@@ -1,0 +1,333 @@
+{
+  "viewport": "1280x900",
+  "states": {
+    "initial": {
+      "enReady": "Load 50 earlier",
+      "latestRows": 100,
+      "composerCount": 1,
+      "composerEnabled": true,
+      "zhReady": "加载更早的 50 条"
+    },
+    "loading": {
+      "en": "Loading earlier…",
+      "zh": "正在加载更早的动态…",
+      "ariaBusy": 1,
+      "composerFocused": true,
+      "requestCount": 1
+    },
+    "error": {
+      "alert": "probe recoverable failure",
+      "enRetry": "Retry",
+      "zhRetry": "重试加载更早的动态",
+      "resident": 200
+    },
+    "liveBrowse": {
+      "revision": "1",
+      "resident": 300,
+      "jumpZh": "跳到最新",
+      "jumpEn": "Jump to latest"
+    },
+    "beginning": {
+      "en": "Beginning of current activity · Earlier activity has been compacted",
+      "zh": "已到当前跟踪记录开头 · 更早动态已压缩",
+      "resident": 270,
+      "min": 0,
+      "max": 269,
+      "unique": 270,
+      "maxReadyMs": 997.144
+    },
+    "jump": {
+      "outline": "2px",
+      "keys": 0,
+      "latestRows": 100,
+      "liveVisible": true,
+      "jumpCount": 0
+    }
+  },
+  "timings": [
+    {
+      "label": "first-cold",
+      "readyMs": 997.144,
+      "status": 200,
+      "network": {
+        "startTime": 1784560533261.2969,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.812,
+        "responseStart": 13.015,
+        "responseEnd": 927.249
+      },
+      "resident": 150
+    },
+    {
+      "label": "continuation-1",
+      "readyMs": 148.214,
+      "status": 200,
+      "network": {
+        "startTime": 1784560533363.3198,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.126,
+        "responseStart": 8.598,
+        "responseEnd": 9.55
+      },
+      "resident": 200,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItNDcw:user:0",
+        "offset": 64,
+        "scrollTop": 0
+      },
+      "retainedOffset": 64,
+      "anchorDelta": 0
+    },
+    {
+      "label": "retry-keyboard",
+      "readyMs": 29.555,
+      "status": 200,
+      "network": {
+        "startTime": 1784560533675.2588,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.121,
+        "responseStart": 3.874,
+        "responseEnd": 4.802
+      },
+      "resident": 250
+    },
+    {
+      "label": "continuation-thinking",
+      "readyMs": 150.751,
+      "status": 200,
+      "network": {
+        "startTime": 1784560533796.8298,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.12,
+        "responseStart": 4.329,
+        "responseEnd": 5.283
+      },
+      "resident": 300,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMzcw:user:0",
+        "offset": 64,
+        "scrollTop": 0
+      },
+      "retainedOffset": 63.890625,
+      "anchorDelta": -0.109
+    },
+    {
+      "label": "turnover-1",
+      "readyMs": 160.499,
+      "status": 200,
+      "network": {
+        "startTime": 1784560534115.353,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.188,
+        "responseStart": 5.414,
+        "responseEnd": 6.543
+      },
+      "resident": 300,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMzUw:thinking:0",
+        "offset": 8,
+        "scrollTop": 1910
+      },
+      "retainedOffset": 8,
+      "anchorDelta": 0
+    },
+    {
+      "label": "continuation-5",
+      "readyMs": 144.392,
+      "status": 200,
+      "network": {
+        "startTime": 1784560534566.439,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.159,
+        "responseStart": 3.509,
+        "responseEnd": 4.535
+      },
+      "resident": 300,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMjcw:user:0",
+        "offset": 88,
+        "scrollTop": 0
+      },
+      "retainedOffset": 88,
+      "anchorDelta": 0
+    },
+    {
+      "label": "continuation-6",
+      "readyMs": 159.877,
+      "status": 200,
+      "network": {
+        "startTime": 1784560534730.085,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.126,
+        "responseStart": 3.692,
+        "responseEnd": 4.743
+      },
+      "resident": 300,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMjIw:user:0",
+        "offset": 88,
+        "scrollTop": 0
+      },
+      "retainedOffset": 88,
+      "anchorDelta": 0
+    },
+    {
+      "label": "continuation-7",
+      "readyMs": 152.842,
+      "status": 200,
+      "network": {
+        "startTime": 1784560534897,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.135,
+        "responseStart": 3.846,
+        "responseEnd": 4.942
+      },
+      "resident": 300,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMTcw:user:0",
+        "offset": 88,
+        "scrollTop": 0
+      },
+      "retainedOffset": 88,
+      "anchorDelta": 0
+    },
+    {
+      "label": "continuation-8",
+      "readyMs": 155.537,
+      "status": 200,
+      "network": {
+        "startTime": 1784560535065.1199,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.137,
+        "responseStart": 3.847,
+        "responseEnd": 4.861
+      },
+      "resident": 300,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMTIw:user:0",
+        "offset": 88,
+        "scrollTop": 0
+      },
+      "retainedOffset": 88,
+      "anchorDelta": 0
+    },
+    {
+      "label": "continuation-9",
+      "readyMs": 162.234,
+      "status": 200,
+      "network": {
+        "startTime": 1784560535231.8572,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.134,
+        "responseStart": 3.555,
+        "responseEnd": 4.592
+      },
+      "resident": 300,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjEwOmJyb3dzZXItNzA:user:0",
+        "offset": 88,
+        "scrollTop": 0
+      },
+      "retainedOffset": 88,
+      "anchorDelta": 0
+    },
+    {
+      "label": "continuation-10",
+      "readyMs": 142.314,
+      "status": 200,
+      "network": {
+        "startTime": 1784560535396.58,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.126,
+        "responseStart": 2.924,
+        "responseEnd": 3.881
+      },
+      "resident": 270,
+      "before": {
+        "key": "active-trace-visual:v1:cmF3OnYxOjEwOmJyb3dzZXItMjA:user:0",
+        "offset": 88,
+        "scrollTop": 0
+      },
+      "retainedOffset": 88,
+      "anchorDelta": 0
+    }
+  ],
+  "turnover": {
+    "before": {
+      "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMzUw:thinking:0",
+      "rect": 68,
+      "open": true
+    },
+    "after": {
+      "count": 1,
+      "rect": 68,
+      "open": true
+    },
+    "identity": true,
+    "rectDelta": 0,
+    "enReleased": "Newer browsed activity was released to keep this view responsive",
+    "zhReleased": "为保持视图流畅，已释放较新的浏览内容",
+    "resident": 300
+  },
+  "recovery": {
+    "expired": {
+      "en": "Activity was compacted · Return to latest",
+      "zh": "当前跟踪记录已变化 · 返回最新动态",
+      "resident": 150,
+      "duplicateBottom": 0,
+      "returned": true
+    }
+  },
+  "integrity": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "pageOperationCount": 14,
+    "maxResident": 300,
+    "allUnder2s": true,
+    "composerEnabled": true
+  }
+}

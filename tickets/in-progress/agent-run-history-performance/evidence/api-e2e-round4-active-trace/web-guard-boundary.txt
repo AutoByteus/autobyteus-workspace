@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.19 guard:web-boundary /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+exit_code=0
