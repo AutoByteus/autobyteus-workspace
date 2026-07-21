@@ -1,6 +1,34 @@
 import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { defineComponent, h } from 'vue';
 import AgentConversationFeed from '../AgentConversationFeed.vue';
+import type { EventMonitorBrowseAssistantVisual } from '~/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation';
+
+const emptyConversation = (id: string) => ({
+  id,
+  createdAt: '2026-03-07T00:00:00.000Z',
+  updatedAt: '2026-03-07T00:00:00.000Z',
+  messages: [],
+}) as any;
+
+const browseTextVisual = (visualId: string, content = 'Done') => ({
+  kind: 'text' as const,
+  visualId,
+  content,
+});
+
+const browseThinkingVisual = (visualId: string, content = 'Thinking') => ({
+  kind: 'thinking' as const,
+  visualId,
+  content,
+});
+
+const browseAssistant = (visuals: EventMonitorBrowseAssistantVisual[]) => ({
+  kind: 'assistant' as const,
+  key: 'browse-assistant-group:turn-1',
+  turnGroupId: 'turn-1',
+  visuals,
+});
 
 describe('AgentConversationFeed', () => {
   it('renders canonical user and ai message components in order', () => {
@@ -334,6 +362,118 @@ describe('AgentConversationFeed', () => {
     await wrapper.setProps({ presentationRevision: 0 });
     expect(wrapper.find('button').exists()).toBe(false);
     wrapper.unmount();
+  });
+
+  it('keeps an explicit keyboard-operable return to latest across every ordinary browse state', async () => {
+    const wrapper = mount(AgentConversationFeed, {
+      props: {
+        conversation: emptyConversation('run-browse-exit'),
+        browseState: 'browsing',
+        browseItems: [browseAssistant([browseTextVisual('visual:retained')])],
+      },
+      attachTo: document.body,
+      global: {
+        stubs: {
+          EventMonitorBrowseAssistantRow: { template: '<div />' },
+        },
+        mocks: {
+          $t: (key: string) => key.endsWith('return_to_latest') ? 'Return to latest' : key,
+        },
+      },
+    });
+
+    for (const state of ['browsing', 'beginning', 'error', 'loading'] as const) {
+      await wrapper.setProps({ browseState: state });
+      const exit = wrapper.get('[data-testid="event-monitor-jump-to-latest"]');
+      expect(exit.element.tagName).toBe('BUTTON');
+      expect(exit.attributes('type')).toBe('button');
+      expect(exit.classes()).toContain('focus-visible:ring-2');
+      expect(exit.text()).toBe('Return to latest');
+    }
+
+    const exit = wrapper.get('[data-testid="event-monitor-jump-to-latest"]');
+    (exit.element as HTMLButtonElement).focus();
+    expect(document.activeElement).toBe(exit.element);
+    await exit.trigger('click');
+    await exit.trigger('keydown', { key: 'Enter' });
+    await exit.trigger('keydown', { key: ' ' });
+    expect(wrapper.emitted('jump-to-latest')).toHaveLength(3);
+    wrapper.unmount();
+  });
+
+  it('uses the expiry recovery as the sole return control and supports keyboard activation', async () => {
+    const wrapper = mount(AgentConversationFeed, {
+      props: {
+        conversation: emptyConversation('run-expired-exit'),
+        browseState: 'expired',
+      },
+      global: {
+        mocks: {
+          $t: (key: string) => key.endsWith('earlier_cursor_expired') ? 'History changed · Return to latest' : key,
+        },
+      },
+    });
+
+    expect(wrapper.find('[data-testid="event-monitor-jump-to-latest"]').exists()).toBe(false);
+    const recovery = wrapper.get('[data-testid="event-monitor-expired-return"]');
+    expect(recovery.text()).toBe('History changed · Return to latest');
+    expect(recovery.classes()).toContain('focus-visible:ring-2');
+    await recovery.trigger('click');
+    await recovery.trigger('keydown', { key: 'Enter' });
+    await recovery.trigger('keydown', { key: ' ' });
+    expect(wrapper.emitted('jump-to-latest')).toHaveLength(3);
+  });
+
+  it('preserves retained disclosure component identity across same-turn prepend and newer turnover', async () => {
+    const StatefulThinkSegment = defineComponent({
+      props: { content: { type: String, required: true } },
+      data: () => ({ open: false }),
+      render() {
+        return h('button', {
+          type: 'button',
+          'data-testid': 'browse-thinking-disclosure',
+          onClick: () => { this.open = !this.open; },
+        }, `${this.content}:${this.open ? 'open' : 'closed'}`);
+      },
+    });
+    const retained = browseThinkingVisual('visual:retained', 'Equal thinking');
+    const newer = browseThinkingVisual('visual:newer', 'Equal thinking');
+    const wrapper = mount(AgentConversationFeed, {
+      props: {
+        conversation: emptyConversation('run-disclosure'),
+        browseState: 'browsing',
+        browseItems: [browseAssistant([retained, newer])],
+      },
+      global: {
+        stubs: {
+          ThinkSegment: StatefulThinkSegment,
+          TextSegment: true,
+          ToolCallIndicator: true,
+          MediaSegment: true,
+        },
+        mocks: { $t: (key: string) => key },
+      },
+    });
+
+    const retainedContainer = wrapper.get('[data-event-monitor-visual-key="visual:retained"]');
+    const retainedDisclosure = retainedContainer.get('[data-testid="browse-thinking-disclosure"]');
+    await retainedDisclosure.trigger('click');
+    expect(retainedDisclosure.text()).toContain('open');
+
+    const earlier = browseThinkingVisual('visual:earlier', 'Equal thinking');
+    await wrapper.setProps({ browseItems: [browseAssistant([earlier, retained, newer])] });
+    const afterPrepend = wrapper.get('[data-event-monitor-visual-key="visual:retained"]')
+      .get('[data-testid="browse-thinking-disclosure"]');
+    expect(afterPrepend.element).toBe(retainedDisclosure.element);
+    expect(afterPrepend.text()).toContain('open');
+    expect(wrapper.findAll('[data-testid="browse-thinking-disclosure"]')).toHaveLength(3);
+
+    await wrapper.setProps({ browseItems: [browseAssistant([earlier, retained])] });
+    const afterTurnover = wrapper.get('[data-event-monitor-visual-key="visual:retained"]')
+      .get('[data-testid="browse-thinking-disclosure"]');
+    expect(afterTurnover.element).toBe(retainedDisclosure.element);
+    expect(afterTurnover.text()).toContain('open');
+    expect(wrapper.find('[data-event-monitor-visual-key="visual:newer"]').exists()).toBe(false);
   });
 
 });

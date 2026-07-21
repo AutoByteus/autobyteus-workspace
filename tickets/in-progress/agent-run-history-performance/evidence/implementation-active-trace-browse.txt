@@ -1,0 +1,13 @@
+{
+  "viewport": "1280x900",
+  "loadLabel": "Load 50 earlier",
+  "loadingLabel": "Loading earlier…",
+  "beginningLabel": "Beginning of current activity · Earlier activity has been compacted",
+  "anchorTopBefore": 97,
+  "anchorTopAfter": 97,
+  "anchorDeltaPx": 0,
+  "thinkingExpanded": true,
+  "jumpFocused": true,
+  "jumpHiddenAfterActivation": true,
+  "consoleErrors": []
+}

@@ -8,6 +8,8 @@ import {
 describe("recent run projection policy", () => {
   it("returns the newest 100 canonical replay events in their existing order", () => {
     const events: HistoricalReplayEvent[] = Array.from({ length: 105 }, (_, index) => ({
+      eventId: `event-${index}`,
+      turnGroupId: `turn-${index}`,
       kind: "message",
       role: "user",
       content: `event-${index}`,

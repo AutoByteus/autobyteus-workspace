@@ -33,6 +33,15 @@ export interface ToolCardPresentation {
   approvalTargetPrimitives: ToolCardPresentationPrimitive[];
 }
 
+export interface EventMonitorPageToolCardInput {
+  invocationId: string;
+  toolName: string;
+  statusKey: ToolCardStatusPresentationKey;
+  summaryArgs: Record<string, string | null | undefined>;
+  errorMessage: string | null;
+  approvalTarget: ToolApprovalTarget | null;
+}
+
 const TARGET_SCALAR_KEYS = [
   'memberRouteKey',
   'sourceRouteKey',
@@ -72,6 +81,21 @@ const flattenApprovalTarget = (
     }
   }
   return primitives;
+};
+
+export const buildEventMonitorPageToolCardPresentation = (
+  input: EventMonitorPageToolCardInput,
+): ToolCardPresentation => {
+  const approvalTarget = input.statusKey === 'awaiting-approval' ? input.approvalTarget : null;
+  return {
+    invocationId: input.invocationId,
+    toolName: input.toolName,
+    statusKey: input.statusKey,
+    summary: getToolDisplaySummary(input.toolName, input.summaryArgs, { preferCompactPath: true }),
+    errorMessage: input.errorMessage,
+    approvalTarget,
+    approvalTargetPrimitives: flattenApprovalTarget(approvalTarget),
+  };
 };
 
 const deriveSummary = (segment: ToolCardSegment, toolName: string): ToolDisplaySummary | null => {

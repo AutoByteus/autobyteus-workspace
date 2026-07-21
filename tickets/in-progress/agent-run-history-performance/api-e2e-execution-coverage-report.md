@@ -5,22 +5,24 @@
 - Requirements Doc: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/requirements-doc.md`
 - Investigation Notes: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Design Spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
-- Supplemental Task Artifacts: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
-- Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (round 4 Pass)
+- Supplemental Task Artifacts: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`; `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
+- Design Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 8 Pass)
 - Implementation Handoff: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/implementation-handoff.md`
-- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (round 3 Pass)
+- Code Review Report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 5 Pass)
 - Coverage Investigation: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/api-e2e-coverage-investigation.md`
-- Current Execution Round: `2`
-- Trigger: Source-review round-3 Pass for latest-base integration merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657` at artifact HEAD `336b08502`.
-- Prior Round Reviewed: `Round 1` — pre-integration Pass, context only for the integrated candidate.
-- Latest Authoritative Round: `2`
+- Current Execution Round: `4`
+- Trigger: Fresh execution for active-trace paging implementation `a210ad1dfd00bbf76ca6f13cbc9ee02f012ab1be`, Local Fix `9c188af7e`, and handoff HEAD `155d0eb192ffc0f5272813a514811cc15dcde821` after source-review round 5 Pass.
+- Prior Round Reviewed: `Round 2` — authoritative only for the pre-paging candidate. Round 3 was a safety preflight that did not quiesce port 8000 because explicit operator approval was not obtained.
+- Latest Authoritative Round: `4`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Code-review Pass | N/A | One obsolete archive-recovery test premise; corrected to approved active-only semantics | Pass | No | Pre-integration repository, live HTTP, and Chromium validation passed. |
-| 2 | Latest-base integration source-review Pass | Round-1 behavioral gates and static-baseline risks | None | Pass | Yes | Integrated action/attachment composition, all prior gates, live HTTP, and Chromium passed. |
+| 2 | Latest-base integration source-review Pass | Round-1 behavioral gates and static-baseline risks | None | Pass | No | Integrated action/attachment composition, all prior gates, live HTTP, and Chromium passed. |
+| 3 | Corrected representative-live safety preflight | N/A | Exact missing dependency: explicit Mode-S quiesce approval | Blocked | No | No process/data change; port 8000 remained running. |
+| 4 | Active-trace paging source-review Pass | Paging API/browser coverage gap and round-3 safety dependency | No product failure; two test-expectation and two temporary harness corrections | Blocked | Yes | Generated fixture, live HTTP, browser, durable suites all pass; corrected representative live snapshot remains approval-gated. |
 
 ## Investigation And Execution Basis
 
@@ -319,7 +321,7 @@ No implementation production file changed in round 2. Round-1 API/E2E durable fi
 - Classification: no implementation failure; static failures are repository baselines.
 - Recommended recipient: `code_reviewer` for proportional review of the one updated durable test path.
 
-## Latest Authoritative Result
+## Round-2 Latest Result (Historical)
 
 - Result: `Pass`.
 - Latest authoritative round: `2` — integrated candidate `c13ba233a` / artifact HEAD `336b08502`.
@@ -330,3 +332,111 @@ No implementation production file changed in round 2. Round-1 API/E2E durable fi
 - Critical acceptance criteria lacking direct proof: `None`.
 - Required next recipient: `code_reviewer` for proportional test-code review of `recentEventMonitorProductionDispatch.spec.ts`.
 - Notes: all prior active-only/newest-100, semantic revision, team replacement, 1,001-message, live HTTP, and browser gates passed against the integrated candidate. Explicit/passive file-action composition and member-echo equal/changed attachment revision behavior also passed. Repository static baselines remain red outside changed paths.
+
+---
+
+## Execution Round 3 — Corrected Representative-Live Safety Preflight
+
+- Result: `Blocked` before execution.
+- Mode decision: `Mode S`; Mode R was unavailable because no full-lifetime path tracer exists.
+- Exact blocker: no atomic snapshot facility was available and explicit operator approval to stop the supervised port-8000 owner for the entire validation window was not obtained.
+- Safety result: port 8000 was not stopped; `/home/autobyteus/data` was not copied, opened by a validation process, or modified.
+- Evidence: `evidence/api-e2e-round3-corrected-live/preflight.txt`.
+- This round is historical context only after the paging source refinement.
+
+---
+
+## Execution Round 4 — Active-Trace Earlier Paging Refinement
+
+### Round-4 Candidate And Execution Modes
+
+- Candidate source: paging implementation `a210ad1dfd00bbf76ca6f13cbc9ee02f012ab1be`, Local Fix `9c188af7e`, handoff HEAD `155d0eb192ffc0f5272813a514811cc15dcde821`.
+- Durable mode: in-process TypeGraphQL with real temporary files/stores plus focused/expanded Vitest.
+- Live mode: built `dist/app.js` on owned loopback port `31249`, sanitized environment, disposable 5,418,360-byte / 620-event fixture, cold plus two warm latest/first-page/continuation requests.
+- Browser mode: Nuxt on owned port `31175`, real built backend on `31250`, Chromium 1280×900, production `AgentEventMonitor`/controller/feed, English and Simplified Chinese.
+- Representative-live mode: `Blocked pending explicit operator approval for Mode S`; the user-owned port-8000 process and `/home/autobyteus/data` were not touched.
+
+### Round-4 Requirement And Scenario Matrix
+
+| Scenario ID | Requirement / boundary | Executed evidence | Result |
+| --- | --- | --- | --- |
+| `PAGE-API-001` | `AC-012` standalone 275-event latest/traversal, stable IDs, active-only | Durable real-files GraphQL: latest 175–274; first 125–274; continuations 75–124, 25–74, 0–24; active/manifest read, archive segment zero reads; hashes unchanged | Pass |
+| `PAGE-API-002` | `AC-012` team-member traversal and subject-bound cursor | Same four-page traversal through team route key; standalone reuse of team cursor rejected | Pass |
+| `PAGE-API-003` | Append-stable cursor and rewrite expiry | Cursor generation unchanged across append; atomic fixture rewrite returns typed `EXPIRED`, zero events, no archive fallback | Pass |
+| `PAGE-API-004` | Production media/locators; closed result/log-free payload | User/assistant/tool media serialize with stable IDs; 4,861,018-byte multi-megabyte result fixture yields 2,371-byte central events, byte-equal to result-null; sentinel/log/deep args absent; 9.3–11.4 ms | Pass |
+| `PAGE-LIVE-001` | `AC-015` representative-equivalent HTTP timings | 5,418,360-byte / 620-event built-server fixture; latest 100; first page 150; continuation 50; cold + two warm totals 15.7–43.6 ms; hashes unchanged | Pass |
+| `PAGE-BROWSER-001` | Loading/coalescing/retry/beginning/expiry and keyboard | Production monitor + real page API; en/zh ready/loading/retry/beginning/expired; composer focusable during delayed request; Retry Enter; expiry Return Enter | Pass |
+| `PAGE-BROWSER-002` | `AC-014` <=300 turnover, anchor/disclosure/source-to-DOM identity | Paged 620-event trace to beginning; max 300, final retained 0–269 with no duplicates; retained Thinking DOM identity/open state and top offset stayed exact through turnover | Pass |
+| `PAGE-BROWSER-003` | Frozen browse vs live truth and return | Live revision left browse at 300; localized return action; Space activation restored current latest 100 and cleared browse/jump | Pass |
+| `LATEST-REG-001` | Preserve `AC-001`–`AC-011` | Server run-history 2 files / 13 tests; server page/projection 8 files / 36; frontend ticket suite 25 files / 202; prior 1,001-message and semantic/replacement/file-action paths included | Pass |
+| `STATIC-R4` | Compile/guards/build/diff | Server build TypeScript and production build Pass; three web/localization guards Pass; git diff check Pass | Pass with Nuxt baseline caveat |
+| `LIVE-REP-R4` | Corrected integrated live snapshot `BOOT/ROW/API/HYDRATE/USABLE/BOUND/PAGE/COPY/LIVE-SOURCE` | Safe Mode S cannot begin without explicit permission to quiesce port 8000 | Blocked |
+
+### Round-4 Durable Test Change
+
+| Path | Change | Direct coverage | Result |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts` | Extended from 2 to 6 scenarios | Standalone/team 275 traversal, foreign subject, append/rewrite cursor lifecycle, production media/locator/closed payload | 1 file / 6 Pass; expanded suites Pass |
+
+No production source or other durable test file was changed by API/E2E. No stale test was removed.
+
+### Round-4 Repository And Static Execution
+
+| Scope | Result | Evidence |
+| --- | --- | --- |
+| Focused paging GraphQL | 1 file / 6 tests Pass | `evidence/api-e2e-round4-active-trace/server-paging-graphql-focused.txt` |
+| Expanded page/projection/service | 8 files / 36 tests Pass | `server-active-trace-expanded.txt` |
+| Run-history GraphQL regression | 2 files / 13 tests Pass | `server-run-history-e2e.txt` |
+| Focused frontend paging/composition | 7 files / 36 tests Pass | `web-active-trace-focused.txt` |
+| Expanded ticket frontend | 25 files / 202 tests Pass | `web-ticket-expanded.txt` |
+| Server build TypeScript | Pass | `server-build-typecheck.txt` |
+| Server production build | Pass | `server-production-build.txt` |
+| Web/localization guards | All Pass | `web-guard-boundary.txt`, `web-guard-localization.txt`, `web-audit-localization.txt` |
+| Nuxt typecheck, default heap | Inconclusive: Node 4 GB heap exhausted before diagnostics | `web-typecheck.txt` |
+| Nuxt typecheck, 8 GB heap | Completed nonzero with repository-wide baseline diagnostics; no paging/ticket production path was identified in the diagnostic audit | `web-typecheck-8gb.txt` |
+
+The first two focused GraphQL attempts failed only because the new test initially counted the retained compaction boundary as an extra event and then incorrectly forbade the generation manifest read. The fixture was corrected to exactly 275 active canonical events, and the expectation was aligned with the approved contract: paging may read the active generation manifest but never an archived segment. The third focused run and all expanded runs passed. Browser attempts corrected only temporary probe assumptions: same-key anchor offset rather than “first visible after prepend,” stable conversation object identity, and a 270-event final resident count when a 20-event last page causes a complete newer 50-block release. These were API/E2E-owned harness corrections, not product failures.
+
+### Round-4 Live HTTP And Browser Evidence
+
+- Live HTTP cold/warm latest totals: `28.6–43.6 ms`; first-page totals: `25.0–28.9 ms`; continuation totals: `15.7–21.1 ms`. All are below 2.0 seconds.
+- Latest response: 100 entries (`event-520`–`event-619`), zero Activity, 868,635 bytes. First page: 150 unique events/visuals (`470`–`619`), 1,327,276 bytes. Continuation: 50 (`420`–`469`), 442,776 bytes.
+- Browser maximum click-to-stable result: `997.144 ms`, including a deliberately delayed cold request. Every other page/retry was below the same 2.0-second gate.
+- Browser maximum resident/mounted visuals: `300`. At beginning, 270 unique events `0`–`269` remained because adding the final 20-event page correctly released one whole farthest-newer 50-event block.
+- Retained Thinking identity remained `active-trace-visual:...browser-350:thinking:0`; its same DOM element stayed expanded and its top position remained exactly `68 px` before/after turnover.
+- The composer remained enabled and was focusable during the delayed request. Browser console and page errors were empty.
+- The screenshot's headless container lacks a CJK glyph font, so some Chinese glyphs render as squares in the bitmap; semantic DOM labels were asserted exactly in both locales and the product catalogs/guards passed.
+
+### Round-4 Safety, Cleanup, And Evidence Retention
+
+- Both live/browser backends used sanitized owned paths; `/proc` environment and FD audit found zero references to `/home/autobyteus/data`.
+- The generated live HTTP fixture's active/archive/manifest hashes were unchanged. The browser fixture's active file was intentionally rewritten only for cursor-expiry control flow; its archive and manifest remained unchanged.
+- Backend ports `31249`/`31250`, Nuxt `31175`, Chromium, temporary route/script, SQLite, memory, and raw GraphQL bodies were removed. Aggregate metrics and synthetic screenshot only were retained.
+- Port 8000 remained healthy (`HTTP 200`) after cleanup and was never stopped.
+- Evidence root: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round4-active-trace`.
+
+### Round-4 Confidence Scorecard
+
+| Category | Final score | Evidence / residual gap |
+| --- | ---: | --- |
+| Requirement and acceptance proof | 90% | All generated-fixture paging/latest requirements pass; corrected representative-live metrics remain blocked. |
+| Changed-boundary execution directness | 98% | Real files, GraphQL schema, built HTTP, actual page controller, production feed, and Chromium. |
+| Cross-boundary integration realism | 94% | Nuxt called the real built paging backend; full node-bound representative row-selection journey remains blocked. |
+| Environment/configuration/identity/fixture fidelity | 75% | Sanitized deterministic 5 MB/620 and 275/620 fixtures are strong, but they do not replace the required quiesced representative live snapshot. |
+| Failure/edge/lifecycle/recovery | 98% | Foreign cursor, append, rewrite expiry, retry, coalescing, beginning, turnover, frozen-live, and return paths pass. |
+| User-surface/browser/shell confidence | 97% | Real Chromium production monitor, en/zh semantics, focus, anchor/disclosure identity; no shell-specific change. |
+| Durable regression quality | 98% | One maintainable GraphQL file extended at the real boundary; 251 server/frontend relevant tests pass. |
+
+- Overall final confidence: `92.9%` (simple average).
+- Category below 90%: environment/configuration/fixture fidelity `75%`.
+- Default clean-pass target met: `No`.
+- Critical unexecuted acceptance evidence: corrected representative Mode-S snapshot `BOOT-001`, `ROW-001`, representative `API-001`, `HYDRATE-001`, `USABLE-001`, `BOUND-001`, representative `PAGE-001`, `COPY-001`, `LIVE-SOURCE-001`; `OPEN-001` would be explicitly Not Executed under the approved tracer-unavailable Mode-S fallback.
+
+## Latest Authoritative Result
+
+- Result: `Blocked`.
+- Latest authoritative round: `4` — active-trace paging Local Fix `9c188af7e` / handoff HEAD `155d0eb19`.
+- Exact missing dependency: explicit operator approval to stop the supervised port-8000 server for the entire Mode-S representative validation window, create the disposable consistent snapshot while quiesced, keep the old owner stopped during execution, and restart it only after final live-source equality.
+- What passed before the blocker: all durable paging/latest suites, built-server cold/warm HTTP, >=5 MB/620-event timing, 275 standalone/team traversal, closed result/log-free payload, real backend+Nuxt+Chromium browse/turnover/localization/recovery, and cleanup.
+- Routing: no teammate handoff while Blocked. Resume immediately after the user supplies the explicit approval; do not weaken the safety contract.
+- Delivery hold: remains active; no push, archive, release, deployment, or finalization performed.

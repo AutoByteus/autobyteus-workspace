@@ -79,8 +79,38 @@ describe('MermaidDiagram', () => {
     await flushPromises();
 
     expect(wrapper.find('.error-state').text()).toContain('bad diagram');
+    expect(wrapper.get('.error-state').classes()).toEqual(expect.arrayContaining([
+      'min-w-0',
+      'max-w-full',
+      'overflow-hidden',
+    ]));
+    expect(wrapper.get('.mermaid-error-message').classes()).toEqual(expect.arrayContaining([
+      'min-w-0',
+      'max-w-full',
+      'whitespace-pre-wrap',
+    ]));
     expect(wrapper.find('.mermaid-expand-button').exists()).toBe(false);
     expect(consoleError).toHaveBeenCalledWith('Mermaid rendering failed:', expect.any(Error));
+  });
+
+  it('keeps long parser errors in the bounded local message surface', async () => {
+    const longError = `Syntax error in text ${'with-a-very-long-parser-token-'.repeat(30)}`;
+    mermaidMocks.render.mockRejectedValue(new Error(longError));
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const wrapper = mountDiagram();
+
+    await flushPromises();
+
+    expect(wrapper.get('.mermaid-error-message').text()).toBe(longError);
+    expect(wrapper.get('.mermaid-diagram-component').classes()).toEqual(expect.arrayContaining([
+      'min-w-0',
+      'max-w-full',
+      'overflow-x-hidden',
+    ]));
+    expect(wrapper.get('.mermaid-error-message').classes()).toEqual(expect.arrayContaining([
+      'min-w-0',
+      'max-w-full',
+    ]));
   });
 
   it('renders a full-width intrinsic-capped preview with no duplicate wrapper id', async () => {

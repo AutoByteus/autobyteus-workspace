@@ -30,9 +30,21 @@ Latest-base integration refresh, integrated-state verification, docs synchroniza
 
 - Initial explicit user completion/verification received: `No`
 - Initial verification reference: Pending hands-on user confirmation.
-- Renewed verification required after later re-integration: `No`
-- Renewed verification received: `Not needed`
-- Renewed verification reference: Not applicable.
+- Renewed verification required after later re-integration: `Yes`
+- Renewed verification received: `No`
+- Renewed verification reference: The user requested publication of a latest-`personal` ticket branch for host-side Electron verification.
+
+## User-Requested Latest-Base Refresh — 2026-07-21
+
+- Latest tracked remote base: `origin/personal@534210b9e1dffff6c22855ae89ddb3d2afef5a9b`.
+- Pre-integration safety checkpoint: `b7be67c591b93c32121e62102305beb5eb72d39a`.
+- Integration method: merge latest `origin/personal` into `codex/agent-run-history-performance`.
+- Integration merge: `1470cb353e07a1de8b38cbb131ae49108478bcf0`.
+- Conflict result: none; the merge completed automatically.
+- Post-integration executable check: `Pass` — server focused GraphQL 1 file / 6 tests and frontend focused Event Monitor 7 files / 36 tests.
+- Evidence: `tickets/in-progress/agent-run-history-performance/evidence/delivery-post-refresh-check-20260721.txt`.
+- Representative live snapshot status: remains `Blocked` pending permission to quiesce the user-owned port-8000 server; the user selected host-side verification instead.
+- Ticket-branch publication: `Pass` — the latest-base integrated state and post-refresh evidence were published through `02591f4af67536ad1e8c877b1a89b098fdfbd17f`, followed by this publication-record update on the same ticket branch. Target-branch finalization remains on hold.
 
 ## Docs Sync Result
 
@@ -54,8 +66,8 @@ Not started. No version or tag is selected before user verification and reposito
 
 - Bootstrap context source: `tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Ticket branch: `codex/agent-run-history-performance`
-- Ticket branch commit result: Host-validation publication commit `487ea715bcaf9ccaa1a3fce4b415d3abc9afdcc4` completed at the user's explicit request; the final archival commit remains pending verification.
-- Ticket branch push result: `Pass` — published `487ea715bcaf9ccaa1a3fce4b415d3abc9afdcc4` to `origin/codex/agent-run-history-performance` for host-side Electron build and verification. This is not a merge or push to the finalization target.
+- Ticket branch commit result: Latest-base host-validation refresh includes safety checkpoint `b7be67c591b93c32121e62102305beb5eb72d39a`, integration merge `1470cb353e07a1de8b38cbb131ae49108478bcf0`, and docs/evidence commit `02591f4af67536ad1e8c877b1a89b098fdfbd17f`; the final archival commit remains pending verification.
+- Ticket branch push result: `Pass` — refreshed `origin/codex/agent-run-history-performance` for host-side Electron build and verification. This is not a merge or push to the finalization target.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: Not applicable; verification has not occurred.

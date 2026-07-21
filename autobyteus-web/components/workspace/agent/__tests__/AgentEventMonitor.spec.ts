@@ -60,6 +60,7 @@ describe('AgentEventMonitor.vue', () => {
           'member-1': 'Professor',
         },
         presentationRevision: 7,
+        browseSubject: { kind: 'run', runId: 'agent-42' },
       },
       global: {
         stubs: {
@@ -95,6 +96,7 @@ describe('AgentEventMonitor.vue', () => {
           id: 'team-run-1::Professor',
         },
         runId: 'member-run-1',
+        browseSubject: { kind: 'teamMember', teamRunId: 'team-run-1', memberRouteKey: 'Professor', agentRunId: 'member-run-1' },
       },
       global: {
         stubs: {
@@ -117,7 +119,7 @@ describe('AgentEventMonitor.vue', () => {
 
   it('keeps the shared monitor as a bounded flex column for mobile and desktop shells', () => {
     const wrapper = mount(AgentEventMonitor, {
-      props: { conversation },
+      props: { conversation, browseSubject: { kind: 'run', runId: 'agent-42' } },
       global: {
         stubs: {
           AgentUserInputForm: { template: '<div data-testid="agent-input-stub" />' },

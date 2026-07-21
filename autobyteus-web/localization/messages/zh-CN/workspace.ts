@@ -196,6 +196,20 @@ const messages = {
     "智能体产物",
   "workspace.components.workspace.agent.AgentConversationFeed.jump_to_latest":
     "有新动态 · 跳到最新",
+  "workspace.components.workspace.agent.AgentConversationFeed.load_50_earlier":
+    "加载更早的 50 条",
+  "workspace.components.workspace.agent.AgentConversationFeed.loading_earlier":
+    "正在加载更早的动态…",
+  "workspace.components.workspace.agent.AgentConversationFeed.retry_earlier":
+    "重试加载更早的动态",
+  "workspace.components.workspace.agent.AgentConversationFeed.active_trace_beginning":
+    "已到当前跟踪记录开头 · 更早动态已压缩",
+  "workspace.components.workspace.agent.AgentConversationFeed.earlier_cursor_expired":
+    "当前跟踪记录已变化 · 返回最新动态",
+  "workspace.components.workspace.agent.AgentConversationFeed.return_to_latest":
+    "跳到最新",
+  "workspace.components.workspace.agent.AgentConversationFeed.newer_browse_released":
+    "为保持视图流畅，已释放较新的浏览内容",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "重试加载工作区",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":

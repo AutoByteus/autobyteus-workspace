@@ -9,8 +9,16 @@
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
       :compaction-activities="compactionActivities"
       :presentation-revision="presentationRevision"
+      :browse-items="browse.presentation.value"
+      :browse-state="browse.state.value"
+      :can-load-earlier="browse.canLoadEarlier.value"
+      :browse-error-message="browse.errorMessage.value"
+      :newer-browse-content-released="browse.newerBrowseContentReleased.value"
+      :browse-has-newer-live-activity="browse.hasNewerLiveActivity.value"
       :enable-event-monitor-file-actions="true"
       @file-path-action="handleFilePathAction"
+      @load-earlier="browse.loadEarlier"
+      @jump-to-latest="browse.jumpToLatest"
     />
 
     <div class="shrink-0">
@@ -30,12 +38,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import AgentConversationFeed from '~/components/workspace/agent/AgentConversationFeed.vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
+import {
+  useEventMonitorActiveTraceBrowse,
+} from '~/services/eventMonitor/eventMonitorActiveTraceBrowse';
+import type {
+  EventMonitorActiveTraceBrowseSubject,
+} from '~/services/eventMonitor/eventMonitorActiveTracePageService';
 
 const props = defineProps<{
   conversation: Conversation;
@@ -45,12 +59,19 @@ const props = defineProps<{
   interAgentSenderNameById?: Record<string, string>;
   beforeSend?: () => void | Promise<void>;
   presentationRevision?: number;
+  hasEarlierActiveTraceEvents?: boolean;
+  browseSubject: EventMonitorActiveTraceBrowseSubject;
 }>();
 
 const activityStore = useAgentActivityStore();
 const effectiveRunId = computed(() => props.runId || props.conversation.id);
 const compactionActivities = computed(() => activityStore.getCompactionActivities(effectiveRunId.value));
 const filePreviewStatus = ref('');
+const browse = useEventMonitorActiveTraceBrowse({
+  subject: toRef(props, 'browseSubject'),
+  hasEarlierAvailable: () => props.hasEarlierActiveTraceEvents === true,
+  presentationRevision: () => props.presentationRevision ?? 0,
+});
 
 const handleFilePathAction = async (action: AbsoluteFilePathAction): Promise<void> => {
   // Keep the launcher effect boundary out of Markdown rendering and passive

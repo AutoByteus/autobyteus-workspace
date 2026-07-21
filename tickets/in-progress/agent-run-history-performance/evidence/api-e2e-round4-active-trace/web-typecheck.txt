@@ -1,0 +1,35 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+<--- Last few GCs --->
+
+[67622:0xffff88af0000]    76576 ms: Mark-Compact 4033.7 (4131.0) -> 4018.4 (4131.5) MB, pooled: 4 MB, 854.06 / 0.00 ms  (average mu = 0.128, current mu = 0.094) allocation failure; scavenge might not succeed
+[67622:0xffff88af0000]    77532 ms: Mark-Compact 4034.2 (4131.8) -> 4018.6 (4132.0) MB, pooled: 4 MB, 896.60 / 0.00 ms  (average mu = 0.096, current mu = 0.062) allocation failure; scavenge might not succeed
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0xe19178 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [node]
+ 2: 0x11cad4c v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node]
+ 3: 0x11caefc v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node]
+ 4: 0x13f098c  [node]
+ 5: 0x13f09bc  [node]
+ 6: 0x1408370  [node]
+ 7: 0x140af5c  [node]
+ 8: 0x1bf2714  [node]
+Aborted
+
+ ERROR  Process exited with non-zero status (134)
+
+    at G._waitForOutput (/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/node_modules/.pnpm/tinyexec@1.0.2/node_modules/tinyexec/dist/main.js:574:92)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.run (/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/typecheck-C8wVgBzd.mjs:66:3)
+    at async runCommand (/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:188:47)
+    at async runCommand (/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:185:21)
+    at async runMain (/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:285:10)
+
+
+exit_code=1

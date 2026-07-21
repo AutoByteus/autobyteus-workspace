@@ -310,8 +310,8 @@ intentionally live-only center feedback in this slice: reopened historical
 conversations should replay that active-file recent window and should not
 synthesize center compaction cards from compaction lifecycle/status entries.
 Archived segments and manifests remain unchanged and directly usable by their
-own storage lifecycle, but there is no archive or load-earlier path in the Event
-Monitor.
+own storage lifecycle. The Event Monitor never pages into those archives; its
+explicit earlier-browsing path is bounded to the current active trace.
 
 ### Run Reopen Projection Hydration
 
@@ -334,6 +334,25 @@ normalizes the complete active-file lifecycle, and then applies
 `RECENT_RUN_PROJECTION_EVENT_LIMIT` (`100`) before building conversation and
 Activity projections. Selection must happen after lifecycle reconstruction;
 raw-record tail slicing can separate related tool-call and result evidence.
+
+When the active trace contains earlier events, the normal projection exposes
+that availability without expanding its latest-100 payload. The explicit
+`Load 50 earlier` action enters an ephemeral active-trace browse snapshot: the
+first request returns the current latest 100 plus at most 50 immediately
+preceding canonical events, and each opaque-cursor request prepends at most 50
+more. Standalone and team-member page queries use a dedicated central-only
+typed projection; raw tool results, logs, Activity detail, and generic payload
+objects are not transported. Cursors are bound to the authorized subject and
+active-trace generation, remain valid across ordinary appends, and expire on a
+rewrite or compaction instead of falling back to an archive.
+
+Browse presentation remains separate from canonical live conversation and
+Activity state while live updates continue independently. It retains and mounts
+at most 300 central visual events, releases the farthest newer 50-event page
+when necessary, and uses stable event/subvisual identities for scroll anchors,
+Vue keys, and disclosure ownership. Retry and cursor-expiry states are inline;
+`Jump to latest` discards the browse snapshot and restores the current live
+latest-100 presentation.
 
 The frontend defensively applies the same `100`-visual-event bound during
 historical hydration and every standalone, team, or local-submission mutation.

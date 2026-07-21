@@ -71,6 +71,7 @@ export const buildRunProjectionBundle = (
     activities,
     summary: compactSummary(firstUser?.content ?? null),
     lastActivityAt: toIsoString(latestTs),
+    hasEarlierActiveTraceEvents: false,
   };
 };
 

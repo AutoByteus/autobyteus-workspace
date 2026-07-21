@@ -7,6 +7,23 @@ const base = {
 };
 
 describe("raw trace record normalizer outcome presence", () => {
+  it("normalizes only the production RawTraceMedia keys", () => {
+    const event = toMemoryTraceEvent({
+      ...base,
+      media: {
+        images: ["images/proof.png", ""],
+        image: ["singular-is-not-the-contract.png"],
+        audio: ["audio/proof.mp3"],
+        video: ["video/proof.mp4"],
+      },
+    });
+    expect(event.media).toEqual({
+      images: ["images/proof.png"],
+      audio: ["audio/proof.mp3"],
+      video: ["video/proof.mp4"],
+    });
+  });
+
   it("preserves absent historical outcome properties", () => {
     const event = toMemoryTraceEvent(base);
     expect(Object.prototype.hasOwnProperty.call(event, "toolResult")).toBe(false);

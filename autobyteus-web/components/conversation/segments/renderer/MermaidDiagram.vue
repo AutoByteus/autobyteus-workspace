@@ -1,5 +1,5 @@
 <template>
-  <div class="mermaid-diagram-component relative my-4">
+  <div class="mermaid-diagram-component relative my-4 min-w-0 max-w-full overflow-x-hidden">
     <div
       v-if="isLoading"
       class="loading-state flex min-h-[100px] flex-col items-center justify-center rounded border border-dashed border-gray-300 bg-gray-50 p-6 dark:border-gray-600 dark:bg-gray-800"
@@ -15,12 +15,12 @@
 
     <div
       v-else-if="error"
-      class="error-state flex min-h-[100px] flex-col items-center justify-center rounded border border-dashed border-red-400 bg-red-50 p-6 dark:border-red-600 dark:bg-gray-800"
+      class="error-state flex min-h-[100px] min-w-0 max-w-full flex-col items-center justify-center overflow-hidden rounded border border-dashed border-red-400 bg-red-50 p-6 dark:border-red-600 dark:bg-gray-800"
     >
       <svg class="h-8 w-8 text-red-500 dark:text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
       </svg>
-      <span class="mt-3 whitespace-pre-wrap text-center font-mono text-sm text-red-600 dark:text-red-400">
+      <span class="mermaid-error-message mt-3 min-w-0 max-w-full whitespace-pre-wrap text-center font-mono text-sm text-red-600 dark:text-red-400">
         {{ error }}
       </span>
     </div>
@@ -180,6 +180,11 @@ onBeforeUnmount(() => {
   display: block;
   height: auto;
   max-width: 100%;
+}
+
+.mermaid-error-message {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .mermaid-expand-button {

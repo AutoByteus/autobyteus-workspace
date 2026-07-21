@@ -1,0 +1,13 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-mermaid-error-layout-overflow/autobyteus-web/electron
+
+stdout | browser/__tests__/browser-shell-controller.spec.ts
+[2026-07-20T15:58:57.471Z] [INFO] [electron] Application started
+
+········
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  17:58:57
+   Duration  331ms (transform 79ms, setup 0ms, collect 94ms, tests 6ms, environment 0ms, prepare 65ms)
+

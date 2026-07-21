@@ -6,69 +6,67 @@
 - Investigation notes: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/investigation-notes.md`
 - Design spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-spec.md`
 - Supplemental UI/UX spec: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/history-window-ui-ux-spec.md`
-- Design review report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 4 pass)
-- Code review report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/code-review-report.md` (authoritative round 2 pre-integration pass; includes the round 1 findings that triggered rework)
-- API/E2E package before latest-base integration: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and `api-e2e-test-review-report.md` in the same ticket directory
-- Delivery integration blocker package: `docs-sync-report.md`, `release-deployment-report.md`, and `evidence/delivery-initial-integration-conflicts.txt` in the same ticket directory
+- Supplemental integrated validation plan: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/integrated-live-validation-plan.md`
+- Design review report: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/design-review-report.md` (authoritative round 8 pass)
+- Prior cumulative review/execution package remains in the same ticket directory: `code-review-report.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-review-report.md`, `docs-sync-report.md`, `release-deployment-report.md`, `handoff-summary.md`, `release-notes.md`, and `delivery-live-validation-observation.md`. Those reports describe the prior latest-100 integrated state; fresh source review and API/E2E are required for this refinement.
 
 ## What Changed
 
-The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a92b5`; its first artifact package is in `06a09b778bd22564784eea4ecb8c7e6a8bd426b8`. The architecture-round-4 implementation rework is in `0b35f3c567f7411df514c5d2e5c5231bdd73e54e`.
+Implemented the user-approved active-trace-only **Load 50 earlier** refinement on top of the reviewed latest-100 implementation and its latest-base merge. Code-review round 4 local fixes are implemented in source commit `9c188af7e`: production media now follows the canonical `RawTraceMedia` contract, browse attachments reuse the established locator classifier, every non-latest state has an explicit exit, and same-turn prepend/turnover preserve retained disclosure identity. The implementation preserves the earlier bounded-window/presentation-witness behavior and adds one explicit, isolated browse path:
 
-- Preserved the active-file-only backend path: complete active raw-trace lifecycle reconstruction still precedes newest-100 canonical replay selection, with no archive or full-history fallback.
-- Split frontend responsibilities into pure window policy (`recentEventMonitorWindow.ts`), pure semantic witness (`recentEventMonitorPresentationWitness.ts`), and the only stateful Activity-store/revision adapter (`recentEventMonitorMutationCommit.ts`).
-- Replaced handler-effect OR revision authority with bounded pre-witness -> mutation -> completed-first enforcement -> post-witness equality on standalone, team-generic, and local submission commits. A commit increments `eventMonitorPresentationRevision` at most once and only for a net central presentation change.
-- Implemented the full `AR-003` per-kind witness. Shared tool-card, usage, and compaction presentation helpers now drive both the renderers and witness. Tool result/log data, raw argument identity, generic payload references, and recursive serialization are excluded.
-- Removed obsolete `EventMonitorPresentationMutation` propagation and the handler snapshots/equality walks that no longer own revision truth; handlers retain only their protocol projection mutations and local no-op guards.
-- Reset presentation revision immediately when `teamRunOpenCoordinator` replaces a non-live member conversation; subscribed-live preservation leaves both the live conversation and revision untouched.
-- Added focused regressions for `MP-CR-001`, `MP-AR-003`, semantic replacements, true visible changes, all visual kinds/order, team replacement reset/preservation, and throwing unused/deep getters.
-- Preserved Activity capping/derived-flag repair, collapsed Thinking/tool behavior, bottom-follow/unseen jump behavior, and the clean removal of the workspace copy control/eager joined text/dead localization key.
-
-## Latest-Base Integration Local Fix
-
-- Delivery advanced `origin/personal` from task base `75a4c97f` to `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12` and checkpointed the reviewed API/E2E package at `9e06eff8a28ee3c5dc0a08c8432f24470e36c7e2`.
-- Implementation completed the conflicted merge in `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`.
-- `AgentConversationFeed.vue` keeps the ticket's shared newest-100 presentation, shared usage strings, semantic presentation revision, bottom-follow, and unseen jump action while forwarding the newly landed opt-in absolute-file-path action through retained `AIMessage` rows.
-- `AgentEventMonitor.vue` supplies both the presentation revision and the absolute-file-action capability, retaining the new explicit-activation preview/status boundary without bypassing the bounded feed.
-- `userMessageProjection.ts` uses the newly landed member-echo rule that retains and deduplicates only existing non-executable attachments. Revision authority remains the surrounding semantic pre/post witness, so the obsolete handler boolean/deep attachment comparison was not restored.
-- Added focused component assertions that the file-action capability and event forwarding remain present alongside the recent presentation path. Existing member-input tests cover retained non-executable attachments, refreshed executable attachments, deduplication, unrelated identity isolation, and historical unsupported locators.
-- Composition required no new product decision: Markdown text already belongs to the witness through segment content, and user attachment witness tuples already include the retained attachment identity/kind/locator/label/type used by the new attachment model.
+- Added required replay `eventId` and `turnGroupId` assignment while raw, tool-lifecycle, or provider/legacy identity evidence is available. Raw and tool IDs are length-prefixed; legacy identities use a flat-field SHA-256 fingerprint plus occurrence, without result/log recursion.
+- Added an active-file snapshot reader that opens only `raw_traces_active.jsonl`, records device/inode plus the current completed manifest generation, and normalizes the entire active snapshot before lifecycle reconstruction. Page selection never tails raw records and never reads an archive segment.
+- Added a pure fixed-page/cursor policy: first request returns one consistent newest-100 plus up to 50 preceding canonical events; continuations return the immediately preceding at-most-50 events. Opaque cursors are subject-, generation-, and anchor-bound; appends preserve them and rewrite/compaction evidence returns typed `EXPIRED`.
+- Added a closed TypeGraphQL central visual union and dedicated projector. The page contract contains only typed user, assistant text, Thinking, tool-card, media, and compaction visuals with deterministic source-derived `visualId`s. Tool projection copies only declared shallow string summary fields and explicit status/error/action data; result, logs, Activity detail, generic JSON, and recursive serialization are structurally absent.
+- Added explicit standalone and team-member page queries with only their subject identity and optional cursor. Normal projection adds `hasEarlierActiveTraceEvents` but remains active-only/latest-100 and performs no speculative page request.
+- Added an isolated Vue browse controller with explicit subject reset, stale in-flight response rejection, ID-only Map/Set validation, fixed page blocks, frozen browse/live separation, and a hard 300-central-visual resident bound. Overflow releases complete farthest-newer server-owned blocks while preserving the reading anchor.
+- Added a page-only linear presentation converter and dedicated assistant row renderer. Server-carried visual IDs are used unchanged for user/compaction rows and assistant subvisual Vue keys, `data-event-monitor-visual-key` anchors, and disclosure identities; assistant groups use their stable source `turnGroupId` rather than the first retained visual. Equal-content/timestamp events are not content-deduplicated.
+- Added localized ready/loading/retry/beginning/expired/newer-released/jump controls. Every browsing/loading/beginning/error state now exposes a keyboard-operable Jump action, while expiry uses one non-duplicated recovery action. The first visible visual ID and offset are captured before prepend and restored afterward; Jump discards all browse pages/cursors and returns to current live latest truth.
+- Tightened the replay/page input contract to shared `RawTraceMedia` and map canonical `media.images` to image attachments/visuals. The raw normalizer rejects the non-contract singular `image` key; provider coverage proves stable user, assistant, and tool media output identities.
+- Reused `hydrateContextAttachment` for browse user attachments while preserving the server-carried `attachmentId`, so relative workspace, external/REST, canonical local-file, uploaded, and duplicate-locator behavior matches the established open/preview routing.
+- Propagated browse availability and explicit standalone/team subjects through desktop and mobile composition. Older page data never enters `AgentRunState.conversation` or Activity; live revision tracking continues independently.
+- Retained all previously reviewed behavior: lifecycle-aware latest-100 selection, completed-first eviction with deterministic mutable fallback, bounded semantic pre/post presentation revision, Activity cap/flag repair, collapsed Thinking/tool interaction, bottom follow, copy-control/eager-text removal, absolute-file-path actions, and non-executable attachment retention.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `REQ-001` | Normal projection reads active raw trace only | `autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts` | `includeArchive: false`; no archive/full-history compatibility branch. |
-| `REQ-002` | Select newest 100 canonical events after complete active lifecycle reconstruction | `recent-run-projection-policy.ts`; local-memory provider | `buildHistoricalReplayEvents` remains before `selectRecentReplayEvents`; no raw-record tailing. |
-| `REQ-003` | Retain/render at most 100 segment-aware center events, including compactions | `recentEventMonitorWindow.ts`; `AgentConversationFeed.vue`; hydration projections | Shared selection counts user rows, individual AI segments, and center compaction rows; conversation and final merged presentation remain capped. |
-| `REQ-004` | Completed-first eviction, deterministic mutable fallback, stable source-limited re-entry | `recentEventMonitorCompletion.ts`; `recentEventMonitorSelection.ts`; `recentEventMonitorWindow.ts` | Existing completed-first/hard-fallback policy preserved. Commit tests prove classification-only membership changes and transient append eviction. |
-| `REQ-005` | Revision represents only net central render/retained-interaction change; replacement establishes a baseline | `recentEventMonitorPresentationWitness.ts`; `recentEventMonitorMutationCommit.ts`; standalone/team dispatchers; local submission; `teamRunOpenCoordinator.ts` | Pre/post bounded witnesses are authoritative. No timestamps, protocol heuristics, deep watchers, serialized snapshots, or effect OR. Non-live replacement resets; subscribed-live preservation does not. |
-| `REQ-006` | Preserve collapsed Thinking/tool retained interactions | Existing AI/Thinking components plus shared `toolCardPresentation.ts` and `ToolCallIndicator.vue` | Thinking content remains available behind its existing disclosure. Tool card name/status/summary/error/action semantics are shared with witness without adding result/log center content. |
-| `REQ-007` | Cap Activity at 100 with matching terminal semantics and repair derived flags | `stores/agentActivityStore.ts`; `recentEventMonitorCompletion.ts` | Initial implementation remains unchanged by rework; completed-first/mutable fallback and approval/highlight repair stay active. |
-| `REQ-008` | Remove copy control, eager joined conversation text, and dead key | `AgentWorkspaceView.vue`; generated/source localization catalogs | Initial clean removal preserved; no compatibility UI/path restored. |
-| `REQ-009` | Existing traces remain directly usable; no migration | Read-policy-only server change | No trace write/rewrite/delete, schema, manifest, or version-specific transition path. |
+| `BEH-001` | Normal standalone/team history is active-only newest 100 after complete lifecycle reconstruction. | `MemoryFileStore` / `AgentMemoryService` -> `LocalMemoryRunViewProjectionProvider` -> `buildHistoricalReplayEvents` -> `selectRecentReplayEvents` | Preserved. No raw-tail or archive/full-history fallback. |
+| `BEH-002` | Latest central and Activity state remain lifecycle-aware and bounded. | Existing recent-window/completion/Activity policies; `recentEventMonitorMutationCommit.ts` | Preserved. A live retention change also exposes that earlier active content may exist. |
+| `BEH-003` | Revision reflects only net bounded central presentation change; browse Jump restores live truth. | Existing pure witness/commit path plus `useEventMonitorActiveTraceBrowse` and `AgentConversationFeed` | Preserved; browse never bumps or replaces live revision/conversation state. |
+| `BEH-004` | Thinking/tool cards stay collapsed by default with stable explicit disclosure interaction. | Stable turn-group parent in `eventMonitorActiveTraceBrowsePresentation.ts` -> visual-ID keyed `EventMonitorBrowseAssistantRow.vue` -> `ThinkSegment` / direct `ToolCallIndicator` | Feed-level and browser checks prove an expanded retained subvisual keeps the same DOM/component identity across same-turn prepend and farthest-newer turnover. |
+| `BEH-005` | Copy control/eager conversation derivation remains removed. | Existing workspace composition | No compatibility or replacement control added. |
+| `BEH-006` | Explicit fixed-50 traversal inside only the current active trace, with stable source-to-DOM identities and <=300 visuals. | Explicit GraphQL page queries -> active snapshot -> canonical `RawTraceMedia` normalization -> replay identity -> page policy/projector -> page service/controller/converter -> keyed feed | Implemented for standalone and team member subjects. First response is latest100+up-to50 from one reconstruction; continuations are preceding <=50. Production-shaped user/assistant/tool images are retained. |
+| `BEH-007` | Appends keep cursors valid; active rewrite/compaction expires safely. | `active-trace-event-page-policy.ts`; snapshot device/inode + manifest/earliest generation; controller expired state | Foreign/malformed cursor errors and typed generation/anchor expiry covered. No archive fallback. |
+| `BEH-008` | Page data is central-only and never hydrates canonical conversation/Activity or raw tool detail. | `event-monitor-active-trace-page-types.ts`, projector, TypeGraphQL union, generated types, page-only converter | Result-null and multi-megabyte-result projections are byte-identical; getter/deep fields are not invoked. |
+| `BEH-009` | Stored active/archive traces remain directly usable and unchanged. | Read-only snapshot/page path | No writer, schema, migration, rewrite, delete, or compatibility branch added. |
 
 ## Key Files Or Areas
 
-- Backend projection: `autobyteus-server-ts/src/run-history/projection/recent-run-projection-policy.ts`, `.../providers/local-memory-run-view-projection-provider.ts`
-- Pure Event Monitor policy/witness: `autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts`, `recentEventMonitorPresentationWitness.ts`, `recentEventMonitorUsagePresentation.ts`
-- Stateful commit boundary: `autobyteus-web/services/eventMonitor/recentEventMonitorMutationCommit.ts`
-- Shared renderer semantics: `autobyteus-web/utils/toolCardPresentation.ts`, `utils/compactionActivityPresentation.ts`, `ToolCallIndicator.vue`, four tool segment wrappers, `AgentConversationFeed.vue`, `CompactionStatusRow.vue`
-- Authoritative mutation sequencing: `AgentStreamingService.ts`, `teamStreamGenericMessageDispatcher.ts`, `localUserSubmission.ts`, direct team submission fallback in `agentTeamRunStore.ts`
-- Replacement baseline: `services/runOpen/teamRunOpenCoordinator.ts`
-- Durable regressions: `recentEventMonitorMutationCommit.spec.ts`, `recentEventMonitorPresentationWitness.spec.ts`, `toolCardPresentation.spec.ts`, plus revised streaming/submission/open/component tests
+- Server identity and page policy: `autobyteus-server-ts/src/run-history/projection/historical-replay-event-identity.ts`, `active-trace-event-page-policy.ts`
+- Server closed DTO/projector: `event-monitor-active-trace-page-types.ts`, `event-monitor-active-trace-page-projection.ts`, `src/api/graphql/types/event-monitor-active-trace-page.ts`
+- Server source/service boundaries: `src/agent-memory/store/memory-file-store.ts`, `src/agent-memory/services/agent-memory-service.ts`, local-memory provider, standalone/team projection services and resolvers
+- Web transport/state/presentation: `autobyteus-web/services/eventMonitor/eventMonitorActiveTracePageService.ts`, `eventMonitorActiveTraceBrowse.ts`, `eventMonitorActiveTraceBrowsePresentation.ts`
+- Web render/scroll controls: `AgentConversationFeed.vue`, `AgentEventMonitor.vue`, `EventMonitorBrowseAssistantRow.vue`, desktop/team/mobile parents
+- Canonical media and attachment adapters: `autobyteus-ts/src/memory/models/raw-trace-item.ts`, server `raw-trace-record-normalizer.ts`, web `contextAttachmentModel.ts`
+- Shared tool-card projection: `autobyteus-web/utils/toolCardPresentation.ts`
+- Generated contract: `autobyteus-web/generated/graphql.ts`, `graphql/queries/runHistoryQueries.ts`
+- Focused tests: new server page-policy/projector specs, expanded provider/team service specs, browse controller/converter/row specs, query and existing composition suites
 
 ## Important Assumptions
 
-- Active raw-trace normalization remains the authority for canonical chronological replay ordering.
-- Protocol stable identities (stream, invocation, inter-agent message, and user message/dedupe identities) are unique inside their source lifecycle; a late update after fallback may re-enter only once at the newest edge and is immediately re-capped.
-- The central witness intentionally describes the production `AgentConversationFeed` defaults and retained card interactions, not Activity-panel detail or shell-owned names/avatars/local disclosure state.
+- The active trace remains append-oriented between supported compaction/rewrite operations; supported rewrite owners replace the active file and update manifest/earliest evidence as documented in the reviewed design.
+- Raw-trace IDs and `(turnId, toolCallId)` are unique in their source lifecycle. Legacy duplicate flat records are distinguished deterministically by occurrence.
+- A page counts canonical replay events for fixed 100/50 selection and counts emitted central subvisuals for the 300 resident/mounted bound.
+- Page tool cards intentionally retain only center-render semantics; result/log/context detail remains available only through the normal live/Activity path, not older browse pages.
 
 ## Known Risks
 
-- Reviewed residual risks remain: an individual retained event can be byte-heavy; conversation and Activity transport duplicate some tool information; a large active team can perform several bounded reads; dynamic-height content can imperfectly anchor while non-pinned; source-limited late re-entry cannot recover evicted prior content.
-- Index-derived component/disclosure keys remain a downstream observation risk when rolling eviction regroups retained AI segments.
-- Post-integration `timeout 600s corepack pnpm exec nuxt typecheck` completed and exited nonzero on the repository baseline diagnostics. No diagnostic names `AgentConversationFeed`, `AgentEventMonitor`, `userMessageProjection`, or another ticket-modified production path. Exact output is retained at `evidence/implementation-post-integration-typecheck.txt`.
+- Each explicit page reconstructs the complete active file. That is intentionally accepted to preserve lifecycle correctness; representative `AC-015` timing remains API/E2E-owned.
+- One retained central event can still be byte-heavy through visible text/media locator content even though hidden result/log payloads are excluded.
+- Dynamic-height media/Markdown can reflow after anchor restoration; the implementation uses the exact retained visual ID plus offset first, then scroll-height delta as fallback.
+- Latest-mode ordinal component keys remain outside this browse-only identity refinement. Browse row/subvisual keys are source-derived stable IDs.
+- The reviewed manifest-plus-earliest generation fallback remains weaker than a dedicated persisted revision, but matches the evidenced supported compaction/rewrite path and introduces no speculative storage mechanism.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -76,25 +74,25 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 - Reviewed root-cause classification: `Missing Invariant`
 - Reviewed refactor decision: `Refactor Needed Now`
 - Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `Yes` — round-1 `CR-001` was routed through solution redesign and architecture round 4 before this rework.
-- Evidence / notes: The inadequate effect-OR mechanism was removed rather than patched. Window policy, pure semantic witness, renderer-shared derivation, and stateful commit are separate owners. `CR-001`, `CR-002`, and architecture `AR-003` are covered by production changes and focused regressions.
+- If challenged, routed as `Design Impact`: `N/A`; review round 4 findings `CR-003`–`CR-006` were bounded local fixes and introduced no requirement/design gap
+- Evidence / notes: Page identity is assigned before selection, page policy and closed projection are pure server owners, browse transport/state/presentation/render are separated, and no caller bypasses those boundaries through normal hydration, Activity, Apollo lookup in the feed, or filesystem access in resolvers.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
 - Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
-- Shared structures remain tight: `Yes`
-- Canonical shared design guidance was reapplied, and design weaknesses were routed upstream when needed: `Yes`
+- Shared structures remain tight: `Yes` — the closed page union is separate from normal result-bearing projection/Activity structures
+- Canonical shared design guidance was reapplied: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`
-- Notes: All changed source files remain below 500 effective non-empty lines. No changed source delta exceeds 220 lines from task base; `recentEventMonitorWindow.ts` remains under the delta threshold after extracting the witness and commit adapter. Obsolete handler effect/snapshot plumbing was removed cleanly.
+- Notes: No changed source file exceeds 500 effective non-empty lines. After the local fix, `AgentConversationFeed.vue` is 333 effective non-empty lines; no source delta crosses the 220-line pressure threshold.
 
 ## Persisted Data Transition Check
 
 - Approved decision: `Directly Usable — No Migration`
-- Design-spec decision reference: `design-spec.md` — “Persisted Data / State Transition Decision”
+- Design-spec decision reference: `design-spec.md` — Persisted Data / State Transition Decision
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence: Existing active trace reader/replay normalization stays intact; only archive inclusion and post-normalization selection policy changed in the initial commit. Round-4 rework is ephemeral frontend presentation state only.
+- Direct-use evidence: Existing JSONL normalization remains version-agnostic; the new page path only reads the active file and ignores archived segment bodies. Existing active/archive files are neither transformed nor deleted.
 - Migration implementation: Not applicable.
 - Deviation from the reviewed transition decision: `None`
 
@@ -104,46 +102,44 @@ The initial reviewed implementation is in `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a9
 - Branch: `codex/agent-run-history-performance`
 - Task base: `75a4c97f`
 - Latest integrated base: `origin/personal` at `8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`
-- Implementation commits: `d50cf2cc996e8e1bf63d5cf2dd3e2ef6735a92b5`, `0b35f3c567f7411df514c5d2e5c5231bdd73e54e`, and integration merge `c13ba233a435eb7c1d0cbd88556b93e77f7ad657`
-- Dependencies were already available from the workspace lockfile. Commands use Corepack because bare `pnpm` is not on `PATH`.
-- Vitest was restricted to `--maxWorkers=2` because the shared environment was memory constrained after the reported power interruption.
+- Pre-refinement branch checkpoint: `a391b0222f1fdfa38ce26df4d239277e09b506f7`
+- Active-trace paging implementation: `a210ad1dfd00bbf76ca6f13cbc9ee02f012ab1be`
+- Code-review round 4 local-fix source commit: `9c188af7e`
+- Dependencies were already available from the workspace lockfile; no dependency or lockfile change was required.
+- Delivery/user-verification hold remains active. No push, archive, release, deployment, or docs-sync finalization was performed.
 
 ## Local Implementation Checks Run
 
-- Round-4 focused mutation/handler/render suite — **pass**, 12 files / 139 tests.
-- Final expanded implementation-scoped Nuxt suite covering tool card/feed/workspace, standalone/team routing, handlers, witness/commit/window, hydration/open/submission, Activity/context stores, and tool presentation — **pass**, 23 files / 232 tests (`--maxWorkers=2`).
-- Post-integration focused composition suite covering bounded feed/Event Monitor, absolute-path Markdown actions, member attachment retention, production dispatch, semantic witness/commit, and recent-window policy — **pass**, 9 files / 79 tests.
-- Post-integration expanded implementation-scoped suite including the integrated renderer/context changes — **pass**, 29 files / 262 tests (`--maxWorkers=2`).
-- `corepack pnpm guard:web-boundary` — **pass**.
-- `corepack pnpm guard:localization-boundary` — **pass**.
-- `corepack pnpm audit:localization-literals` — **pass**, zero unresolved findings.
-- `timeout 600s corepack pnpm exec nuxt typecheck` — **repository baseline failure**; command completed with exit 1 and no diagnostic in an integration-resolved or ticket-modified production path. Evidence: `evidence/implementation-post-integration-typecheck.txt`.
-- Conflict-resolution-only `git diff --check` — **pass** for the three resolved production files and two focused test files. Whole-merge whitespace checking reports pre-existing whitespace in evidence logs introduced by the remote base; those upstream artifacts were not rewritten during this local fix.
-- `git diff --check` — **pass** before source commit.
-- Initial implementation checks remain recorded from the prior handoff/review: backend projection tests 2 files / 4 tests and server TypeScript build passed; the round-4 rework did not modify those backend files.
+- Server focused projection/page/service suite — **pass**, 7 files / 30 tests. Covers canonical raw-media normalization, production-shaped user/assistant/tool images with stable IDs, all central kinds/order, lifecycle reconstruction, fixed first/continuation pages, append/foreign/rewrite expiry, actual archive-sentinel exclusion, and explicit team-member routing.
+- Web focused browse/latest/composition suite — **pass**, 13 files / 90 tests. Covers attachment locator classification with server-carried IDs, equal-content identities, feed-level same-turn prepend and turnover disclosure retention, non-latest/expiry exits with click/Enter/Space/focus behavior, 300-visual turnover, frozen/live separation, standalone/team composition, query inputs, revision, and replacement behavior.
+- `pnpm exec tsc -p tsconfig.build.json --noEmit` in `autobyteus-server-ts` — **pass**.
+- `pnpm exec nuxi typecheck` in `autobyteus-web` — **pass**.
+- `pnpm guard:web-boundary` — **pass**.
+- `pnpm guard:localization-boundary` — **pass**.
+- `pnpm audit:localization-literals` — **pass**, zero unresolved findings.
+- `git diff --check` — **pass**.
+- Source-size audit — **pass**: no changed source file >500 effective lines and no changed source delta >220 lines.
 
 ## Frontend Rendered-Result Check
 
-- Affected surfaces / journeys: Event Monitor bounded feed, shared tool card summary/status rendering, non-pinned visible revision, localized jump-to-latest interaction, and preserved bottom-follow.
-- Approved references: `history-window-ui-ux-spec.md`, `requirements-doc.md` (`REQ-003`–`REQ-008`), round-4 `design-spec.md` central witness contract.
-- Existing design system/components reviewed: `AgentConversationFeed`, `AIMessage`, `UserMessage`, four tool wrappers, `ToolCallIndicator`, `CompactionStatusRow`, Tailwind button/focus styling, and the application shell.
-- Development/preview surface: Read `autobyteus-web/README.md`; ran the Nuxt development renderer and used headless Chromium through Playwright. Temporary preview/probe files were removed immediately.
-- States and interactions inspected at 1280×900: initially pinned feed; manual non-pinned scroll; shared terminal card command/title before and after a semantic mutation; unchanged scroll position after revision; localized jump action visibility/focus; jump activation and clearing.
-- Result: the card changed from `printf initial-command` to `printf changed-command`; non-pinned scroll stayed `0/2000` after the revision; the action accepted focus; jump moved to `1234/2000` and hid the action; no page/console errors. No visual defect requiring another production change was observed.
-- Evidence: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-browser-interaction.txt`, `implementation-event-monitor-unseen.png`, and `implementation-event-monitor-round4.png`.
-- Post-integration composition check: rendered the full `AgentEventMonitor` at 1280×900, explicitly activated a retained absolute-path control, observed the host-only status, then exercised a non-pinned visible revision. Scroll stayed `0/1990`; the localized jump accepted focus; activation moved to `1400/1990` and cleared the action; there were no page/console errors.
-- Post-integration evidence: `evidence/implementation-post-integration-browser.txt` and `evidence/implementation-post-integration-browser.png`. Temporary preview/probe files were removed.
-- Remaining limitations: real live large-run/team timing, Simplified Chinese browser rendering, and index/disclosure behavior under realistic rolling eviction remain downstream API/E2E work.
+- Affected surfaces / journeys: desktop Event Monitor browse entry, loading, beginning, retained Thinking/tool/text rows, anchor restoration, newer-content indicator, keyboard-focused Jump, and return to latest.
+- Approved references: `history-window-ui-ux-spec.md`, `requirements-doc.md` (`REQ-010`–`REQ-012`), and round-8 `design-spec.md` (`DS-006`, `DS-007`).
+- Existing design system/components reviewed: `AgentConversationFeed`, `UserMessage`, `TextSegment`, `ThinkSegment`, `ToolCallIndicator`, `CompactionStatusRow`, existing sticky/floating controls, focus-ring and localization conventions.
+- Development/preview surface: Read `autobyteus-web/README.md`; rendered a temporary Nuxt development route at 1280×900 in headless Chromium and removed the temporary route/probe afterward.
+- States/interactions inspected after the local fix: ordinary browsing with no live activity, beginning, error/retry, expiry, click/Enter/Space Jump activation, focus, equal-content Thinking disclosure, same-turn prepend, and farthest-newer turnover at 1280×900.
+- Result: browsing/beginning/error each showed the explicit localized Jump action; Enter and Space each returned to latest; expiry showed only its single recovery action. The retained expanded Thinking button kept the same instrumented DOM identity and open state through prepend and turnover, equal-content neighbors remained distinct, the newer row was released, and no browser console errors occurred.
+- Evidence: `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-active-trace-browse-local-fix.txt` and `/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/implementation-active-trace-browse-local-fix.png`. The earlier full refinement render evidence remains at `implementation-active-trace-browse.txt` / `.png`.
+- Remaining unverified states: realistic large-run/network timing, Simplified Chinese browser layout, real team/standalone GraphQL traffic, and dynamic remote media reflow remain downstream API/E2E work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Instrument normal standalone and team-member projection I/O with active plus archive files and prove archives are never opened/read.
-- Use a deterministic >=600 canonical active fixture and record count/bytes, TTFB, total time, hydration time, and composer/browser usability against the 2-second target.
-- Drive >=1,000 mixed live append/update/no-op events through standalone and team paths; assert one stable-identity representation, center <=100, Activity <=100, and at-most-once revision per authoritative commit.
-- Exercise exact `MP-CR-001` and `MP-AR-003` through production dispatch: transient complete append into 100 mutable events; supported tool logs/result-only changes; equal semantic argument replacement; true tool card change.
-- Validate non-live team reopen reset versus subscribed-live preservation in the application, then observe pinned/non-pinned English and Simplified Chinese jump behavior with keyboard focus.
-- Confirm Thinking and tool cards remain collapsed by default and expand normally after hydration, rolling retention, and live continuation.
+- Run the reviewed 275-event standalone and team-member traversal against active data plus archive-only sentinels. Prove initial latest100, first 126–275 snapshot, subsequent 50/50/25 pages, stable IDs, and zero archive-segment opens.
+- Exercise active append between page requests, then supported compaction/rewrite. Confirm append-stable continuation and typed expired recovery with no fallback.
+- Measure page TTFB/total/bytes/conversion/usability against `PAGE-001`/`AC-015`, including null versus multi-megabyte tool result fixtures.
+- Drive >500 canonical events with multi-visual rows through repeated paging. Assert <=300 mounted visuals, complete farthest-newer block release, no resident gaps/duplicates, and unchanged visual-ID anchor.
+- Validate English and Simplified Chinese ready/loading/retry/beginning/expired/newer-released states, keyboard activation, real disclosure stability, and Jump restoration to current live latest truth.
+- Re-run the prior latest-window/API/E2E package to prove this isolated browse path did not regress active-only/latest-100, live revision, Activity cap, file actions, or attachment retention.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes, for the newly integrated state. The pre-integration package passed API/E2E at 96.6% confidence and proportional test-code review, but the latest-base conflict resolution changed the composed source state. After source review passes, `api_e2e_engineer` must rerun proportionate integrated-state coverage and decide whether any durable tests/evidence require refresh.
+Yes. This artifact records implementation-scoped checks and browser self-validation only. The round-8 source state requires fresh implementation source review, then `api_e2e_engineer` coverage investigation/execution and proportional test-code review before delivery resumes.

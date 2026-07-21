@@ -39,6 +39,7 @@ export class AgentRunState {
   public agent_tool_invocation_counts = new Map<string, number>();
   public compactionStatus: AgentCompactionStatus | null = null;
   public eventMonitorPresentationRevision = 0;
+  public hasEarlierActiveTraceEvents = false;
 
   constructor(initialId: string, initialConversation: Conversation) {
     this.runId = initialId;

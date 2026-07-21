@@ -1,0 +1,20 @@
+mode=generated-disposable-fixture
+server_pid=69193
+nuxt_pid=69189
+server_cmd=node /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-server-ts/dist/app.js --data-dir /tmp/autobyteus-browser-r4-wwCqWT --host 127.0.0.1 --port 31250
+server_relevant_env_begin
+APP_ENV=test
+AUTOBYTEUS_DATA_DIR=<OWNED_TEMP>
+AUTOBYTEUS_LOG_DIR=<OWNED_TEMP>/logs
+AUTOBYTEUS_MEMORY_DIR=<OWNED_TEMP>/memory
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:31250
+AUTOBYTEUS_SKIP_SYNC=1
+DATABASE_URL=file:<OWNED_TEMP>/db/test.db
+NODE_ENV=production
+server_relevant_env_end
+server_fd_live_root_count=0
+server_fd_owned_temp_count=2
+archive_sha256=a3db7e8f4b4932dcf550c9edb9702b518051699c82c8d0c3eb838421790723c3
+manifest_sha256=3e45f8a128e5e246d3f162fa6130a91b6abc21eeda3205d1613e033afdff8de9
+active_rewrite=Intentional fixture-only cursor-expiry control flow; first synthetic row removed atomically after traversal
+live_root_modified=false
