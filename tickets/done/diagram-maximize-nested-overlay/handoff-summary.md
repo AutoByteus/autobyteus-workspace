@@ -2,17 +2,20 @@
 
 ## Delivery Status
 
-- Current status: `User verified; repository finalization and v1.4.23 release authorized`
+- Current status: `Completed — repository finalized and v1.4.23 published`
 - Ticket state: Archived at `tickets/done/diagram-maximize-nested-overlay/`
-- Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay`
-- Ticket branch: `codex/diagram-maximize-nested-overlay`
+- Dedicated worktree: Removed after successful finalization and release.
+- Ticket branch: `codex/diagram-maximize-nested-overlay` — final commit pushed, merged, then removed locally and remotely.
 - Finalization target from bootstrap context: latest tracked `origin/personal`
 - Reviewed implementation commit: `425ca42974b7e213c08033480b3301446aae1366`
 - Latest tracked base checked: `origin/personal` at `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
 - Initial delivery integration result: `Already current`; the 2026-07-21 fetch found the bootstrap base unchanged, so no checkpoint commit, merge, rebase, or behavior rerun was required.
+- Final ticket commit: `b516d82990c09f0e615ab9c99344a274dcab2700`
+- Merge commit on `personal`: `092afe117a18ab7a1f33bce215de23eb0c64766f`
+- Release commit/tag: `54acfa29294d922f921c674c12ce7298da9b87e8` / `v1.4.23`
 - Unresolved findings/blockers: None.
 
-Implementation source is committed. The reviewed durable browser-test changes, API/E2E evidence, review reports, long-lived docs, delivery artifacts, and user verification are archived for the authorized final ticket commit.
+Implementation source, durable browser coverage, API/E2E evidence, review reports, long-lived docs, delivery artifacts, and user verification are archived on `personal`. The stable release and all five tag-triggered workflows completed successfully.
 
 ## Delivered Behavior
 
@@ -45,14 +48,12 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 
 - Result: `Pass`, exit status `0`
 - Build flavor/version/architecture: `enterprise` / `1.4.22` / macOS ARM64
-- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.22.zip`
+- App/DMG/ZIP: Built in the dedicated task worktree for user verification, then removed with that worktree after acceptance and successful publication. The hashes and build/package-verification evidence remain archived in the ticket.
 - DMG SHA-256: `1766bdc0fe53ea102fade8bab4152bc29a6d9802cff371d001e69f2687489b62`
 - ZIP SHA-256: `d514c0505ea4f7891147e9a1c94a35e91f776c998fb36864fb69ebc239596a1f`
 - Package integrity: `hdiutil verify` passed for the DMG; `unzip -tq` passed for the ZIP; bundle version/build are `1.4.22`; executable is ARM64.
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-build.log`
-- Package verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-package-verification.log`
+- Build evidence: `tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-build.log`
+- Package verification evidence: `tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-package-verification.log`
 - Packaging note: Signing, notarization, and timestamping were intentionally skipped by the README's local-test command. This is an ad-hoc local test package, not a published release.
 
 ## Documentation And Data
@@ -62,8 +63,11 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/docs-sync-report.md`
 - Persisted-data decision: `Not Affected`; all changed overlay, focus, and SVG-mounting state is transient.
 - Release notes prepared: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/release-notes.md`
-- Planned release: `v1.4.23`, the next patch after `v1.4.22`; the tag was confirmed absent locally and remotely after user verification.
-- Version bump, tag, publication, deployment, and repository finalization: Authorized and in progress; exact outcomes will be recorded after completion.
+- Release: [`v1.4.23`](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.23), published as a stable GitHub Release with 21 uploaded assets.
+- Version and manifest sync: `autobyteus-web`, `autobyteus-message-gateway`, and the managed messaging release manifest all resolve to `1.4.23` / `v1.4.23`.
+- Repository finalization: Completed; ticket commit `b516d8299` was merged to `personal` by `092afe117`, then release commit/tag `54acfa292` / `v1.4.23` was pushed.
+- Publication/deployment: Android APK, desktop packages, managed messaging package, iOS App Store Connect upload, and multi-architecture server Docker publication all completed successfully.
+- Docker Hub: `autobyteus/autobyteus-server:1.4.23` and `:latest` resolve to multi-architecture digest `sha256:e4b3acfe90c3f5c858fcb15563f0f5b6df24b76b2b12a98bf21278bcbe8f6186` for `linux/amd64` and `linux/arm64`.
 
 ## Suggested User Verification
 
@@ -85,6 +89,8 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 
 ## Cumulative Artifact Package
 
+The absolute paths below record the original task-worktree context used by upstream stages. That dedicated worktree has been removed; the canonical archived package now lives in the repository under `tickets/done/diagram-maximize-nested-overlay/`.
+
 - Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/design-spec.md`
@@ -105,6 +111,10 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 - Local Electron build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-build.log`
 - Local Electron package verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/delivery-electron-mac-package-verification.log`
 - User verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/tickets/done/diagram-maximize-nested-overlay/user-verification-report.md`
+- Repository finalization and cleanup: `tickets/done/diagram-maximize-nested-overlay/repository-finalization-and-cleanup.log`
+- Release command: `tickets/done/diagram-maximize-nested-overlay/release-command.log`
+- Release workflow verification: `tickets/done/diagram-maximize-nested-overlay/release-workflow-verification.log`
+- Release publication verification: `tickets/done/diagram-maximize-nested-overlay/release-publication-verification.log`
 - Changed production source: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web/components/conversation/segments/renderer/MermaidDiagramViewer.vue`
 - Changed focused unit test: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web/components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts`
 - Changed durable browser coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web/tests/e2e/fixtures/diagram-zoom-viewer.page.vue`; `/Users/normy/autobyteus_org/autobyteus-worktrees/diagram-maximize-nested-overlay/autobyteus-web/tests/e2e/diagram-zoom-viewer-probe.mjs`

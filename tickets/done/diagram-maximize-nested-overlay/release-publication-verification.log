@@ -1,0 +1,323 @@
+# v1.4.23 release publication verification
+timestamp=2026-07-21T12:52:35Z
+
+## Git references and versions
+personal_head=54acfa29294d922f921c674c12ce7298da9b87e8
+origin_personal=54acfa29294d922f921c674c12ce7298da9b87e8
+tag_target=54acfa29294d922f921c674c12ce7298da9b87e8
+remote_tag_target=54acfa29294d922f921c674c12ce7298da9b87e8
+web_version=1.4.23
+gateway_version=1.4.23
+manifest_release_tag=v1.4.23
+manifest_artifact_version=1.4.23
+
+## GitHub release
+{
+  "name": "v1.4.23",
+  "tagName": "v1.4.23",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.23",
+  "isDraft": false,
+  "isPrerelease": false,
+  "publishedAt": "2026-07-21T12:29:09Z",
+  "assetCount": 21,
+  "assets": [
+    {
+      "name": "autobyteus-message-gateway-1.4.23-node-generic.tar.gz",
+      "size": 46218095,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:29:09Z"
+    },
+    {
+      "name": "autobyteus-message-gateway-1.4.23-node-generic.tar.gz.json",
+      "size": 429,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:29:08Z"
+    },
+    {
+      "name": "autobyteus-message-gateway-1.4.23-node-generic.tar.gz.sha256",
+      "size": 120,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:29:08Z"
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.23-release.apk",
+      "size": 1846691,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:29:48Z"
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.23-release.apk.sha256",
+      "size": 113,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:29:48Z"
+    },
+    {
+      "name": "AutoByteus_personal_linux-arm64-1.4.23.AppImage",
+      "size": 356524385,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:49Z"
+    },
+    {
+      "name": "AutoByteus_personal_linux-x64-1.4.23.AppImage",
+      "size": 368129924,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:50Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.23.dmg",
+      "size": 433770485,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:49Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.23.dmg.blockmap",
+      "size": 453704,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.23.zip",
+      "size": 429323055,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:50Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.23.zip.blockmap",
+      "size": 440143,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.23.dmg",
+      "size": 455866502,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:50Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.23.dmg.blockmap",
+      "size": 471658,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.23.zip",
+      "size": 450962693,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:49Z"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.23.zip.blockmap",
+      "size": 461112,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "AutoByteus_personal_windows-1.4.23.exe",
+      "size": 301512652,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:45Z"
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "size": 417,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "latest-linux.yml",
+      "size": 413,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "latest-mac.yml",
+      "size": 897,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "latest.yml",
+      "size": 354,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:42:25Z"
+    },
+    {
+      "name": "release-manifest.json",
+      "size": 904,
+      "state": "uploaded",
+      "updatedAt": "2026-07-21T12:29:08Z"
+    }
+  ]
+}
+
+## Workflow/job summaries
+{
+  "databaseId": 29830117535,
+  "workflowName": "Android APK Release",
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29830117535",
+  "jobs": [
+    {
+      "name": "Resolve Android Release Metadata",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build Android APK",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Publish Android APK To GitHub Release",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}
+{
+  "databaseId": 29830117657,
+  "workflowName": "Desktop Release",
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29830117657",
+  "jobs": [
+    {
+      "name": "Resolve Release Metadata",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build Linux ARM64",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build macOS ARM64",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build Windows x64",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build Linux x64",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build macOS Intel x64",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Publish GitHub Release",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}
+{
+  "databaseId": 29830117558,
+  "workflowName": "Release Messaging Gateway",
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29830117558",
+  "jobs": [
+    {
+      "name": "Resolve Release Metadata",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build Runtime Package",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Publish GitHub Release",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}
+{
+  "databaseId": 29830117599,
+  "workflowName": "Server Docker Release",
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29830117599",
+  "jobs": [
+    {
+      "name": "Resolve Release Metadata",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build And Push Server Image",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}
+{
+  "databaseId": 29830117687,
+  "workflowName": "iOS App Store Connect Release",
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29830117687",
+  "jobs": [
+    {
+      "name": "Resolve iOS Release Metadata",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Build And Test iOS App",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate iOS Publish Secrets",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Archive And Upload To App Store Connect",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}
+
+## Docker Hub stable manifests
+Name:      docker.io/autobyteus/autobyteus-server:1.4.23
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:e4b3acfe90c3f5c858fcb15563f0f5b6df24b76b2b12a98bf21278bcbe8f6186
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.23@sha256:0d7fb0167af0b6cbb51d0a5536f1d0f7a1f033f68db60c55c0a885576d30448e
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.23@sha256:49f44ce779dd6db6bde8339692a0b880e5218217773bf9d6a5553467264e373c
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+Name:      docker.io/autobyteus/autobyteus-server:latest
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:e4b3acfe90c3f5c858fcb15563f0f5b6df24b76b2b12a98bf21278bcbe8f6186
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:0d7fb0167af0b6cbb51d0a5536f1d0f7a1f033f68db60c55c0a885576d30448e
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:49f44ce779dd6db6bde8339692a0b880e5218217773bf9d6a5553467264e373c
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+
+overall=PASS
+
+release_body_matches_curated_notes=PASS

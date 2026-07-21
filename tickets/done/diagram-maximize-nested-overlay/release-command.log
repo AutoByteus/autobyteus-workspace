@@ -1,0 +1,34 @@
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-release-workspaces/diagram-maximize-nested-overlay-v1.4.23
+> bash scripts/desktop-release.sh release 1.4.23 -- --release-notes tickets/done/diagram-maximize-nested-overlay/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.22 -> 1.4.23
+Updating autobyteus-message-gateway/package.json: 1.4.22 -> 1.4.23
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.23
+Synced default release manifest: /Users/normy/autobyteus_org/autobyteus-release-workspaces/diagram-maximize-nested-overlay-v1.4.23/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+Release tag: v1.4.23
+Server version: 0.1.1
+[personal 54acfa292] chore(release): bump workspace release version to 1.4.23
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 14 insertions(+), 23 deletions(-)
+remote:
+remote: GitHub found 582 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (14 critical, 236 high, 280 moderate, 52 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   092afe117..54acfa292  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.23 -> v1.4.23
+Release complete and pushed: branch 'personal', tag 'v1.4.23'.
