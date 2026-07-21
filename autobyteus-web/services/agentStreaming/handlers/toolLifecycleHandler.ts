@@ -180,12 +180,13 @@ const mergeArguments = (
 export function handleToolApprovalRequested(
   payload: ToolApprovalRequestedPayload,
   context: AgentContext,
-): void {
+) {
   const parsed = parseToolApprovalRequestedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_APPROVAL_REQUESTED', payload);
     return;
   }
+
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -210,14 +211,16 @@ export function handleToolApprovalRequested(
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'awaiting-approval');
   }
+  return;
 }
 
-export function handleToolApproved(payload: ToolApprovedPayload, context: AgentContext): void {
+export function handleToolApproved(payload: ToolApprovedPayload, context: AgentContext) {
   const parsed = parseToolApprovedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_APPROVED', payload);
     return;
   }
+
 
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
@@ -230,14 +233,16 @@ export function handleToolApproved(payload: ToolApprovedPayload, context: AgentC
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'approved');
   }
+  return;
 }
 
-export function handleToolDenied(payload: ToolDeniedPayload, context: AgentContext): void {
+export function handleToolDenied(payload: ToolDeniedPayload, context: AgentContext) {
   const parsed = parseToolDeniedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_DENIED', payload);
     return;
   }
+
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -259,17 +264,19 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
     updateToolActivityStatus(context, parsed.invocationId, 'denied');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
+  return;
 }
 
 export function handleToolExecutionStarted(
   payload: ToolExecutionStartedPayload,
   context: AgentContext,
-): void {
+) {
   const parsed = parseToolExecutionStartedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_STARTED', payload);
     return;
   }
+
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -292,17 +299,19 @@ export function handleToolExecutionStarted(
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'executing');
   }
+  return;
 }
 
 export function handleToolExecutionSucceeded(
   payload: ToolExecutionSucceededPayload,
   context: AgentContext,
-): void {
+) {
   const parsed = parseToolExecutionSucceededPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_SUCCEEDED', payload);
     return;
   }
+
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -324,17 +333,19 @@ export function handleToolExecutionSucceeded(
     updateToolActivityStatus(context, parsed.invocationId, 'success');
     setToolActivityResult(context, parsed.invocationId, segment.result, null);
   }
+  return;
 }
 
 export function handleToolExecutionFailed(
   payload: ToolExecutionFailedPayload,
   context: AgentContext,
-): void {
+) {
   const parsed = parseToolExecutionFailedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_FAILED', payload);
     return;
   }
+
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -356,17 +367,19 @@ export function handleToolExecutionFailed(
     updateToolActivityStatus(context, parsed.invocationId, 'error');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
+  return;
 }
 
 export function handleToolExecutionInterrupted(
   payload: ToolExecutionInterruptedPayload,
   context: AgentContext,
-): void {
+) {
   const parsed = parseToolExecutionInterruptedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_INTERRUPTED', payload);
     return;
   }
+
 
   const segment = ensureToolLifecycleSegment(
     context,
@@ -388,18 +401,21 @@ export function handleToolExecutionInterrupted(
     updateToolActivityStatus(context, parsed.invocationId, 'interrupted');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
+  return;
 }
 
-export function handleToolLog(payload: ToolLogPayload, context: AgentContext): void {
+export function handleToolLog(payload: ToolLogPayload, context: AgentContext) {
   const parsed = parseToolLogPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_LOG', payload);
     return;
   }
 
+
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
   appendLog(segment, parsed.logEntry);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
   addToolActivityLog(context, parsed.invocationId, parsed.logEntry);
+  return;
 }

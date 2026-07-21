@@ -15,6 +15,10 @@ import type {
   RunProjection,
 } from "../run-projection-types.js";
 import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
+import {
+  createLegacyOccurrenceAllocator,
+  resolveProviderReplayIdentity,
+} from "../historical-replay-event-identity.js";
 
 const asObject = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -77,7 +81,9 @@ const createMessageEvent = (
   role: "user" | "assistant",
   content: string,
   ts: number | null,
+  identity: { eventId: string; turnGroupId: string },
 ): HistoricalReplayEvent => ({
+  ...identity,
   kind: "message",
   role,
   content,
@@ -88,7 +94,9 @@ const createMessageEvent = (
 const createReasoningEvent = (
   content: string,
   ts: number | null,
+  identity: { eventId: string; turnGroupId: string },
 ): HistoricalReplayEvent => ({
+  ...identity,
   kind: "reasoning",
   content,
   media: null,
@@ -155,6 +163,7 @@ const resolveToolEvent = (
   turnTs: number | null,
   turnIndex: number,
   itemIndex: number,
+  identity: { eventId: string; turnGroupId: string },
 ): HistoricalReplayToolEvent | null => {
   const normalized = normalizeCodexThreadHistoryItem({
     item,
@@ -166,6 +175,7 @@ const resolveToolEvent = (
   }
 
   return {
+    ...identity,
     kind: "tool",
     invocationId: normalized.invocationId,
     toolName: normalized.toolName,
@@ -225,9 +235,11 @@ const extractTurns = (
 const transformThreadPayload = (payload: Record<string, unknown>): HistoricalReplayEvent[] => {
   const turns = extractTurns(payload);
   const events: HistoricalReplayEvent[] = [];
+  const nextOccurrence = createLegacyOccurrenceAllocator();
 
   turns.forEach(({ turn, index: turnIndex }) => {
     const turnTs = resolveEntryTimestamp(turn);
+    const turnId = asString(turn.id) ?? `codex-turn-${turnIndex}`;
 
     const items = asArray(turn.items) ?? [];
 
@@ -238,14 +250,21 @@ const transformThreadPayload = (payload: Record<string, unknown>): HistoricalRep
       }
 
       const itemTs = resolveEntryTimestamp(itemObject) ?? turnTs;
+      const identity = resolveProviderReplayIdentity({
+        provider: "codex",
+        nativeId: asString(itemObject.id),
+        turnId,
+        fingerprintFields: [turnIndex, itemIndex, normalizeItemKind(itemObject), itemTs, asString(itemObject.callId)],
+        nextOccurrence,
+      });
 
       const userContent = resolveUserMessageContent(itemObject);
       if (userContent) {
-        events.push(createMessageEvent("user", userContent, itemTs));
+        events.push(createMessageEvent("user", userContent, itemTs, identity));
         return;
       }
 
-      const toolEvent = resolveToolEvent(itemObject, itemTs, turnIndex, itemIndex);
+      const toolEvent = resolveToolEvent(itemObject, itemTs, turnIndex, itemIndex, identity);
       if (toolEvent) {
         events.push(toolEvent);
         return;
@@ -253,11 +272,11 @@ const transformThreadPayload = (payload: Record<string, unknown>): HistoricalRep
 
       const textPart = resolveTextPart(itemObject);
       if (textPart) {
-        events.push(createMessageEvent("assistant", textPart, itemTs));
+        events.push(createMessageEvent("assistant", textPart, itemTs, identity));
       }
       const reasoningPart = resolveReasoningPart(itemObject);
       if (reasoningPart) {
-        events.push(createReasoningEvent(reasoningPart, itemTs));
+        events.push(createReasoningEvent(reasoningPart, itemTs, identity));
       }
     });
   });

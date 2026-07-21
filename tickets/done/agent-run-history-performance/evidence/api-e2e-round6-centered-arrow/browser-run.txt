@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "browserVersion": "150.0.7871.129",
+  "assertions": {
+    "coexistenceCount": 16,
+    "allSignaturesExact": true,
+    "allGeometryAndNonOverlap": true,
+    "zeroLayoutAllStates": true,
+    "wheelHeldRestoreQueuedReflowNoChain": true,
+    "freshAwayReenterSecondRequest": true,
+    "turnoverAtMost300": true,
+    "keyboardTrustedPath": true,
+    "manualBottomModeDistinction": true,
+    "localizedAccessibleNames": true
+  },
+  "consoleErrors": []
+}

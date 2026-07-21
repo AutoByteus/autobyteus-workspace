@@ -14,6 +14,10 @@ import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
+import type { Conversation } from '~/types/conversation';
 
 const labels: Record<string, string> = {
   'agentInput.components.agentInput.AgentUserInputTextArea.type_a_message': 'Type a message...',
@@ -41,29 +45,23 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam': 'Focused subteam',
 };
 
-const makeAgentContext = (runId: string, agentName: string) => ({
-  config: {
+const makeAgentContext = (runId: string, agentName: string) => {
+  const conversation: Conversation = {
+    id: runId,
+    agentName,
+    messages: [],
+    createdAt: '2026-06-28T00:00:00.000Z',
+    updatedAt: '2026-06-28T00:00:00.000Z',
+  };
+  const state = new AgentRunState(runId, conversation);
+  state.currentStatus = AgentStatus.Idle;
+  return new AgentContext({
     agentDefinitionId: `${agentName}-def`,
     agentDefinitionName: agentName,
     agentAvatarUrl: null,
     isLocked: false,
-  },
-  requirement: '',
-  contextFilePaths: [],
-  isSending: false,
-  state: {
-    runId,
-    currentStatus: AgentStatus.Idle,
-    canInterrupt: false,
-    conversation: {
-      id: runId,
-      agentName,
-      messages: [],
-      createdAt: '2026-06-28T00:00:00.000Z',
-      updatedAt: '2026-06-28T00:00:00.000Z',
-    },
-  },
-});
+  } as AgentRunConfig, state);
+};
 
 const buildTeamContext = () => {
   const coordinatorNode = {

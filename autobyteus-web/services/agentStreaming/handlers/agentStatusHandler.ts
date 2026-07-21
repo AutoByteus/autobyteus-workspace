@@ -34,14 +34,16 @@ import {
 export function handleAgentStatus(
   payload: AgentStatusPayload,
   context: AgentContext
-): void {
+) {
   applyLiveAgentStatusEvent(context, payload);
 
   // If status indicates completion, mark the current AI message as complete.
   if (payload.status === AgentStatus.Idle) {
     const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
     if (lastMessage?.type === 'ai') {
+      if (lastMessage.isComplete) return;
       lastMessage.isComplete = true;
+      return;
     }
   }
 }
@@ -53,21 +55,21 @@ export function handleAgentStatus(
 export function handleAssistantComplete(
   _payload: AssistantCompletePayload,
   context: AgentContext
-): void {
+) {
   markConversationComplete(context);
 }
 
 export function handleTurnCompleted(
   _payload: TurnLifecyclePayload,
   context: AgentContext
-): void {
+) {
   markConversationComplete(context);
 }
 
 export function handleTurnInterrupted(
   payload: TurnLifecyclePayload,
   context: AgentContext
-): void {
+) {
   terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
   markConversationComplete(context);
 }
@@ -77,7 +79,7 @@ export function handleTurnInterrupted(
 export function handleCompactionStatus(
   payload: CompactionStatusPayload,
   context: AgentContext
-): void {
+) {
   const previousStatus = context.state.compactionStatus;
   const projection = projectCompactionStatusToActivity(payload, {
     runId: context.state.runId,
@@ -99,9 +101,10 @@ export function handleCompactionStatus(
 export function handleError(
   payload: ErrorPayload,
   context: AgentContext
-): void {
+) {
   const toolErrorInfo = parseToolExecutionError(payload.message);
-  if (toolErrorInfo && applyToolError(toolErrorInfo, context)) {
+  if (toolErrorInfo) {
+    applyToolError(toolErrorInfo, context);
     markConversationComplete(context);
     return;
   }
@@ -155,6 +158,12 @@ function applyToolError(info: ToolErrorInfo, context: AgentContext): boolean {
   }
 
   const toolSegment = segment as ToolInvocationLifecycle;
+  const wasChanged = toolSegment.status !== 'error'
+    || toolSegment.error !== info.message
+    || toolSegment.result !== null
+    || (info.toolName && isPlaceholderToolName(toolSegment.toolName))
+    || !toolSegment.logs.includes(info.message);
+  if (!wasChanged) return false;
   toolSegment.status = 'error';
   toolSegment.error = info.message;
   toolSegment.result = null;
@@ -183,11 +192,14 @@ function applyToolError(info: ToolErrorInfo, context: AgentContext): boolean {
   return true;
 }
 
-function markConversationComplete(context: AgentContext): void {
+function markConversationComplete(context: AgentContext): boolean {
   const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
   if (lastMessage?.type === 'ai') {
+    if (lastMessage.isComplete) return false;
     lastMessage.isComplete = true;
+    return true;
   }
+  return false;
 }
 
 function shouldCloseCurrentAIMessageForCenterCompaction(
@@ -200,7 +212,7 @@ function shouldCloseCurrentAIMessageForCenterCompaction(
   if (previousStatus?.activityId !== status.activityId) {
     return true;
   }
-  return !isCenterFeedCompactionPhase(previousStatus.phase);
+  return previousStatus !== null && !isCenterFeedCompactionPhase(previousStatus.phase);
 }
 
 function isToolLifecycleSegment(segment: unknown): segment is ToolLifecycleSegment {
@@ -214,10 +226,10 @@ function isToolLifecycleSegment(segment: unknown): segment is ToolLifecycleSegme
 function terminalizeOpenToolSegmentsForInterruptedTurn(
   payload: TurnLifecyclePayload,
   context: AgentContext,
-): void {
+): boolean {
   const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
   if (lastMessage?.type !== 'ai') {
-    return;
+    return false;
   }
 
   const rawReason = (payload as { reason?: unknown }).reason;
@@ -226,6 +238,7 @@ function terminalizeOpenToolSegmentsForInterruptedTurn(
       ? rawReason.trim()
       : 'interrupted';
   const activityStore = useAgentActivityStore();
+  let changed = false;
 
   for (const segment of lastMessage.segments) {
     if (!isToolLifecycleSegment(segment) || isTerminalStatus(segment.status)) {
@@ -236,19 +249,21 @@ function terminalizeOpenToolSegmentsForInterruptedTurn(
     if (!transitioned) {
       continue;
     }
+    changed = true;
 
     activityStore.updateToolActivityStatus(context.state.runId, segment.invocationId, 'interrupted');
     activityStore.setToolActivityResult(context.state.runId, segment.invocationId, null, segment.error);
   }
+  return changed;
 }
 
 function terminalizeOpenToolSegmentsForError(
   payload: ErrorPayload,
   context: AgentContext,
-): void {
+): boolean {
   const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
   if (lastMessage?.type !== 'ai') {
-    return;
+    return false;
   }
 
   const error =
@@ -256,6 +271,7 @@ function terminalizeOpenToolSegmentsForError(
       ? payload.message.trim()
       : 'stream_error';
   const activityStore = useAgentActivityStore();
+  let changed = false;
 
   for (const segment of lastMessage.segments) {
     if (!isToolLifecycleSegment(segment) || isTerminalStatus(segment.status)) {
@@ -266,8 +282,10 @@ function terminalizeOpenToolSegmentsForError(
     if (!transitioned) {
       continue;
     }
+    changed = true;
 
     activityStore.updateToolActivityStatus(context.state.runId, segment.invocationId, 'error');
     activityStore.setToolActivityResult(context.state.runId, segment.invocationId, null, segment.error);
   }
+  return changed;
 }

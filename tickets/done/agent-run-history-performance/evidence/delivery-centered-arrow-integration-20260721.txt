@@ -1,0 +1,55 @@
+DELIVERY_REFRESH_START_UTC=2026-07-21T18:24:58Z
+WORKTREE=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance
+BRANCH=codex/agent-run-history-performance
+REVIEWED_SOURCE_COMMIT=70a2ddc626d9e9e834b3b6b322fb09183f5b76e7
+CORRECTED_HANDOFF_COMMIT=5eb12b42e13890bd1d304ce1052d3235a67f48fd
+DELIVERY_SAFETY_CHECKPOINT=096a60418c8747f8741ecd2909794247b244270f
+ORIGIN_PERSONAL_BEFORE_FETCH=9b4e038a40e0b6358fe53ca101406e0f6446e790
+FETCH_COMMAND=git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+FETCH_EXIT_STATUS=0
+ORIGIN_PERSONAL_AFTER_FETCH=9b4e038a40e0b6358fe53ca101406e0f6446e790
+BASE_CONTAINED_BEFORE_MERGE=yes
+MERGE_BASE_BEFORE_MERGE=9b4e038a40e0b6358fe53ca101406e0f6446e790
+REMOTE_COMMITS_NOT_IN_TICKET_BEGIN
+REMOTE_COMMITS_NOT_IN_TICKET_END
+INTEGRATION_REQUIRED=no
+INTEGRATION_METHOD=none; latest origin/personal already contained
+CURRENT_HEAD=096a60418c8747f8741ecd2909794247b244270f
+LATEST_BASE_CONTAINED=yes
+REVIEWED_SOURCE_CONTAINED=yes
+HANDOFF_COMMIT_CONTAINED=yes
+SOURCE_DIFF_SINCE_HANDOFF_BEGIN
+SOURCE_DIFF_SINCE_HANDOFF_END
+SOURCE_DIFF_SINCE_HANDOFF_COUNT=0
+SOURCE_DIFF_CHECK_BEGIN
+SOURCE_DIFF_CHECK_END
+FRESH_API_E2E_RESULT=641:- Final validation confidence: `97.4%`.
+POST_INTEGRATION_EXECUTABLE_RERUN=not required
+NO_RERUN_RATIONALE=origin/personal remained 9b4e038a4 and was already integrated before reviewed source 70a2ddc62; API/E2E round 5 freshly passed at 97.4 percent on that source and no production or durable test file changed after handoff commit 5eb12b42e
+CURRENT_STATUS_BEGIN
+?? .local-build-logs/
+?? tickets/in-progress/agent-run-history-performance/evidence/delivery-centered-arrow-integration-20260721.txt
+CURRENT_STATUS_END
+DELIVERY_REFRESH_END_UTC=2026-07-21T18:25:23Z
+INTEGRATED_STATE_CHECK=PASS
+DOCS_MIRRORED_SECTION_EQUAL=yes
+DOCS_STALE_LOAD_CONTROL_PRESENT=no
+DOCS_STALE_WIDE_JUMP_PRESENT=no
+POST_DOCS_PRODUCTION_DIFF_BEGIN
+POST_DOCS_PRODUCTION_DIFF_END
+POST_DOCS_PRODUCTION_DIFF_COUNT=0
+DOCS_DIFF_CHECK_BEGIN
+DOCS_DIFF_CHECK_END
+CURRENT_PACKAGED_APP_OBSERVATION_BEGIN
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 70849 normy   27u  IPv4 0xc6b558b2b342b97f      0t0  TCP *:29695 (LISTEN)
+70849 70244 03:14:41 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+70244     1 03:14:42 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+PACKAGED_APP_ASAR_MTIME=2026-07-21T15:28:44+0200
+CENTERED_SOURCE_COMMIT_TIME=2026-07-21 19:34:30 +0200
+CENTERED_ELECTRON_REBUILD_PERFORMED=no
+CURRENT_PACKAGED_APP_ACCEPTANCE_VALID=no
+CURRENT_PACKAGED_APP_OBSERVATION_END
+DELIVERY_DOCS_SYNC_RESULT=PASS

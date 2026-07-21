@@ -76,5 +76,8 @@ describe('teamTaskExecutionEventRouter', () => {
       taskTargetName: 'implementation_engineer',
       taskExecutionStatus: 'active',
     });
+    const taskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-1');
+    expect(taskContext.state.conversation.messages).toHaveLength(0);
+    expect(taskContext.state.eventMonitorPresentationRevision).toBe(0);
   });
 });

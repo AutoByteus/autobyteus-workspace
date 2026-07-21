@@ -109,6 +109,7 @@ describe('runProjectionActivityHydration', () => {
         activityId: 'compaction:boundary:boundary-1',
         phase: 'completed',
         provider: 'codex',
+        centerTimelineTimestamp: new Date(30_000),
       }),
     ]);
   });

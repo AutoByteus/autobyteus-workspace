@@ -6,6 +6,9 @@
       :run-id="selectedAgentContext.state.runId"
       :agent-name="selectedAgentContext.config.agentDefinitionName"
       :agent-avatar-url="selectedAgentContext.config.agentAvatarUrl"
+      :presentation-revision="selectedAgentContext.state.eventMonitorPresentationRevision"
+      :has-earlier-active-trace-events="selectedAgentContext.state.hasEarlierActiveTraceEvents"
+      :browse-subject="{ kind: 'run', runId: selectedAgentContext.state.runId }"
       class="min-h-0 flex-1 overflow-hidden"
     >
       <template #composerContext>

@@ -42,6 +42,19 @@ const flushTaskTeamCleanup = async (): Promise<void> => {
   await Promise.resolve();
 };
 
+const withEventMonitorPresentationState = <T extends { leafAgentContextsByRouteKey?: Map<string, any> }>(
+  teamContext: T,
+): T => {
+  for (const context of teamContext.leafAgentContextsByRouteKey?.values() ?? []) {
+    context.state.conversation = context.state.conversation ?? context.conversation;
+    context.state.eventMonitorPresentationRevision ??= 0;
+    context.state.markEventMonitorPresentationChanged ??= function markEventMonitorPresentationChanged() {
+      this.eventMonitorPresentationRevision += 1;
+    };
+  }
+  return teamContext;
+};
+
 const createLogicalAgentContext = (memberName: string, runId: string): AgentContext => {
   const conversation = {
     id: runId,
@@ -196,7 +209,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     const onMessage = callbacks.get('onMessage');
     expect(onMessage).toBeTruthy();
 
@@ -272,7 +285,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'TOOL_APPROVAL_REQUESTED',
@@ -426,7 +439,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onConnect')?.();
     expect(teamContext.isSubscribed).toBe(true);
 
@@ -475,7 +488,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', originalContext);
+    service.connect('team-1', withEventMonitorPresentationState(originalContext));
     service.attachContext(replacementContext);
 
     callbacks.get('onConnect')?.();
@@ -524,7 +537,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'EXTERNAL_USER_MESSAGE',
@@ -590,7 +603,7 @@ describe('TeamStreamingService', () => {
         ]),
       } as any;
 
-      service.connect('team-1', teamContext);
+      service.connect('team-1', withEventMonitorPresentationState(teamContext));
       callbacks.get('onMessage')?.(
         JSON.stringify({
           type: 'EXTERNAL_USER_MESSAGE',
@@ -638,7 +651,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'TOOL_EXECUTION_SUCCEEDED',
@@ -716,7 +729,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'SEGMENT_START',
@@ -774,7 +787,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'SEGMENT_START',
@@ -825,7 +838,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'SEGMENT_START',
@@ -880,7 +893,7 @@ describe('TeamStreamingService', () => {
     } as any;
 
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'AGENT_STATUS',
@@ -931,7 +944,7 @@ describe('TeamStreamingService', () => {
     } as any;
 
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'TEAM_STATUS',
@@ -980,7 +993,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onConnect')?.();
     callbacks.get('onError')?.(new Error('socket failed'));
     callbacks.get('onDisconnect')?.('network reset');
@@ -1037,7 +1050,7 @@ describe('TeamStreamingService', () => {
       source_path: ['worker-a'],
     };
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'INTER_AGENT_MESSAGE',
@@ -1092,7 +1105,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'SYSTEM_TASK_NOTIFICATION',
@@ -1158,7 +1171,7 @@ describe('TeamStreamingService', () => {
       referenceFiles: [{ referenceId: 'ref-1', path: '/tmp/report.md', type: 'file', createdAt: '2026-04-08T00:00:00.000Z', updatedAt: '2026-04-08T00:00:00.000Z' }],
     };
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'TEAM_COMMUNICATION_MESSAGE',
@@ -1219,7 +1232,7 @@ describe('TeamStreamingService', () => {
       source_route_key: 'program_manager',
     };
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'TEAM_COMMUNICATION_MESSAGE',
@@ -1287,7 +1300,7 @@ describe('TeamStreamingService', () => {
       parent_communication_message_id: 'team-message-1',
     };
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({ type: 'MEMBER_INPUT_MESSAGE', payload }));
     callbacks.get('onMessage')?.(JSON.stringify({ type: 'MEMBER_INPUT_MESSAGE', payload }));
 
@@ -1307,7 +1320,7 @@ describe('TeamStreamingService', () => {
     const teamContext = createTeamContextWithWorker();
     const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'AGENT_STATUS',
@@ -1401,7 +1414,7 @@ describe('TeamStreamingService', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     try {
-      service.connect('team-1', teamContext);
+      service.connect('team-1', withEventMonitorPresentationState(teamContext));
       callbacks.get('onMessage')?.(
         JSON.stringify({
           type: 'AGENT_STATUS',
@@ -1458,7 +1471,7 @@ describe('TeamStreamingService', () => {
     const teamContext = createTeamContextWithWorker();
     const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'MEMBER_INPUT_MESSAGE',
@@ -1500,7 +1513,7 @@ describe('TeamStreamingService', () => {
     const teamContext = createTeamContextWithWorker();
     const workerContext = teamContext.leafAgentContextsByRouteKey.get('worker');
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
 
     expect(() => callbacks.get('onMessage')?.(
       JSON.stringify({
@@ -1541,7 +1554,7 @@ describe('TeamStreamingService', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithSoftwareTeam();
 
-    service.connect('parent-team-run', teamContext);
+    service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TASK_DELEGATION_EVENT',
       payload: {
@@ -1621,7 +1634,7 @@ describe('TeamStreamingService', () => {
     const teamContext = createTeamContextWithSoftwareTeam();
     const structuralTeam = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam');
 
-    service.connect('parent-team-run', teamContext);
+    service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TASK_DELEGATION_EVENT',
       payload: {
@@ -1657,7 +1670,7 @@ describe('TeamStreamingService', () => {
     const teamContext = createTeamContextWithSoftwareTeam();
     const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
 
-    service.connect('parent-team-run', teamContext);
+    service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TASK_DELEGATION_EVENT',
       payload: {
@@ -1706,7 +1719,7 @@ describe('TeamStreamingService', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     try {
-      service.connect('parent-team-run', teamContext);
+      service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
       callbacks.get('onMessage')?.(JSON.stringify({
         type: 'AGENT_STATUS',
         payload: {
@@ -1737,7 +1750,7 @@ describe('TeamStreamingService', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     try {
-      service.connect('parent-team-run', teamContext);
+      service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
       for (const taskNumber of [1, 2]) {
         callbacks.get('onMessage')?.(JSON.stringify({
           type: 'TASK_DELEGATION_EVENT',
@@ -1820,7 +1833,7 @@ describe('TeamStreamingService', () => {
     const structuralTeam = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam');
     const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
 
-    service.connect('parent-team-run', teamContext);
+    service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TASK_DELEGATION_EVENT',
       payload: {
@@ -1895,7 +1908,7 @@ describe('TeamStreamingService', () => {
     const structuralSolutionNode = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
     const structuralSolutionContext = teamContext.leafAgentContextsByRouteKey.get('SoftwareEngineeringTeam/solution_designer');
 
-    service.connect('parent-team-run', teamContext);
+    service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TASK_DELEGATION_EVENT',
       payload: {
@@ -2023,7 +2036,7 @@ describe('TeamStreamingService', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithSoftwareTeam();
 
-    service.connect('parent-team-run', teamContext);
+    service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TASK_DELEGATION_EVENT',
       payload: {
@@ -2081,7 +2094,7 @@ describe('TeamStreamingService', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithWorker();
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'AGENT_STATUS',
@@ -2158,7 +2171,7 @@ describe('TeamStreamingService', () => {
       },
     } satisfies ServerMessage;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify(approvalMessage));
 
     const taskContext = teamContext.leafAgentContextsByRouteKey.get('task-agent-run-tool');
@@ -2194,7 +2207,7 @@ describe('TeamStreamingService', () => {
     const { callbacks, service, wsClient } = createWsHarness();
     const teamContext = createTeamContextWithSoftwareTeam();
 
-    service.connect('parent-team-run', teamContext);
+    service.connect('parent-team-run', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TASK_DELEGATION_EVENT',
       payload: {
@@ -2297,7 +2310,7 @@ describe('TeamStreamingService', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithWorker();
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     for (const taskNumber of [1, 2]) {
       callbacks.get('onMessage')?.(
         JSON.stringify({
@@ -2406,7 +2419,7 @@ describe('TeamStreamingService', () => {
       ]),
     } as any;
 
-    service.connect('team-1', teamContext);
+    service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onMessage')?.(
       JSON.stringify({
         type: 'COMPACTION_STATUS',

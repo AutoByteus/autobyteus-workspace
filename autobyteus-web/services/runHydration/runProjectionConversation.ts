@@ -1,6 +1,7 @@
 import type { ContextAttachment, Conversation, AIMessage, UserMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolInvocationStatus } from '~/types/segments';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { enforceRecentConversationWindow } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 export interface RunProjectionConversationEntry {
   kind: string;
@@ -326,7 +327,7 @@ export const buildConversationFromProjection = (
     ? messages[messages.length - 1].timestamp.toISOString()
     : new Date().toISOString();
 
-  return {
+  const conversation: Conversation = {
     id: runId,
     messages,
     createdAt,
@@ -335,4 +336,6 @@ export const buildConversationFromProjection = (
     agentName: defaults.agentName,
     llmModelIdentifier: defaults.llmModelIdentifier,
   };
+  enforceRecentConversationWindow(conversation);
+  return conversation;
 };

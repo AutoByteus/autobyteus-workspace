@@ -1,0 +1,3 @@
+run=1 http=200 ttfb=0.061463 total=0.063120 bytes=868858
+run=2 http=200 ttfb=0.030500 total=0.031113 bytes=868858
+run=3 http=200 ttfb=0.037063 total=0.037607 bytes=868858

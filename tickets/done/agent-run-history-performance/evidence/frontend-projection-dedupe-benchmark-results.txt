@@ -1,0 +1,8 @@
+label=current count=42 {"inputEntries":42,"dedupedEntries":42,"elapsedMs":21.114,"heapDeltaBytes":5122528}
+label=large count=50 {"inputEntries":50,"dedupedEntries":50,"elapsedMs":41.161,"heapDeltaBytes":7241288}
+label=large count=100 {"inputEntries":100,"dedupedEntries":100,"elapsedMs":83.969,"heapDeltaBytes":10525008}
+label=large count=200 {"inputEntries":200,"dedupedEntries":200,"elapsedMs":176.519,"heapDeltaBytes":6340488}
+label=large count=400 {"inputEntries":400,"dedupedEntries":400,"elapsedMs":418.397,"heapDeltaBytes":12113120}
+label=large count=800 {"inputEntries":800,"dedupedEntries":800,"elapsedMs":3979.841,"heapDeltaBytes":78237544}
+label=large count=1200 {"inputEntries":1200,"dedupedEntries":1200,"elapsedMs":17526.134,"heapDeltaBytes":-38715544}
+label=large count=1725 {"inputEntries":1725,"dedupedEntries":1725,"elapsedMs":27885.376,"heapDeltaBytes":70861760}

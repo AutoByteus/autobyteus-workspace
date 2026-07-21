@@ -1,0 +1,23 @@
+Delivery documentation and verification-build check
+2026-07-20T07:27:43Z
+HEAD=20fe710ef86f2658bc761f5e4bff4aad8603b630
+origin/personal=8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+ahead_behind=8	0
+
+$ git diff --check
+PASS
+
+$ bounded-window mirror equality
+PASS: mirrored sections are identical
+
+$ required delivery artifacts
+PASS: docs-sync-report.md
+PASS: release-deployment-report.md
+PASS: handoff-summary.md
+PASS: release-notes.md
+
+$ integrated Linux ARM64 Electron build and runtime
+PASS: AppImage exists and build log records EXIT_STATUS: 0
+PASS: Electron PID 15701 is running in persistent session 45803
+PASS: visible Electron window is 'autobyteus'
+PASS: bundled backend health {"status":"ok","message":"Server is running"}

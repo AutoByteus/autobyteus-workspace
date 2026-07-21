@@ -1,0 +1,3 @@
+cold latest_ttfb_ms=39.795 latest_total_ms=43.582 latest_bytes=868635 first_page_ttfb_ms=25.617 first_page_total_ms=28.896 first_page_bytes=1327276 second_page_ttfb_ms=19.908 second_page_total_ms=21.073 second_page_bytes=442776
+warm-1 latest_ttfb_ms=26.577 latest_total_ms=28.588 latest_bytes=868635 first_page_ttfb_ms=21.846 first_page_total_ms=25.009 first_page_bytes=1327276 second_page_ttfb_ms=14.871 second_page_total_ms=15.656 second_page_bytes=442776
+warm-2 latest_ttfb_ms=30.914 latest_total_ms=32.819 latest_bytes=868635 first_page_ttfb_ms=22.703 first_page_total_ms=25.013 first_page_bytes=1327276 second_page_ttfb_ms=16.101 second_page_total_ms=17.42 second_page_bytes=442776

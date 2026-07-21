@@ -53,6 +53,8 @@ export const applyExecutionSucceededState = (
   if (segment.status === 'denied' || segment.status === 'error') {
     return false;
   }
+  const changed = segment.status !== 'success' || segment.result !== result || segment.error !== null;
+  if (!changed) return false;
   segment.status = 'success';
   segment.result = result;
   segment.error = null;
@@ -66,6 +68,8 @@ export const applyExecutionFailedState = (
   if (segment.status === 'denied' || segment.status === 'success') {
     return false;
   }
+  const changed = segment.status !== 'error' || segment.result !== null || segment.error !== error;
+  if (!changed) return false;
   segment.status = 'error';
   segment.result = null;
   segment.error = error;
@@ -80,9 +84,12 @@ export const applyDeniedState = (
   if (segment.status === 'success' || segment.status === 'error') {
     return false;
   }
+  const nextError = error ?? reason;
+  const changed = segment.status !== 'denied' || segment.result !== null || segment.error !== nextError;
+  if (!changed) return false;
   segment.status = 'denied';
   segment.result = null;
-  segment.error = error ?? reason;
+  segment.error = nextError;
   return true;
 };
 
@@ -93,12 +100,16 @@ export const applyExecutionInterruptedState = (
   if (segment.status === 'success' || segment.status === 'error' || segment.status === 'denied') {
     return false;
   }
+  const changed = segment.status !== 'interrupted' || segment.result !== null || segment.error !== reason;
+  if (!changed) return false;
   segment.status = 'interrupted';
   segment.result = null;
   segment.error = reason;
   return true;
 };
 
-export const appendLog = (segment: ToolLifecycleSegment, logEntry: string): void => {
+export const appendLog = (segment: ToolLifecycleSegment, logEntry: string): boolean => {
+  if (segment.logs.at(-1) === logEntry) return false;
   segment.logs.push(logEntry);
+  return true;
 };

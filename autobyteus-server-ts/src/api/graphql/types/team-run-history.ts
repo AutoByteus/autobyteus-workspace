@@ -2,6 +2,7 @@ import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql"
 import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
 import { getTeamMemberRunViewProjectionService } from "../../../run-history/services/team-member-run-view-projection-service.js";
+import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 
 @ObjectType()
 class TeamRunResumeConfigPayload {
@@ -31,6 +32,9 @@ class TeamMemberRunProjectionPayload {
 
   @Field(() => String, { nullable: true })
   lastActivityAt?: string | null;
+
+  @Field(() => Boolean)
+  hasEarlierActiveTraceEvents!: boolean;
 }
 
 @ObjectType()
@@ -80,7 +84,17 @@ export class TeamRunHistoryResolver {
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
+      hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
     };
+  }
+
+  @Query(() => EventMonitorActiveTracePageObject)
+  async getTeamMemberEventMonitorActiveTracePage(
+    @Arg("teamRunId", () => String) teamRunId: string,
+    @Arg("memberRouteKey", () => String) memberRouteKey: string,
+    @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
+  ): Promise<EventMonitorActiveTracePageObject> {
+    return this.teamMemberRunProjectionService.getActiveTracePage(teamRunId, memberRouteKey, beforeCursor);
   }
 
   @Mutation(() => DeleteStoredTeamRunMutationResult)

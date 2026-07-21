@@ -1,0 +1,35 @@
+
+> autobyteus@1.4.16 dev /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+> nuxt dev --host 0.0.0.0
+
+│
+▲  Changing NODE_ENV from production to development, to avoid unintended behavior.
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+ 
+              █▀▀▀▀▀▀▀█▀▀▀▀████▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▀█ ▄▀▄█ █ █▀▀▀█ █
+              █ █   █ ███  ▀▄▄███ █   █ █
+              █ ▀▀▀▀▀ █▀▄▀▄▀▄▀█ █ ▀▀▀▀▀ █
+              █▀▀█▀▀█▀█▄ ██ ▄█▄ █▀█████▀█
+              █▀ ▀▀ ▀▀▄ ▀▄█▀█▀ ▄ ▀▀▄ ▄▄▀█
+              █▄█▀ ▀ ▀▀▄▀▀███ ▀▄ ▀▄█▄▄▄ █
+              █  ██▀▄▀    █▄ █ ▀▀█▄▄▀▀ ▀█
+              █ █▀▄ █▀ ▄█▄▀ ▀▀▄▀▀▀▀ █ ▀▄█
+              █▀▀▀▀▀▀▀█▄▀▀▄▀█▄█ █▀█ ▀█▄▀█
+              █ █▀▀▀█ █▀▀▄ ▀▄█▀ ▀▀▀ ▀██▄█
+              █ █   █ █▄ ▄▀▄▀▀▄██▄▄▀▄▀  █
+              █ ▀▀▀▀▀ █  ▄█▀█  ▀▄ ▄▄▀▄▄ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Local:    http://0.0.0.0:31173/
+  ➜ Network:  http://172.17.0.3:31173/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 49ms
+✔ Vite server built in 1172ms
+[nitro] ✔ Nuxt Nitro server built in 1272ms
+ℹ Vite client warmed up in 1ms
+[nitro] ✔ Nuxt Nitro server built in 862ms

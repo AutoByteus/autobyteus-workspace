@@ -36,6 +36,10 @@ import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecut
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { applyLiveRuntimeActivityProjectionRepair } from '~/services/runStatus/agentRuntimeStatusState';
+import {
+  beginRecentEventMonitorMutation,
+  commitRecentEventMonitorMutation,
+} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -253,6 +257,7 @@ export class AgentStreamingService {
    * Dispatch a parsed message to the appropriate handler.
    */
   private dispatchMessage(message: ServerMessage, context: AgentContext): void {
+    const presentationBaseline = beginRecentEventMonitorMutation(context);
     // Update timestamp
     context.conversation.updatedAt = new Date().toISOString();
     if (isLiveRuntimeActivityMessage(message)) {
@@ -374,5 +379,6 @@ export class AgentStreamingService {
       default:
         console.warn('Unhandled message type:', (message as any).type);
     }
+    commitRecentEventMonitorMutation(context, presentationBaseline);
   }
 }

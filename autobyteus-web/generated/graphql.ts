@@ -557,6 +557,135 @@ export type DiscoverAndRegisterMcpServerToolsResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type EventMonitorActiveTraceAttachment = {
+  __typename?: 'EventMonitorActiveTraceAttachment';
+  attachmentId: Scalars['ID']['output'];
+  locator: Scalars['String']['output'];
+  mediaType: Scalars['String']['output'];
+};
+
+export type EventMonitorActiveTracePage = {
+  __typename?: 'EventMonitorActiveTracePage';
+  activeGeneration: Scalars['String']['output'];
+  beforeCursor?: Maybe<Scalars['String']['output']>;
+  cursorStatus: Scalars['String']['output'];
+  events: Array<EventMonitorActiveTracePageEvent>;
+  hasEarlier: Scalars['Boolean']['output'];
+  loadedEarlierCount: Scalars['Int']['output'];
+};
+
+export type EventMonitorActiveTracePageEvent = {
+  __typename?: 'EventMonitorActiveTracePageEvent';
+  eventId: Scalars['ID']['output'];
+  occurredAtMs?: Maybe<Scalars['Float']['output']>;
+  turnGroupId: Scalars['ID']['output'];
+  visuals: Array<EventMonitorActiveTracePageVisual>;
+};
+
+export type EventMonitorActiveTracePageVisual = EventMonitorAssistantTextVisual | EventMonitorCompactionVisual | EventMonitorMediaVisual | EventMonitorThinkingVisual | EventMonitorToolCardVisual | EventMonitorUserVisual;
+
+export type EventMonitorApprovalTarget = {
+  __typename?: 'EventMonitorApprovalTarget';
+  memberPath?: Maybe<Array<Scalars['String']['output']>>;
+  memberRouteKey?: Maybe<Scalars['String']['output']>;
+  sourcePath?: Maybe<Array<Scalars['String']['output']>>;
+  sourceRouteKey?: Maybe<Scalars['String']['output']>;
+  taskAgentRunId?: Maybe<Scalars['String']['output']>;
+  taskTeamRelativeMemberPath?: Maybe<Array<Scalars['String']['output']>>;
+  taskTeamRelativeMemberRouteKey?: Maybe<Scalars['String']['output']>;
+  taskTeamRunId?: Maybe<Scalars['String']['output']>;
+  teamPath?: Maybe<Array<Scalars['String']['output']>>;
+  teamRouteKey?: Maybe<Scalars['String']['output']>;
+};
+
+export type EventMonitorAssistantTextVisual = {
+  __typename?: 'EventMonitorAssistantTextVisual';
+  content: Scalars['String']['output'];
+  eventId: Scalars['ID']['output'];
+  kind: Scalars['String']['output'];
+  kindOrdinal: Scalars['Int']['output'];
+  visualId: Scalars['ID']['output'];
+};
+
+export type EventMonitorCompactionVisual = {
+  __typename?: 'EventMonitorCompactionVisual';
+  activityId: Scalars['String']['output'];
+  eventId: Scalars['ID']['output'];
+  kind: Scalars['String']['output'];
+  kindOrdinal: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  phase: Scalars['String']['output'];
+  provider?: Maybe<Scalars['String']['output']>;
+  rawTraceCount?: Maybe<Scalars['Int']['output']>;
+  semanticFactCount?: Maybe<Scalars['Int']['output']>;
+  turnId?: Maybe<Scalars['String']['output']>;
+  visualId: Scalars['ID']['output'];
+};
+
+export type EventMonitorMediaVisual = {
+  __typename?: 'EventMonitorMediaVisual';
+  eventId: Scalars['ID']['output'];
+  kind: Scalars['String']['output'];
+  kindOrdinal: Scalars['Int']['output'];
+  mediaType: Scalars['String']['output'];
+  urls: Array<Scalars['String']['output']>;
+  visualId: Scalars['ID']['output'];
+};
+
+export type EventMonitorThinkingVisual = {
+  __typename?: 'EventMonitorThinkingVisual';
+  content: Scalars['String']['output'];
+  eventId: Scalars['ID']['output'];
+  kind: Scalars['String']['output'];
+  kindOrdinal: Scalars['Int']['output'];
+  visualId: Scalars['ID']['output'];
+};
+
+export type EventMonitorToolCardVisual = {
+  __typename?: 'EventMonitorToolCardVisual';
+  approvalTarget?: Maybe<EventMonitorApprovalTarget>;
+  cardKind: Scalars['String']['output'];
+  errorMessage?: Maybe<Scalars['String']['output']>;
+  eventId: Scalars['ID']['output'];
+  invocationId: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  kindOrdinal: Scalars['Int']['output'];
+  statusKey: Scalars['String']['output'];
+  summaryArgs: EventMonitorToolSummaryArgs;
+  toolName: Scalars['String']['output'];
+  visualId: Scalars['ID']['output'];
+};
+
+export type EventMonitorToolSummaryArgs = {
+  __typename?: 'EventMonitorToolSummaryArgs';
+  cmd?: Maybe<Scalars['String']['output']>;
+  command?: Maybe<Scalars['String']['output']>;
+  file_path?: Maybe<Scalars['String']['output']>;
+  filename?: Maybe<Scalars['String']['output']>;
+  filepath?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  path?: Maybe<Scalars['String']['output']>;
+  prompt?: Maybe<Scalars['String']['output']>;
+  query?: Maybe<Scalars['String']['output']>;
+  raw?: Maybe<Scalars['String']['output']>;
+  script?: Maybe<Scalars['String']['output']>;
+  target_path?: Maybe<Scalars['String']['output']>;
+  text?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type EventMonitorUserVisual = {
+  __typename?: 'EventMonitorUserVisual';
+  attachments: Array<EventMonitorActiveTraceAttachment>;
+  eventId: Scalars['ID']['output'];
+  kind: Scalars['String']['output'];
+  kindOrdinal: Scalars['Int']['output'];
+  text: Scalars['String']['output'];
+  visualId: Scalars['ID']['output'];
+};
+
 export type ExternalChannelBindingGql = {
   __typename?: 'ExternalChannelBindingGql';
   accountId: Scalars['String']['output'];
@@ -1537,6 +1666,7 @@ export type Query = {
   getLlmProviderCredentialStatus?: Maybe<CredentialStatusObject>;
   getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
   getMemorySyncStatus: MemorySyncStatusGql;
+  getRunEventMonitorActiveTracePage: EventMonitorActiveTracePage;
   getRunFileChanges: Array<RunFileChangeEntryObject>;
   getRunProjection: RunProjectionPayload;
   getSearchConfig: SearchConfig;
@@ -1545,6 +1675,7 @@ export type Query = {
   getSkillImprovementRunRecord?: Maybe<GraphqlSkillImprovementRunRecord>;
   getTaskDelegationRecords: Array<TaskDelegationRecordObject>;
   getTeamCommunicationMessages: Array<TeamCommunicationMessageObject>;
+  getTeamMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
   getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
   getTeamMemberSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
@@ -1673,6 +1804,12 @@ export type QueryGetLlmProviderCredentialStatusArgs = {
 };
 
 
+export type QueryGetRunEventMonitorActiveTracePageArgs = {
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  runId: Scalars['String']['input'];
+};
+
+
 export type QueryGetRunFileChangesArgs = {
   runId: Scalars['String']['input'];
 };
@@ -1694,6 +1831,13 @@ export type QueryGetTaskDelegationRecordsArgs = {
 
 
 export type QueryGetTeamCommunicationMessagesArgs = {
+  teamRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetTeamMemberEventMonitorActiveTracePageArgs = {
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  memberRouteKey: Scalars['String']['input'];
   teamRunId: Scalars['String']['input'];
 };
 
@@ -1963,6 +2107,7 @@ export type RunProjectionPayload = {
   __typename?: 'RunProjectionPayload';
   activities: Array<Scalars['JSON']['output']>;
   conversation: Array<Scalars['JSON']['output']>;
+  hasEarlierActiveTraceEvents: Scalars['Boolean']['output'];
   lastActivityAt?: Maybe<Scalars['String']['output']>;
   runId: Scalars['String']['output'];
   summary?: Maybe<Scalars['String']['output']>;
@@ -2249,6 +2394,7 @@ export type TeamMemberRunProjectionPayload = {
   activities: Array<Scalars['JSON']['output']>;
   agentRunId: Scalars['String']['output'];
   conversation: Array<Scalars['JSON']['output']>;
+  hasEarlierActiveTraceEvents: Scalars['Boolean']['output'];
   lastActivityAt?: Maybe<Scalars['String']['output']>;
   summary?: Maybe<Scalars['String']['output']>;
 };
@@ -3371,7 +3517,7 @@ export type GetRunProjectionQueryVariables = Exact<{
 }>;
 
 
-export type GetRunProjectionQuery = { __typename?: 'Query', getRunProjection: { __typename?: 'RunProjectionPayload', runId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any> } };
+export type GetRunProjectionQuery = { __typename?: 'Query', getRunProjection: { __typename?: 'RunProjectionPayload', runId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any>, hasEarlierActiveTraceEvents: boolean } };
 
 export type GetRunFileChangesQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -3379,6 +3525,25 @@ export type GetRunFileChangesQueryVariables = Exact<{
 
 
 export type GetRunFileChangesQuery = { __typename?: 'Query', getRunFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
+
+export type EventMonitorActiveTracePageFieldsFragment = { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', memberRouteKey?: string | null, memberPath?: Array<string> | null, sourceRouteKey?: string | null, sourcePath?: Array<string> | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, teamRouteKey?: string | null, teamPath?: Array<string> | null, taskTeamRelativeMemberRouteKey?: string | null, taskTeamRelativeMemberPath?: Array<string> | null } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, mediaType: string, locator: string }> }> }> };
+
+export type GetRunEventMonitorActiveTracePageQueryVariables = Exact<{
+  runId: Scalars['String']['input'];
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetRunEventMonitorActiveTracePageQuery = { __typename?: 'Query', getRunEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', memberRouteKey?: string | null, memberPath?: Array<string> | null, sourceRouteKey?: string | null, sourcePath?: Array<string> | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, teamRouteKey?: string | null, teamPath?: Array<string> | null, taskTeamRelativeMemberRouteKey?: string | null, taskTeamRelativeMemberPath?: Array<string> | null } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, mediaType: string, locator: string }> }> }> } };
+
+export type GetTeamMemberEventMonitorActiveTracePageQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+  memberRouteKey: Scalars['String']['input'];
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetTeamMemberEventMonitorActiveTracePageQuery = { __typename?: 'Query', getTeamMemberEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', memberRouteKey?: string | null, memberPath?: Array<string> | null, sourceRouteKey?: string | null, sourcePath?: Array<string> | null, taskAgentRunId?: string | null, taskTeamRunId?: string | null, teamRouteKey?: string | null, teamPath?: Array<string> | null, taskTeamRelativeMemberRouteKey?: string | null, taskTeamRelativeMemberPath?: Array<string> | null } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, mediaType: string, locator: string }> }> }> } };
 
 export type GetTeamRunResumeConfigQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -3393,7 +3558,7 @@ export type GetTeamMemberRunProjectionQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamMemberRunProjectionQuery = { __typename?: 'Query', getTeamMemberRunProjection: { __typename?: 'TeamMemberRunProjectionPayload', agentRunId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any> } };
+export type GetTeamMemberRunProjectionQuery = { __typename?: 'Query', getTeamMemberRunProjection: { __typename?: 'TeamMemberRunProjectionPayload', agentRunId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any>, hasEarlierActiveTraceEvents: boolean } };
 
 export type GetTeamCommunicationMessagesQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -3860,6 +4025,110 @@ export const ApplicationDetailFieldsFragmentDoc = gql`
 }
     ${ApplicationCatalogFieldsFragmentDoc}
 ${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
+export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
+    fragment EventMonitorActiveTracePageFields on EventMonitorActiveTracePage {
+  beforeCursor
+  hasEarlier
+  loadedEarlierCount
+  activeGeneration
+  cursorStatus
+  events {
+    eventId
+    turnGroupId
+    occurredAtMs
+    visuals {
+      ... on EventMonitorUserVisual {
+        kind
+        visualId
+        eventId
+        kindOrdinal
+        text
+        attachments {
+          attachmentId
+          mediaType
+          locator
+        }
+      }
+      ... on EventMonitorAssistantTextVisual {
+        kind
+        visualId
+        eventId
+        kindOrdinal
+        content
+      }
+      ... on EventMonitorThinkingVisual {
+        kind
+        visualId
+        eventId
+        kindOrdinal
+        content
+      }
+      ... on EventMonitorToolCardVisual {
+        kind
+        visualId
+        eventId
+        kindOrdinal
+        invocationId
+        cardKind
+        toolName
+        statusKey
+        errorMessage
+        summaryArgs {
+          path
+          file_path
+          filepath
+          filename
+          target_path
+          command
+          cmd
+          script
+          query
+          prompt
+          url
+          message
+          text
+          title
+          name
+          raw
+        }
+        approvalTarget {
+          memberRouteKey
+          memberPath
+          sourceRouteKey
+          sourcePath
+          taskAgentRunId
+          taskTeamRunId
+          teamRouteKey
+          teamPath
+          taskTeamRelativeMemberRouteKey
+          taskTeamRelativeMemberPath
+        }
+      }
+      ... on EventMonitorMediaVisual {
+        kind
+        visualId
+        eventId
+        kindOrdinal
+        mediaType
+        urls
+      }
+      ... on EventMonitorCompactionVisual {
+        kind
+        visualId
+        eventId
+        kindOrdinal
+        activityId
+        phase
+        message
+        turnId
+        rawTraceCount
+        semanticFactCount
+        provider
+      }
+    }
+  }
+}
+    `;
 export const SkillImprovementCapabilityFieldsFragmentDoc = gql`
     fragment SkillImprovementCapabilityFields on SkillImprovementCapability {
   enabled
@@ -7887,6 +8156,7 @@ export const GetRunProjectionDocument = gql`
     lastActivityAt
     conversation
     activities
+    hasEarlierActiveTraceEvents
   }
 }
     `;
@@ -7952,6 +8222,73 @@ export function useGetRunFileChangesLazyQuery(variables?: GetRunFileChangesQuery
   return VueApolloComposable.useLazyQuery<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>(GetRunFileChangesDocument, variables, options);
 }
 export type GetRunFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>;
+export const GetRunEventMonitorActiveTracePageDocument = gql`
+    query GetRunEventMonitorActiveTracePage($runId: String!, $beforeCursor: String) {
+  getRunEventMonitorActiveTracePage(runId: $runId, beforeCursor: $beforeCursor) {
+    ...EventMonitorActiveTracePageFields
+  }
+}
+    ${EventMonitorActiveTracePageFieldsFragmentDoc}`;
+
+/**
+ * __useGetRunEventMonitorActiveTracePageQuery__
+ *
+ * To run a query within a Vue component, call `useGetRunEventMonitorActiveTracePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRunEventMonitorActiveTracePageQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetRunEventMonitorActiveTracePageQuery({
+ *   runId: // value for 'runId'
+ *   beforeCursor: // value for 'beforeCursor'
+ * });
+ */
+export function useGetRunEventMonitorActiveTracePageQuery(variables: GetRunEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetRunEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetRunEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables>(GetRunEventMonitorActiveTracePageDocument, variables, options);
+}
+export function useGetRunEventMonitorActiveTracePageLazyQuery(variables?: GetRunEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetRunEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetRunEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables>(GetRunEventMonitorActiveTracePageDocument, variables, options);
+}
+export type GetRunEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunEventMonitorActiveTracePageQuery, GetRunEventMonitorActiveTracePageQueryVariables>;
+export const GetTeamMemberEventMonitorActiveTracePageDocument = gql`
+    query GetTeamMemberEventMonitorActiveTracePage($teamRunId: String!, $memberRouteKey: String!, $beforeCursor: String) {
+  getTeamMemberEventMonitorActiveTracePage(
+    teamRunId: $teamRunId
+    memberRouteKey: $memberRouteKey
+    beforeCursor: $beforeCursor
+  ) {
+    ...EventMonitorActiveTracePageFields
+  }
+}
+    ${EventMonitorActiveTracePageFieldsFragmentDoc}`;
+
+/**
+ * __useGetTeamMemberEventMonitorActiveTracePageQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamMemberEventMonitorActiveTracePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamMemberEventMonitorActiveTracePageQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamMemberEventMonitorActiveTracePageQuery({
+ *   teamRunId: // value for 'teamRunId'
+ *   memberRouteKey: // value for 'memberRouteKey'
+ *   beforeCursor: // value for 'beforeCursor'
+ * });
+ */
+export function useGetTeamMemberEventMonitorActiveTracePageQuery(variables: GetTeamMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetTeamMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetTeamMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>(GetTeamMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export function useGetTeamMemberEventMonitorActiveTracePageLazyQuery(variables?: GetTeamMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetTeamMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetTeamMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>(GetTeamMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export type GetTeamMemberEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>;
 export const GetTeamRunResumeConfigDocument = gql`
     query GetTeamRunResumeConfig($teamRunId: String!) {
   getTeamRunResumeConfig(teamRunId: $teamRunId) {
@@ -7995,6 +8332,7 @@ export const GetTeamMemberRunProjectionDocument = gql`
     lastActivityAt
     conversation
     activities
+    hasEarlierActiveTraceEvents
   }
 }
     `;

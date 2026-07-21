@@ -1,0 +1,177 @@
+{
+  "reviewedIdentity": {
+    "sourceCommit": "70a2ddc626d9e9e834b3b6b322fb09183f5b76e7",
+    "handoffPackagingCommit": "5eb12b42e"
+  },
+  "browser": {
+    "engine": "150.0.7871.129",
+    "platform": "darwin",
+    "coexistenceSamples": 16,
+    "surfaces": [
+      "standalone",
+      "focused-team-member"
+    ],
+    "viewports": [
+      "1280x900",
+      "390x844"
+    ],
+    "states": [
+      "ordinary-unseen",
+      "frozen-browse",
+      "cursor-expired"
+    ],
+    "centerDeltaPxValues": [
+      0
+    ],
+    "bottomInsetPxValues": [
+      8
+    ],
+    "dimensions": [
+      [
+        44,
+        36,
+        16
+      ]
+    ],
+    "exactStyleSignatureEquality": true,
+    "noOverlapOrOverflow": true,
+    "zeroLayoutAllStates": true,
+    "requestCounts": {
+      "held": 1,
+      "afterQueuedRestoreAndDelayedReflow": 1,
+      "afterFreshAwayReenter": 2
+    },
+    "queuedScrollAfterWriteReturnDelayMs": 1.1,
+    "pageDispatchToNextTickMs": [
+      193.5,
+      48.3,
+      29.2,
+      25.8,
+      26.5,
+      31.1,
+      27.2
+    ],
+    "maxPageDispatchToNextTickMs": 193.5,
+    "turnover": {
+      "requestCount": 7,
+      "pageCount": 7,
+      "residentCount": 300,
+      "domVisualCount": 300,
+      "domIdsUnique": 300
+    },
+    "touch": {
+      "advertised": {
+        "maxTouchPoints": 1,
+        "ontouchstart": true
+      },
+      "requestCount": 1,
+      "allRecordedTouchEventsTrusted": true
+    },
+    "keyboardTrusted": true,
+    "manualBottomModeDistinction": true,
+    "accessibility": {
+      "focused": true,
+      "enterExited": true,
+      "enName": "Jump to latest activity",
+      "zhName": "\u8df3\u5230\u6700\u65b0\u52a8\u6001"
+    },
+    "defaultNativeGutterPx": 0,
+    "consoleErrors": []
+  },
+  "liveHttp": {
+    "fixture": {
+      "activeBytes": 5415892,
+      "activeCanonicalEvents": 620
+    },
+    "requests": [
+      {
+        "label": "projection-cold",
+        "httpStatus": 200,
+        "ttfbMs": 45.502,
+        "totalMs": 48.765,
+        "responseBytes": 868851
+      },
+      {
+        "label": "projection-warm-1",
+        "httpStatus": 200,
+        "ttfbMs": 19.172,
+        "totalMs": 20.045,
+        "responseBytes": 868851
+      },
+      {
+        "label": "projection-warm-2",
+        "httpStatus": 200,
+        "ttfbMs": 21.123,
+        "totalMs": 22.34,
+        "responseBytes": 868851
+      },
+      {
+        "label": "page-cold",
+        "httpStatus": 200,
+        "ttfbMs": 17.237,
+        "totalMs": 18.989,
+        "responseBytes": 1338980
+      }
+    ],
+    "projections": [
+      {
+        "label": "projection-cold",
+        "runId": "api-e2e-round6-live",
+        "conversationRows": 100,
+        "activityRows": 0,
+        "firstContentPrefix": "active-520:xxxxxxxxxxxxx",
+        "lastContentPrefix": "active-619:xxxxxxxxxxxxx",
+        "containsArchiveMarker": false
+      },
+      {
+        "label": "projection-warm-1",
+        "runId": "api-e2e-round6-live",
+        "conversationRows": 100,
+        "activityRows": 0,
+        "firstContentPrefix": "active-520:xxxxxxxxxxxxx",
+        "lastContentPrefix": "active-619:xxxxxxxxxxxxx",
+        "containsArchiveMarker": false
+      },
+      {
+        "label": "projection-warm-2",
+        "runId": "api-e2e-round6-live",
+        "conversationRows": 100,
+        "activityRows": 0,
+        "firstContentPrefix": "active-520:xxxxxxxxxxxxx",
+        "lastContentPrefix": "active-619:xxxxxxxxxxxxx",
+        "containsArchiveMarker": false
+      }
+    ],
+    "page": {
+      "cursorStatus": "VALID",
+      "loadedEarlierCount": 50,
+      "hasEarlier": true,
+      "returnedEventsIncludingLatestBaseline": 150,
+      "eventIdsUnique": true,
+      "visualIdsUnique": true,
+      "firstTextPrefix": "active-470:xxxxxxxxxxxxx",
+      "lastTextPrefix": "active-619:xxxxxxxxxxxxx",
+      "containsArchiveMarker": false
+    },
+    "transportPass": true
+  },
+  "repository": {
+    "webFocused": "7 files / 38 tests Pass",
+    "webExpanded": "26 files / 208 tests Pass",
+    "serverFocused": "1 file / 6 tests Pass",
+    "serverExpanded": "9 files / 43 tests Pass",
+    "serverBuild": "Pass",
+    "webGuards": "Pass",
+    "diffStaticGuards": "Pass"
+  },
+  "safety": {
+    "rawHashesEqual": true,
+    "ownedPortsStopped": [
+      3108,
+      31982
+    ],
+    "preExistingPackagedPortUntouched": 29695,
+    "temporaryFixtureRemoved": true,
+    "durableTestChanges": false
+  }
+}

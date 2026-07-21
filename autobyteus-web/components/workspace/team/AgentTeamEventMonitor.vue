@@ -8,6 +8,9 @@
       :agent-avatar-url="focusedMemberAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
       :before-send="beforeSend"
+      :presentation-revision="focusedMember?.state.eventMonitorPresentationRevision"
+      :has-earlier-active-trace-events="focusedMember?.state.hasEarlierActiveTraceEvents"
+      :browse-subject="focusedBrowseSubject"
       class="min-h-0 flex-1 overflow-hidden"
     >
       <template #composerContext>
@@ -117,6 +120,13 @@ const focusedMemberAvatarUrl = computed(() => {
 const interAgentSenderNameById = computed<Record<string, string>>(() => {
   return getInterAgentSenderNameById(activeTeam.value);
 });
+
+const focusedBrowseSubject = computed(() => ({
+  kind: 'teamMember' as const,
+  teamRunId: activeTeam.value?.teamRunId || '',
+  memberRouteKey: focusedMemberRouteKey.value,
+  agentRunId: focusedMember.value?.state.runId || '',
+}));
 
 const focusMemberRouteKey = (memberRouteKey: string) => {
   const teamRunId = activeTeam.value?.teamRunId;

@@ -59,13 +59,15 @@ describe('AgentEventMonitor.vue', () => {
         interAgentSenderNameById: {
           'member-1': 'Professor',
         },
+        presentationRevision: 7,
+        browseSubject: { kind: 'run', runId: 'agent-42' },
       },
       global: {
         stubs: {
           AgentUserInputForm: { template: '<div data-testid="agent-input-stub" />' },
           AgentConversationFeed: {
             name: 'AgentConversationFeed',
-            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById', 'compactionActivities'],
+            props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById', 'compactionActivities', 'presentationRevision', 'enableEventMonitorFileActions'],
             template: '<div data-testid="agent-feed-stub" />',
           },
         },
@@ -80,6 +82,8 @@ describe('AgentEventMonitor.vue', () => {
     expect(feed.props('agentAvatarUrl')).toBe('https://example.com/slide-narrator.png');
     expect(feed.props('interAgentSenderNameById')).toEqual({ 'member-1': 'Professor' });
     expect(feed.props('compactionActivities')).toEqual(compactionActivityRows);
+    expect(feed.props('presentationRevision')).toBe(7);
+    expect(feed.props('enableEventMonitorFileActions')).toBe(true);
     expect(compactionActivities).toHaveBeenCalledWith('agent-42');
     expect(wrapper.find('[data-testid="agent-input-stub"]').exists()).toBe(true);
   });
@@ -92,6 +96,7 @@ describe('AgentEventMonitor.vue', () => {
           id: 'team-run-1::Professor',
         },
         runId: 'member-run-1',
+        browseSubject: { kind: 'teamMember', teamRunId: 'team-run-1', memberRouteKey: 'Professor', agentRunId: 'member-run-1' },
       },
       global: {
         stubs: {
@@ -114,7 +119,7 @@ describe('AgentEventMonitor.vue', () => {
 
   it('keeps the shared monitor as a bounded flex column for mobile and desktop shells', () => {
     const wrapper = mount(AgentEventMonitor, {
-      props: { conversation },
+      props: { conversation, browseSubject: { kind: 'run', runId: 'agent-42' } },
       global: {
         stubs: {
           AgentUserInputForm: { template: '<div data-testid="agent-input-stub" />' },

@@ -1,0 +1,23 @@
+RESTART_START_UTC=2026-07-21T13:32:47Z
+TARGET_APP=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+SOURCE_HEAD=35fc7ca06481da6ff7933ca7c53d00212a80606f
+INTEGRATED_ORIGIN_PERSONAL=9b4e038a40e0b6358fe53ca101406e0f6446e790
+PRE_RESTART_LISTENER_BEGIN
+COMMAND     PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+AutoByteu 67451 normy   27u  IPv4 0xdf9dbe26445530e      0t0  TCP *:29695 (LISTEN)
+PRE_RESTART_LISTENER_PID=67451
+67451 66840 09:04 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+PRE_RESTART_APP_PID=66840
+PRE_RESTART_APP_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+STOP_COMMAND=kill -TERM 66840
+INTERRUPTION_RECOVERY_OBSERVATION_UTC=2026-07-21T14:01:18Z
+NOTE=The controlling command was interrupted after launch; this read-only observation preserves the actual resulting state.
+POST_RESTART_LISTENER_BEGIN
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 74826 normy   27u  IPv4 0xfc7001d8bc5b4b6f      0t0  TCP *:29695 (LISTEN)
+74826 74215 28:15 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+74215     1 28:19 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+HEALTH_RESPONSE={"status":"ok","message":"Server is running"}
+BUNDLE_VERSION=1.4.23
+POST_RESTART_LISTENER_END
+RESTART_RESULT=PASS_OBSERVED_AFTER_INTERRUPTION

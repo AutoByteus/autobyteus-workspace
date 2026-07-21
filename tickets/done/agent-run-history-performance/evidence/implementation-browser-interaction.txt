@@ -1,0 +1,35 @@
+Implementation browser feedback loop (Chromium + Playwright, Nuxt dev renderer)
+Date: 2026-07-18 UTC
+Viewport: 1280x900
+Affected surface: AgentConversationFeed rendered with 101 source events and a 100-event presentation window.
+
+Observed interaction evidence:
+- Before retained append while non-pinned: scrollTop=0, scrollHeight=6000, clientHeight=746.
+- After retained append/revision: scrollTop=0, scrollHeight=6000, clientHeight=746 (viewport preserved).
+- Rendered event rows: 100.
+- Localized action shown: "New activity · Jump to latest".
+- Action accepted programmatic focus: true.
+- After activating the action: scrollTop=5254, scrollHeight=6000, clientHeight=746; action hidden.
+- Browser page/console errors: none.
+
+Screenshot: implementation-event-monitor-unseen.png
+Temporary preview route used only for this inspection was removed immediately afterward.
+
+Round-4 rework browser feedback loop (Chromium + Playwright, Nuxt dev renderer)
+Date: 2026-07-20 UTC
+Viewport: 1280x900
+Affected surface: AgentConversationFeed with the shared TerminalCommandSegment/ToolCallIndicator presentation model and presentation-revision jump behavior.
+
+Observed interaction evidence:
+- Initial pinned position: scrollTop=1234, scrollHeight=2000, clientHeight=766.
+- After manually scrolling to the top: scrollTop=0.
+- Before mutation, the shared card rendered/title-exposed `printf initial-command`.
+- A semantic terminal-command mutation rendered/title-exposed `printf changed-command`.
+- After the visible revision while non-pinned: scrollTop=0, scrollHeight=2000, clientHeight=766 (viewport preserved).
+- Localized action shown: "New activity · Jump to latest".
+- Action accepted programmatic focus: true.
+- After activating the action: scrollTop=1234, scrollHeight=2000, clientHeight=766; action hidden.
+- Browser page/console errors: none.
+
+Screenshot: implementation-event-monitor-round4.png
+Temporary preview route and Playwright probe used only for this inspection were removed immediately afterward.

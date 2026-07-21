@@ -1,0 +1,14 @@
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3108/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 49ms
+✔ Vite server built in 722ms
+[nitro] ✔ Nuxt Nitro server built in 587ms
+ℹ Vite client warmed up in 1ms
+ℹ hmr update /pages/__api_e2e_centered_arrow.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/__api_e2e_centered_arrow.vue?macro=true, /@id/virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-run-history-performance%2Fautobyteus-web%2F.nuxt%2Froutes.mjs
+ℹ hmr update /pages/__api_e2e_centered_arrow.vue, /app.vue?vue&type=style&index=0&lang.css, /pages/__api_e2e_centered_arrow.vue?macro=true, /@id/virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-run-history-performance%2Fautobyteus-web%2F.nuxt%2Froutes.mjs (x2)

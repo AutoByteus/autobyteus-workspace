@@ -214,6 +214,7 @@ export interface TeamMemberRunProjectionPayload {
   activities: RunProjectionActivityEntry[];
   summary?: string | null;
   lastActivityAt?: string | null;
+  hasEarlierActiveTraceEvents: boolean;
 }
 
 export interface GetTeamMemberRunProjectionQueryData {
