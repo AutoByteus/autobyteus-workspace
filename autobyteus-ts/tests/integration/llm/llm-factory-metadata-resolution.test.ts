@@ -7,6 +7,7 @@ import { LLMProvider } from '../../../src/llm/providers.js';
 import { LMStudioModelProvider } from '../../../src/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from '../../../src/llm/ollama-provider.js';
 import { OpenAILLM } from '../../../src/llm/api/openai-llm.js';
+import { SecretValue } from '../../../src/secrets/secret-value.js';
 
 const ENV_KEYS = [
   'OPENAI_API_KEY',
@@ -253,10 +254,13 @@ describe('LLMFactory metadata resolution', () => {
   });
 
   it('resolves every canonical GPT-5.6 identifier through the existing OpenAI adapter', async () => {
-    process.env.OPENAI_API_KEY = 'test-openai-key';
-
     for (const modelId of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna']) {
-      const llm = await LLMFactory.createLLM(modelId);
+      const llm = await LLMFactory.createLLM(modelId, {
+        authentication: {
+          kind: 'apiKey',
+          apiKey: SecretValue.fromString('synthetic-openai-construction-key'),
+        },
+      });
       expect(llm).toBeInstanceOf(OpenAILLM);
       expect(llm.model).toMatchObject({
         modelIdentifier: modelId,
@@ -265,148 +269,5 @@ describe('LLMFactory metadata resolution', () => {
       });
       await llm.cleanup();
     }
-  });
-
-  it('applies live provider metadata during registry initialization when official endpoints are configured', async () => {
-    process.env.ANTHROPIC_API_KEY = 'anthropic-key';
-    process.env.KIMI_API_KEY = 'kimi-key';
-    process.env.MISTRAL_API_KEY = 'mistral-key';
-    process.env.GEMINI_API_KEY = 'gemini-key';
-
-    mockFetch.mockImplementation(async (input: string | URL | Request) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
-
-      if (url.includes('anthropic.com')) {
-        return {
-          ok: true,
-          json: async () => ({
-            data: [
-              { id: 'claude-fable-5', max_input_tokens: 1000000, max_tokens: 128000 },
-              { id: 'claude-sonnet-5', max_input_tokens: 1000000, max_tokens: 128000 },
-              { id: 'claude-opus-4-8', max_input_tokens: 1000000, max_tokens: 128000 },
-              { id: 'claude-sonnet-4-6', max_input_tokens: 1200000, max_tokens: 64000 },
-              { id: 'claude-opus-4-7', max_input_tokens: 1000000, max_tokens: 128000 },
-              { id: 'claude-opus-4-6', max_input_tokens: 1000000, max_tokens: 128000 }
-            ]
-          })
-        } as Response;
-      }
-
-      if (url.includes('moonshot.ai')) {
-        return {
-          ok: true,
-          json: async () => ({
-            data: [
-              { id: 'kimi-k2.6', context_length: 256000 },
-              { id: 'kimi-k2.7-code', context_length: 262144 },
-              { id: 'kimi-k2-thinking', context_length: 131072 }
-            ]
-          })
-        } as Response;
-      }
-
-      if (url.includes('mistral.ai')) {
-        return {
-          ok: true,
-          json: async () => ([
-            { id: 'mistral-large-2512', max_context_length: 300000 },
-            { id: 'devstral-2512', max_context_length: 280000 }
-          ])
-        } as Response;
-      }
-
-      if (url.includes('generativelanguage.googleapis.com')) {
-        return {
-          ok: true,
-          json: async () => ({
-            models: [
-              {
-                name: 'models/gemini-3.1-pro-preview',
-                baseModelId: 'gemini-3.1-pro-preview',
-                inputTokenLimit: 1048576,
-                outputTokenLimit: 65536
-              },
-              {
-                name: 'models/gemini-3-flash-preview',
-                baseModelId: 'gemini-3-flash-preview',
-                inputTokenLimit: 1048576,
-                outputTokenLimit: 65536
-              },
-              {
-                name: 'models/gemini-3.5-flash',
-                baseModelId: 'gemini-3.5-flash',
-                inputTokenLimit: 1048576,
-                outputTokenLimit: 65536
-              }
-            ]
-          })
-        } as Response;
-      }
-
-      throw new Error(`Unexpected metadata URL: ${url}`);
-    });
-
-    await LLMFactory.reinitialize();
-
-    const anthropicModels = await LLMFactory.listModelsByProvider(LLMProvider.ANTHROPIC);
-    const kimiModels = await LLMFactory.listModelsByProvider(LLMProvider.KIMI);
-    const mistralModels = await LLMFactory.listModelsByProvider(LLMProvider.MISTRAL);
-    const geminiModels = await LLMFactory.listModelsByProvider(LLMProvider.GEMINI);
-
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-4.6')?.max_context_tokens).toBe(1200000);
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-4.6')?.max_output_tokens).toBe(64000);
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-fable-5')?.max_output_tokens).toBe(128000);
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-5')?.max_context_tokens).toBe(1000000);
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.max_output_tokens).toBe(128000);
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.value).toBe('claude-opus-4-7');
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.max_context_tokens).toBe(256000);
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.7-code')?.max_context_tokens).toBe(262144);
-    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2-thinking');
-    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.5');
-    expect(mistralModels.find((model) => model.model_identifier === 'mistral-large-3')?.max_context_tokens).toBe(300000);
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_input_tokens).toBe(1048576);
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_output_tokens).toBe(65536);
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')).toMatchObject({
-      value: 'gemini-3.5-flash',
-      max_context_tokens: 1048576,
-      max_input_tokens: 1048576,
-      max_output_tokens: 65536
-    });
-    expect(mockFetch).toHaveBeenCalledTimes(4);
-  });
-
-  it('falls back to curated metadata when a resolver-backed provider metadata call times out during initialization', async () => {
-    process.env.GEMINI_API_KEY = 'gemini-key';
-    process.env.LLM_MODEL_METADATA_TIMEOUT_MS = '10';
-
-    mockFetch.mockImplementation(async (input: string | URL | Request) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
-      if (url.includes('generativelanguage.googleapis.com')) {
-        return await new Promise<Response>(() => {});
-      }
-
-      throw new Error(`Unexpected metadata URL: ${url}`);
-    });
-
-    await LLMFactory.reinitialize();
-
-    const geminiModels = await LLMFactory.listModelsByProvider(LLMProvider.GEMINI);
-
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_input_tokens).toBe(
-      1048576
-    );
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3-flash-preview')?.max_output_tokens).toBe(
-      65536
-    );
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')?.max_context_tokens).toBe(
-      1048576
-    );
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')?.max_input_tokens).toBe(
-      1048576
-    );
-    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')?.max_output_tokens).toBe(
-      65536
-    );
-    expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 });

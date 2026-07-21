@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
 import type {
   AppDataMigrationRecordRepositoryLike,
   AppDataMigrationRecordSnapshot,
   AppDataMigrationStatus,
 } from "../domain/app-data-migration-types.js";
 
-const prisma = new PrismaClient();
+const prisma = createConfiguredPrismaClient();
 
 type RawMigrationRecord = {
   migration_id: string;

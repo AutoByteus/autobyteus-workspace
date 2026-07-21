@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron
+
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 10ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (1 test) 5ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  18:19:44
+   Duration  486ms (transform 130ms, setup 0ms, collect 285ms, tests 16ms, environment 0ms, prepare 126ms)
+

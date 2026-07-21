@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
+import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -113,7 +114,7 @@ const assertFinalSchema = (columns: readonly string[]): void => {
 export class PrismaTokenUsageLegacyPathColumnsDropDatabase implements TokenUsageLegacyPathColumnsDropDatabase {
   private readonly ownsClient: boolean;
 
-  constructor(private readonly prisma: PrismaClient = new PrismaClient()) {
+  constructor(private readonly prisma: PrismaClient = createConfiguredPrismaClient()) {
     this.ownsClient = arguments.length === 0;
   }
 

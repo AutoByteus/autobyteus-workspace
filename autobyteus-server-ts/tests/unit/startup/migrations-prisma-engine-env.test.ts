@@ -66,6 +66,8 @@ function withRuntimeIdentity<T>(
 }
 
 describe("Prisma migration engine env resolution", () => {
+  const databaseUrl = "file:/tmp/autobyteus-migration-test.db";
+
   it("prefers ARM64 Linux prisma targets on ARM64 runtimes", () => {
     expect(getPrismaRuntimeTargetPreference("linux", "arm64")).toEqual([
       "linux-arm64-openssl-3.0.x",
@@ -142,9 +144,15 @@ describe("Prisma migration engine env resolution", () => {
       fs.writeFileSync(path.join(x64TargetDir, "libquery-engine"), "query-x64-cache");
       fs.writeFileSync(path.join(x64TargetDir, "schema-engine"), "schema-x64-cache");
 
-      const env = buildPrismaCommandEnv(appRoot, { FOO: "bar" }, cacheRoot);
+      const env = buildPrismaCommandEnv({
+        appRoot,
+        databaseUrl,
+        baseEnv: { FOO: "bar" },
+        cacheRoot,
+      });
 
       expect(env.FOO).toBe("bar");
+      expect(env.DATABASE_URL).toBe(databaseUrl);
       expect(env.PRISMA_QUERY_ENGINE_LIBRARY).toBeUndefined();
       expect(env.PRISMA_SCHEMA_ENGINE_BINARY).toBeUndefined();
     });
@@ -161,24 +169,32 @@ describe("Prisma migration engine env resolution", () => {
     fs.writeFileSync(queryPath, "query-cache");
     fs.writeFileSync(schemaPath, "schema-cache");
 
-    const env = buildPrismaCommandEnv(appRoot, { EXISTING_VAR: "1" }, cacheRoot);
+    const env = buildPrismaCommandEnv({
+      appRoot,
+      databaseUrl,
+      baseEnv: { EXISTING_VAR: "1" },
+      cacheRoot,
+    });
 
     expect(env.EXISTING_VAR).toBe("1");
+    expect(env.DATABASE_URL).toBe(databaseUrl);
     expect(env.PRISMA_QUERY_ENGINE_LIBRARY).toBe(queryPath);
     expect(env.PRISMA_SCHEMA_ENGINE_BINARY).toBe(schemaPath);
   });
 
   it("keeps existing explicit prisma engine overrides", () => {
     const appRoot = trackTempDir(makeTempDir("ab-migrations-app-root-"));
-    const env = buildPrismaCommandEnv(
+    const env = buildPrismaCommandEnv({
       appRoot,
-      {
+      databaseUrl,
+      baseEnv: {
         PRISMA_QUERY_ENGINE_LIBRARY: "/custom/query",
         PRISMA_SCHEMA_ENGINE_BINARY: "/custom/schema",
       },
-      "/does/not/matter",
-    );
+      cacheRoot: "/does/not/matter",
+    });
 
+    expect(env.DATABASE_URL).toBe(databaseUrl);
     expect(env.PRISMA_QUERY_ENGINE_LIBRARY).toBe("/custom/query");
     expect(env.PRISMA_SCHEMA_ENGINE_BINARY).toBe("/custom/schema");
   });
@@ -187,9 +203,15 @@ describe("Prisma migration engine env resolution", () => {
     const appRoot = trackTempDir(makeTempDir("ab-migrations-app-root-"));
     const cacheRoot = path.join(appRoot, "missing-cache");
 
-    const env = buildPrismaCommandEnv(appRoot, { FOO: "bar" }, cacheRoot);
+    const env = buildPrismaCommandEnv({
+      appRoot,
+      databaseUrl,
+      baseEnv: { FOO: "bar", DATABASE_URL: "file:/tmp/stale.db" },
+      cacheRoot,
+    });
 
     expect(env.FOO).toBe("bar");
+    expect(env.DATABASE_URL).toBe(databaseUrl);
     expect(env.PRISMA_QUERY_ENGINE_LIBRARY).toBeUndefined();
     expect(env.PRISMA_SCHEMA_ENGINE_BINARY).toBeUndefined();
   });

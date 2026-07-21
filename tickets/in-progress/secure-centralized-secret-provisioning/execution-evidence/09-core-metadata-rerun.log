@@ -1,0 +1,10 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-ts
+
+ ✓ tests/integration/llm/llm-factory-metadata-resolution.test.ts (2 tests) 17ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  18:16:57
+   Duration  724ms (transform 283ms, setup 16ms, import 602ms, tests 17ms, environment 0ms)
+

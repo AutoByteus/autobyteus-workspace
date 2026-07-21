@@ -1,0 +1,262 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-ts
+
+ ✓ tests/unit/clients/autobyteus-client.test.ts (16 tests) 43ms
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > registers definition with expected schema
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a unified diff patch in an existing file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a git diff style patch with file headers
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises PatchApplicationError when patch fails
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > retries with whitespace tolerance
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises error when file is missing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > resolves relative paths from the workspace root
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects relative paths when no workspace root is configured
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > read then patch flow
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/edit-file.test.ts (9 tests) 43ms
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > replaces a unique exact block
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > returns a helpful multiple match error
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > resolves relative paths from the workspace root
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > rejects relative paths when no workspace root is configured
+Successfully registered tool definition: 'replace_in_file'
+
+ ✓ tests/unit/tools/file/replace-in-file.test.ts (5 tests) 11ms
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > inserts text after an exact anchor
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > requires exactly one anchor mode
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/llm/api/ollama-llm.test.ts (3 tests) 21ms
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > returns a helpful missing anchor error
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > resolves relative paths from the workspace root
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > rejects relative paths when no workspace root is configured
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/tools/file/insert-in-file.test.ts (6 tests) 38ms
+ ✓ tests/unit/tools/search-tool.test.ts (3 tests) 3ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (8 tests) 20ms
+ ✓ tests/unit/llm/api/autobyteus-llm.test.ts (10 tests) 20ms
+ ✓ tests/unit/llm/api/anthropic-llm.test.ts (24 tests) 39ms
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels replaces old models with new ones on success
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels replaces old models with new ones on success
+Could not read running Ollama models from http://127.0.0.1:11434. fetch failed
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels replaces old models with new ones on success
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+ ❯ tests/integration/llm/llm-factory-metadata-resolution.test.ts (4 tests | 3 failed) 28ms
+     ✓ uses curated metadata for supported models and leaves unknown providers truthful 17ms
+     × resolves every canonical GPT-5.6 identifier through the existing OpenAI adapter 6ms
+     × applies live provider metadata during registry initialization when official endpoints are configured 3ms
+     × falls back to curated metadata when a resolver-backed provider metadata call times out during initialization 1ms
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Finished LM Studio discovery. Total models registered: 10
+
+ ✓ tests/unit/tools/terminal/run-bash.test.ts (5 tests) 686ms
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels replaces old models with new ones on success
+Finished LM Studio discovery. Total models registered: 10
+
+ ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (4 tests) 34ms
+stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels preserves existing provider models when fetch fails
+Failed to fetch models for OLLAMA. Registry for this provider is unchanged. Server Down
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels preserves existing provider models when fetch fails
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels preserves existing provider models when fetch fails
+Could not read running Ollama models from http://127.0.0.1:11434. fetch failed
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels preserves existing provider models when fetch fails
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels preserves existing provider models when fetch fails
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
+Could not read running Ollama models from http://127.0.0.1:11434. fetch failed
+
+stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
+Failed to fetch Ollama model details for 'qwen3.5:35b-a3b-coding-nvfp4' from http://127.0.0.1:11434: fetch failed
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
+Finished Ollama discovery. Total models registered: 1
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels repopulates the requested Ollama bucket for vendor-keyword model names
+Finished LM Studio discovery. Total models registered: 10
+
+stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels leaves unsupported providers unchanged
+Reloading is not supported for provider: OPENAI
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels leaves unsupported providers unchanged
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels leaves unsupported providers unchanged
+Could not read running Ollama models from http://127.0.0.1:11434. fetch failed
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels leaves unsupported providers unchanged
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/llm/llm-reloading.test.ts > LLMFactory reload models > reloadModels leaves unsupported providers unchanged
+Finished LM Studio discovery. Total models registered: 10
+
+ ✓ tests/integration/llm/llm-reloading.test.ts (4 tests) 75ms
+ ✓ tests/unit/multimedia/audio/api/gemini-audio-client.test.ts (1 test) 9ms
+ ✓ tests/unit/multimedia/image/api/openai-image-client.test.ts (5 tests) 13ms
+ ✓ tests/unit/multimedia/video/api/gemini-video-client.test.ts (11 tests) 1059ms
+     ✓ continues polling object-shaped PROCESSING states until ACTIVE before download  1002ms
+ ✓ tests/unit/utils/gemini-helper.test.ts (4 tests) 5ms
+ ✓ tests/unit/llm/api/glm-llm.test.ts (6 tests) 7ms
+ ✓ tests/unit/llm/api/kimi-llm.test.ts (13 tests) 8ms
+ ✓ tests/unit/tools/file/workspace-path-utils.test.ts (3 tests) 18ms
+ ✓ tests/unit/llm/api/openai-compatible-llm.test.ts (12 tests) 10ms
+ ✓ tests/unit/llm/api/grok-llm.test.ts (2 tests) 6ms
+ ✓ tests/integration/tools/search/serpapi-strategy.test.ts (1 test) 2ms
+ ✓ tests/unit/multimedia/image/image-client-factory.test.ts (7 tests) 8ms
+stdout | tests/unit/llm/autobyteus-provider.test.ts > AutobyteusModelProvider > keeps unknown context metadata as null instead of defaulting to 8192
+Discovering Autobyteus models from host: https://autobyteus.example
+
+stdout | tests/unit/llm/autobyteus-provider.test.ts > AutobyteusModelProvider > prefers explicit server metadata when present
+Discovering Autobyteus models from host: https://autobyteus.example
+
+stdout | tests/unit/llm/autobyteus-provider.test.ts > AutobyteusModelProvider > parses server config_schema into discovered model metadata
+Discovering Autobyteus models from host: https://autobyteus.example
+
+ ✓ tests/unit/llm/autobyteus-provider.test.ts (3 tests) 6ms
+ ✓ tests/unit/multimedia/audio/api/openai-audio-client.test.ts (1 test) 9ms
+ ✓ tests/unit/llm/autobyteus-gateway-routing.test.ts (2 tests) 23ms
+ ✓ tests/unit/llm/metadata/model-metadata-resolver.test.ts (7 tests) 6ms
+ ✓ tests/unit/llm/api/lmstudio-llm.test.ts (3 tests) 5ms
+ ✓ tests/unit/multimedia/audio/audio-client-factory.test.ts (4 tests) 8ms
+ ✓ tests/unit/multimedia/image/api/autobyteus-image-client.test.ts (5 tests) 5ms
+ ✓ tests/unit/multimedia/audio/api/autobyteus-audio-client.test.ts (4 tests) 5ms
+ ✓ tests/integration/tools/search/vertex-ai-search-strategy.test.ts (1 test) 15ms
+ ✓ tests/integration/tools/search-tool.test.ts (1 test) 3ms
+ ✓ tests/unit/multimedia/video/video-client-factory.test.ts (3 tests) 4ms
+ ✓ tests/unit/tools/search/serper-strategy.test.ts (4 tests) 5ms
+ ✓ tests/unit/tools/search/serpapi-strategy.test.ts (4 tests) 4ms
+ ✓ tests/unit/tools/search/vertex-ai-search-strategy.test.ts (6 tests) 20ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (1 test) 4ms
+ ✓ tests/unit/llm/api/deepseek-llm.test.ts (2 tests) 7ms
+ ✓ tests/unit/secrets/secret-value.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/search/serper-strategy.test.ts (1 test) 4ms
+ ✓ tests/unit/tools/search/factory-drift.test.ts (2 tests) 3ms
+ ✓ tests/integration/tools/search/factory.test.ts (2 tests) 2ms
+ ✓ tests/unit/tools/search/factory.test.ts (4 tests) 3ms
+ ✓ tests/unit/llm/api/openai-llm.test.ts (1 test) 2ms
+ ✓ tests/unit/multimedia/autobyteus-gateway-routing.test.ts (4 tests) 3ms
+ ✓ tests/unit/llm/llm-factory-config-composition.test.ts (3 tests) 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/llm/llm-factory-metadata-resolution.test.ts > LLMFactory metadata resolution > resolves every canonical GPT-5.6 identifier through the existing OpenAI adapter
+TypeError: Cannot read properties of undefined (reading 'configInput')
+ ❯ Function.createLLM src/llm/llm-factory.ts:279:69
+    277|         throw new Error(`Model '${model.modelIdentifier}' does not hav…
+    278|       }
+    279|       const config = LLMFactory.composeEffectiveConfig(model, input.co…
+       |                                                                     ^
+    280|       return new LLMClass(model, { config, authentication: input.authe…
+    281|     }
+ ❯ tests/integration/llm/llm-factory-metadata-resolution.test.ts:259:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/integration/llm/llm-factory-metadata-resolution.test.ts > LLMFactory metadata resolution > applies live provider metadata during registry initialization when official endpoints are configured
+AssertionError: expected 1000000 to be 1200000 // Object.is equality
+
+- Expected
++ Received
+
+- 1200000
++ 1000000
+
+ ❯ tests/integration/llm/llm-factory-metadata-resolution.test.ts:356:113
+    354|     const geminiModels = await LLMFactory.listModelsByProvider(LLMProv…
+    355| 
+    356|     expect(anthropicModels.find((model) => model.model_identifier === …
+       |                                                                                                                 ^
+    357|     expect(anthropicModels.find((model) => model.model_identifier === …
+    358|     expect(anthropicModels.find((model) => model.model_identifier === …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/integration/llm/llm-factory-metadata-resolution.test.ts > LLMFactory metadata resolution > falls back to curated metadata when a resolver-backed provider metadata call times out during initialization
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/integration/llm/llm-factory-metadata-resolution.test.ts:410:23
+    408|       65536
+    409|     );
+    410|     expect(mockFetch).toHaveBeenCalledTimes(1);
+       |                       ^
+    411|   });
+    412| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 47 passed (48)
+      Tests  3 failed | 232 passed (235)
+   Start at  18:14:45
+   Duration  2.92s (transform 3.92s, setup 427ms, import 13.80s, tests 2.36s, environment 5ms)
+

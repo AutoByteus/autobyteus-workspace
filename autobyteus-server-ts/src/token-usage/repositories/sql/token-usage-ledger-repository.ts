@@ -1,9 +1,10 @@
-import { PrismaClient, type Prisma, type TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent } from "@prisma/client";
+import { type Prisma, type TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent } from "@prisma/client";
 import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
+import { createConfiguredPrismaClient } from "../../../config/prisma-client-factory.js";
 import { normalizeTokenUsageExecutionAddress } from "../../domain/execution-address.js";
 import { isCacheState, isInputTokenSemantic } from "../../domain/token-usage-component-basis.js";
 
-const prisma = new PrismaClient();
+const prisma = createConfiguredPrismaClient();
 
 const toJsonString = (value: unknown): string | null =>
   value === undefined || value === null ? null : JSON.stringify(value);

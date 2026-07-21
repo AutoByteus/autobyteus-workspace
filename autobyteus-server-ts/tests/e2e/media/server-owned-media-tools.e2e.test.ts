@@ -14,18 +14,23 @@ const mockConfig = vi.hoisted(() => ({
 const mockImageClientFactory = vi.hoisted(() => ({
   ensureInitialized: vi.fn(),
   listModels: vi.fn(),
+  describeConstructionTarget: vi.fn(),
   createImageClient: vi.fn(),
+  syncRuntimeModels: vi.fn(),
 }));
 
 const mockAudioClientFactory = vi.hoisted(() => ({
   ensureInitialized: vi.fn(),
   listModels: vi.fn(),
+  describeConstructionTarget: vi.fn(),
   createAudioClient: vi.fn(),
+  syncRuntimeModels: vi.fn(),
 }));
 
 const mockVideoClientFactory = vi.hoisted(() => ({
   ensureInitialized: vi.fn(),
   listModels: vi.fn(),
+  describeConstructionTarget: vi.fn(),
   createVideoClient: vi.fn(),
 }));
 
@@ -183,6 +188,10 @@ const createVideoSchema = (): ParameterSchema =>
 const configureMediaFactories = (): void => {
   mockConfig.get.mockImplementation((key: string) => configValues[key]);
   mockImageClientFactory.ensureInitialized.mockImplementation(() => undefined);
+  mockImageClientFactory.describeConstructionTarget.mockImplementation(() => ({
+    credentialProviderId: 'SYNTHETIC',
+    authenticationRequirement: { kind: 'none' },
+  }));
   mockImageClientFactory.listModels.mockReturnValue([
     {
       modelIdentifier: "image-gen-a",
@@ -204,6 +213,10 @@ const configureMediaFactories = (): void => {
     },
   ]);
   mockAudioClientFactory.ensureInitialized.mockImplementation(() => undefined);
+  mockAudioClientFactory.describeConstructionTarget.mockImplementation(() => ({
+    credentialProviderId: 'SYNTHETIC',
+    authenticationRequirement: { kind: 'none' },
+  }));
   mockAudioClientFactory.listModels.mockReturnValue([
     {
       modelIdentifier: "speech-a",
@@ -213,6 +226,10 @@ const configureMediaFactories = (): void => {
     },
   ]);
   mockVideoClientFactory.ensureInitialized.mockImplementation(() => undefined);
+  mockVideoClientFactory.describeConstructionTarget.mockImplementation(() => ({
+    credentialProviderId: 'SYNTHETIC',
+    authenticationRequirement: { kind: 'none' },
+  }));
   mockVideoClientFactory.listModels.mockReturnValue([
     {
       modelIdentifier: "video-a",

@@ -1,0 +1,70 @@
+=== Reviewed base-to-head config loading diff ===
+   private loadEnvironmentInternal(): void {
+     const envPath = this.getConfigFilePath();
+-    console.info(`Loading environment from: ${envPath}`);
+-    const result = dotenv.config({ path: envPath });
+-    if (result.error) {
+-      const message = `Failed to load environment variables from ${envPath}`;
+-      console.error(`ERROR: ${message}`);
+-      throw new Error(message);
+-    }
++    console.info(`Loading non-secret configuration from: ${envPath}`);
++    if (!fs.existsSync(envPath)) throw new Error("Configuration file does not exist");
+     process.env.LOG_LEVEL ??= "INFO";
+-    console.info("Environment variables loaded successfully");
++    console.info("Non-secret configuration parsed without process-wide injection");
+   }
+ 
+   private initializeBaseUrl(): void {
+=== Prisma child environment construction ===
+      }
+    : { ...baseEnv };
+}
+
+function runPrismaCommand(appRoot: string, args: string[]): void {
+  const { command, argsPrefix } = getPrismaCommand(appRoot);
+  const enginePair = resolvePrismaEnginePair(appRoot, process.env);
+  const prismaEnv = enginePair
+    ? {
+        ...process.env,
+        PRISMA_QUERY_ENGINE_LIBRARY: enginePair.queryEngineLibrary,
+        PRISMA_SCHEMA_ENGINE_BINARY: enginePair.schemaEngineBinary,
+      }
+    : { ...process.env };
+  if (enginePair) {
+    logger.info(
+      `Using Prisma engine overrides from ${enginePair.source}: ${enginePair.sourcePath} ` +
+        `(query=${path.basename(enginePair.queryEngineLibrary)}, schema=${path.basename(enginePair.schemaEngineBinary)})`,
+    );
+  } else {
+    logger.warn("Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.");
+  }
+  execFileSync(command, [...argsPrefix, ...args], {
+    cwd: appRoot,
+    stdio: "inherit",
+    env: prismaEnv,
+  });
+}
+
+export function runMigrations(): void {
+  const config = appConfigProvider.config;
+  const appRoot = config.getAppRootDir();
+  const schemaPath = path.join(appRoot, "prisma", "schema.prisma");
+
+=== Current initSqlitePath early return ===
+      (fs.existsSync(prismaPath) || fs.existsSync(srcAppPath) || fs.existsSync(distAppPath))
+    );
+  }
+
+  private initSqlitePath(): void {
+    const configuredDatabaseUrl = this.get("DATABASE_URL");
+    if (typeof configuredDatabaseUrl === "string" && configuredDatabaseUrl.trim().length > 0) {
+      return;
+    }
+    const dbPath = this.getSqlitePath();
+    const expectedUrl = this.toPrismaSqliteUrl(dbPath);
+    this.set("DATABASE_URL", expectedUrl);
+  }
+
+  private toPrismaSqliteUrl(filePath: string): string {
+    return `file:${filePath.replace(/\\/g, "/")}`;

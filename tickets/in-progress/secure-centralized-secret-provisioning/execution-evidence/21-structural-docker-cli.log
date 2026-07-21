@@ -1,0 +1,22 @@
+=== Docker diff ===
+NO_DOCKER_OR_COMPOSE_CHANGES
+=== Docker availability ===
+client=29.0.1 server=29.0.1
+=== Compose discovery ===
+./autobyteus-message-gateway/docker/docker-compose.wechat-personal.yml
+./autobyteus-message-gateway/docker/docker-compose.yml
+./autobyteus-server-ts/docker/docker-compose.yml
+./autobyteus-web/docker-compose.dev.yml
+./autobyteus-web/docker-compose.prod.yml
+./autobyteus-web/docker-compose.yml
+=== Runtime ambient provider read scan (production only) ===
+NO_DIRECT_PRODUCTION_PROVIDER_ENV_READS
+=== Claude CLI binary/version only ===
+CLAUDE_CLI_PRESENT
+2.1.207 (Claude Code)
+=== Platform/runtime ===
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+v22.23.1
+10.28.2

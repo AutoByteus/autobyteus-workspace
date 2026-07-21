@@ -91,6 +91,45 @@ describe("AppConfig", () => {
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
+  it("delivers a persisted SQLite DATABASE_URL without injecting it into the parent process", async () => {
+    const explicitDatabaseUrl = "file:/tmp/persisted-autobyteus-test.db";
+    const configDir = await createTempConfigDir(
+      [
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/",
+        "APP_ENV=test",
+        "DB_TYPE=sqlite",
+        `DATABASE_URL=${explicitDatabaseUrl}`,
+        "",
+      ].join("\n"),
+    );
+    const config = new AppConfig({ appDataDir: configDir });
+
+    config.initialize();
+
+    expect(config.getOperationalDatabaseUrl()).toBe(explicitDatabaseUrl);
+    expect(process.env.DATABASE_URL).toBeUndefined();
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("rejects a persisted non-SQLite DATABASE_URL", async () => {
+    const configDir = await createTempConfigDir(
+      [
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/",
+        "APP_ENV=test",
+        "DB_TYPE=sqlite",
+        "DATABASE_URL=postgresql://localhost/autobyteus",
+        "",
+      ].join("\n"),
+    );
+    const config = new AppConfig({ appDataDir: configDir });
+
+    expect(() => config.initialize()).toThrow(AppConfigError);
+    expect(process.env.DATABASE_URL).toBeUndefined();
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
   it("resolves AUTOBYTEUS_LOG_DIR relative to app data dir", async () => {
     const configDir = await createTempConfigDir(
       "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/\nAUTOBYTEUS_LOG_DIR=custom-logs\n",

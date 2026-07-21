@@ -14,6 +14,9 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Prior implementation-source review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md`
+- Failed execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md`
+- Preserved failure evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/18-browser-backend-runtime.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/23-restart-failure-source-diff.log`
 
 ## What Changed
 
@@ -26,6 +29,8 @@
 - Added `AUTOBYTEUS_API_KEY` only to the migration alias scrub/reprovision map. Current production reads remain absent; the unchanged core header name is a wire-protocol constant, not an environment lookup.
 - Completed retained source-review fixes: Claude CLI maps the actual node-local OS home (or a validated existing override) into its empty-base child; stdio MCP composes sanitized operational variables plus exact configured additions; absent custom-provider deletion succeeds idempotently while built-in deletion is still rejected.
 - Completed the bounded source-review fixes: discovery authentication stays wrapped through the server coordinator and core ports; stale discovery cannot publish after credential removal, credential replacement, or host replacement; and generic provider removal disables and rejects overlapping input/reveal/save/remove actions.
+- Corrected CR-009 at the configuration owner boundary. `AppConfig` now validates and explicitly returns the selected non-secret SQLite `DATABASE_URL`; every Prisma migration child receives only that explicit configured URL in addition to its operational process environment, and every in-process Prisma client is constructed through one datasource-override factory. Persisted `.env` configuration is still parsed privately: no broad dotenv injection, provider-secret alias, or process-wide credential path was restored.
+- Added a built-server two-process regression using one owned data directory and a sanitized parent environment with no `DATABASE_URL`. It proves first-start persistence, second-start migrations and listen, value-free `CONFIGURED` reopen, removal, and secret-free logs/responses. All API/E2E-owned durable tests, reports, and evidence from the failed execution stage were preserved.
 - Corrected Claude scope wording: both `cli` and `managed-secret` use an empty-base child environment and never fall back. Only `managed-secret` receives the exact child key and enforces `tools: []`, empty setting sources, and strict explicit AutoByteus in-process MCP. CLI uses the existing external account state and normal CLI tools/settings/MCP behavior while performing zero secret-management lookup.
 
 ## Reviewed Behavior Implementation Trace
@@ -36,8 +41,8 @@
 | `BEH-002` | Empty-base children, authorized roots, `LOCAL_HARDENED` only | `agent-child-environment.ts`; process/PTY/MCP/application launchers; workspace authorization | Named launch paths remain sanitized. Stdio MCP now uses the environment owner's additions boundary, preserving configured entries without broad parent inheritance. No same-user-isolation claim. |
 | `BEH-003` | Explicit JIT LLM/search/media/metadata authentication | server provisioning services; exact construction targets; core factories/clients | Generic LLM/media consumers use only `target.credentialProviderId` and the tagged requirement slot. AutoByteus discovery carries `SecretValue` through an exact authentication shape and reveals only at core client construction. No displayed provider/runtime/host/model fallback exists. |
 | `BEH-004` | Tracked non-secret real-test selection and direct target provisioning | `test-config/live-e2e.json`; real-E2E Store CLI; live-test supplement | Target-only setup remains implemented. AutoByteus real scenarios and remaining old live-suite gates are explicitly left for API/E2E-owned durable harness migration/execution. |
-| `BEH-005` | Five-state health plus healthy-only definition status | secret domain/backend/service status; GraphQL; web stores/components | Existing `READY/LOCKED/UNAVAILABLE/CORRUPT/INCOMPATIBLE` and `MISSING/CONFIGURED` behavior is preserved. |
-| `BEH-006` | Deployment-neutral early bootstrap below `serverDataDir` | configuration/bootstrap services; direct/Electron server entrypoints | Preserved; no Docker Compose/launcher/port/volume changes were made. |
+| `BEH-005` | Five-state health plus healthy-only definition status | secret domain/backend/service status; GraphQL; web stores/components; built restart regression | Existing `READY/LOCKED/UNAVAILABLE/CORRUPT/INCOMPATIBLE` and `MISSING/CONFIGURED` behavior is preserved. The same-data-dir second process reopens `CONFIGURED` and removes it without value readback. |
+| `BEH-006` | Deployment-neutral early bootstrap below `serverDataDir` | `app-config.ts`; `prisma-client-factory.ts`; `startup/migrations.ts`; direct/Electron server entrypoints | Private persisted config now explicitly supplies validated SQLite state to migration and in-process Prisma consumers. The built direct server starts twice from one data directory with no parent `DATABASE_URL`; Docker Compose/launcher/port/volume files remain unchanged. |
 | `BEH-007` | First delivery only Local/InMemory; future registration contract | backend/configuration ports and tagged capabilities | Preserved; no enterprise adapter, shared writable SQLite, strong-isolation container, or Kubernetes production manifest was invented. |
 | `BEH-008` | Clean migration/reprovision; no runtime legacy path | `legacy-secret-cutover-migration.ts`; custom-provider migration | `AUTOBYTEUS_API_KEY` is now scrubbed and records `provider.autobyteus.api-key` for reprovision while hosts remain non-secret configuration. Runtime has no alias fallback. |
 | `BEH-009` | Preserve factory config composition while separating authentication | `llm-construction-context.ts`; `llm-factory.ts`; concrete LLMs | Preserved. The target shape is now the exact round-6 shape. |
@@ -54,6 +59,9 @@
 - `autobyteus-server-ts/src/agent-tools/media/media-client-provisioning-service.ts`
 - `autobyteus-server-ts/src/secret-management/{catalog,domain,migration}/`
 - `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-launch-policy.ts`
+- `autobyteus-server-ts/src/config/{app-config,prisma-client-factory}.ts`
+- `autobyteus-server-ts/src/startup/migrations.ts`
+- `autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts`
 - `autobyteus-ts/src/llm/{llm-construction-context,llm-factory,models,autobyteus-provider}.ts`
 - `autobyteus-ts/src/clients/autobyteus-discovery-authentication.ts`
 - `autobyteus-ts/src/multimedia/`
@@ -75,7 +83,7 @@
 
 - `LOCAL_HARDENED` does not prevent arbitrary same-user filesystem/process inspection; `STRONG_AGENT_ISOLATION` remains deferred.
 - JavaScript/SDK memory cannot be reliably zeroized. Managed Claude intentionally entrusts one exact SDK child with one Anthropic key.
-- Local cross-platform ACL/owner behavior, busy contention, unchanged-Docker persistence, and single-Pod/PVC restart/reopen still need realistic downstream evidence.
+- The local built direct-launch restart/reopen path now has passing two-process evidence. Cross-platform ACL/owner behavior, busy contention, unchanged-Docker persistence, and single-Pod/PVC restart/reopen still need realistic downstream evidence.
 - The full core test-tree TypeScript check remains non-green at 365 errors, dominated by pre-existing broader integration/live constructor and test-only typing drift. Eight remaining errors are in AutoByteus audio/image live integration files that still call removed no-argument discovery APIs; API/E2E owns their durable Store-backed migration. Production core build and changed-path unit coverage are green.
 - The broad core unit suite remains 1,718/1,719 because the pre-existing `event-types.test.ts` expects 28 enum values while the reviewed base contains 29. This ticket does not change that source or test.
 - The full Nuxt repository typecheck remains non-green from broad pre-existing unrelated errors; production build, Electron transpilation, focused tests, and guards are green.
@@ -84,12 +92,12 @@
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Larger Requirement` plus bounded source-review rework.
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `Legacy Or Compatibility Pressure`; CR-001 additionally exposed an omitted reachable production spine.
+- Reviewed change posture: `Larger Requirement` plus bounded source-review and API/E2E-origin local rework.
+- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `Legacy Or Compatibility Pressure`; CR-001 exposed an omitted reachable production spine. CR-009 is a `Local Implementation Defect`: the correct AppConfig owner privately parsed persisted operational state but failed to deliver it to its Prisma consumers.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` for the in-scope gateway/custody boundary; enterprise adapters and strong isolation remain deferred.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes`; CR-001 returned through solution design and architecture review before this rework.
-- Evidence / notes: the server discovery owner resolves exact semantic identities and calls storage-neutral core discovery; factories own model registration; generic provisioning owns construction consumers. No caller bypasses secret management or infers custody from displayed provider metadata.
+- Evidence / notes: the server discovery owner resolves exact semantic identities and calls storage-neutral core discovery; factories own model registration; generic provisioning owns construction consumers. AppConfig remains the non-secret configuration owner and explicitly supplies one validated SQLite URL to the CLI and in-process Prisma construction boundaries. No caller bypasses secret management or infers custody from displayed provider metadata.
 
 ## Legacy / Compatibility Removal Check
 
@@ -116,6 +124,7 @@
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Reviewed base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
 - Round-6 rework starting implementation HEAD: `240d722070864e0ed960f552cdafc03d05d0ffeb`
+- CR-009 rework starting implementation HEAD: `69d5442c0f8eb7c293097d939f79c272d0c56fad`
 - Recorded base/finalization branch: `origin/personal`
 - Local toolchain: Node `v22.23.1`, pnpm `10.28.2`.
 - Existing Docker Compose, launcher, ports, and volumes were not changed.
@@ -125,6 +134,8 @@
 
 - `pnpm --filter autobyteus-ts run build` — passed, including runtime dependency verification.
 - `pnpm --filter autobyteus-server-ts run build` — passed, including shared/core build, Prisma generation, TypeScript compilation, and built-in-agent bootstrap smoke.
+- Focused CR-009 config/Prisma/app-data suite — 6 files / 42 tests passed, including persisted private SQLite configuration, non-SQLite rejection, explicit child delivery, engine override preservation, default configured Prisma construction, app-data migration runners, and token-usage repository access.
+- `pnpm --filter autobyteus-server-ts exec vitest run tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts` after the production build — focused CR-009 regression passed 1/1. This is implementation-local proof only, not an API/E2E stage pass; the independent scenario and matrix must be rerun downstream.
 - `pnpm --filter autobyteus run build` — passed; static Nuxt client generated successfully with only existing large-chunk warnings.
 - GraphQL schema generation from the built server followed by `pnpm run codegen` — passed; generated web bindings include `removeLlmProviderApiKey`.
 - Focused core AutoByteus discovery/routing/MCP suite — 4 files / 10 tests passed, including reveal only at client construction.
@@ -137,7 +148,8 @@
 - `pnpm --filter autobyteus guard:localization-boundary` — passed.
 - `pnpm --filter autobyteus audit:localization-literals` — passed with zero unresolved findings (existing module-type warning only).
 - `pnpm --filter autobyteus-ts exec tsc -p tsconfig.json --noEmit --pretty false` — not green: 365 broader test-tree errors; production build is green and no full test-tree typecheck pass is claimed.
-- Static checks — `git diff --check` passed; no Docker changes; normal production `AUTOBYTEUS_API_KEY` reads absent; no construction-target fallback scan hit; all changed hand-authored source remains below 500 effective non-empty lines and no effective non-empty source delta exceeds 220 lines.
+- `pnpm --filter autobyteus-server-ts exec tsc -p tsconfig.json --noEmit` — not green because the repository config includes `tests` while fixing `rootDir` to `src`, producing TS6059 for the full test tree. `tsconfig.build.json --noEmit` and the production build are green.
+- Static checks — implementation-owned source/tests/artifact diff checks passed; preserved captured API/E2E log files remain byte-for-byte unchanged and retain some command-output whitespace. No Docker changes; normal production `AUTOBYTEUS_API_KEY` reads absent; no construction-target fallback scan hit; all changed hand-authored source remains below 500 effective non-empty lines and no effective non-empty source delta exceeds 220 lines.
 - No actual secret value, secret-bearing Store, or credential file was inspected. Tests use synthetic values only.
 
 ## Frontend Rendered-Result Check (When Applicable)
@@ -158,9 +170,10 @@
 - Run Store-backed real AutoByteus discovery plus representative LLM invocation, speech generation, and image generation. Migrate remaining old live integration files away from environment gates and removed no-argument discovery calls without adding fallback.
 - Re-run Claude `cli` and `managed-secret` separately: CLI maps existing account state and performs zero lookup with normal CLI tools/settings/MCP; managed alone receives the exact child key plus empty settings, `tools: []`, and strict explicit MCP. Both remain empty-base and fallback-free.
 - Validate stdio MCP configured additions alongside required operational variables while unrelated parent/provider/Store variables remain absent.
+- Rerun `SCSP-E2E-RESTART-001` and the applicable matrix against the committed built server. Confirm the second sanitized process receives no parent `DATABASE_URL`, migrations and in-process Prisma clients use the persisted selected URL, listen succeeds, status reopens value-free as `CONFIGURED`, and removal succeeds.
 - Exercise unchanged Docker create/save/restart/reopen and a realistic single server Pod/PVC equivalent. Validate Local ACL/owner modes, read-only reopen/checkpoint, bounded contention, staged pair recovery, swapped empty-Store key, and every five-state degraded path.
 - Scan logs, GraphQL, diagnostics, events, generated files, child environments, and artifacts with synthetic raw/encoded markers.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Implementation-scoped builds, focused unit checks, narrow non-live integration checks, and frontend self-validation are complete. Independent API/E2E coverage investigation, durable live-test migration, realistic deployment execution, real-provider execution, browser/live validation decisions, percentage confidence scoring, cleanup, and final evidence remain owned by `api_e2e_engineer` after source review passes.
+Implementation-scoped builds, focused unit checks, the bounded built-server restart regression, and frontend self-validation are complete. Prior API/E2E-owned durable changes and failure evidence are preserved. After source review passes, `api_e2e_engineer` must rerun `SCSP-E2E-RESTART-001` and the applicable matrix, then refresh execution confidence/evidence. The dedicated real-E2E Store is still unavailable, so real provider execution remains unclaimed.

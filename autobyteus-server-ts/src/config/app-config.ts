@@ -182,6 +182,7 @@ export class AppConfig {
   private initSqlitePath(): void {
     const configuredDatabaseUrl = this.get("DATABASE_URL");
     if (typeof configuredDatabaseUrl === "string" && configuredDatabaseUrl.trim().length > 0) {
+      this.validateSqliteDatabaseUrl(configuredDatabaseUrl);
       return;
     }
     const dbPath = this.getSqlitePath();
@@ -191,6 +192,14 @@ export class AppConfig {
 
   private toPrismaSqliteUrl(filePath: string): string {
     return `file:${filePath.replace(/\\/g, "/")}`;
+  }
+
+  private validateSqliteDatabaseUrl(databaseUrl: string): string {
+    const normalized = databaseUrl.trim();
+    if (!normalized.startsWith("file:") || normalized.length === "file:".length) {
+      throw new AppConfigError("DATABASE_URL must be a non-empty SQLite file URL.");
+    }
+    return normalized;
   }
 
   private getSqlitePath(): string {
@@ -266,6 +275,17 @@ export class AppConfig {
 
   getAppDataDir(): string {
     return this.dataDir;
+  }
+
+  getOperationalDatabaseUrl(): string {
+    if (this.get("DB_TYPE", "sqlite") !== "sqlite") {
+      throw new AppConfigError("Only the SQLite DATABASE_URL operational configuration is supported.");
+    }
+    const databaseUrl = this.get("DATABASE_URL");
+    if (typeof databaseUrl !== "string") {
+      throw new AppConfigError("DATABASE_URL is not configured.");
+    }
+    return this.validateSqliteDatabaseUrl(databaseUrl);
   }
 
   getConfigFilePath(): string {

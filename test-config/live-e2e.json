@@ -10,7 +10,7 @@
     "openai.llm": {
       "mode": "REAL_DIRECT_SECRET",
       "requiredSecrets": ["provider.openai.api-key"],
-      "model": "configured-non-secret-model"
+      "model": "gpt-4o-mini"
     },
     "openai.agent-flow": {
       "mode": "REAL_GATEWAY",
@@ -20,11 +20,55 @@
       "mode": "REAL_DIRECT_SECRET",
       "requiredSecrets": ["search.serper.api-key"]
     },
+    "openai.audio": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.openai.api-key"],
+      "model": "gpt-4o-mini-tts",
+      "expectedCapabilities": ["audio-generation"]
+    },
+    "openai.image": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.openai.api-key"],
+      "model": "gpt-image-2",
+      "expectedCapabilities": ["image-generation"]
+    },
+    "gemini.audio": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.gemini.ai-studio-api-key"],
+      "googleSetupMode": "AI_STUDIO",
+      "model": "gemini-3.1-flash-tts-preview",
+      "expectedCapabilities": ["audio-generation"]
+    },
+    "gemini.image": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.gemini.ai-studio-api-key"],
+      "googleSetupMode": "AI_STUDIO",
+      "model": "gemini-3-pro-image",
+      "expectedCapabilities": ["image-generation"]
+    },
     "anthropic.claude-agent-sdk": {
       "mode": "REAL_DIRECT_SECRET",
       "runtimeAuthMode": "managed-secret",
       "requiredSecrets": ["provider.anthropic.api-key"],
-      "model": "configured-non-secret-model"
+      "model": "claude-sonnet-4-6"
+    },
+    "autobyteus.remote-llm": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.autobyteus.api-key"],
+      "hosts": ["https://api.autobyteus.com"],
+      "expectedCapabilities": ["llm-discovery", "llm-invocation"]
+    },
+    "autobyteus.remote-audio": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.autobyteus.api-key"],
+      "hosts": ["https://api.autobyteus.com"],
+      "expectedCapabilities": ["audio-discovery", "audio-generation"]
+    },
+    "autobyteus.remote-image": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.autobyteus.api-key"],
+      "hosts": ["https://api.autobyteus.com"],
+      "expectedCapabilities": ["image-discovery", "image-generation"]
     }
   }
 }

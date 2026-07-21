@@ -1,7 +1,8 @@
 import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
+import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
 import { TASK_DELEGATION_RECORDS_FILE_NAME } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import { normalizeTaskDelegationRecordsFile } from "../../agent-team-execution/task-delegation/records/task-delegation-records-normalizer.js";
 import {
@@ -346,7 +347,7 @@ const statusFromSummary = (summary: AppDataMigrationSummary): AppDataMigrationEx
 export class PrismaTokenUsageExecutionAddressBackfillDatabase implements TokenUsageExecutionAddressBackfillDatabase {
   private readonly ownsClient: boolean;
 
-  constructor(private readonly prisma: PrismaClient = new PrismaClient()) {
+  constructor(private readonly prisma: PrismaClient = createConfiguredPrismaClient()) {
     this.ownsClient = arguments.length === 0;
   }
 
