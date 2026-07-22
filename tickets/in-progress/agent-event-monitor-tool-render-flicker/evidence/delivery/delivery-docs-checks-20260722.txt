@@ -1,0 +1,26 @@
+# Delivery documentation checks — 2026-07-22
++ git diff --check -- canonical docs and delivery artifacts
+result=pass
++ required durable contract phrases
+tickets/in-progress/agent-event-monitor-tool-render-flicker/docs-sync-report.md:16:- Summary: Long-lived Codex documentation described logical reasoning identities being silently “cleared” at semantic boundaries and treated later visible writes as the main persistence flush. The reviewed implementation instead makes closure an explicit generic lifecycle: every supported content-bearing logical reasoning block emits one status-neutral `SEGMENT_END(reasoning)` before its real boundary, while missing-turn content is ended immediately and matching updates to an existing tool card preserve the block.
+tickets/in-progress/agent-event-monitor-tool-render-flicker/release-deployment-report.md:108:- Approved persisted-data decision: `Directly Usable — No Migration`
+tickets/in-progress/agent-event-monitor-tool-render-flicker/handoff-summary.md:28:- A real ordered boundary now emits exactly one matching, status-neutral generic reasoning `SEGMENT_END` before the boundary output.
+tickets/in-progress/agent-event-monitor-tool-render-flicker/handoff-summary.md:31:- A completed reasoning snapshot without a correlatable turn emits adjacent content/end events with one identity and null turn.
+tickets/in-progress/agent-event-monitor-tool-render-flicker/handoff-summary.md:42:- Persisted-data decision: `Directly Usable — No Migration`; no trace, archive, manifest, or snapshot rewrite is required.
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md:381:| `error` | runtime error payload | close every active content-bearing reasoning block with ordered status-neutral `SEGMENT_END(reasoning)` events, then projected error `AGENT_STATUS` and `ERROR` | `codex-thread-lifecycle-event-converter.ts` | Keep |
+tickets/in-progress/agent-event-monitor-tool-render-flicker/release-notes.md:13:- Matching updates to an already-created tool card do not split a Thinking block; the first new ordered card, assistant text, turn transition, or terminal error closes it in deterministic order.
+autobyteus-server-ts/docs/modules/codex_integration.md:401:  status-neutral `SEGMENT_END(reasoning)` for that id before the boundary's own
+autobyteus-server-ts/docs/modules/codex_integration.md:406:  events do not close the block. A completed snapshot without a correlatable
+autobyteus-server-ts/docs/modules/codex_integration.md:409:  deterministic order. Generic transport, frontend retention, and memory code
++ stale silent-clear wording check
+result=pass (stale phrases absent)
++ changed long-lived docs
+autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+autobyteus-server-ts/docs/modules/codex_integration.md
++ delivery hold assertions
+74:- Explicit user verification received: `No`
+75:- Ticket archive: `Not performed`
+76:- Ticket branch push: `Not performed`
+77:- Merge into `personal`: `Not performed`
+78:- Version/tag/release/publication/deployment: `Not performed`
+overall=pass
