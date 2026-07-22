@@ -2,41 +2,9 @@ import dotenv from 'dotenv';
 
 export type EnvironmentRecordParser = (contents: string) => Record<string, string>;
 
-const assignmentPattern = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*(?:=|:(?=\s))/gm;
-
-const endOfPhysicalLine = (contents: string, offset: number): number => {
-  let cursor = offset;
-  while (cursor < contents.length && contents[cursor] !== '\r' && contents[cursor] !== '\n') {
-    cursor += 1;
-  }
-  return cursor;
-};
-
-const isEscaped = (contents: string, offset: number): boolean => {
-  let backslashes = 0;
-  for (let cursor = offset - 1; cursor >= 0 && contents[cursor] === '\\'; cursor -= 1) {
-    backslashes += 1;
-  }
-  return backslashes % 2 === 1;
-};
-
-const endOfAssignment = (contents: string, valueOffset: number): number => {
-  let cursor = valueOffset;
-  while (contents[cursor] === ' ' || contents[cursor] === '\t') cursor += 1;
-  const quote = contents[cursor];
-  if (quote !== "'" && quote !== '"' && quote !== '`') {
-    return endOfPhysicalLine(contents, cursor);
-  }
-
-  cursor += 1;
-  while (cursor < contents.length) {
-    if (contents[cursor] === quote && !isEscaped(contents, cursor)) {
-      return endOfPhysicalLine(contents, cursor + 1);
-    }
-    cursor += 1;
-  }
-  return contents.length;
-};
+// This deliberately mirrors dotenv's complete assignment grammar while capturing only the name.
+// Excluded ranges are erased before dotenv.parse can decode or retain any value.
+const assignmentPattern = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(?:\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/gm;
 
 const maskExcludedAssignments = (
   contents: string,
@@ -47,9 +15,9 @@ const maskExcludedAssignments = (
   let match: RegExpExecArray | null;
   while ((match = assignmentPattern.exec(contents)) !== null) {
     const name = match[1];
-    const end = endOfAssignment(contents, assignmentPattern.lastIndex);
-    if (name && excludedNames.has(name)) excludedRanges.push({ start: match.index, end });
-    assignmentPattern.lastIndex = Math.max(end, assignmentPattern.lastIndex);
+    if (name && excludedNames.has(name)) {
+      excludedRanges.push({ start: match.index, end: assignmentPattern.lastIndex });
+    }
   }
 
   let cursor = 0;

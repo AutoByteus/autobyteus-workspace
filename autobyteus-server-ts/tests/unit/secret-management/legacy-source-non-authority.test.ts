@@ -162,6 +162,78 @@ describe('legacy source non-authority', () => {
     expect(retained.AUTOBYTEUS_SERVER_HOST).toBe('http://localhost:8000');
   });
 
+  it('masks a complete dotenv multiline quoted assignment after newline and Unicode whitespace', async () => {
+    const canary = 'synthetic-post-separator-canary';
+    const acceptedEscapedQuote = '\\\\' + '"';
+    const source = [
+      'OPENAI_API_KEY=',
+      `\u00A0"${canary}-first`,
+      `accepted-${acceptedEscapedQuote}-continuation`,
+      'AUTOBYTEUS_SERVER_HOST=http://inside-excluded-value.invalid',
+      `${canary}-last"`,
+      'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+      '',
+    ].join('\n');
+    const parsedFixture = dotenv.parse(source);
+    expect(parsedFixture.OPENAI_API_KEY).toContain(
+      'AUTOBYTEUS_SERVER_HOST=http://inside-excluded-value.invalid',
+    );
+    expect(parsedFixture.AUTOBYTEUS_SERVER_HOST).toBe('http://localhost:8000');
+    const genericParser = vi.fn((admitted: string) => dotenv.parse(admitted));
+
+    const projected = parseNonSecretEnvironment(
+      source,
+      new Set<string>(LEGACY_SECRET_ALIASES),
+      genericParser,
+    );
+
+    const admitted = genericParser.mock.calls[0]?.[0] ?? '';
+    expect(admitted).not.toContain(canary);
+    expect(admitted).not.toContain('http://inside-excluded-value.invalid');
+    expect(projected).toEqual({ AUTOBYTEUS_SERVER_HOST: 'http://localhost:8000' });
+
+    const configPath = path.join(root, '.env');
+    await fs.writeFile(configPath, source);
+    const config = new AppConfig({ appDataDir: root });
+    config.initialize();
+    const retained = config.getConfigData();
+    expect(retained).not.toHaveProperty('OPENAI_API_KEY');
+    expect(JSON.stringify(retained)).not.toContain(canary);
+    expect(JSON.stringify(retained)).not.toContain('http://inside-excluded-value.invalid');
+    expect(retained.AUTOBYTEUS_SERVER_HOST).toBe('http://localhost:8000');
+    expect(await fs.readFile(configPath, 'utf8')).toBe(source);
+  });
+
+  it('masks the complete dotenv colon-newline unquoted assignment', async () => {
+    const insideValue = 'AUTOBYTEUS_SERVER_HOST=http://inside-excluded-value.invalid';
+    const source = [
+      'OPENAI_API_KEY:',
+      insideValue,
+      'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+      '',
+    ].join('\n');
+    expect(dotenv.parse(source)).toEqual({
+      OPENAI_API_KEY: insideValue,
+      AUTOBYTEUS_SERVER_HOST: 'http://localhost:8000',
+    });
+    const genericParser = vi.fn((admitted: string) => dotenv.parse(admitted));
+
+    const projected = parseNonSecretEnvironment(
+      source,
+      new Set<string>(LEGACY_SECRET_ALIASES),
+      genericParser,
+    );
+
+    const admitted = genericParser.mock.calls[0]?.[0] ?? '';
+    expect(admitted).not.toContain(insideValue);
+    expect(projected).toEqual({ AUTOBYTEUS_SERVER_HOST: 'http://localhost:8000' });
+
+    await fs.writeFile(path.join(root, '.env'), source);
+    const config = new AppConfig({ appDataDir: root });
+    config.initialize();
+    expect(config.getConfigData().AUTOBYTEUS_SERVER_HOST).toBe('http://localhost:8000');
+  });
+
   it('leaves canonical application bytes and parent aliases unchanged while projecting approved non-secret settings', async () => {
     const configPath = path.join(root, '.env');
     const source = Buffer.from([
