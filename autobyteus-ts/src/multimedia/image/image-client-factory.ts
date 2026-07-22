@@ -132,7 +132,7 @@ export class ImageClientFactory extends Singleton {
       value: 'imagen-4.0-generate-001',
       provider: MultimediaProvider.GEMINI,
       credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'googleAuthenticationMode' },
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'High-fidelity stateless model; text-to-image only.'
@@ -143,7 +143,7 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-2.5-flash-image',
       provider: MultimediaProvider.GEMINI,
       credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'googleAuthenticationMode' },
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'Fast conversational multimodal image model.'
@@ -154,7 +154,7 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-3.1-flash-lite-image',
       provider: MultimediaProvider.GEMINI,
       credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'googleAuthenticationMode' },
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description:
@@ -166,7 +166,7 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-3.1-flash-image',
       provider: MultimediaProvider.GEMINI,
       credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'googleAuthenticationMode' },
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'GA Nano Banana 2 / Gemini 3.1 Flash Image model for versatile image generation and editing.'
@@ -177,7 +177,7 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-3-pro-image',
       provider: MultimediaProvider.GEMINI,
       credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'googleAuthenticationMode' },
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'GA Nano Banana Pro / Gemini 3 Pro Image model for high-quality complex image tasks.'

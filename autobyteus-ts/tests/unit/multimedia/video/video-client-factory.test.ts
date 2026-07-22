@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { VideoClientFactory } from '../../../../src/multimedia/video/video-client-factory.js';
 import { BaseVideoClient } from '../../../../src/multimedia/video/base-video-client.js';
 import { GeminiVideoClient } from '../../../../src/multimedia/video/api/gemini-video-client.js';
-import { apiKeyAuthentication } from '../../explicit-auth-test-helpers.js';
+import { geminiAiStudioAuthentication } from '../../explicit-auth-test-helpers.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
   initializeGeminiClientWithRuntime: () => ({
@@ -41,12 +41,21 @@ describe('VideoClientFactory', () => {
 
   it('creates GeminiVideoClient for Gemini Omni Flash Preview', () => {
     const client = VideoClientFactory.createVideoClient('gemini-omni-flash-preview', {
-      authentication: apiKeyAuthentication('synthetic-gemini-key'),
+      authentication: geminiAiStudioAuthentication('synthetic-gemini-key'),
     });
 
     expect(client).toBeInstanceOf(BaseVideoClient);
     expect(client).toBeInstanceOf(GeminiVideoClient);
     expect(client.model.modelIdentifier).toBe('gemini-omni-flash-preview');
+  });
+
+  it('describes Gemini construction with only credential ownership and exact mode requirement', () => {
+    const target = VideoClientFactory.describeConstructionTarget('gemini-omni-flash-preview');
+    expect(target).toEqual({
+      credentialProviderId: 'GEMINI',
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
+    });
+    expect(Object.keys(target).sort()).toEqual(['authenticationRequirement', 'credentialProviderId']);
   });
 
   it('throws for invalid identifier', () => {

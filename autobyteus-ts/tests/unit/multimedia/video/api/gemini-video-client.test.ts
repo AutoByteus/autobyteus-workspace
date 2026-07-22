@@ -4,7 +4,7 @@ import { GeminiVideoClient } from '../../../../../src/multimedia/video/api/gemin
 import { VideoModel } from '../../../../../src/multimedia/video/video-model.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
 import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
-import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
+import { multimediaGeminiAiStudioContext } from '../../../explicit-auth-test-helpers.js';
 
 const { createMock, filesGetMock, filesDownloadMock, loadMediaReferenceMock } = vi.hoisted(() => ({
   createMock: vi.fn(),
@@ -43,7 +43,7 @@ const buildClient = (config = new MultimediaConfig({
     provider: MultimediaProvider.GEMINI,
     clientClass: GeminiVideoClient
   });
-  return new GeminiVideoClient(model, multimediaApiKeyContext(config, 'synthetic-gemini-key'));
+  return new GeminiVideoClient(model, multimediaGeminiAiStudioContext(config, 'synthetic-gemini-key'));
 };
 
 describe('GeminiVideoClient', () => {

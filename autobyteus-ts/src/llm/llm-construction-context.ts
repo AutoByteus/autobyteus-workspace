@@ -2,10 +2,7 @@ import type { SecretValue } from '../secrets/secret-value.js';
 import type { LLMConfig } from './utils/llm-config.js';
 import type { RawLlmConfigOverrides } from './utils/llm-config-overrides.js';
 
-export type LLMApiKeyCredentialSlot =
-  | 'apiKey'
-  | 'geminiAiStudioApiKey'
-  | 'geminiVertexExpressApiKey';
+export type LLMApiKeyCredentialSlot = 'apiKey';
 
 export type LLMAuthenticationRequirement =
   | {
@@ -13,7 +10,7 @@ export type LLMAuthenticationRequirement =
       credentialSlot: LLMApiKeyCredentialSlot;
       required: boolean;
     }
-  | { kind: 'googleAuthenticationMode' }
+  | { kind: 'geminiAuthenticationMode' }
   | { kind: 'none' };
 
 export type LLMConstructionTarget = {
@@ -23,7 +20,9 @@ export type LLMConstructionTarget = {
 
 export type ResolvedLLMAuthentication =
   | { kind: 'apiKey'; apiKey: SecretValue }
-  | { kind: 'googleWorkloadIdentity'; project: string; location: string }
+  | { kind: 'geminiAiStudio'; apiKey: SecretValue }
+  | { kind: 'geminiVertexExpress'; apiKey: SecretValue }
+  | { kind: 'geminiVertexProject'; project: string; location: string }
   | { kind: 'none' };
 
 export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;

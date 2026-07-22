@@ -85,7 +85,7 @@ export class VideoClientFactory extends Singleton {
       value: GEMINI_OMNI_FLASH_VIDEO_MODEL_ID,
       provider: MultimediaProvider.GEMINI,
       credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'googleAuthenticationMode' },
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiVideoClient,
       parameterSchema: geminiOmniVideoSchema,
       description:

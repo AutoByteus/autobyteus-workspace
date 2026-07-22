@@ -186,7 +186,7 @@ const grokReasoningSchema = new ParameterSchema([
 ]);
 
 const requiredApiKeyAuthentication = { kind: 'apiKey', credentialSlot: 'apiKey', required: true } as const;
-const googleAuthenticationMode = { kind: 'googleAuthenticationMode' } as const;
+const geminiAuthenticationMode = { kind: 'geminiAuthenticationMode' } as const;
 
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
   ...([
@@ -370,7 +370,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gemini-3.1-pro-preview',
     value: 'gemini-3.1-pro-preview',
     provider: LLMProvider.GEMINI,
-    authenticationRequirement: googleAuthenticationMode,
+    authenticationRequirement: geminiAuthenticationMode,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.1-pro-preview',
     defaultConfig: new LLMConfig({
@@ -400,7 +400,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gemini-3-flash-preview',
     value: 'gemini-3-flash-preview',
     provider: LLMProvider.GEMINI,
-    authenticationRequirement: googleAuthenticationMode,
+    authenticationRequirement: geminiAuthenticationMode,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3-flash-preview',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.5, 3.0) }),
@@ -410,7 +410,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     name: 'gemini-3.5-flash',
     value: 'gemini-3.5-flash',
     provider: LLMProvider.GEMINI,
-    authenticationRequirement: googleAuthenticationMode,
+    authenticationRequirement: geminiAuthenticationMode,
     llmClass: GeminiLLM,
     canonicalName: 'gemini-3.5-flash',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(1.5, 9.0, { cachedInputReadTokenPricing: 0.15 }) }),

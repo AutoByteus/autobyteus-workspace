@@ -136,6 +136,15 @@ describe('supportedModelDefinitions', () => {
     expect(gemini35Flash?.price_config_id).toBe('autobyteus_model_catalog:GEMINI:gemini-3.5-flash');
   });
 
+  it('describes Gemini construction with only credential ownership and exact mode requirement', async () => {
+    const target = await LLMFactory.describeConstructionTarget('gemini-3.5-flash');
+    expect(target).toEqual({
+      credentialProviderId: 'GEMINI',
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
+    });
+    expect(Object.keys(target).sort()).toEqual(['authenticationRequirement', 'credentialProviderId']);
+  });
+
   it('corrects verified non-Mistral model prices and cache dimensions', async () => {
     await expect(LLMFactory.getModelPricingInfo({ modelIdentifier: 'deepseek-v4-pro', modelProvider: LLMProvider.DEEPSEEK }))
       .resolves.toMatchObject({

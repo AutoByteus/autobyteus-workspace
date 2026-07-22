@@ -148,7 +148,7 @@ export class AudioClientFactory extends Singleton {
         value,
         provider: MultimediaProvider.GEMINI,
         credentialProviderId: MultimediaProvider.GEMINI,
-        authenticationRequirement: { kind: 'googleAuthenticationMode' },
+        authenticationRequirement: { kind: 'geminiAuthenticationMode' },
         clientClass: GeminiAudioClient,
         parameterSchema: geminiTtsSchema
       });

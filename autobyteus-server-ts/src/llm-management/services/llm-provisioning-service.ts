@@ -32,7 +32,7 @@ export class LLMProvisioningService {
     requirement: Awaited<ReturnType<LlmFactoryPort['describeConstructionTarget']>>['authenticationRequirement'],
   ): Promise<ResolvedLLMAuthentication> {
     if (requirement.kind === 'none') return { kind: 'none' };
-    if (requirement.kind === 'googleAuthenticationMode') {
+    if (requirement.kind === 'geminiAuthenticationMode') {
       return this.resolveGoogleAuthentication(providerId);
     }
 
@@ -57,13 +57,15 @@ export class LLMProvisioningService {
       const apiKey = await this.managementProvider().resolveForUse(
         this.llmConsumer(providerId, credentialSlot),
       );
-      return { kind: 'apiKey', apiKey };
+      return mode === 'AI_STUDIO'
+        ? { kind: 'geminiAiStudio', apiKey }
+        : { kind: 'geminiVertexExpress', apiKey };
     }
     if (mode === 'VERTEX_PROJECT') {
       const project = appConfigProvider.config.get('VERTEX_AI_PROJECT')?.trim();
       const location = appConfigProvider.config.get('VERTEX_AI_LOCATION')?.trim();
       if (!project || !location) throw new Error('GOOGLE_WORKLOAD_IDENTITY_CONFIG_INVALID');
-      return { kind: 'googleWorkloadIdentity', project, location };
+      return { kind: 'geminiVertexProject', project, location };
     }
     throw new Error('GEMINI_SETUP_MODE_INVALID');
   }

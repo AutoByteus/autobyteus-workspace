@@ -2,6 +2,7 @@ import {
   AudioClientFactory,
   ImageClientFactory,
   VideoClientFactory,
+  type LLMAuthenticationRequirement,
   type ResolvedMultimediaAuthentication,
 } from 'autobyteus-ts';
 import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-binding.js';
@@ -47,16 +48,17 @@ export class MediaClientProvisioningService {
   private async resolveAuthentication(
     mediaKind: MediaKind,
     providerId: string,
-    requirement: { kind: string; credentialSlot?: string; required?: boolean },
+    requirement: LLMAuthenticationRequirement,
   ): Promise<ResolvedMultimediaAuthentication> {
     if (requirement.kind === 'none') return { kind: 'none' };
-    if (requirement.kind === 'googleAuthenticationMode') {
+    if (requirement.kind === 'geminiAuthenticationMode') {
+      if (providerId.toUpperCase() !== 'GEMINI') throw new Error('MEDIA_AUTHENTICATION_MODE_INVALID');
       const mode = appConfigProvider.config.get('GEMINI_SETUP_MODE')?.trim().toUpperCase();
       if (mode === 'VERTEX_PROJECT') {
         const project = appConfigProvider.config.get('VERTEX_AI_PROJECT')?.trim();
         const location = appConfigProvider.config.get('VERTEX_AI_LOCATION')?.trim();
         if (!project || !location) throw new Error('GOOGLE_WORKLOAD_IDENTITY_CONFIG_INVALID');
-        return { kind: 'googleWorkloadIdentity', project, location };
+        return { kind: 'geminiVertexProject', project, location };
       }
       const credentialSlot = mode === 'AI_STUDIO'
         ? 'geminiAiStudioApiKey'
@@ -65,7 +67,9 @@ export class MediaClientProvisioningService {
           : null;
       if (!credentialSlot) throw new Error('GEMINI_SETUP_MODE_INVALID');
       const apiKey = await this.resolve({ kind: 'media', mediaKind, providerId, credentialSlot });
-      return { kind: 'apiKey', apiKey };
+      return mode === 'AI_STUDIO'
+        ? { kind: 'geminiAiStudio', apiKey }
+        : { kind: 'geminiVertexExpress', apiKey };
     }
     const credentialSlot = requirement.credentialSlot;
     if (credentialSlot !== 'apiKey') throw new Error('MEDIA_AUTHENTICATION_REQUIREMENT_INVALID');

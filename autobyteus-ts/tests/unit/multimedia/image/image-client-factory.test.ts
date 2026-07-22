@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ImageClientFactory } from '../../../../src/multimedia/image/image-client-factory.js';
 import { BaseImageClient } from '../../../../src/multimedia/image/base-image-client.js';
 import { GeminiImageClient } from '../../../../src/multimedia/image/api/gemini-image-client.js';
-import { apiKeyAuthentication } from '../../explicit-auth-test-helpers.js';
+import {
+  apiKeyAuthentication,
+  geminiAiStudioAuthentication,
+} from '../../explicit-auth-test-helpers.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
   initializeGeminiClientWithRuntime: () => ({
@@ -70,10 +73,19 @@ describe('ImageClientFactory', () => {
     expect(model?.value).toBe(modelId);
 
     const client = ImageClientFactory.createImageClient(modelId, {
-      authentication: apiKeyAuthentication('synthetic-gemini-key'),
+      authentication: geminiAiStudioAuthentication('synthetic-gemini-key'),
     });
     expect(client).toBeInstanceOf(GeminiImageClient);
     expect(client.model.modelIdentifier).toBe(modelId);
+  });
+
+  it('describes Gemini construction with only credential ownership and exact mode requirement', () => {
+    const target = ImageClientFactory.describeConstructionTarget('gemini-2.5-flash-image');
+    expect(target).toEqual({
+      credentialProviderId: 'GEMINI',
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
+    });
+    expect(Object.keys(target).sort()).toEqual(['authenticationRequirement', 'credentialProviderId']);
   });
 
   it('throws for invalid identifier', () => {

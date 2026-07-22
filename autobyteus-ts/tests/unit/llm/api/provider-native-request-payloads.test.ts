@@ -17,7 +17,11 @@ import {
   ToolResultPayload,
   type ToolCallSpec
 } from '../../../../src/llm/utils/messages.js';
-import { llmApiKeyContext, llmNoAuthContext } from '../../explicit-auth-test-helpers.js';
+import {
+  llmApiKeyContext,
+  llmGeminiAiStudioContext,
+  llmNoAuthContext,
+} from '../../explicit-auth-test-helpers.js';
 
 const originalEnv = { ...process.env };
 
@@ -44,7 +48,7 @@ const model = (
 
 class GeminiLLM extends ProductionGeminiLLM {
   constructor(inputModel = model(LLMProvider.GEMINI, 'gemini-2.5-pro'), config = new LLMConfig()) {
-    super(inputModel, llmApiKeyContext(config, 'synthetic-gemini-key'));
+    super(inputModel, llmGeminiAiStudioContext(config, 'synthetic-gemini-key'));
   }
 }
 

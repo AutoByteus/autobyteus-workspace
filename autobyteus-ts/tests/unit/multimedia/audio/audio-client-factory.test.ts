@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AudioClientFactory } from '../../../../src/multimedia/audio/audio-client-factory.js';
 import { BaseAudioClient } from '../../../../src/multimedia/audio/base-audio-client.js';
-import { SecretValue } from '../../../../src/secrets/secret-value.js';
+import {
+  apiKeyAuthentication,
+  geminiAiStudioAuthentication,
+} from '../../explicit-auth-test-helpers.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
   initializeGeminiClientWithRuntime: () => ({
@@ -16,7 +19,10 @@ describe('AudioClientFactory', () => {
   });
 
   const explicitApiKey = () => ({
-    authentication: { kind: 'apiKey' as const, apiKey: SecretValue.fromString('synthetic-test-key') },
+    authentication: apiKeyAuthentication(),
+  });
+  const explicitGeminiAiStudio = () => ({
+    authentication: geminiAiStudioAuthentication(),
   });
 
   it('lists available models', () => {
@@ -31,6 +37,15 @@ describe('AudioClientFactory', () => {
     );
   });
 
+  it('describes Gemini construction with only credential ownership and exact mode requirement', () => {
+    const target = AudioClientFactory.describeConstructionTarget('gemini-2.5-pro-tts');
+    expect(target).toEqual({
+      credentialProviderId: 'GEMINI',
+      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
+    });
+    expect(Object.keys(target).sort()).toEqual(['authenticationRequirement', 'credentialProviderId']);
+  });
+
   it('creates audio client for valid identifier', () => {
     const client = AudioClientFactory.createAudioClient('gpt-4o-mini-tts', explicitApiKey());
     expect(client).toBeInstanceOf(BaseAudioClient);
@@ -40,9 +55,12 @@ describe('AudioClientFactory', () => {
   it('creates Gemini audio clients with user-facing identifiers and API values', () => {
     const latestClient = AudioClientFactory.createAudioClient(
       'gemini-3.1-flash-tts-preview',
-      explicitApiKey(),
+      explicitGeminiAiStudio(),
     );
-    const proClient = AudioClientFactory.createAudioClient('gemini-2.5-pro-tts', explicitApiKey());
+    const proClient = AudioClientFactory.createAudioClient(
+      'gemini-2.5-pro-tts',
+      explicitGeminiAiStudio(),
+    );
 
     expect(latestClient).toBeInstanceOf(BaseAudioClient);
     expect(latestClient.model.value).toBe('gemini-3.1-flash-tts-preview');

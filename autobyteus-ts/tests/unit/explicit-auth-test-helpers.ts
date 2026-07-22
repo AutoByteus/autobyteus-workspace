@@ -11,10 +11,24 @@ export const apiKeyAuthentication = (value = 'synthetic-test-key'): ResolvedLLMA
 
 export const noAuthentication = (): ResolvedLLMAuthentication => ({ kind: 'none' });
 
-export const workloadIdentityAuthentication = (
+export const geminiAiStudioAuthentication = (
+  value = 'synthetic-gemini-ai-studio-key',
+): ResolvedLLMAuthentication => ({
+  kind: 'geminiAiStudio',
+  apiKey: SecretValue.fromString(value),
+});
+
+export const geminiVertexExpressAuthentication = (
+  value = 'synthetic-gemini-vertex-express-key',
+): ResolvedLLMAuthentication => ({
+  kind: 'geminiVertexExpress',
+  apiKey: SecretValue.fromString(value),
+});
+
+export const geminiVertexProjectAuthentication = (
   project = 'synthetic-project',
   location = 'synthetic-location',
-): ResolvedLLMAuthentication => ({ kind: 'googleWorkloadIdentity', project, location });
+): ResolvedLLMAuthentication => ({ kind: 'geminiVertexProject', project, location });
 
 export const llmApiKeyContext = (
   config = new LLMConfig(),
@@ -26,6 +40,11 @@ export const llmNoAuthContext = (config = new LLMConfig()): LLMConstructionConte
   authentication: noAuthentication(),
 });
 
+export const llmGeminiAiStudioContext = (
+  config = new LLMConfig(),
+  value = 'synthetic-gemini-ai-studio-key',
+): LLMConstructionContext => ({ config, authentication: geminiAiStudioAuthentication(value) });
+
 export const multimediaApiKeyContext = (
   config = new MultimediaConfig(),
   value = 'synthetic-test-key',
@@ -34,3 +53,11 @@ export const multimediaApiKeyContext = (
 export const multimediaNoAuthContext = (
   config = new MultimediaConfig(),
 ): MultimediaConstructionContext => ({ config, authentication: noAuthentication() });
+
+export const multimediaGeminiAiStudioContext = (
+  config = new MultimediaConfig(),
+  value = 'synthetic-gemini-ai-studio-key',
+): MultimediaConstructionContext => ({
+  config,
+  authentication: geminiAiStudioAuthentication(value),
+});
