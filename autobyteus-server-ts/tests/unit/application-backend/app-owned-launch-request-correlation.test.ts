@@ -741,6 +741,8 @@ describe("App-owned launchRequestId correlation", () => {
       }),
     ).rejects.toThrow("lesson start failed after binding creation");
 
+    const startRequest = vi.mocked(capabilities.agentExecution.startAgentTeam).mock.calls[0]?.[0];
+    expect(startRequest).not.toHaveProperty("initialInput");
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
@@ -748,6 +750,7 @@ describe("App-owned launchRequestId correlation", () => {
         launchPreset: expect.objectContaining({
           llmModelIdentifier: "gpt-test",
           autoExecuteTools: true,
+          llmConfig: { reasoning_effort: "high" },
         }),
       }),
     }));
@@ -820,10 +823,12 @@ describe("App-owned launchRequestId correlation", () => {
       capabilities,
     });
 
-    await createLessonRuntimeService(context).startLesson({
+    const lesson = await createLessonRuntimeService(context).startLesson({
       prompt: "Solve 2x + 3 = 11",
     });
 
+    const startRequest = vi.mocked(capabilities.agentExecution.startAgentTeam).mock.calls[0]?.[0];
+    expect(startRequest).not.toHaveProperty("initialInput");
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
@@ -835,10 +840,21 @@ describe("App-owned launchRequestId correlation", () => {
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
             workspaceRootPath: "/tmp/lessons",
             autoExecuteTools: true,
+            llmConfig: { reasoning_effort: "high" },
           }),
         ],
       }),
     }));
+    expect(lesson).toMatchObject({
+      lessonId: expect.any(String),
+      tutorTargetAddress: {
+        bindingId: "binding-lesson-1",
+        target: {
+          kind: "AGENT_TEAM_MEMBER",
+          memberRouteKey: "tutor",
+        },
+      },
+    });
   });
 
   it("launches Socratic lessons from explicit per-member team profiles when defaults are null", async () => {
@@ -876,6 +892,8 @@ describe("App-owned launchRequestId correlation", () => {
       prompt: "Solve 2x + 3 = 11",
     });
 
+    const startRequest = vi.mocked(capabilities.agentExecution.startAgentTeam).mock.calls[0]?.[0];
+    expect(startRequest).not.toHaveProperty("initialInput");
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
@@ -887,6 +905,7 @@ describe("App-owned launchRequestId correlation", () => {
             llmModelIdentifier: "openai/gpt-5",
             workspaceRootPath: context.storage.runtimePath,
             autoExecuteTools: true,
+            llmConfig: { reasoning_effort: "high" },
           }),
         ],
       }),
@@ -1055,6 +1074,7 @@ describe("App-owned launchRequestId correlation", () => {
       latestBindingStatus: "FAILED",
       lastErrorMessage: "Tutor session failed before launch completion.",
       closedAt: null,
+      tutorTargetAddress: null,
     });
   });
 

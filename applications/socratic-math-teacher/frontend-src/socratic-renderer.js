@@ -24,8 +24,8 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
         <div class="eyebrow">Built-in teaching sample</div>
         <h1>Socratic Math Teacher</h1>
         <p class="lede">
-          Start lessons, ask follow-up questions, and request hints while the app keeps one lesson-centric
-          conversation flow over the hosted backend mount.
+          Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable
+          lesson transcript.
         </p>
       </header>
 
@@ -62,7 +62,7 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
         <div class="panel-header">
           <div>
             <h2>Start lesson</h2>
-            <p class="muted">Create one lesson record and begin the tutoring conversation. Runtime, model, and workspace defaults come from the host-managed launch setup surface.</p>
+            <p class="muted">Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.</p>
           </div>
         </div>
         <form id="start-lesson-form" class="brief-composer">
@@ -73,8 +73,8 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
             </label>
           </div>
           <div class="action-row">
-            <button class="primary-button" type="submit">Start lesson</button>
-            <span class="muted small">The app keeps later student questions on the same lesson record while the host supplies runtime defaults.</span>
+            <button id="start-lesson-button" class="primary-button" type="submit">Start lesson</button>
+            <span class="muted small">The first response streams live, then the published tutor turn becomes the durable transcript.</span>
           </div>
         </form>
       </section>
@@ -232,6 +232,45 @@ const renderRuntimeDiagnostics = (lesson) => `
   </details>
 `;
 
+const LIVE_STATUS_LABELS = {
+  idle: "Tutor not connected",
+  connecting: "Connecting to the tutor…",
+  ready: "Tutor connected",
+  streaming: "Tutor is responding…",
+  saved: "Tutor response saved",
+  failed: "Tutor connection failed",
+  closed: "Tutor connection closed",
+};
+
+const renderLiveTutor = (state, lesson) => {
+  const live = state.tutorLive;
+  const belongsToLesson = live?.lessonId === lesson.lessonId;
+  const status = belongsToLesson ? live.status : "idle";
+  const statusLabel = LIVE_STATUS_LABELS[status] ?? LIVE_STATUS_LABELS.idle;
+  const text = belongsToLesson ? live.text : "";
+  const toolStatus = belongsToLesson ? live.toolStatus : "";
+  const errorMessage = belongsToLesson ? live.errorMessage : null;
+  const responseCompleted = belongsToLesson && live.responseCompleted;
+
+  return `
+    <section class="live-tutor" data-live-state="${escapeHtml(status)}" aria-live="polite" aria-atomic="false">
+      <div class="live-tutor-header">
+        <div>
+          <span class="label">Live tutor</span>
+          <strong>${escapeHtml(statusLabel)}</strong>
+        </div>
+        <span class="live-status-dot" aria-hidden="true"></span>
+      </div>
+      ${text
+        ? `<p class="live-tutor-text">${escapeHtml(text)}</p>`
+        : `<p class="muted small live-tutor-placeholder">Live text appears here while the tutor responds. Completed turns remain in the transcript below.</p>`}
+      ${toolStatus ? `<p class="live-tool-status">${escapeHtml(toolStatus)}</p>` : ""}
+      ${responseCompleted ? `<p class="live-completion">Response complete · waiting for or showing the durable transcript.</p>` : ""}
+      ${errorMessage ? `<p class="live-error" role="alert">${escapeHtml(errorMessage)}</p>` : ""}
+    </section>
+  `;
+};
+
 export const renderLessonDetail = ({
   state,
   elements,
@@ -287,6 +326,8 @@ export const renderLessonDetail = ({
       </div>
     </section>
 
+    ${renderLiveTutor(state, lesson)}
+
     <section class="detail-section">
       <div>
         <h3>Transcript</h3>
@@ -306,13 +347,13 @@ export const renderLessonDetail = ({
     </section>
   `;
 
-  document.getElementById("request-hint")?.addEventListener("click", () => {
+  elements.lessonDetail.querySelector("#request-hint")?.addEventListener("click", () => {
     onRequestHint().catch(onError);
   });
-  document.getElementById("close-lesson")?.addEventListener("click", () => {
+  elements.lessonDetail.querySelector("#close-lesson")?.addEventListener("click", () => {
     onCloseLesson().catch(onError);
   });
-  document.getElementById("follow-up-form")?.addEventListener("submit", (event) => {
+  elements.lessonDetail.querySelector("#follow-up-form")?.addEventListener("submit", (event) => {
     event.preventDefault();
     onAskFollowUp().catch(onError);
   });

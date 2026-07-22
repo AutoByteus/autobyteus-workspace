@@ -9,10 +9,13 @@ It now demonstrates:
 - one app-owned `lessonId` business identity
 - one required manifest `executionResourceSlots[]` team slot resolved through the host-managed setup-first launch gate
 - one long-lived binding reused through `agentExecution.sendInput(...)`
+- one standard frontend `agentCommunication.connect(...)` session addressed to the bound `tutor` member
+- READY-before-input sequencing so the mounted UI observes the first provider-neutral live response
 - host-managed saved team `launchProfile` before entry: shared runtime/model/workspace defaults plus per-member runtime/model overrides
+- the bundled Codex App Server tutor default (`gpt-5.6-sol`, high reasoning effort) while saved runtime/model selections retain priority
 - post-bootstrap business UI ownership only; the bundle does not author pre-bootstrap waiting/failure/direct-open UX
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace
-- tutor-turn publication through the canonical `publish_artifacts` tool with one-item `artifacts` arrays for lesson-history projection
+- provider-neutral live text/tool/completion presentation that converges on tutor-turn publication through the canonical `publish_artifacts` tool and durable lesson-history projection
 
 Authoring roots:
 

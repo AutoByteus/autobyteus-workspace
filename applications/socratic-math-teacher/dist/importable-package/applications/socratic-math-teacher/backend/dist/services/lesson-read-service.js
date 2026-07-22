@@ -1,6 +1,7 @@
 import { withAppDatabase } from "../repositories/app-database.js";
 import { createLessonMessageRepository } from "../repositories/lesson-message-repository.js";
 import { createLessonRepository } from "../repositories/lesson-repository.js";
+import { deriveTutorTargetAddress } from "../domain/lesson-model.js";
 const requireLessonId = (lessonId) => {
     const normalized = lessonId.trim();
     if (!normalized) {
@@ -21,6 +22,7 @@ export const createLessonReadService = (context) => ({
             }
             return {
                 ...lesson,
+                tutorTargetAddress: deriveTutorTargetAddress(lesson),
                 messages: createLessonMessageRepository(db).listByLessonId(normalizedLessonId),
             };
         });

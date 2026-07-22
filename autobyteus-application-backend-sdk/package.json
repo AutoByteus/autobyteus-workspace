@@ -10,14 +10,16 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run --no-watch"
   },
   "dependencies": {
     "@autobyteus/application-sdk-contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "license": "Apache-2.0",
   "exports": {

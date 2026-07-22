@@ -34,6 +34,7 @@ type LessonDetail {
   updatedAt: String!
   createdAt: String!
   closedAt: String
+  tutorTargetAddress: JSON
   messages: [LessonMessage!]!
 }
 

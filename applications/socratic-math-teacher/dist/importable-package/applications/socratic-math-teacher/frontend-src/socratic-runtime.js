@@ -4,6 +4,10 @@ import {
   renderNotifications,
   renderSocraticMathTeacherShell,
 } from "./socratic-renderer.js";
+import {
+  createIdleSocraticTutorState,
+  createSocraticTutorSession,
+} from "./socratic-tutor-session.js";
 
 export const mountSocraticMathTeacher = ({
   applicationClient,
@@ -24,6 +28,7 @@ export const mountSocraticMathTeacher = ({
     selectedLessonId: null,
     statusText: "Socratic Math Teacher is ready to load lesson data.",
     statusTone: "idle",
+    tutorLive: createIdleSocraticTutorState(),
   };
 
   const elements = {
@@ -39,8 +44,11 @@ export const mountSocraticMathTeacher = ({
     notificationList: rootElement.querySelector("#notification-list"),
     refreshButton: rootElement.querySelector("#refresh-button"),
     startLessonForm: rootElement.querySelector("#start-lesson-form"),
+    startLessonButton: rootElement.querySelector("#start-lesson-button"),
     lessonPromptInput: rootElement.querySelector("#lesson-prompt-input"),
   };
+
+  let disposed = false;
 
   const setStatus = (text, tone = "idle") => {
     state.statusText = text;
@@ -55,14 +63,28 @@ export const mountSocraticMathTeacher = ({
     setStatus(error instanceof Error ? error.message : String(error), "error");
   };
 
+  const renderDetail = () => renderLessonDetail({
+    state,
+    elements,
+    onAskFollowUp: askFollowUp,
+    onRequestHint: requestHint,
+    onCloseLesson: closeLesson,
+    onError: handleUiError,
+  });
+
+  const tutorSession = createSocraticTutorSession({
+    agentCommunication: applicationClient.agentCommunication,
+    onStateChange: (tutorLive) => {
+      state.tutorLive = tutorLive;
+      renderDetail();
+    },
+  });
+
   const render = () => {
     renderApp({
       state,
       elements,
-      onSelectLesson: async (lessonId) => {
-        state.selectedLessonId = lessonId;
-        await refreshDetail();
-      },
+      onSelectLesson: selectLesson,
       onAskFollowUp: askFollowUp,
       onRequestHint: requestHint,
       onCloseLesson: closeLesson,
@@ -73,26 +95,19 @@ export const mountSocraticMathTeacher = ({
   const refreshDetail = async () => {
     if (!state.selectedLessonId) {
       state.detail = null;
-      renderLessonDetail({
-        state,
-        elements,
-        onAskFollowUp: askFollowUp,
-        onRequestHint: requestHint,
-        onCloseLesson: closeLesson,
-        onError: handleUiError,
-      });
+      tutorSession.close();
+      renderDetail();
       return;
     }
 
     state.detail = await client.lesson(state.selectedLessonId);
-    renderLessonDetail({
-      state,
-      elements,
-      onAskFollowUp: askFollowUp,
-      onRequestHint: requestHint,
-      onCloseLesson: closeLesson,
-      onError: handleUiError,
-    });
+    tutorSession.reconcileDurableLesson(state.detail);
+    renderDetail();
+    if (state.detail?.tutorTargetAddress && !tutorSession.matchesLesson(state.detail)) {
+      await tutorSession.connectLesson({ lesson: state.detail });
+    } else if (!state.detail?.tutorTargetAddress) {
+      tutorSession.close();
+    }
   };
 
   const refresh = async () => {
@@ -112,6 +127,12 @@ export const mountSocraticMathTeacher = ({
     );
   };
 
+  const selectLesson = async (lessonId) => {
+    tutorSession.close();
+    state.selectedLessonId = lessonId;
+    await refreshDetail();
+  };
+
   const startLesson = async () => {
     const prompt = elements.lessonPromptInput?.value?.trim() || "";
     if (!prompt) {
@@ -119,52 +140,66 @@ export const mountSocraticMathTeacher = ({
       return;
     }
 
+    if (elements.startLessonButton) elements.startLessonButton.disabled = true;
+    if (elements.lessonPromptInput) elements.lessonPromptInput.disabled = true;
     setStatus("Starting a new lesson…");
-    const lesson = await client.startLesson({ prompt });
-    state.selectedLessonId = lesson.lessonId;
-    if (elements.lessonPromptInput) {
-      elements.lessonPromptInput.value = "";
+    try {
+      const lesson = await client.startLesson({ prompt });
+      tutorSession.close();
+      state.selectedLessonId = lesson.lessonId;
+      state.detail = lesson;
+      state.lessons = [lesson, ...state.lessons.filter((item) => item.lessonId !== lesson.lessonId)];
+      render();
+      await tutorSession.connectLesson({ lesson, sendInitialProblem: true });
+      if (elements.lessonPromptInput) elements.lessonPromptInput.value = "";
+      await refresh();
+    } finally {
+      if (elements.startLessonButton) elements.startLessonButton.disabled = false;
+      if (elements.lessonPromptInput) elements.lessonPromptInput.disabled = false;
     }
-    await refresh();
   };
 
   const askFollowUp = async () => {
-    if (!state.selectedLessonId) {
-      return;
-    }
-    const textarea = document.getElementById("follow-up-input");
+    if (!state.selectedLessonId) return;
+    const textarea = elements.lessonDetail?.querySelector("#follow-up-input");
     const text = textarea?.value?.trim() || "";
     if (!text) {
       setStatus("Enter a follow-up message before sending.", "error");
       return;
     }
     setStatus("Sending your follow-up…");
-    await client.askFollowUp({ lessonId: state.selectedLessonId, text });
-    if (textarea) {
-      textarea.value = "";
+    tutorSession.beginObservedTurn(state.detail);
+    try {
+      await client.askFollowUp({ lessonId: state.selectedLessonId, text });
+    } catch (error) {
+      tutorSession.markFailed(error);
+      throw error;
     }
     await refresh();
   };
 
   const requestHint = async () => {
-    if (!state.selectedLessonId) {
-      return;
-    }
+    if (!state.selectedLessonId) return;
     const text = browserWindow.prompt("Optional hint request detail", "") || "";
     setStatus("Requesting a hint…");
-    await client.requestHint({
-      lessonId: state.selectedLessonId,
-      text: text.trim() || null,
-    });
+    tutorSession.beginObservedTurn(state.detail);
+    try {
+      await client.requestHint({
+        lessonId: state.selectedLessonId,
+        text: text.trim() || null,
+      });
+    } catch (error) {
+      tutorSession.markFailed(error);
+      throw error;
+    }
     await refresh();
   };
 
   const closeLesson = async () => {
-    if (!state.selectedLessonId) {
-      return;
-    }
+    if (!state.selectedLessonId) return;
     setStatus("Closing lesson…");
     await client.closeLesson({ lessonId: state.selectedLessonId });
+    tutorSession.close();
     await refresh();
   };
 
@@ -181,16 +216,27 @@ export const mountSocraticMathTeacher = ({
     });
   };
 
-  connectNotifications();
-  render();
-
-  elements.refreshButton?.addEventListener("click", () => {
-    refresh().catch(handleUiError);
-  });
-  elements.startLessonForm?.addEventListener("submit", (event) => {
+  const onRefresh = () => refresh().catch(handleUiError);
+  const onStartLesson = (event) => {
     event.preventDefault();
     startLesson().catch(handleUiError);
-  });
+  };
+  const dispose = () => {
+    if (disposed) return;
+    disposed = true;
+    tutorSession.close();
+    state.notificationHandle?.close?.();
+    elements.refreshButton?.removeEventListener("click", onRefresh);
+    elements.startLessonForm?.removeEventListener("submit", onStartLesson);
+    browserWindow.removeEventListener("beforeunload", dispose);
+  };
+
+  connectNotifications();
+  render();
+  elements.refreshButton?.addEventListener("click", onRefresh);
+  elements.startLessonForm?.addEventListener("submit", onStartLesson);
+  browserWindow.addEventListener("beforeunload", dispose, { once: true });
 
   void refresh().catch(handleUiError);
+  return dispose;
 };

@@ -49,14 +49,6 @@ const ensureOpenBinding = (lesson: {
   return lesson.latestBindingId;
 };
 
-const buildTutorPrompt = (studentPrompt: string): string => [
-  "You are guiding one student through a math problem.",
-  "Ask one focused question or give one concise hint at a time.",
-  "After every tutor response, call publish_artifacts with a one-item artifacts array so the application can project your turn into lesson history.",
-  `Publish normal turns with artifacts: [{ path: "socratic-math/lesson-response.md" }] and hint turns with artifacts: [{ path: "socratic-math/lesson-hint.md" }].`,
-  `Student problem: ${studentPrompt}`,
-].join("\n\n");
-
 const resolveStartLessonProjection = (input: {
   currentLesson: {
     status: "active" | "closed" | "blocked";
@@ -137,11 +129,8 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
           launchProfile: tutorTeam.launchProfile,
           workspaceRootPath,
           llmModelIdentifier: input.llmModelIdentifier,
+          llmConfig: { reasoning_effort: "high" },
         }),
-        initialInput: {
-          text: buildTutorPrompt(prompt),
-          metadata: { lessonId },
-        },
       });
 
       withAppDatabase(context.storage.appDatabasePath, (db) => {
