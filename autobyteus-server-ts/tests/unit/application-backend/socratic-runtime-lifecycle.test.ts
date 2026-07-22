@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mountSocraticMathTeacher } from "../../../../applications/socratic-math-teacher/frontend-src/socratic-runtime.js";
 
 const deferred = <T>() => {
@@ -62,8 +62,12 @@ const buildConnection = () => ({
   close: vi.fn(),
 });
 
+const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
+const mountedDisposers: Array<() => void> = [];
+
 const createHarness = (clientOverrides: Record<string, unknown> = {}) => {
   const connections: ReturnType<typeof buildConnection>[] = [];
+  let notificationListener: ((notification: unknown) => void) | null = null;
   const applicationClient = {
     agentCommunication: {
       connect: vi.fn(() => {
@@ -81,7 +85,10 @@ const createHarness = (clientOverrides: Record<string, unknown> = {}) => {
     askFollowUp: vi.fn(),
     requestHint: vi.fn(),
     closeLesson: vi.fn(),
-    subscribeNotifications: vi.fn(() => notificationHandle),
+    subscribeNotifications: vi.fn((listener: (notification: unknown) => void) => {
+      notificationListener = listener;
+      return notificationHandle;
+    }),
     ...clientOverrides,
   };
   const rootElement = document.getElementById("app-root")!;
@@ -92,12 +99,17 @@ const createHarness = (clientOverrides: Record<string, unknown> = {}) => {
     createSocraticMathGraphqlClient: () => client,
     rootElement,
   });
+  mountedDisposers.push(dispose);
 
   return {
     applicationClient,
     client,
     connections,
     dispose,
+    emitNotification(notification: unknown) {
+      if (!notificationListener) throw new Error("Notification listener was not registered.");
+      notificationListener(notification);
+    },
     notificationHandle,
     rootElement,
   };
@@ -109,9 +121,24 @@ const clickLesson = (rootElement: HTMLElement, lessonId: string) => {
   button!.click();
 };
 
+const submitStart = (rootElement: HTMLElement, prompt = "Solve 3x + 5 = 20") => {
+  const input = rootElement.querySelector<HTMLInputElement>("#lesson-prompt-input")!;
+  input.value = prompt;
+  rootElement.querySelector<HTMLFormElement>("#start-lesson-form")!
+    .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+};
+
+const totalInputSends = (connections: ReturnType<typeof buildConnection>[]) => (
+  connections.reduce((total, connection) => total + connection.sendInput.mock.calls.length, 0)
+);
+
 describe("Socratic mounted runtime lifecycle", () => {
   beforeEach(() => {
     document.body.innerHTML = '<div id="app-root"></div>';
+  });
+
+  afterEach(() => {
+    while (mountedDisposers.length > 0) mountedDisposers.pop()?.();
   });
 
   it("does not mutate or connect after unload while the initial lesson refresh is pending", async () => {
@@ -130,6 +157,147 @@ describe("Socratic mounted runtime lifecycle", () => {
     expect(lesson).not.toHaveBeenCalled();
     expect(harness.applicationClient.agentCommunication.connect).not.toHaveBeenCalled();
     expect(harness.notificationHandle.close).toHaveBeenCalledOnce();
+  });
+
+  it("sends the initial problem once when the GraphQL start response wins the notification race", async () => {
+    const pendingStart = deferred<ReturnType<typeof buildLesson>>();
+    const startedLesson = {
+      ...buildLesson("lesson-started"),
+      prompt: "Solve 3x + 5 = 20",
+    };
+    const lessons = vi.fn()
+      .mockResolvedValueOnce([])
+      .mockResolvedValue([startedLesson]);
+    const harness = createHarness({
+      lessons,
+      lesson: vi.fn(async () => startedLesson),
+      startLesson: vi.fn(() => pendingStart.promise),
+    });
+
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector("#workspace-status")?.className).toContain("ready");
+    });
+    submitStart(harness.rootElement);
+    pendingStart.resolve(startedLesson);
+
+    await vi.waitFor(() => {
+      expect(totalInputSends(harness.connections)).toBe(1);
+      expect(harness.rootElement.querySelector<HTMLButtonElement>("#start-lesson-button")?.disabled).toBe(false);
+    });
+    harness.emitNotification({
+      topic: "lesson.started",
+      payload: { lessonId: startedLesson.lessonId },
+    });
+    await vi.waitFor(() => expect(lessons).toHaveBeenCalledTimes(3));
+    await settle();
+
+    expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledTimes(1);
+    expect(totalInputSends(harness.connections)).toBe(1);
+    expect(harness.connections[0].sendInput).toHaveBeenCalledWith({
+      text: "Solve 3x + 5 = 20",
+      metadata: {
+        lessonId: "lesson-started",
+        requestKind: "lesson_start",
+      },
+    });
+  });
+
+  it("keeps start ownership and sends once when lesson.started refresh wins the response race", async () => {
+    const pendingStart = deferred<ReturnType<typeof buildLesson>>();
+    const startedLesson = {
+      ...buildLesson("lesson-started"),
+      prompt: "Solve 3x + 5 = 20",
+    };
+    const lessons = vi.fn()
+      .mockResolvedValueOnce([])
+      .mockResolvedValue([startedLesson]);
+    const lesson = vi.fn(async () => startedLesson);
+    const harness = createHarness({
+      lessons,
+      lesson,
+      startLesson: vi.fn(() => pendingStart.promise),
+    });
+
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector("#workspace-status")?.className).toContain("ready");
+    });
+    submitStart(harness.rootElement);
+    harness.emitNotification({
+      topic: "lesson.started",
+      payload: { lessonId: startedLesson.lessonId },
+    });
+    await vi.waitFor(() => {
+      expect(lessons).toHaveBeenCalledTimes(2);
+      expect(harness.rootElement.querySelector('button[data-lesson-id="lesson-started"]')).not.toBeNull();
+    });
+
+    expect(lesson).not.toHaveBeenCalled();
+    expect(harness.applicationClient.agentCommunication.connect).not.toHaveBeenCalled();
+    expect(harness.rootElement.querySelector<HTMLButtonElement>("#start-lesson-button")?.disabled).toBe(true);
+    expect(harness.rootElement.querySelector("#workspace-status")?.textContent).toContain("Starting a new lesson");
+    pendingStart.resolve(startedLesson);
+
+    await vi.waitFor(() => {
+      expect(totalInputSends(harness.connections)).toBe(1);
+      expect(harness.rootElement.querySelector<HTMLButtonElement>("#start-lesson-button")?.disabled).toBe(false);
+    });
+    expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledTimes(1);
+    expect(totalInputSends(harness.connections)).toBe(1);
+    expect(harness.connections[0].sendInput).toHaveBeenCalledWith({
+      text: "Solve 3x + 5 = 20",
+      metadata: {
+        lessonId: "lesson-started",
+        requestKind: "lesson_start",
+      },
+    });
+  });
+
+  it("lets explicit selection cancel a pending start without sending its problem", async () => {
+    const pendingStart = deferred<ReturnType<typeof buildLesson>>();
+    const startedLesson = buildLesson("lesson-started");
+    const lessons = [buildLesson("lesson-a", { target: false }), buildLesson("lesson-b")];
+    const harness = createHarness({
+      lessons: vi.fn(async () => lessons),
+      lesson: vi.fn(async (lessonId: string) => buildLesson(lessonId, { target: lessonId === "lesson-b" })),
+      startLesson: vi.fn(() => pendingStart.promise),
+    });
+
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector('button[data-lesson-id="lesson-b"]')).not.toBeNull();
+    });
+    submitStart(harness.rootElement);
+    clickLesson(harness.rootElement, "lesson-b");
+    await vi.waitFor(() => {
+      expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledWith(addressFor("lesson-b"));
+    });
+
+    pendingStart.resolve(startedLesson);
+    await pendingStart.promise;
+    await settle();
+
+    expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledTimes(1);
+    expect(totalInputSends(harness.connections)).toBe(0);
+    expect(harness.rootElement.querySelector("#lesson-detail")?.textContent).toContain("Problem lesson-b");
+  });
+
+  it("lets disposal cancel a pending start without connecting or sending", async () => {
+    const pendingStart = deferred<ReturnType<typeof buildLesson>>();
+    const harness = createHarness({
+      lessons: vi.fn(async () => []),
+      startLesson: vi.fn(() => pendingStart.promise),
+    });
+
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector("#workspace-status")?.className).toContain("ready");
+    });
+    submitStart(harness.rootElement);
+    harness.dispose();
+    pendingStart.resolve(buildLesson("lesson-started"));
+    await pendingStart.promise;
+    await settle();
+
+    expect(harness.applicationClient.agentCommunication.connect).not.toHaveBeenCalled();
+    expect(totalInputSends(harness.connections)).toBe(0);
   });
 
   it("keeps the latest rapid selection when lesson details resolve out of order", async () => {

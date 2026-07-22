@@ -50,6 +50,7 @@ export const mountSocraticMathTeacher = ({
 
   let disposed = false;
   let lifecycleGeneration = 0;
+  let pendingStartOperation = null;
 
   const captureOperation = (lessonId = state.selectedLessonId) => ({
     generation: lifecycleGeneration,
@@ -60,6 +61,11 @@ export const mountSocraticMathTeacher = ({
     !disposed
     && operation.generation === lifecycleGeneration
     && operation.lessonId === state.selectedLessonId
+  );
+
+  const isPendingStartCurrent = () => Boolean(
+    pendingStartOperation
+    && isOperationCurrent(pendingStartOperation)
   );
 
   const advanceOperation = () => {
@@ -109,7 +115,10 @@ export const mountSocraticMathTeacher = ({
     lifecycleGeneration += 1;
     tutorSession.close();
     state.selectedLessonId = lessonId;
-    if (cancelPendingStart) setStartLessonBusy(false);
+    if (cancelPendingStart) {
+      pendingStartOperation = null;
+      setStartLessonBusy(false);
+    }
     return captureOperation(lessonId);
   };
 
@@ -160,7 +169,9 @@ export const mountSocraticMathTeacher = ({
   const refresh = async (startingOperation = captureOperation()) => {
     let operation = startingOperation;
     if (!isOperationCurrent(operation)) return;
-    setStatus("Loading lessons through the hosted GraphQL backend mount…");
+    if (!isPendingStartCurrent()) {
+      setStatus("Loading lessons through the hosted GraphQL backend mount…");
+    }
     let lessons;
     try {
       lessons = await client.lessons();
@@ -172,7 +183,9 @@ export const mountSocraticMathTeacher = ({
 
     state.lessons = Array.isArray(lessons) ? lessons : [];
     if (!state.selectedLessonId || !state.lessons.some((lesson) => lesson.lessonId === state.selectedLessonId)) {
-      operation = replaceSelection(state.lessons[0]?.lessonId || null);
+      if (!isPendingStartCurrent()) {
+        operation = replaceSelection(state.lessons[0]?.lessonId || null);
+      }
     }
     try {
       await refreshDetail(operation);
@@ -182,12 +195,14 @@ export const mountSocraticMathTeacher = ({
     }
     if (!isOperationCurrent(operation)) return;
     render();
-    setStatus(
-      state.lessons.length === 0
-        ? "Socratic Math Teacher is ready. Start a lesson to begin guided help on one math problem."
-        : "Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.",
-      "ready",
-    );
+    if (!isPendingStartCurrent()) {
+      setStatus(
+        state.lessons.length === 0
+          ? "Socratic Math Teacher is ready. Start a lesson to begin guided help on one math problem."
+          : "Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.",
+        "ready",
+      );
+    }
   };
 
   const selectLesson = async (lessonId) => {
@@ -210,6 +225,7 @@ export const mountSocraticMathTeacher = ({
     }
 
     let operation = advanceOperation();
+    pendingStartOperation = operation;
     setStartLessonBusy(true);
     setStatus("Starting a new lesson…");
     try {
@@ -217,16 +233,19 @@ export const mountSocraticMathTeacher = ({
       if (!isOperationCurrent(operation)) return;
 
       operation = replaceSelection(lesson.lessonId, { cancelPendingStart: false });
+      pendingStartOperation = operation;
       state.detail = lesson;
       state.lessons = [lesson, ...state.lessons.filter((item) => item.lessonId !== lesson.lessonId)];
       render();
       await tutorSession.connectLesson({ lesson, sendInitialProblem: true });
       if (!isOperationCurrent(operation)) return;
+      if (pendingStartOperation === operation) pendingStartOperation = null;
       if (elements.lessonPromptInput) elements.lessonPromptInput.value = "";
       await refresh(operation);
     } catch (error) {
       if (isOperationCurrent(operation)) throw error;
     } finally {
+      if (pendingStartOperation === operation) pendingStartOperation = null;
       if (isOperationCurrent(operation)) setStartLessonBusy(false);
     }
   };
@@ -321,6 +340,7 @@ export const mountSocraticMathTeacher = ({
     if (disposed) return;
     disposed = true;
     lifecycleGeneration += 1;
+    pendingStartOperation = null;
     tutorSession.close();
     state.notificationHandle?.close?.();
     elements.refreshButton?.removeEventListener("click", onRefresh);
