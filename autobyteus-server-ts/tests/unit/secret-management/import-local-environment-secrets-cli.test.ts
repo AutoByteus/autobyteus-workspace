@@ -12,8 +12,12 @@ import { CanonicalHostLocalImportTargetResolver } from '../../../src/secret-mana
 describe('local environment import CLI adapter', () => {
   const absoluteSource = path.resolve('/synthetic/operator/source-with-any-name');
 
-  it('maps only the four reviewed options into the exact typed request', () => {
+  it.each([
+    { label: 'direct options', prefix: [] },
+    { label: 'one PNPM separator', prefix: ['--'] },
+  ])('maps $label into the same exact typed request', ({ prefix }) => {
     expect(parseLocalImportArguments([
+      ...prefix,
       '--source', absoluteSource,
       '--target', 'e2e',
       '--dry-run',
@@ -61,6 +65,8 @@ describe('local environment import CLI adapter', () => {
     { args: ['--source', absoluteSource, '--target', 'default', '--definition', 'provider.openai.api-key'] },
     { args: ['--source', absoluteSource, '--target', 'default', '--value', 'synthetic-value'] },
     { args: ['--source', absoluteSource, '--target', 'default', '--env', 'SYNTHETIC=value'] },
+    { args: ['--', '--', '--source', absoluteSource, '--target', 'default'] },
+    { args: ['--source', absoluteSource, '--', '--target', 'default'] },
   ])('rejects missing, duplicate, unknown, relative, or widened options before invocation', ({ args }) => {
     expect(() => parseLocalImportArguments(args)).toThrowError('IMPORT_OPTIONS_INVALID');
   });

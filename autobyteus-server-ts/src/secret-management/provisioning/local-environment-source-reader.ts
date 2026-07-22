@@ -5,15 +5,14 @@ import { TextDecoder } from 'node:util';
 import type { Stats } from 'node:fs';
 import type { FileHandle } from 'node:fs/promises';
 import type { SecretDefinitionId } from '../domain/secret-binding.js';
-import { legacyDefinitionForAlias } from './legacy-secret-alias-map.js';
-import { LocalLegacyEnvironmentImportError } from './local-legacy-environment-import.js';
+import { localImportDefinitionForAlias } from './local-import-credential-alias-registry.js';
+import { LocalEnvironmentSecretImportError } from './local-environment-secret-import.js';
 import {
   assertWindowsExclusiveAcl,
   type WindowsAclCommandRunner,
 } from '../windows-exclusive-acl.js';
 
 const MAX_SOURCE_BYTES = 1024 * 1024;
-const SECRET_LIKE_NAME = /(?:^|_)(?:API_?KEY|KEY|TOKEN|SECRET|PASSWORD|PASSWD|PRIVATE_?KEY|CREDENTIALS?|ACCESS_?KEY|SESSION|COOKIE)(?:_|$)/;
 
 export type LocalEnvironmentMappedCredential = {
   definitionId: SecretDefinitionId;
@@ -25,8 +24,8 @@ export type LocalEnvironmentSourceReadResult = {
   release: () => void;
 };
 
-const fail = (code: ConstructorParameters<typeof LocalLegacyEnvironmentImportError>[0]): never => {
-  throw new LocalLegacyEnvironmentImportError(code);
+const fail = (code: ConstructorParameters<typeof LocalEnvironmentSecretImportError>[0]): never => {
+  throw new LocalEnvironmentSecretImportError(code);
 };
 
 const sameIdentity = (left: Stats, right: Stats): boolean => {
@@ -93,32 +92,28 @@ const parseAssignment = (line: string): { name: string; value: string } => {
   return { name, value };
 };
 
+const recognizeAssignmentName = (line: string): string | null =>
+  /^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)/.exec(line)?.[1] ?? null;
+
 const parseSource = (sourceText: string): LocalEnvironmentMappedCredential[] => {
   if (/\r(?!\n)/.test(sourceText)) fail('IMPORT_SOURCE_SYNTAX_INVALID');
   const credentials: LocalEnvironmentMappedCredential[] = [];
   const seenNames = new Set<string>();
-  const seenDefinitions = new Set<string>();
   try {
     for (const line of sourceText.split(/\r?\n/)) {
-      if (/^[ \t]*$/.test(line) || /^[ \t]*#/.test(line)) continue;
+      const recognizedName = recognizeAssignmentName(line);
+      const definitionId = recognizedName
+        ? localImportDefinitionForAlias(recognizedName)
+        : null;
+      if (!definitionId) continue;
+
       const assignment = parseAssignment(line);
       if (seenNames.has(assignment.name)) fail('IMPORT_SOURCE_DUPLICATE_ASSIGNMENT');
       seenNames.add(assignment.name);
-
-      const definitionId = legacyDefinitionForAlias(assignment.name);
-      if (!definitionId) {
-        const upperName = assignment.name.toUpperCase();
-        if (SECRET_LIKE_NAME.test(upperName) || upperName === 'DATABASE_URL' || upperName === 'CONNECTION_STRING') {
-          fail('IMPORT_SOURCE_UNSUPPORTED_SECRET_ALIAS');
-        }
-        continue;
-      }
       if (assignment.value.length === 0) fail('IMPORT_SOURCE_EMPTY_CREDENTIAL');
       if (assignment.value.includes('${') || assignment.value.includes('$(') || assignment.value.includes('`')) {
         fail('IMPORT_SOURCE_SYNTAX_INVALID');
       }
-      if (seenDefinitions.has(String(definitionId))) fail('IMPORT_SOURCE_ALIAS_CONFLICT');
-      seenDefinitions.add(String(definitionId));
       credentials.push({ definitionId, valueBytes: Buffer.from(assignment.value, 'utf8') });
     }
     if (credentials.length === 0) fail('IMPORT_NO_MAPPED_CREDENTIALS');
@@ -198,8 +193,8 @@ export class LocalEnvironmentSourceReader {
         },
       };
     } catch (error) {
-      if (error instanceof LocalLegacyEnvironmentImportError) throw error;
-      throw new LocalLegacyEnvironmentImportError('IMPORT_SOURCE_UNTRUSTED');
+      if (error instanceof LocalEnvironmentSecretImportError) throw error;
+      throw new LocalEnvironmentSecretImportError('IMPORT_SOURCE_UNTRUSTED');
     } finally {
       sourceBytes?.fill(0);
     }

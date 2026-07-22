@@ -1,28 +1,28 @@
 import type { SecretDefinitionId } from '../domain/secret-binding.js';
 import type { SecretBackendHealth } from '../domain/secret-storage-types.js';
 
-export type LocalLegacyEnvironmentImportTarget = 'default' | 'e2e';
+export type LocalEnvironmentSecretImportTarget = 'default' | 'e2e';
 
-export type LocalLegacyEnvironmentImportRequest = {
+export type LocalEnvironmentSecretImportRequest = {
   sourceAbsolutePath: string;
-  target: LocalLegacyEnvironmentImportTarget;
+  target: LocalEnvironmentSecretImportTarget;
   dryRun: boolean;
   overwrite: boolean;
 };
 
-export type LocalLegacyEnvironmentImportAction =
+export type LocalEnvironmentSecretImportAction =
   | 'CREATE'
   | 'SKIPPED_CONFIGURED'
   | 'REPLACE';
 
-export type LocalLegacyEnvironmentImportPlanEntry = {
+export type LocalEnvironmentSecretImportPlanEntry = {
   definitionId: SecretDefinitionId;
-  action: LocalLegacyEnvironmentImportAction;
+  action: LocalEnvironmentSecretImportAction;
 };
 
 export type NonReadySecretBackendHealth = Exclude<SecretBackendHealth, { state: 'READY' }>;
 
-export type LocalLegacyEnvironmentImportTargetStatus =
+export type LocalEnvironmentSecretImportTargetStatus =
   | { state: 'READY' }
   | {
       state: 'INITIALIZATION_REQUIRED';
@@ -30,13 +30,13 @@ export type LocalLegacyEnvironmentImportTargetStatus =
     }
   | NonReadySecretBackendHealth;
 
-export type LocalLegacyEnvironmentImportPlan = {
-  targetStatus: LocalLegacyEnvironmentImportTargetStatus;
-  entries: LocalLegacyEnvironmentImportPlanEntry[];
+export type LocalEnvironmentSecretImportPlan = {
+  targetStatus: LocalEnvironmentSecretImportTargetStatus;
+  entries: LocalEnvironmentSecretImportPlanEntry[];
 };
 
-export type LocalLegacyEnvironmentImportResult = {
-  targetStatus: LocalLegacyEnvironmentImportTargetStatus;
+export type LocalEnvironmentSecretImportResult = {
+  targetStatus: LocalEnvironmentSecretImportTargetStatus;
   definitionIds: SecretDefinitionId[];
   configuredCount: number;
   skippedCount: number;
@@ -44,7 +44,7 @@ export type LocalLegacyEnvironmentImportResult = {
   instructionCode: 'NONE' | 'RESTART_REQUIRED' | 'RUN_REAL_E2E_PREFLIGHT';
 };
 
-export type LocalLegacyEnvironmentImportErrorCode =
+export type LocalEnvironmentSecretImportErrorCode =
   | 'IMPORT_OPTIONS_INVALID'
   | 'IMPORT_SOURCE_PATH_INVALID'
   | 'IMPORT_SOURCE_UNTRUSTED'
@@ -54,8 +54,6 @@ export type LocalLegacyEnvironmentImportErrorCode =
   | 'IMPORT_SOURCE_SYNTAX_INVALID'
   | 'IMPORT_SOURCE_DUPLICATE_ASSIGNMENT'
   | 'IMPORT_SOURCE_EMPTY_CREDENTIAL'
-  | 'IMPORT_SOURCE_ALIAS_CONFLICT'
-  | 'IMPORT_SOURCE_UNSUPPORTED_SECRET_ALIAS'
   | 'IMPORT_NO_MAPPED_CREDENTIALS'
   | 'IMPORT_MAPPING_INVALID'
   | 'IMPORT_TARGET_INITIALIZATION_FAILED'
@@ -65,16 +63,16 @@ export type LocalLegacyEnvironmentImportErrorCode =
   | 'IMPORT_CANCELLED'
   | 'IMPORT_BATCH_FAILED';
 
-export class LocalLegacyEnvironmentImportError extends Error {
+export class LocalEnvironmentSecretImportError extends Error {
   constructor(
-    readonly code: LocalLegacyEnvironmentImportErrorCode,
-    readonly target?: LocalLegacyEnvironmentImportTarget,
+    readonly code: LocalEnvironmentSecretImportErrorCode,
+    readonly target?: LocalEnvironmentSecretImportTarget,
   ) {
     super(code);
-    this.name = 'LocalLegacyEnvironmentImportError';
+    this.name = 'LocalEnvironmentSecretImportError';
   }
 
-  toJSON(): { code: LocalLegacyEnvironmentImportErrorCode; target?: LocalLegacyEnvironmentImportTarget } {
+  toJSON(): { code: LocalEnvironmentSecretImportErrorCode; target?: LocalEnvironmentSecretImportTarget } {
     return this.target ? { code: this.code, target: this.target } : { code: this.code };
   }
 }

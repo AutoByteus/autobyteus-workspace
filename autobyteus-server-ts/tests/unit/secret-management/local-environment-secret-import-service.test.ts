@@ -10,9 +10,9 @@ import { LocalSecretStoreProvisioningService } from '../../../src/secret-managem
 import type { LocalStoreConfiguration } from '../../../src/secret-management/backends/local/local-secret-store-initializer.js';
 import type { LocalImportTargetResolver } from '../../../src/secret-management/provisioning/local-import-target-resolver.js';
 import {
-  LocalLegacyEnvironmentImportService,
+  LocalEnvironmentSecretImportService,
   type LocalImportConfirmationPort,
-} from '../../../src/secret-management/provisioning/local-legacy-environment-import-service.js';
+} from '../../../src/secret-management/provisioning/local-environment-secret-import-service.js';
 
 class TemporaryTargetResolver implements LocalImportTargetResolver {
   constructor(private readonly root: string) {}
@@ -39,7 +39,7 @@ const confirmation = (
   }),
 });
 
-describe('LocalLegacyEnvironmentImportService', () => {
+describe('LocalEnvironmentSecretImportService', () => {
   let directory: string;
   let sourcePath: string;
   let resolver: TemporaryTargetResolver;
@@ -129,7 +129,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
 
   it('previews an absent target value-free without initializing either Store', async () => {
     await writeSource('OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\n');
-    const service = new LocalLegacyEnvironmentImportService(resolver);
+    const service = new LocalEnvironmentSecretImportService(resolver);
     const plan = await service.preview({
       sourceAbsolutePath: sourcePath,
       target: 'e2e',
@@ -156,7 +156,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
     const sourceBefore = await writeSource(
       'OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\nAPP_MODE=test\n',
     );
-    const result = await new LocalLegacyEnvironmentImportService(resolver).execute({
+    const result = await new LocalEnvironmentSecretImportService(resolver).execute({
       sourceAbsolutePath: sourcePath,
       target: 'default',
       dryRun: false,
@@ -180,7 +180,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
 
   it('skips by default without prompting and replaces only with explicit overwrite and E2E challenge', async () => {
     await writeSource('OPENAI_API_KEY=synthetic-first\n');
-    const service = new LocalLegacyEnvironmentImportService(resolver);
+    const service = new LocalEnvironmentSecretImportService(resolver);
     await service.execute({
       sourceAbsolutePath: sourcePath,
       target: 'e2e',
@@ -226,7 +226,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
 
   it('cancels without initialization on a non-matching target challenge', async () => {
     await writeSource('OPENAI_API_KEY=synthetic-openai\n');
-    const error = await new LocalLegacyEnvironmentImportService(resolver).execute({
+    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
       sourceAbsolutePath: sourcePath,
       target: 'default',
       dryRun: false,
@@ -239,7 +239,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
 
   it('requires a direct TTY before initializing the selected target', async () => {
     await writeSource('OPENAI_API_KEY=synthetic-openai\n');
-    const error = await new LocalLegacyEnvironmentImportService(resolver).execute({
+    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
       sourceAbsolutePath: sourcePath,
       target: 'default',
       dryRun: false,
@@ -269,7 +269,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
     const before = await storeSnapshot('default');
     expect(before.journalMode).toEqual({ journal_mode: 'delete' });
 
-    const service = new LocalLegacyEnvironmentImportService(resolver);
+    const service = new LocalEnvironmentSecretImportService(resolver);
     const plan = await service.preview({
       sourceAbsolutePath: sourcePath,
       target: 'default',
@@ -315,7 +315,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
     await fs.mkdir(path.dirname(configuration.keyPath), { recursive: true, mode: 0o700 });
     await fs.writeFile(configuration.keyPath, Buffer.alloc(32), { mode: 0o600 });
 
-    const service = new LocalLegacyEnvironmentImportService(resolver);
+    const service = new LocalEnvironmentSecretImportService(resolver);
     const plan = await service.preview({
       sourceAbsolutePath: sourcePath,
       target: 'default',
@@ -357,7 +357,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
   ] as const)('preserves $state target health without definition projection', async (targetStatus) => {
     await writeSource('OPENAI_API_KEY=synthetic-openai\n');
     const inspectExact = vi.fn().mockResolvedValue({ targetStatus, definitionStatus: null });
-    const service = new LocalLegacyEnvironmentImportService(
+    const service = new LocalEnvironmentSecretImportService(
       resolver,
       undefined,
       () => ({ inspectExact }) as unknown as LocalSecretStoreProvisioningService,
@@ -387,7 +387,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
       );
     };
 
-    const error = await new LocalLegacyEnvironmentImportService(resolver).execute({
+    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
       sourceAbsolutePath: sourcePath,
       target: 'default',
       dryRun: false,
@@ -419,7 +419,7 @@ describe('LocalLegacyEnvironmentImportService', () => {
       database.close();
     }
 
-    const error = await new LocalLegacyEnvironmentImportService(resolver).execute({
+    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
       sourceAbsolutePath: sourcePath,
       target: 'default',
       dryRun: false,

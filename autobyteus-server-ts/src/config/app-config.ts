@@ -10,9 +10,17 @@ import {
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
 import { parseNonSecretEnvironment } from "./non-secret-environment-projection.js";
-import { LEGACY_SECRET_ALIASES } from "../secret-management/provisioning/legacy-secret-alias-map.js";
+import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
 
-const forbiddenGenericSettingNames = new Set<string>(LEGACY_SECRET_ALIASES);
+const forbiddenGenericSettingNames = new Set<string>([
+  ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
+  "QWEN_API_KEY",
+  "ZHIPU_API_KEY",
+  "OLLAMA_API_KEY",
+  "GOOGLE_CSE_API_KEY",
+  "CLAUDE_CODE_API_KEY",
+  "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
+]);
 const sensitiveSettingNamePattern = /(?:API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;
 const assignmentName = (line: string): string | null =>
   /^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)[ \t]*=/.exec(line)?.[1] ?? null;

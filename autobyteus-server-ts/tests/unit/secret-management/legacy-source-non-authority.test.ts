@@ -10,7 +10,17 @@ import {
   CustomLlmProviderStore,
   CustomLlmProviderStoreError,
 } from '../../../src/llm-management/llm-providers/stores/custom-llm-provider-store.js';
-import { LEGACY_SECRET_ALIASES } from '../../../src/secret-management/provisioning/legacy-secret-alias-map.js';
+import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from '../../../src/secret-management/provisioning/local-import-credential-alias-registry.js';
+
+const NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES = [
+  ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
+  'QWEN_API_KEY',
+  'ZHIPU_API_KEY',
+  'OLLAMA_API_KEY',
+  'GOOGLE_CSE_API_KEY',
+  'CLAUDE_CODE_API_KEY',
+  'CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR',
+] as const;
 
 const MUTATED_ENVIRONMENT_KEYS = [
   'OPENAI_API_KEY',
@@ -83,7 +93,7 @@ describe('legacy source non-authority', () => {
 
     const projected = parseNonSecretEnvironment(
       source,
-      new Set<string>(LEGACY_SECRET_ALIASES),
+      new Set<string>(NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES),
       genericParser,
     );
 
@@ -112,7 +122,7 @@ describe('legacy source non-authority', () => {
 
       const projected = parseNonSecretEnvironment(
         source,
-        new Set<string>(LEGACY_SECRET_ALIASES),
+        new Set<string>(NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES),
         genericParser,
       );
 
@@ -144,7 +154,7 @@ describe('legacy source non-authority', () => {
 
     const projected = parseNonSecretEnvironment(
       source,
-      new Set<string>(LEGACY_SECRET_ALIASES),
+      new Set<string>(NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES),
       genericParser,
     );
 
@@ -183,7 +193,7 @@ describe('legacy source non-authority', () => {
 
     const projected = parseNonSecretEnvironment(
       source,
-      new Set<string>(LEGACY_SECRET_ALIASES),
+      new Set<string>(NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES),
       genericParser,
     );
 
@@ -220,7 +230,7 @@ describe('legacy source non-authority', () => {
 
     const projected = parseNonSecretEnvironment(
       source,
-      new Set<string>(LEGACY_SECRET_ALIASES),
+      new Set<string>(NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES),
       genericParser,
     );
 
@@ -241,7 +251,7 @@ describe('legacy source non-authority', () => {
       'APP_ENV=test',
       'DB_TYPE=sqlite',
       'export AUTOBYTEUS_LLM_SERVER_HOSTS = http://localhost:9000',
-      ...LEGACY_SECRET_ALIASES.map((alias, index) => `${alias}=synthetic-file-${index}`),
+      ...NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES.map((alias, index) => `${alias}=synthetic-file-${index}`),
       '',
     ].join('\r\n'));
     await fs.writeFile(configPath, source);
@@ -252,7 +262,7 @@ describe('legacy source non-authority', () => {
     expect(await fs.readFile(configPath)).toEqual(source);
     expect(process.env.OPENAI_API_KEY).toBe('synthetic-parent-openai');
     expect(process.env.AUTOBYTEUS_API_KEY).toBe('synthetic-parent-autobyteus');
-    for (const alias of LEGACY_SECRET_ALIASES) {
+    for (const alias of NON_SECRET_CONFIGURATION_CREDENTIAL_NAMES) {
       expect(config.get(alias)).toBeUndefined();
       expect(config.get(alias, 'synthetic-default-must-not-authorize')).toBeUndefined();
       expect(config.getConfigData()).not.toHaveProperty(alias);

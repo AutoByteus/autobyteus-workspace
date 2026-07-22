@@ -14,13 +14,13 @@ import {
 } from './local-environment-source-reader.js';
 import type { LocalImportTargetResolver } from './local-import-target-resolver.js';
 import {
-  LocalLegacyEnvironmentImportError,
-  type LocalLegacyEnvironmentImportPlan,
-  type LocalLegacyEnvironmentImportPlanEntry,
-  type LocalLegacyEnvironmentImportRequest,
-  type LocalLegacyEnvironmentImportResult,
-  type LocalLegacyEnvironmentImportTarget,
-} from './local-legacy-environment-import.js';
+  LocalEnvironmentSecretImportError,
+  type LocalEnvironmentSecretImportPlan,
+  type LocalEnvironmentSecretImportPlanEntry,
+  type LocalEnvironmentSecretImportRequest,
+  type LocalEnvironmentSecretImportResult,
+  type LocalEnvironmentSecretImportTarget,
+} from './local-environment-secret-import.js';
 
 export interface LocalImportConfirmationPort {
   isDirectTty(): boolean;
@@ -34,13 +34,13 @@ export type LocalProvisioningServiceFactory = (
 type PreparedImport = {
   source: LocalEnvironmentSourceReadResult;
   provisioning: LocalSecretStoreProvisioningService;
-  plan: LocalLegacyEnvironmentImportPlan;
+  plan: LocalEnvironmentSecretImportPlan;
 };
 
-const expectedConfirmation = (target: LocalLegacyEnvironmentImportTarget): string =>
+const expectedConfirmation = (target: LocalEnvironmentSecretImportTarget): string =>
   target === 'default' ? 'IMPORT DEFAULT STORE' : 'IMPORT REAL-E2E STORE';
 
-export class LocalLegacyEnvironmentImportService {
+export class LocalEnvironmentSecretImportService {
   constructor(
     private readonly targetResolver: LocalImportTargetResolver,
     private readonly sourceReader: LocalEnvironmentSourceReader = new LocalEnvironmentSourceReader(),
@@ -49,9 +49,9 @@ export class LocalLegacyEnvironmentImportService {
     private readonly catalog: SecretCatalog = defaultSecretCatalog,
   ) {}
 
-  async preview(request: LocalLegacyEnvironmentImportRequest): Promise<LocalLegacyEnvironmentImportPlan> {
+  async preview(request: LocalEnvironmentSecretImportRequest): Promise<LocalEnvironmentSecretImportPlan> {
     this.validateRequest(request);
-    if (!request.dryRun) throw new LocalLegacyEnvironmentImportError('IMPORT_OPTIONS_INVALID', request.target);
+    if (!request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID', request.target);
     const prepared = await this.prepare(request);
     try {
       return prepared.plan;
@@ -61,11 +61,11 @@ export class LocalLegacyEnvironmentImportService {
   }
 
   async execute(
-    request: LocalLegacyEnvironmentImportRequest,
+    request: LocalEnvironmentSecretImportRequest,
     confirmation: LocalImportConfirmationPort,
-  ): Promise<LocalLegacyEnvironmentImportResult> {
+  ): Promise<LocalEnvironmentSecretImportResult> {
     this.validateRequest(request);
-    if (request.dryRun) throw new LocalLegacyEnvironmentImportError('IMPORT_OPTIONS_INVALID', request.target);
+    if (request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID', request.target);
     const prepared = await this.prepare(request);
     try {
       const writableEntries = prepared.plan.entries.filter(
@@ -106,7 +106,7 @@ export class LocalLegacyEnvironmentImportService {
     }
   }
 
-  private async prepare(request: LocalLegacyEnvironmentImportRequest): Promise<PreparedImport> {
+  private async prepare(request: LocalEnvironmentSecretImportRequest): Promise<PreparedImport> {
     const source = await this.sourceReader.read(request.sourceAbsolutePath);
     try {
       const definitionIds = source.credentials
@@ -116,7 +116,7 @@ export class LocalLegacyEnvironmentImportService {
         new Set(definitionIds.map(String)).size !== definitionIds.length
         || definitionIds.some((definitionId) => !this.catalog.isKnownDefinition(definitionId))
       ) {
-        throw new LocalLegacyEnvironmentImportError('IMPORT_MAPPING_INVALID', request.target);
+        throw new LocalEnvironmentSecretImportError('IMPORT_MAPPING_INVALID', request.target);
       }
 
       const provisioning = this.provisioningFactory(this.targetResolver.resolve(request.target));
@@ -125,8 +125,8 @@ export class LocalLegacyEnvironmentImportService {
       return { source, provisioning, plan };
     } catch (error) {
       source.release();
-      if (error instanceof LocalLegacyEnvironmentImportError) throw error;
-      throw new LocalLegacyEnvironmentImportError('IMPORT_TARGET_NOT_READY', request.target);
+      if (error instanceof LocalEnvironmentSecretImportError) throw error;
+      throw new LocalEnvironmentSecretImportError('IMPORT_TARGET_NOT_READY', request.target);
     }
   }
 
@@ -134,7 +134,7 @@ export class LocalLegacyEnvironmentImportService {
     snapshot: LocalProvisioningTargetSnapshot,
     definitionIds: readonly SecretDefinitionId[],
     overwrite: boolean,
-  ): LocalLegacyEnvironmentImportPlan {
+  ): LocalEnvironmentSecretImportPlan {
     if (snapshot.targetStatus.state === 'INITIALIZATION_REQUIRED') {
       return {
         targetStatus: snapshot.targetStatus,
@@ -158,14 +158,14 @@ export class LocalLegacyEnvironmentImportService {
 
   private materializeBatch(
     source: LocalEnvironmentSourceReadResult,
-    writableEntries: readonly LocalLegacyEnvironmentImportPlanEntry[],
+    writableEntries: readonly LocalEnvironmentSecretImportPlanEntry[],
   ): LocalProvisioningBatchEntry[] {
     const values = new Map(
       source.credentials.map((credential) => [String(credential.definitionId), credential.valueBytes] as const),
     );
     return writableEntries.map((entry) => {
       const valueBytes = values.get(String(entry.definitionId));
-      if (!valueBytes) throw new LocalLegacyEnvironmentImportError('IMPORT_MAPPING_INVALID');
+      if (!valueBytes) throw new LocalEnvironmentSecretImportError('IMPORT_MAPPING_INVALID');
       return {
         definitionId: entry.definitionId,
         value: SecretValue.fromString(valueBytes.toString('utf8')),
@@ -175,43 +175,43 @@ export class LocalLegacyEnvironmentImportService {
   }
 
   private async confirm(
-    target: LocalLegacyEnvironmentImportTarget,
+    target: LocalEnvironmentSecretImportTarget,
     confirmation: LocalImportConfirmationPort,
   ): Promise<void> {
     if (!confirmation.isDirectTty()) {
-      throw new LocalLegacyEnvironmentImportError('IMPORT_CONFIRMATION_REQUIRED', target);
+      throw new LocalEnvironmentSecretImportError('IMPORT_CONFIRMATION_REQUIRED', target);
     }
     let response: string | null;
     try {
       response = await confirmation.readChallenge(expectedConfirmation(target));
     } catch {
-      throw new LocalLegacyEnvironmentImportError('IMPORT_CANCELLED', target);
+      throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED', target);
     }
     if (response !== expectedConfirmation(target)) {
-      throw new LocalLegacyEnvironmentImportError('IMPORT_CANCELLED', target);
+      throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED', target);
     }
   }
 
   private mapBatchError(
     error: unknown,
-    target: LocalLegacyEnvironmentImportTarget,
-  ): LocalLegacyEnvironmentImportError {
+    target: LocalEnvironmentSecretImportTarget,
+  ): LocalEnvironmentSecretImportError {
     if (!(error instanceof LocalProvisioningBatchError)) {
-      return new LocalLegacyEnvironmentImportError('IMPORT_BATCH_FAILED', target);
+      return new LocalEnvironmentSecretImportError('IMPORT_BATCH_FAILED', target);
     }
     switch (error.code) {
       case 'TARGET_CHANGED':
-        return new LocalLegacyEnvironmentImportError('IMPORT_TARGET_CHANGED', target);
+        return new LocalEnvironmentSecretImportError('IMPORT_TARGET_CHANGED', target);
       case 'TARGET_NOT_READY':
-        return new LocalLegacyEnvironmentImportError('IMPORT_TARGET_NOT_READY', target);
+        return new LocalEnvironmentSecretImportError('IMPORT_TARGET_NOT_READY', target);
       case 'INITIALIZATION_FAILED':
-        return new LocalLegacyEnvironmentImportError('IMPORT_TARGET_INITIALIZATION_FAILED', target);
+        return new LocalEnvironmentSecretImportError('IMPORT_TARGET_INITIALIZATION_FAILED', target);
       default:
-        return new LocalLegacyEnvironmentImportError('IMPORT_BATCH_FAILED', target);
+        return new LocalEnvironmentSecretImportError('IMPORT_BATCH_FAILED', target);
     }
   }
 
-  private validateRequest(request: LocalLegacyEnvironmentImportRequest): void {
+  private validateRequest(request: LocalEnvironmentSecretImportRequest): void {
     const keys = request && typeof request === 'object' ? Object.keys(request).sort() : [];
     const exactKeys = ['dryRun', 'overwrite', 'sourceAbsolutePath', 'target'];
     if (
@@ -223,7 +223,7 @@ export class LocalLegacyEnvironmentImportService {
       || typeof request.dryRun !== 'boolean'
       || typeof request.overwrite !== 'boolean'
     ) {
-      throw new LocalLegacyEnvironmentImportError('IMPORT_OPTIONS_INVALID');
+      throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
     }
   }
 }

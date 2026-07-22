@@ -1,7 +1,7 @@
 import type { SecretDefinitionId } from '../domain/secret-binding.js';
 import { secretDefinitionId } from '../domain/secret-binding.js';
 
-const importableAliases = Object.freeze({
+const localImportCredentialAliases = Object.freeze({
   OPENAI_API_KEY: secretDefinitionId('provider.openai.api-key'),
   ANTHROPIC_API_KEY: secretDefinitionId('provider.anthropic.api-key'),
   MISTRAL_API_KEY: secretDefinitionId('provider.mistral.api-key'),
@@ -20,21 +20,15 @@ const importableAliases = Object.freeze({
   VERTEX_AI_SEARCH_API_KEY: secretDefinitionId('search.vertex-ai.api-key'),
 } satisfies Readonly<Record<string, SecretDefinitionId>>);
 
-export type ImportableLegacySecretAlias = keyof typeof importableAliases;
+export type LocalImportCredentialAlias = keyof typeof localImportCredentialAliases;
 
-export const LEGACY_SECRET_ALIAS_TO_DEFINITION = importableAliases;
+export const LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION = localImportCredentialAliases;
 
-export const UNSUPPORTED_LEGACY_SECRET_ALIASES = Object.freeze([
-  'CLAUDE_CODE_API_KEY',
-  'CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR',
-] as const);
+export const LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES = Object.freeze(
+  Object.keys(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION) as LocalImportCredentialAlias[],
+);
 
-export const LEGACY_SECRET_ALIASES = Object.freeze([
-  ...Object.keys(LEGACY_SECRET_ALIAS_TO_DEFINITION),
-  ...UNSUPPORTED_LEGACY_SECRET_ALIASES,
-]);
-
-export const legacyDefinitionForAlias = (alias: string): SecretDefinitionId | null =>
-  Object.hasOwn(LEGACY_SECRET_ALIAS_TO_DEFINITION, alias)
-    ? LEGACY_SECRET_ALIAS_TO_DEFINITION[alias as ImportableLegacySecretAlias]
+export const localImportDefinitionForAlias = (alias: string): SecretDefinitionId | null =>
+  Object.hasOwn(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION, alias)
+    ? LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION[alias as LocalImportCredentialAlias]
     : null;

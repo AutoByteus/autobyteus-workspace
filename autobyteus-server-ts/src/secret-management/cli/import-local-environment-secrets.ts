@@ -3,27 +3,28 @@ import { pathToFileURL } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stderr } from 'node:process';
 import { CanonicalHostLocalImportTargetResolver } from '../provisioning/local-import-target-resolver.js';
-import { LocalLegacyEnvironmentImportService } from '../provisioning/local-legacy-environment-import-service.js';
+import { LocalEnvironmentSecretImportService } from '../provisioning/local-environment-secret-import-service.js';
 import {
-  LocalLegacyEnvironmentImportError,
-  type LocalLegacyEnvironmentImportPlan,
-  type LocalLegacyEnvironmentImportRequest,
-  type LocalLegacyEnvironmentImportResult,
-} from '../provisioning/local-legacy-environment-import.js';
+  LocalEnvironmentSecretImportError,
+  type LocalEnvironmentSecretImportPlan,
+  type LocalEnvironmentSecretImportRequest,
+  type LocalEnvironmentSecretImportResult,
+} from '../provisioning/local-environment-secret-import.js';
 
 const invalidOptions = (): never => {
-  throw new LocalLegacyEnvironmentImportError('IMPORT_OPTIONS_INVALID');
+  throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
 };
 
-export const parseLocalImportArguments = (args: readonly string[]): LocalLegacyEnvironmentImportRequest => {
+export const parseLocalImportArguments = (args: readonly string[]): LocalEnvironmentSecretImportRequest => {
+  const normalizedArgs = args[0] === '--' ? args.slice(1) : args;
   let sourceAbsolutePath: string | null = null;
   let target: 'default' | 'e2e' | null = null;
   let dryRun = false;
   let overwrite = false;
   const seen = new Set<string>();
 
-  for (let index = 0; index < args.length; index += 1) {
-    const option = args[index];
+  for (let index = 0; index < normalizedArgs.length; index += 1) {
+    const option = normalizedArgs[index];
     if (!['--source', '--target', '--dry-run', '--overwrite'].includes(option) || seen.has(option)) {
       invalidOptions();
     }
@@ -36,7 +37,7 @@ export const parseLocalImportArguments = (args: readonly string[]): LocalLegacyE
       overwrite = true;
       continue;
     }
-    const value = args[index + 1];
+    const value = normalizedArgs[index + 1];
     if (!value || value.startsWith('--')) invalidOptions();
     index += 1;
     if (option === '--source') sourceAbsolutePath = value;
@@ -50,7 +51,7 @@ export const parseLocalImportArguments = (args: readonly string[]): LocalLegacyE
 
 export const formatLocalImportPlan = (
   target: 'default' | 'e2e',
-  plan: LocalLegacyEnvironmentImportPlan,
+  plan: LocalEnvironmentSecretImportPlan,
 ): string => {
   const instruction = 'instructionCode' in plan.targetStatus
     ? plan.targetStatus.instructionCode
@@ -68,7 +69,7 @@ export const formatLocalImportPlan = (
 
 export const formatLocalImportResult = (
   target: 'default' | 'e2e',
-  result: LocalLegacyEnvironmentImportResult,
+  result: LocalEnvironmentSecretImportResult,
 ): string => [
   `TARGET ${target}`,
   `TARGET_STATUS ${result.targetStatus.state}`,
@@ -93,7 +94,7 @@ const createConfirmationPort = () => ({
 
 export const runLocalEnvironmentImportCli = async (args: readonly string[]): Promise<string> => {
   const request = parseLocalImportArguments(args);
-  const service = new LocalLegacyEnvironmentImportService(
+  const service = new LocalEnvironmentSecretImportService(
     new CanonicalHostLocalImportTargetResolver(),
   );
   if (request.dryRun) {
@@ -109,7 +110,7 @@ const main = async (): Promise<void> => {
   try {
     process.stdout.write(await runLocalEnvironmentImportCli(process.argv.slice(2)));
   } catch (error) {
-    const projected = error instanceof LocalLegacyEnvironmentImportError
+    const projected = error instanceof LocalEnvironmentSecretImportError
       ? error.toJSON()
       : { code: 'IMPORT_BATCH_FAILED' as const };
     process.stderr.write(

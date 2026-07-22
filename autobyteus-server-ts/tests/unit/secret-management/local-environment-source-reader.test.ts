@@ -7,8 +7,8 @@ import {
   LocalEnvironmentSourceReader,
   verifyWindowsExclusiveAcl,
 } from '../../../src/secret-management/provisioning/local-environment-source-reader.js';
-import { LEGACY_SECRET_ALIAS_TO_DEFINITION } from '../../../src/secret-management/provisioning/legacy-secret-alias-map.js';
-import { LocalLegacyEnvironmentImportError } from '../../../src/secret-management/provisioning/local-legacy-environment-import.js';
+import { LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION } from '../../../src/secret-management/provisioning/local-import-credential-alias-registry.js';
+import { LocalEnvironmentSecretImportError } from '../../../src/secret-management/provisioning/local-environment-secret-import.js';
 
 const privateFile = async (filePath: string, content: string | Buffer): Promise<void> => {
   await fs.writeFile(filePath, content, { mode: 0o600 });
@@ -58,18 +58,54 @@ describe('LocalEnvironmentSourceReader', () => {
 
   it('maps every immutable approved alias without filename-driven format selection', async () => {
     const sourcePath = path.join(directory, 'not-an-env-file.bin');
-    await privateFile(sourcePath, Object.keys(LEGACY_SECRET_ALIAS_TO_DEFINITION)
+    await privateFile(sourcePath, Object.keys(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION)
       .map((alias, index) => `${alias}=synthetic-${index}`)
       .join('\n'));
 
     const result = await new LocalEnvironmentSourceReader().read(sourcePath);
     try {
       expect(result.credentials.map((credential) => String(credential.definitionId))).toEqual(
-        Object.values(LEGACY_SECRET_ALIAS_TO_DEFINITION).map(String),
+        Object.values(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).map(String),
       );
       expect(result.credentials.every((credential) => (
         defaultSecretCatalog.isKnownDefinition(credential.definitionId)
       ))).toBe(true);
+      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).toHaveProperty(
+        'DASHSCOPE_API_KEY',
+        'provider.qwen.api-key',
+      );
+      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).not.toHaveProperty('QWEN_API_KEY');
+      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).not.toHaveProperty('ZHIPU_API_KEY');
+    } finally {
+      result.release();
+    }
+  });
+
+  it('ignores every unrecognized line without parsing its right-hand side or retaining metadata', async () => {
+    const sourcePath = path.join(directory, '.env');
+    await privateFile(sourcePath, [
+      'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+      'DATABASE_URL=file:synthetic.db',
+      'OLLAMA_API_KEY="unterminated-unrelated-value',
+      'GOOGLE_CSE_API_KEY=$(',
+      'QWEN_API_KEY=${UNRELATED_DYNAMIC_VALUE}',
+      'ZHIPU_API_KEY=`unrelated-command`',
+      'CLAUDE_CODE_API_KEY=synthetic-unmapped-claude',
+      'UNREVIEWED_TOKEN=synthetic-unmapped-token',
+      'malformed unrelated text with no assignment',
+      'DASHSCOPE_API_KEY=synthetic-dashscope',
+      '',
+    ].join('\n'));
+
+    const result = await new LocalEnvironmentSourceReader().read(sourcePath);
+    try {
+      expect(result.credentials).toHaveLength(1);
+      expect(result.credentials[0]?.definitionId).toBe('provider.qwen.api-key');
+      expect(result.credentials[0]?.valueBytes.toString('utf8')).toBe('synthetic-dashscope');
+      expect(Object.keys(result).sort()).toEqual(['credentials', 'release']);
+      expect(JSON.stringify(result)).not.toContain('QWEN_API_KEY');
+      expect(JSON.stringify(result)).not.toContain('ZHIPU_API_KEY');
+      expect(JSON.stringify(result)).not.toContain('UNREVIEWED_TOKEN');
     } finally {
       result.release();
     }
@@ -78,8 +114,7 @@ describe('LocalEnvironmentSourceReader', () => {
   it.each([
     ['duplicate', 'OPENAI_API_KEY=synthetic-one\nOPENAI_API_KEY=synthetic-two', 'IMPORT_SOURCE_DUPLICATE_ASSIGNMENT'],
     ['empty', 'OPENAI_API_KEY=   ', 'IMPORT_SOURCE_EMPTY_CREDENTIAL'],
-    ['unsupported secret-like', 'UNREVIEWED_TOKEN=synthetic-token', 'IMPORT_SOURCE_UNSUPPORTED_SECRET_ALIAS'],
-    ['unsupported Claude alias', 'CLAUDE_CODE_API_KEY=synthetic-claude', 'IMPORT_SOURCE_UNSUPPORTED_SECRET_ALIAS'],
+    ['recognized assignment without a separator', 'OPENAI_API_KEY synthetic', 'IMPORT_SOURCE_SYNTAX_INVALID'],
     ['dynamic expression', 'OPENAI_API_KEY=${SYNTHETIC_SOURCE}', 'IMPORT_SOURCE_SYNTAX_INVALID'],
     ['line continuation marker', 'OPENAI_API_KEY=synthetic\\', 'IMPORT_SOURCE_SYNTAX_INVALID'],
     ['unmatched quote', 'OPENAI_API_KEY="synthetic', 'IMPORT_SOURCE_SYNTAX_INVALID'],
@@ -89,7 +124,7 @@ describe('LocalEnvironmentSourceReader', () => {
     const sourcePath = path.join(directory, 'source');
     await privateFile(sourcePath, content);
     const error = await new LocalEnvironmentSourceReader().read(sourcePath).catch((caught) => caught);
-    expect(error).toBeInstanceOf(LocalLegacyEnvironmentImportError);
+    expect(error).toBeInstanceOf(LocalEnvironmentSecretImportError);
     expect(error.toJSON()).toEqual({ code });
     expect(JSON.stringify(error)).not.toContain('synthetic');
     expect(JSON.stringify(error)).not.toContain(sourcePath);
