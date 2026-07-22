@@ -13,6 +13,7 @@ import type {
   WritableSecretStorageBackend,
 } from '../secret-storage-backend.js';
 import { LocalEncryptedSecretRepository } from './local-encrypted-secret-repository.js';
+import type { LocalEncryptedSecretBatchEntry } from './local-encrypted-secret-repository.js';
 import {
   LocalSecretStoreInitializer,
   type LocalStoreConfiguration,
@@ -23,9 +24,12 @@ abstract class LocalSecretStorageBackendBase {
   protected currentHealth: SecretBackendHealth = READY_SECRET_BACKEND_HEALTH;
   protected closed = false;
 
-  protected async initialize(configuration: LocalStoreConfiguration): Promise<void> {
+  protected async initialize(
+    configuration: LocalStoreConfiguration,
+    options: { initializeIfAbsent?: boolean } = {},
+  ): Promise<void> {
     try {
-      const opened = await LocalSecretStoreInitializer.open(configuration);
+      const opened = await LocalSecretStoreInitializer.open(configuration, options);
       this.repository = new LocalEncryptedSecretRepository(
         opened.database,
         opened.rootKey,
@@ -102,9 +106,12 @@ export class LocalWritableSecretStorageBackend
   implements WritableSecretStorageBackend {
   readonly lifecycle = { kind: 'WRITABLE' } as const;
 
-  static async open(configuration: LocalStoreConfiguration): Promise<LocalWritableSecretStorageBackend> {
+  static async open(
+    configuration: LocalStoreConfiguration,
+    options: { initializeIfAbsent?: boolean } = {},
+  ): Promise<LocalWritableSecretStorageBackend> {
     const backend = new LocalWritableSecretStorageBackend();
-    await backend.initialize({ ...configuration, accessMode: 'READ_WRITE' });
+    await backend.initialize({ ...configuration, accessMode: 'READ_WRITE' }, options);
     return backend;
   }
 
@@ -118,6 +125,13 @@ export class LocalWritableSecretStorageBackend
 
   async checkpoint(): Promise<void> {
     await this.run(() => this.requireRepository().checkpoint());
+  }
+
+  async provisionBatchExact(entries: readonly LocalEncryptedSecretBatchEntry[]): Promise<{
+    configuredCount: number;
+    replacedCount: number;
+  }> {
+    return this.run(() => this.requireRepository().provisionBatchExact(entries));
   }
 }
 

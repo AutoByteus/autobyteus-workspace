@@ -36,6 +36,8 @@ export type OpenLocalStore = {
   configuration: LocalStoreConfiguration;
 };
 
+export type LocalStorePairState = 'ABSENT' | 'PRESENT';
+
 const corrupt = (cause?: unknown): SecretStorageError =>
   new SecretStorageError('CORRUPT_STORE', false, 'SECRET_BACKEND_CORRUPT', { cause });
 
@@ -156,13 +158,32 @@ const configureWritableDatabase = (database: DatabaseSync): void => {
 };
 
 export class LocalSecretStoreInitializer {
-  static async open(input: LocalStoreConfiguration): Promise<OpenLocalStore> {
+  static async inspectPairState(input: LocalStoreConfiguration): Promise<LocalStorePairState> {
     const configuration = normalizeConfig(input);
-    const databaseExists = fs.existsSync(configuration.databasePath);
-    const keyExists = fs.existsSync(configuration.keyPath);
-    if (databaseExists !== keyExists) throw corrupt();
-    if (!databaseExists) {
-      if (configuration.accessMode === 'READ_ONLY') throw unavailable();
+    const [databaseStat, keyStat] = await Promise.all([
+      fsp.lstat(configuration.databasePath).catch((error: NodeJS.ErrnoException) => {
+        if (error.code === 'ENOENT') return null;
+        throw unavailable(error);
+      }),
+      fsp.lstat(configuration.keyPath).catch((error: NodeJS.ErrnoException) => {
+        if (error.code === 'ENOENT') return null;
+        throw unavailable(error);
+      }),
+    ]);
+    if (Boolean(databaseStat) !== Boolean(keyStat)) throw corrupt();
+    if (!databaseStat || !keyStat) return 'ABSENT';
+    if (!databaseStat.isFile() || !keyStat.isFile()) throw corrupt();
+    return 'PRESENT';
+  }
+
+  static async open(
+    input: LocalStoreConfiguration,
+    options: { initializeIfAbsent?: boolean } = {},
+  ): Promise<OpenLocalStore> {
+    const configuration = normalizeConfig(input);
+    const pairState = await this.inspectPairState(configuration);
+    if (pairState === 'ABSENT') {
+      if (configuration.accessMode === 'READ_ONLY' || options.initializeIfAbsent === false) throw unavailable();
       await this.createUnderLock(configuration);
     }
 

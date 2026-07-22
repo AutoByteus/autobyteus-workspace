@@ -4,7 +4,6 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { SecretValue } from 'autobyteus-ts';
 import { secretDefinitionId } from '../domain/secret-binding.js';
-import { LocalWritableSecretStorageBackend } from '../backends/local/local-secret-storage-backend.js';
 import { LocalSecretStoreProvisioningService } from '../backends/local/local-secret-store-provisioning-service.js';
 
 type LiveConfiguration = {
@@ -72,28 +71,26 @@ const main = async (): Promise<void> => {
   ) throw new Error('LIVE_E2E_CONFIG_INVALID');
 
   const storeRoot = path.join(os.homedir(), '.autobyteus', 'server-data', 'secret-store');
-  const backend = await LocalWritableSecretStorageBackend.open({
+  const target = {
     kind: 'local-store',
     databasePath: path.join(storeRoot, configuration.backend.databaseFile),
     keyPath: path.join(storeRoot, configuration.backend.keyFile),
     accessMode: 'READ_WRITE',
-  });
-  const health = await backend.health();
-  if (health.state !== 'READY') {
-    await backend.close();
-    process.stdout.write(`Real-E2E Store: ${health.state}\n`);
+  } as const;
+  const definitionId = secretDefinitionId(requestedDefinition);
+  const provisioning = new LocalSecretStoreProvisioningService(target);
+  const targetSnapshot = await provisioning.inspectExact([definitionId]);
+  if (
+    targetSnapshot.targetStatus.state !== 'READY'
+    && targetSnapshot.targetStatus.state !== 'INITIALIZATION_REQUIRED'
+  ) {
+    process.stdout.write(`Real-E2E Store: ${targetSnapshot.targetStatus.state}\n`);
     process.exitCode = 1;
     return;
   }
-  const definitionId = secretDefinitionId(requestedDefinition);
   const rawValue = await readHiddenValue();
-  try {
-    const result = await new LocalSecretStoreProvisioningService(backend)
-      .provisionExact(definitionId, SecretValue.fromString(rawValue));
-    process.stdout.write(`Real-E2E Store: READY\n${String(result.definitionId)}: CONFIGURED\n`);
-  } finally {
-    await backend.close();
-  }
+  const result = await provisioning.provisionExact(definitionId, SecretValue.fromString(rawValue));
+  process.stdout.write(`Real-E2E Store: READY\n${String(result.definitionId)}: CONFIGURED\n`);
 };
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {

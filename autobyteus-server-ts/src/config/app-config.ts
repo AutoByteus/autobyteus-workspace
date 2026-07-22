@@ -10,10 +10,20 @@ import {
   parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
-import { LEGACY_SECRET_ALIASES } from "../secret-management/migration/legacy-secret-cutover-migration.js";
+import { LEGACY_SECRET_ALIASES } from "../secret-management/provisioning/legacy-secret-alias-map.js";
 
 const forbiddenGenericSettingNames = new Set<string>(LEGACY_SECRET_ALIASES);
 const sensitiveSettingNamePattern = /(?:API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;
+const assignmentName = (line: string): string | null =>
+  /^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)[ \t]*=/.exec(line)?.[1] ?? null;
+
+const linesWithEndings = (content: string): string[] =>
+  content.match(/[^\r\n]*(?:\r\n|\r|\n|$)/g)?.filter((line) => line.length > 0) ?? [];
+
+const splitLineEnding = (line: string): { body: string; ending: string } => {
+  const ending = line.endsWith("\r\n") ? "\r\n" : line.endsWith("\r") ? "\r" : line.endsWith("\n") ? "\n" : "";
+  return { body: ending ? line.slice(0, -ending.length) : line, ending };
+};
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -133,7 +143,10 @@ export class AppConfig {
         throw new Error("Config file path not set");
       }
       const contents = fs.readFileSync(this.configFile, "utf-8");
-      this.configData = dotenv.parse(contents);
+      const parsed = dotenv.parse(contents);
+      this.configData = Object.fromEntries(
+        Object.entries(parsed).filter(([key]) => !forbiddenGenericSettingNames.has(key)),
+      );
     } catch (error) {
       const message = `Failed to parse configuration file: ${String(error)}`;
       console.error(`ERROR: ${message}`);
@@ -187,7 +200,7 @@ export class AppConfig {
     }
     const dbPath = this.getSqlitePath();
     const expectedUrl = this.toPrismaSqliteUrl(dbPath);
-    this.set("DATABASE_URL", expectedUrl);
+    this.setRuntimeValue("DATABASE_URL", expectedUrl);
   }
 
   private toPrismaSqliteUrl(filePath: string): string {
@@ -220,7 +233,7 @@ export class AppConfig {
   private initMemoryPath(): void {
     const memoryDir = this.getMemoryDir();
     if (!this.get("AUTOBYTEUS_MEMORY_DIR")) {
-      this.set("AUTOBYTEUS_MEMORY_DIR", memoryDir);
+      this.setRuntimeValue("AUTOBYTEUS_MEMORY_DIR", memoryDir);
     }
     process.env.AUTOBYTEUS_MEMORY_DIR ??= memoryDir;
   }
@@ -470,6 +483,7 @@ export class AppConfig {
   }
 
   get(key: string, defaultValue?: string): string | undefined {
+    if (forbiddenGenericSettingNames.has(key)) return undefined;
     return process.env[key] ?? this.configData[key] ?? defaultValue;
   }
 
@@ -497,6 +511,9 @@ export class AppConfig {
   }
 
   delete(key: string): void {
+    if (forbiddenGenericSettingNames.has(key) || sensitiveSettingNamePattern.test(key)) {
+      throw new AppConfigError("Sensitive values must be removed through a subject-specific secret service.");
+    }
     delete this.configData[key];
     delete process.env[key];
 
@@ -516,41 +533,37 @@ export class AppConfig {
     return this.initialized;
   }
 
+  private setRuntimeValue(key: string, value: string): void {
+    this.configData[key] = value;
+    process.env[key] = value;
+  }
+
   private updateEnvFile(configFile: string, key: string, value: string): void {
     const content = fs.readFileSync(configFile, "utf-8");
-    const lines = content.split(/\r?\n/);
     let found = false;
-
-    const updatedLines = lines.map((line) => {
-      if (!line || line.trim().startsWith("#")) {
-        return line;
-      }
-      const [currentKey] = line.split("=");
-      if (currentKey === key) {
+    const updated = linesWithEndings(content).map((line) => {
+      const { body, ending } = splitLineEnding(line);
+      if (assignmentName(body) === key) {
         found = true;
-        return `${key}=${value}`;
+        return `${key}=${value}${ending}`;
       }
       return line;
-    });
+    }).join("");
 
-    if (!found) {
-      updatedLines.push(`${key}=${value}`);
-    }
+    const preferredEnding = content.includes("\r\n") ? "\r\n" : "\n";
+    const withNewValue = found
+      ? updated
+      : `${content}${content.length > 0 && !/[\r\n]$/.test(content) ? preferredEnding : ""}${key}=${value}`;
 
-    fs.writeFileSync(configFile, updatedLines.filter((line) => line !== undefined).join("\n"));
+    fs.writeFileSync(configFile, withNewValue);
   }
 
   private removeKeyFromEnvFile(configFile: string, key: string): void {
     const content = fs.readFileSync(configFile, "utf-8");
-    const lines = content.split(/\r?\n/);
-    const filteredLines = lines.filter((line) => {
-      if (!line || line.trim().startsWith("#")) {
-        return true;
-      }
-      const [currentKey] = line.split("=");
-      return currentKey !== key;
-    });
-
-    fs.writeFileSync(configFile, filteredLines.join("\n"));
+    const filtered = linesWithEndings(content).filter((line) => {
+      const { body } = splitLineEnding(line);
+      return assignmentName(body) !== key;
+    }).join("");
+    fs.writeFileSync(configFile, filtered);
   }
 }

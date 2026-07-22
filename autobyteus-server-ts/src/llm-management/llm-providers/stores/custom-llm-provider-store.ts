@@ -20,6 +20,32 @@ const sortProviders = (providers: CustomLlmProviderRecord[]): CustomLlmProviderR
       return left.id.localeCompare(right.id);
     });
 
+export class CustomLlmProviderStoreError extends Error {
+  constructor(
+    readonly code:
+      | 'CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED'
+      | 'CUSTOM_PROVIDER_CONFIG_INVALID',
+  ) {
+    super(code);
+    this.name = 'CustomLlmProviderStoreError';
+  }
+
+  toJSON(): { code: CustomLlmProviderStoreError['code'] } {
+    return { code: this.code };
+  }
+}
+
+const parseCurrentConfig = (value: unknown): CustomLlmProviderConfigFile => {
+  if (value && typeof value === 'object' && (value as { version?: unknown }).version === 1) {
+    throw new CustomLlmProviderStoreError('CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED');
+  }
+  try {
+    return parseCustomLlmProviderConfigFile(value);
+  } catch {
+    throw new CustomLlmProviderStoreError('CUSTOM_PROVIDER_CONFIG_INVALID');
+  }
+};
+
 export class CustomLlmProviderStore {
   private getFilePath(): string {
     return path.join(
@@ -30,11 +56,11 @@ export class CustomLlmProviderStore {
   }
 
   async listProviders(): Promise<CustomLlmProviderRecord[]> {
-    const rawFile = await readJsonFile<CustomLlmProviderConfigFile>(
+    const rawFile = await readJsonFile<unknown>(
       this.getFilePath(),
       DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE,
     );
-    return sortProviders(parseCustomLlmProviderConfigFile(rawFile).providers);
+    return sortProviders(parseCurrentConfig(rawFile).providers);
   }
 
   async getProviderById(providerId: string): Promise<CustomLlmProviderRecord | null> {
@@ -54,11 +80,11 @@ export class CustomLlmProviderStore {
       baseUrl: input.baseUrl,
     };
 
-    await updateJsonFile<CustomLlmProviderConfigFile>(
+    await updateJsonFile<unknown>(
       this.getFilePath(),
       DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE,
       (existing) => {
-        const parsed = parseCustomLlmProviderConfigFile(existing);
+        const parsed = parseCurrentConfig(existing);
         return {
           version: 2,
           providers: sortProviders([...parsed.providers, nextRecord]),
@@ -70,11 +96,11 @@ export class CustomLlmProviderStore {
   }
 
   async deleteProvider(providerId: string): Promise<void> {
-    await updateJsonFile<CustomLlmProviderConfigFile>(
+    await updateJsonFile<unknown>(
       this.getFilePath(),
       DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE,
       (existing) => {
-        const parsed = parseCustomLlmProviderConfigFile(existing);
+        const parsed = parseCurrentConfig(existing);
         return {
           version: 2,
           providers: sortProviders(parsed.providers.filter((provider) => provider.id !== providerId)),

@@ -2,6 +2,7 @@
   "name": "autobyteus-workspace",
   "private": true,
   "scripts": {
+    "secrets:local:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
     "secrets:local:e2e:setup": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/provision-real-e2e-store.js --config test-config/live-e2e.json",
     "test:e2e:real:preflight": "node test-support/live-e2e/run-live-e2e.mjs --preflight",
     "test:e2e:real": "node test-support/live-e2e/run-live-e2e.mjs",

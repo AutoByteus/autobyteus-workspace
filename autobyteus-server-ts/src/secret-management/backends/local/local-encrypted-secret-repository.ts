@@ -7,6 +7,19 @@ import type { LocalStoreAccessMode } from './local-secret-store-initializer.js';
 
 type SecretRecordRow = { nonce: Uint8Array; ciphertext: Uint8Array };
 
+export type LocalEncryptedSecretBatchEntry = {
+  definitionId: SecretDefinitionId;
+  value: SecretValue;
+  action: 'CREATE' | 'REPLACE';
+};
+
+export class LocalSecretStoreBatchPreconditionError extends Error {
+  constructor() {
+    super('LOCAL_SECRET_STORE_BATCH_PRECONDITION_CHANGED');
+    this.name = 'LocalSecretStoreBatchPreconditionError';
+  }
+}
+
 const isBusy = (error: unknown): boolean =>
   /busy|locked/i.test(String((error as Error | undefined)?.message ?? ''));
 
@@ -91,6 +104,48 @@ export class LocalEncryptedSecretRepository {
     }
   }
 
+  provisionBatchExact(entries: readonly LocalEncryptedSecretBatchEntry[]): {
+    configuredCount: number;
+    replacedCount: number;
+  } {
+    this.assertWritable();
+    const statusStatement = this.database.prepare(
+      'SELECT 1 AS configured FROM secret_records WHERE definition_id = ?',
+    );
+    const writeStatement = this.database.prepare(`
+      INSERT INTO secret_records (definition_id, nonce, ciphertext)
+      VALUES (?, ?, ?)
+      ON CONFLICT(definition_id) DO UPDATE SET
+        nonce = excluded.nonce,
+        ciphertext = excluded.ciphertext
+    `);
+    this.transaction(() => {
+      for (const entry of entries) {
+        const configured = Boolean(statusStatement.get(String(entry.definitionId)));
+        if ((entry.action === 'CREATE' && configured) || (entry.action === 'REPLACE' && !configured)) {
+          throw new LocalSecretStoreBatchPreconditionError();
+        }
+      }
+      for (const entry of entries) {
+        const plaintext = Buffer.from(entry.value.revealToTrustedConsumer(), 'utf8');
+        try {
+          const encrypted = encryptSecretRecord(this.rootKey, entry.definitionId, plaintext);
+          writeStatement.run(
+            String(entry.definitionId),
+            encrypted.nonce,
+            Buffer.concat([encrypted.ciphertext, encrypted.tag]),
+          );
+        } finally {
+          plaintext.fill(0);
+        }
+      }
+    });
+    return {
+      configuredCount: entries.filter((entry) => entry.action === 'CREATE').length,
+      replacedCount: entries.filter((entry) => entry.action === 'REPLACE').length,
+    };
+  }
+
   remove(definitionId: SecretDefinitionId): void {
     this.assertWritable();
     this.transaction(() => {
@@ -128,6 +183,7 @@ export class LocalEncryptedSecretRepository {
       } catch {
         // The transaction may not have begun; preserve only the value-free mapped cause.
       }
+      if (error instanceof LocalSecretStoreBatchPreconditionError) throw error;
       throw mapSqliteError(error);
     }
   }
