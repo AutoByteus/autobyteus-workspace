@@ -12,7 +12,9 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/socratic-math-live-journey.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/design-review-report.md`
 - Implementation-source review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/code-review-report.md`
-- Current expanded-scope implementation source/test commit: `e9c130a52b9f790505a4fd472149790ddcaecafd`
+- Round-14 target-address-builder source/test/generated commit: `cee41e91788d97d98955c3d960f9d1e511d19eb0`
+- Round-14 stopped source authority: `4927272f06e329078eba31a11ed3178eeedeee9e`
+- Prior expanded-scope implementation source/test commit: `e9c130a52b9f790505a4fd472149790ddcaecafd`
 - CR-005 lifecycle-fix commit: `6896bd413f62ec887884a579648ed83c71cb59a5`
 - Round-11 initial expanded-scope source/test commit: `4732df357706a9dfa1798193ed02162cae715b13`
 - Round-11 reviewed source base: `69fae2e424a708fe9a0d038077346d5b95b41df6`
@@ -22,6 +24,15 @@
 - Recorded implementation base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
 
 ## What Changed
+
+### Round-14 Application Agent Target-Address Builder Delta
+
+- Added the three exact pure backend-SDK builders in `src/application-agent-target-address.ts`: individual `AGENT_RUN`, whole-team `AGENT_TEAM_RUN`, and exact static `AGENT_TEAM_MEMBER` construction. Every call returns a fresh canonical address, trims/requires the binding ID, enforces the expected runtime subject, and—for the member builder—trims/requires and verifies the exact `memberRouteKey`. The builders import only shared contracts and perform no discovery, liveness, authorization, runtime, store, or network work.
+- Exported the builders from the backend-SDK package boundary and documented the three precise uses, their preferred already-owned-binding posture, direct bindingId-only one-shot DTO construction, and the unchanged Application Orchestration authorization boundary.
+- Replaced Socratic's manual reusable tutor-member literal. The read service resolves the current binding for an active lesson, normal no/terminal/unattached cases project `null`, the domain projection explicitly narrows to `ApplicationAgentTeamBinding`, and the member address comes only from `createApplicationAgentTeamMemberTargetAddress(binding, "tutor")`. Wrong binding subject and missing `tutor` membership remain deterministic configuration defects.
+- Preserved `lesson-runtime-service.ts` byte-for-byte. `askFollowUp` and `requestHint` still send the exact inline bindingId-only `AGENT_TEAM_RUN` DTO before the normal read projection; focused tests prove the send shape and that the only binding read occurs afterward for the returned reusable projection rather than as a pre-send builder fetch.
+- Added package-owned success/error/freshness/nonmutation coverage plus focused Socratic binding/adoption/follow-up/hint coverage. Regenerated backend-SDK declarations/runtime output and the Brief Studio/Socratic checked-in vendor and importable mirrors only through their existing build owners. Brief business source remains unchanged.
+- Source/test/generated commit: `cee41e91788d97d98955c3d960f9d1e511d19eb0`.
 
 ### Round-11 Socratic Math Live Acceptance Expansion
 
@@ -83,7 +94,7 @@
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | `DS-001` | Application business still starts and persists a bound runtime. | backend handler -> `ApplicationEngineHostService` -> `ApplicationOrchestrationHostService` / launch service / stores | Preserved with exact agent/team public returns. |
-| `DS-002` | App business returns an address; it does not proxy the standard socket. | shared binding/address contracts plus built-in app correlation services | One business mapping only. |
+| `DS-002` | App business returns an address; it does not proxy the standard socket. | shared binding/address contracts -> backend-SDK precise target-address builders -> Socratic authoritative binding read/team narrowing/member selection | All three canonical constructors are exported; Socratic's reusable tutor projection uses only the member builder while direct bindingId-only one-shot DTOs remain supported. |
 | `DS-003` | Desktop host and SDK establish the direct standard path with one READY winner. | `applicationHostTransport.ts`, frontend connection/transport, standard WS adapter, Communication, Streaming, Orchestration | Implemented; no Gateway/Engine/worker traversal. |
 | `DS-004` | Addressed input is accepted/rejected through the same target authority. | frontend connection -> Communication session/parser -> Orchestration `sendRunInput` | Correlated acknowledgement and exact runtime validation. |
 | `DS-005` | Closed provider-neutral events reach frontend listeners. | runtime source -> projector/mapper -> stream subscription -> Communication -> strict SDK parser | Exact envelope/data validation; native/provider fields are not spread. |
@@ -98,7 +109,7 @@
 | `DS-014` | Worker observer activation is atomic. | observer registry + activation barrier + handler context factory | Host PENDING-to-ACTIVE ordering and pending cancellation implemented. |
 | `DS-015` | All reachable terminal causes converge before fan-out. | terminal transition service used by host, observer, and recovery services | Keyed serialization; store/journal then one terminal signal. |
 | `DS-016` | Custom socket sessions correlate and clean up independently. | Gateway and worker WebSocket session services + JSON-line protocol | Ordered bounded delivery and scope-local failure cleanup. |
-| `DS-017` | The real Socratic UI starts without input, connects to its selected tutor, sends after READY, renders safe live progress, and converges on the durable artifact transcript. | backend SDK launch helper -> Socratic runtime lifecycle/selection generation plus singular pending-start owner -> read/GraphQL and notification returns -> `applicationClient.agentCommunication` -> Socratic live session/renderer -> existing artifact notification refresh | Implemented deterministically, including both start/notification orderings and stale/disposed async completion suppression. The real mounted Codex run required by `AC-018` remains downstream API/E2E work. |
+| `DS-017` | The real Socratic UI starts without input, receives a builder-created selected-tutor address, sends after READY, renders safe live progress, and converges on the durable artifact transcript. | backend SDK launch helper -> Socratic binding read/team narrowing/member target builder -> runtime lifecycle/selection generation plus singular pending-start owner -> read/GraphQL and notification returns -> `applicationClient.agentCommunication` -> Socratic live session/renderer -> existing artifact notification refresh | Builder adoption and deterministic journey coverage are implemented. Both start/notification orderings and stale/disposed async completion suppression remain preserved. The real mounted Codex run required by `AC-018` remains downstream API/E2E work. |
 
 ## Key Files Or Areas
 
@@ -108,6 +119,9 @@
 - Orchestration authority: `src/application-orchestration/services/application-agent-target-authorization-service.ts`, lifecycle hub, terminal transition service, and host/observer/recovery integrations.
 - Backend observation/custom sockets: `src/application-engine/**`, `src/application-backend-api-gateway/websockets/**`, `src/api/websocket/application-backends.ts`.
 - Strict compatibility chain: contracts manifests, server bundle parsers/definition loader, devkit config/validators/templates, and both built-in apps.
+- Round-14 backend-SDK builder: `autobyteus-application-backend-sdk/src/application-agent-target-address.ts`, package `src/index.ts`, `README.md`, focused tests, and generated `dist/**` declarations/runtime.
+- Round-14 Socratic adoption: `applications/socratic-math-teacher/backend-src/domain/lesson-model.ts`, `backend-src/services/lesson-read-service.ts`, and focused target/launch-correlation tests; generated backend/importable mirrors follow the existing app build.
+- Round-14 built-in propagation: Brief Studio and Socratic Math Teacher `backend/dist/vendor/**` plus importable-package mirrors. Brief business source and Socratic `lesson-runtime-service.ts` are unchanged.
 - Expanded Socratic source: `autobyteus-application-backend-sdk/src/launch-profile.ts`, `applications/socratic-math-teacher/backend-src/{domain,repositories,services}/**`, `api/graphql/schema.graphql`, `frontend-src/socratic-{runtime,tutor-session,renderer}.js`, `frontend-src/styles.css`, and exact tutor `agent-config.json`.
 - Expanded deterministic coverage: `autobyteus-application-backend-sdk/tests/launch-profile.test.ts`, four focused Socratic server unit files including `socratic-runtime-lifecycle.test.ts`, plus the existing launch-correlation and GraphQL executor suites.
 
@@ -117,39 +131,41 @@
 - Application binding/artifact/database stored meanings and physical schemas are unchanged. Connection/subscription/session/queue state is transient.
 - Native agent/team sockets remain native product APIs and are not an application compatibility path.
 - Host-saved application execution-resource runtime/model values intentionally retain priority over bundled tutor defaults; only the previously missing neutral `llmConfig` reasoning value is supplied by the Socratic launch helper call.
+- Target-address builders validate only already-owned local binding structure. Application Orchestration remains the sole authority for active application, binding liveness, runtime availability, target membership at use time, and authorization.
+- Socratic's projected reusable tutor address requires an authoritative attached team binding; its one-shot follow-up/hint inputs intentionally continue to use the persisted binding ID directly and do not fetch a binding before `sendInput` merely to satisfy a builder.
 - The live draft is transient and future-only. Durable transcript messages remain artifact-projected application data, and no replay or draft persistence is introduced.
 
 ## Known Risks
 
 - `AC-018` is not satisfied by these implementation checks. API/E2E must still preflight the exact Codex model/login, import and mount a fresh generated Socratic package, execute one bounded real turn, verify effective config/live/durable/cleanup evidence, apply the approved one-clean-retry classification, and recalculate confidence.
 - Rendered self-validation used a deterministic hosted-application-state preview rather than the actual imported desktop mount. Real SDK/socket/provider interaction and mounted browser behavior remain independently unverified here.
-- The worktree intentionally remains dirty only in upstream/design/review/delivery-owned ticket artifacts and logs. They were neither staged nor committed; source, tests, and generated implementation paths are clean at commit `e9c130a52b9f790505a4fd472149790ddcaecafd`.
+- The worktree intentionally remains dirty only in upstream/design/review/delivery-owned ticket artifacts and logs plus this handoff update. Those pre-existing artifacts were preserved; source, tests, and generated implementation paths are clean at commit `cee41e91788d97d98955c3d960f9d1e511d19eb0`.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Larger Requirement` plus focused `Behavior Change`.
-- Reviewed root-cause classification: `Missing Invariant` and `File Placement Or Responsibility Drift`.
+- Reviewed change posture: `Focused Refactor / SDK Ergonomics Addition` over the preserved implemented framework/Socratic requirement.
+- Reviewed root-cause classification: `Duplicated Policy Or Coordination` plus `File Placement Or Responsibility Drift`.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; the stopped proxy/auth proposal was discarded per the fresh reviewed basis.
-- Evidence / notes: the helper owns neutral launch construction, Socratic owns target selection/business sequence/presentation, and Communication/Streaming/Orchestration/artifacts keep their implemented subjects. The application uses only the standard SDK path and adds no mapper, queue, target authority, transport, or transcript store.
+- Evidence / notes: the backend SDK now owns only deterministic canonical target construction from precise bindings; Socratic owns binding resolution and `tutor` selection; Application Orchestration retains use-time authorization. The manual Socratic discriminant/membership construction is removed without turning builders into mandatory discovery authorities or changing the valid bindingId-only one-shot send paths. Generic business correlation and live-output accumulation remain explicitly deferred.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; Socratic's now-obsolete `buildTutorPrompt` / launch-time initial-input branch was removed, while optional initial input remains unchanged in the framework API.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; the remaining hand-built Socratic tutor-member target literal is removed, with no parallel direct reusable projection retained. The previously removed `buildTutorPrompt` / launch-time initial-input branch remains absent while optional initial input remains unchanged in the framework API.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: expanded-scope changed production sources remain at or below `438` effective non-empty lines. The application-specific tutor session is `198` effective lines, and CR-006 leaves `socratic-runtime.js` at `328`; the CR-006 local-fix delta is `38` changed lines, below the `>220` changed-line pressure signal. The existing split continues to avoid the `>500` source limit without introducing a generic framework abstraction. No compatibility alias, resend/replay path, custom/raw/native socket, migration, auth/mobile surface, or fallback was added.
+- Notes: round-14 changed source implementation files are `73`, `44`, and `41` effective non-empty lines; all remain far below `500`, and no changed source delta crosses `220` lines. The prior Socratic frontend/runtime split remains untouched. No compatibility alias, mandatory binding-fetch layer, resend/replay path, custom/raw/native socket, migration, auth/mobile surface, or fallback was added.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`.
 - Design-spec decision reference: `design-spec.md`, “Persisted Data / State Transition Decision”.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: binding JSON fields/values and runtime-subject semantics remain unchanged; `tutorTargetAddress` is derived at read time, `llmConfig` already exists in launch contracts, and live state is memory-only. Existing lesson/message/binding/artifact records remain readable. No migration/schema file changed.
+- Direct-use evidence or discard/rebuild result, when applicable: target builders consume existing public binding/address structures and persist nothing; Socratic still derives `tutorTargetAddress` from the existing stored binding ID plus the authoritative current binding; binding JSON fields/values and runtime-subject semantics remain unchanged; `llmConfig` already exists in launch contracts; live state is memory-only. Existing lesson/message/binding/artifact records remain readable. No migration, Prisma, or schema file changed.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`.
 - Deviation from the reviewed transition decision: `None`.
 
@@ -166,6 +182,19 @@
   - custom WebSocket frame `1 MiB`; Gateway inbound FIFO `64`; early outbound FIFO `64`; worker outbound FIFO `64`; network buffered amount `2 MiB`.
 
 ## Local Implementation Checks Run
+
+### Round-14 Target-Address Builder Delta
+
+- `@autobyteus/application-backend-sdk`: `pnpm test` — `2 files / 9 tests` passed. The six builder cases cover all three exact shapes, trimmed IDs/member keys, fresh outer/nested objects, source-binding nonmutation, validation order, blank/missing IDs, subject mismatch, blank/unknown membership, and rejection of member-name/display-name/run-ID substitutions; the three preserved launch-helper tests also pass.
+- `@autobyteus/application-backend-sdk`: `pnpm build` — passed and emitted the exact three declaration signatures plus runtime/source maps.
+- Socratic Math Teacher and Brief Studio: `pnpm typecheck:backend` — both passed. Brief business source is unchanged; Socratic's read/domain projection compiles with explicit team-binding narrowing.
+- Socratic Math Teacher and Brief Studio: `pnpm build` — both passed through their existing build owners. Backend-SDK module/export files propagated to runtime and importable vendor mirrors; the Brief build also brought its previously build-owned neutral `llmConfig` launch-profile mirror up to the already-committed SDK source without changing Brief business code.
+- Backend SDK plus both built-in build owners were rerun without source edits. All `619` generated output files retained identical per-file SHA-256 values; the final checksum manifest is `7ecaff9f4404362fb7570c457705f45f1164d447b203dfabb228922b0e5e6638`.
+- Runtime package-export probe imported the backend-SDK distribution and both built-in vendor entrypoints and verified all three builder values are callable. New builder JavaScript is byte-identical across the SDK distribution, Brief runtime/importable vendors, and Socratic runtime/importable vendors; Socratic changed backend source is byte-identical to its importable source mirror.
+- `autobyteus-server-ts`: focused Vitest run across launch correlation, GraphQL executors, target projection, tutor session, tutor renderer, and mounted runtime lifecycle — `6 files / 32 tests` passed. New assertions prove attached authoritative team adoption, normal nullable projection, exact deterministic configuration failures, preserved follow-up/hint input DTOs, and send-before-single-projection-read ordering; all prior lifecycle and exactly-one-start coverage remains green.
+- `autobyteus-server-ts`: `pnpm build` — passed, including shared package builds, Prisma generation, production TypeScript compilation, and built-in-agent bootstrap smoke.
+- Hygiene/inventories passed: `git diff --check`; all three builders present at package/runtime/vendor entrypoints; source/generated mirror comparisons; no Socratic `lesson-runtime-service.ts` edit; no Brief business-source edit; no migration/Prisma/schema edit; changed implementation source files remain below size/delta guardrails.
+- Source/test/generated commit: `cee41e91788d97d98955c3d960f9d1e511d19eb0`.
 
 ### CR-006 Start/Notification Interleaving Local Fix
 
@@ -212,6 +241,8 @@
 
 ## Frontend Rendered-Result Check (When Applicable)
 
+Round-14 delta: `Not Applicable`. The authorized change adds a backend-SDK pure construction API, changes only the Socratic backend's existing JSON target projection, and regenerates backend/vendor artifacts. It does not change frontend source, layout, styling, interaction state, connection behavior, or visible copy. The prior expanded-scope rendered-result check remains relevant baseline evidence below; downstream still owns the real mounted `AC-018` journey.
+
 - Affected surfaces / journeys: mounted Socratic Math Teacher lesson composer, lesson detail, focused live tutor status/draft/tool/completion region, durable transcript convergence, and selection/unload cleanup. CR-005 changes lifecycle sequencing only; it adds no styling or visual state.
 - Approved UI/UX, interaction, requirement, or design references: `REQ-018`, `AC-018`, `DS-017`, and `socratic-math-live-journey.md` sections 3–5.
 - Existing design system, shared components, and adjacent product surfaces reviewed: current Socratic card, badge, workspace status, lesson list/detail, transcript, action, spacing, color, and responsive patterns; no new framework-wide chat component was introduced.
@@ -222,6 +253,8 @@
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- Import the built backend SDK and both checked-in built-in packages through their normal package boundaries; exercise all three builders and prove exact static-member validation plus normal Orchestration rejection of unauthorized/inactive/malformed addresses.
+- Read/start/follow up/request a hint on a fresh Socratic lesson and verify the returned tutor address is builder-backed, the one-shot whole-team DTOs remain unchanged, and no pre-send builder-only binding read occurs.
 - Exercise all three standard target variants through a real desktop-host bootstrap and child worker: agent root, team root, and exact static team member.
 - Race actual socket close/abort/transport failure and persisted terminal signals before source attach, during paused activation, during READY write, and during retained-event drain.
 - Verify whole-team provider/task-agent attribution, selected-member filtering/input routing, exact public projection, contiguous sequence, and scope-local overflow/failure behavior.
@@ -236,4 +269,4 @@
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. No implementation check above is API/E2E sign-off. The prior `96.7%` deterministic framework confidence is historical only and does not satisfy expanded `AC-018`. After source review passes, `api_e2e_engineer` must update coverage decisions, perform the exact model/login preflight and one bounded real mounted Socratic/Codex journey, preserve redacted evidence and cleanup, apply the classified one-clean-retry policy, and recalculate confidence.
+Required. No implementation check above is API/E2E sign-off. After source review passes, `api_e2e_engineer` must proportionately validate the new builder/package/Socratic projection paths, update coverage decisions, and resume the exact model/login preflight plus one bounded real mounted Socratic/Codex journey. The prior `96.7%` deterministic framework confidence is historical only and does not satisfy expanded `AC-018`/`AC-019`; new execution must preserve redacted evidence and cleanup, apply the classified one-clean-retry policy, and recalculate confidence.
