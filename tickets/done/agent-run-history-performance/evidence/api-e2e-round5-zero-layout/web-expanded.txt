@@ -1,0 +1,107 @@
+candidate=a14fb9ec283b813293a3fbe5db4730b56b2baebf
+started=2026-07-21T16:44:01Z
+
+> autobyteus@1.4.23 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/ToolCallIndicator.spec.ts components/conversation/segments/__tests__/ThinkSegment.spec.ts components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts graphql/queries/__tests__/runHistoryQueries.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts services/agentStreaming/__tests__/teamStreamGenericMessageDispatcher.spec.ts services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts services/eventMonitor/__tests__/recentEventMonitorMutationCommit.spec.ts services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts services/runHydration/__tests__/runProjectionActivityHydration.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts stores/__tests__/agentActivityStore.spec.ts utils/__tests__/toolCardPresentation.spec.ts localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > marks team subscription state on connect and disconnect callbacks
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not repair stale member error from focused-member fallback without explicit identity
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket connected
+Team WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:998:32
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (38 tests) 36ms
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (15 tests) 83ms
+stderr | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts (16 tests) 9ms
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts (2 tests) 67ms
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (6 tests) 7ms
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > tracks subscription state on connect and disconnect
+Agent WebSocket connected
+Agent WebSocket disconnected: bye
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts:214:38
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts (15 tests) 15ms

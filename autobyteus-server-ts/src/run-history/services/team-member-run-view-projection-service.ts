@@ -21,6 +21,7 @@ import {
   AgentMemoryLocationService,
   getAgentMemoryLocationService,
 } from "../../agent-memory/services/agent-memory-location-service.js";
+import type { EventMonitorActiveTracePage } from "../projection/event-monitor-active-trace-page-types.js";
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -36,6 +37,7 @@ export interface TeamMemberRunProjection {
   activities: RunProjection["activities"];
   summary: string | null;
   lastActivityAt: string | null;
+  hasEarlierActiveTraceEvents: boolean;
 }
 
 const resolveMemberWorkspaceRootPath = (
@@ -157,7 +159,37 @@ export class TeamMemberRunViewProjectionService {
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
+      hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
     };
+  }
+
+  async getActiveTracePage(
+    teamRunId: string,
+    memberRouteKey: string,
+    beforeCursor?: string | null,
+  ): Promise<EventMonitorActiveTracePage> {
+    const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
+    const normalizedMemberRouteKey = normalizeRequiredString(memberRouteKey, "memberRouteKey");
+    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(normalizedTeamRunId);
+    const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
+      resumeConfig.metadata,
+      { memberRouteKey: normalizedMemberRouteKey },
+      normalizedTeamRunId,
+    );
+    if (!target) {
+      throw new Error(`Member route key '${normalizedMemberRouteKey}' not found for team run '${normalizedTeamRunId}'.`);
+    }
+    const binding = target.member;
+    return this.agentRunViewProjectionService.getActiveTracePageFromMetadata({
+      runId: binding.memberRunId,
+      metadata: toMemberRunMetadata(
+        binding,
+        resolveTeamWorkspaceRootPath(resumeConfig.metadata),
+        target.memoryDir,
+      ),
+      beforeCursor,
+      canonicalSubject: `team:${normalizedTeamRunId}:member:${normalizedMemberRouteKey}`,
+    });
   }
 }
 

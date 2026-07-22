@@ -5,6 +5,7 @@ export interface StreamSegmentIdentity {
   id: string;
   segmentType?: SegmentType;
   lookupKey: string | null;
+  presentationComplete: boolean;
 }
 
 export interface StreamSegmentIdentityCarrier {
@@ -33,7 +34,17 @@ export function setStreamSegmentIdentity(
     id: segmentId,
     segmentType,
     lookupKey: buildStreamSegmentLookupKey(segmentId, segmentType),
+    presentationComplete: false,
   };
+}
+
+export function markStreamSegmentPresentationComplete(segment: AIResponseSegment): boolean {
+  const identity = getStreamSegmentIdentity(segment);
+  if (!identity || identity.presentationComplete) {
+    return false;
+  }
+  identity.presentationComplete = true;
+  return true;
 }
 
 export function matchesStreamSegmentIdentity(

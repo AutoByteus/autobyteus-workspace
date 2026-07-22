@@ -1,0 +1,58 @@
+VERIFY_START_UTC=2026-07-21T13:31:38Z
+WORKTREE=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance
+BRANCH=codex/agent-run-history-performance
+SOURCE_HEAD=35fc7ca06481da6ff7933ca7c53d00212a80606f
+INTEGRATED_ORIGIN_PERSONAL=9b4e038a40e0b6358fe53ca101406e0f6446e790
+LATEST_PERSONAL_CONTAINED=yes
+PACKAGE_VERSION=1.4.23
+DMG=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.dmg
+ZIP=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.zip
+UNPACKED_APP=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+ARTIFACT_METADATA_BEGIN
+2026-07-21T15:29:31+0200 | 401882809 bytes | /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.dmg
+2026-07-21T15:31:03+0200 | 397486273 bytes | /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.zip
+2026-07-21T15:28:44+0200 | 96 bytes | /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+ARTIFACT_METADATA_END
+SHA256_BEGIN
+e53e6b3d2bc0e031b39373c1cf8dd48081318a5445b7d5f5110509b5176cd7c4  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.dmg
+8c7ab45f53151f27a2d082a75fc3791f5b75c28a873f86ab5aaf76d12637ac18  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.zip
+SHA256_END
+BUNDLE_VERSION=1.4.23
+BUNDLE_BUILD_VERSION=1.4.23
+EXECUTABLE_ARCH=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+DMG_VERIFY_BEGIN
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $F8B92B61
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $D9ECCC9F
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $9479EE62
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $B4A44BFD
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $9479EE62
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $10D2C9CF
+Die überprüfte CRC32-Prüfsumme ist $DC2F9DB0
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.dmg" is VALID
+DMG_VERIFY_END
+ZIP_VERIFY_COMMAND=unzip -tqq /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.zip
+ZIP_VERIFY_EXIT_STATUS=0
+ZIP_VERIFY_OUTPUT=(quiet success)
+EXISTING_RUNTIME_SAFETY_BEGIN
+COMMAND     PID  USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+AutoByteu 67451 normy   27u  IPv4 0xdf9dbe26445530e      0t0  TCP *:29695 (LISTEN)
+{"status":"ok","message":"Server is running"}
+EXISTING_RUNTIME_SAFETY_END
+POST_BUILD_GIT_STATUS_BEGIN
+?? .local-build-logs/
+?? tickets/in-progress/agent-run-history-performance/evidence/delivery-electron-macos-arm64-latest-personal-rebuild-20260721.log
+?? tickets/in-progress/agent-run-history-performance/evidence/delivery-electron-macos-arm64-latest-personal-verification-20260721.txt
+?? tickets/in-progress/agent-run-history-performance/evidence/delivery-latest-personal-refresh-rebuild-20260721.txt
+POST_BUILD_GIT_STATUS_END
+VERIFY_END_UTC=2026-07-21T13:31:51Z
+VERIFY_EXIT_STATUS=0

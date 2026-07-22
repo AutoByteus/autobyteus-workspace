@@ -7,6 +7,11 @@ import {
 
 const buildContext = () => ({
   state: {
+    runId: 'run-1',
+    eventMonitorPresentationRevision: 0,
+    markEventMonitorPresentationChanged() {
+      this.eventMonitorPresentationRevision += 1;
+    },
     conversation: {
       messages: [] as any[],
       updatedAt: '2026-05-17T00:00:00.000Z',
@@ -15,6 +20,9 @@ const buildContext = () => ({
   requirement: 'draft text',
   contextFilePaths: [{ kind: 'workspace_path', id: 'draft', locator: '/tmp/draft.txt', displayName: 'draft.txt', type: 'Text' }],
   isSending: false,
+  get conversation() {
+    return this.state.conversation;
+  },
 }) as any;
 
 describe('localUserSubmission', () => {
@@ -37,6 +45,7 @@ describe('localUserSubmission', () => {
     expect(context.requirement).toBe('');
     expect(context.contextFilePaths).toEqual([]);
     expect(context.isSending).toBe(true);
+    expect(context.state.eventMonitorPresentationRevision).toBe(1);
   });
 
   it('reconciles finalized attachments on the existing local message', () => {
@@ -52,6 +61,19 @@ describe('localUserSubmission', () => {
     expect(context.state.conversation.messages).toHaveLength(1);
     expect(context.state.conversation.messages[0]).toBe(handle.message);
     expect(handle.message.contextFilePaths).toEqual(finalized);
+    expect(context.state.eventMonitorPresentationRevision).toBe(2);
+  });
+
+  it('does not revise for an equal semantic attachment replacement', () => {
+    const context = buildContext();
+    const handle = beginLocalUserSubmission(context, {
+      text: 'send with file',
+      attachments: context.contextFilePaths,
+    });
+
+    finalizeLocalSubmissionAttachments(handle, [{ ...handle.message.contextFilePaths![0]! }] as any);
+
+    expect(context.state.eventMonitorPresentationRevision).toBe(1);
   });
 
   it('keeps the submitted message visible and appends system error feedback on failure', () => {
@@ -76,5 +98,6 @@ describe('localUserSubmission', () => {
       })],
     });
     expect(context.requirement).toBe('');
+    expect(context.state.eventMonitorPresentationRevision).toBe(2);
   });
 });

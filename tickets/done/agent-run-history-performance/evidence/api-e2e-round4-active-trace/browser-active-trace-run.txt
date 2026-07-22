@@ -1,0 +1,83 @@
+{
+  "result": "PASS",
+  "metrics": "/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-active-trace-metrics.json",
+  "screenshot": "/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-active-trace-en-zh.png",
+  "states": {
+    "initial": {
+      "enReady": "Load 50 earlier",
+      "latestRows": 100,
+      "composerCount": 1,
+      "composerEnabled": true,
+      "zhReady": "加载更早的 50 条"
+    },
+    "loading": {
+      "en": "Loading earlier…",
+      "zh": "正在加载更早的动态…",
+      "ariaBusy": 1,
+      "composerFocused": true,
+      "requestCount": 1
+    },
+    "error": {
+      "alert": "probe recoverable failure",
+      "enRetry": "Retry",
+      "zhRetry": "重试加载更早的动态",
+      "resident": 200
+    },
+    "liveBrowse": {
+      "revision": "1",
+      "resident": 300,
+      "jumpZh": "跳到最新",
+      "jumpEn": "Jump to latest"
+    },
+    "beginning": {
+      "en": "Beginning of current activity · Earlier activity has been compacted",
+      "zh": "已到当前跟踪记录开头 · 更早动态已压缩",
+      "resident": 270,
+      "min": 0,
+      "max": 269,
+      "unique": 270,
+      "maxReadyMs": 997.144
+    },
+    "jump": {
+      "outline": "2px",
+      "keys": 0,
+      "latestRows": 100,
+      "liveVisible": true,
+      "jumpCount": 0
+    }
+  },
+  "turnover": {
+    "before": {
+      "key": "active-trace-visual:v1:cmF3OnYxOjExOmJyb3dzZXItMzUw:thinking:0",
+      "rect": 68,
+      "open": true
+    },
+    "after": {
+      "count": 1,
+      "rect": 68,
+      "open": true
+    },
+    "identity": true,
+    "rectDelta": 0,
+    "enReleased": "Newer browsed activity was released to keep this view responsive",
+    "zhReleased": "为保持视图流畅，已释放较新的浏览内容",
+    "resident": 300
+  },
+  "recovery": {
+    "expired": {
+      "en": "Activity was compacted · Return to latest",
+      "zh": "当前跟踪记录已变化 · 返回最新动态",
+      "resident": 150,
+      "duplicateBottom": 0,
+      "returned": true
+    }
+  },
+  "integrity": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "pageOperationCount": 14,
+    "maxResident": 300,
+    "allUnder2s": true,
+    "composerEnabled": true
+  }
+}

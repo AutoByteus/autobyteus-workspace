@@ -26,7 +26,10 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { CompactionActivity } from '~/stores/agentActivityStore';
-import { getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
+import {
+  getCompactionPhasePresentation,
+  getCompactionSecondaryText,
+} from '~/utils/compactionActivityPresentation';
 
 const props = defineProps<{
   activity: CompactionActivity;
@@ -59,19 +62,11 @@ const toneClasses = {
 
 const currentTone = computed(() => toneClasses[presentation.value.tone]);
 const rowClasses = computed(() => currentTone.value.row);
-const isCompacting = computed(() => props.activity.phase === 'started');
 const iconClasses = computed(() => [
   currentTone.value.icon,
-  isCompacting.value ? 'motion-safe:animate-spin' : '',
+  presentation.value.isCompacting ? 'motion-safe:animate-spin' : '',
 ]);
 const chipClasses = computed(() => currentTone.value.chip);
 
-const secondaryText = computed(() => {
-  const parts: string[] = [];
-  if (props.activity.turnId) parts.push(`Turn: ${props.activity.turnId}`);
-  if (props.activity.rawTraceCount != null) parts.push(`${props.activity.rawTraceCount} raw traces`);
-  if (props.activity.semanticFactCount != null) parts.push(`${props.activity.semanticFactCount} facts`);
-  if (props.activity.provider) parts.push(`Provider: ${props.activity.provider}`);
-  return parts.join(' · ');
-});
+const secondaryText = computed(() => getCompactionSecondaryText(props.activity));
 </script>

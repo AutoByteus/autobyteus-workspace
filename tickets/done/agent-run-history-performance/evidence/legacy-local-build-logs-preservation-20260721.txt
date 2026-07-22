@@ -1,0 +1,27 @@
+PRESERVATION_UTC=2026-07-21T19:11:14Z
+ORIGINAL_LOCATION=.local-build-logs/
+PRESERVED_LOCATION=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721
+PURPOSE=Preserve pre-existing scratch build and integration logs without promoting duplicate raw logs into the durable ticket package.
+STATUS=Preserved; not deleted or cleaned.
+FILE_COUNT=19
+SHA256_BEGIN
+e525404f3d9047ac2996aff9edada1b343fe603ab7879b31249844be1501d88b  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-electron-mac-arm64-verification.log
+9d9b5671e35647f5c2daf37651f1f75fd55ecf2d98bf539c6e38cc23c239eeec  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-electron-mac-arm64.log
+e131c97e603da708a1e4be39f286e63535a8e4b1569f4c629aba3b4c4ef47b0f  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-electron-mac-arm64-round-2.log
+8f69ec76614d151753db66905ddc94df5a238943387ecf9247352b9987cab003  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-electron-mac-arm64-round-3.log
+e554fdb797c23170af8844df4bde0d05156419da462ef57333da2e79a8fdfdd7  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-electron-mac-arm64.log
+5f3728fdc1029575de133be4fb33902165b6b88bf7ea5c047ffb43d90f3ba32e  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-merge-round-2.log
+c3b059383ef73f09b744f9d3c69487eee439b1c021a166a89cc9dbc0bc099e0e  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-merge-round-3.log
+345ad3e3212483fe79245ca19090b5e10c8ed863095551f5ae90b3845ec45e9d  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-merge.log
+ffcb7fc6ff39fea7a128824fb65c4a691c49b9a84d60bec8772dd2efe137af0e  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-pnpm-install-round-2.log
+02f36ec88fee95a922f6591155c7467d1e9e473d8dd589ad6ba8127161a21dd3  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-pnpm-install-round-3.log
+2f2cf4c1a1b8bd1ff8b053af8402266cf4a96d2513eff2a1b4fea6ff16ec32aa  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-pnpm-install.log
+3f878d6af334dec72d835f1e9365ec027ac4ab43cfcb31f1f523430070b2da57  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-verification-round-2.log
+09773564f5ec6b13577760aa77021f8c5e19ec1e8558e20d0b37c59f33b3a5b7  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-verification-round-3.log
+cbe0a3f02cf8025794dee090c497e3cbe870bd40ac5f49f3eb9fe48f014c3113  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-latest-personal-verification.log
+f7954c05e673644163912c6a0eed1f211fd569c05c9a1b69ab55f1eb15de438f  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-pnpm-install.log
+efb7a538141ff28c531fb74a64d80707de7429849becd135a55febe623a1390c  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-remote-ticket-electron-mac-arm64-round-1.log
+b8bb38b10e41903a7aedd31a4c27da6862a044351447968cc52b4e8153901c19  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-remote-ticket-merge-round-1.log
+feb08d9787a13a3a24b225e85c16d81486548e1eea8a88c7502eb9cbe2640245  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-remote-ticket-pnpm-install-round-1.log
+e8fbda6fcc55676641db695c2d743e183dd33793466f11be11ba424441d5d07e  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance-local-build-logs-20260721/agent-run-history-performance-remote-ticket-verification-round-1.log
+SHA256_END

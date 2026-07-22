@@ -1,0 +1,33 @@
+
+> autobyteus@1.4.16 test:nuxt /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts components/conversation/segments/__tests__/ThinkSegment.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/autobyteus-web
+
+stderr | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/__tests__/ThinkSegment.spec.ts (1 test) 26ms
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (6 tests) 1141ms
+   ✓ recent Event Monitor production dispatch coverage > keeps standalone center and Activity state bounded and duplicate-free after 1,001 mixed live messages  606ms
+   ✓ recent Event Monitor production dispatch coverage > keeps team-member center and Activity state bounded and duplicate-free after 1,001 mixed live messages  527ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  04:37:26
+   Duration  11.16s (transform 4.79s, setup 16.74s, collect 123ms, tests 1.17s, environment 1.80s, prepare 781ms)
+

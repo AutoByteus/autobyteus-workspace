@@ -195,6 +195,10 @@ const messages = {
     "Failed to fetch artifact content",
   "workspace.components.workspace.agent.ArtifactList.agent_artifacts":
     "Agent Artifacts",
+  "workspace.components.workspace.agent.AgentConversationFeed.jump_to_latest":
+    "Jump to latest activity",
+  "workspace.components.workspace.agent.AgentConversationFeed.retry_earlier":
+    "Retry",
   "workspace.components.workspace.tools.Terminal.retry_workspace_load":
     "Retry workspace load",
   "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":

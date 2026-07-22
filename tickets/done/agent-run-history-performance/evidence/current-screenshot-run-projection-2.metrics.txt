@@ -1,0 +1,27 @@
+http_code=200
+time_total=0.029860
+time_starttransfer=0.019708
+size_download=1487317
+speed_download=49809678
+{
+  "errors": null,
+  "agentRunId": "solution_designer_62969670fca54e7fbe04a1f7e934be3c",
+  "conversationEntries": 42,
+  "activityEntries": 21,
+  "kinds": [
+    {
+      "kind": "message",
+      "count": 1
+    },
+    {
+      "kind": "reasoning",
+      "count": 20
+    },
+    {
+      "kind": "tool_call",
+      "count": 21
+    }
+  ],
+  "approxConversationJsonBytes": 737725,
+  "approxActivitiesJsonBytes": 748050
+}

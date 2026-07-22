@@ -1,0 +1,52 @@
+Implementation-scoped check summary — centered Event Monitor return arrow
+Date: 2026-07-21
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance
+
+1. Focused Nuxt component/localization suite
+Command:
+  pnpm test:nuxt components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts --run --maxWorkers=2
+Result: PASS — 7 files, 38 tests.
+Final rerun after test-helper simplification: PASS — 7 files, 38 tests.
+
+2. Nuxt typecheck
+Initial command:
+  pnpm exec nuxi typecheck
+Result: INCONCLUSIVE — Node exhausted the default ~4 GiB heap during repository-wide analysis.
+
+Retry command:
+  NODE_OPTIONS=--max-old-space-size=8192 pnpm exec nuxi typecheck
+Result: FAIL — the current repository-wide check reports 4,889 TypeScript diagnostics across unrelated build scripts, legacy components/tests, stores, missing/generated modules, and setup utilities. Examples include build/scripts/afterPack.ts type-only imports, components/agents/MarketplaceFilter.vue missing ~/stores/agents, generated GraphQL member mismatches, and tests/setup/websocket.ts missing ws declarations. No diagnostic referenced either changed file:
+  - autobyteus-web/components/workspace/agent/AgentConversationFeed.vue
+  - autobyteus-web/components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+The focused Vitest transform/execution for both changed files passed. This is not recorded as a typecheck pass.
+
+3. Repository guards
+  pnpm guard:localization-boundary
+Result: PASS.
+  pnpm audit:localization-literals
+Result: PASS — zero unresolved findings.
+  pnpm guard:web-boundary
+Result: PASS.
+  git diff --check
+Result: PASS.
+
+4. Source-size guard
+AgentConversationFeed.vue effective non-empty lines: 498 (hard limit <=500).
+
+5. Rendered implementation validation
+Surface: temporary Nuxt route, removed after validation.
+Browser: installed Google Chrome, headless, 1280x900 and 390x844.
+Result: PASS for implementation-scoped geometry/style checks:
+- 44x44 target, 36x36 white circle, 16x16 dark glyph.
+- feed-relative horizontal center delta 0 px and bottom inset 8 px.
+- no intersection with the real SkillImprovementComposerCta or composer.
+- no horizontal overflow.
+- browse and expired normalized class/computed-style signatures equal at both widths.
+- CTA-visible and CTA-absent arrow signatures equal at both widths.
+- no text, title, tooltip role, badge, or console/page errors.
+Evidence:
+  tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-20260721.json
+  tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-wide-20260721.png
+  tickets/in-progress/agent-run-history-performance/evidence/implementation-centered-arrow-narrow-20260721.png
+
+No build, API/E2E, Electron, release, deployment, push, archive, or cleanup was performed.

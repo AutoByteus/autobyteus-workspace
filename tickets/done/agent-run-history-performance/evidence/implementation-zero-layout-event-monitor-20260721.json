@@ -1,0 +1,51 @@
+{
+  "initial": {
+    "firstOffsetAtTop": 0,
+    "topOverlay": false,
+    "nativeScrollbarGutterPx": 0
+  },
+  "loading": {
+    "ariaBusy": "true",
+    "dotCount": 3,
+    "dotsText": "",
+    "overlayPosition": "absolute",
+    "firstOffset": 0,
+    "requestCount": 1
+  },
+  "browse": {
+    "arrowVisibleAfterManualBrowseBottom": true,
+    "arrowText": "",
+    "arrowAria": "Jump to latest activity",
+    "arrowTitle": null,
+    "arrowWidth": 44,
+    "arrowHeight": 44,
+    "renderedSvg": true
+  },
+  "returnedLatest": {
+    "arrowVisible": false
+  },
+  "error": {
+    "retryText": "",
+    "retryAria": "Retry",
+    "retryTitle": null,
+    "retrySvg": true,
+    "arrowCount": 1,
+    "visibleCopyContains50": false,
+    "statusOrAlertCount": 0,
+    "retryOverlayPosition": "absolute",
+    "arrowText": ""
+  },
+  "beginning": {
+    "topOverlay": false,
+    "firstOffsetAtTop": 0
+  },
+  "narrow": {
+    "arrowWidth": 44,
+    "arrowHeight": 44,
+    "doesNotOverlapComposer": true,
+    "bodyScrollWidth": 390,
+    "viewportWidth": 390
+  },
+  "expectedShellBackendErrorCount": 16,
+  "unexpectedConsoleErrors": []
+}

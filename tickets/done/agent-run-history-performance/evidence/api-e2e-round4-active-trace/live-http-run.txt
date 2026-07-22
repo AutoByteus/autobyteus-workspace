@@ -1,0 +1,158 @@
+{
+  "result": "PASS",
+  "summaryPath": "/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round4-active-trace/live-http-summary.json",
+  "metricsPath": "/home/autobyteus/workspace/.codex/worktrees/agent-run-history-performance/tickets/in-progress/agent-run-history-performance/evidence/api-e2e-round4-active-trace/live-http-metrics.txt",
+  "dataRoot": "/tmp/autobyteus-active-trace-r4-HrvRlv",
+  "runs": [
+    {
+      "label": "cold",
+      "latest": {
+        "status": 200,
+        "bytes": 868635,
+        "ttfbMs": 39.795,
+        "totalMs": 43.582,
+        "conversationCount": 100,
+        "activityCount": 0,
+        "firstContent": "event-520",
+        "lastContent": "event-619",
+        "hasEarlier": true
+      },
+      "firstPage": {
+        "http": {
+          "status": 200,
+          "bytes": 1327276,
+          "ttfbMs": 25.617,
+          "totalMs": 28.896
+        },
+        "count": 150,
+        "visualCount": 150,
+        "firstText": "event-470",
+        "lastText": "event-619",
+        "uniqueEventIds": 150,
+        "uniqueVisualIds": 150,
+        "loadedEarlierCount": 50,
+        "hasEarlier": true,
+        "cursorStatus": "VALID",
+        "generation": "666989d87d915d377f5a65b43d24ea7ddad1ac4cf7918fc54d75543fd79c5d08"
+      },
+      "secondPage": {
+        "http": {
+          "status": 200,
+          "bytes": 442776,
+          "ttfbMs": 19.908,
+          "totalMs": 21.073
+        },
+        "count": 50,
+        "visualCount": 50,
+        "firstText": "event-420",
+        "lastText": "event-469",
+        "uniqueEventIds": 50,
+        "uniqueVisualIds": 50,
+        "loadedEarlierCount": 50,
+        "hasEarlier": true,
+        "cursorStatus": "VALID",
+        "generation": "666989d87d915d377f5a65b43d24ea7ddad1ac4cf7918fc54d75543fd79c5d08"
+      }
+    },
+    {
+      "label": "warm-1",
+      "latest": {
+        "status": 200,
+        "bytes": 868635,
+        "ttfbMs": 26.577,
+        "totalMs": 28.588,
+        "conversationCount": 100,
+        "activityCount": 0,
+        "firstContent": "event-520",
+        "lastContent": "event-619",
+        "hasEarlier": true
+      },
+      "firstPage": {
+        "http": {
+          "status": 200,
+          "bytes": 1327276,
+          "ttfbMs": 21.846,
+          "totalMs": 25.009
+        },
+        "count": 150,
+        "visualCount": 150,
+        "firstText": "event-470",
+        "lastText": "event-619",
+        "uniqueEventIds": 150,
+        "uniqueVisualIds": 150,
+        "loadedEarlierCount": 50,
+        "hasEarlier": true,
+        "cursorStatus": "VALID",
+        "generation": "666989d87d915d377f5a65b43d24ea7ddad1ac4cf7918fc54d75543fd79c5d08"
+      },
+      "secondPage": {
+        "http": {
+          "status": 200,
+          "bytes": 442776,
+          "ttfbMs": 14.871,
+          "totalMs": 15.656
+        },
+        "count": 50,
+        "visualCount": 50,
+        "firstText": "event-420",
+        "lastText": "event-469",
+        "uniqueEventIds": 50,
+        "uniqueVisualIds": 50,
+        "loadedEarlierCount": 50,
+        "hasEarlier": true,
+        "cursorStatus": "VALID",
+        "generation": "666989d87d915d377f5a65b43d24ea7ddad1ac4cf7918fc54d75543fd79c5d08"
+      }
+    },
+    {
+      "label": "warm-2",
+      "latest": {
+        "status": 200,
+        "bytes": 868635,
+        "ttfbMs": 30.914,
+        "totalMs": 32.819,
+        "conversationCount": 100,
+        "activityCount": 0,
+        "firstContent": "event-520",
+        "lastContent": "event-619",
+        "hasEarlier": true
+      },
+      "firstPage": {
+        "http": {
+          "status": 200,
+          "bytes": 1327276,
+          "ttfbMs": 22.703,
+          "totalMs": 25.013
+        },
+        "count": 150,
+        "visualCount": 150,
+        "firstText": "event-470",
+        "lastText": "event-619",
+        "uniqueEventIds": 150,
+        "uniqueVisualIds": 150,
+        "loadedEarlierCount": 50,
+        "hasEarlier": true,
+        "cursorStatus": "VALID",
+        "generation": "666989d87d915d377f5a65b43d24ea7ddad1ac4cf7918fc54d75543fd79c5d08"
+      },
+      "secondPage": {
+        "http": {
+          "status": 200,
+          "bytes": 442776,
+          "ttfbMs": 16.101,
+          "totalMs": 17.42
+        },
+        "count": 50,
+        "visualCount": 50,
+        "firstText": "event-420",
+        "lastText": "event-469",
+        "uniqueEventIds": 50,
+        "uniqueVisualIds": 50,
+        "loadedEarlierCount": 50,
+        "hasEarlier": true,
+        "cursorStatus": "VALID",
+        "generation": "666989d87d915d377f5a65b43d24ea7ddad1ac4cf7918fc54d75543fd79c5d08"
+      }
+    }
+  ]
+}

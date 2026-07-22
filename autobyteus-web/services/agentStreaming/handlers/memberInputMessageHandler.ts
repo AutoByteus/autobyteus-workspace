@@ -8,7 +8,7 @@ import {
 export const handleMemberInputMessage = (
   payload: MemberInputMessagePayload,
   context: AgentContext,
-): void => {
+) => {
   upsertUserMessageByIdentity({
     context,
     userMessage: buildUserMessageFromProjectionPayload(payload),

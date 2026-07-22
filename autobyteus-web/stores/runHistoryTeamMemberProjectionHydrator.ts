@@ -191,6 +191,8 @@ export const applyProjectionToTeamMemberContext = (params: {
   });
   params.memberContext.state.runId = memberRunId;
   params.memberContext.state.conversation = conversation;
+  params.memberContext.state.resetEventMonitorPresentationRevision();
+  params.memberContext.state.hasEarlierActiveTraceEvents = params.projection?.hasEarlierActiveTraceEvents === true;
   applyMemberOrHistoryStatusSnapshot(
     params.memberContext,
     params.isActive
@@ -246,6 +248,7 @@ const buildTeamMemberContextsFromReferences = (params: {
     });
 
     const state = new AgentRunState(memberRunId, conversation);
+    state.hasEarlierActiveTraceEvents = projection?.hasEarlierActiveTraceEvents === true;
     initializeRuntimeStatusState(state, AgentStatus.Offline);
     members.set(
       normalizedMemberRouteKey,

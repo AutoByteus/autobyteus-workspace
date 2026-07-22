@@ -9,7 +9,7 @@ import { findOrCreateAIMessage } from './segmentHandler';
 export function handleSystemTaskNotification(
   payload: SystemTaskNotificationPayload,
   context: AgentContext,
-): void {
+) {
   const aiMessage = findOrCreateAIMessage(context);
 
   const segment: SystemTaskNotificationSegment = {

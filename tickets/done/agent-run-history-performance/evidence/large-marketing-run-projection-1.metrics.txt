@@ -1,0 +1,27 @@
+http_code=200
+time_total=1.103343
+time_starttransfer=0.804919
+size_download=47537621
+speed_download=43085079
+{
+  "errors": null,
+  "agentRunId": "x_marketer_dc7c611e2a3d4dbd916f0cebaff1eaff",
+  "conversationEntries": 1725,
+  "activityEntries": 794,
+  "kinds": [
+    {
+      "kind": "message",
+      "count": 123
+    },
+    {
+      "kind": "reasoning",
+      "count": 814
+    },
+    {
+      "kind": "tool_call",
+      "count": 788
+    }
+  ],
+  "approxConversationJsonBytes": 23699199,
+  "approxActivitiesJsonBytes": 23810542
+}

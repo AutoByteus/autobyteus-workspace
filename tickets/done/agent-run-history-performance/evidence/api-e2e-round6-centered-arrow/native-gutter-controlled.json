@@ -1,0 +1,370 @@
+{
+  "browser": "150.0.7871.129",
+  "platform": "darwin",
+  "method": "temporary standards-based scrollbar-gutter: stable on the actual production feed; no position-only fallback",
+  "initial": {
+    "offsetWidth": 832,
+    "clientWidth": 832,
+    "gutter": 0,
+    "scrollbarGutter": "auto"
+  },
+  "before": {
+    "rect": {
+      "left": 385.5,
+      "right": 1217.5,
+      "top": 73,
+      "bottom": 713,
+      "width": 832,
+      "height": 640
+    },
+    "offsetWidth": 832,
+    "clientWidth": 832,
+    "gutter": 0,
+    "scrollbarGutter": "stable",
+    "scrollTop": 600,
+    "scrollHeight": 6000,
+    "clientHeight": 640,
+    "max": 5360,
+    "track": 640,
+    "thumb": 68.26666666666667,
+    "thumbCenterY": 171.13333333333333
+  },
+  "requestObserved": false,
+  "after": {
+    "requestCount": 0,
+    "pageCount": 0,
+    "browseState": "latest",
+    "residentCount": 0,
+    "residentVisualIds": [],
+    "presentationRevision": 0,
+    "surfaceKind": "agent",
+    "ctaVisible": true,
+    "locale": "en",
+    "gutterWidth": 0,
+    "feed": {
+      "scrollTop": 580,
+      "scrollHeight": 6000,
+      "clientHeight": 640,
+      "offsetWidth": 832,
+      "clientWidth": 832
+    },
+    "records": [
+      {
+        "type": "probe-ready",
+        "at": 471.09999999403954,
+        "scrollTop": 5360,
+        "scrollHeight": 6000
+      },
+      {
+        "type": "scroll-event",
+        "at": 471.59999999403954,
+        "scrollTop": 5360,
+        "scrollHeight": 6000,
+        "trusted": true
+      },
+      {
+        "type": "scroll-write-start",
+        "at": 1218.5,
+        "scrollTop": 5360,
+        "detail": {
+          "value": 600
+        }
+      },
+      {
+        "type": "scroll-write-return",
+        "at": 1219.0999999940395,
+        "scrollTop": 600,
+        "detail": {
+          "value": 600
+        }
+      },
+      {
+        "type": "scroll-event",
+        "at": 1219.2000000029802,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true
+      },
+      {
+        "type": "pointermove",
+        "at": 1326.9000000059605,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 171.13333129882812,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointerdown",
+        "at": 1328,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 171.13333129882812,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointermove",
+        "at": 1336.7999999970198,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 159.36666870117188,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointermove",
+        "at": 1344.2999999970198,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 147.60000610351562,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointermove",
+        "at": 1353.5999999940395,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 135.8333282470703,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointermove",
+        "at": 1361,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 124.06666564941406,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointermove",
+        "at": 1369.2000000029802,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 112.30000305175781,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointermove",
+        "at": 1377.7999999970198,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 100.53333282470703,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "pointermove",
+        "at": 1386.4000000059605,
+        "scrollTop": 600,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 88.76667022705078,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "scroll-event",
+        "at": 1386.9000000059605,
+        "scrollTop": 596,
+        "scrollHeight": 6000,
+        "trusted": true
+      },
+      {
+        "type": "pointermove",
+        "at": 1393.4000000059605,
+        "scrollTop": 596,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 77,
+          "pointerId": 1
+        }
+      },
+      {
+        "type": "scroll-event",
+        "at": 1393.7999999970198,
+        "scrollTop": 580,
+        "scrollHeight": 6000,
+        "trusted": true
+      },
+      {
+        "type": "pointerup",
+        "at": 1396.2999999970198,
+        "scrollTop": 580,
+        "scrollHeight": 6000,
+        "trusted": true,
+        "detail": {
+          "clientX": 1215.5,
+          "clientY": 77,
+          "pointerId": 1
+        }
+      }
+    ]
+  },
+  "trustedPointerRecords": [
+    {
+      "type": "pointermove",
+      "at": 1326.9000000059605,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 171.13333129882812,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointerdown",
+      "at": 1328,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 171.13333129882812,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1336.7999999970198,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 159.36666870117188,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1344.2999999970198,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 147.60000610351562,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1353.5999999940395,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 135.8333282470703,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1361,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 124.06666564941406,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1369.2000000029802,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 112.30000305175781,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1377.7999999970198,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 100.53333282470703,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1386.4000000059605,
+      "scrollTop": 600,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 88.76667022705078,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointermove",
+      "at": 1393.4000000059605,
+      "scrollTop": 596,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 77,
+        "pointerId": 1
+      }
+    },
+    {
+      "type": "pointerup",
+      "at": 1396.2999999970198,
+      "scrollTop": 580,
+      "scrollHeight": 6000,
+      "trusted": true,
+      "detail": {
+        "clientX": 1215.5,
+        "clientY": 77,
+        "pointerId": 1
+      }
+    }
+  ]
+}

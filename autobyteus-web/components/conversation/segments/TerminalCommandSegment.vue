@@ -1,11 +1,6 @@
 <template>
   <ToolCallIndicator
-    :invocation-id="segment.invocationId"
-    :tool-name="segment.toolName || 'run_bash'"
-    :status="segment.status"
-    :args="displayArgs"
-    :error-message="segment.error ?? undefined"
-    :approval-target="segment.approvalTarget ?? null"
+    :presentation="presentation"
   />
 </template>
 
@@ -13,19 +8,14 @@
 import { computed } from 'vue';
 import type { TerminalCommandSegment } from '~/types/segments';
 import ToolCallIndicator from '~/components/conversation/ToolCallIndicator.vue';
+import { buildToolCardPresentation } from '~/utils/toolCardPresentation';
 
 const props = defineProps<{
   segment: TerminalCommandSegment;
   conversationId: string;
 }>();
 
-const displayArgs = computed<Record<string, any>>(() => {
-  const args = { ...(props.segment.arguments || {}) };
-  if (!args.command) {
-    args.command = props.segment.command || '';
-  }
-  return args;
-});
+const presentation = computed(() => buildToolCardPresentation(props.segment));
 </script>
 
 <style scoped>

@@ -42,6 +42,10 @@ import {
 import {
   reconcileTeamContextMemberRunIdsFromBackend,
 } from '~/services/runHydration/teamRunMemberIdentityReconciler';
+import {
+  beginRecentEventMonitorMutation,
+  commitRecentEventMonitorMutation,
+} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -428,6 +432,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission.message.dedupeKey = dedupeKey;
           finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
         } else if (finalFocusedMember) {
+          const presentationBaseline = beginRecentEventMonitorMutation(finalFocusedMember);
           finalFocusedMember.state.conversation.messages.push({
             type: 'user',
             text,
@@ -436,6 +441,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             messageId,
             dedupeKey,
           });
+          commitRecentEventMonitorMutation(finalFocusedMember, presentationBaseline);
           finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
         }
 

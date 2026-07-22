@@ -1,0 +1,5034 @@
+{
+  "meta": {
+    "baseUrl": "http://127.0.0.1:3108/__api_e2e_centered_arrow",
+    "browserVersion": "150.0.7871.129",
+    "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "platform": "darwin",
+    "node": "v22.23.1",
+    "timestamp": "2026-07-21T18:10:08.461Z",
+    "gateDurationMs": 6223.675708999999
+  },
+  "coexistence": {
+    "wide-agent-ordinary-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 661,
+        "right": 823.5,
+        "bottom": 705,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 665,
+        "right": 819.5,
+        "bottom": 701,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 675,
+        "right": 809.5,
+        "bottom": 691,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 713,
+        "width": 832,
+        "height": 640
+      },
+      "ctaRect": {
+        "left": 1071.25,
+        "top": 725,
+        "right": 1217.5,
+        "bottom": 763,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": null,
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "wide-agent-browse-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 661,
+        "right": 823.5,
+        "bottom": 705,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 665,
+        "right": 819.5,
+        "bottom": 701,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 675,
+        "right": 809.5,
+        "bottom": 691,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 713,
+        "width": 832,
+        "height": 640
+      },
+      "ctaRect": {
+        "left": 1071.25,
+        "top": 725,
+        "right": 1217.5,
+        "bottom": 763,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "wide-agent-expired-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 661,
+        "right": 823.5,
+        "bottom": 705,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 665,
+        "right": 819.5,
+        "bottom": 701,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 675,
+        "right": 809.5,
+        "bottom": 691,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 713,
+        "width": 832,
+        "height": 640
+      },
+      "ctaRect": {
+        "left": 1071.25,
+        "top": 725,
+        "right": 1217.5,
+        "bottom": 763,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "wide-agent-browse-no-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 707,
+        "right": 823.5,
+        "bottom": 751,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 711,
+        "right": 819.5,
+        "bottom": 747,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 721,
+        "right": 809.5,
+        "bottom": 737,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 759,
+        "width": 832,
+        "height": 686
+      },
+      "ctaRect": null,
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": null,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "wide-team-member-ordinary-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 661,
+        "right": 823.5,
+        "bottom": 705,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 665,
+        "right": 819.5,
+        "bottom": 701,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 675,
+        "right": 809.5,
+        "bottom": 691,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 713,
+        "width": 832,
+        "height": 640
+      },
+      "ctaRect": {
+        "left": 1071.25,
+        "top": 725,
+        "right": 1217.5,
+        "bottom": 763,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": null,
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "wide-team-member-browse-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 661,
+        "right": 823.5,
+        "bottom": 705,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 665,
+        "right": 819.5,
+        "bottom": 701,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 675,
+        "right": 809.5,
+        "bottom": 691,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 713,
+        "width": 832,
+        "height": 640
+      },
+      "ctaRect": {
+        "left": 1071.25,
+        "top": 725,
+        "right": 1217.5,
+        "bottom": 763,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "wide-team-member-expired-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 661,
+        "right": 823.5,
+        "bottom": 705,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 665,
+        "right": 819.5,
+        "bottom": 701,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 675,
+        "right": 809.5,
+        "bottom": 691,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 713,
+        "width": 832,
+        "height": 640
+      },
+      "ctaRect": {
+        "left": 1071.25,
+        "top": 725,
+        "right": 1217.5,
+        "bottom": 763,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "wide-team-member-browse-no-cta": {
+      "targetRect": {
+        "left": 779.5,
+        "top": 707,
+        "right": 823.5,
+        "bottom": 751,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 783.5,
+        "top": 711,
+        "right": 819.5,
+        "bottom": 747,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 793.5,
+        "top": 721,
+        "right": 809.5,
+        "bottom": 737,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 385.5,
+        "top": 73,
+        "right": 1217.5,
+        "bottom": 759,
+        "width": 832,
+        "height": 686
+      },
+      "ctaRect": null,
+      "composerRect": {
+        "left": 385.5,
+        "top": 771,
+        "right": 1217.5,
+        "bottom": 867,
+        "width": 832,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": null,
+      "bodyOverflow": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280
+      },
+      "feedWidths": {
+        "offsetWidth": 832,
+        "clientWidth": 832,
+        "scrollWidth": 832
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-agent-ordinary-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 605,
+        "right": 242,
+        "bottom": 649,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 609,
+        "right": 238,
+        "bottom": 645,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 619,
+        "right": 228,
+        "bottom": 635,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 657,
+        "width": 274,
+        "height": 584
+      },
+      "ctaRect": {
+        "left": 210.75,
+        "top": 669,
+        "right": 357,
+        "bottom": 707,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": null,
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-agent-browse-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 605,
+        "right": 242,
+        "bottom": 649,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 609,
+        "right": 238,
+        "bottom": 645,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 619,
+        "right": 228,
+        "bottom": 635,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 657,
+        "width": 274,
+        "height": 584
+      },
+      "ctaRect": {
+        "left": 210.75,
+        "top": 669,
+        "right": 357,
+        "bottom": 707,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-agent-expired-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 605,
+        "right": 242,
+        "bottom": 649,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 609,
+        "right": 238,
+        "bottom": 645,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 619,
+        "right": 228,
+        "bottom": 635,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 657,
+        "width": 274,
+        "height": 584
+      },
+      "ctaRect": {
+        "left": 210.75,
+        "top": 669,
+        "right": 357,
+        "bottom": 707,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-agent-browse-no-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 651,
+        "right": 242,
+        "bottom": 695,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 655,
+        "right": 238,
+        "bottom": 691,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 665,
+        "right": 228,
+        "bottom": 681,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 703,
+        "width": 274,
+        "height": 630
+      },
+      "ctaRect": null,
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": null,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-team-member-ordinary-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 605,
+        "right": 242,
+        "bottom": 649,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 609,
+        "right": 238,
+        "bottom": 645,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 619,
+        "right": 228,
+        "bottom": 635,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 657,
+        "width": 274,
+        "height": 584
+      },
+      "ctaRect": {
+        "left": 210.75,
+        "top": 669,
+        "right": 357,
+        "bottom": 707,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": null,
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-team-member-browse-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 605,
+        "right": 242,
+        "bottom": 649,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 609,
+        "right": 238,
+        "bottom": 645,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 619,
+        "right": 228,
+        "bottom": 635,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 657,
+        "width": 274,
+        "height": 584
+      },
+      "ctaRect": {
+        "left": 210.75,
+        "top": 669,
+        "right": 357,
+        "bottom": 707,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-team-member-expired-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 605,
+        "right": 242,
+        "bottom": 649,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 609,
+        "right": 238,
+        "bottom": 645,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 619,
+        "right": 228,
+        "bottom": 635,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 657,
+        "width": 274,
+        "height": 584
+      },
+      "ctaRect": {
+        "left": 210.75,
+        "top": 669,
+        "right": 357,
+        "bottom": 707,
+        "width": 146.25,
+        "height": 38
+      },
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": 0,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    },
+    "narrow390-team-member-browse-no-cta": {
+      "targetRect": {
+        "left": 198,
+        "top": 651,
+        "right": 242,
+        "bottom": 695,
+        "width": 44,
+        "height": 44
+      },
+      "surfaceRect": {
+        "left": 202,
+        "top": 655,
+        "right": 238,
+        "bottom": 691,
+        "width": 36,
+        "height": 36
+      },
+      "glyphRect": {
+        "left": 212,
+        "top": 665,
+        "right": 228,
+        "bottom": 681,
+        "width": 16,
+        "height": 16
+      },
+      "feedRect": {
+        "left": 83,
+        "top": 73,
+        "right": 357,
+        "bottom": 703,
+        "width": 274,
+        "height": 630
+      },
+      "ctaRect": null,
+      "composerRect": {
+        "left": 83,
+        "top": 715,
+        "right": 357,
+        "bottom": 811,
+        "width": 274,
+        "height": 96
+      },
+      "centerDeltaPx": 0,
+      "bottomInsetPx": 8,
+      "overlapsCta": false,
+      "overlapsComposer": false,
+      "ctaRightDeltaFromFeedPx": null,
+      "bodyOverflow": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "feedWidths": {
+        "offsetWidth": 274,
+        "clientWidth": 274,
+        "scrollWidth": 274
+      },
+      "targetClasses": [
+        "-translate-x-1/2",
+        "absolute",
+        "bottom-2",
+        "flex",
+        "focus-visible:ring-2",
+        "focus-visible:ring-indigo-500",
+        "focus-visible:ring-offset-2",
+        "focus:outline-none",
+        "h-11",
+        "items-center",
+        "justify-center",
+        "left-1/2",
+        "rounded-full",
+        "w-11",
+        "z-20"
+      ],
+      "signature": {
+        "targetClasses": [
+          "-translate-x-1/2",
+          "absolute",
+          "bottom-2",
+          "flex",
+          "focus-visible:ring-2",
+          "focus-visible:ring-indigo-500",
+          "focus-visible:ring-offset-2",
+          "focus:outline-none",
+          "h-11",
+          "items-center",
+          "justify-center",
+          "left-1/2",
+          "rounded-full",
+          "w-11",
+          "z-20"
+        ],
+        "surfaceClasses": [
+          "bg-white",
+          "border",
+          "border-slate-200",
+          "flex",
+          "h-9",
+          "items-center",
+          "justify-center",
+          "motion-reduce:transition-none",
+          "rounded-full",
+          "shadow-sm",
+          "text-slate-700",
+          "transition-colors",
+          "w-9"
+        ],
+        "glyphClasses": [
+          "h-4",
+          "iconify",
+          "iconify--heroicons",
+          "w-4"
+        ],
+        "target": {
+          "position": "absolute",
+          "bottom": "8px",
+          "width": "44px",
+          "height": "44px",
+          "transform": "matrix(1, 0, 0, 1, -22, 0)"
+        },
+        "surface": {
+          "width": "36px",
+          "height": "36px",
+          "backgroundColor": "rgb(255, 255, 255)",
+          "borderColor": "rgb(226, 232, 240)",
+          "borderWidth": "1px",
+          "borderStyle": "solid",
+          "borderRadius": "9999px",
+          "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px",
+          "color": "rgb(51, 65, 85)"
+        },
+        "glyph": {
+          "width": "16px",
+          "height": "16px",
+          "color": "rgb(51, 65, 85)",
+          "viewBox": "0 0 24 24"
+        },
+        "accessibleName": "Jump to latest activity",
+        "title": null,
+        "text": "",
+        "roleTooltipCount": 0,
+        "badgeCount": 0
+      },
+      "focusBefore": "event-monitor-jump-to-latest",
+      "focusStyle": {
+        "outline": "rgba(0, 0, 0, 0) solid 2px",
+        "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(99, 102, 241) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+      }
+    }
+  },
+  "gate": {
+    "held": {
+      "requestCount": 1,
+      "pageCount": 0,
+      "browseState": "loading",
+      "residentCount": 0,
+      "residentVisualIds": [],
+      "presentationRevision": 0,
+      "surfaceKind": "agent",
+      "ctaVisible": true,
+      "locale": "en",
+      "gutterWidth": 0,
+      "feed": {
+        "scrollTop": 0,
+        "scrollHeight": 6000,
+        "clientHeight": 640,
+        "offsetWidth": 832,
+        "clientWidth": 832
+      },
+      "records": [
+        {
+          "type": "reset-complete",
+          "at": 3115.9000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "detail": {
+            "surface": "agent"
+          }
+        },
+        {
+          "type": "pointermove",
+          "at": 3124.7000000029802,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "clientX": 801.5,
+            "clientY": 393,
+            "pointerId": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 3141.4000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -10000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3158.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 3158.7000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "requestCount": 1
+          }
+        }
+      ]
+    },
+    "afterHeldRestoreAndReflow": {
+      "requestCount": 1,
+      "pageCount": 1,
+      "browseState": "browse",
+      "residentCount": 150,
+      "residentVisualIds": [
+        "active-generation-A:event-450:visual-0",
+        "active-generation-A:event-451:visual-0",
+        "active-generation-A:event-452:visual-0",
+        "active-generation-A:event-453:visual-0",
+        "active-generation-A:event-454:visual-0",
+        "active-generation-A:event-455:visual-0",
+        "active-generation-A:event-456:visual-0",
+        "active-generation-A:event-457:visual-0",
+        "active-generation-A:event-458:visual-0",
+        "active-generation-A:event-459:visual-0",
+        "active-generation-A:event-460:visual-0",
+        "active-generation-A:event-461:visual-0",
+        "active-generation-A:event-462:visual-0",
+        "active-generation-A:event-463:visual-0",
+        "active-generation-A:event-464:visual-0",
+        "active-generation-A:event-465:visual-0",
+        "active-generation-A:event-466:visual-0",
+        "active-generation-A:event-467:visual-0",
+        "active-generation-A:event-468:visual-0",
+        "active-generation-A:event-469:visual-0",
+        "active-generation-A:event-470:visual-0",
+        "active-generation-A:event-471:visual-0",
+        "active-generation-A:event-472:visual-0",
+        "active-generation-A:event-473:visual-0",
+        "active-generation-A:event-474:visual-0",
+        "active-generation-A:event-475:visual-0",
+        "active-generation-A:event-476:visual-0",
+        "active-generation-A:event-477:visual-0",
+        "active-generation-A:event-478:visual-0",
+        "active-generation-A:event-479:visual-0",
+        "active-generation-A:event-480:visual-0",
+        "active-generation-A:event-481:visual-0",
+        "active-generation-A:event-482:visual-0",
+        "active-generation-A:event-483:visual-0",
+        "active-generation-A:event-484:visual-0",
+        "active-generation-A:event-485:visual-0",
+        "active-generation-A:event-486:visual-0",
+        "active-generation-A:event-487:visual-0",
+        "active-generation-A:event-488:visual-0",
+        "active-generation-A:event-489:visual-0",
+        "active-generation-A:event-490:visual-0",
+        "active-generation-A:event-491:visual-0",
+        "active-generation-A:event-492:visual-0",
+        "active-generation-A:event-493:visual-0",
+        "active-generation-A:event-494:visual-0",
+        "active-generation-A:event-495:visual-0",
+        "active-generation-A:event-496:visual-0",
+        "active-generation-A:event-497:visual-0",
+        "active-generation-A:event-498:visual-0",
+        "active-generation-A:event-499:visual-0",
+        "active-generation-A:event-500:visual-0",
+        "active-generation-A:event-501:visual-0",
+        "active-generation-A:event-502:visual-0",
+        "active-generation-A:event-503:visual-0",
+        "active-generation-A:event-504:visual-0",
+        "active-generation-A:event-505:visual-0",
+        "active-generation-A:event-506:visual-0",
+        "active-generation-A:event-507:visual-0",
+        "active-generation-A:event-508:visual-0",
+        "active-generation-A:event-509:visual-0",
+        "active-generation-A:event-510:visual-0",
+        "active-generation-A:event-511:visual-0",
+        "active-generation-A:event-512:visual-0",
+        "active-generation-A:event-513:visual-0",
+        "active-generation-A:event-514:visual-0",
+        "active-generation-A:event-515:visual-0",
+        "active-generation-A:event-516:visual-0",
+        "active-generation-A:event-517:visual-0",
+        "active-generation-A:event-518:visual-0",
+        "active-generation-A:event-519:visual-0",
+        "active-generation-A:event-520:visual-0",
+        "active-generation-A:event-521:visual-0",
+        "active-generation-A:event-522:visual-0",
+        "active-generation-A:event-523:visual-0",
+        "active-generation-A:event-524:visual-0",
+        "active-generation-A:event-525:visual-0",
+        "active-generation-A:event-526:visual-0",
+        "active-generation-A:event-527:visual-0",
+        "active-generation-A:event-528:visual-0",
+        "active-generation-A:event-529:visual-0",
+        "active-generation-A:event-530:visual-0",
+        "active-generation-A:event-531:visual-0",
+        "active-generation-A:event-532:visual-0",
+        "active-generation-A:event-533:visual-0",
+        "active-generation-A:event-534:visual-0",
+        "active-generation-A:event-535:visual-0",
+        "active-generation-A:event-536:visual-0",
+        "active-generation-A:event-537:visual-0",
+        "active-generation-A:event-538:visual-0",
+        "active-generation-A:event-539:visual-0",
+        "active-generation-A:event-540:visual-0",
+        "active-generation-A:event-541:visual-0",
+        "active-generation-A:event-542:visual-0",
+        "active-generation-A:event-543:visual-0",
+        "active-generation-A:event-544:visual-0",
+        "active-generation-A:event-545:visual-0",
+        "active-generation-A:event-546:visual-0",
+        "active-generation-A:event-547:visual-0",
+        "active-generation-A:event-548:visual-0",
+        "active-generation-A:event-549:visual-0",
+        "active-generation-A:event-550:visual-0",
+        "active-generation-A:event-551:visual-0",
+        "active-generation-A:event-552:visual-0",
+        "active-generation-A:event-553:visual-0",
+        "active-generation-A:event-554:visual-0",
+        "active-generation-A:event-555:visual-0",
+        "active-generation-A:event-556:visual-0",
+        "active-generation-A:event-557:visual-0",
+        "active-generation-A:event-558:visual-0",
+        "active-generation-A:event-559:visual-0",
+        "active-generation-A:event-560:visual-0",
+        "active-generation-A:event-561:visual-0",
+        "active-generation-A:event-562:visual-0",
+        "active-generation-A:event-563:visual-0",
+        "active-generation-A:event-564:visual-0",
+        "active-generation-A:event-565:visual-0",
+        "active-generation-A:event-566:visual-0",
+        "active-generation-A:event-567:visual-0",
+        "active-generation-A:event-568:visual-0",
+        "active-generation-A:event-569:visual-0",
+        "active-generation-A:event-570:visual-0",
+        "active-generation-A:event-571:visual-0",
+        "active-generation-A:event-572:visual-0",
+        "active-generation-A:event-573:visual-0",
+        "active-generation-A:event-574:visual-0",
+        "active-generation-A:event-575:visual-0",
+        "active-generation-A:event-576:visual-0",
+        "active-generation-A:event-577:visual-0",
+        "active-generation-A:event-578:visual-0",
+        "active-generation-A:event-579:visual-0",
+        "active-generation-A:event-580:visual-0",
+        "active-generation-A:event-581:visual-0",
+        "active-generation-A:event-582:visual-0",
+        "active-generation-A:event-583:visual-0",
+        "active-generation-A:event-584:visual-0",
+        "active-generation-A:event-585:visual-0",
+        "active-generation-A:event-586:visual-0",
+        "active-generation-A:event-587:visual-0",
+        "active-generation-A:event-588:visual-0",
+        "active-generation-A:event-589:visual-0",
+        "active-generation-A:event-590:visual-0",
+        "active-generation-A:event-591:visual-0",
+        "active-generation-A:event-592:visual-0",
+        "active-generation-A:event-593:visual-0",
+        "active-generation-A:event-594:visual-0",
+        "active-generation-A:event-595:visual-0",
+        "active-generation-A:event-596:visual-0",
+        "active-generation-A:event-597:visual-0",
+        "active-generation-A:event-598:visual-0",
+        "active-generation-A:event-599:visual-0"
+      ],
+      "presentationRevision": 0,
+      "surfaceKind": "agent",
+      "ctaVisible": true,
+      "locale": "en",
+      "gutterWidth": 0,
+      "feed": {
+        "scrollTop": 3933,
+        "scrollHeight": 10670,
+        "clientHeight": 640,
+        "offsetWidth": 832,
+        "clientWidth": 832
+      },
+      "records": [
+        {
+          "type": "reset-complete",
+          "at": 3115.9000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "detail": {
+            "surface": "agent"
+          }
+        },
+        {
+          "type": "pointermove",
+          "at": 3124.7000000029802,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "clientX": 801.5,
+            "clientY": 393,
+            "pointerId": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 3141.4000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -10000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3158.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 3158.7000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "requestCount": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 3182.2000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -900
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 3345.7000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "pageCount": 1,
+            "residentCount": 150,
+            "firstVisualId": "active-generation-A:event-450:visual-0",
+            "lastVisualId": "active-generation-A:event-599:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 3352.2000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 9000
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 3357.4000000059605,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 3357.4000000059605,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3358.5,
+          "scrollTop": 3000,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3369.0999999940395,
+          "scrollTop": 2995,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3385.5999999940395,
+          "scrollTop": 2991,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3394.2999999970198,
+          "scrollTop": 2987,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3402.5999999940395,
+          "scrollTop": 2984,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3411,
+          "scrollTop": 2981,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3419.2000000029802,
+          "scrollTop": 2978,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3427.5999999940395,
+          "scrollTop": 2976,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3435.9000000059605,
+          "scrollTop": 2974,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3443.5999999940395,
+          "scrollTop": 2972,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3452.5999999940395,
+          "scrollTop": 2970,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3460.7999999970198,
+          "scrollTop": 2968,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3469.2999999970198,
+          "scrollTop": 2967,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3477,
+          "scrollTop": 2966,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3486,
+          "scrollTop": 2965,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 3494.4000000059605,
+          "scrollTop": 2964,
+          "scrollHeight": 9000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -700
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3494.5,
+          "scrollTop": 2964,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "delayed-reflow-committed",
+          "at": 3496.0999999940395,
+          "scrollTop": 4634,
+          "scrollHeight": 10670,
+          "detail": {
+            "extraLines": 70
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3500.7999999970198,
+          "scrollTop": 3933,
+          "scrollHeight": 10670,
+          "trusted": true
+        }
+      ]
+    },
+    "queuedScrollAfterWriteReturn": {
+      "installed": true,
+      "writeReturn": {
+        "type": "scroll-write-return",
+        "at": 3357.4000000059605,
+        "scrollTop": 3000,
+        "detail": {
+          "value": 3000
+        }
+      },
+      "laterScroll": {
+        "type": "scroll-event",
+        "at": 3358.5,
+        "scrollTop": 3000,
+        "scrollHeight": 9000,
+        "trusted": true
+      }
+    },
+    "afterFreshSecond": {
+      "requestCount": 2,
+      "pageCount": 2,
+      "browseState": "browse",
+      "residentCount": 200,
+      "residentVisualIds": [
+        "active-generation-A:event-400:visual-0",
+        "active-generation-A:event-401:visual-0",
+        "active-generation-A:event-402:visual-0",
+        "active-generation-A:event-403:visual-0",
+        "active-generation-A:event-404:visual-0",
+        "active-generation-A:event-405:visual-0",
+        "active-generation-A:event-406:visual-0",
+        "active-generation-A:event-407:visual-0",
+        "active-generation-A:event-408:visual-0",
+        "active-generation-A:event-409:visual-0",
+        "active-generation-A:event-410:visual-0",
+        "active-generation-A:event-411:visual-0",
+        "active-generation-A:event-412:visual-0",
+        "active-generation-A:event-413:visual-0",
+        "active-generation-A:event-414:visual-0",
+        "active-generation-A:event-415:visual-0",
+        "active-generation-A:event-416:visual-0",
+        "active-generation-A:event-417:visual-0",
+        "active-generation-A:event-418:visual-0",
+        "active-generation-A:event-419:visual-0",
+        "active-generation-A:event-420:visual-0",
+        "active-generation-A:event-421:visual-0",
+        "active-generation-A:event-422:visual-0",
+        "active-generation-A:event-423:visual-0",
+        "active-generation-A:event-424:visual-0",
+        "active-generation-A:event-425:visual-0",
+        "active-generation-A:event-426:visual-0",
+        "active-generation-A:event-427:visual-0",
+        "active-generation-A:event-428:visual-0",
+        "active-generation-A:event-429:visual-0",
+        "active-generation-A:event-430:visual-0",
+        "active-generation-A:event-431:visual-0",
+        "active-generation-A:event-432:visual-0",
+        "active-generation-A:event-433:visual-0",
+        "active-generation-A:event-434:visual-0",
+        "active-generation-A:event-435:visual-0",
+        "active-generation-A:event-436:visual-0",
+        "active-generation-A:event-437:visual-0",
+        "active-generation-A:event-438:visual-0",
+        "active-generation-A:event-439:visual-0",
+        "active-generation-A:event-440:visual-0",
+        "active-generation-A:event-441:visual-0",
+        "active-generation-A:event-442:visual-0",
+        "active-generation-A:event-443:visual-0",
+        "active-generation-A:event-444:visual-0",
+        "active-generation-A:event-445:visual-0",
+        "active-generation-A:event-446:visual-0",
+        "active-generation-A:event-447:visual-0",
+        "active-generation-A:event-448:visual-0",
+        "active-generation-A:event-449:visual-0",
+        "active-generation-A:event-450:visual-0",
+        "active-generation-A:event-451:visual-0",
+        "active-generation-A:event-452:visual-0",
+        "active-generation-A:event-453:visual-0",
+        "active-generation-A:event-454:visual-0",
+        "active-generation-A:event-455:visual-0",
+        "active-generation-A:event-456:visual-0",
+        "active-generation-A:event-457:visual-0",
+        "active-generation-A:event-458:visual-0",
+        "active-generation-A:event-459:visual-0",
+        "active-generation-A:event-460:visual-0",
+        "active-generation-A:event-461:visual-0",
+        "active-generation-A:event-462:visual-0",
+        "active-generation-A:event-463:visual-0",
+        "active-generation-A:event-464:visual-0",
+        "active-generation-A:event-465:visual-0",
+        "active-generation-A:event-466:visual-0",
+        "active-generation-A:event-467:visual-0",
+        "active-generation-A:event-468:visual-0",
+        "active-generation-A:event-469:visual-0",
+        "active-generation-A:event-470:visual-0",
+        "active-generation-A:event-471:visual-0",
+        "active-generation-A:event-472:visual-0",
+        "active-generation-A:event-473:visual-0",
+        "active-generation-A:event-474:visual-0",
+        "active-generation-A:event-475:visual-0",
+        "active-generation-A:event-476:visual-0",
+        "active-generation-A:event-477:visual-0",
+        "active-generation-A:event-478:visual-0",
+        "active-generation-A:event-479:visual-0",
+        "active-generation-A:event-480:visual-0",
+        "active-generation-A:event-481:visual-0",
+        "active-generation-A:event-482:visual-0",
+        "active-generation-A:event-483:visual-0",
+        "active-generation-A:event-484:visual-0",
+        "active-generation-A:event-485:visual-0",
+        "active-generation-A:event-486:visual-0",
+        "active-generation-A:event-487:visual-0",
+        "active-generation-A:event-488:visual-0",
+        "active-generation-A:event-489:visual-0",
+        "active-generation-A:event-490:visual-0",
+        "active-generation-A:event-491:visual-0",
+        "active-generation-A:event-492:visual-0",
+        "active-generation-A:event-493:visual-0",
+        "active-generation-A:event-494:visual-0",
+        "active-generation-A:event-495:visual-0",
+        "active-generation-A:event-496:visual-0",
+        "active-generation-A:event-497:visual-0",
+        "active-generation-A:event-498:visual-0",
+        "active-generation-A:event-499:visual-0",
+        "active-generation-A:event-500:visual-0",
+        "active-generation-A:event-501:visual-0",
+        "active-generation-A:event-502:visual-0",
+        "active-generation-A:event-503:visual-0",
+        "active-generation-A:event-504:visual-0",
+        "active-generation-A:event-505:visual-0",
+        "active-generation-A:event-506:visual-0",
+        "active-generation-A:event-507:visual-0",
+        "active-generation-A:event-508:visual-0",
+        "active-generation-A:event-509:visual-0",
+        "active-generation-A:event-510:visual-0",
+        "active-generation-A:event-511:visual-0",
+        "active-generation-A:event-512:visual-0",
+        "active-generation-A:event-513:visual-0",
+        "active-generation-A:event-514:visual-0",
+        "active-generation-A:event-515:visual-0",
+        "active-generation-A:event-516:visual-0",
+        "active-generation-A:event-517:visual-0",
+        "active-generation-A:event-518:visual-0",
+        "active-generation-A:event-519:visual-0",
+        "active-generation-A:event-520:visual-0",
+        "active-generation-A:event-521:visual-0",
+        "active-generation-A:event-522:visual-0",
+        "active-generation-A:event-523:visual-0",
+        "active-generation-A:event-524:visual-0",
+        "active-generation-A:event-525:visual-0",
+        "active-generation-A:event-526:visual-0",
+        "active-generation-A:event-527:visual-0",
+        "active-generation-A:event-528:visual-0",
+        "active-generation-A:event-529:visual-0",
+        "active-generation-A:event-530:visual-0",
+        "active-generation-A:event-531:visual-0",
+        "active-generation-A:event-532:visual-0",
+        "active-generation-A:event-533:visual-0",
+        "active-generation-A:event-534:visual-0",
+        "active-generation-A:event-535:visual-0",
+        "active-generation-A:event-536:visual-0",
+        "active-generation-A:event-537:visual-0",
+        "active-generation-A:event-538:visual-0",
+        "active-generation-A:event-539:visual-0",
+        "active-generation-A:event-540:visual-0",
+        "active-generation-A:event-541:visual-0",
+        "active-generation-A:event-542:visual-0",
+        "active-generation-A:event-543:visual-0",
+        "active-generation-A:event-544:visual-0",
+        "active-generation-A:event-545:visual-0",
+        "active-generation-A:event-546:visual-0",
+        "active-generation-A:event-547:visual-0",
+        "active-generation-A:event-548:visual-0",
+        "active-generation-A:event-549:visual-0",
+        "active-generation-A:event-550:visual-0",
+        "active-generation-A:event-551:visual-0",
+        "active-generation-A:event-552:visual-0",
+        "active-generation-A:event-553:visual-0",
+        "active-generation-A:event-554:visual-0",
+        "active-generation-A:event-555:visual-0",
+        "active-generation-A:event-556:visual-0",
+        "active-generation-A:event-557:visual-0",
+        "active-generation-A:event-558:visual-0",
+        "active-generation-A:event-559:visual-0",
+        "active-generation-A:event-560:visual-0",
+        "active-generation-A:event-561:visual-0",
+        "active-generation-A:event-562:visual-0",
+        "active-generation-A:event-563:visual-0",
+        "active-generation-A:event-564:visual-0",
+        "active-generation-A:event-565:visual-0",
+        "active-generation-A:event-566:visual-0",
+        "active-generation-A:event-567:visual-0",
+        "active-generation-A:event-568:visual-0",
+        "active-generation-A:event-569:visual-0",
+        "active-generation-A:event-570:visual-0",
+        "active-generation-A:event-571:visual-0",
+        "active-generation-A:event-572:visual-0",
+        "active-generation-A:event-573:visual-0",
+        "active-generation-A:event-574:visual-0",
+        "active-generation-A:event-575:visual-0",
+        "active-generation-A:event-576:visual-0",
+        "active-generation-A:event-577:visual-0",
+        "active-generation-A:event-578:visual-0",
+        "active-generation-A:event-579:visual-0",
+        "active-generation-A:event-580:visual-0",
+        "active-generation-A:event-581:visual-0",
+        "active-generation-A:event-582:visual-0",
+        "active-generation-A:event-583:visual-0",
+        "active-generation-A:event-584:visual-0",
+        "active-generation-A:event-585:visual-0",
+        "active-generation-A:event-586:visual-0",
+        "active-generation-A:event-587:visual-0",
+        "active-generation-A:event-588:visual-0",
+        "active-generation-A:event-589:visual-0",
+        "active-generation-A:event-590:visual-0",
+        "active-generation-A:event-591:visual-0",
+        "active-generation-A:event-592:visual-0",
+        "active-generation-A:event-593:visual-0",
+        "active-generation-A:event-594:visual-0",
+        "active-generation-A:event-595:visual-0",
+        "active-generation-A:event-596:visual-0",
+        "active-generation-A:event-597:visual-0",
+        "active-generation-A:event-598:visual-0",
+        "active-generation-A:event-599:visual-0"
+      ],
+      "presentationRevision": 0,
+      "surfaceKind": "agent",
+      "ctaVisible": true,
+      "locale": "en",
+      "gutterWidth": 0,
+      "feed": {
+        "scrollTop": 3000,
+        "scrollHeight": 13670,
+        "clientHeight": 640,
+        "offsetWidth": 832,
+        "clientWidth": 832
+      },
+      "records": [
+        {
+          "type": "reset-complete",
+          "at": 3115.9000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "detail": {
+            "surface": "agent"
+          }
+        },
+        {
+          "type": "pointermove",
+          "at": 3124.7000000029802,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "clientX": 801.5,
+            "clientY": 393,
+            "pointerId": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 3141.4000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -10000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3158.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 3158.7000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "requestCount": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 3182.2000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -900
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 3345.7000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "pageCount": 1,
+            "residentCount": 150,
+            "firstVisualId": "active-generation-A:event-450:visual-0",
+            "lastVisualId": "active-generation-A:event-599:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 3352.2000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 9000
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 3357.4000000059605,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 3357.4000000059605,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3358.5,
+          "scrollTop": 3000,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3369.0999999940395,
+          "scrollTop": 2995,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3385.5999999940395,
+          "scrollTop": 2991,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3394.2999999970198,
+          "scrollTop": 2987,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3402.5999999940395,
+          "scrollTop": 2984,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3411,
+          "scrollTop": 2981,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3419.2000000029802,
+          "scrollTop": 2978,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3427.5999999940395,
+          "scrollTop": 2976,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3435.9000000059605,
+          "scrollTop": 2974,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3443.5999999940395,
+          "scrollTop": 2972,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3452.5999999940395,
+          "scrollTop": 2970,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3460.7999999970198,
+          "scrollTop": 2968,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3469.2999999970198,
+          "scrollTop": 2967,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3477,
+          "scrollTop": 2966,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3486,
+          "scrollTop": 2965,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 3494.4000000059605,
+          "scrollTop": 2964,
+          "scrollHeight": 9000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -700
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3494.5,
+          "scrollTop": 2964,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "delayed-reflow-committed",
+          "at": 3496.0999999940395,
+          "scrollTop": 4634,
+          "scrollHeight": 10670,
+          "detail": {
+            "extraLines": 70
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3500.7999999970198,
+          "scrollTop": 3933,
+          "scrollHeight": 10670,
+          "trusted": true
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 4055.4000000059605,
+          "scrollTop": 3933,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 4055.5,
+          "scrollTop": 180,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 4056.0999999940395,
+          "scrollTop": 180,
+          "scrollHeight": 10670,
+          "trusted": true
+        },
+        {
+          "type": "pointermove",
+          "at": 4383.79999999702,
+          "scrollTop": 180,
+          "scrollHeight": 10670,
+          "trusted": true,
+          "detail": {
+            "clientX": 801.5,
+            "clientY": 393,
+            "pointerId": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 4401.0999999940395,
+          "scrollTop": 180,
+          "scrollHeight": 10670,
+          "trusted": true,
+          "detail": {
+            "deltaY": -1000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 4410,
+          "scrollTop": 0,
+          "scrollHeight": 10670,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 4410.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 10670,
+          "detail": {
+            "requestCount": 2
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 4453.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 10670,
+          "detail": {
+            "pageCount": 2,
+            "residentCount": 200,
+            "firstVisualId": "active-generation-A:event-400:visual-0",
+            "lastVisualId": "active-generation-A:event-599:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 4458.70000000298,
+          "scrollTop": 0,
+          "scrollHeight": 13670
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 4460.9000000059605,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 4460.9000000059605,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 4462.20000000298,
+          "scrollTop": 3000,
+          "scrollHeight": 13670,
+          "trusted": true
+        }
+      ]
+    },
+    "turnover": {
+      "requestCount": 7,
+      "pageCount": 7,
+      "browseState": "browse",
+      "residentCount": 300,
+      "residentVisualIds": [
+        "active-generation-A:event-150:visual-0",
+        "active-generation-A:event-151:visual-0",
+        "active-generation-A:event-152:visual-0",
+        "active-generation-A:event-153:visual-0",
+        "active-generation-A:event-154:visual-0",
+        "active-generation-A:event-155:visual-0",
+        "active-generation-A:event-156:visual-0",
+        "active-generation-A:event-157:visual-0",
+        "active-generation-A:event-158:visual-0",
+        "active-generation-A:event-159:visual-0",
+        "active-generation-A:event-160:visual-0",
+        "active-generation-A:event-161:visual-0",
+        "active-generation-A:event-162:visual-0",
+        "active-generation-A:event-163:visual-0",
+        "active-generation-A:event-164:visual-0",
+        "active-generation-A:event-165:visual-0",
+        "active-generation-A:event-166:visual-0",
+        "active-generation-A:event-167:visual-0",
+        "active-generation-A:event-168:visual-0",
+        "active-generation-A:event-169:visual-0",
+        "active-generation-A:event-170:visual-0",
+        "active-generation-A:event-171:visual-0",
+        "active-generation-A:event-172:visual-0",
+        "active-generation-A:event-173:visual-0",
+        "active-generation-A:event-174:visual-0",
+        "active-generation-A:event-175:visual-0",
+        "active-generation-A:event-176:visual-0",
+        "active-generation-A:event-177:visual-0",
+        "active-generation-A:event-178:visual-0",
+        "active-generation-A:event-179:visual-0",
+        "active-generation-A:event-180:visual-0",
+        "active-generation-A:event-181:visual-0",
+        "active-generation-A:event-182:visual-0",
+        "active-generation-A:event-183:visual-0",
+        "active-generation-A:event-184:visual-0",
+        "active-generation-A:event-185:visual-0",
+        "active-generation-A:event-186:visual-0",
+        "active-generation-A:event-187:visual-0",
+        "active-generation-A:event-188:visual-0",
+        "active-generation-A:event-189:visual-0",
+        "active-generation-A:event-190:visual-0",
+        "active-generation-A:event-191:visual-0",
+        "active-generation-A:event-192:visual-0",
+        "active-generation-A:event-193:visual-0",
+        "active-generation-A:event-194:visual-0",
+        "active-generation-A:event-195:visual-0",
+        "active-generation-A:event-196:visual-0",
+        "active-generation-A:event-197:visual-0",
+        "active-generation-A:event-198:visual-0",
+        "active-generation-A:event-199:visual-0",
+        "active-generation-A:event-200:visual-0",
+        "active-generation-A:event-201:visual-0",
+        "active-generation-A:event-202:visual-0",
+        "active-generation-A:event-203:visual-0",
+        "active-generation-A:event-204:visual-0",
+        "active-generation-A:event-205:visual-0",
+        "active-generation-A:event-206:visual-0",
+        "active-generation-A:event-207:visual-0",
+        "active-generation-A:event-208:visual-0",
+        "active-generation-A:event-209:visual-0",
+        "active-generation-A:event-210:visual-0",
+        "active-generation-A:event-211:visual-0",
+        "active-generation-A:event-212:visual-0",
+        "active-generation-A:event-213:visual-0",
+        "active-generation-A:event-214:visual-0",
+        "active-generation-A:event-215:visual-0",
+        "active-generation-A:event-216:visual-0",
+        "active-generation-A:event-217:visual-0",
+        "active-generation-A:event-218:visual-0",
+        "active-generation-A:event-219:visual-0",
+        "active-generation-A:event-220:visual-0",
+        "active-generation-A:event-221:visual-0",
+        "active-generation-A:event-222:visual-0",
+        "active-generation-A:event-223:visual-0",
+        "active-generation-A:event-224:visual-0",
+        "active-generation-A:event-225:visual-0",
+        "active-generation-A:event-226:visual-0",
+        "active-generation-A:event-227:visual-0",
+        "active-generation-A:event-228:visual-0",
+        "active-generation-A:event-229:visual-0",
+        "active-generation-A:event-230:visual-0",
+        "active-generation-A:event-231:visual-0",
+        "active-generation-A:event-232:visual-0",
+        "active-generation-A:event-233:visual-0",
+        "active-generation-A:event-234:visual-0",
+        "active-generation-A:event-235:visual-0",
+        "active-generation-A:event-236:visual-0",
+        "active-generation-A:event-237:visual-0",
+        "active-generation-A:event-238:visual-0",
+        "active-generation-A:event-239:visual-0",
+        "active-generation-A:event-240:visual-0",
+        "active-generation-A:event-241:visual-0",
+        "active-generation-A:event-242:visual-0",
+        "active-generation-A:event-243:visual-0",
+        "active-generation-A:event-244:visual-0",
+        "active-generation-A:event-245:visual-0",
+        "active-generation-A:event-246:visual-0",
+        "active-generation-A:event-247:visual-0",
+        "active-generation-A:event-248:visual-0",
+        "active-generation-A:event-249:visual-0",
+        "active-generation-A:event-250:visual-0",
+        "active-generation-A:event-251:visual-0",
+        "active-generation-A:event-252:visual-0",
+        "active-generation-A:event-253:visual-0",
+        "active-generation-A:event-254:visual-0",
+        "active-generation-A:event-255:visual-0",
+        "active-generation-A:event-256:visual-0",
+        "active-generation-A:event-257:visual-0",
+        "active-generation-A:event-258:visual-0",
+        "active-generation-A:event-259:visual-0",
+        "active-generation-A:event-260:visual-0",
+        "active-generation-A:event-261:visual-0",
+        "active-generation-A:event-262:visual-0",
+        "active-generation-A:event-263:visual-0",
+        "active-generation-A:event-264:visual-0",
+        "active-generation-A:event-265:visual-0",
+        "active-generation-A:event-266:visual-0",
+        "active-generation-A:event-267:visual-0",
+        "active-generation-A:event-268:visual-0",
+        "active-generation-A:event-269:visual-0",
+        "active-generation-A:event-270:visual-0",
+        "active-generation-A:event-271:visual-0",
+        "active-generation-A:event-272:visual-0",
+        "active-generation-A:event-273:visual-0",
+        "active-generation-A:event-274:visual-0",
+        "active-generation-A:event-275:visual-0",
+        "active-generation-A:event-276:visual-0",
+        "active-generation-A:event-277:visual-0",
+        "active-generation-A:event-278:visual-0",
+        "active-generation-A:event-279:visual-0",
+        "active-generation-A:event-280:visual-0",
+        "active-generation-A:event-281:visual-0",
+        "active-generation-A:event-282:visual-0",
+        "active-generation-A:event-283:visual-0",
+        "active-generation-A:event-284:visual-0",
+        "active-generation-A:event-285:visual-0",
+        "active-generation-A:event-286:visual-0",
+        "active-generation-A:event-287:visual-0",
+        "active-generation-A:event-288:visual-0",
+        "active-generation-A:event-289:visual-0",
+        "active-generation-A:event-290:visual-0",
+        "active-generation-A:event-291:visual-0",
+        "active-generation-A:event-292:visual-0",
+        "active-generation-A:event-293:visual-0",
+        "active-generation-A:event-294:visual-0",
+        "active-generation-A:event-295:visual-0",
+        "active-generation-A:event-296:visual-0",
+        "active-generation-A:event-297:visual-0",
+        "active-generation-A:event-298:visual-0",
+        "active-generation-A:event-299:visual-0",
+        "active-generation-A:event-300:visual-0",
+        "active-generation-A:event-301:visual-0",
+        "active-generation-A:event-302:visual-0",
+        "active-generation-A:event-303:visual-0",
+        "active-generation-A:event-304:visual-0",
+        "active-generation-A:event-305:visual-0",
+        "active-generation-A:event-306:visual-0",
+        "active-generation-A:event-307:visual-0",
+        "active-generation-A:event-308:visual-0",
+        "active-generation-A:event-309:visual-0",
+        "active-generation-A:event-310:visual-0",
+        "active-generation-A:event-311:visual-0",
+        "active-generation-A:event-312:visual-0",
+        "active-generation-A:event-313:visual-0",
+        "active-generation-A:event-314:visual-0",
+        "active-generation-A:event-315:visual-0",
+        "active-generation-A:event-316:visual-0",
+        "active-generation-A:event-317:visual-0",
+        "active-generation-A:event-318:visual-0",
+        "active-generation-A:event-319:visual-0",
+        "active-generation-A:event-320:visual-0",
+        "active-generation-A:event-321:visual-0",
+        "active-generation-A:event-322:visual-0",
+        "active-generation-A:event-323:visual-0",
+        "active-generation-A:event-324:visual-0",
+        "active-generation-A:event-325:visual-0",
+        "active-generation-A:event-326:visual-0",
+        "active-generation-A:event-327:visual-0",
+        "active-generation-A:event-328:visual-0",
+        "active-generation-A:event-329:visual-0",
+        "active-generation-A:event-330:visual-0",
+        "active-generation-A:event-331:visual-0",
+        "active-generation-A:event-332:visual-0",
+        "active-generation-A:event-333:visual-0",
+        "active-generation-A:event-334:visual-0",
+        "active-generation-A:event-335:visual-0",
+        "active-generation-A:event-336:visual-0",
+        "active-generation-A:event-337:visual-0",
+        "active-generation-A:event-338:visual-0",
+        "active-generation-A:event-339:visual-0",
+        "active-generation-A:event-340:visual-0",
+        "active-generation-A:event-341:visual-0",
+        "active-generation-A:event-342:visual-0",
+        "active-generation-A:event-343:visual-0",
+        "active-generation-A:event-344:visual-0",
+        "active-generation-A:event-345:visual-0",
+        "active-generation-A:event-346:visual-0",
+        "active-generation-A:event-347:visual-0",
+        "active-generation-A:event-348:visual-0",
+        "active-generation-A:event-349:visual-0",
+        "active-generation-A:event-350:visual-0",
+        "active-generation-A:event-351:visual-0",
+        "active-generation-A:event-352:visual-0",
+        "active-generation-A:event-353:visual-0",
+        "active-generation-A:event-354:visual-0",
+        "active-generation-A:event-355:visual-0",
+        "active-generation-A:event-356:visual-0",
+        "active-generation-A:event-357:visual-0",
+        "active-generation-A:event-358:visual-0",
+        "active-generation-A:event-359:visual-0",
+        "active-generation-A:event-360:visual-0",
+        "active-generation-A:event-361:visual-0",
+        "active-generation-A:event-362:visual-0",
+        "active-generation-A:event-363:visual-0",
+        "active-generation-A:event-364:visual-0",
+        "active-generation-A:event-365:visual-0",
+        "active-generation-A:event-366:visual-0",
+        "active-generation-A:event-367:visual-0",
+        "active-generation-A:event-368:visual-0",
+        "active-generation-A:event-369:visual-0",
+        "active-generation-A:event-370:visual-0",
+        "active-generation-A:event-371:visual-0",
+        "active-generation-A:event-372:visual-0",
+        "active-generation-A:event-373:visual-0",
+        "active-generation-A:event-374:visual-0",
+        "active-generation-A:event-375:visual-0",
+        "active-generation-A:event-376:visual-0",
+        "active-generation-A:event-377:visual-0",
+        "active-generation-A:event-378:visual-0",
+        "active-generation-A:event-379:visual-0",
+        "active-generation-A:event-380:visual-0",
+        "active-generation-A:event-381:visual-0",
+        "active-generation-A:event-382:visual-0",
+        "active-generation-A:event-383:visual-0",
+        "active-generation-A:event-384:visual-0",
+        "active-generation-A:event-385:visual-0",
+        "active-generation-A:event-386:visual-0",
+        "active-generation-A:event-387:visual-0",
+        "active-generation-A:event-388:visual-0",
+        "active-generation-A:event-389:visual-0",
+        "active-generation-A:event-390:visual-0",
+        "active-generation-A:event-391:visual-0",
+        "active-generation-A:event-392:visual-0",
+        "active-generation-A:event-393:visual-0",
+        "active-generation-A:event-394:visual-0",
+        "active-generation-A:event-395:visual-0",
+        "active-generation-A:event-396:visual-0",
+        "active-generation-A:event-397:visual-0",
+        "active-generation-A:event-398:visual-0",
+        "active-generation-A:event-399:visual-0",
+        "active-generation-A:event-400:visual-0",
+        "active-generation-A:event-401:visual-0",
+        "active-generation-A:event-402:visual-0",
+        "active-generation-A:event-403:visual-0",
+        "active-generation-A:event-404:visual-0",
+        "active-generation-A:event-405:visual-0",
+        "active-generation-A:event-406:visual-0",
+        "active-generation-A:event-407:visual-0",
+        "active-generation-A:event-408:visual-0",
+        "active-generation-A:event-409:visual-0",
+        "active-generation-A:event-410:visual-0",
+        "active-generation-A:event-411:visual-0",
+        "active-generation-A:event-412:visual-0",
+        "active-generation-A:event-413:visual-0",
+        "active-generation-A:event-414:visual-0",
+        "active-generation-A:event-415:visual-0",
+        "active-generation-A:event-416:visual-0",
+        "active-generation-A:event-417:visual-0",
+        "active-generation-A:event-418:visual-0",
+        "active-generation-A:event-419:visual-0",
+        "active-generation-A:event-420:visual-0",
+        "active-generation-A:event-421:visual-0",
+        "active-generation-A:event-422:visual-0",
+        "active-generation-A:event-423:visual-0",
+        "active-generation-A:event-424:visual-0",
+        "active-generation-A:event-425:visual-0",
+        "active-generation-A:event-426:visual-0",
+        "active-generation-A:event-427:visual-0",
+        "active-generation-A:event-428:visual-0",
+        "active-generation-A:event-429:visual-0",
+        "active-generation-A:event-430:visual-0",
+        "active-generation-A:event-431:visual-0",
+        "active-generation-A:event-432:visual-0",
+        "active-generation-A:event-433:visual-0",
+        "active-generation-A:event-434:visual-0",
+        "active-generation-A:event-435:visual-0",
+        "active-generation-A:event-436:visual-0",
+        "active-generation-A:event-437:visual-0",
+        "active-generation-A:event-438:visual-0",
+        "active-generation-A:event-439:visual-0",
+        "active-generation-A:event-440:visual-0",
+        "active-generation-A:event-441:visual-0",
+        "active-generation-A:event-442:visual-0",
+        "active-generation-A:event-443:visual-0",
+        "active-generation-A:event-444:visual-0",
+        "active-generation-A:event-445:visual-0",
+        "active-generation-A:event-446:visual-0",
+        "active-generation-A:event-447:visual-0",
+        "active-generation-A:event-448:visual-0",
+        "active-generation-A:event-449:visual-0"
+      ],
+      "presentationRevision": 0,
+      "surfaceKind": "agent",
+      "ctaVisible": true,
+      "locale": "en",
+      "gutterWidth": 0,
+      "feed": {
+        "scrollTop": 3000,
+        "scrollHeight": 18000,
+        "clientHeight": 640,
+        "offsetWidth": 832,
+        "clientWidth": 832
+      },
+      "records": [
+        {
+          "type": "reset-complete",
+          "at": 3115.9000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "detail": {
+            "surface": "agent"
+          }
+        },
+        {
+          "type": "pointermove",
+          "at": 3124.7000000029802,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "clientX": 801.5,
+            "clientY": 393,
+            "pointerId": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 3141.4000000059605,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -10000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3158.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 3158.7000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "requestCount": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 3182.2000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -900
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 3345.7000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "pageCount": 1,
+            "residentCount": 150,
+            "firstVisualId": "active-generation-A:event-450:visual-0",
+            "lastVisualId": "active-generation-A:event-599:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 3352.2000000029802,
+          "scrollTop": 0,
+          "scrollHeight": 9000
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 3357.4000000059605,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 3357.4000000059605,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3358.5,
+          "scrollTop": 3000,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3369.0999999940395,
+          "scrollTop": 2995,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3385.5999999940395,
+          "scrollTop": 2991,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3394.2999999970198,
+          "scrollTop": 2987,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3402.5999999940395,
+          "scrollTop": 2984,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3411,
+          "scrollTop": 2981,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3419.2000000029802,
+          "scrollTop": 2978,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3427.5999999940395,
+          "scrollTop": 2976,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3435.9000000059605,
+          "scrollTop": 2974,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3443.5999999940395,
+          "scrollTop": 2972,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3452.5999999940395,
+          "scrollTop": 2970,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3460.7999999970198,
+          "scrollTop": 2968,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3469.2999999970198,
+          "scrollTop": 2967,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3477,
+          "scrollTop": 2966,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 3486,
+          "scrollTop": 2965,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 3494.4000000059605,
+          "scrollTop": 2964,
+          "scrollHeight": 9000,
+          "trusted": true,
+          "detail": {
+            "deltaY": -700
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3494.5,
+          "scrollTop": 2964,
+          "scrollHeight": 9000,
+          "trusted": true
+        },
+        {
+          "type": "delayed-reflow-committed",
+          "at": 3496.0999999940395,
+          "scrollTop": 4634,
+          "scrollHeight": 10670,
+          "detail": {
+            "extraLines": 70
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 3500.7999999970198,
+          "scrollTop": 3933,
+          "scrollHeight": 10670,
+          "trusted": true
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 4055.4000000059605,
+          "scrollTop": 3933,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 4055.5,
+          "scrollTop": 180,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 4056.0999999940395,
+          "scrollTop": 180,
+          "scrollHeight": 10670,
+          "trusted": true
+        },
+        {
+          "type": "pointermove",
+          "at": 4383.79999999702,
+          "scrollTop": 180,
+          "scrollHeight": 10670,
+          "trusted": true,
+          "detail": {
+            "clientX": 801.5,
+            "clientY": 393,
+            "pointerId": 1
+          }
+        },
+        {
+          "type": "wheel",
+          "at": 4401.0999999940395,
+          "scrollTop": 180,
+          "scrollHeight": 10670,
+          "trusted": true,
+          "detail": {
+            "deltaY": -1000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 4410,
+          "scrollTop": 0,
+          "scrollHeight": 10670,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 4410.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 10670,
+          "detail": {
+            "requestCount": 2
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 4453.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 10670,
+          "detail": {
+            "pageCount": 2,
+            "residentCount": 200,
+            "firstVisualId": "active-generation-A:event-400:visual-0",
+            "lastVisualId": "active-generation-A:event-599:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 4458.70000000298,
+          "scrollTop": 0,
+          "scrollHeight": 13670
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 4460.9000000059605,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 4460.9000000059605,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 4462.20000000298,
+          "scrollTop": 3000,
+          "scrollHeight": 13670,
+          "trusted": true
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 4870.9000000059605,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 4870.9000000059605,
+          "scrollTop": 180,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 4871.5999999940395,
+          "scrollTop": 180,
+          "scrollHeight": 13670,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 5192.5,
+          "scrollTop": 180,
+          "scrollHeight": 13670,
+          "trusted": true,
+          "detail": {
+            "deltaY": -1000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 5201,
+          "scrollTop": 0,
+          "scrollHeight": 13670,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 5201.29999999702,
+          "scrollTop": 0,
+          "scrollHeight": 13670,
+          "detail": {
+            "requestCount": 3
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 5225.20000000298,
+          "scrollTop": 0,
+          "scrollHeight": 13670,
+          "detail": {
+            "pageCount": 3,
+            "residentCount": 250,
+            "firstVisualId": "active-generation-A:event-350:visual-0",
+            "lastVisualId": "active-generation-A:event-599:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 5230.5,
+          "scrollTop": 0,
+          "scrollHeight": 16670
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 5233.29999999702,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 5233.29999999702,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 5235,
+          "scrollTop": 3000,
+          "scrollHeight": 16670,
+          "trusted": true
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 5590.79999999702,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 5590.79999999702,
+          "scrollTop": 180,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 5591.5,
+          "scrollTop": 180,
+          "scrollHeight": 16670,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 5911.5999999940395,
+          "scrollTop": 180,
+          "scrollHeight": 16670,
+          "trusted": true,
+          "detail": {
+            "deltaY": -1000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 5917.5999999940395,
+          "scrollTop": 0,
+          "scrollHeight": 16670,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 5917.9000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 16670,
+          "detail": {
+            "requestCount": 4
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 5941.29999999702,
+          "scrollTop": 0,
+          "scrollHeight": 16670,
+          "detail": {
+            "pageCount": 4,
+            "residentCount": 300,
+            "firstVisualId": "active-generation-A:event-300:visual-0",
+            "lastVisualId": "active-generation-A:event-599:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 5943.70000000298,
+          "scrollTop": 0,
+          "scrollHeight": 19670
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 5946,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 5946,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 5947.70000000298,
+          "scrollTop": 3000,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 6304,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 6304.0999999940395,
+          "scrollTop": 180,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 6304.70000000298,
+          "scrollTop": 180,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 6616.70000000298,
+          "scrollTop": 180,
+          "scrollHeight": 19670,
+          "trusted": true,
+          "detail": {
+            "deltaY": -1000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 6625,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 6625.20000000298,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "detail": {
+            "requestCount": 5
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 6648.5999999940395,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "detail": {
+            "pageCount": 5,
+            "residentCount": 300,
+            "firstVisualId": "active-generation-A:event-250:visual-0",
+            "lastVisualId": "active-generation-A:event-549:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 6651.70000000298,
+          "scrollTop": 0,
+          "scrollHeight": 19670
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 6654.20000000298,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 6654.20000000298,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 6656,
+          "scrollTop": 3000,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 7011.70000000298,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 7011.79999999702,
+          "scrollTop": 180,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 7012.5,
+          "scrollTop": 180,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 7325.79999999702,
+          "scrollTop": 180,
+          "scrollHeight": 19670,
+          "trusted": true,
+          "detail": {
+            "deltaY": -1000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 7333.4000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 7333.79999999702,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "detail": {
+            "requestCount": 6
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 7357.5999999940395,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "detail": {
+            "pageCount": 6,
+            "residentCount": 300,
+            "firstVisualId": "active-generation-A:event-200:visual-0",
+            "lastVisualId": "active-generation-A:event-499:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 7364.9000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 19670
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 7367.5999999940395,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 7367.5999999940395,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 7369.5,
+          "scrollTop": 3000,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 7723.79999999702,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 7723.79999999702,
+          "scrollTop": 180,
+          "detail": {
+            "value": 180
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 7724.5,
+          "scrollTop": 180,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "wheel",
+          "at": 8034.29999999702,
+          "scrollTop": 180,
+          "scrollHeight": 19670,
+          "trusted": true,
+          "detail": {
+            "deltaY": -1000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 8041.5999999940395,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 8041.9000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "detail": {
+            "requestCount": 7
+          }
+        },
+        {
+          "type": "response-state-committed",
+          "at": 8065.9000000059605,
+          "scrollTop": 0,
+          "scrollHeight": 19670,
+          "detail": {
+            "pageCount": 7,
+            "residentCount": 300,
+            "firstVisualId": "active-generation-A:event-150:visual-0",
+            "lastVisualId": "active-generation-A:event-449:visual-0"
+          }
+        },
+        {
+          "type": "response-next-tick",
+          "at": 8069.0999999940395,
+          "scrollTop": 0,
+          "scrollHeight": 18000
+        },
+        {
+          "type": "scroll-write-start",
+          "at": 8071.4000000059605,
+          "scrollTop": 0,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 8071.4000000059605,
+          "scrollTop": 3000,
+          "detail": {
+            "value": 3000
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 8073.29999999702,
+          "scrollTop": 3000,
+          "scrollHeight": 18000,
+          "trusted": true
+        }
+      ],
+      "domVisualCount": 300,
+      "domIdsUnique": 300
+    },
+    "manualBottom": {
+      "latestArrowCleared": true,
+      "browseArrowRetained": true,
+      "browseExited": true
+    }
+  },
+  "inputs": {
+    "keyboard": {
+      "requestCount": 1,
+      "pageCount": 0,
+      "browseState": "loading",
+      "residentCount": 0,
+      "residentVisualIds": [],
+      "presentationRevision": 0,
+      "surfaceKind": "agent",
+      "ctaVisible": true,
+      "locale": "en",
+      "gutterWidth": 0,
+      "feed": {
+        "scrollTop": 0,
+        "scrollHeight": 6000,
+        "clientHeight": 640,
+        "offsetWidth": 832,
+        "clientWidth": 832
+      },
+      "records": [
+        {
+          "type": "scroll-write-start",
+          "at": 8448.90000000596,
+          "scrollTop": 0,
+          "detail": {
+            "value": 6000
+          }
+        },
+        {
+          "type": "scroll-write-return",
+          "at": 8448.90000000596,
+          "scrollTop": 5360,
+          "detail": {
+            "value": 6000
+          }
+        },
+        {
+          "type": "reset-complete",
+          "at": 8451.09999999404,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "detail": {
+            "surface": "agent"
+          }
+        },
+        {
+          "type": "keydown",
+          "at": 8457,
+          "scrollTop": 5360,
+          "scrollHeight": 6000,
+          "trusted": true,
+          "detail": {
+            "key": "Home",
+            "shiftKey": false
+          }
+        },
+        {
+          "type": "scroll-event",
+          "at": 8465.40000000596,
+          "scrollTop": 5331,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8474.40000000596,
+          "scrollTop": 5223,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8483,
+          "scrollTop": 5047,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8491.20000000298,
+          "scrollTop": 4800,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8499.29999999702,
+          "scrollTop": 4489,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8507.79999999702,
+          "scrollTop": 4099,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8515.29999999702,
+          "scrollTop": 3700,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8523.90000000596,
+          "scrollTop": 3201,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8532.79999999702,
+          "scrollTop": 2655,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8541.20000000298,
+          "scrollTop": 2142,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8549.59999999404,
+          "scrollTop": 1657,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8557.90000000596,
+          "scrollTop": 1218,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8566.20000000298,
+          "scrollTop": 841,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8574.59999999404,
+          "scrollTop": 527,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8582.90000000596,
+          "scrollTop": 289,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8591.20000000298,
+          "scrollTop": 123,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8599.09999999404,
+          "scrollTop": 32,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "scroll-event",
+          "at": 8607.90000000596,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "trusted": true
+        },
+        {
+          "type": "request-dispatched",
+          "at": 8608.09999999404,
+          "scrollTop": 0,
+          "scrollHeight": 6000,
+          "detail": {
+            "requestCount": 1
+          }
+        }
+      ]
+    },
+    "defaultGutter": {
+      "offsetWidth": 832,
+      "clientWidth": 832,
+      "gutterWidth": 0
+    },
+    "touch": {
+      "advertised": {
+        "maxTouchPoints": 1,
+        "ontouchstart": true
+      },
+      "snapshot": {
+        "requestCount": 1,
+        "pageCount": 0,
+        "browseState": "loading",
+        "residentCount": 0,
+        "residentVisualIds": [],
+        "presentationRevision": 0,
+        "surfaceKind": "agent",
+        "ctaVisible": true,
+        "locale": "en",
+        "gutterWidth": 0,
+        "feed": {
+          "scrollTop": 0,
+          "scrollHeight": 12200,
+          "clientHeight": 584,
+          "offsetWidth": 274,
+          "clientWidth": 274
+        },
+        "records": [
+          {
+            "type": "probe-ready",
+            "at": 441,
+            "scrollTop": 11616,
+            "scrollHeight": 12200
+          },
+          {
+            "type": "scroll-event",
+            "at": 442.59999999403954,
+            "scrollTop": 11616,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "scroll-event",
+            "at": 1092.3999999910593,
+            "scrollTop": 180,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "pointerdown",
+            "at": 1181.5999999940395,
+            "scrollTop": 180,
+            "scrollHeight": 12200,
+            "trusted": true,
+            "detail": {
+              "clientX": 220,
+              "clientY": 203,
+              "pointerId": 2
+            }
+          },
+          {
+            "type": "touchstart",
+            "at": 1181.7999999970198,
+            "scrollTop": 180,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "pointermove",
+            "at": 1195.3999999910593,
+            "scrollTop": 180,
+            "scrollHeight": 12200,
+            "trusted": true,
+            "detail": {
+              "clientX": 220,
+              "clientY": 283,
+              "pointerId": 2
+            }
+          },
+          {
+            "type": "touchmove",
+            "at": 1195.5,
+            "scrollTop": 180,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "scroll-event",
+            "at": 1211.7999999970198,
+            "scrollTop": 115,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "touchmove",
+            "at": 1229.7999999970198,
+            "scrollTop": 35,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "scroll-event",
+            "at": 1229.7999999970198,
+            "scrollTop": 35,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "scroll-event",
+            "at": 1262.5,
+            "scrollTop": 0,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "request-dispatched",
+            "at": 1262.699999988079,
+            "scrollTop": 0,
+            "scrollHeight": 12200,
+            "detail": {
+              "requestCount": 1
+            }
+          },
+          {
+            "type": "touchmove",
+            "at": 1295.7999999970198,
+            "scrollTop": 0,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "touchmove",
+            "at": 1340.0999999940395,
+            "scrollTop": 0,
+            "scrollHeight": 12200,
+            "trusted": true
+          },
+          {
+            "type": "touchend",
+            "at": 1340.199999988079,
+            "scrollTop": 0,
+            "scrollHeight": 12200,
+            "trusted": true
+          }
+        ]
+      }
+    }
+  },
+  "zeroLayout": {
+    "latest": {
+      "feedTop": 73,
+      "contentTopDelta": -5360,
+      "firstTopDelta": -5360,
+      "rootHeight": 640,
+      "overlayPosition": null,
+      "ariaBusy": null,
+      "chromeText": ""
+    },
+    "loading": {
+      "feedTop": 73,
+      "contentTopDelta": -5360,
+      "firstTopDelta": -5360,
+      "rootHeight": 640,
+      "overlayPosition": "absolute",
+      "ariaBusy": "true",
+      "chromeText": ""
+    },
+    "browse": {
+      "feedTop": 73,
+      "contentTopDelta": -5360,
+      "firstTopDelta": -5360,
+      "rootHeight": 640,
+      "overlayPosition": null,
+      "ariaBusy": null,
+      "chromeText": ""
+    },
+    "beginning": {
+      "feedTop": 73,
+      "contentTopDelta": -5360,
+      "firstTopDelta": -5360,
+      "rootHeight": 640,
+      "overlayPosition": null,
+      "ariaBusy": null,
+      "chromeText": ""
+    },
+    "error": {
+      "feedTop": 73,
+      "contentTopDelta": -5360,
+      "firstTopDelta": -5360,
+      "rootHeight": 640,
+      "overlayPosition": "absolute",
+      "ariaBusy": null,
+      "chromeText": ""
+    },
+    "expired": {
+      "feedTop": 73,
+      "contentTopDelta": -5360,
+      "firstTopDelta": -5360,
+      "rootHeight": 640,
+      "overlayPosition": null,
+      "ariaBusy": null,
+      "chromeText": ""
+    }
+  },
+  "accessibility": {
+    "focused": true,
+    "enterExited": true,
+    "enName": "Jump to latest activity",
+    "zhName": "跳到最新动态"
+  },
+  "consoleErrors": [],
+  "assertions": {
+    "coexistenceCount": 16,
+    "allSignaturesExact": true,
+    "allGeometryAndNonOverlap": true,
+    "zeroLayoutAllStates": true,
+    "wheelHeldRestoreQueuedReflowNoChain": true,
+    "freshAwayReenterSecondRequest": true,
+    "turnoverAtMost300": true,
+    "keyboardTrustedPath": true,
+    "manualBottomModeDistinction": true,
+    "localizedAccessibleNames": true
+  }
+}

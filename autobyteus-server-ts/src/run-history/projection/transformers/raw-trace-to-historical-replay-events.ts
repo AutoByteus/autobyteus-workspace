@@ -4,6 +4,12 @@ import { buildToolInteractions } from "autobyteus-ts/memory/tool-interaction-bui
 import type { ToolCallContext } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
 import type { MemoryTraceEvent } from "../../../agent-memory/domain/models.js";
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../historical-replay-event-types.js";
+import {
+  buildReplayTurnGroupId,
+  buildToolReplayEventId,
+  createLegacyOccurrenceAllocator,
+  resolveTraceReplayIdentity,
+} from "../historical-replay-event-identity.js";
 
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
@@ -70,10 +76,12 @@ const createToolEvent = (
   interaction: ToolInteraction,
   anchor: MemoryTraceEvent,
   terminal: MemoryTraceEvent | null,
+  identity: { eventId: string; turnGroupId: string },
 ): HistoricalReplayToolEvent => {
   const toolName = interaction.toolName?.trim() || "tool";
   const toolArgs = interaction.arguments;
   return {
+    ...identity,
     kind: "tool",
     invocationId: interaction.toolCallId,
     toolName,
@@ -93,12 +101,16 @@ const createToolEvent = (
   };
 };
 
-const createCompactionEvent = (trace: MemoryTraceEvent): HistoricalReplayEvent => {
+const createCompactionEvent = (
+  trace: MemoryTraceEvent,
+  identity: { eventId: string; turnGroupId: string },
+): HistoricalReplayEvent => {
   const details = asRecord(trace.toolResult);
   const boundaryKey = asString(details?.boundary_key) ?? asString(details?.boundaryKey) ??
     trace.id?.trim() ?? `${trace.turnId}:${trace.seq}`;
   const phase = normalizeProviderStatusToPhase(details?.status);
   return {
+    ...identity,
     kind: "compaction",
     activityId: resolveCompactionActivityId(trace, details, boundaryKey),
     phase,
@@ -114,6 +126,8 @@ const createCompactionEvent = (trace: MemoryTraceEvent): HistoricalReplayEvent =
     providerSessionId: resolveProviderSessionId(details),
     trigger: asString(details?.trigger),
     preTokens: asNumber(details?.pre_tokens) ?? asNumber(details?.preTokens),
+    rawTraceCount: asNumber(details?.raw_trace_count) ?? asNumber(details?.rawTraceCount),
+    semanticFactCount: asNumber(details?.semantic_fact_count) ?? asNumber(details?.semanticFactCount),
     rotationEligible: asBoolean(details?.rotation_eligible) ?? asBoolean(details?.rotationEligible),
     ts: trace.ts ?? null,
     detailLevel: "source_limited",
@@ -142,18 +156,32 @@ export const buildHistoricalReplayEvents = (
   );
   const emittedToolIdentities = new Set<string>();
   const events: HistoricalReplayEvent[] = [];
+  const nextLegacyOccurrence = createLegacyOccurrenceAllocator();
 
   for (const trace of rawTraces) {
     if (trace.traceType === "user" || trace.traceType === "assistant") {
-      events.push({ kind: "message", role: trace.traceType, content: trace.content ?? null, media: trace.media ?? null, ts: trace.ts ?? null });
+      events.push({
+        ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),
+        kind: "message",
+        role: trace.traceType,
+        content: trace.content ?? null,
+        media: trace.media ?? null,
+        ts: trace.ts ?? null,
+      });
       continue;
     }
     if (trace.traceType === "reasoning") {
-      events.push({ kind: "reasoning", content: trace.content ?? null, media: trace.media ?? null, ts: trace.ts ?? null });
+      events.push({
+        ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),
+        kind: "reasoning",
+        content: trace.content ?? null,
+        media: trace.media ?? null,
+        ts: trace.ts ?? null,
+      });
       continue;
     }
     if (trace.traceType === "provider_compaction_boundary") {
-      events.push(createCompactionEvent(trace));
+      events.push(createCompactionEvent(trace, resolveTraceReplayIdentity(trace, nextLegacyOccurrence)));
       continue;
     }
     if (trace.traceType !== "tool_call" && trace.traceType !== "tool_result") continue;
@@ -174,7 +202,7 @@ export const buildHistoricalReplayEvents = (
           terminalRawTraceId: trace.id ?? null,
           anchorTs: trace.ts ?? null,
           terminalTs: trace.ts ?? null,
-        }), trace, trace));
+        }), trace, trace, resolveTraceReplayIdentity(trace, nextLegacyOccurrence)));
       }
       continue;
     }
@@ -189,7 +217,11 @@ export const buildHistoricalReplayEvents = (
     const terminal = interaction.terminalRawTraceId
       ? traceById.get(interaction.terminalRawTraceId) ?? null
       : null;
-    events.push(createToolEvent(interaction, anchor, terminal));
+    const eventId = buildToolReplayEventId(identity.turnId, identity.toolCallId);
+    events.push(createToolEvent(interaction, anchor, terminal, {
+      eventId,
+      turnGroupId: buildReplayTurnGroupId(identity.turnId, eventId),
+    }));
   }
   return events;
 };

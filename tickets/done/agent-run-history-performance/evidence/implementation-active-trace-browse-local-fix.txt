@@ -1,0 +1,23 @@
+{
+  "viewport": "1280x900",
+  "browsingLabel": "Jump to latest",
+  "focusRingClassPresent": true,
+  "enterFocused": true,
+  "enterExitCount": "Exit activations: 1",
+  "spaceExitCount": "Exit activations: 2",
+  "stateExitLabels": {
+    "beginning": "Jump to latest",
+    "error": "Jump to latest"
+  },
+  "expiredBottomCount": 0,
+  "expiredLabel": "Activity was compacted · Return to latest",
+  "retainedOpenBefore": true,
+  "retainedIdentityAfterPrepend": "retained-node",
+  "retainedOpenAfterPrepend": true,
+  "retainedIdentityAfterTurnover": "retained-node",
+  "retainedOpenAfterTurnover": true,
+  "equalContentDistinctBefore": 2,
+  "equalContentDistinctAfterPrepend": 3,
+  "newerReleased": true,
+  "consoleErrors": []
+}

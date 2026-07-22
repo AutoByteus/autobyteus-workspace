@@ -10,6 +10,10 @@ import type {
   RunProjection,
 } from "../run-projection-types.js";
 import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
+import {
+  createLegacyOccurrenceAllocator,
+  resolveProviderReplayIdentity,
+} from "../historical-replay-event-identity.js";
 
 const asObject = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -91,7 +95,11 @@ const toRole = (row: Record<string, unknown>): string | null => {
   return normalized;
 };
 
-const toReplayEvent = (row: Record<string, unknown>): HistoricalReplayEvent | null => {
+const toReplayEvent = (
+  row: Record<string, unknown>,
+  index: number,
+  nextOccurrence: (fingerprint: string) => number,
+): HistoricalReplayEvent | null => {
   const role = toRole(row);
   const content = collectTextFragments(row.content ?? row.text ?? row.message ?? row.parts).join("\n\n");
   const timestamp =
@@ -105,6 +113,13 @@ const toReplayEvent = (row: Record<string, unknown>): HistoricalReplayEvent | nu
   }
 
   return {
+    ...resolveProviderReplayIdentity({
+      provider: "claude",
+      nativeId: asString(row.id) ?? asString(row.uuid),
+      turnId: asString(row.turnId) ?? asString(row.turn_id),
+      fingerprintFields: [index, role, timestamp, asString(row.type), content],
+      nextOccurrence,
+    }),
     kind: "message",
     role,
     content: content || null,
@@ -136,8 +151,9 @@ export class ClaudeRunViewProjectionProvider implements RunProjectionProvider {
     const sessionId = asString(input.source.platformRunId) ?? input.source.runId;
 
     const messages = await this.sessionManager.getSessionMessages(sessionId);
+    const nextOccurrence = createLegacyOccurrenceAllocator();
     const events = messages
-      .map((message) => toReplayEvent(message))
+      .map((message, index) => toReplayEvent(message, index, nextOccurrence))
       .filter((entry): entry is HistoricalReplayEvent => entry !== null);
 
     return buildRunProjectionBundleFromEvents(input.source.runId, events);

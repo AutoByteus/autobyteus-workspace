@@ -12,15 +12,15 @@
       <div class="flex items-center justify-between px-3 py-2 select-none">
         <div class="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
           <div v-if="isExecuting" class="animate-spin h-5 w-5 border-[2.5px] border-blue-500 border-t-transparent rounded-full flex-shrink-0"></div>
-          <Icon v-else-if="status === 'success'" icon="heroicons:check-circle-solid" class="w-5 h-5 text-green-500 flex-shrink-0" />
-          <Icon v-else-if="status === 'error'" icon="heroicons:exclamation-circle-solid" class="w-5 h-5 text-red-500 flex-shrink-0" />
-          <Icon v-else-if="status === 'approved'" icon="heroicons:check-badge-solid" class="w-5 h-5 text-cyan-500 flex-shrink-0" />
+          <Icon v-else-if="presentation.statusKey === 'success'" icon="heroicons:check-circle-solid" class="w-5 h-5 text-green-500 flex-shrink-0" />
+          <Icon v-else-if="presentation.statusKey === 'error'" icon="heroicons:exclamation-circle-solid" class="w-5 h-5 text-red-500 flex-shrink-0" />
+          <Icon v-else-if="presentation.statusKey === 'approved'" icon="heroicons:check-badge-solid" class="w-5 h-5 text-cyan-500 flex-shrink-0" />
           <Icon v-else-if="isAwaiting" icon="heroicons:hand-raised-solid" class="w-5 h-5 text-amber-500 animate-pulse flex-shrink-0" />
-          <Icon v-else-if="status === 'denied'" icon="heroicons:x-circle-solid" class="w-5 h-5 text-gray-400 flex-shrink-0" />
+          <Icon v-else-if="presentation.statusKey === 'denied'" icon="heroicons:x-circle-solid" class="w-5 h-5 text-gray-400 flex-shrink-0" />
           <Icon v-else icon="heroicons:wrench-screwdriver-solid" class="w-5 h-5 text-gray-500 flex-shrink-0" />
 
           <div class="min-w-0 flex flex-1 items-baseline gap-2 overflow-hidden">
-            <span class="max-w-[12rem] truncate font-medium text-gray-700 text-sm">{{ toolName }}</span>
+            <span class="max-w-[12rem] truncate font-medium text-gray-700 text-sm">{{ presentation.toolName }}</span>
             <span
               v-if="contextSummary"
               data-test="tool-context-summary"
@@ -60,9 +60,9 @@
         </div>
       </div>
 
-      <div v-if="errorMessage" class="px-3 pb-2 pt-0 border-t border-red-100/50">
+      <div v-if="presentation.errorMessage" class="px-3 pb-2 pt-0 border-t border-red-100/50">
         <div class="mt-2 rounded border border-red-100 bg-red-50 px-2 py-1 font-mono text-xs text-red-600 break-words">
-          {{ errorMessage }}
+          {{ presentation.errorMessage }}
         </div>
       </div>
     </div>
@@ -75,16 +75,10 @@ import { Icon } from '@iconify/vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { getToolDisplaySummary } from '~/utils/toolDisplaySummary';
-import type { ToolApprovalTarget } from '~/types/segments';
+import type { ToolCardPresentation } from '~/utils/toolCardPresentation';
 
 const props = defineProps<{
-  invocationId: string;
-  toolName: string;
-  status: string;
-  args?: Record<string, any> | string;
-  errorMessage?: string;
-  approvalTarget?: ToolApprovalTarget | null;
+  presentation: ToolCardPresentation;
 }>();
 
 const activeContextStore = useActiveContextStore();
@@ -92,17 +86,13 @@ const { setActiveTab } = useRightSideTabs();
 const activityStore = useAgentActivityStore();
 
 const isProcessing = ref(false);
-const isExecuting = computed(() => props.status === 'executing' || props.status === 'parsing');
-const isAwaiting = computed(() => props.status === 'awaiting-approval');
+const isExecuting = computed(() => props.presentation.statusKey === 'running');
+const isAwaiting = computed(() => props.presentation.statusKey === 'awaiting-approval');
 const isNavigable = computed(() => !isAwaiting.value);
-const displaySummary = computed(() => getToolDisplaySummary(props.toolName, props.args, {
-  preferCompactPath: true,
-}));
 
 const statusClasses = computed(() => {
-  switch (props.status) {
-    case 'executing':
-    case 'parsing':
+  switch (props.presentation.statusKey) {
+    case 'running':
       return 'bg-white border-gray-200';
     case 'success':
       return 'bg-white border-gray-200';
@@ -119,10 +109,10 @@ const statusClasses = computed(() => {
   }
 });
 
-const contextSummary = computed(() => displaySummary.value?.text ?? '');
-const contextSummaryTitle = computed(() => displaySummary.value?.title ?? '');
+const contextSummary = computed(() => props.presentation.summary?.text ?? '');
+const contextSummaryTitle = computed(() => props.presentation.summary?.title ?? '');
 const contextTextClasses = computed(() => (
-  displaySummary.value?.kind === 'command' || displaySummary.value?.kind === 'file'
+  props.presentation.summary?.kind === 'command' || props.presentation.summary?.kind === 'file'
     ? 'font-mono'
     : ''
 ));
@@ -131,7 +121,12 @@ const approve = async () => {
   if (isProcessing.value) return;
   isProcessing.value = true;
   try {
-    await activeContextStore.postToolExecutionApproval(props.invocationId, true, null, props.approvalTarget ?? null);
+    await activeContextStore.postToolExecutionApproval(
+      props.presentation.invocationId,
+      true,
+      null,
+      props.presentation.approvalTarget,
+    );
   } finally {
     isProcessing.value = false;
   }
@@ -142,10 +137,10 @@ const deny = async () => {
   isProcessing.value = true;
   try {
     await activeContextStore.postToolExecutionApproval(
-      props.invocationId,
+      props.presentation.invocationId,
       false,
       'User denied via inline chat.',
-      props.approvalTarget ?? null,
+      props.presentation.approvalTarget,
     );
   } finally {
     isProcessing.value = false;
@@ -156,7 +151,7 @@ const goToActivity = () => {
   setActiveTab('progress');
   const agentRunId = activeContextStore.activeAgentContext?.state.runId;
   if (agentRunId) {
-    activityStore.setHighlightedActivity(agentRunId, props.invocationId);
+    activityStore.setHighlightedActivity(agentRunId, props.presentation.invocationId);
   }
 };
 

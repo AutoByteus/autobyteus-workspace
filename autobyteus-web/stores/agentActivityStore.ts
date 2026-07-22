@@ -3,6 +3,10 @@ import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments'
 import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { canTransitionToolInvocationStatus } from '~/utils/toolInvocationStatus';
+import {
+  RECENT_EVENT_MONITOR_VISUAL_LIMIT,
+} from '~/services/eventMonitor/recentEventMonitorWindow';
+import { isRecentEventMonitorActivityComplete } from '~/services/eventMonitor/recentEventMonitorCompletion';
 
 export type ToolActivityType = 'tool_call' | 'write_file' | 'terminal_command' | 'edit_file';
 
@@ -72,6 +76,21 @@ const isValidToolInvocationId = (invocationId: unknown): invocationId is string 
 const isToolActivity = (activity: RunActivity): activity is ToolActivity => activity.kind === 'tool';
 const isCompactionActivity = (activity: RunActivity): activity is CompactionActivity => activity.kind === 'compaction';
 
+const presentationValuesEqual = (left: unknown, right: unknown): boolean => {
+  if (Object.is(left, right)) return true;
+  if (left instanceof Date && right instanceof Date) return left.getTime() === right.getTime();
+  if (Array.isArray(left) && Array.isArray(right)) {
+    return left.length === right.length && left.every((value, index) => presentationValuesEqual(value, right[index]));
+  }
+  if (left && right && typeof left === 'object' && typeof right === 'object') {
+    const leftRecord = left as Record<string, unknown>;
+    const rightRecord = right as Record<string, unknown>;
+    const keys = new Set([...Object.keys(leftRecord), ...Object.keys(rightRecord)]);
+    return [...keys].every((key) => presentationValuesEqual(leftRecord[key], rightRecord[key]));
+  }
+  return false;
+};
+
 export const useAgentActivityStore = defineStore('agentActivity', {
   state: () => ({
     activitiesByRunId: new Map<string, AgentActivities>(),
@@ -124,31 +143,59 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       );
     },
 
-    addActivity(runId: string, activity: RunActivity) {
+    _enforceRecentWindow(agentState: AgentActivities): boolean {
+      let overflow = agentState.activities.length - RECENT_EVENT_MONITOR_VISUAL_LIMIT;
+      if (overflow <= 0) {
+        this._updateAwaitingFlag(agentState);
+        return false;
+      }
+      const removedIds = new Set<string>();
+      for (const activity of agentState.activities) {
+        if (overflow === 0) break;
+        if (!isRecentEventMonitorActivityComplete(activity)) continue;
+        removedIds.add(activity.activityId);
+        overflow -= 1;
+      }
+      for (const activity of agentState.activities) {
+        if (overflow === 0) break;
+        if (removedIds.has(activity.activityId)) continue;
+        removedIds.add(activity.activityId);
+        overflow -= 1;
+      }
+      agentState.activities = agentState.activities.filter((activity) => !removedIds.has(activity.activityId));
+      if (agentState.highlightedActivityId && removedIds.has(agentState.highlightedActivityId)) {
+        agentState.highlightedActivityId = null;
+      }
+      this._updateAwaitingFlag(agentState);
+      return removedIds.size > 0;
+    },
+
+    addActivity(runId: string, activity: RunActivity): boolean {
       if (!isValidActivityId(activity.activityId)) {
         console.warn('[agentActivityStore] Dropping activity with invalid activityId', activity);
-        return;
+        return false;
       }
       if (activity.kind === 'tool' && !isValidToolInvocationId(activity.invocationId)) {
         console.warn('[agentActivityStore] Dropping tool activity with invalid invocationId', activity);
-        return;
+        return false;
       }
       const state = this._ensureRunState(runId);
       if (state.activities.some((a) => a.activityId === activity.activityId)) {
-        return;
+        return false;
       }
       state.activities.push(activity);
-      this._updateAwaitingFlag(state);
+      this._enforceRecentWindow(state);
+      return true;
     },
 
-    addToolActivity(runId: string, activity: ToolActivity) {
-      this.addActivity(runId, activity);
+    addToolActivity(runId: string, activity: ToolActivity): boolean {
+      return this.addActivity(runId, activity);
     },
 
-    upsertCompactionActivity(runId: string, activity: CompactionActivity) {
+    upsertCompactionActivity(runId: string, activity: CompactionActivity): boolean {
       if (!isValidActivityId(activity.activityId)) {
         console.warn('[agentActivityStore] Dropping compaction activity with invalid activityId', activity);
-        return;
+        return false;
       }
       const state = this._ensureRunState(runId);
       const existing = state.activities.find(
@@ -157,90 +204,119 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       );
       if (!existing) {
         state.activities.push(activity);
-        return;
+        this._enforceRecentWindow(state);
+        return true;
       }
 
       const originalTimestamp = existing.timestamp;
       const originalCenterTimelineTimestamp = existing.centerTimelineTimestamp ?? null;
-      Object.assign(existing, activity, {
+      const patch = {
+        ...activity,
         timestamp: originalTimestamp,
         centerTimelineTimestamp: originalCenterTimelineTimestamp ?? activity.centerTimelineTimestamp ?? null,
-      });
+      };
+      const changed = Object.entries(patch)
+        .some(([key, value]) => !presentationValuesEqual((existing as unknown as Record<string, unknown>)[key], value));
+      if (changed) Object.assign(existing, patch);
+      this._enforceRecentWindow(state);
+      return changed;
     },
 
     updateToolActivityStatus(
       runId: string,
       invocationId: string,
       status: ToolInvocationStatus
-    ) {
+    ): boolean {
       const state = this._ensureRunState(runId);
       const activity = state.activities.find(
         (a): a is ToolActivity => a.kind === 'tool' && a.invocationId === invocationId,
       );
       if (activity) {
         if (!canTransitionToolInvocationStatus(activity.status, status)) {
-          return;
+          return false;
         }
+        if (activity.status === status) return false;
         activity.status = status;
-        this._updateAwaitingFlag(state);
+        this._enforceRecentWindow(state);
+        return true;
       }
+      return false;
     },
 
-    addToolActivityLog(runId: string, invocationId: string, log: string) {
+    addToolActivityLog(runId: string, invocationId: string, log: string): boolean {
       const state = this._ensureRunState(runId);
       const activity = state.activities.find(
         (a): a is ToolActivity => a.kind === 'tool' && a.invocationId === invocationId,
       );
       if (activity) {
+        if (activity.logs.at(-1) === log) return false;
         activity.logs.push(log);
+        this._enforceRecentWindow(state);
+        return true;
       }
+      return false;
     },
 
-    setToolActivityResult(runId: string, invocationId: string, result: any, error: string | null = null) {
+    setToolActivityResult(runId: string, invocationId: string, result: any, error: string | null = null): boolean {
       const state = this._ensureRunState(runId);
       const activity = state.activities.find(
         (a): a is ToolActivity => a.kind === 'tool' && a.invocationId === invocationId,
       );
       if (activity) {
+        if (presentationValuesEqual(activity.result, result) && activity.error === error) return false;
         activity.result = result;
         activity.error = error;
+        this._enforceRecentWindow(state);
+        return true;
       }
+      return false;
     },
 
-    updateToolActivityArguments(runId: string, invocationId: string, args: Record<string, any>) {
+    updateToolActivityArguments(runId: string, invocationId: string, args: Record<string, any>): boolean {
       const state = this._ensureRunState(runId);
       const activity = state.activities.find(
         (a): a is ToolActivity => a.kind === 'tool' && a.invocationId === invocationId,
       );
       if (activity) {
-        activity.arguments = { ...activity.arguments, ...args };
+        const next = { ...activity.arguments, ...args };
+        if (presentationValuesEqual(activity.arguments, next)) return false;
+        activity.arguments = next;
+        this._enforceRecentWindow(state);
+        return true;
       }
+      return false;
     },
 
-    updateToolActivityApprovalTarget(runId: string, invocationId: string, approvalTarget: ToolApprovalTarget | null) {
+    updateToolActivityApprovalTarget(runId: string, invocationId: string, approvalTarget: ToolApprovalTarget | null): boolean {
       const state = this._ensureRunState(runId);
       const activity = state.activities.find(
         (a): a is ToolActivity => a.kind === 'tool' && a.invocationId === invocationId,
       );
       if (activity) {
+        if (presentationValuesEqual(activity.approvalTarget ?? null, approvalTarget)) return false;
         activity.approvalTarget = approvalTarget;
+        return true;
       }
+      return false;
     },
 
-    updateToolActivityToolName(runId: string, invocationId: string, toolName: string) {
+    updateToolActivityToolName(runId: string, invocationId: string, toolName: string): boolean {
       if (typeof toolName !== 'string' || toolName.trim().length === 0) {
-        return;
+        return false;
       }
       const state = this._ensureRunState(runId);
       const activity = state.activities.find(
         (a): a is ToolActivity => a.kind === 'tool' && a.invocationId === invocationId,
       );
       if (!activity) {
-        return;
+        return false;
       }
       if (isPlaceholderToolName(activity.toolName)) {
+        if (activity.toolName === toolName) return false;
         activity.toolName = toolName;
+        return true;
       }
+      return false;
     },
 
     setHighlightedActivity(runId: string, activityId: string | null) {

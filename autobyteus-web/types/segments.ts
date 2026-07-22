@@ -92,6 +92,7 @@ export interface SystemTaskNotificationSegment {
 
 export interface InterAgentMessageSegment {
   type: 'inter_agent_message';
+  messageId?: string;
   senderAgentRunId: string;
   recipientRoleName: string;
   messageType: string;

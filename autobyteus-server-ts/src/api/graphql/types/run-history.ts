@@ -15,6 +15,7 @@ import { getAgentRunViewProjectionService } from "../../../run-history/services/
 import { getAgentRunResumeConfigService } from "../../../run-history/services/agent-run-resume-config-service.js";
 import { getWorkspaceRunHistoryService } from "../../../run-history/services/workspace-run-history-service.js";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
+import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
 
 @ObjectType()
 class RunHistoryItemObject {
@@ -164,6 +165,9 @@ class RunProjectionPayload {
 
   @Field(() => String, { nullable: true })
   lastActivityAt?: string | null;
+
+  @Field(() => Boolean)
+  hasEarlierActiveTraceEvents!: boolean;
 }
 
 @ObjectType()
@@ -297,6 +301,14 @@ export class RunHistoryResolver {
     @Arg("runId", () => String) runId: string,
   ): Promise<RunProjectionPayload> {
     return this.agentRunProjectionService.getProjection(runId);
+  }
+
+  @Query(() => EventMonitorActiveTracePageObject)
+  async getRunEventMonitorActiveTracePage(
+    @Arg("runId", () => String) runId: string,
+    @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
+  ): Promise<EventMonitorActiveTracePageObject> {
+    return this.agentRunProjectionService.getActiveTracePage(runId, beforeCursor);
   }
 
   @Query(() => RunResumeConfigPayload)

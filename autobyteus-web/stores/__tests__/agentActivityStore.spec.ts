@@ -158,4 +158,29 @@ describe('agentActivityStore', () => {
     expect(activity.centerTimelineTimestamp).toBe(firstCenterTimestamp);
     expect(store.getToolActivities(agentId)).toHaveLength(0);
   });
+
+  it('caps Activity at 100 by evicting completed records before older mutable records and repairs derived state', () => {
+    const store = useAgentActivityStore();
+    const agentId = 'bounded-agent';
+    store.addToolActivity(agentId, buildToolActivity({
+      activityId: 'mutable-oldest',
+      invocationId: 'mutable-oldest',
+      status: 'awaiting-approval',
+    }));
+    store.setHighlightedActivity(agentId, 'completed-0');
+    for (let index = 0; index < 100; index += 1) {
+      store.addToolActivity(agentId, buildToolActivity({
+        activityId: `completed-${index}`,
+        invocationId: `completed-${index}`,
+        status: 'success',
+      }));
+    }
+
+    const activities = store.getActivities(agentId);
+    expect(activities).toHaveLength(100);
+    expect(activities.some((activity) => activity.activityId === 'mutable-oldest')).toBe(true);
+    expect(activities.some((activity) => activity.activityId === 'completed-0')).toBe(false);
+    expect(store.hasAwaitingApproval(agentId)).toBe(true);
+    expect(store.getHighlightedActivityId(agentId)).toBeNull();
+  });
 });

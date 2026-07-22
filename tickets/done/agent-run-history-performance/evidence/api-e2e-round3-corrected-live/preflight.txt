@@ -1,0 +1,60 @@
+CORRECTED LIVE VALIDATION PREFLIGHT
+2026-07-20T09:22:53Z
+candidate:
+20fe710ef86f2658bc761f5e4bff4aad8603b630
+8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+codex/agent-run-history-performance
+artifact fingerprints:
+c163c58519f05346741d6ba56e694e4b079abe403be112f34f615d67d5da0a99  autobyteus-web/electron-dist/AutoByteus_enterprise_linux-arm64-1.4.19.AppImage
+d5170840e3d26adb130d7a0bfa8b2ccd5e27e9a87aa82fee29a842f63511be09  autobyteus-web/electron-dist/linux-arm64-unpacked/resources/app.asar
+dbc56cb18343ae625ad7136a1b6d6dc4b9b9a23b6f2c8bd71cc41b2e5e13c1f4  autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/app.js
+9f1df208f61dec1f581561b9272d7fce1c711f51ac2a89d2092b3bda71da4dbd  autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/run-history/projection/providers/local-memory-run-view-projection-provider.js
+9099e8fdaf65e4e6faf369cae9324a5ba8305c01ff0cebf7fec93a4b938717d0  autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server/dist/run-history/projection/recent-run-projection-policy.js
+compiled integrated provider assertions:
+30:            includeArchive: false,
+6:import { selectRecentReplayEvents } from "../recent-run-projection-policy.js";
+33:        return buildRunProjectionBundleFromEvents(input.source.runId, selectRecentReplayEvents(replayEvents));
+recent policy present=yes
+old owner fingerprint:
+  PID  PPID                  STARTED     ELAPSED CMD
+   45     1 Mon Jul 20 06:20:54 2026    03:02:01 node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data
+d4a3ac1467ddec66fd064fdd6b57bde4b91675f8f3789fcba3a7b198e7195721  /app/autobyteus-server-ts/dist/run-history/projection/providers/local-memory-run-view-projection-provider.js
+29:            includeArchive: true,
+old recent policy present=no
+filesystem/snapshot capability:
+/home/autobyteus/data /dev/vda1[/docker/volumes/autobyteus-server-0-data/_data] ext4   rw,relatime,discard
+filesystem=ext2/ext3 block_size=4096
+atomic storage snapshot demonstrated=no
+strace=unavailable
+btrfs=unavailable
+zfs=unavailable
+lvs=unavailable
+selected mode=Mode S (pending explicit operator approval)
+Mode R available=no (path-only full-lifetime tracer unavailable)
+live root aggregate:
+318697552	/home/autobyteus/data
+files=951
+target aggregate:
+raw_active_files=2
+raw_active_bytes=658743
+archive_files=17
+archive_bytes=31960167
+old owner relevant environment (non-secret only):
+AUTOBYTEUS_BIND_HOST=0.0.0.0
+NODE_ENV=production
+AUTOBYTEUS_DATA_DIR=/home/autobyteus/data
+APP_ENV=production
+AUTOBYTEUS_SERVER_HOST=http://localhost:8001
+AUTOBYTEUS_SERVER_PORT=8000
+AUTOBYTEUS_SKIP_SYNC=1
+old owner live-root FDs:
+23 02402001 /home/autobyteus/data/logs/server.log
+28 02500002 /home/autobyteus/data/db/production.db
+31 02500002 /home/autobyteus/data/db/production.db
+35 02500002 /home/autobyteus/data/db/production.db
+47 02500002 /home/autobyteus/data/db/production.db
+supervisor owner:
+autobyteus_server                RUNNING   pid 45, uptime 3:02:02
+2:command=/bin/bash -lc 'cd /app/autobyteus-server-ts && exec node dist/app.js --host "${AUTOBYTEUS_BIND_HOST:-0.0.0.0}" --port "${AUTOBYTEUS_SERVER_PORT:-8000}" --data-dir "${AUTOBYTEUS_DATA_DIR:-/home/autobyteus/data}"'
+6:autorestart=true
+decision=BLOCKED_PENDING_EXPLICIT_OPERATOR_APPROVAL_FOR_MODE_S_QUIESCE
