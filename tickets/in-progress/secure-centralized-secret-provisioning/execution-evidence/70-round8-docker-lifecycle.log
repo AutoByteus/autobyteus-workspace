@@ -1,0 +1,34 @@
+Scenario: SCSP-E2E-DOCKER-001 unchanged tracked Docker lifecycle
+HEAD: 977948fe68695374afbcd5e9516693d64533230e
+Derived image ID: sha256:d136ee61f2e73485a1790fd7bbab94a50b1111d0bb3d6c12355b78dcde93eca2
+Backend port: 51756
+Initial container ID: f9e9756647739dcfb97efdb2ef5da6a0aebcfe05541a4f7b34029dd4e4307261
+Initial data volume: scsp-round8_autobyteus-server-data
+Initial application .env state/hash/DB-key: present:c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb:absent
+Initial production database: present
+First-start backend health: READY
+First-start assurance: LOCAL_HARDENED
+Initial credential state: MISSING
+Save response: value-free success
+Post-save credential state: CONFIGURED
+Restart command: docker compose restart autobyteus-server
+ Container scsp-round8-autobyteus-server-1  Restarting
+ Container scsp-round8-autobyteus-server-1  Started
+Restarted container ID: f9e9756647739dcfb97efdb2ef5da6a0aebcfe05541a4f7b34029dd4e4307261
+Restarted data volume: scsp-round8_autobyteus-server-data
+Restarted application .env state/hash/DB-key: present:c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb:absent
+Restarted production database: present
+Restart backend health: READY
+Reopened credential state: CONFIGURED
+Removal response: value-free success
+Final credential state: MISSING
+Migration completion records: 2
+Listen records: 2
+P1012 records: 0
+Missing DATABASE_URL records: 0
+Synthetic canary records: 0
+Supervisor compatibility-error records: 0
+Same container identity across restart: yes
+Same named data volume across restart: yes
+Application .env state/bytes across restart: identical
+Result: PASS

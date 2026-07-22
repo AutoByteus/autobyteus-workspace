@@ -1,0 +1,47 @@
+Scenario: SCSP-E2E-DOCKER-001
+Result: FAIL before server startup
+HEAD: 977948fe68695374afbcd5e9516693d64533230e
+Exact start command: env with DATABASE_URL and known credential aliases unset; ./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round7 --no-build
+Clean source image: autobyteus-server:latest (sha256:b190db0deca36000ba8f5fe38eba9253be12fb8a30f23e8ea4c77e8140c3e7ba)
+Current runtime base: autobyteus/chrome-vnc@sha256:a8c17115473bfe0e14c4363e75e88fcb9240e2e71928e03c109e8aea19bcd6cc
+Prior Round 3 passing runtime base: autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+Current container state: restarting exit=1 restartCount=12
+Observed boundary: image entrypoint hands off to /usr/bin/supervisord; supervisor 4.2.1 imports pkg_resources under Python 3.13.14 and terminates before migrations/listen.
+Exact terminal error: AttributeError: module pkgutil has no attribute ImpImporter
+Crash records with terminal error: 12
+Migration completion records: 0
+Listen records: 0
+P1012 records: 0
+Synthetic credential canary records: 0
+GraphQL lifecycle attempted: no (backend never listened; no credential was written)
+Tracked Docker/Compose delta from reviewed base 534210b9e1dffff6c22855ae89ddb3d2afef5a9b: none
+
+Direct current-base reproduction command:
+docker run --rm --entrypoint /bin/bash autobyteus/chrome-vnc:latest -lc "python3 --version; /usr/bin/supervisord --version"
+Python 3.13.14
+Traceback (most recent call last):
+  File "/usr/bin/supervisord", line 33, in <module>
+    sys.exit(load_entry_point('supervisor==4.2.1', 'console_scripts', 'supervisord')())
+             ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/bin/supervisord", line 25, in importlib_load_entry_point
+    return next(matches).load()
+           ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/importlib/metadata/__init__.py", line 179, in load
+    module = import_module(match.group('module'))
+  File "/usr/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1395, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/usr/lib/python3/dist-packages/supervisor/supervisord.py", line 41, in <module>
+    from supervisor.options import ServerOptions
+  File "/usr/lib/python3/dist-packages/supervisor/options.py", line 13, in <module>
+    import pkg_resources
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 2172, in <module>
+    register_finder(pkgutil.ImpImporter, find_on_path)
+                    ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'pkgutil' has no attribute 'ImpImporter'. Did you mean: 'zipimporter'?

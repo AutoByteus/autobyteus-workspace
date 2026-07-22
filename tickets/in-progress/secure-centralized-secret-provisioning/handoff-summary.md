@@ -2,7 +2,7 @@
 
 ## Delivery Status
 
-- Current status: `Ready for explicit user verification`
+- Current status: `Blocked — Round 5 API/E2E Fail and renewed Design Impact`
 - Ticket state: `tickets/in-progress/secure-centralized-secret-provisioning/`
 - Dedicated worktree:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
@@ -13,16 +13,44 @@
 - Reviewed API/E2E package checkpoint:
   `e1aee5a86f82abf2768e25eb722b55c1acb4b937`
 - Latest tracked base checked: `origin/personal` at
-  `9b4e038a40e0b6358fe53ca101406e0f6446e790`
+  `71875b938a4b984f2010eae76230b429ff2d2de8`
 - Initial delivery integration: `Merge`, completed without conflicts at
   `548336b4d2909f2c0ee6c74b5004f1f7ad94f898`
-- Post-integration result: `Pass` — focused secret-management matrix `24/24`
-  and migration `2/2`.
-- API/E2E result: `Pass`, final confidence `97.1%`.
-- Proportional durable-test review: `Pass`; unresolved findings: none.
-- Repository finalization/release/deployment: `Not started — waiting for user verification`.
+- Delivery-package checkpoint before the later base refresh:
+  `d22af1175afda66da697e0dd1c6a2a2fca726cd9`
+- Latest delivery integration: `Merge`, completed without conflicts at
+  `09343ae17e016fa68cceda304df257563fc07cdc`
+- Final pre-handoff fetch confirmed the branch remains current with that base:
+  ahead `11`, behind `0`.
+- Latest post-integration result: `Pass` — focused secret-management matrix
+  `24/24` and migration `2/2`.
+- Prior Round 4 API/E2E result: `Pass`, confidence `97.1%`; superseded as a
+  delivery gate by the Round 5 real OpenAI failures.
+- Prior proportional durable-test review: `Pass`; no longer sufficient for
+  delivery until the current failure/redesign paths complete.
+- Repository finalization/release/deployment: `Stopped`.
 
-## Resolved Post-Review Clarification
+## Current Delivery Hold — Round 5
+
+- Real OpenAI execution became reachable after operator provisioning. All four
+  selected preflights were `READY` with value-free `CONFIGURED` status.
+- `openai.audio` and `openai.image` passed.
+- `openai.llm` and `openai.agent-flow` failed with
+  `LIVE_E2E_PROVIDER_OPERATION_FAILED`; total result was `6 passed / 2 failed`.
+- Evidence:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/49-round5-real-openai.log`.
+- `code_reviewer` owns the focused failure-origin classification. No delivery
+  conclusion is valid until the owning rework path and required rereviews pass.
+- The user renewed a committed `.env`/`.env.test` to default-or-E2E Store
+  provisioning-script request. This is `Design Impact` and is with
+  `solution_designer`; no importer work or documentation may proceed before a
+  revised design passes architecture review.
+- No credential value was read, copied, logged, or exposed.
+- The ticket branch is currently one commit behind the latest tracked base;
+  the tracked base is `965f97685c08569a98186b2a894243c0b3f602d3`.
+  Refresh/integration is intentionally deferred until delivery re-entry.
+
+## Superseded Post-Review Clarification
 
 - A temporary hold was recorded after an `.env.test` importer was proposed.
 - The importer proposal is now explicitly withdrawn. The user/operator will
@@ -34,9 +62,12 @@
 - No requirements, design, implementation, durable-test, runtime, Store,
   Docker, Claude, or AutoByteus behavior changed. Architecture rereview and
   downstream revalidation are not required.
-- The canonical test review reactivates its `Pass`, `97.1%` confidence, and
+- At that time, the canonical test review reactivated its `Pass`, `97.1%`
+  confidence, and
   delivery recommendation. The operator-local setup remains unperformed and is
   not a real-provider execution claim.
+- This section is historical. The renewed importer request and Round 5 failures
+  above supersede it for current workflow and delivery-gate purposes.
 
 ## Delivered Behavior
 
@@ -68,22 +99,30 @@
 
 ## Validation Summary
 
-- Architecture review: `Pass`; no unresolved requirement/design findings.
+- Prior architecture review: `Pass`; the renewed Design Impact requires a
+  revised package and architecture review before implementation proceeds.
 - Implementation-source review: `Pass`; implementation HEAD
   `62417e80831a52e627d1b4365e9bfcdc9817ae81`.
-- API/E2E: `Pass`, `97.1%` confidence. Round 4 focused matrix passed `24/24`;
+- Prior API/E2E: `Pass`, `97.1%` confidence. Round 4 focused matrix passed `24/24`;
   captured canonical real-E2E preflight passed `11/11`; dedicated real-provider
   capabilities were truthfully `UNAVAILABLE / SECRET_BACKEND_UNAVAILABLE`.
 - Proportional durable-test rereview: `Pass`; `TCR-001` and `TCR-002` resolved.
+- Current API/E2E delivery gate: `Fail`. Round 5 real OpenAI audio/image passed,
+  while LLM and agent-flow failed; focused failure-origin review is pending.
 - Delivery base refresh: fetched `origin/personal`, checkpointed the reviewed
   dirty test package, merged five newer base commits without conflict, and
-  reran affected executable coverage on the integrated state.
+  reran affected executable coverage on the integrated state. After the
+  temporary hold, refreshed the base again to `71875b938a`, checkpointed the
+  delivery package, merged the additional base commits without conflict, and
+  reran the same affected coverage.
 - Delivery integrated-state check: focused matrix `24/24` and legacy cutover
   migration `2/2`, both passed. Evidence:
+  `execution-evidence/47-delivery-latest-base-rerun.log` (latest); initial
+  refresh evidence remains in
   `execution-evidence/46-delivery-integration-focused-rerun.log`.
-- No real OpenAI, Gemini, Serper, Anthropic, Claude managed-secret, or AutoByteus
-  external invocation is claimed because the dedicated real-E2E Store is not
-  provisioned.
+- No broad real-provider pass is claimed. The bounded Round 5 claims are OpenAI
+  audio/image `Pass` and OpenAI LLM/agent-flow `Fail`; other real-provider
+  execution remains unclaimed.
 - Security claim remains `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains
   deferred.
 
@@ -122,6 +161,9 @@
 
 ## Suggested User Verification
 
+**Suspended:** do not use this checklist as acceptance evidence until a newly
+reviewed candidate is returned to delivery.
+
 1. Start the integrated candidate from this worktree in the normal desktop or
    direct-server development mode.
 2. Open **Settings -> API Key Management** and choose a non-production test
@@ -144,9 +186,9 @@
 ## User Verification
 
 - Explicit user completion/verification received: `No`
-- User verification request status: `Active`.
-- Required next signal: user confirms the integrated candidate is accepted, or
-  reports a concrete issue.
+- User verification request status: `Withdrawn due to delivery hold`.
+- Required next signal: none from the user at this stage. The focused
+  failure-origin and revised-design workflows must complete first.
 - Do not move the ticket to `done`, make the final ticket commit, push, merge to
   `personal`, tag, release, deploy, or clean the worktree.
 
@@ -173,3 +215,6 @@
 - Delivery report: `release-deployment-report.md`
 - Release notes: `release-notes.md`
 - Integration evidence: `execution-evidence/46-delivery-integration-focused-rerun.log`
+  and `execution-evidence/47-delivery-latest-base-rerun.log` (latest).
+- Current Round 5 failure evidence:
+  `execution-evidence/49-round5-real-openai.log`.

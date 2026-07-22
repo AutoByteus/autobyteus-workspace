@@ -3,10 +3,10 @@
 ## Artifact Metadata
 
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
-- Purpose: define direct one-time provisioning of the physically separate host real-E2E Store, tracked non-secret test contract, per-worktree zero-copy flow, real execution modes including managed Claude SDK authentication and preserved AutoByteus remote LLM/audio/image behavior, failure semantics, security boundary, and explicit non-impact on existing Docker deployment.
-- Scope: REQ-002–REQ-005, REQ-008, REQ-009, REQ-012, REQ-016–REQ-019 / AC-003, AC-004, AC-006, AC-010, AC-012, AC-013, AC-015, AC-016, AC-018, AC-019.
-- Status: `User Approved — CR-001 AutoByteus Remote Gateway Preservation; Architecture Re-review Required`.
-- Approval applicability: `Required`; this supplement defines intended developer, test, and operator behavior.
+- Purpose: define hidden-input and explicit source-file provisioning of the physically separate host real-E2E Store, tracked non-secret test contract, per-worktree zero-copy flow, real execution modes including exact Vertex Express LLM/media behavior and preserved dual-key Gemini metadata behavior, managed Claude SDK, preserved AutoByteus remote behavior, and external Codex regression evidence, failure semantics, security boundary, and non-impact on existing Docker deployment.
+- Scope: REQ-002–REQ-005, REQ-008, REQ-009, REQ-012, REQ-016–REQ-020 / AC-003, AC-004, AC-006, AC-010, AC-012, AC-013, AC-015, AC-016, AC-018–AC-020.
+- Status: `Refined — Original Gemini Metadata Preservation Reconciliation; Architecture Re-review Required`.
+- Approval applicability: `Required`; the importer/no-automatic-update workflow remains approved, external Codex preservation is user-approved, and the user confirms the original dual-key Generative Language metadata path works. CR-021 changes the evidence contract only: retain exact LLM/media SDK modes and verify metadata's separate selected-consumer/request/mapping/fallback behavior without source redesign.
 - Core artifacts supported: [requirements.md](./requirements.md), [investigation-notes.md](./investigation-notes.md), [design-spec.md](./design-spec.md).
 - Related supplements: [use-case-spine-validation.md](./use-case-spine-validation.md), [secret-storage-architecture.md](./secret-storage-architecture.md), [secret-storage-backend-contract.md](./secret-storage-backend-contract.md), [credential-consumer-mapping.md](./credential-consumer-mapping.md), [threat-model-and-option-analysis.md](./threat-model-and-option-analysis.md).
 
@@ -25,7 +25,7 @@ fresh worktree lacks ignored .env.test
 The target makes a machine-global, physically separate real-E2E Local Store—not the worktree—the credential distribution unit:
 
 ```text
-one-time setup provisions real-e2e-secret-store.db with its independent key
+one-time hidden-input setup or explicit operator import provisions real-e2e-secret-store.db with its independent key
  -> Git supplies non-secret scenario/Store configuration to every worktree
  -> test command constructs the Local backend in Agent Server
  -> backend opens the real-E2E Store read-only and validates its format
@@ -34,7 +34,9 @@ one-time setup provisions real-e2e-secret-store.db with its independent key
  -> real provider is exercised
 ```
 
-No person copies a secret file or re-enters credentials merely because a worktree was created.
+No person copies a secret file or re-enters credentials merely because a worktree was created. The optional importer is an explicit one-time setup action against an operator-selected source; it is never part of per-worktree execution.
+
+Startup performs no legacy credential import, copy, scrub, delete, rewrite, conversion, or Store write; legacy sources remain untouched/non-authoritative. This is not an E2E setup path. Real-E2E custody is populated only by hidden input or the explicit importer selected by the operator.
 
 ## Real And Deterministic Coverage Are Complementary
 
@@ -134,11 +136,11 @@ State outside every repository/worktree contains:
 
 Git contains only backend kind, canonical filenames/access mode, scenarios, and logical definition IDs. The root launcher derives the host Store root from `~/.autobyteus/server-data/secret-store/`. Database ciphertext and key bytes remain host machine state and are not committed. This host test contract does not configure or mount Docker.
 
-Stores do not inherit. A missing real-E2E credential fails preflight even if the default Store contains it. First-delivery setup is constructed with the writable E2E target only and accepts dedicated test credentials directly through hidden transient input. It has no source/default backend dependency, read path, copy command, or automatic inheritance. This deliberately accepts one extra provisioning action in exchange for a smaller custody boundary.
+Stores do not inherit. A missing real-E2E credential fails preflight even if the default Store contains it. Hidden-input setup is constructed with the writable E2E target only and accepts dedicated test credentials directly through transient input. It has no source/default backend dependency, read path, copy command, or automatic inheritance. The separate explicit importer may read one verified absolute plaintext source but writes only the selected E2E Store and never opens the default Store. Both choices preserve the same physical boundary.
 
 ## Local Developer Workflow
 
-### One-time machine setup
+### One-time machine setup — hidden input
 
 Representative command contract:
 
@@ -156,6 +158,23 @@ pnpm secrets:local:e2e:setup
 Setup is repeated only for a new machine/Store/provider, rotation/revocation, expired credentials, or Store repair. AutoByteus cannot manufacture an upstream provider key. Provisioning must not run concurrently with host read-only provider execution.
 
 The setup definition set includes `provider.autobyteus.api-key` when any AutoByteus remote scenario is enabled. It is provisioned once, directly into the E2E Store, exactly like other provider definitions. The setup command never writes `AUTOBYTEUS_API_KEY` into `.env`, `.env.test`, process-wide environment, or tracked configuration.
+
+### One-time machine setup — explicit source importer
+
+An operator who already has approved credentials in one privately owned file may use the committed command instead of re-entering each value:
+
+```text
+pnpm secrets:local:import -- --source /absolute/path/to/server-data/.env --target e2e --dry-run
+pnpm secrets:local:import -- --source /absolute/path/to/copied-test-api-keys --target e2e --dry-run
+pnpm secrets:local:import -- --source /absolute/path/to/copied-test-api-keys --target e2e
+pnpm secrets:local:import -- --source /absolute/path/to/copied-test-api-keys --target e2e --overwrite
+```
+
+The current application `.env` preview is the approved ordinary journey. The CLI accepts its documented single leading PNPM separator (and the equivalent direct-option form), performs source trust/file-safety, recognize-first alias selection, empty-as-absent normalization, populated selected-value/catalog, E2E Store target-status, and current-definition checks, then prints only logical IDs, planned actions, and counts. It never prompts, initializes, or writes. If both E2E pair files are absent it reports `INITIALIZATION_REQUIRED`; the confirmed command stage-initializes only that selected pair, creates missing selected records, and skips configured records. A one-file partial pair remains `CORRUPT`. `--overwrite` is the only replacement form. Every write requires a direct TTY and exact `IMPORT REAL-E2E STORE`; no noninteractive bypass exists.
+
+The source path must be absolute, but any filename or extension is accepted so the current application `.env`, renamed/copied files, and extensionless files work. The command never searches the repository, a parent, or another checkout. It rejects symlink/non-regular/raced/wrong-owner/non-private files, files over 1 MiB, and invalid UTF-8/NUL. It then recognizes exact current aliases before parsing assignments. Recognized lines must use the supported static same-line grammar. After unquoting and outer-horizontal-whitespace normalization, an empty recognized assignment is absent/non-selected: it creates no credential, plan/output metadata, warning, count, or failure and does not enter duplicate tracking. Only populated selected aliases are checked for dynamic content and duplicate populated occurrences. Every unrecognized line is ignored without right-hand-side interpretation. Therefore an empty `GEMINI_API_KEY` does not block populated `VERTEX_AI_API_KEY` or other current credentials, while `DATABASE_URL`, `OLLAMA_API_KEY`, `GOOGLE_CSE_API_KEY`, legacy `ZHIPU_API_KEY`, Claude delivery aliases, unknown secret-like names, arbitrary text, and malformed unrelated lines do not block the import and are not reported by name. One positive registry translates current aliases to definition IDs. For Qwen, only `DASHSCOPE_API_KEY` is mapped; `QWEN_API_KEY` and ZHIPU are unrecognized/non-blocking. A source with zero populated selected mapped credentials returns `IMPORT_NO_MAPPED_CREDENTIALS` before target access or mutation.
+
+The importer never mutates/deletes the source, uses shell evaluation, assigns values to `process.env`, creates a plaintext intermediate, accepts a Store/definition/value path in argv, or opens the default Store. All planned creates/replacements commit in one E2E SQLite transaction or none. Output is restricted to target status, logical IDs, action counts, and stable instruction/error codes; ignored-line metadata and values are absent. Selected values necessarily exist transiently in the trusted process; buffers/references are minimized/cleaned best-effort, but JavaScript/runtime zeroization is not claimed. Hidden-input provisioning remains available.
 
 ### Per-worktree execution
 
@@ -190,7 +209,7 @@ Allowed:
 ```text
 Real-E2E Store: READY (read-only)
 openai.llm: READY (provider.openai.api-key configured)
-serper.search: MISSING (run pnpm secrets:local:e2e:setup --definition search.serper.api-key)
+serper.search: MISSING (use hidden-input setup or explicit e2e import; no value shown)
 ```
 
 The preflight health vocabulary is exactly `READY`, `LOCKED`, `UNAVAILABLE`, `CORRUPT`, or `INCOMPATIBLE`. Definition state (`MISSING`/`CONFIGURED`) is shown only for `READY`; every other health returns a stable value-free setup instruction and no definition projection. A wrong/swapped key, missing half-pair, or verifier failure reports `CORRUPT`; an unsupported Store/verifier version reports `INCOMPATIBLE`.
@@ -218,6 +237,22 @@ Forbidden: key fragments, lengths, fingerprints, hashes, absolute backend paths,
 - scans logs/results/artifacts using safe synthetic canaries and structural redaction checks.
 
 Direct access is necessary for scenarios whose subject is credential delivery into the actual SDK. Source review before this mode is a team-workflow prerequisite, not an invented runtime attestation/capability subsystem. It is not a claim that reviewed code which receives the key cannot exfiltrate it.
+
+### Gemini metadata preservation harness
+
+- LLM/media constructor capture separately drives all three closed authentication variants through `gemini-helper.ts` and asserts exactly `{ apiKey }`, `{ vertexai: true, apiKey }`, or `{ vertexai: true, project, location }` with no optional/extra mode fields;
+- metadata tests start at `ModelCatalogService.listLlmModels` and reload, prove the exact `llmMetadata/GEMINI/<slot>` consumer for AI Studio/Vertex Express, and prove zero secret resolution/no live provider for Vertex Project;
+- provider tests preserve the existing Generative Language request and response mapping for either selected key; resolver tests prove live-over-curated precedence, timeout/failure containment, and cache invalidation without a real credential;
+- negative tests prove no ambient alias lookup, alternate-definition/Store lookup, credential-presence inference, endpoint override, or cross-mode retry;
+- a real key-backed metadata scenario may begin at the ordinary GraphQL/web model-list or reload surface and verify that a live-returned field reaches the catalog. If provider loading is unavailable, curated-only availability is the existing product fallback and is reported accurately rather than treated as proof of a different SDK mode. No metadata SDK-construction rewrite is required by this harness.
+
+### External Codex preservation harness
+
+- uses the normal user-selectable Codex App Server product path, never a new AutoByteus auth mode or Store definition;
+- deterministic spawn capture proves `CodexAppServerClient` preserves `options.env ?? process.env` and real HOME/CODEX_HOME, removes the ticket-added synthetic-home builder, and makes zero management/Store/account-RPC calls;
+- synthetic HOME/CODEX_HOME/account sentinels are used for durable source tests. They inspect no real Codex auth file and assert no environment dump/output;
+- when Codex is installed and its existing external login is available, a targeted product-path model/turn smoke validates that the preserved path still authenticates. If the runtime is declared available but the established operation fails, the scenario fails with existing sanitized output; no Store/API-key fallback or account login mutation is attempted;
+- the harness and assurance report explicitly exclude Codex environment inheritance from `LOCAL_HARDENED`. Generic output redaction still applies.
 
 ### Managed Claude Agent SDK harness
 
@@ -275,8 +310,10 @@ Where a CI platform can only expose a credential as a job secret, inject it dire
 | provider authentication acceptance | `REAL_DIRECT_SECRET` | validates storage-to-SDK path |
 | model simple/streaming/tool behavior | `REAL_GATEWAY` or `REAL_DIRECT_SECRET` | current provider/model behavior changes |
 | agent end-to-end turns | `REAL_GATEWAY` where suitable | real model behavior with narrower key exposure |
-| live model discovery | `REAL_DIRECT_SECRET` | real metadata endpoint and authentication |
+| live Gemini model metadata list/reload for AI Studio or Vertex Express | `REAL_DIRECT_SECRET` for key modes; curated-only for Vertex Project | proves exact metadata consumer selection and the established Generative Language provider/mapping; curated fallback is reported separately and never causes another credential lookup |
 | media formats/generation | real mode | fake bytes do not prove provider behavior |
+| Gemini Vertex Express LLM/audio/image construction and representative operations, plus separately preserved metadata list/reload | `REAL_DIRECT_SECRET` | validates exact `geminiVertexExpress` propagation and `GoogleGenAI({vertexai:true,apiKey})` for LLM/media; metadata independently validates its exact semantic consumer and established Generative Language path without being forced through that SDK-mode union |
+| Codex external-login product turn when installed/account-ready | existing external Codex state, no Store secret | proves the pre-ticket environment/home preservation without inventing an AutoByteus auth lifecycle |
 | live search | real mode | real service/schema behavior |
 | Claude Agent SDK managed authentication and one bounded request | `REAL_DIRECT_SECRET` with `runtimeAuthMode: managed-secret` | validates exact consumer authorization, Store resolution, child environment delivery, and current SDK/CLI authentication |
 | AutoByteus remote LLM discovery plus representative invocation | `REAL_DIRECT_SECRET` | validates host gate, discovery consumer, Store-backed AutoByteus credential ownership, scoped catalog update, and real construction/request |
@@ -291,6 +328,15 @@ The downstream coverage owner decides the precise durable test inventory after i
 | Condition | Required Result |
 | --- | --- |
 | tracked config missing/invalid | fail with file/schema location; never search another checkout |
+| import source/target option missing, duplicated, relative, unknown, or invalid; repeated/misplaced separator | fail value-free before source value handling; never infer source/target; zero/one leading separator succeeds |
+| import source is symlink/non-regular/raced/wrong-owner/non-private/unverifiable | fail closed without changing permissions/ACLs or target Store |
+| import source is oversize/invalid UTF-8/NUL | reject the entire operation before recognition/prompt/write |
+| recognized assignment is valid but normalizes empty | treat as absent/non-selected; continue with populated current credentials; emit no placeholder metadata/warning |
+| recognized assignment is malformed, has a dynamic populated value, or repeats a populated occurrence | reject before target mutation; never emit line/name/value |
+| source contains unrelated settings, unknown/legacy/secret-like names, or malformed unrelated lines | ignore without interpreting their right-hand side; report no ignored-line metadata; continue if at least one recognized credential is populated and valid |
+| every recognized assignment is absent or normalizes empty | fail value-free with `IMPORT_NO_MAPPED_CREDENTIALS` before target access or mutation |
+| import target configured and no `--overwrite` | skip record and preserve it; dry-run may report replacement requires overwrite |
+| import write is non-TTY, unconfirmed, cancelled, or transaction fails | write nothing or roll back all planned records; source and other Store unchanged |
 | real-E2E database and key both absent | fail with the one-time E2E setup command |
 | only database or key exists | fail `CORRUPT_STORE`; never generate a replacement key or overwrite the surviving file |
 | Store files inaccessible | report `UNAVAILABLE` with a value-free setup instruction |
@@ -311,13 +357,26 @@ The downstream coverage owner decides the precise durable test inventory after i
 | AutoByteus remote discovery returns authoritative empty | clear only matching model-kind AutoByteus runtime subset; a scenario requiring that capability fails unavailable |
 | AutoByteus advertises LLM/audio/image capability but representative operation fails | fail the exact scenario; do not skip, downgrade to synthetic, or count discovery alone as pass |
 | quota/model/provider issue | fail or classify via existing provider rules; never reinterpret as “secret missing” |
+| Codex external runtime is installed/selected but existing login state is hidden by a synthetic home or the product turn fails authentication | fail the Codex preservation scenario with existing sanitized outcome; do not call Store/account RPC, mutate login, or fall back |
+| Gemini mode/input is invalid or the exact Vertex Express product construction uses AI Studio options | fail before construction or fail the exact real scenario; never infer another mode/key and never count the corrected-mode diagnostic as a product pass |
+| Gemini live metadata request fails but curated metadata still returns | report the exact live-enrichment scenario unavailable/failed while retaining the ordinary curated catalog result; do not count curated fields as proof of exact-mode authentication and do not retry another Google mode |
 | result/log/artifact canary hit | fail the run and restrict evidence; never attach the raw hit |
+
+## Preserved Current API/E2E State At Revision Time
+
+- Round 10 confirmed the explicit current-application importer: the dedicated Store remained `READY`, eight recognized credentials were newly configured, the previously configured OpenAI record was preserved, the source remained byte-identical, and empty `GEMINI_API_KEY` was absent/non-blocking while populated `VERTEX_AI_API_KEY` was imported. No credential value was emitted or inspected.
+- Canonical preflight passed 11/11: ten tracked scenarios were `READY/CONFIGURED`; Serper alone was `READY/MISSING`.
+- Real OpenAI LLM, agent-flow, audio, and image all passed. Real Anthropic managed-secret Claude Agent SDK passed.
+- Real Gemini Vertex Express audio/image failed on the normal product path because the correct definition was collapsed to generic `apiKey`; a bounded value-safe same-credential diagnostic using `GoogleGenAI({vertexai:true,apiKey})` passed both. This proves the LLM/media correction direction but is not a product-path pass. Metadata does not share that SDK-construction contract: its original/current dual-key Generative Language path is preserved and verified separately.
+- AutoByteus remote LLM/audio/image were `READY/CONFIGURED` but the declared `https://api.autobyteus.com` endpoint was not DNS-resolvable. AC-019(f) permits exact unavailable reporting. No alternate endpoint may be invented and no remote capability is claimed.
+- Codex remains an established external-login runtime, and the user explicitly directed that it be left alone. The next matrix must prove the restored product path without reading real auth files or adding managed custody.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck dependency only. Both Claude modes remain unchanged. `LOCAL_HARDENED` retains its explicit Codex exclusion and deferred `STRONG_AGENT_ISOLATION`.
 
 ## Security Checks
 
 1. Fresh worktree `git status` shows no copied secret file, Local Store data, or encryption-key material.
-2. Test/agent child environments contain no provider key or backend bootstrap material, except the exact Claude Code child in explicit managed mode contains only its authorized `ANTHROPIC_API_KEY`.
-3. Agent file tools cannot reach Local Store paths and agent child environments/descriptors start from explicit empty-base allowlists. The managed Claude parent, siblings, unrelated children, and AutoByteus tool children receive no key. This proves `LOCAL_HARDENED`, not denial against the authorized Claude process or arbitrary same-user filesystem/process access.
+2. Governed test/agent child environments contain no provider key or backend bootstrap material, except the exact Claude Code child in explicit managed mode contains only its authorized `ANTHROPIC_API_KEY`. Codex is the explicit external-runtime exclusion and is not asserted here.
+3. Agent file tools cannot reach Local Store paths and governed child environments/descriptors start from explicit empty-base allowlists. The managed Claude parent, siblings, unrelated governed children, and AutoByteus tool children receive no key. Codex preserves the pre-ticket external environment/home and is excluded. This proves `LOCAL_HARDENED` only within the stated boundary, not denial against Codex inherited state, the authorized Claude process, or arbitrary same-user filesystem/process access.
 4. Browser/GraphQL cannot invoke raw resolve, enumerate values, select another Store, or supply Store paths.
 5. Direct harness can resolve only declared scenario definitions and only during the run.
 6. Gateway cannot attach credentials to caller-supplied destinations.
@@ -327,18 +386,24 @@ The downstream coverage owner decides the precise durable test inventory after i
 10. Local CRUD tests receive a separate temporary writable pair; neither shared host Store is mutated.
 11. Existing Docker Compose/launcher/volume configuration is unchanged by this test design.
 12. Repository/team workflow runs implementation source review before `REAL_DIRECT_SECRET`; the product does not pretend to prove source trust through a new runtime flag.
+13. Exact Gemini tests prove all three closed variants and exact SDK options for LLM/media. Separate metadata tests prove exact AI Studio/Vertex Express semantic consumers, trusted reveal into the existing provider, preserved Generative Language request/response mapping, Vertex Project zero lookup/no live provider, reload invalidation, curated fallback, and no ambient/alternate-definition fallback. Real scenarios use normal product paths and do not require a metadata SDK-mode rewrite.
+14. Codex tests use synthetic state for durable launch assertions and, when available, the existing external product login for a bounded turn; they never read auth files, dump inherited environment, call Store/account RPC, or claim the environment is hardened.
 13. Empty-Store pair verification proves correct pair `READY`, swapped key/partial pair/verifier tamper `CORRUPT`, and unsupported format `INCOMPATIBLE` without writing or regenerating.
 14. Claude CLI-mode tests make zero management calls; managed-mode synthetic capture proves one resolve per child, no caller `env`, exact child-only alias delivery, empty settings/strict MCP/safe tools, and no fallback for the complete failure matrix.
 15. A real managed-Claude scenario authenticates and completes a bounded SDK request from the read-only real-E2E Store; evidence passes structural redaction checks without reading/exporting the real value. Separate synthetic exact/encoded-canary scans include a seeded negative leak proving the scanner fails correctly.
 16. AutoByteus remote tests prove no-host zero resolution/model-kind scoped clear, exact discovery/construction bindings, runtime-scoped catalog replacement, explicit-removal all-subset clear, native same-provider coexistence, and `credentialProviderId = AUTOBYTEUS` without serializing authentication.
 17. Real AutoByteus LLM/audio/image scenarios use the read-only E2E Store and real hosts; each advertised capability completes a representative operation or reports an explicit failure. Evidence and child/process environments contain no `AUTOBYTEUS_API_KEY` value or fallback alias.
-18. Migration tests prove a legacy `AUTOBYTEUS_API_KEY` is scrubbed after explicit Store reprovision/migration handling and normal runtime never dual-reads it.
+18. Legacy-source non-authority tests prove canonical application `.env` and parent aliases remain unchanged; `AUTOBYTEUS_API_KEY` and every sensitive alias are excluded before value retention while approved non-secret hosts remain usable; custom-provider-v1 remains byte-unchanged and returns only stable value-free guidance; and normal runtime never dual-reads or falls back.
+19. Importer deterministic tests use synthetic canaries and constructor-injected temporary target resolver/Stores to prove zero/one leading separator, absolute-source/closed-target options, non-mutating source trust checks, file safety, recognize-first positive selection, selected-only validation, full current alias registry, exact Qwen `DASHSCOPE_API_KEY` mapping plus deliberate `QWEN_API_KEY` and ZHIPU absence, dry-run, selected-pair initialization, skip/no-overwrite, explicit replacement, both target-specific TTY phrases, cancellation, changed-plan rejection, atomic rollback/idempotency, source immutability, and other-Store non-access. Mixed fixtures include unrelated settings, unknown secret-like names, malformed unrelated lines, and legacy aliases that remain non-blocking. No CLI/environment path override exists and canonical host Stores are never opened by these tests.
+20. Selected-value canaries and unrecognized-line canaries do not appear in argv, environment, stdout/stderr, logs, exceptions, snapshots, reports, evidence, or source copies; ignored-line metadata is absent, and a seeded negative leak control demonstrates the scanner fails correctly.
+21. The real test runner never invokes the importer. After an operator import, it uses only normal value-free preflight/read-only product execution. Default-target import validation is a separate operator/status/restart check and never participates in host real-E2E execution.
+22. Legacy-source negative tests prove startup performs no Local Store/importer operation and no source or parent-environment mutation, while explicit-import tests prove one selected target only and no test-runner/startup invocation.
 
 ## Why This Improves The Agent-Driven Workflow
 
 The improvement comes from four properties together:
 
-1. **one-time machine custody** — real values are provisioned once outside all checkouts;
+1. **one-time machine custody** — real values are provisioned once outside all checkouts, either through hidden input or an explicit operator import;
 2. **physically separate E2E custody** — every worktree selects the same real-E2E database/key pair through tracked config while the default Store stays unavailable;
 3. **in-process lifecycle** — Electron and test servers construct the Local backend directly, without another service or user action;
 4. **explicit resolution** — trusted test/server code receives only the declared credential instead of broad ambient environment state.

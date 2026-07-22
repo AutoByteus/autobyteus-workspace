@@ -10,12 +10,12 @@
     "openai.llm": {
       "mode": "REAL_DIRECT_SECRET",
       "requiredSecrets": ["provider.openai.api-key"],
-      "model": "gpt-4o-mini"
+      "model": "gpt-5.4-mini"
     },
     "openai.agent-flow": {
       "mode": "REAL_GATEWAY",
       "requiredSecrets": ["provider.openai.api-key"],
-      "model": "gpt-4o-mini",
+      "model": "gpt-5.4-mini",
       "expectedCapabilities": ["agent-turn"]
     },
     "serper.search": {
@@ -34,17 +34,24 @@
       "model": "gpt-image-2",
       "expectedCapabilities": ["image-generation"]
     },
+    "gemini.llm": {
+      "mode": "REAL_DIRECT_SECRET",
+      "requiredSecrets": ["provider.google.vertex-express-api-key"],
+      "googleSetupMode": "VERTEX_EXPRESS",
+      "model": "gemini-3-flash-preview",
+      "expectedCapabilities": ["llm-invocation"]
+    },
     "gemini.audio": {
       "mode": "REAL_DIRECT_SECRET",
-      "requiredSecrets": ["provider.gemini.ai-studio-api-key"],
-      "googleSetupMode": "AI_STUDIO",
+      "requiredSecrets": ["provider.google.vertex-express-api-key"],
+      "googleSetupMode": "VERTEX_EXPRESS",
       "model": "gemini-3.1-flash-tts-preview",
       "expectedCapabilities": ["audio-generation"]
     },
     "gemini.image": {
       "mode": "REAL_DIRECT_SECRET",
-      "requiredSecrets": ["provider.gemini.ai-studio-api-key"],
-      "googleSetupMode": "AI_STUDIO",
+      "requiredSecrets": ["provider.google.vertex-express-api-key"],
+      "googleSetupMode": "VERTEX_EXPRESS",
       "model": "gemini-3-pro-image",
       "expectedCapabilities": ["image-generation"]
     },

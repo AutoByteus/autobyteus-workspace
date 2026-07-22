@@ -102,12 +102,12 @@ run('read-only Store-backed real provider capabilities', () => {
         throw new Error(`LIVE_E2E_SCENARIO_MODE_MISMATCH:${scenarioId}`);
       }
 
-      if (scenarioId === 'openai.llm') {
+      if (scenarioId === 'openai.llm' || scenarioId === 'gemini.llm') {
         const llm = await safeExternalOperation(scenarioId, () => execution.createLlm(scenario.model!));
         try {
           const response = await safeExternalOperation(scenarioId, () => llm.sendUserMessage(
             new LLMUserMessage({ content: 'Reply with the single word pong.' }),
-            { logicalConversationId: 'secure-secret-real-openai-llm' },
+            { logicalConversationId: `secure-secret-real-${scenarioId.replace('.', '-')}` },
           ));
           assertEvidenceClean(response);
           expect(response.content.trim().length).toBeGreaterThan(0);

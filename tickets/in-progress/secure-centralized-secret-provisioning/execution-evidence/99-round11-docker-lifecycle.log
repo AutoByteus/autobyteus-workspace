@@ -1,0 +1,26 @@
+SCENARIO=SCSP-E2E-DOCKER-001
+IMPLEMENTATION_HEAD=ad629bc55ed5c653db957ce46bdbc5092c7738ac
+PROJECT=scsp-round11
+DATABASE_URL_PARENT=UNSET
+PROVIDER_SECRET_ALIASES_PARENT=UNSET
+CONTAINER_BEFORE=3775ef25b4b79f203e85ccc126d8b26279f199956492c0b0238092b611b1e020
+DATA_VOLUME_BEFORE=scsp-round11_autobyteus-server-data
+IMAGE_ID=sha256:86a867ad8946cb3db9fcacce36f47c257aa39b29aa80d8d2296c88690712df3a
+APPLICATION_ENV_INITIAL=PRESENT size=95
+APPLICATION_ENV_INITIAL_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+SCSP-E2E-DOCKER-001 phase=save initial=MISSING saved=CONFIGURED backend=READY assurance=LOCAL_HARDENED value_exposed=false
+APPLICATION_ENV_AFTER_SAVE=PRESENT size=95
+APPLICATION_ENV_AFTER_SAVE_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+RESTART_COMMAND=docker compose ... restart autobyteus-server
+ Container scsp-round11-autobyteus-server-1  Restarting
+ Container scsp-round11-autobyteus-server-1  Started
+CONTAINER_AFTER=3775ef25b4b79f203e85ccc126d8b26279f199956492c0b0238092b611b1e020
+DATA_VOLUME_AFTER=scsp-round11_autobyteus-server-data
+SAME_NAMED_DATA_VOLUME=true
+SCSP-E2E-DOCKER-001 phase=reopen-remove reopened=CONFIGURED removed=MISSING backend=READY value_exposed=false
+APPLICATION_ENV_AFTER_RESTART=PRESENT size=95
+APPLICATION_ENV_AFTER_RESTART_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+--- sanitized lifecycle log signals ---
+Database migrations completed successfully.
+Database migrations completed successfully.
+SCSP-E2E-DOCKER-001=PASS

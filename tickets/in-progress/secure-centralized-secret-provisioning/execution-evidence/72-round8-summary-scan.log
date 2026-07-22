@@ -1,0 +1,17 @@
+Round 8 final summary and canonical evidence scan
+HEAD: 977948fe68695374afbcd5e9516693d64533230e
+Canonical evidence scanner: PASS (4 Round 8 files)
+Refreshed latest digest records: 2
+Refreshed zh digest records: 2
+Compatibility OK records: 2
+Exact tracked build-command records: 1
+Built refreshed-base records: 3
+Docker lifecycle PASS records: 1
+MISSING state records: 2
+CONFIGURED state records: 2
+Cleanup zero-resource records: 3
+Current derived image differs from stale Round 7 derived image: yes
+Current derived image ID: sha256:d136ee61f2e73485a1790fd7bbab94a50b1111d0bb3d6c12355b78dcde93eca2
+Docker source remains unchanged: yes
+Real credential source/Store inspection in Round 8: none
+Result: PASS

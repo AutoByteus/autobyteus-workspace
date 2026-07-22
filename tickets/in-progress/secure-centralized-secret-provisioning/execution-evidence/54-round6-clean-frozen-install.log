@@ -1,0 +1,84 @@
+ROUND6_CLEAN_FROZEN_INSTALL
+head=5b3c1b58c8e5d98247c0986ec5d63815ebd376fc
+node=v22.23.1
+pnpm=10.28.2
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+Scope: all 11 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1717
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1717, reused 0, downloaded 87, added 86
+Packages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: /tmp/scsp-round6-install.YUga4b/home/Library/pnpm/store/v10
+  Virtual store is at:             node_modules/.pnpm
+Progress: resolved 1717, reused 0, downloaded 187, added 188
+Progress: resolved 1717, reused 0, downloaded 298, added 298
+Progress: resolved 1717, reused 0, downloaded 396, added 386
+Progress: resolved 1717, reused 0, downloaded 450, added 452
+Progress: resolved 1717, reused 0, downloaded 507, added 509
+Progress: resolved 1717, reused 0, downloaded 548, added 545
+Progress: resolved 1717, reused 0, downloaded 596, added 575
+Progress: resolved 1717, reused 0, downloaded 635, added 588
+Progress: resolved 1717, reused 0, downloaded 700, added 625
+Progress: resolved 1717, reused 0, downloaded 744, added 681
+Progress: resolved 1717, reused 0, downloaded 790, added 730
+Progress: resolved 1717, reused 0, downloaded 857, added 764
+Progress: resolved 1717, reused 0, downloaded 947, added 819
+Progress: resolved 1717, reused 0, downloaded 1033, added 887
+Progress: resolved 1717, reused 0, downloaded 1115, added 939
+Progress: resolved 1717, reused 0, downloaded 1208, added 1032
+Progress: resolved 1717, reused 0, downloaded 1295, added 1145
+Progress: resolved 1717, reused 0, downloaded 1388, added 1299
+Progress: resolved 1717, reused 0, downloaded 1498, added 1416
+Progress: resolved 1717, reused 0, downloaded 1589, added 1482
+Progress: resolved 1717, reused 0, downloaded 1681, added 1596
+Progress: resolved 1717, reused 0, downloaded 1713, added 1714
+Progress: resolved 1717, reused 0, downloaded 1714, added 1716
+Progress: resolved 1717, reused 0, downloaded 1715, added 1716
+Progress: resolved 1717, reused 0, downloaded 1715, added 1717, done
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+.../sharp@0.33.5/node_modules/sharp install$ node install/check
+.../node_modules/protobufjs postinstall: Done
+.../node_modules/protobufjs postinstall: Done
+.../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+.../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+.../node_modules/@parcel/watcher install: Done
+.../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+.../node-pty@1.1.0/node_modules/node-pty install: Done
+.../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+.../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+.../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+.../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+.../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+.../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+.../node_modules/vue-demi postinstall: Done
+.../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+.../node_modules/@prisma/engines postinstall: Done
+.../sharp@0.33.5/node_modules/sharp install: Done
+.../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+.../prisma@5.22.0/node_modules/prisma preinstall: Done
+.../node_modules/@whiskeysockets/baileys preinstall$ node ./engine-requirements.js
+.../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+.../node_modules/@whiskeysockets/baileys preinstall: Done
+.../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+.../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+.../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+.../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+.../node_modules/@prisma/client postinstall: Done
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/tmp/scsp-round6-install.YUga4b/work/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+Done in 37.2s using pnpm v10.28.2
+installed_repository_prisma_version=1.0.8
+installed_repository_prisma_dotenv_dependency=false
+installed_repository_prisma_esm_sha256=8aff4c475a30b462a22fa213a08becd6992d642e5276a71af066c0b93a6dd884
+installed_repository_prisma_cjs_sha256=7dbc90a637dc7c7f3b3f45a6e846eaef178bed8d703456d4f8dd9807c7626d2c
+installed_repository_prisma_manifest_sha256=c9d6f2d83dd1c22c63643deefdf89f7712efc490df4e8686575d2f4c4963f980
+tracked_old_repository_prisma_refs=0
+tracked_server_local_lock_exists=0
+tracked_repository_prisma_patch_exists=0

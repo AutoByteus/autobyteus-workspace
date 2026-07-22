@@ -1,0 +1,8 @@
+SCENARIO=SCSP-E2E-REAL-AUTOBYTEUS-CAPABILITY
+TARGET=https://api.autobyteus.com/models/{llm,audio,image}
+llm UNAVAILABLE=curl: (6) Could not resolve host: api.autobyteus.com
+000
+audio UNAVAILABLE=curl: (6) Could not resolve host: api.autobyteus.com
+000
+image UNAVAILABLE=curl: (6) Could not resolve host: api.autobyteus.com
+000

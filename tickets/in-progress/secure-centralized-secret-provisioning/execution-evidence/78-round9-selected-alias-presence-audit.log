@@ -1,0 +1,13 @@
+AUDIT_SCOPE selected alias names and EMPTY/SET state only; values not emitted
+KEY AUTOBYTEUS_API_KEY DEFINITION provider.autobyteus.api-key STATE SET
+KEY OPENAI_API_KEY DEFINITION provider.openai.api-key STATE SET
+KEY KIMI_API_KEY DEFINITION provider.kimi.api-key STATE SET
+KEY DEEPSEEK_API_KEY DEFINITION provider.deepseek.api-key STATE SET
+KEY GROK_API_KEY DEFINITION provider.grok.api-key STATE SET
+KEY SERPAPI_API_KEY DEFINITION search.serpapi.api-key STATE SET
+KEY VERTEX_AI_API_KEY DEFINITION provider.google.vertex-express-api-key STATE SET
+KEY GEMINI_API_KEY DEFINITION provider.gemini.ai-studio-api-key STATE EMPTY
+KEY GLM_API_KEY DEFINITION provider.glm.api-key STATE SET
+KEY ANTHROPIC_API_KEY DEFINITION provider.anthropic.api-key STATE SET
+SUMMARY SELECTED 10 EMPTY 1
+VALUES_EMITTED NO

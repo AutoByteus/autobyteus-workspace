@@ -4,6 +4,8 @@ import path from "node:path";
 import net from "node:net";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
+import { RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
+import { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID } from "../../../src/skill-improvement/domain/settings.js";
 
 type RunningServer = {
   child: ChildProcessWithoutNullStreams;
@@ -128,6 +130,22 @@ const credentialStatus = async (port: number) =>
     }
   `, { providerId: "AUTOBYTEUS" });
 
+const retrospectiveSkillImproverRuntimeDefault = async (port: number) => {
+  const settings = await executeGraphql<{
+    getServerSettings: Array<{ key: string; value: string }>;
+  }>(port, `
+    query RuntimeDefault {
+      getServerSettings {
+        key
+        value
+      }
+    }
+  `, {});
+  return settings.getServerSettings.find(
+    (entry) => entry.key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+  );
+};
+
 afterEach(async () => {
   const children = [...runningServers];
   for (const child of children) {
@@ -151,13 +169,13 @@ afterEach(async () => {
 });
 
 describe("server restart secret lifecycle", () => {
-  it("reopens persisted SQLite and managed Store state without a parent DATABASE_URL", async () => {
+  it("reopens persisted SQLite and managed Store state without a parent or persisted DATABASE_URL", async () => {
     expect(fs.existsSync(builtServerEntry), "Build autobyteus-server-ts before running this test.").toBe(true);
     const port = await reservePort();
     const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-restart-lifecycle-"));
     tempDirectories.add(dataDir);
-    fs.writeFileSync(
-      path.join(dataDir, ".env"),
+    const configPath = path.join(dataDir, ".env");
+    const initialConfigBytes = Buffer.from(
       [
         `AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:${port}`,
         "APP_ENV=test",
@@ -167,9 +185,14 @@ describe("server restart secret lifecycle", () => {
       ].join("\n"),
       "utf-8",
     );
+    fs.writeFileSync(configPath, initialConfigBytes);
 
     const syntheticCanary = "synthetic-restart-secret-canary";
     const firstServer = await startServer(dataDir, port);
+    expect(await retrospectiveSkillImproverRuntimeDefault(port)).toEqual({
+      key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      value: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+    });
     const saved = await executeGraphql<{ setLlmProviderApiKey: string }>(port, `
       mutation Save($providerId: String!, $apiKey: String!) {
         setLlmProviderApiKey(providerId: $providerId, apiKey: $apiKey)
@@ -180,9 +203,8 @@ describe("server restart secret lifecycle", () => {
     expect((await credentialStatus(port)).getLlmProviderCredentialStatus.storageState).toBe("CONFIGURED");
     await stopServer(firstServer);
 
-    const persistedConfig = fs.readFileSync(path.join(dataDir, ".env"), "utf-8");
-    expect(persistedConfig).toMatch(/^DATABASE_URL=file:/m);
-    expect(persistedConfig).not.toContain(syntheticCanary);
+    expect(fs.readFileSync(configPath)).toEqual(initialConfigBytes);
+    expect(fs.existsSync(path.join(dataDir, "db", "test.db"))).toBe(true);
 
     const secondServer = await startServer(dataDir, port);
     const reopened = await credentialStatus(port);
@@ -191,6 +213,10 @@ describe("server restart secret lifecycle", () => {
       storageState: "CONFIGURED",
       lifecycle: "WRITABLE",
       instructionCode: null,
+    });
+    expect(await retrospectiveSkillImproverRuntimeDefault(port)).toEqual({
+      key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      value: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     });
     expect(JSON.stringify(reopened)).not.toContain(syntheticCanary);
 
@@ -202,6 +228,7 @@ describe("server restart secret lifecycle", () => {
     expect(removed.removeLlmProviderApiKey).toContain("removed successfully");
     expect((await credentialStatus(port)).getLlmProviderCredentialStatus.storageState).toBe("MISSING");
     await stopServer(secondServer);
+    expect(fs.readFileSync(configPath)).toEqual(initialConfigBytes);
 
     expect(firstServer.output()).toContain("Database migrations completed successfully.");
     expect(firstServer.output()).toContain(`Server listening on 127.0.0.1:${port}`);

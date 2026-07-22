@@ -3,10 +3,10 @@
 ## Artifact Metadata
 
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md`.
-- Purpose: define the use-case-validated management-service, backend, physical Store, lifecycle, status, error, and local persistence contracts.
-- Scope: UC-001–UC-008, UC-011–UC-013, UC-015–UC-018; REQ-001, REQ-005–REQ-008, REQ-010–REQ-015, REQ-017–REQ-019.
-- Status: `AR-008 Bounded Construction-Target Correction; User-Approved Behavior Unchanged; Architecture Re-review Required`.
-- Approval applicability: `Required`; this supplement constrains intended behavior and architecture.
+- Purpose: define the use-case-validated management-service, backend, physical Store, lifecycle, status, exact LLM/media construction authentication, separately preserved live-metadata request boundary, external-runtime exclusion, explicit Local import, and legacy-source non-authority contracts.
+- Scope: UC-001–UC-008 and UC-011–UC-019; REQ-001, REQ-002, REQ-004–REQ-008, REQ-010–REQ-020.
+- Status: `Original Gemini Metadata Preservation Reconciliation; Architecture Re-review Required`.
+- Approval applicability: `Required`; prior importer/no-automatic-update/Codex/Claude contracts remain approved. Corrected CR-021 preserves the user-confirmed original dual-key Gemini metadata contract and authorizes no source redesign.
 - Core artifacts supported: [requirements.md](./requirements.md), [investigation-notes.md](./investigation-notes.md), [design-spec.md](./design-spec.md).
 - Related supplements: [use-case-spine-validation.md](./use-case-spine-validation.md), [secret-storage-architecture.md](./secret-storage-architecture.md), [credential-consumer-mapping.md](./credential-consumer-mapping.md), [live-test-secret-provisioning.md](./live-test-secret-provisioning.md), [threat-model-and-option-analysis.md](./threat-model-and-option-analysis.md).
 
@@ -19,11 +19,15 @@ subject/provisioning service -> SecretManagementService
 SecretManagementService -> one injected SecretStorageBackend
 SecretStorageBackend -> selected custody implementation
 consumer provisioning service -> credential-agnostic factory -> trusted provider SDK
+LLM/media provisioning -> exact Gemini resolved variant -> gemini-helper -> exact Google SDK options
+Codex runtime selection -> existing CodexAppServerClient -> codex app-server with external Codex-owned login state
 Claude SDK request -> ClaudeSdkClient -> ClaudeRuntimeAuthenticationService
 ClaudeRuntimeAuthenticationService -> SecretManagementService (managed-secret only)
 ClaudeSdkClient -> exact Claude Code child
 AutoByteus model catalog trigger -> AutobyteusRemoteModelDiscoveryService
 AutobyteusRemoteModelDiscoveryService -> SecretManagementService -> core remote provider/factory
+explicit PNPM import command -> LocalEnvironmentSecretImportService -> internal Local setup batch -> one selected Local Store
+server startup -> non-secret AppConfig projection + current custom-provider reader -> untouched/non-authoritative legacy sources or value-free v1 guidance
 ```
 
 Rules:
@@ -34,6 +38,10 @@ Rules:
 4. Backend selection/configuration belongs to `SecretStorageConfigurationService`, separately from provider credential lifecycle.
 5. Individual LLM/search/media clients receive resolved authentication only. They do not import management, backends, Local Store, future vendor SDKs, or `AppConfig`. `ClaudeSdkClient` is a server runtime boundary and may receive only the ephemeral authentication result from `ClaudeRuntimeAuthenticationService`; it never resolves or selects storage itself.
 6. Existing subject-specific GraphQL surfaces remain entrypoints. No generic read/list/path API exists.
+7. The explicit Local import CLI is a setup/operator boundary, not a management/runtime API. Its caller supplies only a required absolute source path, a closed `default|e2e` target, and dry-run/overwrite flags. The owner resolves target paths internally and never calls or widens `SecretManagementService` or the generic backend port.
+8. Startup performs no automatic legacy credential update. `AppConfig` admits approved non-secret settings by name before value retention and preserves excluded source lines; the current custom-provider store accepts v2 only and maps untouched v1 to stable value-free guidance. No credential alias/custom-v1 value becomes runtime authority or fallback, and the later Prisma-backed app-data migration runner remains unchanged.
+9. LLM/media provisioning preserves `GEMINI_SETUP_MODE` as one exact resolved authentication variant. `gemini-helper.ts` is the sole Google SDK option mapper and cannot infer/fall back between modes.
+10. Codex is not a secret-management consumer. `CodexAppServerClient` preserves the single pre-ticket external-login launch environment/home; it never calls management/backend/account RPC or receives a Store definition. Its inherited environment is outside the `LOCAL_HARDENED` child-environment contract.
 
 ## Use-Case-Validated Identity Model
 
@@ -57,7 +65,7 @@ search.serpapi.api-key
 search.vertex-ai.api-key
 ```
 
-Dynamic custom-provider IDs are derived from an immutable provider UUID plus a fixed suffix. The current runtime catalog contains definitions and consumer bindings only. Legacy environment aliases are migration-owned data and do not remain on current definitions.
+Dynamic custom-provider IDs are derived from an immutable provider UUID plus a fixed suffix. The current runtime catalog contains definitions and consumer bindings only. Legacy environment aliases live in one immutable historical source-policy map reused by non-secret exclusion and the explicit Local importer; they do not remain on current definitions.
 
 ### Consumer identity
 
@@ -125,7 +133,7 @@ type SaveSecretForConsumerRequest = {
 };
 ```
 
-`SecretBinding` does not duplicate provider display metadata, purpose prose, sensitivity constants, Store policy, legacy aliases, or validation policy. Those belong respectively to existing provider metadata, documentation, backend bootstrap, migration, and subject services.
+`SecretBinding` does not duplicate provider display metadata, purpose prose, sensitivity constants, Store policy, legacy aliases, or validation policy. Those belong respectively to existing provider metadata, documentation, backend bootstrap, historical exclusion/import policy, and subject services.
 
 `SecretValue` has a private/non-enumerable representation. Node inspection, string conversion, and JSON are redacted. There is no plaintext clone/serialization method. This is accidental-output protection, not a claim that trusted JavaScript memory is opaque.
 
@@ -254,7 +262,7 @@ Backend invariants:
 - failure never falls back to another backend, another Store, `.env`, or `process.env`;
 - `close()` releases clients/database handles and temporary references as far as the runtime permits.
 
-Cross-Store copy is absent from both runtime and first-delivery setup contracts. An ordinary server backend is bound to one Store and cannot select another. `LocalSecretStoreProvisioningService` is constructed with only the exact writable E2E target; it has no source/default backend dependency.
+Cross-Store copy is absent from runtime, hidden-input setup, and explicit import contracts. An ordinary server backend is bound to one Store and cannot select another. `LocalSecretStoreProvisioningService` is constructed with only the exact writable E2E target; it has no source/default backend dependency. `LocalEnvironmentSecretImportService` resolves one closed target role internally and writes from a verified plaintext source; it never uses either Store as a source or exposes bulk write through `SecretStorageBackend`.
 
 ## Typed Error Taxonomy
 
@@ -294,7 +302,45 @@ The Local paths are accepted only from trusted startup/deployment configuration,
 
 Future adapters add their own typed schema and backend factory registration in the delivery that implements them. First-delivery parsing of an unknown/Vault/AWS/Kubernetes kind fails `INVALID_BACKEND_CONFIG` with instruction `SECRET_BACKEND_KIND_NOT_INSTALLED`; it does not persist, construct, or fall back to Local. Backend bootstrap identity is not frontend configuration. First delivery uses the Local key file outside checkout/agent environment; future workload identity remains adapter-owned. Local database/key paths are non-secret configuration; key bytes are not.
 
-`requestedAssuranceTier` is not configuration. First delivery reports `LOCAL_HARDENED` only after its file/env/descriptor controls verify and never reports `STRONG_AGENT_ISOLATION`.
+`requestedAssuranceTier` is not configuration. First delivery reports `LOCAL_HARDENED` only after its governed file/env/descriptor controls verify, explicitly excludes Codex environment inheritance, and never reports `STRONG_AGENT_ISOLATION`.
+
+## Exact Construction Authentication Contract
+
+```ts
+type ResolvedConstructionAuthentication =
+  | { kind: "none" }
+  | { kind: "apiKey"; apiKey: SecretValue }
+  | { kind: "geminiAiStudio"; apiKey: SecretValue }
+  | { kind: "geminiVertexExpress"; apiKey: SecretValue }
+  | { kind: "geminiVertexProject"; project: string; location: string };
+```
+
+LLM and multimedia construction contexts reuse this exact closed union. Generic `apiKey` serves non-Gemini API-key consumers only. The existing LLM/media provisioning owners map the explicit non-secret mode and exact slot/configuration as follows:
+
+| Mode | Required input | Resolved variant | Exact SDK construction |
+| --- | --- | --- | --- |
+| `AI_STUDIO` | `provider.gemini.ai-studio-api-key` | `geminiAiStudio` | `GoogleGenAI({apiKey})` |
+| `VERTEX_EXPRESS` | `provider.google.vertex-express-api-key` | `geminiVertexExpress` | `GoogleGenAI({vertexai:true,apiKey})` |
+| `VERTEX_PROJECT` | project + location | `geminiVertexProject` | `GoogleGenAI({vertexai:true,project,location})` |
+
+Missing/invalid mode or required input fails before client construction. Neither presence of another credential/configuration nor a previous variant authorizes inference, cross-mode retry, or fallback. `gemini-helper.ts` uses an exhaustive switch and reveals an API key only at the exact LLM/media SDK constructor boundary.
+
+Gemini live metadata intentionally has a separate established contract. `ModelMetadataProvisioningService` maps `AI_STUDIO` only to `llmMetadata/GEMINI/geminiAiStudioApiKey` and `VERTEX_EXPRESS` only to `llmMetadata/GEMINI/geminiVertexExpressApiKey`, resolves through `SecretManagementService`, and reveals the selected value only when constructing `GeminiModelMetadataProvider(apiKey)`. That storage-neutral provider preserves the original Generative Language models request and maps `name`, `baseModelId`, and input/output token limits. For `VERTEX_PROJECT`, the service constructs no live metadata provider and performs zero metadata secret lookup. `ModelMetadataResolver` preserves live-over-curated merge plus failure/timeout containment. No metadata branch reads an ambient alias, tries another definition, falls back to another Store, or converts Vertex Project into a key-backed path.
+
+## External Codex Authentication Preservation
+
+Codex has no `SecretConsumerIdentity`, definition binding, managed-auth mode, or management/backend contract. Its single supported path is:
+
+```text
+Codex runtime selection
+ -> existing Codex client manager
+ -> CodexAppServerClient.start
+ -> spawn codex app-server with options.env ?? process.env and real HOME/CODEX_HOME
+ -> Codex-owned external login/configuration state
+ -> existing sanitized model/thread/turn result or failure
+```
+
+The implementation removes the ticket-added `buildAgentChildEnvironment` use from this client and restores no second path. AutoByteus does not call Codex account/login RPC, report auth status, rotate credentials, synthesize an account home, inspect/migrate real auth state, or fall back to a Store. This explicit external-runtime behavior is outside the `LOCAL_HARDENED` child-environment guarantee.
 
 ## Claude Runtime Authentication Cutover
 
@@ -430,14 +476,14 @@ Bootstrap order:
 
 ```text
 resolve canonical/server data paths without credential dotenv
- -> run legacy secret migration
- -> initialize non-secret application config
+ -> initialize read-only approved non-secret application projection; exclude sensitive aliases before value retention and leave the source unchanged
+ -> load current metadata-only custom-provider v2 or return value-free v1 reconfiguration guidance without rewriting the v1 source
  -> load and validate typed backend configuration
  -> construct and health-check exactly one registered backend
  -> if READY: construct management + provisioning/provider routes
  -> otherwise: start value-free configuration/Settings/health control plane only
- -> derive LOCAL_HARDENED after file/env/descriptor checks
- -> permit applicable agent execution
+ -> derive LOCAL_HARDENED after governed file/env/descriptor checks with explicit Codex exclusion
+ -> permit applicable governed agent execution or the separate preserved Codex path
 ```
 
 Backend replacement requires a server restart in the initial design. A runtime request cannot select another backend or Store.
@@ -535,7 +581,7 @@ Automatic local unlock through an owner-only key file remains lower assurance ag
 
 ## Trusted Local Store Provisioning Contract
 
-Ordinary runtime has one backend instance and no Store selector. First-delivery setup is constructed with only the exact writable E2E target:
+Ordinary runtime has one backend instance and no Store selector. The hidden-input setup service is constructed with only the exact writable E2E target:
 
 ```ts
 type LocalProvisioningStatus = {
@@ -543,15 +589,178 @@ type LocalProvisioningStatus = {
   storageState: "CONFIGURED";
 };
 
+type LocalProvisioningBatchEntry = {
+  definitionId: SecretDefinitionId;
+  value: SecretValue;
+  action: "CREATE" | "REPLACE";
+};
+
+type LocalProvisioningTargetSnapshot =
+  | {
+      targetStatus: { state: "READY" };
+      definitionStatus: ReadonlyMap<SecretDefinitionId, BackendSecretStatus>;
+    }
+  | {
+      targetStatus: {
+        state: "INITIALIZATION_REQUIRED";
+        instructionCode: "LOCAL_IMPORT_TARGET_INITIALIZATION_REQUIRED";
+      };
+      definitionStatus: null;
+    }
+  | {
+      targetStatus: NonReadySecretBackendHealth;
+      definitionStatus: null;
+    };
+
 interface LocalSecretStoreProvisioningService {
+  inspectExact(
+    definitionIds: readonly SecretDefinitionId[],
+  ): Promise<LocalProvisioningTargetSnapshot>;
   provisionExact(
     definitionId: SecretDefinitionId,
     value: SecretValue,
   ): Promise<LocalProvisioningStatus>;
+  /** Package-internal setup API; not exported through management/backend/transport. */
+  provisionBatchExact(
+    entries: readonly LocalProvisioningBatchEntry[],
+    options: { initializeIfAbsent: true },
+  ): Promise<{ configuredCount: number; replacedCount: number }>;
 }
 ```
 
-The service instance, not the operation request, is bound to the writable E2E target. It validates one exact catalog definition, accepts hidden transient input, atomically creates/replaces the target record, checkpoints/closes, and returns status only. It has no source/default backend, copy, resolve, list, prefix, path selection, raw readback, runtime, or GraphQL API. Dedicated test credentials must be supplied directly once.
+The service instance, not either operation request, is bound to one exact writable `LocalStoreConfiguration` plus the Local initializer/backend-opener dependencies; callers do not pre-open or retain its repository/backend. Hidden-input composition constructs it only for E2E and calls `provisionExact`. The explicit import owner constructs it only after resolving its closed selected target. `inspectExact` never initializes or resolves a value; both files absent yields `INITIALIZATION_REQUIRED`, a partial pair yields `CORRUPT`, and ready returns status only for the validated requested IDs. The service owns open, staged initialization when the governing owner has authorized it, repository delegation, checkpoint, and close; it validates exact catalog definitions/actions, delegates one repository transaction, and returns counts/status only. It has no plaintext source or alternate-Store backend dependency, copy, resolve, list, prefix, request path selection, raw readback, runtime, or GraphQL API. The batch remains package-internal and is not added to `SecretStorageBackend` or `SecretManagementService`.
+
+## Legacy Source Non-Authority Contract
+
+The automatic `LegacySecretCutoverMigration`, its startup call, source rewrite/conversion behavior, parent-alias deletion, and migration-only record/ledger are removed. No replacement credential migration owner is introduced, and `src/app-data-migrations` remains unchanged.
+
+1. Canonical application `.env`, inherited parent aliases, and custom-provider-v1 remain operator-owned and untouched. Startup never imports, copies, scrubs, deletes, rewrites, or converts them.
+2. `AppConfig` classifies assignment names before retaining values. It may expose only the approved non-secret configuration set; every historical sensitive alias in [credential-consumer-mapping.md](./credential-consumer-mapping.md) is absent from `get`, `getAll`, persistence state, logs, and child environments.
+3. Startup is read-only for the legacy source. Only a later explicit supported non-secret Settings operation may write it; that operation is source-preserving and updates the intended non-secret entry without serializing the projected map over the whole source or dropping/reformatting excluded credential lines.
+4. The current custom-provider store accepts metadata-only v2. Detection of v1 performs no value extraction, metadata conversion, rewrite, delete, Store call, or fallback and returns stable value-free `CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED` guidance.
+5. Startup performs zero Local Store/backend/management/importer operations on behalf of legacy sources and emits no affected-ID, migration, or re-provision record.
+6. Users explicitly provision through UI/Settings, hidden-input E2E setup, or the operator importer below and own any later legacy cleanup. The importer is never invoked by startup.
+7. The normal runtime remains Store-only. A legacy source's continued physical presence is a documented same-user residual, not credential authority.
+
+## Explicit Local Environment-Secret Import Contract
+
+The repository exposes one thin command:
+
+```text
+pnpm secrets:local:import -- --source /absolute/path/to/copied-test-keys --target e2e [--dry-run] [--overwrite]
+pnpm secrets:local:import -- --source /absolute/path/to/local-api-credentials --target default [--dry-run] [--overwrite]
+```
+
+Its typed service request is deliberately smaller than a generic import API:
+
+The shared request/action/plan/status/result/error vocabulary is owned by `autobyteus-server-ts/src/secret-management/provisioning/local-environment-secret-import.ts`. The CLI, source reader, target resolver, `LocalEnvironmentSecretImportService`, and importer tests import that current module directly. The incidental `local-legacy-environment-import.ts` file and `LocalLegacyEnvironmentImport*` exports are removed in the same change, with no compatibility re-export.
+
+```ts
+type LocalEnvironmentSecretImportTarget = "default" | "e2e";
+
+type LocalEnvironmentSecretImportRequest = {
+  sourceAbsolutePath: string;
+  target: LocalEnvironmentSecretImportTarget;
+  dryRun: boolean;
+  overwrite: boolean;
+};
+
+type LocalEnvironmentSecretImportAction =
+  | "CREATE"
+  | "SKIPPED_CONFIGURED"
+  | "REPLACE";
+
+type LocalEnvironmentSecretImportPlanEntry = {
+  definitionId: SecretDefinitionId;
+  action: LocalEnvironmentSecretImportAction;
+};
+
+type LocalEnvironmentSecretImportTargetStatus =
+  | { state: "READY" }
+  | {
+      state: "INITIALIZATION_REQUIRED";
+      instructionCode: "LOCAL_IMPORT_TARGET_INITIALIZATION_REQUIRED";
+    }
+  | NonReadySecretBackendHealth;
+
+type LocalEnvironmentSecretImportResult = {
+  targetStatus: LocalEnvironmentSecretImportTargetStatus;
+  definitionIds: SecretDefinitionId[];
+  configuredCount: number;
+  skippedCount: number;
+  replacedCount: number;
+  instructionCode: "NONE" | "RESTART_REQUIRED" | "RUN_REAL_E2E_PREFLIGHT";
+};
+```
+
+The outward plan/result is value-free. The association between a mapped definition and its transient `SecretValue` is a separate internal short-lived structure that cannot serialize, log, or escape the execute scope. The request has no target Store path/key, definition/value list, backend configuration, environment map, remove action, fallback, or implicit target.
+
+### Source selection and trust
+
+1. The CLI adapter accepts exactly zero or one literal `--` at argv index 0, removes it, and then parses one canonical option form. `--source` and `--target` are required exactly once. Repeated/misplaced sentinels, unknown/duplicate options, a relative source, or target outside `default|e2e` fail before source value handling.
+2. The source may have any basename or extension, including the current application `.env`, an extensionless name, or a renamed copy of `.env`/`.env.test`. Filename never selects or auto-detects a format. The command never searches the current directory, parents, another checkout, application data, or an environment variable to infer a source.
+3. Before parsing, `lstat`, canonical realpath, opened-handle `fstat`, and identity comparison reject missing, symlink, non-regular, changed/raced, wrong-owner, or insufficiently private files. A post-read `fstat` must match the pre-read device/inode (where available), size, modification time, and change time; otherwise the source is raced and the parsed bytes are discarded.
+4. POSIX requires the current UID and no group/other permission bits. Windows requires a non-mutating verifier that proves current-user-exclusive access; if that proof is unavailable, import fails. The importer never chmods, rewrites, or edits source ACLs.
+5. The source limit is 1 MiB. NUL or invalid UTF-8 rejects the whole operation. No partial parsing/writing occurs.
+
+### Recognition, selected-value parsing, and mapping
+
+1. Recognition supports UTF-8 LF/CRLF physical lines. For each line, the scanner examines only enough leading syntax to determine whether it contains optional horizontal whitespace, optional `export `, and an assignment-name token matching `[A-Za-z_][A-Za-z0-9_]*`. It compares that token exactly against the immutable positive alias registry before parsing any right-hand side.
+2. A line whose token is absent or unrecognized is ignored without parsing, unquoting, validating, retaining, or evaluating the remainder. Blank/comment lines, unrelated settings, unknown secret-like names, malformed unrelated text, `DATABASE_URL`, `OLLAMA_API_KEY`, `GOOGLE_CSE_API_KEY`, `QWEN_API_KEY`, `ZHIPU_API_KEY`, `CLAUDE_CODE_API_KEY`, its descriptor alias, and every other unrecognized line are non-blocking. No ignored-line metadata is retained or emitted.
+3. Once an exact recognized alias matches, that line must contain optional horizontal whitespace, `=`, and one same-line value. The first `=` is the delimiter, so later `=` characters remain selected value bytes. An unquoted value has outer horizontal whitespace removed and otherwise remains literal, including `#`; inline comments are not stripped. A single- or double-quoted value must close on the same physical line; only the matching quote and backslash may be escaped, and the outer quotes are removed. Multiline values, heredocs, line continuation, unmatched quotes, trailing non-whitespace after a closing quote, and dynamic-expression markers `${`, `$(`, or backtick in a populated value reject the recognized assignment. No value is expanded/evaluated, assigned to `process.env`, passed to a shell, or read from another file.
+4. After the normalization in rule 3, an empty recognized value is absent/non-selected. This includes `NAME=`, horizontal-whitespace-only, `NAME=""`, and `NAME=''`. It creates no `LocalEnvironmentMappedCredential`, value buffer, plan entry, warning, ignored-line metadata, count, or error, and it does not enter duplicate tracking. Therefore multiple empty occurrences remain absent, one empty plus one populated occurrence selects the populated occurrence, and two or more populated occurrences of the same recognized spelling reject with `IMPORT_SOURCE_DUPLICATE_ASSIGNMENT` even when values match. Each definition has one import name. For Qwen, only `DASHSCOPE_API_KEY` maps; `QWEN_API_KEY` is unrecognized and ignored without value parsing. `ZHIPU_API_KEY` is not a GLM alias and never maps.
+5. One immutable positive alias-to-definition registry owns explicit-import eligibility. Non-secret configuration exclusion may reuse its names but may apply a broader sensitive-name predicate for its own projection responsibility; that broader predicate never flows into the importer. Caller-defined aliases, a second value map, negative secret-like classification, and compatibility aliases are forbidden. Any registry collision or missing current catalog definition fails `IMPORT_MAPPING_INVALID`. The exact normative aliases are listed in [credential-consumer-mapping.md](./credential-consumer-mapping.md).
+6. A source containing zero populated selected mapped credentials—including a source whose recognized assignments are all absent/empty—fails value-free with `IMPORT_NO_MAPPED_CREDENTIALS`; it does not open/mutate the target or report success merely because lines were ignored or empty.
+7. The selected credential set, registry/catalog, selected target status, and current per-definition status validate before any prompt or write. Unknown source content is deliberately outside that validation subject.
+
+### Target, plan, confirmation, and transaction
+
+1. `default` resolves internally only to the canonical host Local Store at `~/.autobyteus/server-data/secret-store/secret-store.db` plus `secret-store.key`. `e2e` resolves internally only to the independent host `real-e2e-secret-store.db` plus `real-e2e-secret-store.key` in the same directory. Callers cannot override these paths. This local operator command does not target a custom-data-directory, Docker, Kubernetes, remote, or enterprise Store; those nodes use their normal Settings or deployment-specific provisioning.
+   - Production CLI composition constructs a fixed `LocalImportTargetResolver` for this host root. Unit/integration tests may constructor-inject a temporary-root resolver implementing the same closed role mapping; that seam is package-internal and is never exposed through CLI flags, environment variables, runtime configuration, or product APIs.
+2. When both selected pair files are absent, target status is `INITIALIZATION_REQUIRED`. Dry-run derives all mapped entries as `CREATE` but creates nothing. After confirmation, execute reuses the existing staged Local initializer for that selected pair before the record batch. A one-file partial pair is `CORRUPT` and is never repaired/replaced silently.
+3. A present selected Store must be `READY` and writable for import. The other Store is not opened. No target can inherit, fall back, or copy from the other.
+4. Dry-run performs all applicable checks and outputs only logical IDs plus `CREATE`, `SKIPPED_CONFIGURED`, or `REPLACE` ; it never prompts, initializes, or writes. Preview and execution use the same request policy: a configured entry is `REPLACE` only when that request includes `--overwrite`, and otherwise is `SKIPPED_CONFIGURED`.
+5. Without `--overwrite`, an already configured definition is `SKIPPED_CONFIGURED` and is not part of the write batch. With `--overwrite`, it becomes `REPLACE`. Missing/absent aliases and unrelated target records remain unchanged. Removal is unsupported.
+6. Every non-dry operation with at least one `CREATE`/`REPLACE` requires a direct TTY and exact target-specific phrase: `IMPORT DEFAULT STORE` or `IMPORT REAL-E2E STORE`. Cancellation, mismatch, EOF, or non-TTY performs no initialization or record mutation. If every mapped record is `SKIPPED_CONFIGURED`, return the value-free skipped result without a prompt or write. No `--yes` bypass exists.
+7. An internal Local setup-only `provisionBatchExact` operation revalidates the selected pair and every plan precondition inside one SQLite transaction: `CREATE` requires the record still absent and `REPLACE` requires it still present. Any difference from the confirmed plan fails `IMPORT_TARGET_CHANGED` and rolls back all records rather than silently overwriting/creating. Otherwise it applies all planned records or none, checkpoints, and closes. It is not added to `SecretStorageBackend` or `SecretManagementService`. If the pair was initialized in this execution and the record batch fails, a valid empty selected Store may remain; no mapped record is partially committed. Crash-created partial pairs follow the existing fail-closed `CORRUPT` lifecycle.
+8. A rerun without overwrite is idempotent. A confirmed default write returns `RESTART_REQUIRED`; a confirmed E2E write returns `RUN_REAL_E2E_PREFLIGHT`.
+
+### Disclosure and cleanup
+
+- Source bytes/values never enter stdout/stderr, argv, ambient `process.env`, shell commands, logs, traces, exceptions, reports, evidence, or committed artifacts.
+- Output is limited to target status, logical definition IDs sorted lexically, stable error/instruction codes, and `CONFIGURED`/`SKIPPED`/`REPLACED` action counts. Ignored-line metadata is absent.
+- No plaintext temporary, backup, quarantine, rewritten source, or copied dotenv file is created. The source is never mutated or deleted.
+- Owned byte buffers are overwritten and references released in `finally` as far as practical. JavaScript, parser logic, SQLite bindings, and the runtime may create string/native copies that cannot be proven deterministically zeroized; the contract makes no stronger memory-erasure claim.
+
+Stable importer failures are value-free:
+
+```ts
+type LocalEnvironmentSecretImportErrorCode =
+  | "IMPORT_OPTIONS_INVALID"
+  | "IMPORT_SOURCE_PATH_INVALID"
+  | "IMPORT_SOURCE_UNTRUSTED"
+  | "IMPORT_SOURCE_RACED"
+  | "IMPORT_SOURCE_TOO_LARGE"
+  | "IMPORT_SOURCE_ENCODING_INVALID"
+  | "IMPORT_SOURCE_SYNTAX_INVALID"
+  | "IMPORT_SOURCE_DUPLICATE_ASSIGNMENT"
+  | "IMPORT_NO_MAPPED_CREDENTIALS"
+  | "IMPORT_MAPPING_INVALID"
+  | "IMPORT_TARGET_INITIALIZATION_FAILED"
+  | "IMPORT_TARGET_NOT_READY"
+  | "IMPORT_TARGET_NOT_WRITABLE"
+  | "IMPORT_TARGET_CHANGED"
+  | "IMPORT_CONFIRMATION_REQUIRED"
+  | "IMPORT_CANCELLED"
+  | "IMPORT_BATCH_FAILED";
+
+class LocalEnvironmentSecretImportError extends Error {
+  readonly code: LocalEnvironmentSecretImportErrorCode;
+  readonly target?: LocalEnvironmentSecretImportTarget;
+}
+```
+
+Error projections contain the code and selected target role only when safe; they never include the source path, line text, variable value, value length/hash/prefix, Store path, or raw exception.
 
 ## Conformance Suite
 
@@ -569,7 +778,7 @@ Every first-delivery implementation/fixture runs the applicable subset:
 10. Local backend binding prevents per-request Store selection; default, real-E2E, and temporary Store fixtures use physically separate database/key pairs;
 11. empty Local Store + correct key is ready; swapped key, one missing file, and tampered verifier are corrupt; unsupported verifier/Store version is incompatible; none rewrites/regenerates;
 12. staged creation crash/partial-pair cases fail closed;
-13. direct E2E setup exposes no source/copy method and returns value-free evidence;
+13. hidden-input direct E2E setup exposes no source/copy method and returns value-free evidence;
 14. read-only Local mode exposes no write methods, authenticates the pair verifier, and opens without mutation;
 15. synthetic canaries do not appear in logs, errors, snapshots, traces, or reports;
 16. test-only externally-managed fixture proves disabled-write projection without implying a production adapter;
@@ -580,6 +789,16 @@ Every first-delivery implementation/fixture runs the applicable subset:
 21. successful AutoByteus discovery replaces only the matching model-kind/runtime subset, preserves native same-provider models, clears that subset on authoritative empty success, and preserves last-known-good on pre-authoritative failure;
 22. remote construction uses the model target's `credentialProviderId = "AUTOBYTEUS"` rather than its displayed provider ID and never consults `AUTOBYTEUS_API_KEY`;
 23. built-in AutoByteus Settings save/status/idempotent-remove and reload remain reachable through the existing product surface, with values absent from every response and artifact; successful explicit removal clears only AutoByteus runtime subsets without discovery resolution.
+24. importer options accept both zero and one leading PNPM separator, require one absolute source file and one closed target, and accept arbitrary source basenames/extensions; repeated/misplaced separators and every implicit/searched/relative/duplicate/unknown/target-path/definition/value/backend/environment selector fail before mutation;
+25. source fixtures prove symlink/non-regular/wrong-owner/non-private/raced/oversize/NUL/invalid-UTF-8 rejection plus malformed recognized syntax, populated dynamic value, and duplicate populated occurrence rejection; they also prove all normalized-empty forms are absent, empty plus one populated occurrence selects only the populated value, multiple empty occurrences remain absent, all-empty/absent yields `IMPORT_NO_MAPPED_CREDENTIALS`, and unrelated settings, unknown secret-like names, malformed unrelated lines, and legacy names remain non-blocking and do not cause source permission mutation;
+26. the positive registry resolves every current approved alias to a catalog definition, maps Qwen only from `DASHSCOPE_API_KEY`, deliberately excludes `QWEN_API_KEY` and ZHIPU, and has no second map, precedence/group mechanism, or negative classifier in importer code;
+27. dry-run is value-free and zero-write; no-overwrite skips configured records; explicit overwrite and exact target-specific TTY phrases are required for replacement/write; cancellation and non-TTY are zero-write;
+28. selected-target batch is atomic, rollback-safe, idempotent, source-preserving, and never opens the other Store; default returns restart instruction and E2E returns preflight instruction;
+29. selected-value canaries and unrecognized-line canaries never appear in argv, environment, stdout/stderr, logs, errors, snapshots, reports, evidence, source copies, or artifacts; ignored-line metadata is absent, and a seeded leak-scanner negative control proves the scanner can fail;
+30. the hidden-input provisioning command remains available and unchanged; no runtime/test-runner path invokes either importer, and no startup path invokes the explicit operator importer;
+31. legacy-source fixtures use synthetic values to prove application `.env` and parent aliases remain unchanged, sensitive names are excluded before value retention, approved non-secret settings remain usable without dropping excluded lines, custom-provider-v1 remains byte-unchanged with value-free guidance, startup performs zero Store/backend/importer operation, and runtime has no legacy fallback.
+32. Codex launch regression fixtures use synthetic HOME/CODEX_HOME/account sentinels only and prove the pre-ticket `options.env ?? process.env` behavior, zero management/Store/account-RPC calls, no synthetic-home rewrite, existing sanitized outcomes, and explicit absence from the `LOCAL_HARDENED` environment assertion.
+33. LLM/media construction tests cover all three exact Gemini variants and exact Google SDK options. Separate metadata tests prove exact AI Studio/Vertex Express consumer selection, trusted construction of the existing key-based provider, preserved Generative Language request/response mapping, Vertex Project zero secret lookup, resolver-curated fallback, cache invalidation, and no ambient/alternate-definition/Store fallback. No metadata SDK-mode rewrite is required.
 
 Storage conformance uses synthetic values. Real-provider suites separately prove consumer/provider behavior.
 
@@ -593,11 +812,24 @@ Storage conformance uses synthetic values. Real-provider suites separately prove
 | consumer calls adapter directly | bypasses authoritative lifecycle/resolution policy |
 | LLM imports management/Local Store/Vault | couples reusable client to server custody |
 | raw key in `LLMConfig`/model metadata | serializable/clonable/request-forwarded custody |
+| generic `{kind:"apiKey"}` for Gemini modes | erases AI Studio versus Vertex Express construction semantics |
+| metadata-specific copy of the LLM/media mode union or optional SDK-mode/retry bag | misrepresents the accepted dual-key Generative Language contract, adds unused Vertex Project live behavior, and creates unnecessary source churn |
+| metadata environment/default-key constructor or alternate-definition retry | restores ambient custody or hidden fallback; server provisioning must supply exactly one selected resolved key |
+| AutoByteus-managed Codex definition/mode/account API | duplicates Codex-owned external login and exceeds the user-approved preservation scope |
+| synthetic Codex HOME through governed child builder | breaks established external `codex login` state and misstates the assurance boundary |
 | expected-version Settings API | no current/approved caller carries or presents versions |
 | Local Store daemon/IPC protocol | same-user process boundary does not justify launcher/socket/versioning complexity; Agent Server owns the backend directly |
 | named profile table and per-request profile fields | approved behavior requires physically separate default and real-E2E Stores, not arbitrary namespaces |
 | Local Store `connectionName` alias | trusted bootstrap supplies exact Store paths; no product caller selects aliases |
 | generic cross-Store backend method | violates Store-bound backend authority and would expose alternate custody through runtime APIs |
+| generic dotenv-to-backend importer | arbitrary paths/definitions/backends would create a second custody API; use the closed Local operator transition only |
+| importer target database/key path flags | bypass canonical default/E2E role isolation and risk writes outside owned custody |
+| importer definition/value CLI flags or environment input | places secret data in argv/ambient state and bypasses the approved alias map |
+| explicit importer source search/parent discovery/startup/test invocation | silently restores arbitrary dotenv as runtime/test authority and recreates worktree exposure; only an explicit absolute operator source is accepted |
+| noninteractive `--yes` or default target | makes wrong-Store mutation mechanically easy; every write requires target-specific direct-TTY proof |
+| importer source chmod/ACL rewrite or deletion | mutates operator-owned evidence/data without separate approval; untrusted access fails closed and cleanup stays operator-owned |
+| Local batch method on generic backend/management port | no runtime use case exists; keep batch internal to Local setup/import owner |
+| any automatic legacy import/copy/scrub/delete/rewrite/conversion or generic credential migration runner | contradicts operator ownership and the approved explicit-only transition; remove the current updater instead |
 | `writable` plus `externallyManaged` booleans | can express contradictory states |
 | requested assurance setting | configuration cannot prove enforcement |
 | global mutable resolver singleton | hidden dependency and cross-test/Store leakage |

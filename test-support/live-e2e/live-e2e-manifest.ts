@@ -9,6 +9,7 @@ export const LIVE_E2E_SCENARIO_MODES = {
   'serper.search': 'REAL_DIRECT_SECRET',
   'openai.audio': 'REAL_DIRECT_SECRET',
   'openai.image': 'REAL_DIRECT_SECRET',
+  'gemini.llm': 'REAL_DIRECT_SECRET',
   'gemini.audio': 'REAL_DIRECT_SECRET',
   'gemini.image': 'REAL_DIRECT_SECRET',
   'anthropic.claude-agent-sdk': 'REAL_DIRECT_SECRET',

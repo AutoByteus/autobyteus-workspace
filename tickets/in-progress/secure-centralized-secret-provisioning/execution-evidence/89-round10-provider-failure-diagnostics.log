@@ -1,0 +1,39 @@
+ROUND10_PROVIDER_FAILURE_DIAGNOSTICS
+HEAD 9e9315d58dbd164dc080b1270ef8b7fc9de4ba1c
+NO_CREDENTIAL_VALUES_READ_OR_EMITTED true
+AUTOBYTEUS_PUBLIC_ENDPOINT_PROBE
+PATH /models/llm HTTP_STATUS 000
+PATH /models/audio HTTP_STATUS 000
+PATH /models/image HTTP_STATUS 000
+AUTOBYTEUS_DNS_TLS_PROBE_COMPLETE true
+GEMINI_STATIC_AUTH_MODE_TRACE
+API_KEY_BRANCH_VERTEXAI_FLAG_PRESENT false
+VERTEX_EXPRESS_COLLAPSES_TO_GENERIC_API_KEY true
+OFFICIAL_VERTEX_EXPRESS_NODE_SAMPLE https://docs.cloud.google.com/vertex-ai/generative-ai/docs/samples/googlegenaisdk-vertexai-express-mode
+OFFICIAL_REQUIRED_CLIENT_MODE vertexai=true
+DIAGNOSTIC_RESULT_COMPLETE true
+CORRECTED_VERTEX_EXPRESS_DIRECT_JIT_PROBE_BEGIN
+node:internal/modules/package_json_reader:314
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@google/genai' imported from /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/.round10-vertex-express-diagnostic.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:855:18)
+    at defaultResolve (node:internal/modules/esm/resolve:985:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+    at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v22.23.1
+CORRECTED_VERTEX_EXPRESS_DIRECT_JIT_PROBE_END
+CORRECTED_VERTEX_EXPRESS_DIRECT_JIT_PROBE_RETRY_BEGIN
+(node:88346) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CORRECTED_VERTEX_EXPRESS_PROBE gemini.audio STATUS PASSED
+CORRECTED_VERTEX_EXPRESS_PROBE gemini.image STATUS PASSED
+CORRECTED_VERTEX_EXPRESS_DIRECT_JIT_PROBE_RETRY_END

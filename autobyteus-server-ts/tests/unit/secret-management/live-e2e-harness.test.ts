@@ -1,7 +1,11 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
+import { LLMFactory } from 'autobyteus-ts';
+import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
+import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import {
   runLiveE2eOpenAiAgentFlow,
 } from '../../../../test-support/live-e2e/live-e2e-harness.js';
@@ -13,6 +17,10 @@ import {
 import { AgentRunEventType } from '../../../src/agent-execution/domain/agent-run-event.js';
 
 const tempDirectories: string[] = [];
+const trackedManifestPath = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../../test-config/live-e2e.json',
+);
 
 afterEach(() => {
   for (const directory of tempDirectories.splice(0)) {
@@ -21,6 +29,31 @@ afterEach(() => {
 });
 
 describe('live E2E manifest and evidence boundary', () => {
+  it('keeps every tracked native model declaration registered in its product factory', async () => {
+    const manifest = loadLiveE2eManifest(trackedManifestPath);
+    const llmScenarioIds = ['openai.llm', 'openai.agent-flow', 'gemini.llm'] as const;
+    const audioScenarioIds = ['openai.audio', 'gemini.audio'] as const;
+    const imageScenarioIds = ['openai.image', 'gemini.image'] as const;
+
+    for (const scenarioId of llmScenarioIds) {
+      const model = manifest.scenarios[scenarioId]?.model;
+      expect(model, `${scenarioId} must declare a model`).toBeTruthy();
+      await expect(LLMFactory.describeConstructionTarget(model!)).resolves.toMatchObject({
+        credentialProviderId: scenarioId === 'gemini.llm' ? 'GEMINI' : 'OPENAI',
+      });
+    }
+    for (const scenarioId of audioScenarioIds) {
+      const model = manifest.scenarios[scenarioId]?.model;
+      expect(model, `${scenarioId} must declare a model`).toBeTruthy();
+      expect(() => AudioClientFactory.describeConstructionTarget(model!)).not.toThrow();
+    }
+    for (const scenarioId of imageScenarioIds) {
+      const model = manifest.scenarios[scenarioId]?.model;
+      expect(model, `${scenarioId} must declare a model`).toBeTruthy();
+      expect(() => ImageClientFactory.describeConstructionTarget(model!)).not.toThrow();
+    }
+  });
+
   it('accepts a tracked value-free scenario manifest', () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'live-e2e-manifest-'));
     tempDirectories.push(directory);
@@ -124,7 +157,7 @@ describe('live E2E manifest and evidence boundary', () => {
         'openai.agent-flow': {
           mode: 'REAL_GATEWAY',
           requiredSecrets: ['provider.openai.api-key'],
-          model: 'gpt-4o-mini',
+          model: 'gpt-5.4-mini',
         },
       },
     }));
@@ -147,7 +180,7 @@ describe('live E2E manifest and evidence boundary', () => {
       scenario: {
         mode: 'REAL_GATEWAY',
         requiredSecrets: ['provider.openai.api-key'],
-        model: 'gpt-4o-mini',
+        model: 'gpt-5.4-mini',
         expectedCapabilities: ['agent-turn'],
       },
       memoryDirectory: path.join(directory, 'memory'),
@@ -183,7 +216,7 @@ describe('live E2E manifest and evidence boundary', () => {
       timeoutMs: 1_000,
     });
 
-    expect(configuredModel).toBe('gpt-4o-mini');
+    expect(configuredModel).toBe('gpt-5.4-mini');
     expect(terminated).toBe(true);
     expect(result).toEqual({
       scenarioId: 'openai.agent-flow',
@@ -201,7 +234,7 @@ describe('live E2E manifest and evidence boundary', () => {
       scenario: {
         mode: 'REAL_DIRECT_SECRET',
         requiredSecrets: ['provider.openai.api-key'],
-        model: 'gpt-4o-mini',
+        model: 'gpt-5.4-mini',
         expectedCapabilities: ['agent-turn'],
       },
       memoryDirectory: path.join(os.tmpdir(), 'unused-live-e2e-memory'),
@@ -223,6 +256,14 @@ describe('live E2E manifest and evidence boundary', () => {
     expect(() => scanner.assertClean({ output: canary })).toThrow('LIVE_E2E_EVIDENCE_LEAK_DETECTED');
     expect(() => scanner.assertClean({ output: Buffer.from(canary).toString('base64') }))
       .toThrow('LIVE_E2E_EVIDENCE_LEAK_DETECTED');
+    expect(() => scanner.assertStructurallyValueFree({ apiKey: 'synthetic-value' }))
+      .toThrow('LIVE_E2E_EVIDENCE_SECRET_FIELD_DETECTED');
+    expect(() => scanner.assertStructurallyValueFree('Authorization: synthetic-value'))
+      .toThrow('LIVE_E2E_EVIDENCE_SECRET_FIELD_DETECTED');
+    expect(() => scanner.assertStructurallyValueFree({
+      configured: ['provider.openai.api-key'],
+      missing: ['provider.google.vertex-express-api-key'],
+    })).not.toThrow();
     expect(() => scanner.assertStructurallyValueFree({ scenarioId: 'openai.llm', health: 'READY' }))
       .not.toThrow();
   });

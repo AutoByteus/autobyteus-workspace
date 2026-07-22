@@ -33,7 +33,10 @@ export class LiveE2eEvidenceScanner {
 
   assertStructurallyValueFree(value) {
     const output = render(value);
-    if (/(api[_-]?key|authorization|credentialValue|secretValue)\s*[":=]/i.test(output)) {
+    if (
+      /(?:^|[\s{,])["']?(api[_-]?key|authorization|credential[_-]?value|secret[_-]?value)["']?\s*[:=]/i
+        .test(output)
+    ) {
       throw new Error('LIVE_E2E_EVIDENCE_SECRET_FIELD_DETECTED');
     }
   }

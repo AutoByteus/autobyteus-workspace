@@ -5,15 +5,15 @@
 - Requirements Doc: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md
 - Investigation Notes: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md
 - Design Spec: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md
-- Supplemental Task Artifacts: use-case-spine-validation.md, secret-storage-architecture.md, secret-storage-backend-contract.md, credential-consumer-mapping.md, live-test-secret-provisioning.md, and threat-model-and-option-analysis.md in the same ticket directory.
+- Supplemental Task Artifacts: use-case-spine-validation.md, secret-storage-architecture.md, secret-storage-backend-contract.md, credential-consumer-mapping.md, live-test-secret-provisioning.md, threat-model-and-option-analysis.md, and repository-prisma-1.0.8-assessment.md in the same ticket directory.
 - Design Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md
 - Implementation Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md
 - Code Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md
 - Coverage Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md
-- Current Execution Round: 4
-- Trigger: proportional durable-test review failed with API/E2E-owned `TCR-001` and `TCR-002`; correct only the real-E2E harness/runner test boundary, rerun affected coverage, and preserve the passed implementation and Round 3 system evidence at `62417e80831a52e627d1b4365e9bfcdc9817ae81`.
-- Prior Round Reviewed: Rounds 1–3, including Round 3 Pass at 96.9% and exact external capability unavailability.
-- Latest Authoritative Round: Round 4 (the Round 4 authoritative result at the end of this report governs where it differs from earlier rounds).
+- Current Execution Round: 11
+- Trigger: Round-26 implementation-source review Pass at `ad629bc55ed5c653db957ce46bdbc5092c7738ac`; independently resolve the prior Vertex Express failure and prove the separate Gemini metadata, Codex continuity, restart, Docker, and applicable real-provider boundaries.
+- Prior Round Reviewed: Rounds 1–10, including the Round 10 importer/restart/Docker passes and Vertex Express product-path failure.
+- Latest Authoritative Round: Round 11 (the Round 11 authoritative result at the end of this report governs where it differs from earlier rounds).
 
 ## Round History
 
@@ -22,13 +22,20 @@
 | 1 | source-review Pass | N/A | SCSP-E2E-RESTART-001 | **Fail** | No | Historical. Dedicated real-provider Store was separately unavailable; that blocker did not supersede the reproducible implementation failure. |
 | 2 | round-6 source-review Pass after CR-009 rework | SCSP-E2E-RESTART-001 | SCSP-E2E-DOCKER-001 | **Fail** | No | Historical. Restart/reopen passed independently; clean source Docker build failed before a container was created. |
 | 3 | round-9 source-review Pass after CR-010/CR-011 rework | SCSP-E2E-DOCKER-001 | None | **Pass** | No | Clean image build, container start, named-volume restart/reopen/removal, focused matrix, and cleanup passed. |
-| 4 | proportional durable-test review Fail | TCR-001, TCR-002 | None | **Pass** | Yes | Mode enforcement, normal product gateway agent flow, full-run capture/scanning, deterministic negative controls, focused lifecycle rerun, and canonical preflight passed. |
+| 4 | proportional durable-test review Fail | TCR-001, TCR-002 | None | **Pass** | No | Mode enforcement, normal product gateway agent flow, full-run capture/scanning, deterministic negative controls, focused lifecycle rerun, and canonical preflight passed. |
+| 5 | operator-provisioned OpenAI capability plus Vertex Express alignment | scanner logical-ID false positive; `FR-001` stale OpenAI model fixture | None after bounded fixes | **Pass** | No | Canonical preflight passed; real OpenAI LLM, gateway agent, audio, and image passed through captured/scanned product boundaries. |
+| 6 | importer/no-automatic-update and repository_prisma 1.0.8 source-review Pass | stale restart assertion reconciled | full startup mutates application `.env` by persisting a built-in-agent default | **Fail** | No | Importer/package/build checks passed; SCSP-E2E-RESTART-001 failed the approved byte-identical source invariant before Docker/real-provider continuation. |
+| 7 | Round-16 source-review Pass after CR-016 rework | SCSP-E2E-RESTART-001 | SCSP-E2E-DOCKER-001 current base-image startup crash | **Fail** | No | Host restart/importer/package/configured OpenAI pass; clean Docker image crash-loops in stale local chrome-vnc/supervisor/Python boundary before server startup. |
+| 8 | focused failure-origin reclassified Docker failure as stale environment Local Fix | SCSP-E2E-DOCKER-001 | direct-current-application importer design gap | **Design Impact** | No | Exact unchanged Docker path passed after base refresh; old importer rejected unrelated current-file assignments. |
+| 9 | Round-20 recognize-first importer source-review Pass | current application import | empty exact mapped Gemini placeholder blocked all populated mappings | **Requirement Gap** | No | Zero/one separator and recognize-first behavior passed; empty-as-absent decision returned through solution design. |
+| 10 | Round-21 empty-as-absent source-review Pass | SCSP-E2E-IMPORT-001, restart, Docker, real providers | Store-backed Vertex Express product mode loss; AutoByteus endpoint DNS unavailable | **Fail** | No | Importer, 205 focused tests, restart, Docker, real OpenAI, and managed Anthropic pass. Gemini corrected-mode diagnostic passes exact models, isolating a product mode-propagation defect. |
+| 11 | Round-26 exact-Gemini-mode/Codex source-review Pass | Vertex Express LLM/audio/image, metadata, Codex, restart, Docker | None; exact external limitations retained | **Pass** | **Yes** | 104 focused tests; real Vertex Express LLM/audio/image, Codex, OpenAI, Anthropic, restart, and Docker pass. Metadata curated fallback is approved; AutoByteus/Serper/AI Studio limitations are not claimed. |
 
 ## Investigation And Execution Basis
 
 - Investigation completed before durable coverage changes or final execution: Yes.
-- Investigation plan followed: Yes. Durable migration, focused-to-broad repository checks, value-free live preflight, and actual browser execution ran.
-- Material deviations: project-scoped Docker persistence and further live-provider execution stopped after a critical implementation failure and an unavailable dedicated E2E Store were established.
+- Investigation plan followed: Yes. Round 7 ran the reconciled restart first, the focused importer/AppConfig/package matrix, canonical preflight and configured real-provider execution, then clean-image/container validation and project-scoped cleanup.
+- Material deviations: the documented Docker build frontend stalled resolving `docker/dockerfile:1`; a bounded equivalent clean build used the built-in frontend with a byte-identical Dockerfile body after removing only the remote syntax directive. Docker lifecycle stopped when the resulting current-base container crash-looped before listen. Missing provider capabilities were reported exactly rather than invoked.
 - Existing coverage decisions revised:
   - The eight old multimedia live suites were confirmed stale and replaced/removed rather than adapted to forbidden ambient keys or removed constructors.
   - Server media E2E mocks lacked two new production methods; this test-owned fixture drift was corrected, then 5/5 passed.
@@ -654,3 +661,655 @@ The cumulative previously reviewed Store/GraphQL/restart/Prisma/metadata/media c
 - Open executable implementation failure: None.
 - External capability result: exact `UNAVAILABLE / SECRET_BACKEND_UNAVAILABLE` for 11 scenarios; no real invocation claimed.
 - Required next recipient: `code_reviewer` for another proportional durable-test review of the cumulative package.
+
+---
+
+## Round 5 Authoritative Real-Provider Execution And FR-001 Rework
+
+### Trigger, Scope, And Outcome
+
+- Integrated execution HEAD: `09343ae17e016fa68cceda304df257563fc07cdc`.
+- Reviewed implementation source remains `62417e80831a52e627d1b4365e9bfcdc9817ae81`; Round 5 contains no production-source change.
+- Trigger: the operator independently provisioned `provider.openai.api-key` into the dedicated E2E Store using hidden input, enabling the first configured real-provider run. The operator also clarified that established Gemini E2E uses the already-supported Vertex Express API-key mode.
+- Initial real-run failure: `openai.llm` and `openai.agent-flow` used stale manifest model `gpt-4o-mini`, while OpenAI audio/image passed. Focused review classified this as API/E2E-owned `FR-001`, not an auth, credential, Store, or production construction defect.
+- Round 5 result: **Pass**. The fixture is aligned to registered `gpt-5.4-mini`, every tracked native model declaration now has deterministic actual-factory consistency coverage, and the canonical captured/scanned real run passed all selected OpenAI boundaries 8/8.
+
+The renewed request for a committed `.env`/`.env.test` importer is a separate Design Impact with `solution_designer`. No importer, parser, source-file access, mapping, or default-Store behavior was combined with this API/E2E Local Fix.
+
+### Durable API/E2E Changes
+
+| Path | Change | Requirement / Failure Link |
+| --- | --- | --- |
+| `test-config/live-e2e.json` | OpenAI LLM/gateway models updated from unsupported `gpt-4o-mini` to registered `gpt-5.4-mini`; Gemini audio/image target `VERTEX_EXPRESS` and `provider.google.vertex-express-api-key` | `FR-001`; approved provider/setup-mode fidelity |
+| `test-support/live-e2e/live-e2e-evidence-scanner.mjs` | structural matcher narrowed to actual secret-field/header assignments instead of logical-ID substrings | value-free evidence enforcement without false positives |
+| `autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts` | canonical manifest is checked against the real LLM/audio/image factories; gateway fixtures use the registered model; seeded secret-field negatives and logical-ID clean control added | deterministic stale-model prevention and scanner correctness |
+
+No production alias, fallback, ambient credential path, Store readback, or authentication-mode change was added.
+
+### Scenario Results And Exact Evidence
+
+| Scenario / Criterion | Expected | Observed | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| Vertex Express declaration alignment | Gemini media declarations select the operator's established supported mode/definition | two `VERTEX_EXPRESS` / `provider.google.vertex-express-api-key` declarations | Pass (structural); invocation capability missing | `46`, `48`, `52` |
+| canonical evidence scanner logical IDs | accept value-free `configured`/`missing` logical IDs; still reject assigned secret fields | deterministic clean and negative controls pass; preflight 11/11 | Pass | `47` initial false positive; `48`, `50`, `52` correction |
+| `SCSP-E2E-REAL-OPENAI-LLM` / `openai.llm` | current registered model executes via real product boundary | preflight `READY/CONFIGURED`; real request passed in 1.118s | Pass | `51` |
+| `SCSP-E2E-REAL-OPENAI-AGENT-FLOW` / `openai.agent-flow` | normal `REAL_GATEWAY` product agent flow reaches assistant completion and cleanup | preflight `READY/CONFIGURED`; real gateway test passed in 1.495s | Pass | `51` |
+| OpenAI audio | real managed-secret audio construction and invocation | preflight `READY/CONFIGURED`; passed in 2.020s | Pass | `51` |
+| OpenAI image | real managed-secret image construction and invocation | preflight `READY/CONFIGURED`; passed in 17.642s | Pass | `51` |
+| every tracked native model declaration | current canonical manifest models are accepted by actual product factory before any Store/secret use | LLM, audio, and image declarations passed registry consistency; 11/11 unit tests | Pass | `50` |
+| full evidence boundary | capture/scan stdout, stderr, structured results, owned artifacts; release no secret field/value | 8/8 canonical real tests; zero final provider/leak/secret-field failure codes | Pass | `51`, `52` |
+
+The registry-consistency test's normal LLM registry initialization attempted local Ollama and LM Studio discovery. Ollama was unavailable; LM Studio discovery completed. The actual registered OpenAI target resolved and the test passed. This local discovery message is not a real-provider failure.
+
+### Commands, Working Directory, And Results
+
+All commands ran from `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning` except the focused Vitest commands, which ran from `autobyteus-server-ts`.
+
+| Order | Exact Command / Execution Mode | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | focused `live-e2e-harness.test.ts` plus default-skipped `real-e2e-provider-capabilities.e2e.test.ts` | 10/10 pass; real suite skipped by default | `execution-evidence/46-round5-vertex-express-focused.log` |
+| 2 | `pnpm test:e2e:real:preflight` | Local Fail: structural scanner false-positive on approved logical IDs; no raw value | `execution-evidence/47-round5-vertex-express-preflight.log` |
+| 3 | `pnpm test:e2e:real:preflight` after scanner correction | Pass, 11/11; backend `READY`; OpenAI configured; exact other capabilities missing | `execution-evidence/48-round5-vertex-express-preflight-rerun.log` |
+| 4 | `pnpm test:e2e:real -- --scenarios=openai.llm,openai.agent-flow,openai.audio,openai.image` before FR-001 fix | 6 pass / 2 fail; audio/image passed; LLM/agent failed before provider call | `execution-evidence/49-round5-real-openai.log` |
+| 5 | `pnpm exec vitest run tests/unit/secret-management/live-e2e-harness.test.ts --no-watch` | Pass, 11/11 including canonical model registry consistency and scanner controls | `execution-evidence/50-round5-fr001-registry-fix.log` |
+| 6 | `pnpm test:e2e:real -- --scenarios=openai.llm,openai.agent-flow,openai.audio,openai.image` after FR-001 fix | Pass, 8/8; four real preflights plus four real executions | `execution-evidence/51-round5-real-openai-rerun.log` |
+| 7 | source/result/residue aggregation and `git diff --check` | Pass | `execution-evidence/52-round5-summary-scan.log` |
+
+### Capability Truth Table
+
+| Tracked Capability | Store Status | Real Invocation In Round 5 | Claim |
+| --- | --- | --- | --- |
+| OpenAI LLM | `READY / CONFIGURED` | Passed | real current-model LLM invocation passed |
+| OpenAI gateway agent flow | `READY / CONFIGURED` | Passed | normal product gateway turn passed |
+| OpenAI audio | `READY / CONFIGURED` | Passed | real audio invocation passed |
+| OpenAI image | `READY / CONFIGURED` | Passed | real image invocation passed |
+| Gemini Vertex Express audio/image | `READY / MISSING` exact definition | Not run | unavailable, not passed |
+| Serper search | `READY / MISSING` exact definition | Not run | unavailable, not passed |
+| Anthropic managed-secret Claude SDK | `READY / MISSING` exact definition | Not run | unavailable, not passed |
+| AutoByteus remote LLM/audio/image | `READY / MISSING` exact definition | Not run | unavailable, not passed |
+
+The preflight health change from historical `SECRET_BACKEND_UNAVAILABLE` to `READY` proves that the dedicated Store exists and can project definition status. It does not reveal a value. The user-owned Store was neither copied nor modified by API/E2E execution.
+
+### Confidence Scorecard And Broader-Validation Decision
+
+Final cumulative validation confidence is **98.0%**:
+
+| Category | Final | Direct Evidence | Residual Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 97% | cumulative requirements matrix, Settings/browser, Store/GraphQL, restart/Docker, and configured real OpenAI paths | unconfigured external capabilities remain uninvoked |
+| Changed-boundary execution directness | 99% | canonical Store-backed product factories, provider SDKs, and gateway | no request to missing providers |
+| Cross-boundary integration realism and mock gap | 99% | status -> JIT resolution -> product provider/gateway -> scanned result | multi-node/Kubernetes excluded |
+| Environment/configuration/identity/fixture fidelity | 99% | exact dedicated Store, current catalog IDs/models, canonical child environment | other OS/architectures not repeated |
+| Failure/edge/lifecycle/recovery evidence | 98% | cumulative fault/restart/removal plus scanner and stale-fixture fail/fix evidence | none material for configured OpenAI paths |
+| User-surface/browser/desktop-shell confidence | 95% | retained actual browser and focused Electron evidence | packaged desktop not required for Round 5 test-only changes |
+| Durable regression coverage quality/relevance | 99% | factory-consistency, mode, gateway, capture, scanner, Store, GraphQL, restart coverage | external service behavior remains independently variable |
+
+- Overall: **98.0%** (simple average).
+- Default clean target met: Yes.
+- Applicable category below 90%: No.
+- Critical configured acceptance path missing/failing: No.
+- Broader-validation decision: `Required` targeted external execution, completed successfully for all currently configured scenarios. Repeating Docker, browser, or desktop validation was `Not Required`: no production, GraphQL, Settings, Docker, launcher, or Electron source changed in Round 5, and those cumulative results remain applicable.
+
+### Evidence Integrity, Safety, And Cleanup
+
+- Final canonical real run: 1 file / 8 tests passed; all four configured scenarios preflighted and executed.
+- Final source/evidence scan: two registered OpenAI LLM declarations, zero stale LLM `gpt-4o-mini` declarations, two Vertex Express declarations, zero provider-operation-failure codes, zero evidence-leak codes, zero secret-field-detected codes.
+- `git diff --check`: Pass.
+- Owned live-E2E temp directories: zero. Owned evidence-directory residue: zero.
+- No `.env.test`, default Store, credential file, Store value, or secret-bearing artifact was read, copied, imported, inspected, or logged by the engineering workflow.
+- The dedicated Store was provisioned independently by the operator through hidden input. Tests used the approved read-only harness. It is user-owned and intentionally retained.
+- No browser, desktop process, Docker project, container, volume, or long-running server was created in Round 5.
+- The separate importer request remains with `solution_designer`; no unreviewed importer behavior is present in this execution package.
+
+### Mandatory Dependency And Assurance Scope
+
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency only, not legal clearance or an authentication-mode redesign. Delivery must recheck the four official Anthropic sources recorded upstream. No Claude authentication mode changed; an authoritative prohibition returns through solution design.
+
+Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+
+## Latest Authoritative Result (Round 5)
+
+- Result: **Pass**.
+- Final validation confidence: **98.0%**.
+- Broader-validation decision: targeted real-provider execution was required and completed for every configured tracked capability; repeated Docker/browser/desktop execution was not required.
+- Resolved API/E2E failures: scanner logical-ID false positive and `FR-001` stale OpenAI LLM/agent fixture.
+- Configured real-provider result: OpenAI LLM, normal gateway agent flow, audio, and image all passed through the canonical captured/scanned runner.
+- Unconfigured capability result: exact `READY / MISSING`; Gemini Vertex Express, Serper, Anthropic managed-secret, and AutoByteus remote invocations remain unclaimed.
+- Open executable implementation failure: None.
+- Required next recipient: `code_reviewer` for proportional review of the Round 5 durable API/E2E changes.
+
+---
+
+## Round 6 Authoritative Importer / Restart / Dependency Execution
+
+### Trigger, Scope, And Result
+
+- Implementation HEAD: `5b3c1b58c8e5d98247c0986ec5d63815ebd376fc`.
+- Round-14 implementation-source review: Pass, 93.8/100; `CR-012` and `CR-015` resolved.
+- Required execution: importer/AppConfig/legacy-source, exact installed `repository_prisma@1.0.8`, production build, `SCSP-E2E-RESTART-001`, `SCSP-E2E-DOCKER-001`, and every configured real-provider scenario.
+- API/E2E durable reconciliation: the downstream restart test no longer expects first-start `DATABASE_URL` persistence. It now requires the initial application `.env` bytes to remain unchanged after each sanitized start and verifies the deterministic `db/test.db` file exists.
+- Result: **Fail**. Focused importer/package/build evidence passed, but `SCSP-E2E-RESTART-001` exposed a full-start automatic non-secret write that violates the approved byte-identical startup invariant.
+
+### Durable Test Change
+
+`/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts`
+
+The change is limited to current approved behavior:
+- remove the stale expectation that startup persists `DATABASE_URL`;
+- assert application `.env` byte equality after first and second process;
+- assert the deterministic data-root SQLite file exists;
+- retain sanitized environment, migrations/listen, managed Store save/status/reopen/remove, value-free output, P1012/missing-URL checks, and cleanup.
+
+### Commands And Results
+
+| Order | Exact Command / Mode | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `pnpm --filter autobyteus-server-ts exec vitest run --silent=true tests/unit/config/app-config.test.ts tests/unit/secret-management/legacy-source-non-authority.test.ts tests/unit/secret-management/local-environment-source-reader.test.ts tests/unit/secret-management/local-legacy-environment-import-service.test.ts tests/unit/secret-management/import-local-environment-secrets-cli.test.ts tests/unit/secret-management/local-secret-storage-backend.test.ts tests/unit/logging/prisma-query-log-policy.test.ts tests/unit/secret-management/live-e2e-harness.test.ts --no-watch` | Pass, 8 files / 126 tests | `execution-evidence/53-round6-importer-appconfig-policy.log` |
+| 2 | clean archive workspace, empty-base operational environment, `pnpm install --frozen-lockfile`, installed manifest/entrypoint hash and tracked package/lock/patch residue scan | Pass; 1,717 packages; exact unpatched 1.0.8; no dotenv dependency; reviewed ESM/CJS/manifest hashes; no old residue; disposable workspace removed | `execution-evidence/54-round6-clean-frozen-install.log` |
+| 3 | `pnpm --filter autobyteus-server-ts build` | Pass including shared/core, Prisma generation, production TS, assets, built-in bootstrap, and sanitized no-DB-URL smoke | `execution-evidence/55-round6-server-build.log` |
+| 4 | `pnpm --filter autobyteus-server-ts exec vitest run tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts --no-watch` | **Fail, 0/1** at first-start `.env` byte equality | `execution-evidence/56-round6-server-restart.log` |
+| 5 | focused source/history/result/residue classification and `git diff --check` | evidence collection Pass; temp residue zero | `execution-evidence/57-round6-restart-failure-origin.log` |
+
+### Passing Importer And Dependency Evidence
+
+The focused importer matrix passed:
+- strict arbitrary-filename source grammar and the complete approved alias map;
+- owner/private-mode, symlink, TOCTOU identity, size, UTF-8/NUL, secret-like unsupported alias, duplicate/conflict/empty, and buffer-release controls;
+- value-free dry-run without absent Store initialization;
+- exact default/E2E target isolation;
+- source byte immutability;
+- no-overwrite skip and explicit overwrite;
+- exact target-specific TTY challenge;
+- non-TTY, wrong phrase, and EOF/cancellation non-mutation, including existing Store bytes, key bytes, record identities, journal mode, and sidecars;
+- exact non-ready health without definition projection;
+- precondition-race rejection and whole-batch rollback;
+- closed CLI options/target resolution and value-free formatting;
+- complete legacy-assignment exclusion before generic AppConfig parsing.
+
+The clean frozen install selected exact `repository_prisma@1.0.8` and reproduced the reviewed hashes:
+- ESM: `8aff4c475a30b462a22fa213a08becd6992d642e5276a71af066c0b93a6dd884`
+- CommonJS: `7dbc90a637dc7c7f3b3f45a6e846eaef178bed8d703456d4f8dd9807c7626d2c`
+- manifest: `c9d6f2d83dd1c22c63643deefdf89f7712efc490df4e8686575d2f4c4963f980`
+
+The exact-package policy suite passed 11/11 under synthetic no-database probes. No server-local lock, package patch, 1.0.6/1.0.7 package/lock residue, dotenv dependency, or production package adoption was found.
+
+### Failing Scenario: SCSP-E2E-RESTART-001
+
+- Requirement / criteria: BEH-008, REQ-014, AC-009, DS-UC015.
+- Execution mode: built production server, two owned loopback processes, one temporary `--data-dir`, minimal application `.env`, sanitized child environment containing no parent `DATABASE_URL`, synthetic managed AutoByteus definition only.
+- Expected first-start behavior: AppConfig derives the deterministic SQLite URL into runtime state, migrations/listen/save/status succeed, and application `.env` remains byte-for-byte identical.
+- Observed behavior: migrations/listen/save/status reached `CONFIGURED`, but the first full start appended the built-in retrospective-skill-improver agent-definition setting to application `.env`. The byte-equality assertion failed before the second process.
+- Negative evidence: no synthetic canary appeared in the released test output; no `P1012` or missing-`DATABASE_URL` failure occurred; temp process/data cleanup completed.
+
+Focused source trace:
+
+`built-in startup -> BuiltInAgentBootstrapper.initializeSettingDefaultIfNeeded -> ServerSettingsService.updateSetting -> AppConfig.set -> updateEnvFile`
+
+The built-in bootstrapper and registry have zero diff from the Round-10 starting HEAD, so this is a pre-existing automatic non-secret write newly conflicting with the explicit approved no-automatic-update/startup-byte-invariance contract. Adding the built-in setting to the fixture would conceal the behavior rather than validate the requirement.
+
+### Preliminary Failure Classification
+
+- Outcome: **Fail**, not Blocked.
+- Preliminary origin: likely implementation-owned source behavior at the full-start configuration boundary.
+- Reason focused reviewer classification is required: the API/E2E-owned test has been corrected to the reviewed behavior; the failing write comes from production startup coordination outside the newly changed AppConfig projection helper.
+- Recommended recipient: `code_reviewer` for focused failure-origin review.
+- Docker and real-provider execution: not continued after the critical restart acceptance failure. No Round 6 Docker or external-provider result is claimed; earlier passes remain historical only.
+
+### Confidence Scorecard
+
+| Category | Final | Evidence | Gap |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 75% | strong importer/package proof | critical byte-identical startup criterion fails |
+| Changed-boundary execution directness | 98% | real temp files/Stores, installed package, build, built server | stopped before Docker/external continuation |
+| Cross-boundary integration realism and mock gap | 90% | full process caught behavior missed by units | Docker/real matrix not rerun |
+| Environment/configuration/identity/fixture fidelity | 98% | clean archive, empty/sanitized env, owned paths and synthetic fixtures | none material before failure |
+| Failure/edge/lifecycle/recovery evidence | 50% | exact reproducible first-start failure | restart/reopen lifecycle incomplete |
+| User-surface/browser/desktop-shell confidence | 95% | retained actual-browser evidence; no changed UI | packaged desktop unnecessary |
+| Durable regression coverage quality/relevance | 95% | corrected test catches approved startup invariant | implementation must pass it before proportional review |
+
+Overall: **85.9%** (simple average). The 95% clean target is not met and a critical criterion fails.
+
+### Safety And Cleanup
+
+- No real `.env`, `.env.test`, default/E2E Store value, credential file, secret-bearing artifact, or real provider credential was read, copied, imported, inspected, or logged.
+- Importer coverage used synthetic private temporary sources and temporary Stores only.
+- The clean install used a disposable archive, empty-base operational child environment, and no operational database; it was removed afterward.
+- The restart test killed/closed its owned process and removed its temporary data root. Residue scans returned zero.
+- No Docker resource, browser, desktop process, or external provider request was created in Round 6 after the failure.
+- `git diff --check`: Pass.
+
+### Mandatory Dependency And Assurance Scope
+
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency only, not legal clearance or an authentication-mode redesign. Both Claude modes remain unchanged. Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+
+## Latest Authoritative Result (Round 6)
+
+- Result: **Fail**.
+- Failing scenario: `SCSP-E2E-RESTART-001`.
+- Final confidence: **85.9%**.
+- Importer/AppConfig/Local/package focused result: Pass, 8 files / 126 tests.
+- Clean frozen install/exact package result: Pass.
+- Production server build result: Pass.
+- Docker and real-provider Round 6 result: Not run after critical failure; no claim.
+- Required next recipient: `code_reviewer` for focused failure-origin analysis and owner classification.
+
+
+---
+
+## Round 7 Authoritative CR-016 / Restart / Docker / Real-Provider Execution
+
+### Trigger, Scope, And Outcome
+
+- Implementation HEAD: `977948fe68695374afbcd5e9516693d64533230e`.
+- Round-16 implementation-source review: Pass, 94.2/100; `CR-016` resolved.
+- Required sequence: rerun reconciled restart first; then focused importer/AppConfig/package checks, clean Docker same-volume lifecycle, and every configured real-provider capability.
+- Outcome: **Fail**. The host two-process restart and every non-Docker required check passed, including real OpenAI. `SCSP-E2E-DOCKER-001` failed before server startup because the current floating `autobyteus/chrome-vnc:latest` base cannot launch its own Supervisor installation under Python 3.13.14.
+
+### Durable API/E2E Change In This Recheck
+
+`/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts`
+
+The existing Round 6 reconciliation remains intact. Round 7 additionally queries ordinary GraphQL `getServerSettings` after both sanitized process starts and requires the runtime-only retrospective-skill-improver default key/value. It does not seed that setting, inspect process internals, or weaken byte equality. All prior Round 5 durable harness/manifest/scanner changes remain unreviewed cumulatively until a successful execution package returns for proportional review.
+
+### Commands And Results
+
+All commands ran from `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`.
+
+| Order | Exact Command / Execution Mode | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `pnpm --filter autobyteus-server-ts build` | Pass | `execution-evidence/58-round7-server-build.log` |
+| 2 | `pnpm --filter autobyteus-server-ts exec vitest run tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts --no-watch` | Pass, 1/1 | `execution-evidence/59-round7-server-restart.log` |
+| 3 | 13-file focused CR-016/importer/AppConfig/non-authority/source-reader/Store/package-policy/harness/GraphQL Vitest matrix with `--silent=true --no-watch` | Pass, 13 files / 192 tests | `execution-evidence/60-round7-focused-importer-runtime-package.log` |
+| 4 | sanitized `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round7 --build-local` | Infrastructure stall resolving `docker/dockerfile:1`; bounded pull timed out. Equivalent clean source build used Docker's built-in frontend with only the remote syntax directive omitted; tracked and temporary Dockerfile bodies had identical SHA-256 `cbab9e6...`; image build passed | `execution-evidence/61-round7-docker-build-up.log` |
+| 5 | `pnpm test:e2e:real:preflight` | Pass, 11/11; backend READY; OpenAI configured; exact other definitions missing | `execution-evidence/62-round7-real-preflight.log` |
+| 6 | `pnpm test:e2e:real -- --scenarios=openai.llm,openai.agent-flow,openai.audio,openai.image` | Pass, 8/8 | `execution-evidence/63-round7-real-openai.log` |
+| 7 | sanitized `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round7 --no-build` | Compose resources created; service crash-looped before migrations/listen | `execution-evidence/64-round7-docker-runtime.log`, `execution-evidence/65-round7-docker-runtime-failure.log` |
+| 8 | `./autobyteus-server-ts/docker/docker-start.sh down -p scsp-round7 --volumes --delete-state` | Pass; all owned resources removed | `execution-evidence/66-round7-cleanup.log` |
+| 9 | `pnpm install --frozen-lockfile --offline`, selected package/link check, package/lock delta, `git diff --check`, canonical scanner, residue checks | Pass; selected installed `repository_prisma` 1.0.8; nine Round 7 evidence files clean | `execution-evidence/67-round7-summary-scan.log` |
+
+The exact focused matrix in order 3 covered:
+- `built-in-agent-bootstrapper.test.ts`
+- `built-in-agent-templates.test.ts`
+- `server-settings-service.test.ts`
+- GraphQL `server-settings.test.ts`
+- `app-config.test.ts`
+- `legacy-source-non-authority.test.ts`
+- `local-environment-source-reader.test.ts`
+- `local-legacy-environment-import-service.test.ts`
+- `import-local-environment-secrets-cli.test.ts`
+- `local-secret-storage-backend.test.ts`
+- `prisma-query-log-policy.test.ts`
+- `live-e2e-harness.test.ts`
+- `provider-secret-lifecycle-graphql.e2e.test.ts`
+
+### Passing Restart And Runtime-Default Result
+
+`SCSP-E2E-RESTART-001` passed independently at current HEAD:
+- both process environments were sanitized and had no parent `DATABASE_URL`;
+- both processes completed migrations and listened on the owned loopback port;
+- application `.env` remained byte-for-byte identical after first and second starts;
+- deterministic `db/test.db` existed;
+- GraphQL Settings projected `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID=autobyteus-retrospective-skill-improver` on both starts without persistence;
+- synthetic Store state saved to `CONFIGURED`, reopened `CONFIGURED`, and removed to `MISSING` without value readback;
+- no synthetic canary, `P1012`, or missing-`DATABASE_URL` output was released.
+
+### Failing Scenario: SCSP-E2E-DOCKER-001
+
+- Affected requirements/criteria: `BEH-006`, `BEH-007`, `REQ-012`, `REQ-013`, `AC-002`.
+- Expected: clean image -> unchanged Compose -> migrations/listen -> synthetic Store save -> same named-volume restart/reopen -> removal, with no injected DB URL.
+- Observed: the image built and Compose created the expected container/network/four volumes. The image entrypoint completed its skip-sync step and handed off to `/usr/bin/supervisord`; Supervisor failed immediately. The container remained `restarting`, exit 1, and never ran server migrations or listened.
+- Exact terminal cause: Python 3.13.14 runs `supervisor==4.2.1`; `pkg_resources` references removed `pkgutil.ImpImporter`, raising `AttributeError`.
+- Direct reproduction independent of this repository image: `docker run --rm --entrypoint /bin/bash autobyteus/chrome-vnc:latest -lc 'python3 --version; /usr/bin/supervisord --version'` returns the same traceback.
+- Current base digest: `autobyteus/chrome-vnc@sha256:a8c17115473bfe0e14c4363e75e88fcb9240e2e71928e03c109e8aea19bcd6cc`. Round 3 passed against `sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029`.
+- Source history: no Docker/Compose delta from reviewed base `534210b9e1dffff6c22855ae89ddb3d2afef5a9b` to current HEAD. The repository Dockerfile uses floating `autobyteus/chrome-vnc:latest`.
+- No workaround masked the product contract: no `DATABASE_URL`, dependency override, Supervisor repair, alternate entrypoint, or pinned older base was injected. Because the backend never listened, Store save/restart/reopen/removal were not attempted or claimed.
+
+Preliminary classification: current documented packaging/runtime dependency failure at an external-base boundary, with a floating tag making the repository's clean start non-reproducible. It is not caused by the CR-016 runtime-default source. `code_reviewer` must perform focused failure-origin review and decide whether the owner is implementation packaging or the external base/release dependency.
+
+### Configured And Unavailable Real-Provider Results
+
+| Tracked capability | Store status | Round 7 result |
+| --- | --- | --- |
+| OpenAI LLM | `READY / CONFIGURED` | Pass, real request, 2.356s |
+| OpenAI normal gateway agent flow | `READY / CONFIGURED` | Pass, assistant completion and cleanup, 1.123s |
+| OpenAI audio | `READY / CONFIGURED` | Pass, 1.883s |
+| OpenAI image | `READY / CONFIGURED` | Pass, 16.953s |
+| Serper search | `READY / MISSING search.serper.api-key` | unavailable; not run/not passed |
+| Gemini Vertex Express audio/image | `READY / MISSING provider.google.vertex-express-api-key` | unavailable; not run/not passed |
+| Anthropic managed-secret Claude SDK | `READY / MISSING provider.anthropic.api-key` | unavailable; not run/not passed |
+| AutoByteus remote LLM/audio/image | `READY / MISSING provider.autobyteus.api-key` | unavailable; not run/not passed |
+
+The canonical runner captured and scanned full stdout, stderr, structured results, and owned artifacts before release. The dedicated E2E Store was opened only through the reviewed read-only harness. The local Ollama discovery warning during the OpenAI run is non-fatal; the four selected real boundaries passed.
+
+### Confidence Scorecard And Broader-Validation Decision
+
+| Category | Score | Evidence / Residual Gap |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 78% | restart/importer/package/real OpenAI strong; critical Docker `AC-002` fails |
+| Changed-boundary execution directness | 99% | full host processes, actual clean image/container, direct base probe, real provider product boundaries |
+| Cross-boundary integration realism and mock gap | 75% | realistic failure at container base/entrypoint; application/GraphQL/Store-volume Docker chain unreachable |
+| Environment/configuration/identity/fixture fidelity | 97% | current base digest, sanitized parent, no DB URL, isolated Compose project, canonical Store statuses; transparent frontend recovery |
+| Failure/edge/lifecycle/recovery evidence | 70% | host restart/recovery passes; Docker restart/persistence/removal blocked by first-start crash |
+| User-surface/browser/desktop-shell confidence | 95% | retained actual-browser Settings evidence; no renderer/Electron change |
+| Durable regression coverage quality/relevance | 98% | current runtime-default/restart plus importer/harness/GraphQL coverage; Docker remains executable temporary coverage |
+
+Overall: **87.4%** (simple average). A critical criterion fails; the 95% clean target is not met.
+
+Broader-validation decision: `Required` and executed. This is **Fail**, not `Blocked`: the failure is reproducible with an exact runtime/base context and requires focused origin review.
+
+### Safety, Evidence Integrity, And Cleanup
+
+- No real `.env.test`, operator assignment source, default Store, Store value, credential file, or secret-bearing artifact was read, copied, imported, inspected, or logged.
+- Synthetic importer/Store tests used only private owned temporary files. Real execution used status plus read-only JIT resolution from the user-provisioned E2E Store.
+- Canonical evidence scanner passed nine Round 7 evidence files with synthetic restart/Docker/live canaries; `git diff --check` passed.
+- `scsp-round7` cleanup left zero containers, networks, volumes, runtime env, temporary lifecycle script, or temporary Dockerfile.
+- The shared `autobyteus-server:latest` alias was retained because it pre-existed and exclusive ownership could not be established.
+- No browser or desktop process was started in Round 7; prior actual-browser evidence remains applicable and no renderer/Electron source changed.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck only, not legal clearance or an authentication-mode redesign. Both Claude modes remain unchanged. Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+
+## Latest Authoritative Result (Round 7)
+
+- Result: **Fail**.
+- Failing scenario: `SCSP-E2E-DOCKER-001` at current base-image Supervisor startup.
+- Passing recheck: `SCSP-E2E-RESTART-001` 1/1, including runtime default and byte-identical `.env` across both processes.
+- Focused matrix: Pass, 13 files / 192 tests.
+- Dependency/install: frozen offline install and exact selected `repository_prisma` 1.0.8 Pass.
+- Configured real providers: OpenAI LLM/gateway/audio/image Pass, 8/8.
+- Unconfigured capabilities: exact missing definitions; not claimed as passed.
+- Final confidence: **87.4%**.
+- Required next recipient: `code_reviewer` for focused failure-origin analysis. Proportional durable-test review remains paused until a future full execution Pass.
+
+---
+
+## Round 8 Environment Local Fix And Importer Design Gate
+
+### Docker Result
+
+The Round 7 stale mutable-tag failure is resolved without repository source changes. `SCSP-E2E-DOCKER-001` passed at `977948fe68695374afbcd5e9516693d64533230e` using the exact tracked command `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round8 --build-local`, the refreshed compatible base, an unset parent `DATABASE_URL`, and no Docker/package/runtime workaround. Migrations/listen, initial `MISSING`, synthetic save to `CONFIGURED`, same-container/same-volume restart, value-free `CONFIGURED` reopen, removal to `MISSING`, evidence scanning, and full owned-resource cleanup all passed.
+
+Evidence:
+
+- `execution-evidence/68-round8-base-refresh-compatibility.log`
+- `execution-evidence/69-round8-exact-docker-build-up.log`
+- `execution-evidence/70-round8-docker-lifecycle.log`
+- `execution-evidence/71-round8-cleanup-scan.log`
+- `execution-evidence/72-round8-summary-scan.log`
+
+### Current Application `.env` Import Attempt
+
+With explicit user authorization, assignment names only were audited from the operator-selected current application `.env`; no values were emitted or inspected. Ten names map to approved managed definitions. Five names are classified by the current source reader as unsupported secret-like aliases: `DATABASE_URL`, `QWEN_API_KEY`, `ZHIPU_API_KEY`, `GOOGLE_CSE_API_KEY`, and `OLLAMA_API_KEY`.
+
+- documented sentinel-form dry-run: `IMPORT_OPTIONS_INVALID`;
+- direct-option dry-run: `IMPORT_SOURCE_UNSUPPORTED_SECRET_ALIAS`;
+- Store mutation: none;
+- source content mutation: none; permissions remain owner-only `0600`;
+- value disclosure: none.
+
+Evidence:
+
+- `execution-evidence/73-round8-importer-current-env-key-audit.log`
+- `execution-evidence/74-round8-importer-current-env-dry-run.log`
+
+### Current Stage Status
+
+Round 8 Docker validation is a direct Pass and supersedes the Round 7 Docker failure. The overall API/E2E stage is not yet finalized because the user clarified a direct-current-application-`.env` importer journey that the reviewed fail-closed mixed-file policy cannot satisfy. This is routed as a **Design Impact / Requirement Gap** rather than weakened locally. Expanded real-provider execution remains pending a revised reviewed contract and successful operator-selected import. No unavailable provider capability is claimed as passed.
+
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck dependency only. Both Claude modes remain unchanged. Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+
+---
+
+## Round 9 Recognize-First Importer Execution Hold
+
+### Reviewed Implementation
+
+- HEAD: `4c9f01776347d18bac78805800363f8a92a096af`
+- Source review: Pass, 92.9/100, no open implementation finding.
+
+### Passing Evidence
+
+- Focused importer/AppConfig/Local Store/runtime-settings/harness/GraphQL/media suite: **14 files / 201 tests passed**.
+- Clean archive frozen offline installation: **Pass**; only exact unpatched `repository_prisma@1.0.8` selected, no dotenv dependency, no 1.0.6/1.0.7 residue in the clean installation, and no package-local lock.
+- The mutable-worktree frozen install itself passed. Its first package probe failed only because the API/E2E command hardcoded an obsolete `.pnpm` directory suffix; the clean realpath-based probe corrected that test-command error and is authoritative.
+- Both zero- and one-leading-separator root PNPM forms reached the production selected-assignment reader, proving argument normalization is fixed.
+- The operator source remained byte-identical, owner-only `0600`, and no Store mutation occurred.
+- Canonical scanner passed all released Round 9 evidence without a canary or structural secret field.
+
+Evidence:
+
+- `execution-evidence/75-round9-focused-importer-package.log`
+- `execution-evidence/76-round9-clean-frozen-install.log`
+- `execution-evidence/77-round9-current-env-dry-runs.log`
+- `execution-evidence/78-round9-selected-alias-presence-audit.log`
+- `execution-evidence/79-round9-failure-evidence-scan.log`
+
+### Critical Current-Source Result: SCSP-E2E-IMPORT-001
+
+Both documented current-application `.env` dry-runs returned `IMPORT_SOURCE_EMPTY_CREDENTIAL`. A user-authorized name/state-only audit emitted no values and identified one cause: `GEMINI_API_KEY` is an exact current mapped alias but is present with an empty assignment. The other nine selected aliases are populated. Unrelated `DATABASE_URL`, `QWEN_API_KEY`, `ZHIPU_API_KEY`, `GOOGLE_CSE_API_KEY`, and `OLLAMA_API_KEY` no longer cause the failure.
+
+The implementation therefore matches its reviewed selected-empty rejection rule, but the explicit ordinary-current-`.env` journey still cannot import any populated selected credentials while an empty supported placeholder exists. Ignoring an empty selected alias as absent would change approved behavior, so API/E2E did not edit the source, filter/copy credentials into another file, weaken production code, or proceed with a workaround.
+
+### Outcome And Routing
+
+Current stage status: **Requirement Gap / Unclear**, not an implementation-source defect and not an API/E2E-local test fix. The required decision is whether an empty recognized assignment is ignored as absent or remains a whole-import error requiring operator cleanup. The package is returned to `solution_designer` before TTY import, Store mutation, restart/Docker reruns, or expanded real-provider execution.
+
+Interim confidence: **90.1%**, with the critical import journey unresolved; no Pass is claimed. Prior Round 8 Docker and prior configured OpenAI evidence remain historical/reusable context only, not Round 9 reruns. No unavailable provider capability is claimed as passed.
+
+Safety and cleanup:
+
+- no right-hand-side value was displayed, logged, copied, or inspected;
+- the real source was read only by the reviewed importer and a name plus EMPTY/SET audit authorized by the user;
+- the source remained byte-identical and `0600`;
+- dry-run made no Store change;
+- the clean-install temporary workspace was removed;
+- no Docker, browser, desktop, server, or external-provider resource was created after the critical gate.
+
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck dependency only. Both Claude modes remain unchanged. Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred. Exact unpatched `repository_prisma@1.0.8`, no automatic legacy update, positive registry/Qwen mapping, and unchanged Docker topology remain authoritative.
+
+---
+
+## Round 10 Empty-As-Absent Import And Full Real-Capability Execution
+
+### Round Meta And Authoritative Outcome
+
+- Reviewed implementation HEAD: `9e9315d58dbd164dc080b1270ef8b7fc9de4ba1c`.
+- Trigger: Round-21 full source-review Pass for architecture MP-005 empty-as-absent import behavior.
+- Worktree/branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`, `codex/secure-centralized-secret-provisioning`.
+- Broader-validation decision: **Required and executed**.
+- Latest authoritative API/E2E result: **Fail**.
+- Final validation confidence: **93.4%**.
+- Critical failing scenario: `SCSP-E2E-REAL-GEMINI-VERTEX-001` (normal Store-backed product path loses the Vertex Express client mode).
+- Separately unavailable configured external capabilities: `autobyteus.remote-llm`, `autobyteus.remote-audio`, and `autobyteus.remote-image` because the declared endpoint is not DNS-resolvable from this environment.
+
+### Exact Execution And Results
+
+| Order | Command / execution mode | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `pnpm secrets:local:import --source /Users/normy/.autobyteus/server-data/.env --target e2e --dry-run` and the one-leading-`--` equivalent | **Pass**; nine populated mappings selected, normalized-empty Gemini alias absent, source byte-identical/`0600`, no Store mutation or values | `execution-evidence/80-round10-current-env-dry-runs.log` |
+| 2 | direct TTY: `pnpm secrets:local:import -- --source /Users/normy/.autobyteus/server-data/.env --target e2e`; exact phrase `IMPORT REAL-E2E STORE` | **Pass**; configured 8, preserved existing OpenAI 1, source unchanged, output value-free | `execution-evidence/81-round10-current-env-confirmed-import.log` |
+| 3 | 14-file focused importer/AppConfig/Local Store/runtime-settings/harness/GraphQL/media Vitest matrix | **Pass: 14 files / 205 tests**; `git diff --check` Pass | `execution-evidence/82-round10-focused-boundary-matrix.log` |
+| 4 | `pnpm --filter autobyteus-server-ts exec vitest run tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts --no-watch` | **Pass: 1/1**; two sanitized starts, migrations/listen, byte-identical `.env`, runtime default, Store reopen/removal, no parent DB URL | `execution-evidence/83-round10-server-restart.log` |
+| 5 | `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round10 --build-local` with parent DB/provider aliases unset | **Pass**; exact unchanged clean-source path | `execution-evidence/84-round10-docker-build-up.log` |
+| 6 | project-scoped GraphQL/Store lifecycle through clean container, same container/volume restart, then tracked `down --volumes --delete-state` | **Pass**; `MISSING -> CONFIGURED -> reopened CONFIGURED -> MISSING`; 2 migrations/listens; complete cleanup | `execution-evidence/85-round10-docker-lifecycle.log`, `86-round10-docker-cleanup.log` |
+| 7 | `pnpm test:e2e:real:preflight` | **Pass: 11/11 preflights**; ten configured scenarios, exact Serper missing definition | `execution-evidence/87-round10-real-preflight.log` |
+| 8 | `pnpm test:e2e:real -- --scenarios=openai.llm,openai.agent-flow,openai.audio,openai.image,gemini.audio,gemini.image,anthropic.claude-agent-sdk,autobyteus.remote-llm,autobyteus.remote-audio,autobyteus.remote-image` | **Fail: 15 passed / 5 failed**. Real OpenAI 4/4 and Anthropic managed SDK 1/1 operations passed. Gemini audio/image and three AutoByteus discoveries failed. Full stdout/stderr/results/artifacts were captured and scanned. | `execution-evidence/88-round10-real-configured-capabilities.log` |
+| 9 | credential-free AutoByteus endpoint probes; static Gemini auth-mode trace; temporary read-only-Store JIT diagnostic with exact manifest models and corrected SDK flag | AutoByteus host: DNS unavailable for all three endpoints. Corrected `GoogleGenAI({vertexai:true, apiKey})`: exact Gemini audio and image **both passed**. The first temporary probe had a package-resolution setup error; its immediate corrected workspace-package retry is authoritative. Both temporary scripts were removed. | `execution-evidence/89-round10-provider-failure-diagnostics.log` |
+| 10 | durable evidence scanner across Round 10 logs plus owned Docker/temp-resource checks | **Pass: 11 files**, no credential value read/emitted; no owned resource remains | `execution-evidence/90-round10-summary-scan.log` |
+
+The current-application import directly proves MP-005: `GEMINI_API_KEY` was normalized-empty and did not appear in the plan, counts, warnings, or results, while populated `VERTEX_AI_API_KEY`, OpenAI, Anthropic, AutoByteus, and other mapped aliases continued independently. No Gemini-to-Vertex fallback occurred. `DASHSCOPE_API_KEY` remains the only Qwen mapping; unmapped names remained outside importer responsibility.
+
+### Real Capability Matrix
+
+| Capability | Preflight | Operation result | Claim |
+| --- | --- | --- | --- |
+| OpenAI LLM | `READY/CONFIGURED` | Pass | Real product invocation passed |
+| OpenAI normal gateway agent flow | `READY/CONFIGURED` | Pass | Real assistant completion/cleanup passed |
+| OpenAI audio | `READY/CONFIGURED` | Pass | Real generation passed |
+| OpenAI image | `READY/CONFIGURED` | Pass | Real generation passed |
+| Gemini Vertex Express audio | `READY/CONFIGURED` | **Fail in product; corrected-mode diagnostic Pass** | Product behavior fails; not claimed |
+| Gemini Vertex Express image | `READY/CONFIGURED` | **Fail in product; corrected-mode diagnostic Pass** | Product behavior fails; not claimed |
+| Anthropic managed-secret Claude Agent SDK | `READY/CONFIGURED` | Pass | Real managed-secret SDK request passed |
+| AutoByteus remote LLM | `READY/CONFIGURED` | **Unavailable: host DNS failure** | Not claimed |
+| AutoByteus remote audio | `READY/CONFIGURED` | **Unavailable: host DNS failure** | Not claimed |
+| AutoByteus remote image | `READY/CONFIGURED` | **Unavailable: host DNS failure** | Not claimed |
+| Serper search | `READY/MISSING search.serper.api-key` | Not run | Exact missing capability; not claimed |
+
+### Failure Package For Focused Origin Review
+
+#### `SCSP-E2E-REAL-GEMINI-VERTEX-001`
+
+- Requirements/criteria: `BEH-003`, `BEH-004`, `REQ-005`, `REQ-009`, `REQ-011`, `REQ-016`, `REQ-017`, `AC-005`, `AC-006`, `AC-016`.
+- Expected: `VERTEX_EXPRESS` selects `provider.google.vertex-express-api-key`, preserves the Google client mode, and executes the exact registered audio/image model through Vertex AI Express.
+- Observed: both normal product operations return stable `LIVE_E2E_PROVIDER_OPERATION_FAILED` codes. Production `MediaClientProvisioningService` selects the correct slot but returns only generic `{kind:'apiKey'}`; `initializeGeminiClientWithRuntime` then constructs `GoogleGenAI({apiKey})` with no `vertexai:true`.
+- Discriminating evidence: Google's official Vertex AI Express Node sample requires `new GoogleGenAI({vertexai: true, apiKey})` (`https://docs.cloud.google.com/vertex-ai/generative-ai/docs/samples/googlegenaisdk-vertexai-express-mode`). A bounded value-safe diagnostic used the same read-only E2E Store JIT consumer and exact manifest audio/image models with that required flag; both operations passed. No credential value was logged or inspected.
+- Preliminary classification: **implementation-owned authentication-mode propagation defect**. Recommended owner after reviewer confirmation: `implementation_engineer`.
+
+#### `SCSP-E2E-REAL-AUTOBYTEUS-001`
+
+- Requirements/criteria: `BEH-013`, `REQ-001`, `REQ-005`, `REQ-009`, `REQ-011`, `REQ-017`, `REQ-019`, `AC-006`, `AC-019`.
+- Expected: declared `https://api.autobyteus.com` host plus configured managed definition permits LLM/audio/image discovery and representative invocation.
+- Observed: all three product discovery operations fail with value-free stable codes. Independent requests that include no credential cannot resolve `api.autobyteus.com`; `/models/llm`, `/models/audio`, and `/models/image` each return curl status `000` at DNS resolution.
+- Preliminary classification: **external endpoint/configuration capability unavailable**; focused review should decide whether the tracked manifest host is stale (API/E2E-owned fixture) or the external service is temporarily unavailable. No alternate host, ambient key, disabled requirement, or pass claim was introduced.
+
+### Confidence Scorecard
+
+| Category | Final | Evidence / gap |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 75% | Importer, restart, Docker, OpenAI, and Anthropic are direct passes; critical Vertex Express product behavior fails and gateway capabilities are unavailable. |
+| Changed-boundary execution directness | 100% | Real operator source/TTY/Store, two processes, clean container, named volume, canonical product consumers, and external SDKs were exercised. |
+| Cross-boundary integration realism and mock gap | 88% | Real product/provider execution exposed the mode-loss defect and endpoint failure; five configured operations do not pass. |
+| Environment/configuration/identity/fixture fidelity | 100% | Reviewed HEAD, exact source/target, read-only dedicated Store, sanitized process/container state, current registered models, and exact manifest endpoints. |
+| Failure/edge/lifecycle/recovery evidence | 98% | 205 focused tests, host restart, container restart, atomic importer coverage, safe discriminating provider diagnostics, and complete cleanup. |
+| User-surface/browser/desktop-shell confidence | 95% | Prior actual-browser Settings journey remains applicable; no renderer/Electron/UI source changed in Round 10. |
+| Durable regression coverage quality/relevance | 98% | Existing durable importer/harness/provider/restart/API coverage is current and detected the real defect; no Round 10 durable edit was needed. |
+
+- Overall: **93.4%** (simple average).
+- Default 95% clean target met: No.
+- Critical acceptance behavior all passed: No.
+- Broader validation: Required and executed.
+- Result: **Fail**; send the cumulative package to `code_reviewer` for focused failure-origin review, not proportional success review.
+
+### Safety, Cleanup, And Preserved Decisions
+
+- The importer and normal product consumers handled credential values only through reviewed production/JIT boundaries. No right-hand-side value, Store value, raw credential, secret-bearing artifact, or provider response body was printed or inspected.
+- The operator source stayed byte-identical and owner-only. The dedicated E2E Store is user-owned and intentionally preserved; no default Store was accessed.
+- All `scsp-round10` Docker resources, runtime state, and both temporary diagnostic scripts were removed. No browser, desktop, or unrelated process was touched.
+- Eleven Round 10 evidence logs passed the canonical scanner.
+- No production source or durable test code was changed during Round 10.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release recheck dependency only, not legal clearance or an authentication redesign. Both Claude modes remain unchanged.
+- Claims remain `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains deferred.
+- Exact unpatched `repository_prisma@1.0.8`, no automatic update, unchanged Docker topology, target isolation, source immutability, and the authoritative Qwen mapping remain preserved.
+
+---
+
+## Round 11 Exact Gemini Modes, Metadata, Codex, And Lifecycle Execution
+
+### Round Meta And Authoritative Outcome
+
+- Reviewed implementation HEAD: `ad629bc55ed5c653db957ce46bdbc5092c7738ac`.
+- Source review: Round 26 **Pass**, 94.4/100, no open implementation-source finding.
+- Broader-validation decision: **Required and completed**.
+- Latest authoritative API/E2E result: **Pass**.
+- Final validation confidence: **98.0%**.
+- Critical prior failure resolved: `SCSP-E2E-REAL-GEMINI-VERTEX-001` now passes for real LLM, audio, and image through normal Store-backed product boundaries.
+- Exact non-pass external capabilities: AutoByteus declared host DNS unavailable; Serper definition missing; AI Studio metadata definition missing; Vertex Express metadata live enrichment returned HTTP 403 and correctly used the approved curated fallback.
+
+### Durable API/E2E Changes In The Cumulative Review Set
+
+Round 11 adds or updates these narrow durable paths:
+
+- `test-config/live-e2e.json`: registered-model native `gemini.llm` scenario using `provider.google.vertex-express-api-key`; preserves existing Gemini audio/image Vertex Express scenarios and the corrected OpenAI registered model.
+- `test-support/live-e2e/live-e2e-manifest.ts`: authoritative `REAL_DIRECT_SECRET` mode for `gemini.llm`.
+- `test-support/live-e2e/live-e2e-harness.ts`: applies the declared Google setup mode while constructing the normal LLM provisioning path.
+- `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`: executes Gemini LLM through the same canonical product boundary as OpenAI.
+- `autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts`: registry consistency includes Gemini LLM; cumulative mode/scanner/agent-flow coverage remains.
+- `autobyteus-server-ts/tests/unit/llm-management/model-metadata-provisioning-service.test.ts`: exact AI Studio versus Vertex Express consumer selection, established request/mapping, live-over-curated merge, and Vertex Project zero lookup/request curated behavior.
+
+The cumulative proportional review set also still includes `server-restart-secret-lifecycle.e2e.test.ts` and `live-e2e-evidence-scanner.mjs` changes from earlier API/E2E rounds. No production source changed during Round 11.
+
+### Exact Commands And Results
+
+| Order | Command / execution mode | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | focused core exact Gemini/metadata, server provisioning/metadata/Codex/harness, exact installed-package policy, and `git diff --check` | **Pass: 104 tests** (62 core + 31 server + 11 package-policy) | `execution-evidence/91-round11-focused-gemini-metadata-codex.log` |
+| 2 | `pnpm test:e2e:real:preflight` | **Pass: 12/12**; exact value-free capability states | `92-round11-real-preflight.log` |
+| 3 | `pnpm test:e2e:real -- --scenarios=gemini.llm,gemini.audio,gemini.image` | **Pass: 6/6 tests; 3/3 real operations** | `93-round11-real-vertex-express.log` |
+| 4 | temporary normal `ModelMetadataProvisioningService` probe against the read-only E2E Store | First probe had a stale live-2xx-only expectation; authoritative corrected contract probe **Pass: 2/2** | `94-round11-real-gemini-metadata.log`, `95-round11-real-gemini-metadata-contract.log` |
+| 5 | `codex --version`; `codex login status`; targeted existing live Codex thread integration | **Pass: 1/1** real model catalog/thread/turn using existing ChatGPT account; 3 unrelated tests skipped | `96-round11-real-codex-continuity.log` |
+| 6 | `pnpm --filter autobyteus-server-ts exec vitest run tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts --no-watch` | **Pass: 1/1** | `97-round11-server-restart.log` |
+| 7 | sanitized `./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round11 --build-local` | **Pass** clean local-source image/start through unchanged tracked Docker path | `98-round11-docker-build-up.log` |
+| 8 | direct GraphQL lifecycle, Compose restart, same named data volume, remove, tracked project cleanup | **Pass**: `MISSING -> CONFIGURED -> reopened CONFIGURED -> MISSING`; zero owned residue | `99-round11-docker-lifecycle.log`, `100-round11-docker-cleanup.log` |
+| 9 | `pnpm test:e2e:real -- --scenarios=openai.llm,openai.agent-flow,anthropic.claude-agent-sdk` | **Pass: 6/6 tests; 3/3 real operations** | `101-round11-real-openai-anthropic.log` |
+| 10 | credential-free `curl` status probes to declared AutoByteus LLM/audio/image endpoints | **Unavailable**: all fail DNS resolution, status `000`; no operation claimed | `102-round11-autobyteus-capability.log` |
+| 11 | canonical scanner over Round 11 evidence plus owned temp/Docker residue checks | **Pass**: initial 12-log scan, zero raw/base64 canary or structural secret field, zero owned residue | `103-round11-evidence-cleanup-scan.log` |
+| 12 | final reviewed-HEAD, `git diff --check`, evidence rescan, and residue check | **Pass**: all 13 prior Round 11 logs clean; exact HEAD; zero owned Docker/temp-script residue | `104-round11-final-package-check.log` |
+
+### Critical Prior Failure Resolution
+
+`SCSP-E2E-REAL-GEMINI-VERTEX-001` is resolved. The dedicated Store reports the exact Vertex Express definition `READY/CONFIGURED`, and the normal reviewed product paths now preserve `vertexai:true` through:
+
+- LLM: `LiveE2eScenarioExecution -> LLMProvisioningService -> LLMFactory -> GeminiLLM`;
+- audio: `MediaClientProvisioningService -> AudioClientFactory -> GeminiAudioClient`;
+- image: `MediaClientProvisioningService -> ImageClientFactory -> GeminiImageClient`.
+
+Observed real-operation durations were approximately 1.684s for LLM, 2.680s for audio, and 18.786s for image. All returned non-empty product results and passed the canonical evidence boundary. The only adjacent warning was a non-fatal unavailable local Ollama discovery during factory initialization.
+
+### Separate Gemini Metadata Contract
+
+The metadata result is not inferred from the Gemini SDK construction variants:
+
+- **Vertex Express:** the server selected only `provider.google.vertex-express-api-key`, performed one established Generative Language request with header presence verified but no value inspected, received HTTP 403, and returned the approved curated catalog. The exact external live-enrichment capability is `UNAVAILABLE_HTTP_403`, while product fallback behavior passes.
+- **AI Studio:** exact Store status is `MISSING`; no real AI Studio request or merge is claimed.
+- **Vertex Project:** zero Gemini secret lookups and zero metadata HTTP requests; curated metadata is returned as designed.
+
+Evidence `94` is deliberately retained: its temporary assertion incorrectly required a 2xx response and therefore failed despite observing the approved endpoint/fallback boundary. The corrected contract probe in `95` supersedes that test-only expectation and passed 2/2. Neither probe modified durable production state, and both temporary scripts were removed.
+
+### Real Capability Matrix
+
+| Capability | Current status / operation | Claim |
+| --- | --- | --- |
+| Gemini Vertex Express LLM | `READY/CONFIGURED`; real operation Pass | Passed through normal product provisioning |
+| Gemini Vertex Express audio | `READY/CONFIGURED`; real operation Pass | Passed through normal media provisioning |
+| Gemini Vertex Express image | `READY/CONFIGURED`; real operation Pass | Passed through normal media provisioning |
+| Gemini Vertex Express metadata | exact consumer selected; established request HTTP 403; curated fallback Pass | Product contract passed; live enrichment unavailable, not claimed |
+| Gemini AI Studio metadata | exact definition `MISSING` | Unavailable, not claimed |
+| Gemini Vertex Project metadata | zero lookup/request; curated catalog Pass | Passed reviewed curated-only contract |
+| OpenAI LLM | `READY/CONFIGURED`; real operation Pass | Passed |
+| OpenAI normal gateway agent flow | `READY/CONFIGURED`; real turn Pass | Passed |
+| OpenAI audio/image | prior Round 10 real passes remain applicable | Passed; unchanged affected boundary |
+| Anthropic managed-secret Claude SDK | `READY/CONFIGURED`; real operation Pass | Passed; mode unchanged |
+| Codex external account/model/thread/turn | ChatGPT login; real model/thread/turn Pass | Passed; explicit child-environment assurance exclusion retained |
+| AutoByteus LLM/audio/image | Store configured; declared host DNS unavailable | Unavailable, not passed |
+| Serper search | exact definition `MISSING` | Unavailable, not passed |
+
+### Restart, Docker, Cleanup, And Evidence Integrity
+
+- `SCSP-E2E-RESTART-001` independently passed two sanitized starts without a parent `DATABASE_URL`; both preserved byte-identical application `.env`, ran migrations/listened, exposed the runtime default, reopened Store state value-free, and removed it.
+- `SCSP-E2E-DOCKER-001` used a clean source image and the unchanged tracked launcher/Compose topology. It recorded the built image identity, stable data-volume name, stable application `.env` hash, present SQLite database, migrations, `LOCAL_HARDENED` status, save/restart/reopen/remove lifecycle, and no database/provider environment injection.
+- Project `scsp-round11` cleanup removed its container, network, four volumes, runtime environment, and temporary lifecycle script. The real Codex/agent/Claude temporary workspaces are absent. The user-owned dedicated E2E Store was intentionally retained.
+- The final canonical scan found no raw/base64 canary or structural secret field across all 13 prior Round 11 logs. No credential value, assignment right-hand side, Store value, default Store, or secret-bearing artifact was read or emitted.
+
+### Confidence Scorecard And Broader-Validation Decision
+
+| Category | Final | Evidence / residual uncertainty |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 95% | All critical currently executable paths pass; exact unavailable AI Studio/Serper/AutoByteus capabilities are bounded. |
+| Changed-boundary execution directness | 100% | Normal real Gemini LLM/media, metadata service, Codex, restart, and clean container paths were executed. |
+| Cross-boundary integration realism and mock gap | 98% | Real external providers/account and actual metadata HTTP fallback executed; metadata live enrichment itself received 403. |
+| Environment/configuration/identity/fixture fidelity | 100% | Exact reviewed HEAD/modes/models, read-only dedicated Store, sanitized processes/container, external Codex account, and same Docker volume. |
+| Failure/edge/lifecycle/recovery evidence | 100% | Prior failure, fallback, missing states, two-process and container restart, removal, and cleanup all have direct proof. |
+| User-surface/browser/desktop-shell confidence | 95% | Retained actual-browser Settings proof remains applicable; no UI/shell source changed, while real Codex transport was exercised. |
+| Durable regression coverage quality and relevance | 98% | Narrow native Gemini/metadata additions complement the cumulative harness/scanner/Store/API/restart/importer coverage. |
+
+- Overall confidence: **98.0%** (simple average).
+- Default 95% clean target met: **Yes**.
+- Any applicable category below 90%: **No**.
+- Broader validation: **Required and completed**.
+- Result: **Pass**.
+- Next recipient: `code_reviewer` for the separate proportional review of all cumulative durable API/E2E test changes.
+
+### Mandatory Preserved Scope
+
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release recheck only, not legal clearance or an authentication redesign. Delivery must recheck the four official Anthropic sources recorded upstream.
+- Both Claude modes remain unchanged.
+- Claims remain `LOCAL_HARDENED` with the explicit Codex child-environment exclusion; `STRONG_AGENT_ISOLATION` remains deferred.
+- Exact unpatched `repository_prisma@1.0.8`, no automatic update, unchanged Docker topology, target isolation, source immutability, and `DASHSCOPE_API_KEY` as the sole Qwen mapping remain authoritative.

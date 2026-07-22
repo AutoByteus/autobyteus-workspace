@@ -254,7 +254,7 @@ export class LiveE2eScenarioExecution {
 
   createLlm(modelIdentifier: string) {
     this.assertDirectSecretBoundary();
-    return this.llmProvisioning.createLLM(modelIdentifier);
+    return this.withGoogleSetupMode(() => this.llmProvisioning.createLLM(modelIdentifier));
   }
 
   createAudioClient(modelIdentifier: string) {
