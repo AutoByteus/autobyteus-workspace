@@ -7,6 +7,18 @@
 - Repository finalization target: `origin/personal` via local target branch `personal` after user verification.
 - Release/publication/deployment: not started; conditional on explicit user instruction after verification.
 
+## Latest-Base Refresh Blocker — 2026-07-22
+
+- User-requested action: refresh this ticket branch onto the newly updated `origin/personal`, then rebuild Electron.
+- Candidate protection: checkpoint `0c4cc5c733004051f19914afa6b1dd5b23b2fb60` preserves the previously reviewed v1.4.23 package and delivery evidence.
+- Latest tracked base: `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3`, 33 commits beyond the prior integrated base and carrying the v1.4.24 finalization state.
+- Refresh command/result: `git merge --no-edit origin/personal` stopped on an implementation-source conflict in `autobyteus-web/services/agentStreaming/AgentStreamingService.ts`.
+- Classification: `Local Fix — implementation-owned source integration with effective lifecycle-behavior risk`.
+- Behavioral issue: the new base's Event Monitor mutation window/commit behavior must be retained, but its activity-triggered `applyLiveRuntimeActivityProjectionRepair` path conflicts with this ticket's approved boundary-owned lifecycle contract and would allow ordinary activity to repair/reopen frontend lifecycle state.
+- Electron rebuild: `Blocked / not started`; no valid integrated candidate exists until the conflict is resolved, source-reviewed, and API/E2E-validated.
+- Required route: `implementation_engineer` -> `code_reviewer` source review -> `api_e2e_engineer` -> `code_reviewer` proportional test review -> `delivery_engineer`.
+- Authoritative blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/delivery-integration-conflict-report.md`
+
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/handoff-summary.md`
@@ -112,9 +124,9 @@ No ticket-owned version bump, release commit, or tag has been created. The integ
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
-- Classification: N/A
-- Recommended recipient: N/A
-- Why final handoff could not complete: N/A; the package is ready for the required user-verification gate.
+- Classification: `Local Fix — implementation-owned source integration with effective lifecycle-behavior risk`
+- Recommended recipient: `implementation_engineer`
+- Why final handoff could not complete: latest `origin/personal` reintroduces frontend activity-driven lifecycle repair in the same streaming service where the ticket removes it, while also adding Event Monitor mutation behavior that must be preserved. Electron cannot be rebuilt as a valid latest-base candidate until the integrated resolution passes source review and API/E2E.
 
 ## Release Notes Summary
 
@@ -163,4 +175,4 @@ Rollback or reroute if user verification or later rollout shows any of the follo
 
 ## Final Status
 
-`Ready for explicit user verification`. The reviewed candidate is preserved, the 44-commit advance from the prior base to `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790` (`v1.4.23`) was merged without conflicts, the refreshed lifecycle smoke passed 38/38, and the macOS ARM64 Electron `1.4.23` package/native runtime/noVNC notice verification passed. API/E2E remains `Pass` at 97.7% confidence; live Codex, Claude, and AutoByteus standalone/team journeys passed. The only bounded material residual is production-duration retired-turn-ID retention. Ticket archival, final push/merge to `personal`, release/version/tag/publication/deployment, and cleanup remain intentionally on hold until the user verifies the rebuilt app and states release intent.
+`Blocked during the user-requested latest-base refresh`. The prior reviewed candidate and v1.4.23 package are preserved at checkpoint `0c4cc5c733004051f19914afa6b1dd5b23b2fb60`, but merging the 33-commit advance to `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3` produced a behavior-sensitive source conflict in `AgentStreamingService.ts`. The Electron rebuild has not started. The conflict is routed as an implementation-owned Local Fix and must pass renewed source review and API/E2E before delivery can resume. Repository finalization, release/version/tag/publication/deployment, and cleanup remain on hold.

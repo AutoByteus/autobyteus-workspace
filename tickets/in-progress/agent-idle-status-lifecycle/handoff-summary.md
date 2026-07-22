@@ -4,7 +4,7 @@
 
 - Ticket: `agent-idle-status-lifecycle`
 - Date: `2026-07-21`
-- Current Status: `Ready for explicit user verification; repository finalization and release are on hold`
+- Current Status: `Blocked during latest-base integration; Electron rebuild not started; repository finalization and release are on hold`
 - Workflow State Source: `tickets/in-progress/agent-idle-status-lifecycle/`
 - Ticket branch: `codex/agent-idle-status-lifecycle`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle`
@@ -121,5 +121,7 @@
 
 ## Blockers / Notes
 
-- No product, review, API/E2E, docs, migration, or integration blocker remains.
-- Repository finalization is intentionally held at the required explicit user-verification gate.
+- A new user-requested refresh to `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3` stopped on a behavior-sensitive source conflict in `autobyteus-web/services/agentStreaming/AgentStreamingService.ts`. The latest base's Event Monitor mutation behavior must be retained without reintroducing activity-driven frontend lifecycle repair.
+- Classification: `Local Fix — implementation-owned source integration with effective lifecycle-behavior risk`; route: `implementation_engineer` followed by renewed source review and API/E2E.
+- Electron rebuild is blocked and has not started. See `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/delivery-integration-conflict-report.md`.
+- Repository finalization remains held; explicit user verification will still be required after a valid latest-base package is rebuilt.

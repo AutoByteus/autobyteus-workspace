@@ -9,10 +9,24 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/production-trace-evidence.md` — retained production evidence; approval applicability `N/A`.
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/design-review-report.md`
 - Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
+- Delivery integration conflict report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/delivery-integration-conflict-report.md`
 - Primary implementation commit: `58bb00ce5` (`fix(agent): reconcile lifecycle by exact turn`)
 - Source-review rework commits:
   - `d8d077d85` (`fix(agent): align accepted command status projection`)
   - `c43130e9a` (`fix(agent): preserve terminal command reconciliation`)
+- Latest-base delivery integration:
+  - protected reviewed checkpoint: `0c4cc5c733004051f19914afa6b1dd5b23b2fb60`
+  - integrated base: `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3`
+  - integration merge commit: `4a5bed139e922a3e91b9f1d29b7e9bce0e7b52af`
+
+## Latest-Base Integration Rework — 2026-07-22
+
+- Resolved the behavior-sensitive `AgentStreamingService.ts` merge conflict created by refreshing the reviewed ticket checkpoint onto the latest `origin/personal` v1.4.24 finalization state.
+- Preserved the latest-base Event Monitor mutation window: `beginRecentEventMonitorMutation` captures the presentation baseline before dispatch and `commitRecentEventMonitorMutation` commits the active-trace mutation after dispatch.
+- Kept the ticket's approved lifecycle boundary intact. `LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES`, `isLiveRuntimeActivityMessage`, and `applyLiveRuntimeActivityProjectionRepair` are absent from frontend source/tests, and ordinary activity does not repair, reopen, or infer lifecycle state. Canonical `AGENT_STATUS` remains the streamed lifecycle input.
+- Reconciled the already-reviewed no-activity-reopen assertions with the latest-base Event Monitor revision/active-trace coverage. No new test-only lifecycle path or compatibility fallback was introduced.
+- The integrated source file is 309 effective non-empty lines and has no unresolved conflict markers. The working integration preserves both required behaviors without a parallel dispatch or projection path.
+- The latest-base refresh changes effective frontend service behavior but no visual component, layout, or styling. Implementation engineering therefore did not perform a separate rendered-layout review; focused production-dispatch tests and a production Nuxt build provide local feedback, while current-base browser/live validation remains an explicit API/E2E gate.
 
 ## Implementation Review Rework
 
@@ -67,7 +81,7 @@
 
 - `AgentTurnLifecycleState.retiredTurnIds` intentionally retains identities for the runtime-context lifetime so arbitrarily delayed events cannot reopen a retired turn. This is one string per identified turn and therefore grows with exceptionally long-lived contexts; no unsafe eviction window was introduced.
 - `agent-run-command-coordinator.ts` is 499 effective non-empty lines after the bounded review fixes and its implementation delta exceeds the `>220` review signal. The size was reassessed: association data/atomic transitions are already split into command types/registry, while accepted-result status reconciliation and buffered terminal replay form one atomic evidence sequencing/settlement transition. A further extraction would fragment that transition; the file remains below the 500-line hard guardrail.
-- API/E2E, live browser, and realistic provider-runtime validation have not been performed by implementation engineering and remain downstream work.
+- API/E2E, live browser, and realistic provider-runtime validation have not been rerun by implementation engineering on the latest-base integration and remain downstream work. Earlier successful evidence applies to the protected pre-refresh candidate, not the requested v1.4.24-base rebuild.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -105,6 +119,7 @@
 - Nuxt generated type scaffolding was prepared locally with `pnpm -C autobyteus-web exec nuxi prepare`; generated output is ignored.
 - The package-level server `pnpm -C autobyteus-server-ts typecheck` remains unusable because its current `tsconfig.json` includes tests outside `rootDir: src` and reports repository-wide `TS6059`; `tsconfig.build.json` passes.
 - `pnpm -C autobyteus-web exec nuxi typecheck` remains repository-baseline red across unrelated build scripts, missing generated/store modules, and pre-existing component/store/test typing issues. The output did not identify the changed lifecycle frontend files; focused Nuxt tests pass.
+- On the latest-base integration, the default-heap Nuxt typecheck exhausted its approximately 4 GB heap. Retrying with `NODE_OPTIONS=--max-old-space-size=8192` reached the compiler and reproduced the repository-wide baseline errors described above; this check is not represented as a pass.
 
 ## Local Implementation Checks Run
 
@@ -119,6 +134,10 @@
 - Rework source-boundary audit — no direct `getDefaultAgentRunEventPipeline().process(...)`, removed-helper, or removed-test references remain under server source/tests.
 - Rework source-size audit — `agent-run-command-coordinator.ts` is 499 effective non-empty lines; all changed implementation source remains below 500.
 - `git diff --check` / staged diff check — pass.
+- Latest-base focused Nuxt suite spanning streaming projection and Event Monitor mutation/production dispatch — **4 files, 42 tests passed**. Expected KaTeX quirks warnings, intentional transport-error logs, and the existing unhandled inter-agent-message warning were non-failing.
+- `pnpm -C autobyteus-web build` on the latest-base integration — pass, including client/SSR compilation and static prerender; only the existing chunk-size warning was emitted.
+- Latest-base lifecycle boundary audit — no `LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES`, `isLiveRuntimeActivityMessage`, or `applyLiveRuntimeActivityProjectionRepair` references remain under frontend source/tests; the Event Monitor begin/commit integration remains in the authoritative dispatcher.
+- Latest-base conflict/targeted-diff checks — pass, with no unresolved entries or conflict markers. A whole incoming-merge whitespace check is not claimed because unchanged archived evidence logs imported from `origin/personal` contain pre-existing trailing whitespace; the ticket/conflict resolution and artifact diffs pass `git diff --check`.
 - Non-passing baseline checks are recorded under Environment Or Dependency Notes and are not represented as implementation passes.
 
 ## Downstream Coverage Hints / Suggested Scenarios
@@ -135,4 +154,4 @@
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. Implementation engineering ran only local build/type/unit/focused checks. The API/E2E engineer must investigate existing broader coverage, decide durable test additions, execute realistic repository/runtime/browser checks, and report confidence/evidence independently.
+Required. Implementation engineering ran only local build/type/unit/focused checks. After renewed implementation-source review passes, the API/E2E engineer must rerun applicable repository/runtime/browser coverage against the latest-base integrated state and report confidence/evidence independently. The prior v1.4.23 coverage package does not satisfy the user's latest-base Electron rebuild request.
