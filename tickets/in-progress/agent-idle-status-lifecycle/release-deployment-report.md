@@ -16,20 +16,20 @@
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
-- Latest tracked remote base reference checked: `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`, release baseline `v1.4.19`, after `git fetch origin personal` at `2026-07-20T04:31:46Z`.
-- Base advanced since the prior `v1.4.17` integration: `Yes`, by 25 commits (104 since bootstrap).
+- Latest tracked remote base reference checked: `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790`, release baseline `v1.4.23`, after `git fetch origin personal` at `2026-07-21T13:17:27Z`.
+- Base advanced since the prior integration: `Yes`, by 44 commits (148 since bootstrap).
 - New base commits integrated into the ticket branch: `Yes`.
-- Local checkpoint commit result: `Completed` — `a4f92249f59a9a24e00eb1ce2047eae7933a441f` protected the prior delivery package; `99fc83570c7863a8b27bf35ee35c04629f327105` protected new evidence after the remote advanced during the first build attempt.
+- Local checkpoint commit result: `Completed` — `88313d23c4703a811db1f437798e0d5ac3b7400f` protected the prior delivery package.
 - Integration method: merge of latest `origin/personal` into the ticket branch.
 - Integration result: `Completed`
-- Merge result: clean first merge `9cffe5dd36279df7736c77058b83930636fb0eb4`, then clean final merge `8052f9d777dcdb30443af068159760ed0c14ec7f`; no conflicts.
+- Merge result: clean merge `1ae7ad7f5f69dc31536ac0970d54d164ea405c91`; no conflicts.
 - Post-integration executable checks rerun: `Yes` — required after integrating new base commits.
 - Post-integration verification result: `Passed` — 6 files / 38 tests.
 - No-rerun rationale (only if no new base commits were integrated): N/A; a focused smoke was rerun and passed.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): N/A
-- Evidence: earlier delivery/API/E2E evidence remains authoritative; the current refresh, intentionally aborted stale-base build attempt, final smoke, Electron rebuild, corrected verification, checksums, integration record, and final audit are logs `55` through `65`.
+- Evidence: earlier delivery/API/E2E evidence remains authoritative; the current refresh smoke, frozen install, Electron rebuild, verification, checksums, integration record, and final audit are logs `66` through `72`.
 - Round-2 evidence refresh: `origin/personal` remained unchanged; the existing Claude runtime test was re-executed without source changes and passed 1 / 19 skipped. No additional base integration, implementation-source review, delivery smoke, or durable-test review was required.
 - Round-3 evidence refresh: two existing Claude team scenarios were re-executed without source changes and each passed 1 / 4 skipped. No additional base integration, implementation-source review, delivery smoke, or durable-test review was required.
 - Round-4/round-5 evidence refresh: the initial invalid DeepSeek credential was historical/environmental. After refresh, live AutoByteus standalone lifecycle, two-member restore/projection, and real inter-agent delivery passed. The only round-5 durable delta was a narrow DeepSeek forced-tool E2E configuration update; proportional test-code review passed with no findings. Production source and its scorecard were not reopened.
@@ -45,7 +45,7 @@
 ## Local Electron User-Test Build
 
 - User-requested local build result: `Pass`, exit status `0`.
-- Target: macOS ARM64, `personal` flavor, app version `1.4.19`, Electron `42.4.1`.
+- Target: macOS ARM64, `personal` flavor, app version `1.4.23`, Electron `42.4.1`.
 - README method: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= ... pnpm build:electron:mac` from `autobyteus-web`.
 - Outputs: DMG, ZIP, updater blockmaps/metadata, and unpacked `AutoByteus.app` under `autobyteus-web/electron-dist`.
 - Verification: ZIP integrity, DMG metadata, app/version/architecture, Electron runtime, staged/packaged `node-pty` architecture/execute-bit/real-spawn checks, and canonical/renderer/app/ZIP/DMG noVNC notice projections passed.
@@ -73,18 +73,18 @@
 
 ## Version / Tag / Release Commit
 
-No ticket-owned version bump, release commit, or tag has been created. The integrated base's current release baseline is `v1.4.19` / package version `1.4.19`. If a new release is explicitly requested after verification, the documented root `pnpm release <version> -- --release-notes tickets/done/agent-idle-status-lifecycle/release-notes.md` path will be used only after repository finalization and ticket archival.
+No ticket-owned version bump, release commit, or tag has been created. The integrated base's current release baseline is `v1.4.23` / package version `1.4.23`. If a new release is explicitly requested after verification, the documented root `pnpm release <version> -- --release-notes tickets/done/agent-idle-status-lifecycle/release-notes.md` path will be used only after repository finalization and ticket archival.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/investigation-notes.md`
 - Ticket branch: `codex/agent-idle-status-lifecycle`
-- Ticket branch commit result: delivery checkpoints through `99fc83570c7863a8b27bf35ee35c04629f327105` plus allowed latest-base merges through `8052f9d777dcdb30443af068159760ed0c14ec7f`; refreshed reports/evidence await post-verification finalization.
+- Ticket branch commit result: delivery checkpoint `88313d23c4703a811db1f437798e0d5ac3b7400f` plus allowed latest-base merge `1ae7ad7f5f69dc31536ac0970d54d164ea405c91`; refreshed reports/evidence await post-verification finalization.
 - Ticket branch push result: `Not started — user-verification hold`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: N/A; verification not yet received.
-- Delivery-owned edits protected before re-integration: `Completed` in checkpoints `a4f92249f59a9a24e00eb1ce2047eae7933a441f` and `99fc83570c7863a8b27bf35ee35c04629f327105`.
+- Delivery-owned edits protected before re-integration: `Completed` in checkpoint `88313d23c4703a811db1f437798e0d5ac3b7400f`.
 - Re-integration before final merge result: latest base merged cleanly and checked; any later target advance will require another refresh and renewed verification if user-facing state changes.
 - Target branch update result: `Not started — user-verification hold`
 - Merge into target result: `Not started — user-verification hold`
@@ -143,11 +143,11 @@ No deployment has been performed. If release is later requested, the repository'
 - Live runtime lifecycle: independent Codex and Claude Agent SDK runs passed the shared GraphQL -> `AgentRun` -> WebSocket create/reconnect/terminate/restore/second-turn scenario. The round-2 Claude result was 1 passed / 19 skipped, exit 0, with cleanup complete.
 - Live Claude team lifecycle: the round-3 bidirectional two-member roundtrip/status and two-member terminate/restore/continue scenarios each passed 1 / 4 skipped, exit 0. Both used the unchanged existing durable file and cleaned owned data/processes without touching the user app.
 - Live AutoByteus + DeepSeek lifecycle: the round-5 standalone scenario passed 1 / 19 skipped; two-member restore/projection and corrected `send_message_to`/reference-file scenarios each passed 1 / 4 skipped. Cleanup and credential-retention audits passed, and the user app on port 29695 remained untouched.
-- Local Electron package: macOS ARM64 `1.4.19` build passed; DMG/ZIP integrity, staged/packaged terminal native-runtime probes, and noVNC notice projections passed. Interactive launch is deliberately left to the user after quitting the currently running AutoByteus instance on port 29695.
-- Base audit: branch contains `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`; ahead 13 / behind 0 at integrated head `8052f9d777dcdb30443af068159760ed0c14ec7f`.
+- Local Electron package: macOS ARM64 `1.4.23` build passed; DMG/ZIP integrity, staged/packaged terminal native-runtime probes, and noVNC notice projections passed. Interactive launch is deliberately left to the user after quitting the currently running AutoByteus instance on port 29695.
+- Base audit: branch contains `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790`; ahead 15 / behind 0 at integrated head `1ae7ad7f5f69dc31536ac0970d54d164ea405c91`.
 - Repository artifact hygiene: passed across 14,693 tracked paths at the 200-character checkout threshold.
 - Docs/artifact handoff audit: passed tracked/untracked whitespace checks, cumulative artifact presence, authoritative evidence markers, base containment, ticket state, and remote ticket-branch absence.
-- Provider round history/residuals: the round-1 Claude HTTP 401 and round-4 DeepSeek HTTP 401 were resolved by credential refreshes and remain history only. The round-5 forced-tool HTTP 400 was stale provider-specific test setup, corrected test-only and passed on rerun. Live Codex, Claude, and AutoByteus standalone/team journeys now pass. The only bounded material residual is production-duration retired-turn-ID retention. Later-base Electron local-file/video and noVNC packaging changes were separately delivered upstream and passed this refreshed local package verification; interactive execution is the pending user-verification step.
+- Provider round history/residuals: the round-1 Claude HTTP 401 and round-4 DeepSeek HTTP 401 were resolved by credential refreshes and remain history only. The round-5 forced-tool HTTP 400 was stale provider-specific test setup, corrected test-only and passed on rerun. Live Codex, Claude, and AutoByteus standalone/team journeys now pass. The only bounded material residual is production-duration retired-turn-ID retention. Later-base application-framework, file-URI, Mermaid viewer/error-layout, and nested diagram-overlay work was separately delivered upstream and passed this refreshed package/build integration; interactive execution is the pending user-verification step.
 - Broad-suite evidence: server 2,426 pass / 64 fail in unchanged files; web 1,885 pass / 4 fail in unchanged files. These are preserved non-green baselines and not represented as successful full-suite runs.
 
 ## Rollback Criteria
@@ -163,4 +163,4 @@ Rollback or reroute if user verification or later rollout shows any of the follo
 
 ## Final Status
 
-`Ready for explicit user verification`. The reviewed candidate is preserved, the 25-commit advance from the prior base to `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12` (`v1.4.19`) was merged without conflicts, the final refreshed lifecycle smoke passed 38/38, and the macOS ARM64 Electron `1.4.19` package/native runtime/noVNC notice verification passed. API/E2E remains `Pass` at 97.7% confidence; live Codex, Claude, and AutoByteus standalone/team journeys passed. The only bounded material residual is production-duration retired-turn-ID retention. Ticket archival, final push/merge to `personal`, release/version/tag/publication/deployment, and cleanup remain intentionally on hold until the user verifies the rebuilt app and states release intent.
+`Ready for explicit user verification`. The reviewed candidate is preserved, the 44-commit advance from the prior base to `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790` (`v1.4.23`) was merged without conflicts, the refreshed lifecycle smoke passed 38/38, and the macOS ARM64 Electron `1.4.23` package/native runtime/noVNC notice verification passed. API/E2E remains `Pass` at 97.7% confidence; live Codex, Claude, and AutoByteus standalone/team journeys passed. The only bounded material residual is production-duration retired-turn-ID retention. Ticket archival, final push/merge to `personal`, release/version/tag/publication/deployment, and cleanup remain intentionally on hold until the user verifies the rebuilt app and states release intent.

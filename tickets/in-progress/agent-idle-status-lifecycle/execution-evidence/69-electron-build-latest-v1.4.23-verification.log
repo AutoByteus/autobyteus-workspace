@@ -1,0 +1,78 @@
+# Latest v1.4.23 Electron macOS build verification
+# Started: 2026-07-21T13:12:48Z
+
+## Artifact existence and sizes
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.23.dmg size_bytes=401892373
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.23.zip size_bytes=397474740
+1.2G	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+## SHA-256
+2297e4dc013aec51f660c6785235bf9fc273a5863d227bf924fcb5afdf4e24f9  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.23.dmg
+68a25d3dadf3afa08bcd53f5dca2044148a04310c332a0c35be5dedb531bc4fa  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.23.zip
+
+## ZIP integrity
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.23.zip.
+
+## DMG metadata
+Format Description: UDIF, nur Lesen, komprimiert (zlib)
+Class Name: CUDIFDiskImage
+Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+Format: UDZO
+	Class Name: CUDIFEncoding
+		Class Name: CBSDBackingStore
+
+## App metadata
+CFBundleName=AutoByteus
+CFBundleIdentifier=com.autobyteus.app
+CFBundleExecutable=AutoByteus
+CFBundleShortVersionString=1.4.23
+CFBundleVersion=1.4.23
+ElectronVersion=42.4.1
+AppExecutableArchitecture=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+version_and_runtime_check=pass
+
+## Staged terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Packaged terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## noVNC notice projections
+canonical_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+renderer_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+packaged_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+zip_notice_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+notice_projections=pass
+
+## DMG packaged notice
+dmg_notice_sha256=399fad4dac55bd3226ed40c5e4f5c366f44654e1738a037272ff3e6661a097b3
+dmg_notice_projection=pass
+
+## Signing
+local_signing=unsigned_expected
+
+## Build provenance
+branch=codex/agent-idle-status-lifecycle
+head=1ae7ad7f5f69dc31536ac0970d54d164ea405c91
+origin_personal=9b4e038a40e0b6358fe53ca101406e0f6446e790
+ahead_behind=15	0
+app_port_29695_listener=1
+
+verification_result=pass
+
+# Finished: 2026-07-21T13:13:08Z
+# Exit status: 0

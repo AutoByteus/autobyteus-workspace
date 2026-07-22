@@ -5,8 +5,8 @@
 - Ticket: `agent-idle-status-lifecycle`
 - Trigger: Delivery-stage documentation synchronization after source review and the cumulative API/E2E package through round 5 passed, including live Codex, Claude, and AutoByteus lifecycle validation and successful proportional review of all eight cumulative durable test paths.
 - Bootstrap base reference: `origin/personal` at `fbd7b6764bd43751956d69ffe22b943d06188444`
-- Integrated base reference used for final docs sync: `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`, release baseline `v1.4.19`. This is 25 commits beyond the prior `v1.4.17` integration and 104 beyond bootstrap. Delivery checkpoints `a4f92249f59a9a24e00eb1ce2047eae7933a441f` and `99fc83570c7863a8b27bf35ee35c04629f327105` protected the package across two clean refresh merges; final ticket head is `8052f9d777dcdb30443af068159760ed0c14ec7f`.
-- Post-integration verification reference: the final six-file lifecycle smoke passed 38/38 in `execution-evidence/59-post-latest-v1.4.19-lifecycle-smoke.log`; the macOS ARM64 Electron `1.4.19` build and expanded native-runtime/noVNC-notice verification passed in logs `60`, `62`, and `63`. The merged long-lived docs still contain the boundary-owned lifecycle, additive error-field, activity-neutral, and retired-turn semantics. The base's new local-video/local-file protocol and packaged noVNC documentation coexist with, but do not replace or contradict, the lifecycle contract, so no corrective lifecycle doc edit was needed.
+- Integrated base reference used for final docs sync: `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790`, release baseline `v1.4.23`. This is 44 commits beyond the prior integration and 148 beyond bootstrap. Checkpoint `88313d23c4703a811db1f437798e0d5ac3b7400f` protected the package before the clean refresh merge; final ticket head is `1ae7ad7f5f69dc31536ac0970d54d164ea405c91`.
+- Post-integration verification reference: the six-file lifecycle smoke passed 38/38 in `execution-evidence/66-post-latest-v1.4.23-lifecycle-smoke.log`; the macOS ARM64 Electron `1.4.23` build and native-runtime/noVNC-notice verification passed in logs `68`-`70`. The merged long-lived docs still contain the boundary-owned lifecycle, additive error-field, activity-neutral, and retired-turn semantics. New application-framework, file-URI, Mermaid viewer/error-layout, and nested diagram-overlay documentation coexist with, but do not replace or contradict, the lifecycle contract, so no corrective lifecycle doc edit was needed.
 
 ## Why Docs Were Updated
 
@@ -59,7 +59,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync is complete against `origin/personal@8c7e2c2aa591b174a3d5c90eb0d05584538bbf12`. Both latest-base refreshes merged without conflicts or effective lifecycle changes; the final delivery smoke passed 6 files / 38 tests and the rebuilt Electron `1.4.19` package passed native-runtime and notice-projection verification. Live Claude and AutoByteus + DeepSeek rounds remain authoritative for the shared lifecycle contract. The new base/Electron packaging did not change that contract, so implementation-source review was not reopened.
+- Notes: Docs sync is complete against `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790`. The latest refresh merged without conflicts or effective lifecycle changes; delivery smoke passed 6 files / 38 tests and the rebuilt Electron `1.4.23` package passed native-runtime and notice-projection verification. Live Claude and AutoByteus + DeepSeek rounds remain authoritative for the shared lifecycle contract. The new base/Electron packaging did not change that contract, so implementation-source review was not reopened.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
