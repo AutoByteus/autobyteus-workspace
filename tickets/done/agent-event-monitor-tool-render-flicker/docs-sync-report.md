@@ -61,7 +61,7 @@ Not applicable; two canonical Codex documents required updates. The reviewed gen
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Documentation now matches the latest integrated, reviewed, and validated state. A fresh artifact-only macOS ARM64 Electron candidate was subsequently built from checkpoint `b60c8faa647a12ba587ea43644f0b74bcb38b49e`; it did not change the docs-impact decision. The user subsequently verified the candidate and authorized finalization plus a new release; the final target refresh found no new base commit, so finalization may proceed without renewed hands-on verification.
+- Notes: Documentation matches the finalized, reviewed, and validated state. The user verified the macOS ARM64 candidate and authorized finalization. Stable `v1.4.25` was published successfully; the release did not change the documentation-impact decision.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

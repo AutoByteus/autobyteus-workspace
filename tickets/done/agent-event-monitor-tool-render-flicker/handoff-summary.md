@@ -2,89 +2,69 @@
 
 ## Delivery Status
 
-- Current status: `User verified; repository finalization and stable v1.4.25 release authorized and in progress`
-- Ticket state: `tickets/done/agent-event-monitor-tool-render-flicker/`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker`
-- Ticket branch: `codex/agent-event-monitor-tool-render-flicker`
+- Status: `Complete — user verified, repository finalized, stable v1.4.25 published, ticket cleanup complete`.
+- Archived ticket: `tickets/done/agent-event-monitor-tool-render-flicker/`
 - Finalization target: `origin/personal`
-- Latest tracked/integrated base: `965f97685c08569a98186b2a894243c0b3f602d3`
-- Reviewed implementation source/evidence commit: `710ab2f46f1a1bf559b735a8ef5863faed025777`
-- Handoff packaging commit: `c93c84b69d1a60156735ea6763fb977c23d10db5`
-- Delivery safety checkpoint preserving reviewed test/report/evidence changes: `8e9a88a153e17ebe0a3678f764496e372a355a01`
-- Delivery documentation and handoff checkpoint: `f2ebf7a19a41962d4c8157cacffe7dfb8f0a4559`
-- User-verification hold: `Cleared`. On 2026-07-22 the user stated `the task is done` and explicitly requested finalization plus a new release.
+- Reviewed production source/evidence: `710ab2f46f1a1bf559b735a8ef5863faed025777`
+- User-verified ticket head: `4a5117403449fb64e095dfb7fc3b4d80988a5130`
+- Release commit/tag target: `6b1093d46558db7dad2f20b0ecaccef4b2964757` / `v1.4.25`
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.25
+- User authorization: on 2026-07-22 the user stated `the task is done` and requested finalization and a new release.
 
-## Delivery Integration Refresh
+## Finalized Behavior
 
-- Refresh command: `git fetch origin personal`
-- Result: `Pass`; `origin/personal` remained the bootstrap base `965f97685c08569a98186b2a894243c0b3f602d3` and is an ancestor of the ticket branch.
-- Base advanced since review/bootstrap: `No`
-- New base commits integrated: `No`; integration method is `Already current`.
-- Additional executable rerun: `Not required`. API/E2E round 2 freshly passed at `95%` against the same integrated production source; no production source changed after `710ab2f46f1a1bf559b735a8ef5863faed025777`. The later local checkpoint contains only proportionally reviewed durable tests plus cumulative reports/evidence.
-- Evidence: `tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt`
+- Consecutive completed Codex reasoning snapshots in one active turn share one logical Thinking identity until a real ordered boundary.
+- The converter emits exactly one status-neutral generic reasoning `SEGMENT_END` before the boundary output.
+- User/non-reasoning transcript items, assistant text, first ordered-tool creation (including result-first creation), turn completion/start, and terminal error close the block.
+- Matching updates to an already-positioned tool card and maintenance/no-effect events preserve it.
+- Missing-turn reasoning ends immediately; turn-start and terminal-error cleanup close all affected content-bearing identities deterministically.
+- Existing traces, active/archive state, history projections, GraphQL/WebSocket shapes, Event Monitor visuals, retention limits, and Electron shell/package behavior remain compatible. No migration or backfill is required.
 
-## Delivered Behavior
+## Integration And Repository Finalization
 
-- Consecutive completed Codex reasoning snapshots in one active turn still share one logical Thinking identity.
-- A real ordered boundary now emits exactly one matching, status-neutral generic reasoning `SEGMENT_END` before the boundary output.
-- User/non-reasoning transcript items, assistant text, first creation of an ordered tool card (including a result-first creation), turn completion/start, and terminal error are completion boundaries.
-- Matching updates to an already-positioned tool card and existing maintenance/no-effect events preserve the active reasoning block.
-- A completed reasoning snapshot without a correlatable turn emits adjacent content/end events with one identity and null turn.
-- Turn-start and terminal-error cleanup closes every affected content-bearing identity deterministically.
-- The unchanged generic Event Monitor completion and latest-100 policy can therefore treat closed Thinking normally instead of evicting terminal tools ahead of falsely mutable Thinking.
-- Existing traces and projections remain directly usable. Future end events flush one logical reasoning record before the next boundary without duplicate writes.
+- Initial and post-authorization refreshes found `origin/personal` unchanged at `965f97685c08569a98186b2a894243c0b3f602d3` and already contained in the verified ticket state.
+- No new base commit or production source change required a duplicate integrated-state suite run or renewed user verification.
+- The archived ticket branch was pushed at `4a5117403449fb64e095dfb7fc3b4d80988a5130`.
+- `origin/personal` advanced linearly from `965f97685c08569a98186b2a894243c0b3f602d3` to the exact ticket head. This was a clean fast-forward integration; no synthetic merge commit was created.
+- Repository artifact and focused release-diff hygiene checks passed.
+- The dedicated ticket worktree, remote ticket branch, and local ticket branch were removed after successful publication. The test candidate was stopped only after exact path verification; the installed `/Applications/AutoByteus.app` was preserved and remained the listener on port `29695`.
 
-## Preserved Contracts
+## Validation
 
-- No Event Monitor visual, control, selection/focus, hydration, GraphQL, WebSocket, or Electron shell/package behavior changed.
-- No latest-100, resident-300, active-only, paging, cursor, archive, or zero-layout contract changed.
-- No Codex-specific frontend repair, delay, timer, forced remount, projection refresh, or larger history window was introduced.
-- The defensive 128-turn tracker bound is unchanged and is not a supported lifecycle mechanism.
-- Persisted-data decision: `Directly Usable — No Migration`; no trace, archive, manifest, or snapshot rewrite is required.
-
-## Authoritative Validation
-
-- Design review: Round 1 `Pass`.
-- Implementation-source review: Round 2 `Pass`, `9.5/10`, with `CR-001` and `CR-002` resolved.
-- API/E2E execution: Round 2 `Pass`, `95%`; no final category below 90%, no critical acceptance criterion lacking proof.
-- Proportional durable-test review: `Pass`; three updated files reviewed, no findings.
-- Focused implementation coverage: server 7 files / 147 tests; web 3 files / 34 tests; server build and web guards passed.
-- Broader coverage: selection/hydration 11 files / 92 tests; final affected repository set 169/169 with one intentionally gated live skip; production server/web build guards passed.
-- Production-spine proof: standalone and focused-team each passed 110 cycles / 220 snapshots / 110 logical blocks / 110 neutral ends; the retained latest 100 stayed 50 Thinking + 50 terminal tools, including the newest tool.
-- Live proof: exact standalone Codex thread MCP readiness/active delivery/inactive rejection passed without arbitrary sleep; fresh model-driven focused-team ping-pong lifecycle and exactly-once memory passed.
-- Cleanup: suite-owned processes/data were removed; installed AutoByteus application, user history, and shared worktree were preserved.
+- Architecture review: `Pass`.
+- Implementation-source review: `Pass`, `9.5/10`, no unresolved findings.
+- API/E2E execution: `Pass`, `95%`; no category below 90% and no critical acceptance criterion without direct proof.
+- Proportional durable-test review: `Pass`, no findings.
+- Affected repository coverage: 169/169 passed with one intentional live-gate skip.
+- Deterministic standalone and focused-team spines each passed 110 cycles; the retained latest 100 remained 50 completed Thinking blocks plus 50 terminal tools.
+- Fresh standalone MCP/WebSocket and focused-team model-driven live paths passed.
 
 ## Documentation
 
-- Updated `autobyteus-server-ts/docs/modules/codex_integration.md` with the durable logical-block completion, boundary ordering, missing-turn/global cleanup, generic-consumer, and persistence contracts.
-- Updated `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` with the typed closure semantics and current normalized audit outputs.
-- Generic streaming, memory, web, and Electron packaging docs required no change because their production contracts were reused unchanged.
-- Docs report: `tickets/done/agent-event-monitor-tool-render-flicker/docs-sync-report.md`
-- Release notes: `tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md`
+- Updated `autobyteus-server-ts/docs/modules/codex_integration.md`.
+- Updated `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`.
+- Generic streaming, memory, web, and Electron documentation required no change because those contracts were reused unchanged.
+- Details: `tickets/done/agent-event-monitor-tool-render-flicker/docs-sync-report.md`.
 
-## Electron Test Candidate
+## User-Test Electron Candidate
 
-- Build result: `Pass` using the README's verbose local macOS/no-notarization command.
-- Source checkpoint: `b60c8faa647a12ba587ea43644f0b74bcb38b49e`; latest `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3` was re-fetched and already contained.
-- Direct app path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG SHA-256: `953a89639a965aec1d639159ba0cc09a06d7e02a359f03a775b54644cea95578`
-- ZIP SHA-256: `4a4e189bd0ab90750d79f03f34917a0ca559bda4cfdee415d00c08ddef3cd9ef`
-- Verification: version `1.4.24`, ARM64 Mach-O, bundled server present, DMG checksum valid, ZIP integrity valid.
-- Runtime safety: delivery preserved the existing `/Applications/AutoByteus.app` server on port `29695` and did not auto-launch the candidate. The user subsequently reported the task done after hands-on testing.
-- Detailed report: `tickets/done/agent-event-monitor-tool-render-flicker/electron-test-build-report.md`
+- README-driven macOS ARM64 build: `Pass` from checkpoint `b60c8faa647a12ba587ea43644f0b74bcb38b49e`.
+- Candidate version/architecture: `1.4.24` / ARM64; it intentionally represented the pre-release user-verified source state.
+- DMG SHA-256: `953a89639a965aec1d639159ba0cc09a06d7e02a359f03a775b54644cea95578`.
+- ZIP SHA-256: `4a4e189bd0ab90750d79f03f34917a0ca559bda4cfdee415d00c08ddef3cd9ef`.
+- The user performed hands-on testing and confirmed completion. The generated candidate path was removed with its dedicated ticket worktree after publication; the published `v1.4.25` macOS ARM64 DMG replaces it.
 
-## Suggested Hands-On Verification
+## Stable Release v1.4.25
 
-1. Run or resume a Codex agent with several Thinking/tool cycles and confirm a terminal tool card does not disappear when later Thinking arrives.
-2. Switch away from and back to an active standalone Codex run; confirm Thinking and intervening tool cards remain in chronological order without a later visual repair.
-3. Repeat with a focused Codex team member and confirm member identity plus the coherent feed are preserved.
-4. In a long feed near or beyond the recent-window limit, confirm older content leaves only through the normal deterministic window rule rather than tools disappearing ahead of older completed Thinking.
-5. Reload/reopen the run and confirm reasoning/tool order remains coherent and no logical Thinking block is duplicated.
+- Release helper: `pnpm release 1.4.25 -- --release-notes tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md --branch delivery/agent-event-monitor-tool-render-flicker-finalize-v1.4.25 --no-push`.
+- Release commit: `6b1093d46558db7dad2f20b0ecaccef4b2964757`.
+- Annotated tag object: `bfebc73a573bef0b3eef80238f33091b6f6dc30e`; dereferences to the release commit.
+- GitHub release: published, non-draft, non-prerelease, 21 assets.
+- macOS ARM64 DMG: `AutoByteus_personal_macos-arm64-1.4.25.dmg`, SHA-256 `52f7436e76b5324a6dc031fff90e0eb9d2a92f8820eccc7ecba62e3abf119fc3`.
+- Server Docker tags `1.4.25` and `latest` resolve to the same multi-platform index digest `sha256:9bb17611305f81658e72769dec2f6e568d98c32c7409bc72570ed5ff58c71b33` for `linux/amd64` and `linux/arm64`.
+- All five tag-triggered workflows passed: Server Docker, Desktop, Android APK, iOS App Store Connect, and Messaging Gateway.
+- Full operational evidence: `tickets/done/agent-event-monitor-tool-render-flicker/release-deployment-report.md` and `tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/`.
 
-## User Verification And Finalization Authorization
+## Rollback
 
-- Explicit user verification received: `Yes`; on 2026-07-22 the user stated `the task is done`.
-- Finalization and release authorization received: `Yes`; the user requested `lets finalize and release a new version`.
-- Final target refresh: `origin/personal` remained unchanged at `965f97685c08569a98186b2a894243c0b3f602d3`, already contained in the verified ticket state.
-- Renewed verification required: `No`; no new base or production-source change was introduced after the verified build.
-- Ticket archive, branch publication, personal merge, stable `v1.4.25` release, publication verification, and cleanup: `In progress`; final results will be recorded in this artifact after completion.
+The `v1.4.25` tag is immutable. If a release issue is discovered, prepare and validate a successor patch release rather than moving the published tag. The persisted-data contract requires no rollback migration.
