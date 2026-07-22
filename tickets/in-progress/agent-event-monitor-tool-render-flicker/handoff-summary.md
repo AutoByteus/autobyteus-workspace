@@ -11,6 +11,7 @@
 - Reviewed implementation source/evidence commit: `710ab2f46f1a1bf559b735a8ef5863faed025777`
 - Handoff packaging commit: `c93c84b69d1a60156735ea6763fb977c23d10db5`
 - Delivery safety checkpoint preserving reviewed test/report/evidence changes: `8e9a88a153e17ebe0a3678f764496e372a355a01`
+- Delivery documentation and handoff checkpoint: `f2ebf7a19a41962d4c8157cacffe7dfb8f0a4559`
 - User-verification hold: `Active`. Do not archive, push, merge, tag, release, publish, deploy, clean the worktree, or delete branches until the user explicitly verifies the candidate and authorizes the applicable finalization step.
 
 ## Delivery Integration Refresh

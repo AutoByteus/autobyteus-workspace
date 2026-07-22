@@ -58,7 +58,7 @@ This delivery stage accepted the fully reviewed Codex reasoning-lifecycle correc
 
 - Bootstrap context source: `tickets/in-progress/agent-event-monitor-tool-render-flicker/investigation-notes.md`
 - Ticket branch: `codex/agent-event-monitor-tool-render-flicker`
-- Ticket branch commit result: `Local delivery-safety checkpoint completed; delivery docs checkpoint remains local until prepared`
+- Ticket branch commit result: `Completed locally` — delivery-safety checkpoint `8e9a88a153e17ebe0a3678f764496e372a355a01` and documentation/handoff checkpoint `f2ebf7a19a41962d4c8157cacffe7dfb8f0a4559`.
 - Ticket branch push result: `Not performed — verification hold`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
