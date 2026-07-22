@@ -2,11 +2,11 @@
 
 ## Release / Publication / Deployment Scope
 
-This delivery stage accepted the fully reviewed Codex reasoning-lifecycle correction, refreshed the ticket branch against its recorded `origin/personal` base, protected the cumulative test/report/evidence package in a local checkpoint, synchronized canonical Codex documentation, and prepared the user-verification handoff and release notes. Repository finalization and any release/publication/deployment work remain intentionally unperformed under the explicit user-verification hold.
+This delivery stage accepted the fully reviewed Codex reasoning-lifecycle correction, refreshed the ticket branch against its recorded `origin/personal` base, protected the cumulative package, synchronized canonical documentation, and produced a verified macOS ARM64 test candidate. On 2026-07-22 the user reported the task done and explicitly authorized repository finalization plus a new stable release. Finalization and release `v1.4.25` are now in progress.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/in-progress/agent-event-monitor-tool-render-flicker/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/agent-event-monitor-tool-render-flicker/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: The package is ready for user verification. No Electron shell source changed. At the user's request, a fresh artifact-only macOS ARM64 candidate was built from the current local handoff checkpoint and was not launched.
 
@@ -25,11 +25,11 @@ This delivery stage accepted the fully reviewed Codex reasoning-lifecycle correc
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker: `None`
-- Evidence: `tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt`
+- Evidence: `tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt`
 
 ## Local User-Test Electron Build
 
-- Build report: `tickets/in-progress/agent-event-monitor-tool-render-flicker/electron-test-build-report.md`
+- Build report: `tickets/done/agent-event-monitor-tool-render-flicker/electron-test-build-report.md`
 - README command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
 - Source checkpoint: `b60c8faa647a12ba587ea43644f0b74bcb38b49e`
 - Latest base check: `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3` remained unchanged and contained.
@@ -44,79 +44,79 @@ This delivery stage accepted the fully reviewed Codex reasoning-lifecycle correc
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification reference: `Pending`
-- Renewed verification required after later re-integration: `No` at this stage; reassess after the mandatory pre-finalization refresh.
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification reference: User message on 2026-07-22: `the task is done. lets finalize and release a new version`
+- Renewed verification required after later re-integration: `No`; the mandatory final target refresh found no new base or production-source change.
 - Renewed verification received: `Not needed`
 - Renewed verification reference: `N/A`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `tickets/in-progress/agent-event-monitor-tool-render-flicker/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/agent-event-monitor-tool-render-flicker/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/codex_integration.md`; `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
 - No-impact rationale (if applicable): Generic streaming/memory/web and Electron packaging docs remain accurate because their production contracts were unchanged.
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A — held in tickets/in-progress pending explicit user verification`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/agent-event-monitor-tool-render-flicker/`
 
 ## Version / Tag / Release Commit
 
 - Version bump: `Not performed`
 - Tag: `Not created`
 - Release commit: `Not created`
-- Reason: Explicit user verification/finalization authorization has not been received.
+- Reason: Release helper has not yet run; authorization is recorded and `v1.4.25` is the selected next patch version.
 
 ## Repository Finalization
 
-- Bootstrap context source: `tickets/in-progress/agent-event-monitor-tool-render-flicker/investigation-notes.md`
+- Bootstrap context source: `tickets/done/agent-event-monitor-tool-render-flicker/investigation-notes.md`
 - Ticket branch: `codex/agent-event-monitor-tool-render-flicker`
 - Ticket branch commit result: `Completed locally` — delivery-safety checkpoint `8e9a88a153e17ebe0a3678f764496e372a355a01` and documentation/handoff checkpoint `f2ebf7a19a41962d4c8157cacffe7dfb8f0a4559`.
-- Ticket branch push result: `Not performed — verification hold`
+- Ticket branch push result: `In progress — verification hold cleared`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `N/A — user verification pending`
+- Target advanced after user verification: `No`; `origin/personal` remained `965f97685c08569a98186b2a894243c0b3f602d3`.
 - Delivery-owned edits protected before re-integration: `Completed` for the incoming reviewed package; final delivery edits will be checkpointed locally.
-- Re-integration before final merge result: `Not needed yet`; mandatory refresh will be repeated after user authorization.
+- Re-integration before final merge result: `Not needed`; the post-authorization refresh found the verified base unchanged.
 - Target branch update result: `Not performed`
 - Merge into target result: `Not performed`
 - Push target branch result: `Not performed`
-- Repository finalization status: `Blocked by workflow hold, not by a defect`
-- Blocker: Explicit user verification/finalization authorization is required.
+- Repository finalization status: `In progress`
+- Blocker: `None`; final results pending.
 
 ## Release / Publication / Deployment
 
-- Applicable: `Conditional — likely patch release after explicit user authorization`
+- Applicable: `Yes — stable patch release v1.4.25 authorized`
 - Method: `Documented repository release path, to be rediscovered/reconfirmed at finalization time`
 - Method reference / command: `Not run`
-- Release/publication/deployment result: `Blocked by workflow hold`
-- Release notes handoff result: `Prepared; not yet used`
-- Blocker: Explicit user verification and release authorization are required.
+- Release/publication/deployment result: `In progress`
+- Release notes handoff result: `Prepared for archived ticket release path`
+- Blocker: `None`; publication results pending.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker`
-- Worktree cleanup result: `Blocked by workflow hold`
+- Worktree cleanup result: `Pending successful repository finalization and publication verification`
 - Worktree prune result: `Not required at this stage`
-- Local ticket branch cleanup result: `Blocked by workflow hold`
+- Local ticket branch cleanup result: `Pending successful repository finalization and publication verification`
 - Remote branch cleanup result: `Not required`; no ticket branch was pushed by delivery.
-- Blocker: Preserve the user-test candidate source, cumulative artifacts, and evidence until finalization completes.
+- Blocker: `None`; preserve the user-test candidate source and cumulative evidence until finalization and publication verification complete.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
-N/A — the user-verification hold is an expected workflow state, not a design, source, test, documentation, or deployment defect.
+N/A — no design, source, test, documentation, integration, or deployment issue requires reroute.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `tickets/in-progress/agent-event-monitor-tool-render-flicker/release-notes.md`
-- Archived release notes artifact used for release/publication: `Not yet; ticket is not archived and release is not authorized`
+- Release notes artifact created before verification: `tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md`
+- Archived release notes artifact used for release/publication: `Pending ticket archive and release-helper execution; release is authorized`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-None executed. After explicit authorization: refresh `origin/personal`; protect delivery edits; integrate and rerun if the target advanced; obtain renewed verification if user-facing behavior changed; move the ticket to `tickets/done`; commit and push the ticket branch; merge/push `personal`; then use the current documented release method only if the user authorizes a release.
+In progress. The post-authorization refresh found `origin/personal` unchanged, so the next steps are to archive and commit the ticket, push/merge `personal`, run the documented release helper for `v1.4.25`, verify publication, update final evidence, and clean up the dedicated ticket worktree/branches.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -141,4 +141,4 @@ Before finalization, stop and reroute if a refreshed base conflicts with the con
 
 ## Final Status
 
-`Ready for explicit user verification; held before repository finalization and release.` The latest tracked base is contained, canonical docs are synchronized, release notes and handoff are prepared, and no push, merge, tag, release, deployment, archival, or cleanup has occurred.
+`User verified; finalization and stable v1.4.25 release in progress.` The latest tracked base remains contained and renewed verification is not required. Final repository, publication, and cleanup results will replace this interim status after completion.

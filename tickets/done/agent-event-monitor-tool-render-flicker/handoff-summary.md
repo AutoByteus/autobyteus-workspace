@@ -2,8 +2,8 @@
 
 ## Delivery Status
 
-- Current status: `Ready for explicit user verification; repository finalization and release remain on hold`
-- Ticket state: `tickets/in-progress/agent-event-monitor-tool-render-flicker/`
+- Current status: `User verified; repository finalization and stable v1.4.25 release authorized and in progress`
+- Ticket state: `tickets/done/agent-event-monitor-tool-render-flicker/`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker`
 - Ticket branch: `codex/agent-event-monitor-tool-render-flicker`
 - Finalization target: `origin/personal`
@@ -12,7 +12,7 @@
 - Handoff packaging commit: `c93c84b69d1a60156735ea6763fb977c23d10db5`
 - Delivery safety checkpoint preserving reviewed test/report/evidence changes: `8e9a88a153e17ebe0a3678f764496e372a355a01`
 - Delivery documentation and handoff checkpoint: `f2ebf7a19a41962d4c8157cacffe7dfb8f0a4559`
-- User-verification hold: `Active`. Do not archive, push, merge, tag, release, publish, deploy, clean the worktree, or delete branches until the user explicitly verifies the candidate and authorizes the applicable finalization step.
+- User-verification hold: `Cleared`. On 2026-07-22 the user stated `the task is done` and explicitly requested finalization plus a new release.
 
 ## Delivery Integration Refresh
 
@@ -21,7 +21,7 @@
 - Base advanced since review/bootstrap: `No`
 - New base commits integrated: `No`; integration method is `Already current`.
 - Additional executable rerun: `Not required`. API/E2E round 2 freshly passed at `95%` against the same integrated production source; no production source changed after `710ab2f46f1a1bf559b735a8ef5863faed025777`. The later local checkpoint contains only proportionally reviewed durable tests plus cumulative reports/evidence.
-- Evidence: `tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt`
+- Evidence: `tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt`
 
 ## Delivered Behavior
 
@@ -59,8 +59,8 @@
 - Updated `autobyteus-server-ts/docs/modules/codex_integration.md` with the durable logical-block completion, boundary ordering, missing-turn/global cleanup, generic-consumer, and persistence contracts.
 - Updated `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` with the typed closure semantics and current normalized audit outputs.
 - Generic streaming, memory, web, and Electron packaging docs required no change because their production contracts were reused unchanged.
-- Docs report: `tickets/in-progress/agent-event-monitor-tool-render-flicker/docs-sync-report.md`
-- Release notes: `tickets/in-progress/agent-event-monitor-tool-render-flicker/release-notes.md`
+- Docs report: `tickets/done/agent-event-monitor-tool-render-flicker/docs-sync-report.md`
+- Release notes: `tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md`
 
 ## Electron Test Candidate
 
@@ -70,8 +70,8 @@
 - DMG SHA-256: `953a89639a965aec1d639159ba0cc09a06d7e02a359f03a775b54644cea95578`
 - ZIP SHA-256: `4a4e189bd0ab90750d79f03f34917a0ca559bda4cfdee415d00c08ddef3cd9ef`
 - Verification: version `1.4.24`, ARM64 Mach-O, bundled server present, DMG checksum valid, ZIP integrity valid.
-- Runtime safety: the existing `/Applications/AutoByteus.app` server on port `29695` was preserved; the candidate was not launched. Quit the installed app normally before manually opening this candidate.
-- Detailed report: `tickets/in-progress/agent-event-monitor-tool-render-flicker/electron-test-build-report.md`
+- Runtime safety: delivery preserved the existing `/Applications/AutoByteus.app` server on port `29695` and did not auto-launch the candidate. The user subsequently reported the task done after hands-on testing.
+- Detailed report: `tickets/done/agent-event-monitor-tool-render-flicker/electron-test-build-report.md`
 
 ## Suggested Hands-On Verification
 
@@ -81,12 +81,10 @@
 4. In a long feed near or beyond the recent-window limit, confirm older content leaves only through the normal deterministic window rule rather than tools disappearing ahead of older completed Thinking.
 5. Reload/reopen the run and confirm reasoning/tool order remains coherent and no logical Thinking block is duplicated.
 
-## Finalization Hold
+## User Verification And Finalization Authorization
 
-- Explicit user verification received: `No`
-- Ticket archive: `Not performed`
-- Ticket branch push: `Not performed`
-- Merge into `personal`: `Not performed`
-- Version/tag/release/publication/deployment: `Not performed`
-- Worktree/branch cleanup: `Not performed`
-- Next action: Wait for explicit user verification. Before any final merge, refresh `origin/personal` again and follow the recorded finalization target; if it advanced materially, re-integrate, rerun relevant checks, and request renewed verification when the user-facing candidate changes.
+- Explicit user verification received: `Yes`; on 2026-07-22 the user stated `the task is done`.
+- Finalization and release authorization received: `Yes`; the user requested `lets finalize and release a new version`.
+- Final target refresh: `origin/personal` remained unchanged at `965f97685c08569a98186b2a894243c0b3f602d3`, already contained in the verified ticket state.
+- Renewed verification required: `No`; no new base or production-source change was introduced after the verified build.
+- Ticket archive, branch publication, personal merge, stable `v1.4.25` release, publication verification, and cleanup: `In progress`; final results will be recorded in this artifact after completion.

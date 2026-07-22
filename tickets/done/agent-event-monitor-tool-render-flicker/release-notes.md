@@ -25,3 +25,4 @@
 - Proportional review of the three updated durable tests passed with no findings.
 - A fresh delivery fetch confirmed `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3` was already contained; no new base commit required integration or a duplicate suite run.
 - A fresh README-driven macOS ARM64 Electron test candidate built successfully from local handoff checkpoint `b60c8faa647a12ba587ea43644f0b74bcb38b49e`; DMG and ZIP integrity plus bundle version, architecture, and bundled-server checks passed. The existing installed app remained running and the new candidate was not auto-launched.
+- The user completed hands-on testing of the local candidate and confirmed the task was done before authorizing repository finalization and the new stable release.

@@ -74,6 +74,6 @@ open "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-
 
 This is an unsigned/no-notarization local build. If macOS displays a trust prompt, use the normal local-development right-click **Open** flow. Do not run the installed app and this candidate simultaneously because both embedded servers use port `29695` and the same normal local data directory.
 
-## Delivery Hold
+## User Verification
 
-The candidate is for user verification only. Ticket archival, push, merge to `personal`, tag, release, publication, deployment, and cleanup remain unperformed until explicit user verification and authorization.
+The user reported the task done on 2026-07-22 and explicitly authorized ticket finalization plus a new release. The candidate therefore satisfies the delivery verification gate; repository finalization and release results are recorded separately in `release-deployment-report.md`.
