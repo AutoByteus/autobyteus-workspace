@@ -21,6 +21,27 @@ const MUTATED_ENVIRONMENT_KEYS = [
   'LOG_LEVEL',
 ] as const;
 
+const DOTENV_LEADING_WHITESPACE_CASES = [
+  { label: 'tab', prefix: '\u0009' },
+  { label: 'line feed', prefix: '\u000A' },
+  { label: 'vertical tab', prefix: '\u000B' },
+  { label: 'form feed', prefix: '\u000C' },
+  { label: 'carriage return', prefix: '\u000D' },
+  { label: 'space', prefix: '\u0020' },
+  { label: 'no-break space', prefix: '\u00A0' },
+  { label: 'ogham space mark', prefix: '\u1680' },
+  ...Array.from({ length: 11 }, (_, index) => ({
+    label: `U+${(0x2000 + index).toString(16).toUpperCase()}`,
+    prefix: String.fromCodePoint(0x2000 + index),
+  })),
+  { label: 'line separator', prefix: '\u2028' },
+  { label: 'paragraph separator', prefix: '\u2029' },
+  { label: 'narrow no-break space', prefix: '\u202F' },
+  { label: 'medium mathematical space', prefix: '\u205F' },
+  { label: 'ideographic space', prefix: '\u3000' },
+  { label: 'UTF-8 BOM', prefix: '\uFEFF' },
+] as const;
+
 describe('legacy source non-authority', () => {
   let root: string;
   const originalParentValues = new Map<string, string | undefined>();
@@ -75,6 +96,70 @@ describe('legacy source non-authority', () => {
       AUTOBYTEUS_SERVER_HOST: 'http://localhost:8000',
       AUTOBYTEUS_LLM_SERVER_HOSTS: 'http://localhost:9000',
     });
+  });
+
+  it.each(DOTENV_LEADING_WHITESPACE_CASES)(
+    'excludes mapped assignments with dotenv-accepted leading $label before parsing or retention',
+    async ({ prefix }) => {
+      const canary = 'synthetic-leading-whitespace-canary';
+      const source = [
+        `${prefix}OPENAI_API_KEY=${canary}-direct`,
+        `${prefix}export${prefix}AUTOBYTEUS_API_KEY=${canary}-exported`,
+        'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+        '',
+      ].join('\n');
+      const genericParser = vi.fn((admitted: string) => dotenv.parse(admitted));
+
+      const projected = parseNonSecretEnvironment(
+        source,
+        new Set<string>(LEGACY_SECRET_ALIASES),
+        genericParser,
+      );
+
+      const admitted = genericParser.mock.calls[0]?.[0] ?? '';
+      expect(admitted).not.toContain(canary);
+      expect(admitted).not.toContain('OPENAI_API_KEY');
+      expect(admitted).not.toContain('AUTOBYTEUS_API_KEY');
+      expect(projected).toEqual({ AUTOBYTEUS_SERVER_HOST: 'http://localhost:8000' });
+
+      await fs.writeFile(path.join(root, '.env'), source);
+      const config = new AppConfig({ appDataDir: root });
+      config.initialize();
+      const retained = config.getConfigData();
+      expect(retained).not.toHaveProperty('OPENAI_API_KEY');
+      expect(retained).not.toHaveProperty('AUTOBYTEUS_API_KEY');
+      expect(JSON.stringify(retained)).not.toContain(canary);
+      expect(retained.AUTOBYTEUS_SERVER_HOST).toBe('http://localhost:8000');
+    },
+  );
+
+  it('excludes the mapped dotenv colon-assignment form before parsing or retention', async () => {
+    const canary = 'synthetic-colon-assignment-canary';
+    const source = [
+      `\uFEFFOPENAI_API_KEY:\u00A0${canary}`,
+      'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+      '',
+    ].join('\n');
+    const genericParser = vi.fn((admitted: string) => dotenv.parse(admitted));
+
+    const projected = parseNonSecretEnvironment(
+      source,
+      new Set<string>(LEGACY_SECRET_ALIASES),
+      genericParser,
+    );
+
+    const admitted = genericParser.mock.calls[0]?.[0] ?? '';
+    expect(admitted).not.toContain(canary);
+    expect(admitted).not.toContain('OPENAI_API_KEY');
+    expect(projected).toEqual({ AUTOBYTEUS_SERVER_HOST: 'http://localhost:8000' });
+
+    await fs.writeFile(path.join(root, '.env'), source);
+    const config = new AppConfig({ appDataDir: root });
+    config.initialize();
+    const retained = config.getConfigData();
+    expect(retained).not.toHaveProperty('OPENAI_API_KEY');
+    expect(JSON.stringify(retained)).not.toContain(canary);
+    expect(retained.AUTOBYTEUS_SERVER_HOST).toBe('http://localhost:8000');
   });
 
   it('leaves canonical application bytes and parent aliases unchanged while projecting approved non-secret settings', async () => {

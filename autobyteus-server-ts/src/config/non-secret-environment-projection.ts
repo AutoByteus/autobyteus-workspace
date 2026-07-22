@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 export type EnvironmentRecordParser = (contents: string) => Record<string, string>;
 
-const assignmentPattern = /^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)[ \t]*=/gm;
+const assignmentPattern = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*(?:=|:(?=\s))/gm;
 
 const endOfPhysicalLine = (contents: string, offset: number): number => {
   let cursor = offset;
