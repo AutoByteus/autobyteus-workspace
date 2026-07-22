@@ -87,7 +87,8 @@ const parseAssignment = (line: string): { name: string; value: string } => {
   const rawValue = match[2].replace(/^[ \t]+/, '');
   const first = rawValue[0];
   const quoted = first === "'" || first === '"';
-  const value = quoted ? parseQuotedValue(rawValue, first) : rawValue.replace(/[ \t]+$/, '');
+  const unquotedValue = quoted ? parseQuotedValue(rawValue, first) : rawValue;
+  const value = unquotedValue.replace(/^[ \t]+|[ \t]+$/g, '');
   if (!quoted && value.endsWith('\\')) fail('IMPORT_SOURCE_SYNTAX_INVALID');
   return { name, value };
 };
@@ -108,9 +109,9 @@ const parseSource = (sourceText: string): LocalEnvironmentMappedCredential[] => 
       if (line.includes('\r')) fail('IMPORT_SOURCE_SYNTAX_INVALID');
 
       const assignment = parseAssignment(line);
+      if (assignment.value.length === 0) continue;
       if (seenNames.has(assignment.name)) fail('IMPORT_SOURCE_DUPLICATE_ASSIGNMENT');
       seenNames.add(assignment.name);
-      if (assignment.value.length === 0) fail('IMPORT_SOURCE_EMPTY_CREDENTIAL');
       if (assignment.value.includes('${') || assignment.value.includes('$(') || assignment.value.includes('`')) {
         fail('IMPORT_SOURCE_SYNTAX_INVALID');
       }

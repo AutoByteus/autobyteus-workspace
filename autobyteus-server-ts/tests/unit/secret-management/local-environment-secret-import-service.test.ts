@@ -152,6 +152,61 @@ describe('LocalEnvironmentSecretImportService', () => {
     await expect(fs.stat(targetConfig('default').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
+  it('omits an empty current-application placeholder from the value-free plan and preserves the source', async () => {
+    const sourceBefore = await writeSource([
+      'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+      'GEMINI_API_KEY=""',
+      'VERTEX_AI_API_KEY=synthetic-vertex',
+      'OPENAI_API_KEY=synthetic-openai',
+      'QWEN_API_KEY=synthetic-unmapped-qwen',
+      '',
+    ].join('\n'));
+
+    const plan = await new LocalEnvironmentSecretImportService(resolver).preview({
+      sourceAbsolutePath: sourcePath,
+      target: 'e2e',
+      dryRun: true,
+      overwrite: false,
+    });
+
+    expect(plan).toEqual({
+      targetStatus: {
+        state: 'INITIALIZATION_REQUIRED',
+        instructionCode: 'LOCAL_IMPORT_TARGET_INITIALIZATION_REQUIRED',
+      },
+      entries: [
+        { definitionId: 'provider.google.vertex-express-api-key', action: 'CREATE' },
+        { definitionId: 'provider.openai.api-key', action: 'CREATE' },
+      ],
+    });
+    expect(JSON.stringify(plan)).not.toMatch(/gemini|empty|placeholder|ignored|synthetic/i);
+    expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
+    await expect(fs.stat(targetConfig('e2e').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
+    await expect(fs.stat(targetConfig('default').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
+  });
+
+  it('rejects an all-empty recognized source before resolving or accessing a target', async () => {
+    const sourceBefore = await writeSource(
+      'OPENAI_API_KEY=\nOPENAI_API_KEY=""\nGEMINI_API_KEY=   \n',
+    );
+    const targetResolver: LocalImportTargetResolver = {
+      resolve: vi.fn(() => {
+        throw new Error('target resolution must not run');
+      }),
+    };
+    const error = await new LocalEnvironmentSecretImportService(targetResolver).preview({
+      sourceAbsolutePath: sourcePath,
+      target: 'e2e',
+      dryRun: true,
+      overwrite: false,
+    }).catch((caught) => caught);
+
+    expect(error).toMatchObject({ code: 'IMPORT_NO_MAPPED_CREDENTIALS' });
+    expect(error.toJSON()).toEqual({ code: 'IMPORT_NO_MAPPED_CREDENTIALS' });
+    expect(targetResolver.resolve).not.toHaveBeenCalled();
+    expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
+  });
+
   it('initializes only the confirmed target and atomically creates mapped records without changing the source', async () => {
     const sourceBefore = await writeSource(
       'OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\nAPP_MODE=test\n',

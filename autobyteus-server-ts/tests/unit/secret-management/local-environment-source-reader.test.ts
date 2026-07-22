@@ -128,9 +128,61 @@ describe('LocalEnvironmentSourceReader', () => {
     }
   });
 
+  it('treats every normalized empty form and repeated empty occurrences as absent', async () => {
+    const sourcePath = path.join(directory, 'empty-placeholders');
+    const sourceBefore = Buffer.from([
+      'OPENAI_API_KEY=',
+      'OPENAI_API_KEY=   ',
+      'MISTRAL_API_KEY=\t \t',
+      'GEMINI_API_KEY=""',
+      "ANTHROPIC_API_KEY=''",
+      'DEEPSEEK_API_KEY=" \t "',
+      'SERPER_API_KEY=synthetic-serper',
+      '',
+    ].join('\n'));
+    await privateFile(sourcePath, sourceBefore);
+
+    const result = await new LocalEnvironmentSourceReader().read(sourcePath);
+    try {
+      expect(result.credentials).toHaveLength(1);
+      expect(result.credentials[0]?.definitionId).toBe('search.serper.api-key');
+      expect(result.credentials[0]?.valueBytes.toString('utf8')).toBe('synthetic-serper');
+      expect(Object.keys(result).sort()).toEqual(['credentials', 'release']);
+      expect(JSON.stringify(result)).not.toMatch(/empty|placeholder|ignored/i);
+      expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
+    } finally {
+      result.release();
+    }
+  });
+
+  it('selects one populated occurrence while empty occurrences of the same spelling remain absent', async () => {
+    const sourcePath = path.join(directory, 'empty-and-populated');
+    await privateFile(sourcePath, [
+      'OPENAI_API_KEY=',
+      'OPENAI_API_KEY=synthetic-openai',
+      'MISTRAL_API_KEY=synthetic-mistral',
+      'MISTRAL_API_KEY=""',
+      '',
+    ].join('\n'));
+
+    const result = await new LocalEnvironmentSourceReader().read(sourcePath);
+    try {
+      expect(result.credentials.map(({ definitionId }) => String(definitionId))).toEqual([
+        'provider.openai.api-key',
+        'provider.mistral.api-key',
+      ]);
+      expect(result.credentials.map(({ valueBytes }) => valueBytes.toString('utf8'))).toEqual([
+        'synthetic-openai',
+        'synthetic-mistral',
+      ]);
+    } finally {
+      result.release();
+    }
+  });
+
   it.each([
     ['duplicate', 'OPENAI_API_KEY=synthetic-one\nOPENAI_API_KEY=synthetic-two', 'IMPORT_SOURCE_DUPLICATE_ASSIGNMENT'],
-    ['empty', 'OPENAI_API_KEY=   ', 'IMPORT_SOURCE_EMPTY_CREDENTIAL'],
+    ['all empty', 'OPENAI_API_KEY=\nOPENAI_API_KEY=""\nGEMINI_API_KEY=   ', 'IMPORT_NO_MAPPED_CREDENTIALS'],
     ['recognized assignment without a separator', 'OPENAI_API_KEY synthetic', 'IMPORT_SOURCE_SYNTAX_INVALID'],
     ['dynamic expression', 'OPENAI_API_KEY=${SYNTHETIC_SOURCE}', 'IMPORT_SOURCE_SYNTAX_INVALID'],
     ['line continuation marker', 'OPENAI_API_KEY=synthetic\\', 'IMPORT_SOURCE_SYNTAX_INVALID'],
