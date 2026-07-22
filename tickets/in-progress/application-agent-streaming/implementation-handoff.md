@@ -9,14 +9,29 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-agent-communication-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-backend-websocket-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-communication-boundaries.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/socratic-math-live-journey.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/design-review-report.md`
 - Implementation-source review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/code-review-report.md`
-- Current implementation source/test commit: `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`
+- Current expanded-scope implementation source/test commit: `4732df357706a9dfa1798193ed02162cae715b13`
+- Round-11 reviewed source base: `69fae2e424a708fe9a0d038077346d5b95b41df6`
+- Prior deterministic-framework implementation source/test commit: `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`
 - CR-001–CR-003 source-fix commit: `5e824f8de8fea67ae8da820b7f5134b78923907e`
 - Initial implementation source commit: `8d93ee5c1fb27dc910496626d6ef4aa38da4fb94`
 - Recorded implementation base: `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
 
 ## What Changed
+
+### Round-11 Socratic Math Live Acceptance Expansion
+
+- Extended `buildConfiguredTeamRunLaunch(...)` and member-config construction with optional transport-neutral `llmConfig`. Preset output and every member output receive independent structured clones; existing host-saved runtime/model/workspace precedence remains unchanged. Added a package-owned Vitest suite and generated declaration/runtime output.
+- Set the Socratic tutor source and importable-package defaults to the exact `codex_app_server` / `gpt-5.6-sol` / `{ reasoning_effort: "high" }` configuration with no service tier or fallback.
+- Changed new-lesson start to persist the student prompt and create the configured team with no `initialInput`. Socratic still uses the existing `startAgentTeam(...)` API; optional launch-time input remains valid for other callers.
+- Added the derived nullable `LessonDetail.tutorTargetAddress` using the shared `{ bindingId, target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" } }` contract. Closed, terminating, failed, terminated, orphaned, and unbound lessons expose `null`; GraphQL schema/client propagation carries the shared JSON shape without a second DTO.
+- Added the mounted Socratic standard connection journey: listeners register immediately, READY precedes one stored-problem input, only increasing provider-neutral TEXT deltas / publish-tool lifecycle / completion state enter live UI state, and artifact-notification refresh clears the draft in favor of the existing durable transcript.
+- Added deterministic listener/cancellation/input/failure/durable-convergence tests, target/GraphQL tests, DOM-rendering tests, exact launch/config assertions, and no-initial-input assertions. Split the application-specific live session into `socratic-tutor-session.js` so changed production files remain below the source-size and changed-line pressure guardrails.
+- Regenerated only through the Socratic build owner: runtime backend/UI, backend SDK vendor, generated GraphQL client, importable source/runtime mirrors, and agent config. Source/generated comparisons and a second-build hash check passed.
+
+### Preserved Standard Framework Baseline
 
 - Added the exact two public binding types, shared application-agent address/input/event contracts, standard v1 connection frames, fixed target-path codec, and generic backend WebSocket contracts.
 - Added the desktop-only `applicationClient.agentCommunication.connect(address)` path and exact sibling frontend capability groups: `backend`, `notifications.subscribe(listener)`, and `agentCommunication.connect(address)`. No `backend.subscribeNotifications` alias remains. The SDK owns strict frame parsing, request correlation, readiness, listener isolation, safe close/error mapping, and 1 MiB frame bounds without exposing a raw socket or authentication surface.
@@ -64,6 +79,7 @@
 | `DS-014` | Worker observer activation is atomic. | observer registry + activation barrier + handler context factory | Host PENDING-to-ACTIVE ordering and pending cancellation implemented. |
 | `DS-015` | All reachable terminal causes converge before fan-out. | terminal transition service used by host, observer, and recovery services | Keyed serialization; store/journal then one terminal signal. |
 | `DS-016` | Custom socket sessions correlate and clean up independently. | Gateway and worker WebSocket session services + JSON-line protocol | Ordered bounded delivery and scope-local failure cleanup. |
+| `DS-017` | The real Socratic UI starts without input, connects to its selected tutor, sends after READY, renders safe live progress, and converges on the durable artifact transcript. | backend SDK launch helper -> Socratic runtime/read/GraphQL -> `applicationClient.agentCommunication` -> Socratic live session/renderer -> existing artifact notification refresh | Implemented deterministically. The real mounted Codex run required by `AC-018` remains downstream API/E2E work. |
 
 ## Key Files Or Areas
 
@@ -73,50 +89,55 @@
 - Orchestration authority: `src/application-orchestration/services/application-agent-target-authorization-service.ts`, lifecycle hub, terminal transition service, and host/observer/recovery integrations.
 - Backend observation/custom sockets: `src/application-engine/**`, `src/application-backend-api-gateway/websockets/**`, `src/api/websocket/application-backends.ts`.
 - Strict compatibility chain: contracts manifests, server bundle parsers/definition loader, devkit config/validators/templates, and both built-in apps.
+- Expanded Socratic source: `autobyteus-application-backend-sdk/src/launch-profile.ts`, `applications/socratic-math-teacher/backend-src/{domain,repositories,services}/**`, `api/graphql/schema.graphql`, `frontend-src/socratic-{runtime,tutor-session,renderer}.js`, `frontend-src/styles.css`, and exact tutor `agent-config.json`.
+- Expanded deterministic coverage: `autobyteus-application-backend-sdk/tests/launch-profile.test.ts` and the three focused Socratic server unit files plus the existing launch-correlation suite.
 
 ## Important Assumptions
 
 - Applications are desktop-only. There is no supported paired-mobile/phone application entry path; existing remote-access security code is outside this application API and remains unchanged.
 - Application binding/artifact/database stored meanings and physical schemas are unchanged. Connection/subscription/session/queue state is transient.
 - Native agent/team sockets remain native product APIs and are not an application compatibility path.
+- Host-saved application execution-resource runtime/model values intentionally retain priority over bundled tutor defaults; only the previously missing neutral `llmConfig` reasoning value is supplied by the Socratic launch helper call.
+- The live draft is transient and future-only. Durable transcript messages remain artifact-projected application data, and no replay or draft persistence is introduced.
 
 ## Known Risks
 
-- Real child-worker, real browser WebSocket, fresh imported package, and full end-to-end race behavior still need independent downstream execution.
-- The branch is currently five commits behind the tracked `origin/personal`; refresh/integrated-state checks remain delivery-owned.
-- An accidental broad web Vitest invocation was not used as the implementation gate. It reported `2078 passed / 5 failed / 1 skipped`; all five failures are in unchanged paths (workspace-history fixture resolution, MemoryHome copy assertion, Codex full-access copy assertion, managed-extension environment state, and zh-CN glossary baseline). The exact changed four-file web check passed separately.
+- `AC-018` is not satisfied by these implementation checks. API/E2E must still preflight the exact Codex model/login, import and mount a fresh generated Socratic package, execute one bounded real turn, verify effective config/live/durable/cleanup evidence, apply the approved one-clean-retry classification, and recalculate confidence.
+- Rendered self-validation used a deterministic hosted-application-state preview rather than the actual imported desktop mount. Real SDK/socket/provider interaction and mounted browser behavior remain independently unverified here.
+- The worktree intentionally remains dirty only in upstream/design/delivery-owned ticket artifacts and logs that predated this implementation. They were neither staged nor committed; source and generated implementation paths are clean at commit `4732df357706a9dfa1798193ed02162cae715b13`.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Larger Requirement` plus `Refactor`.
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `Shared Structure Looseness`.
+- Reviewed change posture: `Larger Requirement` plus focused `Behavior Change`.
+- Reviewed root-cause classification: `Missing Invariant` and `File Placement Or Responsibility Drift`.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; the stopped proxy/auth proposal was discarded per the fresh reviewed basis.
-- Evidence / notes: Communication, Streaming, Orchestration, Backend Gateway, Engine Host, and Backend Host each own one concrete lifecycle; standard and custom paths do not share session state or bypass authoritative boundaries.
+- Evidence / notes: the helper owns neutral launch construction, Socratic owns target selection/business sequence/presentation, and Communication/Streaming/Orchestration/artifacts keep their implemented subjects. The application uses only the standard SDK path and adds no mapper, queue, target authority, transport, or transcript store.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; source-review follow-up removed the unused `closeByClient()` duplicate.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; Socratic's now-obsolete `buildTutorPrompt` / launch-time initial-input branch was removed, while optional initial input remains unchanged in the framework API.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: all changed source implementation files are at or below 498 effective non-empty lines. Larger new state-machine/projector files were assessed as cohesive lifecycle owners; frontend parsing was split into connection, server-frame, and event-validator files. The obsolete `ApplicationWorkerRuntime`, v3 iframe document/symbols, generic binding alias, and flat frontend APIs are absent from current source/docs/generated scope.
+- Notes: expanded-scope changed production sources are at or below `438` effective non-empty lines. The new application-specific tutor session is `198` effective lines, and `socratic-runtime.js` is `219`; the split avoided both the `>500` source limit and `>220` changed-line pressure without introducing a generic framework abstraction. No compatibility alias, replay path, custom/raw/native socket, migration, auth/mobile surface, or fallback was added.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Directly Usable — No Migration`.
 - Design-spec decision reference: `design-spec.md`, “Persisted Data / State Transition Decision”.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: binding JSON fields/values and runtime-subject semantics remain unchanged; current stores read them directly and public projection selects the exact concrete binding type. No migration/schema file changed.
+- Direct-use evidence or discard/rebuild result, when applicable: binding JSON fields/values and runtime-subject semantics remain unchanged; `tutorTargetAddress` is derived at read time, `llmConfig` already exists in launch contracts, and live state is memory-only. Existing lesson/message/binding/artifact records remain readable. No migration/schema file changed.
 - Migration implementation and focused checks, only when `Migration Required`: `N/A`.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
 - Dependencies were provisioned in the shared worktree with pnpm before checks.
+- `vitest ^4.0.18` was added as a development-only dependency of `@autobyteus/application-backend-sdk` so its focused helper behavior has an owning package test command; the lockfile changed only in that workspace importer.
 - Server checks follow `pnpm exec vitest run ... --no-watch` per repository instructions.
 - Implementation-owned numeric bounds:
   - event consumer FIFO `256`; event text `256 KiB`; summary `8 KiB`; public arrays `256`; serialized event/frame `1 MiB`;
@@ -126,6 +147,20 @@
   - custom WebSocket frame `1 MiB`; Gateway inbound FIFO `64`; early outbound FIFO `64`; worker outbound FIFO `64`; network buffered amount `2 MiB`.
 
 ## Local Implementation Checks Run
+
+### Round-11 Expanded Scope
+
+- `@autobyteus/application-backend-sdk`: `pnpm test` — `1 file / 3 tests` passed for preset/member/null propagation, independent deep clones, omitted optional field, and preserved saved runtime/model/workspace precedence.
+- `@autobyteus/application-backend-sdk`: `pnpm build` — passed; checked-in JavaScript, source maps, exact optional `llmConfig` declarations, and Socratic vendor copies regenerated.
+- Socratic Math Teacher: `pnpm typecheck:backend` — passed.
+- Socratic Math Teacher: `pnpm build` — passed through the existing sole build owner; runtime/importable package regenerated. Source-to-runtime/importable `cmp` checks passed, and a second full generated-tree SHA-256 comparison proved build idempotency.
+- `autobyteus-server-ts`: focused Vitest run of launch correlation, GraphQL executor, target projection, live tutor session, and live tutor renderer — `5 files / 21 tests` passed. Coverage includes no launch-time input, high-effort propagation with saved runtime/model precedence, active/terminal address projection, READY-before-one-send, ordered TEXT-only state, provider/raw-field exclusion, publish tool state, completion, durable convergence, pending selection cancellation, future-only existing connection, safe failure/no resend, listener cleanup, and rendered streaming/saved states.
+- `autobyteus-server-ts`: `pnpm typecheck` — passed after shared package preparation; no TypeScript error in the changed backend/application contract path.
+- JavaScript syntax checks: source Socratic tutor session, runtime, renderer, and generated GraphQL client — passed.
+- Frontend rendered-result self-check: deterministic live Socratic state rendered in headless Chrome at `1440x1200` and `720x1200`; direct visual inspection found the hierarchy, wrapping, panel state, status cues, and responsive one-column behavior coherent. DOM tests separately cover streaming/saved accessibility and HTML escaping.
+- Final inventories: tracked and new-file diff hygiene passed; exact source/generated tutor config passed; no Socratic start `initialInput`, service tier, raw/native/custom socket, migration/schema, mobile/auth, replay, or compatibility machinery was found; all expanded production source files are `<=438` effective non-empty lines.
+
+### Prior Deterministic Framework Baseline
 
 - `autobyteus-application-sdk-contracts`: `pnpm test` — `6/6` passed.
 - `autobyteus-application-frontend-sdk`: local-fix rerun of `pnpm test` — `11/11` runtime tests plus the compile-time type test passed, including exact public capability keys, sibling notification routing, absence of the old backend member, READY/input correlation, strict nested event parsing, unsupported frame handling, and local unsafe/oversized input rejection.
@@ -141,13 +176,13 @@
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: application iframe bootstrap transport and application-owned SDK connections; no visual layout, styling, copy hierarchy, or new rendered control was introduced.
-- Approved UI/UX, interaction, requirement, or design references: `REQ-003`–`REQ-005`, `REQ-010`, `REQ-016`; `application-agent-communication-contract.md`; `application-backend-websocket-contract.md`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: existing `ApplicationIframeHost`, `ApplicationSurface`, launch descriptor, and host transport composition.
-- Project development / preview instructions and rendered surface used: visual inspection was `Not Applicable` because the change is transport/bootstrap-only; focused Nuxt component interaction tests exercised the affected host/surface states.
-- States, layouts, viewports, and interactions inspected: READY/bootstrap success, stale READY rejection, postMessage clone failure/retry, exact transport base composition, and application asset URL behavior through component/unit tests.
-- Visual or interaction issues found and corrected: none; no rendered pixels changed.
-- Supporting evidence and remaining unverified states or limitations: `4 files / 11 tests` passed; real browser/socket behavior remains downstream.
+- Affected surfaces / journeys: mounted Socratic Math Teacher lesson composer, lesson detail, focused live tutor status/draft/tool/completion region, durable transcript convergence, and selection/unload cleanup.
+- Approved UI/UX, interaction, requirement, or design references: `REQ-018`, `AC-018`, `DS-017`, and `socratic-math-live-journey.md` sections 3–5.
+- Existing design system, shared components, and adjacent product surfaces reviewed: current Socratic card, badge, workspace status, lesson list/detail, transcript, action, spacing, color, and responsive patterns; no new framework-wide chat component was introduced.
+- Project development / preview instructions and rendered surface used: the application has a source-first build but no standalone hostless preview. I rendered the actual Socratic shell/detail renderer and stylesheet with deterministic hosted state, then inspected it directly in headless Chrome; Vitest/JSDOM exercised the renderer and application-specific session state machine.
+- States, layouts, viewports, and interactions inspected: streaming state at `1440x1200` and `720x1200`; connecting/ready/streaming/saved/failed/closed transition outputs and one-send/listener cleanup through deterministic tests; saved-state draft clearing and accessible `aria-live="polite"` through DOM tests.
+- Visual or interaction issues found and corrected: added a distinct but design-consistent live tutor panel, concise safe publication/completion cues, disabled duplicate start controls during connection/input acceptance, responsive wrapping/one-column behavior, and root-scoped detail event binding.
+- Supporting evidence and remaining unverified states or limitations: focused renderer/session tests passed (`5` tests across their two files). This was not a real imported desktop mount or live provider run; the exact mounted Codex journey, natural model output variation, and real artifact notification timing remain downstream `AC-018` work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -159,7 +194,10 @@
 - Import fresh Brief and Socratic packages, reject stale v3/six-flag/definition-v3 packages, and verify derived exposures.
 - Confirm standard agent traffic never reaches Backend API Gateway/Engine Host/worker and that notifications/artifacts remain independent.
 - Confirm desktop bootstrap and `ApplicationClient` expose no application authentication/credential surface while existing platform/network security continues unchanged.
+- Import the newly generated Socratic package into isolated data, preserve/inspect the configured slot's saved runtime/model precedence, and prove the effective member still receives `reasoning_effort: high`.
+- Execute the supplement's exact `Solve 3x + 5 = 20` mounted journey: start with no initial input, verify the returned `tutor` member address, READY before one acceptance, increasing nonempty TEXT deltas, response completion, successful `publish_artifacts`, notification refresh, durable transcript, and exact close/process/workspace cleanup.
+- Apply the supplement's preflight/redaction/timing/cost/retry classification exactly. Do not substitute a model, use API-key auth, retry deterministic failures, or resend uncertain input on the same connection.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. No implementation check above is API/E2E sign-off. `api_e2e_engineer` must investigate existing coverage, make durable test decisions, run realistic repository/browser/live validation, and report independent evidence after implementation-source review passes.
+Required. No implementation check above is API/E2E sign-off. The prior `96.7%` deterministic framework confidence is historical only and does not satisfy expanded `AC-018`. After source review passes, `api_e2e_engineer` must update coverage decisions, perform the exact model/login preflight and one bounded real mounted Socratic/Codex journey, preserve redacted evidence and cleanup, apply the classified one-clean-retry policy, and recalculate confidence.
