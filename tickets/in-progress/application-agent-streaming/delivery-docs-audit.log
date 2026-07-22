@@ -1,0 +1,57 @@
+# Delivery Documentation Audit
+
+integrated_head=1fa7fa24d2ce80950778a0572ba4332f56c514c3
+integrated_base=9b4e038a40e0b6358fe53ca101406e0f6446e790
+
+## changed long-lived docs inventory
+PASS autobyteus-application-backend-sdk/README.md
+PASS autobyteus-application-devkit/README.md
+PASS autobyteus-application-frontend-sdk/README.md
+PASS autobyteus-application-sdk-contracts/README.md
+PASS autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+PASS autobyteus-server-ts/docs/modules/application_communication_model.md
+PASS autobyteus-server-ts/docs/modules/application_engine.md
+PASS autobyteus-server-ts/docs/modules/application_orchestration.md
+PASS autobyteus-server-ts/docs/modules/application_sessions.md
+PASS autobyteus-server-ts/docs/modules/applications.md
+PASS autobyteus-web/docs/application-bundle-iframe-contract-v4.md
+PASS autobyteus-web/docs/applications.md
+PASS docs/custom-application-development.md
+RESULT docs=13/13
+
+## clean current-contract cutover
+RESULT=PASS
+
+## canonical public concepts
+PASS term=applicationClient.agentCommunication.connect docs=5
+PASS term=applicationClient.backend.connectWebSocket docs=3
+PASS term=applicationClient.notifications.subscribe docs=2
+PASS term=ApplicationAgentTargetAddress docs=2
+PASS term=agentCommunicationWebSocketBaseUrl docs=1
+PASS term=backendWebSocketBaseUrl docs=1
+PASS term=ApplicationBackendNotificationHub docs=2
+RESULT=PASS
+
+## changed long-lived documentation links
+PASS file autobyteus-application-backend-sdk/README.md
+PASS file autobyteus-application-devkit/README.md
+PASS file autobyteus-application-frontend-sdk/README.md
+PASS file autobyteus-application-sdk-contracts/README.md
+PASS file autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+PASS file autobyteus-server-ts/docs/modules/application_communication_model.md
+PASS file autobyteus-server-ts/docs/modules/application_engine.md
+PASS file autobyteus-server-ts/docs/modules/application_orchestration.md
+PASS file autobyteus-server-ts/docs/modules/application_sessions.md
+PASS file autobyteus-server-ts/docs/modules/applications.md
+PASS file autobyteus-web/docs/application-bundle-iframe-contract-v4.md
+PASS file autobyteus-web/docs/applications.md
+PASS file docs/custom-application-development.md
+RESULT links=41/41
+
+## persisted-data boundary
+RESULT=PASS directly usable, no migration path changed
+
+## ticket/base overlap
+RESULT=PASS no changed-path overlap
+
+result=PASS

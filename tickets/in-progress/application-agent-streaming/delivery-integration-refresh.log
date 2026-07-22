@@ -1,0 +1,14 @@
+# Delivery Integration Refresh
+
+refreshed_at=2026-07-21
+recorded_base=534210b9e1dffff6c22855ae89ddb3d2afef5a9b
+latest_origin_personal=9b4e038a40e0b6358fe53ca101406e0f6446e790
+base_advanced=yes
+base_commit_count=5
+base_summary=unrelated nested Mermaid overlay fix/finalization and workspace release v1.4.23
+safety_checkpoint=9b2543ee7a0342e1a42fd71a38f51d282978c844
+changed_path_overlap=none
+integration_method=merge
+integration_result=PASS
+integration_merge=1fa7fa24d2ce80950778a0572ba4332f56c514c3
+post_merge_divergence_head_vs_origin_personal=8 0
