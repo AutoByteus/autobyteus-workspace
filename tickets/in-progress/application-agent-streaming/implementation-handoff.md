@@ -19,14 +19,15 @@
 - Round-17 stopped source authority: `3e48c0ea2c9ccabe52c3126f0db799b3865186a3`
 - Round-17 implementation source/test/generated commit: `4c590d24a0a48910ba32dd4fc6764adca862329e`
 - `CR-008` local-fix source/test/generated commit: `2ade5202aa5c14fcba629607a8d45cf36bf86f82`
+- `CR-008` completion source/test/generated commit: `46d14542a023f06e44a4e5af4375fed2fbcfbbf8`
 
 ## CR-008 Local Fix
 
-- Made `closingLessonId` authoritative for the selected lesson across notification/manual refresh. A refresh that begins while Close owns the lifecycle may still update durable lesson data, but it is permanently marked non-connecting even if the close response and final refresh finish before that earlier refresh settles.
+- Made `closingLessonId` plus one private object-identity close claim authoritative for the selected lesson across notification/manual refresh. A refresh captured during Close may update useful durable data only while that exact claim remains current; after the close-owned final refresh converges, claim invalidation fences every late list/detail commit as well as connection/status work.
 - Kept the closing lesson selected during its refresh, retained the closing state through the final post-mutation refresh, and prevented closing-era refreshes from replacing the workspace status or reopening tutor admission.
-- Added runtime guards before follow-up/hint admission and GraphQL dispatch. The renderer now also derives both controls as unavailable while the selected lesson is closing; presentation is not the sole authority.
+- Added runtime guards before follow-up/hint admission and GraphQL dispatch. The renderer also derives both controls as unavailable while the selected lesson is closing; presentation is not the sole authority. A closed lesson now keeps Close disabled with `Lesson closed`, and runtime status validation rejects programmatic duplicate cleanup.
 - Preserved concurrent Close idempotency by checking the existing close claim before advancing the lifecycle generation. Existing session close still invalidates the active private settlement handle and late callbacks.
-- Added a mounted deferred-close regression covering an intervening `lesson.response_received` refresh with an active target, a stale follow-up settlement, programmatic follow-up/hint attempts, duplicate Close invocation, and the final closed refresh. It proves one connection only, no action re-enable, no post-close dispatch, no late-handle mutation, and correct durable closed state.
+- Extended the mounted deferred-close regression so an intervening `lesson.response_received` refresh reads an active target but its detail promise settles only after the close mutation and close-owned final refresh render `Status closed`. It then proves the late active result cannot overwrite state, reconnect, re-enable any action, dispatch follow-up/hint/Close, or mutate the invalidated turn handle.
 
 ## What Changed
 
@@ -83,7 +84,7 @@
 
 ## Task Design Health Assessment Implementation Check
 
-- `CR-008` change posture: local bug fix. Root cause: missing same-generation close-in-progress invariant in the existing Socratic runtime/renderer owner, not a boundary or ownership defect. Refactor needed now: no; the bounded close claim, refresh, dispatch, and derived-control checks fit the current mounted runtime responsibilities without adding a coordinator or second lifecycle path.
+- `CR-008` change posture: local bug fix. Root cause: missing same-generation close-in-progress and final-state commit invariant in the existing Socratic runtime/renderer owner, not a boundary or ownership defect. Refactor needed now: no; the private close claim, refresh commit fence, dispatch guards, and derived-control checks fit the current mounted runtime responsibilities without adding a coordinator or second lifecycle path.
 - Reviewed change posture: replace the over-broad application-only event interpretation; preserve provider/native/runtime/network owners; compose the two supported Socratic return planes locally.
 - Reviewed root-cause classification: broad application projector/API and Socratic presentation/admission defect, not a Codex/provider or native frontend defect.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now` for the five-event projector/contract and Socratic-local join/admission; broader chat/event abstraction deferred.
@@ -123,7 +124,7 @@
 - `autobyteus-application-frontend-sdk`: `pnpm test` — `12/12` runtime tests plus compile-time type test passed. Coverage proves the exact five-event union, required producer, whitespace preservation, strict extra-key rejection, and rejection of removed segment/assistant/tool/team shapes.
 - `autobyteus-application-backend-sdk`: `pnpm build` and `pnpm test` — build passed; `2 files / 9 tests` passed, preserving launch helpers and target-address builders.
 - `autobyteus-server-ts`: focused Vitest run over projector, runtime-source attribution/drop policy, subscription sequencing/failure, Communication WebSocket integration, context/worker observer integration, Socratic session, renderer, and mounted runtime — `8 files / 49 tests` passed after `CR-008`.
-- `CR-008` mounted lifecycle regression: focused rerun — `1 file / 12 tests` passed. The new case proves notification refresh cannot reconnect or re-enable actions during deferred Close and that the final closed refresh converges.
+- `CR-008` mounted lifecycle regression: focused rerun — `1 file / 12 tests` passed. The extended case proves an active notification detail settling after final closed convergence cannot overwrite state, reconnect, re-enable actions, or dispatch a second cleanup/input.
 - `autobyteus-server-ts`: `pnpm build` — passed shared preparation, Prisma generation, production TypeScript compilation, asset copy, and built-in-agent bootstrap smoke.
 - Socratic Math Teacher and Brief Studio: `pnpm typecheck:backend` — both passed.
 - Socratic Math Teacher and Brief Studio: `pnpm build` — both passed through their existing build owners; UI/vendor/importable outputs regenerated.
@@ -131,7 +132,7 @@
 - Hygiene checks passed: `git diff --check`; obsolete active/generated projector/map/`AGENT_RESPONSE_COMPLETED`/tool-presentation inventory empty except deliberate negative tests; provider/Codex/native diff empty; schema/migration/Prisma diff empty; Gateway/Engine/Orchestration/Communication production diff empty.
 - Implementation visual/interaction self-check: actual Socratic renderer and stylesheet rendered in headless Chrome at `1440x1000`; streaming/durable-first and saved states were directly inspected, and DOM probes confirmed next-turn disabled/Close enabled while joining, newly durable tutor row withheld during live display, and saved-state row reveal/control re-enable. The saved-state placeholder copy was corrected during inspection.
 - `CR-008` generation/build checks: Socratic build owner passed and regenerated the source/UI/importable runtime mirrors; all four runtime hashes and all four renderer hashes are byte-identical. Socratic backend typecheck and the server production build/bootstrap smoke passed. `git diff --check` passed.
-- Latest source/test/generated commit: `2ade5202aa5c14fcba629607a8d45cf36bf86f82` (round-17 base implementation remains `4c590d24a0a48910ba32dd4fc6764adca862329e`).
+- Latest source/test/generated commit: `46d14542a023f06e44a4e5af4375fed2fbcfbbf8` (initial CR-008 fix `2ade5202aa5c14fcba629607a8d45cf36bf86f82`; round-17 base implementation `4c590d24a0a48910ba32dd4fc6764adca862329e`).
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -139,8 +140,8 @@
 - Approved UI/UX, interaction, requirement, or design references: `REQ-018`, `AC-018`, `DS-017`, `DS-018`, and `socratic-math-live-journey.md` sections 3–5.
 - Existing design system, shared components, and adjacent product surfaces reviewed: existing Socratic card/panel, badge, action, transcript, spacing, color, status-dot, disabled-control, and responsive patterns.
 - Project development / preview instructions and rendered surface used: existing Socratic source renderer and production stylesheet served locally and rendered in headless Chrome; focused JSDOM tests exercised the same source modules.
-- States, layouts, viewports, and interactions inspected: durable-first streaming with withheld new tutor row and exact live text; saved convergence with durable row revealed and draft cleared; disabled follow-up/hint plus enabled Close; saved re-enable; safe warning/error presentation via tests; and the `CR-008` mounted closing state with Close/follow-up/hint disabled across an intervening refresh.
-- Visual or interaction issues found and corrected: removed tool/completion UI, added completed/saved/warning-specific minimal copy and status treatment, added stable admission help, prevented controls from enabling before READY, corrected the saved placeholder to point to the authoritative transcript, and added explicit closing-state help while keeping runtime dispatch authoritative.
+- States, layouts, viewports, and interactions inspected: durable-first streaming with withheld new tutor row and exact live text; saved convergence with durable row revealed and draft cleared; disabled follow-up/hint plus enabled Close; saved re-enable; safe warning/error presentation via tests; the `CR-008` mounted closing state across an intervening refresh; and the final closed state remaining monotonic after a late active detail response.
+- Visual or interaction issues found and corrected: removed tool/completion UI, added completed/saved/warning-specific minimal copy and status treatment, added stable admission help, prevented controls from enabling before READY, corrected the saved placeholder to point to the authoritative transcript, added explicit closing-state help, and made final closed controls/copy unambiguously unavailable while keeping runtime dispatch authoritative.
 - Supporting evidence and remaining unverified states or limitations: focused renderer/session/runtime tests passed, including the direct mounted closing interaction. The prior scratch preview was removed. This was not the real imported desktop/live-model execution; API/E2E still owns that independent journey and evidence.
 
 ## Downstream Coverage Hints / Suggested Scenarios
