@@ -70,6 +70,11 @@ export const mountSocraticMathTeacher = ({
     && isOperationCurrent(pendingStartOperation)
   );
 
+  const isLessonClosing = (lessonId = state.selectedLessonId) => Boolean(
+    lessonId
+    && state.closingLessonId === lessonId
+  );
+
   const advanceOperation = () => {
     lifecycleGeneration += 1;
     return captureOperation();
@@ -88,6 +93,15 @@ export const mountSocraticMathTeacher = ({
       elements.workspaceStatus.textContent = text;
       elements.workspaceStatus.className = `workspace-status${tone === "ready" ? " ready" : tone === "error" ? " error" : ""}`;
     }
+  };
+
+  const setReadyStatus = () => {
+    setStatus(
+      state.lessons.length === 0
+        ? "Socratic Math Teacher is ready. Start a lesson to begin guided help on one math problem."
+        : "Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.",
+      "ready",
+    );
   };
 
   const handleUiError = (error) => {
@@ -137,7 +151,7 @@ export const mountSocraticMathTeacher = ({
     });
   };
 
-  const refreshDetail = async (operation) => {
+  const refreshDetail = async (operation, { allowConnection = true } = {}) => {
     if (!isOperationCurrent(operation)) return;
     if (!operation.lessonId) {
       state.detail = null;
@@ -157,6 +171,10 @@ export const mountSocraticMathTeacher = ({
 
     state.detail = detail;
     tutorSession.reconcileDurableLesson(state.detail);
+    if (!allowConnection || isLessonClosing(operation.lessonId)) {
+      renderDetail();
+      return;
+    }
     if (state.detail?.tutorTargetAddress && !tutorSession.matchesLesson(state.detail)) {
       const connectionAttempt = tutorSession.connectLesson({ lesson: state.detail });
       renderDetail();
@@ -175,8 +193,9 @@ export const mountSocraticMathTeacher = ({
 
   const refresh = async (startingOperation = captureOperation()) => {
     let operation = startingOperation;
-    if (!isOperationCurrent(operation)) return;
-    if (!isPendingStartCurrent()) {
+    if (!isOperationCurrent(operation)) return false;
+    const closeOwnsLifecycle = isLessonClosing(operation.lessonId);
+    if (!isPendingStartCurrent() && !closeOwnsLifecycle) {
       setStatus("Loading lessons through the hosted GraphQL backend mount…");
     }
     let lessons;
@@ -184,32 +203,28 @@ export const mountSocraticMathTeacher = ({
       lessons = await client.lessons();
     } catch (error) {
       if (isOperationCurrent(operation)) handleUiError(error);
-      return;
+      return false;
     }
-    if (!isOperationCurrent(operation)) return;
+    if (!isOperationCurrent(operation)) return false;
 
     state.lessons = Array.isArray(lessons) ? lessons : [];
     if (!state.selectedLessonId || !state.lessons.some((lesson) => lesson.lessonId === state.selectedLessonId)) {
-      if (!isPendingStartCurrent()) {
+      if (!isPendingStartCurrent() && !closeOwnsLifecycle) {
         operation = replaceSelection(state.lessons[0]?.lessonId || null);
       }
     }
     try {
-      await refreshDetail(operation);
+      await refreshDetail(operation, { allowConnection: !closeOwnsLifecycle });
     } catch (error) {
       if (isOperationCurrent(operation)) handleUiError(error);
-      return;
+      return false;
     }
-    if (!isOperationCurrent(operation)) return;
+    if (!isOperationCurrent(operation)) return false;
     render();
-    if (!isPendingStartCurrent()) {
-      setStatus(
-        state.lessons.length === 0
-          ? "Socratic Math Teacher is ready. Start a lesson to begin guided help on one math problem."
-          : "Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.",
-        "ready",
-      );
+    if (!isPendingStartCurrent() && !closeOwnsLifecycle) {
+      setReadyStatus();
     }
+    return true;
   };
 
   const selectLesson = async (lessonId) => {
@@ -261,6 +276,7 @@ export const mountSocraticMathTeacher = ({
   const askFollowUp = async () => {
     const operation = captureOperation();
     if (!isOperationCurrent(operation) || !operation.lessonId) return;
+    if (isLessonClosing(operation.lessonId)) return;
     const textarea = elements.lessonDetail?.querySelector("#follow-up-input");
     const text = textarea?.value?.trim() || "";
     if (!text) {
@@ -289,6 +305,7 @@ export const mountSocraticMathTeacher = ({
   const requestHint = async () => {
     const operation = captureOperation();
     if (!isOperationCurrent(operation) || !operation.lessonId) return;
+    if (isLessonClosing(operation.lessonId)) return;
     const admission = tutorSession.tryBeginObservedTurn(state.detail);
     if (!admission) {
       setStatus(SOCRATIC_TURN_BUSY_NOTICE, "error");
@@ -312,9 +329,10 @@ export const mountSocraticMathTeacher = ({
   };
 
   const closeLesson = async () => {
+    const currentOperation = captureOperation();
+    if (!isOperationCurrent(currentOperation) || !currentOperation.lessonId) return;
+    if (isLessonClosing(currentOperation.lessonId)) return;
     const operation = advanceOperation();
-    if (!isOperationCurrent(operation) || !operation.lessonId) return;
-    if (state.closingLessonId === operation.lessonId) return;
     state.closingLessonId = operation.lessonId;
     tutorSession.close();
     renderDetail();
@@ -330,8 +348,11 @@ export const mountSocraticMathTeacher = ({
       return;
     }
     if (!isOperationCurrent(operation)) return;
+    const refreshed = await refresh(operation);
+    if (!isOperationCurrent(operation)) return;
     state.closingLessonId = null;
-    await refresh(operation);
+    renderDetail();
+    if (refreshed) setReadyStatus();
   };
 
   const pushNotification = (notification) => {

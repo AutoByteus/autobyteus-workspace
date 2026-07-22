@@ -305,14 +305,17 @@ export const renderLessonDetail = ({
   }
 
   const live = state.tutorLive?.lessonId === lesson.lessonId ? state.tutorLive : null;
+  const closeDispatching = state.closingLessonId === lesson.lessonId;
   const nextTurnAvailable = Boolean(
-    lesson.status === "active"
+    !closeDispatching
+    && lesson.status === "active"
     && live?.turnAdmission === "available"
   );
-  const turnHelp = nextTurnAvailable
-    ? "Send one follow-up or request one hint. The next action becomes available after the tutor response is saved."
-    : "Wait for the current tutor response to be saved before sending another.";
-  const closeDispatching = state.closingLessonId === lesson.lessonId;
+  const turnHelp = closeDispatching
+    ? "This lesson is closing. Follow-up and hint actions stay unavailable."
+    : nextTurnAvailable
+      ? "Send one follow-up or request one hint. The next action becomes available after the tutor response is saved."
+      : "Wait for the current tutor response to be saved before sending another.";
   const transcriptMessages = visibleTranscriptMessages(lesson.messages, live);
 
   elements.lessonDetail.className = "detail-grid";
