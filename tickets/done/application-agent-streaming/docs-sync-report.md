@@ -9,11 +9,11 @@
 - Protected package checkpoint: 1a796005c420273063b55a34283bf2120f4b2d5b.
 - Integrated candidate: 467dc6db762224f47ef4f6dcd52d4359ff27e90c.
 - Post-integration evidence:
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-integration-refresh.log
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-integration-build.log
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-integration-verification.log
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-electron-mac-build.log
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-docs-audit.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-integration-refresh.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-integration-build.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-integration-verification.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-electron-mac-build.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-docs-audit.log
 
 ## Why Docs Were Updated
 

@@ -30,12 +30,12 @@ To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/a
 > autobyteus@1.4.23 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/prepare-server-dispatch.mjs
 
-[0;32m=======================================[0m
-[0;32m   Preparing AutoByteus Server Files   [0m
-[0;32m=======================================[0m
-[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
+0;32m=======================================0m
+0;32m   Preparing AutoByteus Server Files   0m
+0;32m=======================================0m
+0;32m✓0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;33mBuilding server and dependencies...[0m
+0;33mBuilding server and dependencies...0m
 Scope: all 11 workspace projects
 
 ../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
@@ -105,7 +105,7 @@ AgentFactory (Singleton) initialized.
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 
-[0;33mBuilding mobile web assets...[0m
+0;33mBuilding mobile web assets...0m
 
 > autobyteus@1.4.23 build:mobile-web /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/build-mobile-web.mjs
@@ -576,7 +576,7 @@ isElectronBuild false
 └  ✨ You can now deploy dist/public to any static hosting!
 Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/dist-mobile/public
 
-[0;33mDeploying server package into Electron resources...[0m
+0;33mDeploying server package into Electron resources...0m
  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
 Packages are cloned from the content-addressable store to the virtual store.
   Content-addressable store is at: /Users/normy/Library/pnpm/store/v10
@@ -603,12 +603,12 @@ autobyteus-web
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-[0;33mCleaning workspace symlinks in deployment...[0m
+0;33mCleaning workspace symlinks in deployment...0m
 Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
 
-[0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+0;33mRemoving non-runtime test fixtures from deployed dependencies...0m
 
-[0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+0;33mGenerating Prisma client (ensures engines are bundled)...0m
 Environment variables loaded from .env
 Prisma schema loaded from resources/server/prisma/schema.prisma
 
@@ -619,23 +619,23 @@ Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
 
 
-[0;33mPruning native prebuilds for host platform...[0m
+0;33mPruning native prebuilds for host platform...0m
 
-[0;33mRebuilding native modules for Electron...[0m
+0;33mRebuilding native modules for Electron...0m
 Searching dependency tree
 Building modules: node-pty, node-pty
 ✔ Rebuild Complete
 
-[0;33mNormalizing node-pty spawn-helper execute bits...[0m
-[0;32m✓[0m Normalized execute bits on 3 node-pty spawn-helper file(s)
+0;33mNormalizing node-pty spawn-helper execute bits...0m
+0;32m✓0m Normalized execute bits on 3 node-pty spawn-helper file(s)
 
-[0;33mRemoving symlinks that point outside the bundle...[0m
+0;33mRemoving symlinks that point outside the bundle...0m
 Removed 0 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;32m=======================================[0m
-[0;32m   Server files prepared successfully!   [0m
-[0;32m=======================================[0m
-Target directory: [0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server[0m
+0;32m=======================================0m
+0;32m   Server files prepared successfully!   0m
+0;32m=======================================0m
+Target directory: 0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server0m
 You can now build the Electron app with the server included
 
 > autobyteus@1.4.23 generate:electron /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
@@ -1510,12 +1510,12 @@ To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/a
 > autobyteus@1.4.24 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/prepare-server-dispatch.mjs
 
-[0;32m=======================================[0m
-[0;32m   Preparing AutoByteus Server Files   [0m
-[0;32m=======================================[0m
-[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
+0;32m=======================================0m
+0;32m   Preparing AutoByteus Server Files   0m
+0;32m=======================================0m
+0;32m✓0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;33mBuilding server and dependencies...[0m
+0;33mBuilding server and dependencies...0m
 Scope: all 11 workspace projects
 
 ../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
@@ -1585,7 +1585,7 @@ AgentFactory (Singleton) initialized.
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 
-[0;33mBuilding mobile web assets...[0m
+0;33mBuilding mobile web assets...0m
 
 > autobyteus@1.4.24 build:mobile-web /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/build-mobile-web.mjs
@@ -2055,7 +2055,7 @@ isElectronBuild false
 └  ✨ You can now deploy dist/public to any static hosting!
 Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/dist-mobile/public
 
-[0;33mDeploying server package into Electron resources...[0m
+0;33mDeploying server package into Electron resources...0m
  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
 Packages are cloned from the content-addressable store to the virtual store.
   Content-addressable store is at: /Users/normy/Library/pnpm/store/v10
@@ -2082,12 +2082,12 @@ autobyteus-web
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-[0;33mCleaning workspace symlinks in deployment...[0m
+0;33mCleaning workspace symlinks in deployment...0m
 Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
 
-[0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+0;33mRemoving non-runtime test fixtures from deployed dependencies...0m
 
-[0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+0;33mGenerating Prisma client (ensures engines are bundled)...0m
 Environment variables loaded from .env
 Prisma schema loaded from resources/server/prisma/schema.prisma
 
@@ -2108,23 +2108,23 @@ Tip: Need your database queries to be 1000x faster? Accelerate offers you that a
 │    npm i @prisma/client@latest                          │
 └─────────────────────────────────────────────────────────┘
 
-[0;33mPruning native prebuilds for host platform...[0m
+0;33mPruning native prebuilds for host platform...0m
 
-[0;33mRebuilding native modules for Electron...[0m
+0;33mRebuilding native modules for Electron...0m
 Searching dependency tree
 Building modules: node-pty, node-pty
 ✔ Rebuild Complete
 
-[0;33mNormalizing node-pty spawn-helper execute bits...[0m
-[0;32m✓[0m Normalized execute bits on 3 node-pty spawn-helper file(s)
+0;33mNormalizing node-pty spawn-helper execute bits...0m
+0;32m✓0m Normalized execute bits on 3 node-pty spawn-helper file(s)
 
-[0;33mRemoving symlinks that point outside the bundle...[0m
+0;33mRemoving symlinks that point outside the bundle...0m
 Removed 0 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;32m=======================================[0m
-[0;32m   Server files prepared successfully!   [0m
-[0;32m=======================================[0m
-Target directory: [0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server[0m
+0;32m=======================================0m
+0;32m   Server files prepared successfully!   0m
+0;32m=======================================0m
+Target directory: 0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server0m
 You can now build the Electron app with the server included
 
 > autobyteus@1.4.24 generate:electron /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
@@ -2983,12 +2983,12 @@ To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/a
 > autobyteus@1.4.24 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/prepare-server-dispatch.mjs
 
-[0;32m=======================================[0m
-[0;32m   Preparing AutoByteus Server Files   [0m
-[0;32m=======================================[0m
-[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
+0;32m=======================================0m
+0;32m   Preparing AutoByteus Server Files   0m
+0;32m=======================================0m
+0;32m✓0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;33mBuilding server and dependencies...[0m
+0;33mBuilding server and dependencies...0m
 Scope: all 11 workspace projects
 
 ../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
@@ -3058,7 +3058,7 @@ AgentFactory (Singleton) initialized.
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 
-[0;33mBuilding mobile web assets...[0m
+0;33mBuilding mobile web assets...0m
 
 > autobyteus@1.4.24 build:mobile-web /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/build-mobile-web.mjs
@@ -3525,7 +3525,7 @@ isElectronBuild false
 └  ✨ You can now deploy dist/public to any static hosting!
 Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/dist-mobile/public
 
-[0;33mDeploying server package into Electron resources...[0m
+0;33mDeploying server package into Electron resources...0m
  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
 Packages are cloned from the content-addressable store to the virtual store.
   Content-addressable store is at: /Users/normy/Library/pnpm/store/v10
@@ -3552,12 +3552,12 @@ autobyteus-web
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-[0;33mCleaning workspace symlinks in deployment...[0m
+0;33mCleaning workspace symlinks in deployment...0m
 Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
 
-[0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+0;33mRemoving non-runtime test fixtures from deployed dependencies...0m
 
-[0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+0;33mGenerating Prisma client (ensures engines are bundled)...0m
 Environment variables loaded from .env
 Prisma schema loaded from resources/server/prisma/schema.prisma
 
@@ -3568,23 +3568,23 @@ Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
 
 
-[0;33mPruning native prebuilds for host platform...[0m
+0;33mPruning native prebuilds for host platform...0m
 
-[0;33mRebuilding native modules for Electron...[0m
+0;33mRebuilding native modules for Electron...0m
 Searching dependency tree
 Building modules: node-pty, node-pty
 ✔ Rebuild Complete
 
-[0;33mNormalizing node-pty spawn-helper execute bits...[0m
-[0;32m✓[0m Normalized execute bits on 3 node-pty spawn-helper file(s)
+0;33mNormalizing node-pty spawn-helper execute bits...0m
+0;32m✓0m Normalized execute bits on 3 node-pty spawn-helper file(s)
 
-[0;33mRemoving symlinks that point outside the bundle...[0m
+0;33mRemoving symlinks that point outside the bundle...0m
 Removed 0 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;32m=======================================[0m
-[0;32m   Server files prepared successfully!   [0m
-[0;32m=======================================[0m
-Target directory: [0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server[0m
+0;32m=======================================0m
+0;32m   Server files prepared successfully!   0m
+0;32m=======================================0m
+Target directory: 0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server0m
 You can now build the Electron app with the server included
 
 > autobyteus@1.4.24 generate:electron /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
@@ -4455,12 +4455,12 @@ To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/a
 > autobyteus@1.4.25 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/prepare-server-dispatch.mjs
 
-[0;32m=======================================[0m
-[0;32m   Preparing AutoByteus Server Files   [0m
-[0;32m=======================================[0m
-[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
+0;32m=======================================0m
+0;32m   Preparing AutoByteus Server Files   0m
+0;32m=======================================0m
+0;32m✓0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;33mBuilding server and dependencies...[0m
+0;33mBuilding server and dependencies...0m
 Scope: all 11 workspace projects
 
 ../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
@@ -4530,7 +4530,7 @@ AgentFactory (Singleton) initialized.
 (Use `node --trace-warnings ...` to show where the warning was created)
 Built-in agents bootstrap smoke check passed.
 
-[0;33mBuilding mobile web assets...[0m
+0;33mBuilding mobile web assets...0m
 
 > autobyteus@1.4.25 build:mobile-web /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web
 > node ./scripts/build-mobile-web.mjs
@@ -5000,7 +5000,7 @@ isElectronBuild false
 └  ✨ You can now deploy dist/public to any static hosting!
 Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/dist-mobile/public
 
-[0;33mDeploying server package into Electron resources...[0m
+0;33mDeploying server package into Electron resources...0m
  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
 Packages are cloned from the content-addressable store to the virtual store.
   Content-addressable store is at: /Users/normy/Library/pnpm/store/v10
@@ -5027,12 +5027,12 @@ autobyteus-web
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-[0;33mCleaning workspace symlinks in deployment...[0m
+0;33mCleaning workspace symlinks in deployment...0m
 Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
 
-[0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+0;33mRemoving non-runtime test fixtures from deployed dependencies...0m
 
-[0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+0;33mGenerating Prisma client (ensures engines are bundled)...0m
 Environment variables loaded from .env
 Prisma schema loaded from resources/server/prisma/schema.prisma
 
@@ -5043,23 +5043,23 @@ Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
 Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
 
 
-[0;33mPruning native prebuilds for host platform...[0m
+0;33mPruning native prebuilds for host platform...0m
 
-[0;33mRebuilding native modules for Electron...[0m
+0;33mRebuilding native modules for Electron...0m
 Searching dependency tree
 Building modules: node-pty, node-pty
 ✔ Rebuild Complete
 
-[0;33mNormalizing node-pty spawn-helper execute bits...[0m
-[0;32m✓[0m Normalized execute bits on 3 node-pty spawn-helper file(s)
+0;33mNormalizing node-pty spawn-helper execute bits...0m
+0;32m✓0m Normalized execute bits on 3 node-pty spawn-helper file(s)
 
-[0;33mRemoving symlinks that point outside the bundle...[0m
+0;33mRemoving symlinks that point outside the bundle...0m
 Removed 0 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server
 
-[0;32m=======================================[0m
-[0;32m   Server files prepared successfully!   [0m
-[0;32m=======================================[0m
-Target directory: [0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server[0m
+0;32m=======================================0m
+0;32m   Server files prepared successfully!   0m
+0;32m=======================================0m
+Target directory: 0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/resources/server0m
 You can now build the Electron app with the server included
 
 > autobyteus@1.4.25 generate:electron /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web

@@ -1,0 +1,1907 @@
+[
+  {
+    "conclusion": "success",
+    "jobs": [
+      {
+        "completedAt": "2026-07-22T12:16:28Z",
+        "conclusion": "success",
+        "databaseId": 88919320463,
+        "name": "Resolve Release Metadata",
+        "startedAt": "2026-07-22T12:16:12Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:13Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:13Z",
+            "conclusion": "success",
+            "name": "Resolve release metadata",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:23Z",
+            "conclusion": "success",
+            "name": "Checkout release ref",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:23Z",
+            "conclusion": "success",
+            "name": "Check repository artifact hygiene",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:23Z",
+            "conclusion": "success",
+            "name": "Validate workspace package versions match release tag",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Validate managed messaging release manifest matches release tag",
+            "number": 6,
+            "startedAt": "2026-07-22T12:16:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Resolve release commit SHA",
+            "number": 7,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Post Checkout release ref",
+            "number": 14,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 15,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023/job/88919320463"
+      },
+      {
+        "completedAt": "2026-07-22T12:28:53Z",
+        "conclusion": "success",
+        "databaseId": 88919383306,
+        "name": "Build macOS Intel x64",
+        "startedAt": "2026-07-22T12:16:31Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:34Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:44Z",
+            "conclusion": "success",
+            "name": "Checkout workspace + submodules",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:45Z",
+            "conclusion": "success",
+            "name": "Setup pnpm",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:46Z",
+            "conclusion": "success",
+            "name": "Setup Node",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:11Z",
+            "conclusion": "success",
+            "name": "Install workspace dependencies",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:14Z",
+            "conclusion": "success",
+            "name": "Install Python setuptools for node-gyp",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:14Z",
+            "conclusion": "success",
+            "name": "Import Apple code signing certificate",
+            "number": 7,
+            "startedAt": "2026-07-22T12:17:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:04Z",
+            "conclusion": "success",
+            "name": "Build Electron macOS Intel x64",
+            "number": 8,
+            "startedAt": "2026-07-22T12:17:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:05Z",
+            "conclusion": "success",
+            "name": "Verify bundled Prisma x64 engine target",
+            "number": 9,
+            "startedAt": "2026-07-22T12:28:04Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:05Z",
+            "conclusion": "success",
+            "name": "Verify packaged terminal runtime x64",
+            "number": 10,
+            "startedAt": "2026-07-22T12:28:05Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:13Z",
+            "conclusion": "success",
+            "name": "Verify macOS signing policy x64",
+            "number": 11,
+            "startedAt": "2026-07-22T12:28:05Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:34Z",
+            "conclusion": "success",
+            "name": "Upload macOS Intel artifacts",
+            "number": 12,
+            "startedAt": "2026-07-22T12:28:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:50Z",
+            "conclusion": "success",
+            "name": "Post Setup Node",
+            "number": 22,
+            "startedAt": "2026-07-22T12:28:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:50Z",
+            "conclusion": "success",
+            "name": "Post Setup pnpm",
+            "number": 23,
+            "startedAt": "2026-07-22T12:28:50Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:50Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace + submodules",
+            "number": 24,
+            "startedAt": "2026-07-22T12:28:50Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:51Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 25,
+            "startedAt": "2026-07-22T12:28:50Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023/job/88919383306"
+      },
+      {
+        "completedAt": "2026-07-22T12:20:37Z",
+        "conclusion": "success",
+        "databaseId": 88919383316,
+        "name": "Build Linux x64",
+        "startedAt": "2026-07-22T12:16:31Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:33Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:32Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:43Z",
+            "conclusion": "success",
+            "name": "Checkout workspace + submodules",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:33Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:44Z",
+            "conclusion": "success",
+            "name": "Setup pnpm",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:48Z",
+            "conclusion": "success",
+            "name": "Setup Node",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:04Z",
+            "conclusion": "success",
+            "name": "Install Linux build deps",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:48Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:24Z",
+            "conclusion": "success",
+            "name": "Install workspace dependencies",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:04Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:13Z",
+            "conclusion": "success",
+            "name": "Build Electron Linux x64",
+            "number": 7,
+            "startedAt": "2026-07-22T12:17:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:14Z",
+            "conclusion": "success",
+            "name": "Verify Linux x64 AppImage and updater metadata",
+            "number": 8,
+            "startedAt": "2026-07-22T12:20:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:14Z",
+            "conclusion": "success",
+            "name": "Verify Linux x64 Prisma engines",
+            "number": 9,
+            "startedAt": "2026-07-22T12:20:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:17Z",
+            "conclusion": "success",
+            "name": "Verify Linux x64 packaged server startup",
+            "number": 10,
+            "startedAt": "2026-07-22T12:20:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:29Z",
+            "conclusion": "success",
+            "name": "Upload Linux x64 artifacts",
+            "number": 11,
+            "startedAt": "2026-07-22T12:20:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:34Z",
+            "conclusion": "success",
+            "name": "Post Setup Node",
+            "number": 20,
+            "startedAt": "2026-07-22T12:20:29Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:34Z",
+            "conclusion": "success",
+            "name": "Post Setup pnpm",
+            "number": 21,
+            "startedAt": "2026-07-22T12:20:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:34Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace + submodules",
+            "number": 22,
+            "startedAt": "2026-07-22T12:20:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:20:34Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 23,
+            "startedAt": "2026-07-22T12:20:34Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023/job/88919383316"
+      },
+      {
+        "completedAt": "2026-07-22T12:28:53Z",
+        "conclusion": "success",
+        "databaseId": 88919383321,
+        "name": "Build macOS ARM64",
+        "startedAt": "2026-07-22T12:16:30Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:34Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:45Z",
+            "conclusion": "success",
+            "name": "Checkout workspace + submodules",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:46Z",
+            "conclusion": "success",
+            "name": "Setup pnpm",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:47Z",
+            "conclusion": "success",
+            "name": "Setup Node",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:19Z",
+            "conclusion": "success",
+            "name": "Install workspace dependencies",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:22Z",
+            "conclusion": "success",
+            "name": "Install Python setuptools for node-gyp",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:19Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:22Z",
+            "conclusion": "success",
+            "name": "Import Apple code signing certificate",
+            "number": 7,
+            "startedAt": "2026-07-22T12:17:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:54Z",
+            "conclusion": "success",
+            "name": "Build Electron macOS ARM64",
+            "number": 8,
+            "startedAt": "2026-07-22T12:17:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:54Z",
+            "conclusion": "success",
+            "name": "Verify bundled Prisma ARM64 engine target",
+            "number": 9,
+            "startedAt": "2026-07-22T12:27:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:56Z",
+            "conclusion": "success",
+            "name": "Verify packaged terminal runtime ARM64",
+            "number": 10,
+            "startedAt": "2026-07-22T12:27:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:03Z",
+            "conclusion": "success",
+            "name": "Verify macOS signing policy ARM64",
+            "number": 11,
+            "startedAt": "2026-07-22T12:27:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:26Z",
+            "conclusion": "success",
+            "name": "Upload macOS artifacts",
+            "number": 12,
+            "startedAt": "2026-07-22T12:28:03Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:49Z",
+            "conclusion": "success",
+            "name": "Post Setup Node",
+            "number": 22,
+            "startedAt": "2026-07-22T12:28:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:49Z",
+            "conclusion": "success",
+            "name": "Post Setup pnpm",
+            "number": 23,
+            "startedAt": "2026-07-22T12:28:49Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:50Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace + submodules",
+            "number": 24,
+            "startedAt": "2026-07-22T12:28:49Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:51Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 25,
+            "startedAt": "2026-07-22T12:28:50Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023/job/88919383321"
+      },
+      {
+        "completedAt": "2026-07-22T12:19:47Z",
+        "conclusion": "success",
+        "databaseId": 88919383354,
+        "name": "Build Linux ARM64",
+        "startedAt": "2026-07-22T12:16:30Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:32Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:41Z",
+            "conclusion": "success",
+            "name": "Checkout workspace + submodules",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:32Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:42Z",
+            "conclusion": "success",
+            "name": "Setup pnpm",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:41Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:45Z",
+            "conclusion": "success",
+            "name": "Setup Node",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:42Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:58Z",
+            "conclusion": "success",
+            "name": "Install Linux build deps",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:15Z",
+            "conclusion": "success",
+            "name": "Install workspace dependencies",
+            "number": 6,
+            "startedAt": "2026-07-22T12:16:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:27Z",
+            "conclusion": "success",
+            "name": "Build Electron Linux ARM64",
+            "number": 7,
+            "startedAt": "2026-07-22T12:17:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:27Z",
+            "conclusion": "success",
+            "name": "Verify Linux ARM64 AppImage and updater metadata",
+            "number": 8,
+            "startedAt": "2026-07-22T12:19:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:27Z",
+            "conclusion": "success",
+            "name": "Verify Linux ARM64 Prisma engines",
+            "number": 9,
+            "startedAt": "2026-07-22T12:19:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:30Z",
+            "conclusion": "success",
+            "name": "Verify Linux ARM64 packaged server startup",
+            "number": 10,
+            "startedAt": "2026-07-22T12:19:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:40Z",
+            "conclusion": "success",
+            "name": "Upload Linux ARM64 artifacts",
+            "number": 11,
+            "startedAt": "2026-07-22T12:19:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:44Z",
+            "conclusion": "success",
+            "name": "Post Setup Node",
+            "number": 20,
+            "startedAt": "2026-07-22T12:19:40Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:44Z",
+            "conclusion": "success",
+            "name": "Post Setup pnpm",
+            "number": 21,
+            "startedAt": "2026-07-22T12:19:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:45Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace + submodules",
+            "number": 22,
+            "startedAt": "2026-07-22T12:19:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:45Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 23,
+            "startedAt": "2026-07-22T12:19:45Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023/job/88919383354"
+      },
+      {
+        "completedAt": "2026-07-22T12:29:19Z",
+        "conclusion": "success",
+        "databaseId": 88919383366,
+        "name": "Build Windows x64",
+        "startedAt": "2026-07-22T12:16:30Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:33Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:53Z",
+            "conclusion": "success",
+            "name": "Checkout workspace + submodules",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:33Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:57Z",
+            "conclusion": "success",
+            "name": "Setup pnpm",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:53Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:04Z",
+            "conclusion": "success",
+            "name": "Setup Node",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:37Z",
+            "conclusion": "success",
+            "name": "Install workspace dependencies",
+            "number": 5,
+            "startedAt": "2026-07-22T12:17:04Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:45Z",
+            "conclusion": "success",
+            "name": "Install Python setuptools for node-gyp",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:37Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:53Z",
+            "conclusion": "success",
+            "name": "Build Electron Windows x64",
+            "number": 7,
+            "startedAt": "2026-07-22T12:17:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:03Z",
+            "conclusion": "success",
+            "name": "Upload Windows artifacts",
+            "number": 8,
+            "startedAt": "2026-07-22T12:28:53Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:16Z",
+            "conclusion": "success",
+            "name": "Post Setup Node",
+            "number": 14,
+            "startedAt": "2026-07-22T12:29:03Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:16Z",
+            "conclusion": "success",
+            "name": "Post Setup pnpm",
+            "number": 15,
+            "startedAt": "2026-07-22T12:29:16Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:18Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace + submodules",
+            "number": 16,
+            "startedAt": "2026-07-22T12:29:16Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:18Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 17,
+            "startedAt": "2026-07-22T12:29:18Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023/job/88919383366"
+      },
+      {
+        "completedAt": "2026-07-22T12:30:46Z",
+        "conclusion": "success",
+        "databaseId": 88922202310,
+        "name": "Publish GitHub Release",
+        "startedAt": "2026-07-22T12:29:22Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:29:24Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:29:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:35Z",
+            "conclusion": "success",
+            "name": "Checkout workspace + submodules",
+            "number": 2,
+            "startedAt": "2026-07-22T12:29:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:18Z",
+            "conclusion": "success",
+            "name": "Download build artifacts",
+            "number": 3,
+            "startedAt": "2026-07-22T12:29:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:18Z",
+            "conclusion": "success",
+            "name": "Merge macOS updater metadata",
+            "number": 4,
+            "startedAt": "2026-07-22T12:30:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:18Z",
+            "conclusion": "success",
+            "name": "Validate merged macOS updater metadata",
+            "number": 5,
+            "startedAt": "2026-07-22T12:30:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:19Z",
+            "conclusion": "success",
+            "name": "Validate Linux updater metadata",
+            "number": 6,
+            "startedAt": "2026-07-22T12:30:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:19Z",
+            "conclusion": "success",
+            "name": "Resolve release notes mode",
+            "number": 7,
+            "startedAt": "2026-07-22T12:30:19Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:43Z",
+            "conclusion": "success",
+            "name": "Publish release assets with curated notes",
+            "number": 8,
+            "startedAt": "2026-07-22T12:30:19Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:43Z",
+            "conclusion": "skipped",
+            "name": "Publish release assets with generated notes fallback",
+            "number": 9,
+            "startedAt": "2026-07-22T12:30:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:44Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace + submodules",
+            "number": 18,
+            "startedAt": "2026-07-22T12:30:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:30:44Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 19,
+            "startedAt": "2026-07-22T12:30:44Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023/job/88922202310"
+      }
+    ],
+    "name": "Desktop Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938023"
+  },
+  {
+    "conclusion": "success",
+    "jobs": [
+      {
+        "completedAt": "2026-07-22T12:16:29Z",
+        "conclusion": "success",
+        "databaseId": 88919320716,
+        "name": "Resolve Android Release Metadata",
+        "startedAt": "2026-07-22T12:16:13Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:15Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:15Z",
+            "conclusion": "success",
+            "name": "Resolve release metadata",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Checkout release ref",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Validate workspace package versions match release tag",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Validate bundled managed messaging manifest matches release tag",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Resolve release commit SHA",
+            "number": 6,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Summarize Android release plan",
+            "number": 7,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Post Checkout release ref",
+            "number": 14,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 15,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938068/job/88919320716"
+      },
+      {
+        "completedAt": "2026-07-22T12:19:08Z",
+        "conclusion": "success",
+        "databaseId": 88919388044,
+        "name": "Build Android APK",
+        "startedAt": "2026-07-22T12:16:32Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:35Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:33Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:45Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:47Z",
+            "conclusion": "success",
+            "name": "Set up Java",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:06Z",
+            "conclusion": "success",
+            "name": "Set up Android SDK",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:09Z",
+            "conclusion": "success",
+            "name": "Install Android SDK platform",
+            "number": 5,
+            "startedAt": "2026-07-22T12:17:06Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:58Z",
+            "conclusion": "success",
+            "name": "Build APK",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:09Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:00Z",
+            "conclusion": "success",
+            "name": "Upload Android APK workflow artifact",
+            "number": 7,
+            "startedAt": "2026-07-22T12:18:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:06Z",
+            "conclusion": "success",
+            "name": "Post Set up Java",
+            "number": 13,
+            "startedAt": "2026-07-22T12:19:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:06Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 14,
+            "startedAt": "2026-07-22T12:19:06Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:06Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 15,
+            "startedAt": "2026-07-22T12:19:06Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938068/job/88919388044"
+      },
+      {
+        "completedAt": "2026-07-22T12:19:25Z",
+        "conclusion": "success",
+        "databaseId": 88919966453,
+        "name": "Publish Android APK To GitHub Release",
+        "startedAt": "2026-07-22T12:19:11Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:19:12Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:19:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:21Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:19:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:22Z",
+            "conclusion": "success",
+            "name": "Download Android APK artifact",
+            "number": 3,
+            "startedAt": "2026-07-22T12:19:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:22Z",
+            "conclusion": "success",
+            "name": "Validate publishable APK artifact",
+            "number": 4,
+            "startedAt": "2026-07-22T12:19:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:22Z",
+            "conclusion": "success",
+            "name": "Resolve release notes mode",
+            "number": 5,
+            "startedAt": "2026-07-22T12:19:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:24Z",
+            "conclusion": "success",
+            "name": "Publish Android APK asset with curated notes",
+            "number": 6,
+            "startedAt": "2026-07-22T12:19:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:24Z",
+            "conclusion": "skipped",
+            "name": "Publish Android APK asset with generated notes fallback",
+            "number": 7,
+            "startedAt": "2026-07-22T12:19:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:24Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 14,
+            "startedAt": "2026-07-22T12:19:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:19:24Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 15,
+            "startedAt": "2026-07-22T12:19:24Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938068/job/88919966453"
+      }
+    ],
+    "name": "Android APK Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938068"
+  },
+  {
+    "conclusion": "success",
+    "jobs": [
+      {
+        "completedAt": "2026-07-22T12:16:28Z",
+        "conclusion": "success",
+        "databaseId": 88919320887,
+        "name": "Resolve iOS Release Metadata",
+        "startedAt": "2026-07-22T12:16:12Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:14Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:24Z",
+            "conclusion": "success",
+            "name": "Checkout workflow helper scripts",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:14Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:24Z",
+            "conclusion": "success",
+            "name": "Resolve release metadata",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Checkout release ref",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Resolve release commit SHA",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:25Z",
+            "conclusion": "success",
+            "name": "Summarize iOS release plan",
+            "number": 6,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Post Checkout release ref",
+            "number": 11,
+            "startedAt": "2026-07-22T12:16:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Post Checkout workflow helper scripts",
+            "number": 12,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938099/job/88919320887"
+      },
+      {
+        "completedAt": "2026-07-22T12:27:22Z",
+        "conclusion": "success",
+        "databaseId": 88919384493,
+        "name": "Build And Test iOS App",
+        "startedAt": "2026-07-22T12:16:31Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:34Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:32Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:52Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:02Z",
+            "conclusion": "success",
+            "name": "Select Xcode 26 or newer",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:52Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:38Z",
+            "conclusion": "success",
+            "name": "Install XcodeGen",
+            "number": 4,
+            "startedAt": "2026-07-22T12:17:02Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:39Z",
+            "conclusion": "success",
+            "name": "Select available iOS simulator",
+            "number": 5,
+            "startedAt": "2026-07-22T12:17:38Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:26:48Z",
+            "conclusion": "success",
+            "name": "Generate, build, and run implementation checks",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:39Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:26:49Z",
+            "conclusion": "success",
+            "name": "Write publish secret readiness summary",
+            "number": 7,
+            "startedAt": "2026-07-22T12:26:48Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:26:52Z",
+            "conclusion": "success",
+            "name": "Upload iOS build/test artifacts",
+            "number": 8,
+            "startedAt": "2026-07-22T12:26:49Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:26:53Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 16,
+            "startedAt": "2026-07-22T12:26:52Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:19Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 17,
+            "startedAt": "2026-07-22T12:26:53Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938099/job/88919384493"
+      },
+      {
+        "completedAt": "2026-07-22T12:27:37Z",
+        "conclusion": "success",
+        "databaseId": 88921769141,
+        "name": "Validate iOS Publish Secrets",
+        "startedAt": "2026-07-22T12:27:24Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:27:26Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:27:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:35Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:27:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:36Z",
+            "conclusion": "success",
+            "name": "Fail fast when iOS publish secrets are incomplete",
+            "number": 3,
+            "startedAt": "2026-07-22T12:27:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:36Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 6,
+            "startedAt": "2026-07-22T12:27:36Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:36Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 7,
+            "startedAt": "2026-07-22T12:27:36Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938099/job/88921769141"
+      },
+      {
+        "completedAt": "2026-07-22T12:29:56Z",
+        "conclusion": "success",
+        "databaseId": 88921827256,
+        "name": "Archive And Upload To App Store Connect",
+        "startedAt": "2026-07-22T12:27:40Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:27:42Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:27:40Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:27:58Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:27:42Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:03Z",
+            "conclusion": "success",
+            "name": "Select Xcode 26 or newer",
+            "number": 3,
+            "startedAt": "2026-07-22T12:27:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:09Z",
+            "conclusion": "success",
+            "name": "Install XcodeGen",
+            "number": 4,
+            "startedAt": "2026-07-22T12:28:03Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:09Z",
+            "conclusion": "success",
+            "name": "Initialize temporary publish paths",
+            "number": 5,
+            "startedAt": "2026-07-22T12:28:09Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:10Z",
+            "conclusion": "success",
+            "name": "Import iOS distribution certificate into temporary keychain",
+            "number": 6,
+            "startedAt": "2026-07-22T12:28:09Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:11Z",
+            "conclusion": "success",
+            "name": "Decode, verify, and install App Store provisioning profiles",
+            "number": 7,
+            "startedAt": "2026-07-22T12:28:10Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:11Z",
+            "conclusion": "success",
+            "name": "Generate project and ExportOptions.plist",
+            "number": 8,
+            "startedAt": "2026-07-22T12:28:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:28:53Z",
+            "conclusion": "success",
+            "name": "Archive and export signed IPA",
+            "number": 9,
+            "startedAt": "2026-07-22T12:28:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:50Z",
+            "conclusion": "success",
+            "name": "Upload IPA to App Store Connect/TestFlight",
+            "number": 10,
+            "startedAt": "2026-07-22T12:28:53Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:50Z",
+            "conclusion": "success",
+            "name": "Summarize iOS TestFlight upload",
+            "number": 11,
+            "startedAt": "2026-07-22T12:29:50Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:50Z",
+            "conclusion": "success",
+            "name": "Cleanup iOS signing material",
+            "number": 12,
+            "startedAt": "2026-07-22T12:29:50Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:52Z",
+            "conclusion": "success",
+            "name": "Upload iOS publish artifacts",
+            "number": 13,
+            "startedAt": "2026-07-22T12:29:50Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:52Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 26,
+            "startedAt": "2026-07-22T12:29:52Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:29:54Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 27,
+            "startedAt": "2026-07-22T12:29:52Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938099/job/88921827256"
+      }
+    ],
+    "name": "iOS App Store Connect Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938099"
+  },
+  {
+    "conclusion": "success",
+    "jobs": [
+      {
+        "completedAt": "2026-07-22T12:16:30Z",
+        "conclusion": "success",
+        "databaseId": 88919321123,
+        "name": "Resolve Release Metadata",
+        "startedAt": "2026-07-22T12:16:14Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:16Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:16Z",
+            "conclusion": "success",
+            "name": "Resolve release metadata",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:16Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Checkout release ref",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:16Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Validate workspace package versions match release tag",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Validate bundled managed messaging manifest matches release tag",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:26Z",
+            "conclusion": "success",
+            "name": "Resolve release commit SHA",
+            "number": 6,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:27Z",
+            "conclusion": "success",
+            "name": "Post Checkout release ref",
+            "number": 12,
+            "startedAt": "2026-07-22T12:16:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:27Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-07-22T12:16:27Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938111/job/88919321123"
+      },
+      {
+        "completedAt": "2026-07-22T12:18:03Z",
+        "conclusion": "success",
+        "databaseId": 88919393150,
+        "name": "Build Runtime Package",
+        "startedAt": "2026-07-22T12:16:32Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:34Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:33Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:44Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:45Z",
+            "conclusion": "success",
+            "name": "Setup pnpm",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:49Z",
+            "conclusion": "success",
+            "name": "Setup Node",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:07Z",
+            "conclusion": "success",
+            "name": "Install workspace dependencies",
+            "number": 5,
+            "startedAt": "2026-07-22T12:16:49Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:54Z",
+            "conclusion": "success",
+            "name": "Build gateway runtime package",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:07Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:56Z",
+            "conclusion": "success",
+            "name": "Upload runtime package artifacts",
+            "number": 7,
+            "startedAt": "2026-07-22T12:17:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:02Z",
+            "conclusion": "success",
+            "name": "Post Setup Node",
+            "number": 12,
+            "startedAt": "2026-07-22T12:17:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:02Z",
+            "conclusion": "success",
+            "name": "Post Setup pnpm",
+            "number": 13,
+            "startedAt": "2026-07-22T12:18:02Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:02Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 14,
+            "startedAt": "2026-07-22T12:18:02Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:02Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 15,
+            "startedAt": "2026-07-22T12:18:02Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938111/job/88919393150"
+      },
+      {
+        "completedAt": "2026-07-22T12:18:38Z",
+        "conclusion": "success",
+        "databaseId": 88919728851,
+        "name": "Publish GitHub Release",
+        "startedAt": "2026-07-22T12:18:06Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:18:11Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:18:07Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:21Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:18:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:23Z",
+            "conclusion": "success",
+            "name": "Download runtime package artifacts",
+            "number": 3,
+            "startedAt": "2026-07-22T12:18:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:23Z",
+            "conclusion": "success",
+            "name": "Resolve release notes mode",
+            "number": 4,
+            "startedAt": "2026-07-22T12:18:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:36Z",
+            "conclusion": "success",
+            "name": "Publish release assets with curated notes",
+            "number": 5,
+            "startedAt": "2026-07-22T12:18:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:36Z",
+            "conclusion": "skipped",
+            "name": "Publish release assets with generated notes fallback",
+            "number": 6,
+            "startedAt": "2026-07-22T12:18:36Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:36Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 12,
+            "startedAt": "2026-07-22T12:18:36Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:18:36Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-07-22T12:18:36Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938111/job/88919728851"
+      }
+    ],
+    "name": "Release Messaging Gateway",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938111"
+  },
+  {
+    "conclusion": "success",
+    "jobs": [
+      {
+        "completedAt": "2026-07-22T12:16:15Z",
+        "conclusion": "success",
+        "databaseId": 88919320721,
+        "name": "Resolve Release Metadata",
+        "startedAt": "2026-07-22T12:16:12Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:13Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:13Z",
+            "conclusion": "success",
+            "name": "Resolve publish metadata",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:13Z",
+            "conclusion": "success",
+            "name": "Summarize publish plan",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:13Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 4,
+            "startedAt": "2026-07-22T12:16:13Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938072/job/88919320721"
+      },
+      {
+        "completedAt": "2026-07-22T12:39:55Z",
+        "conclusion": "success",
+        "databaseId": 88919337525,
+        "name": "Build And Push Server Image",
+        "startedAt": "2026-07-22T12:16:17Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-07-22T12:16:19Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-07-22T12:16:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:16:28Z",
+            "conclusion": "success",
+            "name": "Checkout workspace",
+            "number": 2,
+            "startedAt": "2026-07-22T12:16:19Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:51Z",
+            "conclusion": "success",
+            "name": "Free runner disk space",
+            "number": 3,
+            "startedAt": "2026-07-22T12:16:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:54Z",
+            "conclusion": "success",
+            "name": "Set up QEMU",
+            "number": 4,
+            "startedAt": "2026-07-22T12:17:51Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:58Z",
+            "conclusion": "success",
+            "name": "Set up Docker Buildx",
+            "number": 5,
+            "startedAt": "2026-07-22T12:17:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:17:58Z",
+            "conclusion": "success",
+            "name": "Login to Docker Hub",
+            "number": 6,
+            "startedAt": "2026-07-22T12:17:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:28Z",
+            "conclusion": "success",
+            "name": "Build and push default multi-arch image",
+            "number": 7,
+            "startedAt": "2026-07-22T12:17:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:28Z",
+            "conclusion": "skipped",
+            "name": "Build and push zh multi-arch image",
+            "number": 8,
+            "startedAt": "2026-07-22T12:39:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:28Z",
+            "conclusion": "success",
+            "name": "Publish summary",
+            "number": 9,
+            "startedAt": "2026-07-22T12:39:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:30Z",
+            "conclusion": "success",
+            "name": "Post Build and push default multi-arch image",
+            "number": 14,
+            "startedAt": "2026-07-22T12:39:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:30Z",
+            "conclusion": "success",
+            "name": "Post Login to Docker Hub",
+            "number": 15,
+            "startedAt": "2026-07-22T12:39:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:51Z",
+            "conclusion": "success",
+            "name": "Post Set up Docker Buildx",
+            "number": 16,
+            "startedAt": "2026-07-22T12:39:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:53Z",
+            "conclusion": "success",
+            "name": "Post Set up QEMU",
+            "number": 17,
+            "startedAt": "2026-07-22T12:39:51Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:53Z",
+            "conclusion": "success",
+            "name": "Post Checkout workspace",
+            "number": 18,
+            "startedAt": "2026-07-22T12:39:53Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-07-22T12:39:53Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 19,
+            "startedAt": "2026-07-22T12:39:53Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938072/job/88919337525"
+      }
+    ],
+    "name": "Server Docker Release",
+    "status": "completed",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29918938072"
+  }
+]

@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-This is the user-verified finalization and release record for the final revised application-agent streaming and Socratic live-tutor candidate. The reviewed/API-tested package was checkpointed, refreshed against latest origin/personal, checked on the integrated state, documented, and packaged as a local macOS ARM64 Electron candidate. The user explicitly verified the current candidate and authorized repository finalization plus a new stable release on 2026-07-22. Finalization and release execution are now in progress.
+This is the user-verified finalization and release record for the final revised application-agent streaming and Socratic live-tutor candidate. The reviewed/API-tested package was checkpointed, refreshed against latest origin/personal, checked on the integrated state, documented, and packaged as a local macOS ARM64 Electron candidate. The user explicitly verified the current candidate and authorized repository finalization plus a new stable release on 2026-07-22. Repository finalization, stable v1.4.26 publication, verification, and ticket-branch/worktree cleanup completed successfully.
 
 ## Handoff Summary
 
-- Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/handoff-summary.md
-- Status: Updated
-- Notes: Covers the five-event stream, target builders, Socratic live/durable join and admission, monotonic Close, final gates, latest-base integration, integrated checks, docs sync, Electron candidate, hashes, signing posture, and verification hold.
+- Artifact: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/handoff-summary.md
+- Status: Final
+- Notes: Covers the five-event stream, target builders, Socratic live/durable join and admission, monotonic Close, final gates, latest-base integration, integrated checks, docs sync, Electron candidate, hashes, signing posture, and completed repository and release state.
 
 ## Initial Delivery Integration Refresh
 
@@ -26,10 +26,10 @@ This is the user-verified finalization and release record for the final revised 
 - Handoff current with latest remote base: Yes — post-build fetch remained dd815ee9; branch is 0 behind / 28 ahead
 - Changed-path overlap: zero between 147 revised-scope ticket paths and 85 new-base paths
 - Evidence:
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-integration-refresh.log
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-integration-build.log
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-integration-verification.log
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-electron-mac-build.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-integration-refresh.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-integration-build.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-integration-verification.log
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-electron-mac-build.log
 - Blocker: None
 
 ## User Verification
@@ -42,54 +42,69 @@ This is the user-verified finalization and release record for the final revised 
 
 ## Docs Sync Result
 
-- Artifact: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/docs-sync-report.md
+- Artifact: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/docs-sync-report.md
 - Result: Updated
 - Docs: Four final-scope long-lived docs changed (Socratic README and backend/frontend/contracts SDK READMEs); ten earlier framework docs remain and were re-audited.
-- Audit: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/delivery-docs-audit.log
+- Audit: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/delivery-docs-audit.log
 - Audit result: Pass — 14/14 docs, four revised deltas, canonical terms present, obsolete public terms absent, 41/41 links, no migration path, no base overlap.
 
 ## Ticket State Transition
 
 - Moved to tickets/done: Yes
-- Archived ticket path: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/
+- Archived ticket path: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/
 
 ## Version / Tag / Release Commit
 
-A new stable patch release is authorized. Current version is v1.4.25; planned version is v1.4.26. The documented release helper will synchronize desktop/gateway versions, curated notes, and the managed messaging manifest, then create and push the release commit/tag after repository finalization.
+- Previous stable version: v1.4.25
+- New stable version: v1.4.26
+- Release commit: d043eb931ee0e7e584c8b2325f4ed1403178a3af
+- Annotated tag: v1.4.26, pointing exactly to d043eb931ee0e7e584c8b2325f4ed1403178a3af
+- Version sync: autobyteus-web and autobyteus-message-gateway both report 1.4.26; the managed messaging manifest points to v1.4.26.
+- Curated notes: tickets/done/application-agent-streaming/release-notes.md was copied to .github/release-notes/release-notes.md by the documented helper.
 
 ## Repository Finalization
 
-- Bootstrap context: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/done/application-agent-streaming/investigation-notes.md
+- Bootstrap context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming/investigation-notes.md
 - Ticket branch: codex/application-agent-streaming
-- Ticket branch commit result: Safety checkpoint 1a796005c and merge 467dc6db completed; final delivery edits remain uncommitted pending verification
-- Ticket branch push: Not attempted
+- Ticket final commit: 651071efc22c219708274f4e507c34887fd43013
+- Ticket branch push: Completed before target merge
 - Target remote/branch: origin/personal
-- Target advanced after verification: No; the post-verification fetch remained dd815ee9
-- Delivery edits protected before integration: Completed
-- Re-integration before final merge: Not needed; the post-verification fetch found no new target commit
-- Target update: Deferred
-- Merge to target: Deferred
-- Push target: Deferred
-- Finalization status: In progress
-- Exact missing gate: None
+- Target advanced after verification: No; the post-verification fetch remained dd815ee9d83d253ab9bb586a7391b5ba6da18d53
+- Re-integration before final merge: Not needed
+- Merge into personal: Completed at 15878d993e207d4958353161fe7e9b37d05ab6f0
+- Push personal after merge: Completed
+- Release commit push: Completed at d043eb931ee0e7e584c8b2325f4ed1403178a3af
+- Repository finalization status: Completed
+- Blocker: None
 
 ## Release / Publication / Deployment
 
 - Applicable: Yes
 - Method: documented pnpm release helper on personal
-- Planned command: pnpm release 1.4.26 -- --release-notes tickets/done/application-agent-streaming/release-notes.md
-- Result: Pending repository finalization
-- Release notes: tickets/done/application-agent-streaming/release-notes.md
+- Command: pnpm release 1.4.26 -- --release-notes tickets/done/application-agent-streaming/release-notes.md
+- Result: Completed
+- Release commit/tag push: Completed
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.26
+- GitHub Release state: published stable release, not draft/prerelease, 21 assets
+- Desktop workflow: Success — macOS ARM64/x64, Linux ARM64/x64, Windows x64, and GitHub publication jobs
+- Android workflow: Success — signed release APK and GitHub publication
+- iOS workflow: Success — build/test, secret validation, archive, and App Store Connect upload
+- Messaging gateway workflow: Success — runtime package and GitHub publication
+- Server Docker workflow: Success — multi-architecture image push
+- Docker Hub: tags 1.4.26 and latest are active with matching manifest digest sha256:e4f1ebcc1bc1a7a6443a370b07f50b73e099836ba69e4fb32b58ded8544e1bfb for linux/amd64 and linux/arm64
+- Release notes handoff: Used
 - Blocker: None
 
 ## Post-Finalization Cleanup
 
-- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming
-- Worktree cleanup: Deferred
-- Worktree prune: Deferred
-- Local branch cleanup: Deferred
-- Remote branch cleanup: Not required; ticket branch was not pushed
-- Pre-handoff cleanup: Removed obsolete untracked evidence/ac018 gate-retracted scratch; server test .tmp is absent. Canonical round-3/round-4 evidence remains.
+- Dedicated ticket worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming
+- Worktree cleanup: Completed
+- Worktree prune: Completed
+- Local ticket branch cleanup: Completed
+- Remote ticket branch cleanup: Completed
+- Unrelated main-worktree state: .article-work was preserved outside the repository during release and restored unchanged afterward.
+- Canonical archived ticket: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-agent-streaming
+- Blocker: None
 
 ## Escalation / Reroute
 
@@ -98,12 +113,20 @@ Not applicable. There is no code, test, design, requirement, docs, packaging, or
 ## Release Notes Summary
 
 - Created: Yes — tickets/done/application-agent-streaming/release-notes.md
-- Archived release notes: tickets/done/application-agent-streaming/release-notes.md
-- Status: Updated and approved for v1.4.26
+- Archived release notes used: tickets/done/application-agent-streaming/release-notes.md
+- Curated tagged copy: .github/release-notes/release-notes.md
+- Status: Used successfully for v1.4.26
 
 ## Deployment Steps
 
-None. No environment deployment or rollout is in scope.
+1. Pushed the finalized ticket branch.
+2. Merged it into current personal and pushed merge 15878d993.
+3. Ran the documented release helper for 1.4.26.
+4. The pushed v1.4.26 tag started desktop, Android, iOS, messaging-gateway, and server-Docker workflows.
+5. All five workflows completed successfully.
+6. Verified the stable GitHub Release and its 21 assets.
+7. Verified Docker Hub tags 1.4.26 and latest resolve to the same active amd64/arm64 manifest.
+8. Removed the merged ticket branch locally/remotely and removed/pruned its worktree.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -117,9 +140,9 @@ None. No environment deployment or rollout is in scope.
 - Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
 - Source: HEAD 467dc6db762224f47ef4f6dcd52d4359ff27e90c; base dd815ee9d83d253ab9bb586a7391b5ba6da18d53
 - Result: Passed, macOS ARM64, version 1.4.25, bundle com.autobyteus.app
-- App: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
-- DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.25.dmg
-- ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.25.zip
+- Historical local app path: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app (removed with the ticket worktree after successful release)
+- Historical local DMG: AutoByteus_enterprise_macos-arm64-1.4.25.dmg (removed with the ticket worktree)
+- Historical local ZIP: AutoByteus_enterprise_macos-arm64-1.4.25.zip (removed with the ticket worktree)
 - DMG SHA-256: b6fced1e247536d781fb267d97c4119c58bb044987b28cef94f980da79f92e3f
 - ZIP SHA-256: 5ca3db21b31ef719370e90b7aeb4788cc96d6ef4681e563ebaa7f878b0abc629
 - Validation: expected files, bundle/version metadata, ARM64 Mach-O, DMG checksum, and ZIP integrity passed.
@@ -141,7 +164,11 @@ None. No environment deployment or rollout is in scope.
 - Electron build — Pass; app/DMG/ZIP produced.
 - Artifact checks — Pass except expected strict signing failure for the intentionally unsigned local app.
 - Source preservation — packaging changed no non-ticket tracked source.
-- Cleanup — test .tmp absent and obsolete untracked scratch removed.
+- Cleanup — test .tmp and obsolete scratch removed; ticket worktree and local/remote ticket branches removed.
+- Release helper — Pass; release commit d043eb931 and tag v1.4.26 pushed.
+- Release workflows — Pass; all five tag-triggered workflows completed successfully.
+- GitHub Release — Pass; stable v1.4.26 published with 21 assets.
+- Docker publication — Pass; 1.4.26 and latest active with matching multi-architecture digest.
 
 ## Rollback Criteria
 
@@ -152,4 +179,4 @@ None. No environment deployment or rollout is in scope.
 
 ## Final Status
 
-User verification and release authorization received. The post-verification target remained unchanged. Repository finalization and stable v1.4.26 publication are in progress.
+Completed. The user-verified implementation is merged into personal, v1.4.26 is published, all five release workflows passed, GitHub and Docker publication were verified, the ticket is archived, and the dedicated ticket branch/worktree were removed. No blocker remains.
