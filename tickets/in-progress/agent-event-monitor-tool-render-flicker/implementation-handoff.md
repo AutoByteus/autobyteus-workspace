@@ -7,7 +7,9 @@
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/design-spec.md`
 - Supplemental task artifacts: `None`; the sanitized runtime probes and user screenshots remain evidence inventoried by the investigation notes, not behavior-defining supplements.
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/design-review-report.md`
-- Implementation source/evidence commit: `be527c762d12a34fea415e64501d845ea45f4300`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/code-review-report.md`
+- Authoritative replacement implementation source/evidence commit: `710ab2f46f1a1bf559b735a8ef5863faed025777`
+- Superseded implementation history: source/evidence `be527c762d12a34fea415e64501d845ea45f4300`; packaging `b3cb111bf568f5088a50b01914b0c32c1f8d492e`.
 - Implementation check evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/implementation-checks-20260722.txt`
 - Repository-wide web typecheck baseline evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/web-typecheck-20260722.txt`
 
@@ -20,6 +22,9 @@
 - Preserved the existing 128-turn defensive tracker guard without adding capacity-driven lifecycle behavior.
 - Added focused server coverage for the tracker action contract, complete boundary/preserve matrix, exact ordering, stable IDs, missing-turn behavior, deterministic global closure, source payload preservation, and runtime-memory exactly-once projection.
 - Added frontend test-only coverage proving the unchanged generic `SEGMENT_END` handler completes a non-empty Think segment and preserves terminal tools through a >100 interleaved standalone/team latest-window sequence. No web production source changed.
+- Resolved `CR-001` by making every reasoning lifecycle content/end event explicitly status-neutral (`statusHint: null`) at the governing converter while leaving actual user/tool/turn/error boundary event order and derived status hints unchanged.
+- Added exact `TURN_COMPLETED`, `TURN_STARTED`, and `ERROR` assertions for neutral prefixed ends plus preserved `IDLE`, `ACTIVE`, and `ERROR` boundary hints, together with a downstream lifecycle-observer regression proving the following real error retains `provider exploded`.
+- Resolved `CR-002` by normalizing captured evidence whitespace and proving `git diff --check 965f97685c08569a98186b2a894243c0b3f602d3..710ab2f46f1a1bf559b735a8ef5863faed025777` passes.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -27,8 +32,8 @@
 | --- | --- | --- | --- |
 | `BEH-001` | Active standalone/team selection must see coherent state without selection repair machinery. | Upstream Codex notifications now close reasoning through `codex-thread-event-converter.ts`; selection/hydration and UI files are unchanged. | Implemented at the first faulty provider boundary; no timer, remount, refresh, or projection request added. |
 | `BEH-002` | Closed Thinking must participate in ordinary latest-100 eviction so later terminal tools do not disappear. | Server emits the missing generic end; existing web `segmentHandler` and recent-window production dispatch are exercised by focused tests only. | Standalone and team-member >100 interleaved tests retain 50 completed Thinkings and 50 terminal tools, including the newest tool. |
-| `BEH-003` | Multiple snapshots share one ID until exactly one end precedes a real boundary; matching tool updates preserve. | `codex-reasoning-block-tracker.ts`, `codex-reasoning-event-normalizer.ts`, parser facade, governing converter, and item/raw/turn/thread sub-converters. | Full current 48-case boundary/preserve matrix now asserts exact reasoning-end presence/absence and order; new blocks receive monotonic fresh IDs. |
-| `BEH-004` | Missing-turn snapshots and reachable turn-start/error cleanup must not abandon identities. | Tracker adjacent content/end action pair; converter minimal end mapping; deterministic `closeAll()` order; turn/thread lifecycle prefixing. | Missing-turn fallback projection and two-turn deterministic start/error closure are covered; repeated cleanup has no later end effect. |
+| `BEH-003` | Multiple snapshots share one ID until exactly one end precedes a real boundary; matching tool updates preserve. | `codex-reasoning-block-tracker.ts`, `codex-reasoning-event-normalizer.ts`, parser facade, governing converter, and item/raw/turn/thread sub-converters. | Full current boundary/preserve matrix asserts exact reasoning-end presence/absence/order; every reasoning action is status-neutral while the real boundary retains its existing hint; new blocks receive monotonic fresh IDs. |
+| `BEH-004` | Missing-turn snapshots and reachable turn-start/error cleanup must not abandon identities. | Tracker adjacent content/end action pair; converter minimal neutral end mapping; deterministic `closeAll()` order; turn/thread lifecycle prefixing. | Missing-turn fallback projection and two-turn deterministic start/error closure are covered; repeated cleanup has no later end effect; error lifecycle observation retains the actual boundary message. |
 | `BEH-005` | Existing history remains directly usable; future reasoning persists once with stable reasoning/tool order. | Existing `RuntimeMemoryEventAccumulator` and readers are unchanged; converter output is fed through focused accumulator coverage. | One grouped reasoning trace is written before the next tool, later turn completion does not duplicate it, and missing-turn reasoning projects with its following text on one fallback turn. |
 
 ## Key Files Or Areas
@@ -89,22 +94,24 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker`
 - Branch: `codex/agent-event-monitor-tool-render-flicker`
 - Reviewed base: `965f97685c08569a98186b2a894243c0b3f602d3`
-- Implementation source/evidence commit: `be527c762d12a34fea415e64501d845ea45f4300`
+- Authoritative replacement implementation source/evidence commit: `710ab2f46f1a1bf559b735a8ef5863faed025777`
+- Superseded source/evidence and packaging commits: `be527c762d12a34fea415e64501d845ea45f4300`, `b3cb111bf568f5088a50b01914b0c32c1f8d492e`
 - No dependencies or generated protocol/schema artifacts changed.
 - `pnpm -C autobyteus-server-ts typecheck` is not a usable repository check at this baseline because `tsconfig.json` includes tests while `rootDir` is `src`, producing repository-wide `TS6059` errors. The source-only server build passed.
 - `pnpm -C autobyteus-web exec nuxi typecheck` exits 1 on 243 unrelated baseline diagnostics; the full captured log has zero diagnostics for the two changed web test files.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-server-ts exec vitest run` on all five Codex event suites plus runtime-memory accumulator: **Pass**, 6 files / 138 tests.
+- `pnpm -C autobyteus-server-ts exec vitest run` on `AgentRunService` termination, all five Codex event suites, and runtime-memory accumulator: **Pass**, 7 files / 147 tests.
 - `pnpm -C autobyteus-web exec vitest run` on generic segment handling, production dispatch/latest-100, and recent-window suites: **Pass**, 3 files / 34 tests.
 - `pnpm -C autobyteus-web guard:web-boundary`: **Pass**.
 - `pnpm -C autobyteus-web guard:localization-boundary`: **Pass**.
 - `pnpm -C autobyteus-server-ts build`: **Pass**, including shared builds, source TypeScript build, and built-in agent bootstrap smoke check.
-- `git diff --check`: **Pass** after normalizing captured evidence whitespace.
-- Changed source effective non-empty line audit: **Pass**, maximum 499 lines.
+- `git diff --check 965f97685c08569a98186b2a894243c0b3f602d3..710ab2f46f1a1bf559b735a8ef5863faed025777`: **Pass** after normalizing both implementation and prior-review captured evidence whitespace.
+- Changed source effective non-empty line audit: **Pass**, maximum 498 lines.
 - Repository-wide server/web typecheck attempts: **Baseline-blocked**, as documented above; no changed-file web diagnostic remains and the source-only server build passed.
-- Durable evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/implementation-checks-20260722.txt` and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/web-typecheck-20260722.txt`.
+- Durable implementation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/implementation-checks-20260722.txt` and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/web-typecheck-20260722.txt`.
+- Preserved prior-review evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-focused-checks-20260722.txt` and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-status-hint-probe-20260722.txt`.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
