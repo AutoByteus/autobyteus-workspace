@@ -12,7 +12,8 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/socratic-math-live-journey.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/design-review-report.md`
 - Implementation-source review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/code-review-report.md`
-- Current expanded-scope implementation source/test commit: `6896bd413f62ec887884a579648ed83c71cb59a5`
+- Current expanded-scope implementation source/test commit: `e9c130a52b9f790505a4fd472149790ddcaecafd`
+- CR-005 lifecycle-fix commit: `6896bd413f62ec887884a579648ed83c71cb59a5`
 - Round-11 initial expanded-scope source/test commit: `4732df357706a9dfa1798193ed02162cae715b13`
 - Round-11 reviewed source base: `69fae2e424a708fe9a0d038077346d5b95b41df6`
 - Prior deterministic-framework implementation source/test commit: `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`
@@ -39,6 +40,15 @@
 - Added mounted JSDOM coverage for the exact reviewer reproduction (dispose during a deferred initial lessons request), out-of-order `A -> B` detail resolution, a stale follow-up error, and a stale lesson-close completion. The tests prove no post-dispose connection, latest-selection retention, no stale error presentation, no replacement-session close, and no stale refresh.
 - Regenerated the runnable UI and both importable-package runtime mirrors through the existing Socratic build owner. All four runtime files are byte-identical and a second build preserved the combined SHA-256 input hash.
 - CR-005 source/test commit: `6896bd413f62ec887884a579648ed83c71cb59a5`.
+
+### Implementation-Source Review Round 5 Resolution
+
+- `CR-006` resolved inside the same lifecycle-generation invariant with one explicit `pendingStartOperation`. Notification and manual refreshes may update the lesson list while a start is pending, but they do not replace the selected lesson, overwrite the “Starting” status, or steal the only initial-send owner; an older pre-start refresh remains generation-fenced.
+- When the GraphQL response arrives, the still-current start operation alone selects the returned lesson, connects through the standard session, awaits READY, and sends the stored problem once. The pending marker is rebased across that owned selection and cleared immediately after the one send is accepted; there is no resend, fallback, launch-time input, or second send path.
+- Explicit lesson selection and disposal still increment/invalidate the lifecycle generation, clear pending-start ownership, close the prior session where applicable, and make the late start response inert.
+- Mounted coverage now composes both real transport orders: GraphQL-response-first and `lesson.started`-refresh-first each produce exactly one connection and one post-READY input, never zero or two. Additional tests prove explicit selection and disposal cancel the pending start without sending.
+- Regenerated all four Socratic runtime mirrors through the existing build owner; they are byte-identical and idempotent.
+- CR-006 source/test commit: `e9c130a52b9f790505a4fd472149790ddcaecafd`.
 
 ### Preserved Standard Framework Baseline
 
@@ -88,7 +98,7 @@
 | `DS-014` | Worker observer activation is atomic. | observer registry + activation barrier + handler context factory | Host PENDING-to-ACTIVE ordering and pending cancellation implemented. |
 | `DS-015` | All reachable terminal causes converge before fan-out. | terminal transition service used by host, observer, and recovery services | Keyed serialization; store/journal then one terminal signal. |
 | `DS-016` | Custom socket sessions correlate and clean up independently. | Gateway and worker WebSocket session services + JSON-line protocol | Ordered bounded delivery and scope-local failure cleanup. |
-| `DS-017` | The real Socratic UI starts without input, connects to its selected tutor, sends after READY, renders safe live progress, and converges on the durable artifact transcript. | backend SDK launch helper -> Socratic runtime lifecycle/selection generation -> read/GraphQL -> `applicationClient.agentCommunication` -> Socratic live session/renderer -> existing artifact notification refresh | Implemented deterministically, including stale/disposed async completion suppression. The real mounted Codex run required by `AC-018` remains downstream API/E2E work. |
+| `DS-017` | The real Socratic UI starts without input, connects to its selected tutor, sends after READY, renders safe live progress, and converges on the durable artifact transcript. | backend SDK launch helper -> Socratic runtime lifecycle/selection generation plus singular pending-start owner -> read/GraphQL and notification returns -> `applicationClient.agentCommunication` -> Socratic live session/renderer -> existing artifact notification refresh | Implemented deterministically, including both start/notification orderings and stale/disposed async completion suppression. The real mounted Codex run required by `AC-018` remains downstream API/E2E work. |
 
 ## Key Files Or Areas
 
@@ -113,7 +123,7 @@
 
 - `AC-018` is not satisfied by these implementation checks. API/E2E must still preflight the exact Codex model/login, import and mount a fresh generated Socratic package, execute one bounded real turn, verify effective config/live/durable/cleanup evidence, apply the approved one-clean-retry classification, and recalculate confidence.
 - Rendered self-validation used a deterministic hosted-application-state preview rather than the actual imported desktop mount. Real SDK/socket/provider interaction and mounted browser behavior remain independently unverified here.
-- The worktree intentionally remains dirty only in upstream/design/review/delivery-owned ticket artifacts and logs. They were neither staged nor committed; source, tests, and generated implementation paths are clean at commit `6896bd413f62ec887884a579648ed83c71cb59a5`.
+- The worktree intentionally remains dirty only in upstream/design/review/delivery-owned ticket artifacts and logs. They were neither staged nor committed; source, tests, and generated implementation paths are clean at commit `e9c130a52b9f790505a4fd472149790ddcaecafd`.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -132,7 +142,7 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: expanded-scope changed production sources remain at or below `438` effective non-empty lines. The application-specific tutor session is `198` effective lines, and CR-005 leaves `socratic-runtime.js` at `311`; its local-fix delta is `160` changed lines, below the `>220` changed-line pressure signal. The existing split continues to avoid the `>500` source limit without introducing a generic framework abstraction. No compatibility alias, replay path, custom/raw/native socket, migration, auth/mobile surface, or fallback was added.
+- Notes: expanded-scope changed production sources remain at or below `438` effective non-empty lines. The application-specific tutor session is `198` effective lines, and CR-006 leaves `socratic-runtime.js` at `328`; the CR-006 local-fix delta is `38` changed lines, below the `>220` changed-line pressure signal. The existing split continues to avoid the `>500` source limit without introducing a generic framework abstraction. No compatibility alias, resend/replay path, custom/raw/native socket, migration, auth/mobile surface, or fallback was added.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -156,6 +166,14 @@
   - custom WebSocket frame `1 MiB`; Gateway inbound FIFO `64`; early outbound FIFO `64`; worker outbound FIFO `64`; network buffered amount `2 MiB`.
 
 ## Local Implementation Checks Run
+
+### CR-006 Start/Notification Interleaving Local Fix
+
+- `autobyteus-server-ts`: `pnpm exec vitest run --no-watch` across launch correlation, GraphQL executors, target projection, tutor session, tutor renderer, and mounted runtime lifecycle — `6 files / 29 tests` passed.
+- Mounted runtime lifecycle suite — `1 file / 8 tests` passed, including GraphQL-response-first exactly-one-send, notification-refresh-first exactly-one-send, explicit-selection cancellation, disposal cancellation, and all four retained CR-005 stale/disposed cases.
+- Socratic Math Teacher: `pnpm build` passed and a no-edit second build preserved the combined runtime-mirror SHA-256 `0b44d25007a69284857e243b49cf192a9284d2d20a1f271ca28bf619524763c2`. All four mirrors are byte-identical and pass `node --check`.
+- `autobyteus-server-ts`: `pnpm build` passed, including shared-package builds, Prisma generation, production TypeScript compilation, and built-in-agent bootstrap smoke.
+- `git diff --check` passed; backend source, migration, and Prisma schema diffs are empty for this local fix.
 
 ### CR-005 Lifecycle Local Fix
 
@@ -200,7 +218,7 @@
 - Project development / preview instructions and rendered surface used: the application has a source-first build but no standalone hostless preview. I rendered the actual Socratic shell/detail renderer and stylesheet with deterministic hosted state, then inspected it directly in headless Chrome; Vitest/JSDOM exercised the renderer and application-specific session state machine.
 - States, layouts, viewports, and interactions inspected: streaming state at `1440x1200` and `720x1200`; connecting/ready/streaming/saved/failed/closed transition outputs and one-send/listener cleanup through deterministic tests; saved-state draft clearing and accessible `aria-live="polite"` through DOM tests; mounted dispose-during-load and rapid-selection/stale-operation interactions through the new JSDOM lifecycle suite.
 - Visual or interaction issues found and corrected: added a distinct but design-consistent live tutor panel, concise safe publication/completion cues, disabled duplicate start controls during connection/input acceptance, responsive wrapping/one-column behavior, and root-scoped detail event binding.
-- Supporting evidence and remaining unverified states or limitations: focused renderer/session tests passed (`5` tests across their two files), and mounted runtime lifecycle tests passed (`4/4`). This was not a real imported desktop mount or live provider run; the exact mounted Codex journey, natural model output variation, and real artifact notification timing remain downstream `AC-018` work.
+- Supporting evidence and remaining unverified states or limitations: focused renderer/session tests passed (`5` tests across their two files), and mounted runtime lifecycle tests passed (`8/8`), including both notification/GraphQL orderings. This was not a real imported desktop mount or live provider run; the exact mounted Codex journey, natural model output variation, and real artifact notification timing remain downstream `AC-018` work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
