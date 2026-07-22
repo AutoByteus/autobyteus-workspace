@@ -141,6 +141,35 @@ const createTempDatabase = async (prefix: string, migrationsDir: string): Promis
   return dbPath;
 };
 
+const seedActiveLesson = (dbPath: string, lessonId = "lesson-1"): void => {
+  const db = new DatabaseSync(dbPath);
+  try {
+    db.prepare(
+      `INSERT INTO lessons (
+         lesson_id,
+         prompt,
+         status,
+         latest_binding_id,
+         latest_run_id,
+         latest_binding_status,
+         last_error_message,
+         created_at,
+         updated_at,
+         closed_at
+       ) VALUES (?, ?, 'active', ?, ?, 'ATTACHED', NULL, ?, ?, NULL)`,
+    ).run(
+      lessonId,
+      "Solve 3x + 5 = 20",
+      "binding-lesson-1",
+      "team-run-lesson-1",
+      "2026-07-22T12:00:00.000Z",
+      "2026-07-22T12:00:00.000Z",
+    );
+  } finally {
+    db.close();
+  }
+};
+
 const buildBriefBinding = (launchRequestId: string): ApplicationAgentBinding | ApplicationAgentTeamBinding => ({
   bindingId: "binding-brief-1",
   applicationId: "brief-studio",
@@ -790,6 +819,86 @@ describe("App-owned launchRequestId correlation", () => {
     }
   });
 
+  it("keeps askFollowUp on the inline whole-team DTO without a pre-send binding fetch", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-follow-up-", SOCRATIC_MIGRATIONS_DIR);
+    seedActiveLesson(appDatabasePath);
+    const binding = buildLessonBinding("lesson-launch-request-1");
+    const sendInput = vi.fn(async () => binding);
+    const get = vi.fn(async () => binding);
+    const capabilities = buildCapabilities({ sendInput, get });
+    const context = createHandlerContext({ appDatabasePath, capabilities });
+
+    const lesson = await createLessonRuntimeService(context).askFollowUp({
+      lessonId: "lesson-1",
+      text: "Why should I subtract five first?",
+    });
+
+    expect(sendInput).toHaveBeenCalledWith({
+      address: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_RUN" },
+      },
+      input: {
+        text: "Why should I subtract five first?",
+        metadata: { lessonId: "lesson-1" },
+      },
+    });
+    expect(get).toHaveBeenCalledOnce();
+    expect(get).toHaveBeenCalledWith("binding-lesson-1");
+    expect(sendInput.mock.invocationCallOrder[0]).toBeLessThan(get.mock.invocationCallOrder[0]!);
+    expect(lesson).toMatchObject({
+      tutorTargetAddress: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+      },
+      messages: [expect.objectContaining({
+        role: "student",
+        kind: "follow_up",
+        body: "Why should I subtract five first?",
+      })],
+    });
+  });
+
+  it("keeps requestHint on the inline whole-team DTO without a pre-send binding fetch", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-hint-", SOCRATIC_MIGRATIONS_DIR);
+    seedActiveLesson(appDatabasePath);
+    const binding = buildLessonBinding("lesson-launch-request-1");
+    const sendInput = vi.fn(async () => binding);
+    const get = vi.fn(async () => binding);
+    const capabilities = buildCapabilities({ sendInput, get });
+    const context = createHandlerContext({ appDatabasePath, capabilities });
+
+    const lesson = await createLessonRuntimeService(context).requestHint({
+      lessonId: "lesson-1",
+      text: "Help with the first step.",
+    });
+
+    expect(sendInput).toHaveBeenCalledWith({
+      address: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_RUN" },
+      },
+      input: {
+        text: "The student requests a hint. Help with the first step.",
+        metadata: { lessonId: "lesson-1", requestKind: "hint" },
+      },
+    });
+    expect(get).toHaveBeenCalledOnce();
+    expect(get).toHaveBeenCalledWith("binding-lesson-1");
+    expect(sendInput.mock.invocationCallOrder[0]).toBeLessThan(get.mock.invocationCallOrder[0]!);
+    expect(lesson).toMatchObject({
+      tutorTargetAddress: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+      },
+      messages: [expect.objectContaining({
+        role: "student",
+        kind: "hint_request",
+        body: "Help with the first step.",
+      })],
+    });
+  });
+
   it("launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-defaults-", SOCRATIC_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
@@ -817,6 +926,7 @@ describe("App-owned launchRequestId correlation", () => {
         },
       })),
       startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildLessonBinding(input.launchRequestId)),
+      get: vi.fn(async () => buildLessonBinding("lesson-launch-request-1")),
     });
     const context = createHandlerContext({
       appDatabasePath,
@@ -855,6 +965,8 @@ describe("App-owned launchRequestId correlation", () => {
         },
       },
     });
+    expect(capabilities.agentExecution.get).toHaveBeenCalledOnce();
+    expect(capabilities.agentExecution.get).toHaveBeenCalledWith("binding-lesson-1");
   });
 
   it("launches Socratic lessons from explicit per-member team profiles when defaults are null", async () => {

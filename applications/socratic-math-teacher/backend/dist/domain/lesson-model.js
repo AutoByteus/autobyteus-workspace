@@ -1,14 +1,13 @@
+import { createApplicationAgentTeamMemberTargetAddress, } from "../vendor/application-backend-sdk.js";
 const UNUSABLE_BINDING_STATUSES = new Set(["TERMINATING", "TERMINATED", "FAILED", "ORPHANED"]);
-export const deriveTutorTargetAddress = (lesson) => {
+const isApplicationAgentTeamBinding = (binding) => binding.runtime.subject === "TEAM_RUN";
+export const deriveTutorTargetAddress = (lesson, binding) => {
     if (lesson.status !== "active" || !lesson.latestBindingId || (lesson.latestBindingStatus
-        && UNUSABLE_BINDING_STATUSES.has(lesson.latestBindingStatus))) {
+        && UNUSABLE_BINDING_STATUSES.has(lesson.latestBindingStatus)) || !binding || binding.status !== "ATTACHED") {
         return null;
     }
-    return {
-        bindingId: lesson.latestBindingId,
-        target: {
-            kind: "AGENT_TEAM_MEMBER",
-            memberRouteKey: "tutor",
-        },
-    };
+    if (!isApplicationAgentTeamBinding(binding)) {
+        throw new Error("Socratic tutor binding must be an agent-team binding.");
+    }
+    return createApplicationAgentTeamMemberTargetAddress(binding, "tutor");
 };

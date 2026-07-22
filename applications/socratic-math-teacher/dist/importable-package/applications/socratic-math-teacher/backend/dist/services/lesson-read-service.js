@@ -13,18 +13,27 @@ export const createLessonReadService = (context) => ({
     listLessons() {
         return withAppDatabase(context.storage.appDatabasePath, (db) => createLessonRepository(db).listSummaries());
     },
-    getLesson(lessonId) {
+    async getLesson(lessonId) {
         const normalizedLessonId = requireLessonId(lessonId);
-        return withAppDatabase(context.storage.appDatabasePath, (db) => {
+        const lessonDetail = withAppDatabase(context.storage.appDatabasePath, (db) => {
             const lesson = createLessonRepository(db).getById(normalizedLessonId);
             if (!lesson) {
                 return null;
             }
             return {
-                ...lesson,
-                tutorTargetAddress: deriveTutorTargetAddress(lesson),
+                lesson,
                 messages: createLessonMessageRepository(db).listByLessonId(normalizedLessonId),
             };
         });
+        if (!lessonDetail)
+            return null;
+        const binding = lessonDetail.lesson.status === "active" && lessonDetail.lesson.latestBindingId
+            ? await context.agentExecution.get(lessonDetail.lesson.latestBindingId)
+            : null;
+        return {
+            ...lessonDetail.lesson,
+            tutorTargetAddress: deriveTutorTargetAddress(lessonDetail.lesson, binding),
+            messages: lessonDetail.messages,
+        };
     },
 });

@@ -1,4 +1,9 @@
-import type { ApplicationAgentTargetAddress } from "@autobyteus/application-backend-sdk";
+import {
+  createApplicationAgentTeamMemberTargetAddress,
+  type ApplicationAgentBinding,
+  type ApplicationAgentTargetAddress,
+  type ApplicationAgentTeamBinding,
+} from "@autobyteus/application-backend-sdk";
 
 export type LessonStatus = "active" | "closed" | "blocked";
 
@@ -25,22 +30,23 @@ export type LessonDetail = LessonRecord & {
 
 const UNUSABLE_BINDING_STATUSES = new Set(["TERMINATING", "TERMINATED", "FAILED", "ORPHANED"]);
 
+const isApplicationAgentTeamBinding = (
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
+): binding is ApplicationAgentTeamBinding => binding.runtime.subject === "TEAM_RUN";
+
 export const deriveTutorTargetAddress = (lesson: Pick<
   LessonSummary,
   "status" | "latestBindingId" | "latestBindingStatus"
->): ApplicationAgentTargetAddress | null => {
+>, binding: ApplicationAgentBinding | ApplicationAgentTeamBinding | null): ApplicationAgentTargetAddress | null => {
   if (lesson.status !== "active" || !lesson.latestBindingId || (
     lesson.latestBindingStatus
     && UNUSABLE_BINDING_STATUSES.has(lesson.latestBindingStatus)
-  )) {
+  ) || !binding || binding.status !== "ATTACHED") {
     return null;
   }
 
-  return {
-    bindingId: lesson.latestBindingId,
-    target: {
-      kind: "AGENT_TEAM_MEMBER",
-      memberRouteKey: "tutor",
-    },
-  };
+  if (!isApplicationAgentTeamBinding(binding)) {
+    throw new Error("Socratic tutor binding must be an agent-team binding.");
+  }
+  return createApplicationAgentTeamMemberTargetAddress(binding, "tutor");
 };

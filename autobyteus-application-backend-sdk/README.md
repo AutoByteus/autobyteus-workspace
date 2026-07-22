@@ -5,6 +5,7 @@ Backend helper package for application bundle backends executed by the AutoByteu
 ## What it owns
 
 - `defineApplication(...)`
+- pure target-address builders for bound agents, whole teams, and static team members
 - re-exported backend definition, handler, request, storage, notification, named context-capability, resource-slot, and execution-event types from `@autobyteus/application-sdk-contracts`
 
 
@@ -46,6 +47,39 @@ export default defineApplication({
       })
     },
   },
+})
+```
+
+## Application agent target addresses
+
+When backend business code already owns a precise binding and needs a reusable or projected address, prefer the matching typed builder:
+
+```ts
+import {
+  createApplicationAgentTargetAddress,
+  createApplicationAgentTeamMemberTargetAddress,
+  createApplicationAgentTeamTargetAddress,
+} from '@autobyteus/application-backend-sdk'
+
+const agentAddress = createApplicationAgentTargetAddress(agentBinding)
+const wholeTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding)
+const reviewerAddress = createApplicationAgentTeamMemberTargetAddress(
+  teamBinding,
+  'reviewer',
+)
+```
+
+The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. They do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
+
+The shared address DTO remains directly constructible. Code that owns only a `bindingId` and immediately performs a one-shot send should not fetch a binding solely to use a builder:
+
+```ts
+await context.agentExecution.sendInput({
+  address: {
+    bindingId,
+    target: { kind: 'AGENT_TEAM_RUN' },
+  },
+  input: { text: 'Continue the team task.' },
 })
 ```
 

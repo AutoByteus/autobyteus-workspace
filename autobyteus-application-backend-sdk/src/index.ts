@@ -5,6 +5,7 @@ export const defineApplication = <TDefinition extends ApplicationBackendDefiniti
 ): TDefinition => definition;
 
 export * from "./launch-profile.js";
+export * from "./application-agent-target-address.js";
 
 export type {
   ApplicationAgentRunLaunch,
