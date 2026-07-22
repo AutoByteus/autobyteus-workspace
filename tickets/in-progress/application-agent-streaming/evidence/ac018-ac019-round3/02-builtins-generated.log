@@ -1,0 +1,64 @@
+Built-in package/generation execution — fresh round 3
+HEAD=3e48c0ea2c9ccabe52c3126f0db799b3865186a3
+initial_generated_files_hash=426 e14098b9b23c73ece8ddf53995d083857e0a90243cf827f0f5238403714ce2fb
+=== initial product diff ===
+=== Brief backend typecheck/build ===
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio
+> node ./scripts/build-package.mjs
+
+Brief Studio importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio/dist/importable-package
+=== Socratic backend typecheck/build ===
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher
+> node ./scripts/build-package.mjs
+
+Socratic Math Teacher importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher/dist/importable-package
+after_first_generated_files_hash= 426 e14098b9b23c73ece8ddf53995d083857e0a90243cf827f0f5238403714ce2fb
+Traceback (most recent call last):
+  File "<stdin>", line 17, in <module>
+AssertionError
+
+=== SETUP PROBE CORRECTION ===
+The first local assertion looked for an obsolete generic tools key. The current approved config owns toolNames; no product/build command failed. Corrected before final classification.
+after_first_generated_files_hash= 426 e14098b9b23c73ece8ddf53995d083857e0a90243cf827f0f5238403714ce2fb
+source exact codex/high config, no service tier, publish_artifacts present
+Traceback (most recent call last):
+  File "<stdin>", line 14, in <module>
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1256, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1242, in open
+    return io.open(self, mode, buffering, encoding, errors, newline,
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1110, in _opener
+    return self._accessor.open(self, flags, mode)
+FileNotFoundError: [Errno 2] No such file or directory: 'applications/socratic-math-teacher/backend/dist/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json'
+
+=== SETUP PROBE CORRECTION 2 ===
+The source package has two config mirrors (authoring source and importable package), not a backend/dist config copy. The missing probe path was an execution-script assumption, not a build failure.
+after_first_generated_files_hash= 426 e14098b9b23c73ece8ddf53995d083857e0a90243cf827f0f5238403714ce2fb
+source exact codex/high config, no service tier, publish_artifacts present
+importable exact codex/high config, no service tier, publish_artifacts present
+=== second builds for idempotency ===
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio
+> node ./scripts/build-package.mjs
+
+Brief Studio importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio/dist/importable-package
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher
+> node ./scripts/build-package.mjs
+
+Socratic Math Teacher importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher/dist/importable-package
+after_second_generated_files_hash= 426 e14098b9b23c73ece8ddf53995d083857e0a90243cf827f0f5238403714ce2fb
+=== exact mirror byte identity ===
+four target-address runtime mirrors byte-identical
+=== final product diff ===
+RESULT=PASS

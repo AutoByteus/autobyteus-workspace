@@ -8,9 +8,9 @@
 - Ticket branch: `codex/application-agent-streaming`
 - Finalization target from bootstrap context: `origin/personal` / local `personal`
 - Implementation/review-fix commits: `8d93ee5c1fb27dc910496626d6ef4aa38da4fb94`, `5e824f8de8fea67ae8da820b7f5134b78923907e`, `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`, and reviewed artifact HEAD `6b2cdce571fa8d1920f7ad57ede0e8309b94c0ad`
-- Delivery safety checkpoint: `9b2543ee7a0342e1a42fd71a38f51d282978c844`
-- Latest tracked base included in this candidate: `origin/personal` at `9b4e038a40e0b6358fe53ca101406e0f6446e790` (history includes `v1.4.23`)
-- Integration method/result: clean merge at `1fa7fa24d2ce80950778a0572ba4332f56c514c3`; the branch is eight commits ahead and zero behind the fetched target.
+- Delivery safety checkpoints: `9b2543ee7a0342e1a42fd71a38f51d282978c844`, `4d5ea95b2cb180d9e4302248dcaf37aa273ef955`, and `77e616f30c9e3e7e234366adf7b322fdebf6912e`
+- Latest tracked base included in this candidate: `origin/personal` at `965f97685c08569a98186b2a894243c0b3f602d3` (history includes `v1.4.24`)
+- Integration method/result: clean final merge at `69fae2e424a708fe9a0d038077346d5b95b41df6`; the branch is twelve commits ahead and zero behind the fetched target.
 - Repository finalization: Not started. Per delivery policy, the ticket remains in progress and the branch has not been pushed or merged into `personal` pending explicit user verification.
 - Release/publication/deployment: Not requested or authorized; none has been performed.
 
@@ -39,11 +39,11 @@
 - Upstream focused coverage: new/changed live coverage `3` files / `6` tests; combined owner coverage `16` files / `72` tests.
 - Upstream broader coverage: `29` files / `156` tests, including the complete three-test Brief imported-package lifecycle surface.
 - Upstream web coverage: `4` files / `11` tests. Built-in regeneration/drift, final inventories, and cleanup passed.
-- Delivery refresh: `origin/personal` advanced from `534210b9e1dffff6c22855ae89ddb3d2afef5a9b` to `9b4e038a40e0b6358fe53ca101406e0f6446e790` by five unrelated nested-Mermaid-overlay/release commits. A safety checkpoint was created and the latest base merged without conflicts or changed-path overlap.
-- Delivery integrated-state build: `pnpm -C autobyteus-server-ts build` passed.
-- Delivery integrated-state focused test: the standard WebSocket, custom backend WebSocket, and application-context capability integration files passed `3` files / `6` tests.
-- Delivery docs audit: `13/13` changed long-lived docs present, no obsolete active contract terms, canonical public concepts present, `41/41` relative links resolved, v3->v4 path cutover passed, and no migration/schema path changed.
-- User-test Electron build: the README-prescribed unsigned macOS build passed from integrated HEAD `1fa7fa24d2ce80950778a0572ba4332f56c514c3`; app, DMG, and ZIP artifact checks passed for version `1.4.23` / Apple Silicon.
+- Delivery refresh: `origin/personal` advanced from bootstrap `534210b9e1dffff6c22855ae89ddb3d2afef5a9b` through `v1.4.24` to `965f97685c08569a98186b2a894243c0b3f602d3` (38 commits). The reviewed candidate/evidence were checkpointed, and both 2026-07-22 refresh merges completed without conflicts or ticket/base changed-path overlap.
+- Delivery integrated-state build: `pnpm -C autobyteus-server-ts build` passed against base `71875b938a4b984f2010eae76230b429ff2d2de8`; the final additional base commit was delivery-only, and the full Electron rebuild reran the server build from final base `965f97685c08569a98186b2a894243c0b3f602d3`.
+- Delivery integrated-state focused test: the standard WebSocket, custom backend WebSocket, and application-context capability integration files passed `3` files / `6` tests after the substantive `v1.4.24` refresh.
+- Delivery docs audit: `13/13` changed long-lived docs present, no obsolete active contract terms, canonical public concepts present, `41/41` relative links resolved, v3->v4 path cutover passed, no migration/schema path changed, and the final delivery-only base commit required no ticket-doc correction.
+- User-test Electron build: the README-prescribed unsigned macOS build passed from final integrated HEAD `69fae2e424a708fe9a0d038077346d5b95b41df6`; app, DMG, and ZIP artifact checks passed for version `1.4.24` / Apple Silicon.
 - Residual risks: user launch/interaction confirmation, live third-party provider inference, and destructive OS/kernel buffer saturation remain pending or unexecuted. Deterministic provider-compatible events, real loopback WebSockets, a real child worker, browser-equivalent SDK behavior, bounds, lifecycle failures, and Electron packaging were directly validated; no residual item is a changed critical boundary.
 
 ## Documentation And Data
@@ -60,13 +60,13 @@
 
 - README method: `autobyteus-web/README.md`, **macOS Build With Logs (No Notarization)**.
 - Exact command from `autobyteus-web/`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
-- Source: ticket branch HEAD `1fa7fa24d2ce80950778a0572ba4332f56c514c3`, containing `origin/personal` base `9b4e038a40e0b6358fe53ca101406e0f6446e790`.
-- Result: `Passed` on 2026-07-21 for macOS ARM64, application version `1.4.23`, bundle identifier `com.autobyteus.app`.
+- Source: ticket branch HEAD `69fae2e424a708fe9a0d038077346d5b95b41df6`, containing fetched `origin/personal` base `965f97685c08569a98186b2a894243c0b3f602d3`.
+- Result: `Passed` on 2026-07-22 for macOS ARM64, application version `1.4.24`, bundle identifier `com.autobyteus.app`.
 - Application bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.zip`
-- DMG SHA-256: `ba07337336fbd82fc5504ade405e64df20b72591d67f0a25afc54f916dd7321b`
-- ZIP SHA-256: `97f7314583602d81e9e9a8264d2ff7fda843cc80128e3e24a1924cb4b6439b34`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.zip`
+- DMG SHA-256: `ed9a72686f745a0d019f0c255871f6a443814655299a15a61cb950cd99ef7a96`
+- ZIP SHA-256: `e9c3fe3f5e87e4f5971ccac6b900a2fbb29dd376b2545332439bdfea05a68473`
 - Artifact verification: app metadata and ARM64 Mach-O checks passed; `hdiutil verify` passed for the DMG; `unzip -tq` passed for the ZIP; tracked source remained unchanged.
 - Signing posture: this is the README's local no-notarization build. Electron Builder explicitly skipped signing; the executable has only an ad-hoc linker signature, no Team ID, and strict deep signature verification therefore fails as expected. It is not a signed/notarized release artifact.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-electron-mac-build.log`

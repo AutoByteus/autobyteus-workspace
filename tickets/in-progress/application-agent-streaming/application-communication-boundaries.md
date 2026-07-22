@@ -2,9 +2,9 @@
 
 ## Status And Authority
 
-This is a normative intended-behavior supplement to [`requirements.md`](./requirements.md) and [`design-spec.md`](./design-spec.md). Exact standard-agent protocol/state semantics are in [`application-agent-communication-contract.md`](./application-agent-communication-contract.md); exact optional custom-backend WebSocket semantics are in [`application-backend-websocket-contract.md`](./application-backend-websocket-contract.md).
+This is a normative intended-behavior supplement to [`requirements.md`](./requirements.md) and [`design-spec.md`](./design-spec.md). Exact standard-agent protocol/state semantics are in [`application-agent-communication-contract.md`](./application-agent-communication-contract.md); exact optional custom-backend WebSocket semantics are in [`application-backend-websocket-contract.md`](./application-backend-websocket-contract.md). The real Socratic application composition of these boundaries is `DS-017` in [`socratic-math-live-journey.md`](./socratic-math-live-journey.md).
 
-Status: `Approved intended-behavior basis; corrected manifest/exposure boundary and desktop-only application scope are ready for fresh architecture review.`
+Status: `User-approved revised intended-behavior basis at source HEAD 3e48c0ea2c9ccabe52c3126f0db799b3865186a3. Framework/runtime/Socratic/builder boundaries are committed. The unimplemented delta is the clean-cut minimal application stream projector/contract/consumer cutover after the first real Codex journey exposed broad-projector semantic drift. Runtime provider adapters, native AutoByteus streaming, authorization, transport, lifecycle, artifacts, notifications, and custom WebSockets remain unchanged.`
 
 It supersedes the diagram set in which a custom application backend WebSocket handler was mandatory for agent input/output. Custom backend WebSockets remain an optional separate plane.
 
@@ -27,7 +27,7 @@ flowchart LR
         BGW["Application Backend API Gateway"]
         NHUB["Application Backend Notification Hub"]
         ACOMM["Application Agent Communication Service"]
-        ASTREAM["Application Agent Streaming Service"]
+        ASTREAM["Application Agent Streaming Service\nminimal text/turn/error projection"]
         ORC["Application Orchestration"]
         ENGINE["Application Engine Host"]
     end
@@ -35,6 +35,7 @@ flowchart LR
     subgraph WORKER["Managed Application Backend Worker"]
         BHOST["Application Backend Host"]
         BUSINESS["Application business handlers"]
+        BSDK["Backend SDK\ntarget-address builders"]
     end
 
     subgraph RUNTIME["Agent Runtime"]
@@ -47,6 +48,7 @@ flowchart LR
     CLIENT --> NOTIFY
     CLIENT --> AGENT
     BACKEND --> BGW --> ENGINE --> BHOST --> BUSINESS
+    BUSINESS --> BSDK
     NOTIFY --> NHUB
     AGENT --> ACOMM --> ASTREAM --> ORC
     ORC --> ARUN
@@ -54,19 +56,24 @@ flowchart LR
     BHOST --> ORC
 ```
 
-The standard agent path does **not** traverse the application worker. Application business still decides when to create a binding and which target address to return to its frontend. After that decision, the framework owns connection, input routing, event projection, and lifecycle.
+The standard agent path does **not** traverse the application worker. Application business still decides when to create a binding and which target to return to its frontend. When it already owns a precise binding and projects a reusable frontend target, it uses the backend SDK to construct the canonical address from that binding/member selection. After that decision/construction, the framework owns connection, input routing, minimal application event projection, and lifecycle. Existing backend one-shot input callers may still construct the shared address DTO directly from `bindingId`; builders do not introduce a mandatory binding fetch.
 
 ## 2. Responsibility Boundaries
 
 | Boundary | Owns | Must Not Own |
 | --- | --- | --- |
 | AutoByteus desktop web host transport builder | fixed application transport bases and trusted application scope | application business query/path, authentication/credential APIs, target authorization |
-| Application frontend | business UI, target address received from its backend, event rendering, connection use | runtime IDs, binding authorization, provider parsing, server queues |
+| Application frontend | focused business UI, target address received from its backend, `TEXT_DELTA` accumulation and minimal turn/error rendering, connection use | rich native chat behavior, thinking/tool/provider parsing, runtime IDs, binding authorization, server queues |
+| Application backend business | when/why to start a binding, which bound target to expose, business persistence/projection, direct one-shot target DTOs from identities it already owns | projected member-target discriminants/membership policy, standard socket/session/projection mechanics |
+| Application backend SDK target-address builders | preferred canonical agent/team/static-member address construction from a precise binding plus local binding/member validation | mandatory binding fetch, business target selection, binding liveness/authorization, runtime/store/network access |
 | Frontend SDK direct WebSocket transports | standard target-path encoding or custom path/business-query construction, connection protocol/state | application authentication, application-scope selection, server authorization |
 | Frontend SDK `agentCommunication` | target-to-path codec, connection state, standard protocol, input correlation, listener dispatch | application business paths, native agent protocol, binding store reads |
 | Standard agent WebSocket adapter | fixed desktop route decoding, socket adaptation, trusted application-scope entry | application worker handlers, target authorization, event mapping |
 | `ApplicationAgentCommunicationService` | one standard network session, readiness, input request correlation, immediate serialized frame writes, socket buffered-amount enforcement, close | second agent-event FIFO, binding store, runtime source, application business protocol |
-| `ApplicationAgentStreamingService` | reusable target event subscription, exact public projection, per-consumer sequence/queue, terminal drain | frontend socket protocol, application database, binding store/hub bypass |
+| `ApplicationAgentStreamingService` | reusable target event subscription, minimal application projector, per-consumer sequence/queue, terminal drain | provider conversion, native chat mapping, full-response assembly, frontend socket protocol, application database, binding store/hub bypass |
+| Existing provider adapters / `AgentRunEvent` boundary | provider-native conversion into shared internal event type/established canonical text fields | application presentation, public redaction, sockets, authorization |
+| Native `AgentRunEventMessageMapper` | preserved native AutoByteus transport mapping from the shared internal event | application public contract or vertical UI policy |
+| `ApplicationAgentStreamEventProjector` | pure safe selection of five application variants from canonical `AgentRunEvent`; exact text delta preservation and exhaustive drop policy | provider alias repair, native mapping, queues, lifecycle, response accumulation, extensibility registry |
 | Application Orchestration | application/binding/target authorization, binding lifecycle lease, runtime descriptor, input routing, creation/control | network sockets, provider mapping, frontend listener state |
 | Custom WebSocket adapter / Application Backend API Gateway | active application/exposure validation, normalized custom request, HTTP/custom-WebSocket entry and session lifecycle into the managed backend | application authentication, standard agent connection/session |
 | Application Engine Host | application worker lifecycle and IPC | standard frontend agent network path |
@@ -169,16 +176,23 @@ sequenceDiagram
     participant EH as Application Engine Host
     participant APP as Application Business Handler
     participant DB as Application Database / Mapping
+    participant ORC as Application Orchestration
+    participant BUILD as Backend SDK Target-Address Builder
 
     UI->>API: request business object live-agent target
     API->>GW: application-scoped backend request
     GW->>EH: invoke managed application handler
     EH->>APP: trusted application context
-    APP->>DB: resolve business object to binding/member
+    APP->>DB: resolve business object to bindingId/member choice
+    APP->>ORC: get application binding by bindingId
+    ORC-->>APP: precise binding or null
+    APP->>BUILD: build precise agent/team/member address
+    BUILD->>BUILD: validate binding subject/ID and static membership
+    BUILD-->>APP: fresh ApplicationAgentTargetAddress
     APP-->>UI: ApplicationAgentTargetAddress
 ```
 
-This is the only application-specific mapping required. It selects a business-owned bound target; it does not proxy the WebSocket or transform runtime events.
+This is the only application-specific mapping required for a reusable/projected target. Application business selects a business-owned bound target; the pure backend-SDK builder owns the canonical discriminant/object shape and local membership check from the already-resolved binding. Neither proxies the WebSocket nor transforms runtime events, and the builder does not replace Orchestration authorization. A separate one-shot backend `sendInput` path that owns only `bindingId` may construct the exact shared DTO directly and proceed to the same Orchestration authorization boundary.
 
 ## 6. DS-003 — Standard Connection Establishment
 
@@ -254,16 +268,20 @@ The standard connection supports input, not native command passthrough. Tool app
 ```mermaid
 sequenceDiagram
     autonumber
-    participant RUN as Bound Agent / Team Runtime
+    participant PROVIDER as Provider Adapter
+    participant RUN as Bound AgentRun / TeamRun
+    participant NATIVE as Native AutoByteus Mapper
     participant SUB as Agent Event Subscription
-    participant PROJ as Public Event Projector
+    participant PROJ as Application Stream Event Projector
     participant COMM as Agent Communication Service
     participant CONN as ApplicationAgentConnection
     participant UI as Application Frontend
 
-    RUN-->>SUB: normalized runtime event
-    SUB->>PROJ: exact event case
-    PROJ-->>SUB: closed provider-neutral event or deliberate drop
+    PROVIDER-->>RUN: canonical AgentRunEvent
+    RUN-->>NATIVE: same AgentRunEvent (native behavior preserved)
+    RUN-->>SUB: same AgentRunEvent / attributed team wrapper
+    SUB->>PROJ: canonical event type and fields
+    PROJ-->>SUB: five-variant stream event or deliberate drop
     SUB->>SUB: serialization check + bounded acceptance\nassign observedAt and sequence atomically
     SUB-->>COMM: already-sequenced event
     COMM-->>CONN: immediate serialized EVENT write
@@ -272,7 +290,7 @@ sequenceDiagram
     CONN-->>UI: onEvent(ApplicationAgentEvent)
 ```
 
-No application backend mapper is required. The frontend still decides how to render the standard event.
+No application backend mapper is required. The projector exposes only `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and safe `ERROR`. Thinking, tools, team coordination, native/provider data, and complete-response duplication are dropped. The frontend decides only how to present this small standard stream.
 
 ## 9. DS-006 — Binding-Terminal Connection Close
 
@@ -480,7 +498,7 @@ flowchart LR
 flowchart LR
     EVENT["Runtime callback"] --> ACTIVE{"consumer ACTIVE?"}
     ACTIVE -->|no| IGNORE["Ignore/release"]
-    ACTIVE -->|yes| PROJECT["Exact public projection"]
+    ACTIVE -->|yes| PROJECT["Minimal stream projection\ntext + turn/error only"]
     PROJECT --> VALID{"valid + serializable?"}
     VALID -->|no| FAIL["Isolated error + close"]
     VALID -->|yes| CAP{"bounded capacity?"}
@@ -561,6 +579,25 @@ flowchart LR
     BUFFER -->|no| CLOSE["1013 close this session"]
 ```
 
+### DS-018 — Shared canonical event and minimal application projection
+
+```mermaid
+flowchart LR
+    RAW["Provider-native event"] --> ADAPTER["Existing provider adapter"]
+    ADAPTER --> CANON["Canonical AgentRunEvent"]
+    CANON --> NATIVE["Existing native mapper\nrich AutoByteus frontend"]
+    CANON --> PROJECTOR["ApplicationAgentStreamEventProjector"]
+    PROJECTOR -->|text segment| TEXT["TEXT_DELTA\nexact bytes"]
+    PROJECTOR -->|turn lifecycle| TURN["TURN_STARTED / TURN_COMPLETED / TURN_INTERRUPTED"]
+    PROJECTOR -->|runtime error| ERROR["stable ERROR"]
+    PROJECTOR -->|all other events| DROP["deliberate drop\nno sequence"]
+    TEXT --> STREAM["Existing per-consumer queue/session"]
+    TURN --> STREAM
+    ERROR --> STREAM
+```
+
+Provider adapters own provider-native interpretation. The application projector owns only closed safe selection and does not depend on native transport messages. This bounded spine attaches to `DS-005`, `DS-007`, `DS-012`, and the Socratic `DS-017` journey; it adds no new transport, queue, lifecycle, or provider layer.
+
 ## 15. Complete Communication Matrix
 
 | Caller | Public Boundary | Destination | Purpose |
@@ -605,22 +642,32 @@ custom backend WebSocket handler as mandatory standard-agent proxy
 ApplicationClient → authentication / credential API
 paired-mobile or phone remote-access behavior → application framework contract
 ApplicationManifestV4 → supportedExposures copy
+backend target-address builder → Orchestration / binding store / runtime manager
+frontend → target-address builder / binding discovery
 ```
 
 ## 17. Use-Case Coverage
 
 | Use Case | Spine Coverage |
 | --- | --- |
-| `UC-001` Individual bound agent | DS-001 through DS-006, DS-011 through DS-013, DS-015 with `AGENT_RUN` |
-| `UC-002` Whole bound team | DS-001 through DS-006, DS-011 through DS-013, DS-015 with `AGENT_TEAM_RUN` |
-| `UC-003` Selected team member | DS-001 through DS-006, DS-011 through DS-013, DS-015 with `AGENT_TEAM_MEMBER` |
-| `UC-004` Backend live observation | DS-001, DS-006, DS-007, DS-012, DS-014, DS-015 |
+| `UC-001` Individual bound agent | DS-001 through DS-006, DS-011 through DS-013, DS-015, DS-018 with `AGENT_RUN` |
+| `UC-002` Whole bound team | DS-001 through DS-006, DS-011 through DS-013, DS-015, DS-018 with `AGENT_TEAM_RUN`; only agent-origin text/turn/error events are public |
+| `UC-003` Selected team member | DS-001 through DS-006, DS-011 through DS-013, DS-015, DS-018 with `AGENT_TEAM_MEMBER` |
+| `UC-004` Backend live observation | DS-001, DS-006, DS-007, DS-012, DS-014, DS-015, DS-018 |
 | `UC-005` Custom realtime backend protocol | DS-008, DS-016 |
-| `UC-006` Artifact plus live communication | DS-001 through DS-006 composed with DS-010, DS-011 through DS-013, DS-015; planes remain separate |
-| `UC-007` Multiple independent consumers | DS-003, DS-005 through DS-007, plus independent DS-011 through DS-015 state |
+| `UC-006` Artifact plus live communication | DS-001 through DS-006 and DS-018 composed with DS-010, DS-011 through DS-013, DS-015; planes remain separate |
+| `UC-007` Multiple independent consumers | DS-003, DS-005 through DS-007, DS-018, plus independent DS-011 through DS-015 state |
+| `UC-008` Real Socratic tutor journey | Composite `DS-017` in [`socratic-math-live-journey.md`](./socratic-math-live-journey.md): Socratic local admission → DS-001 through DS-006 + DS-018 plus sibling DS-009/DS-010 → local join/release or Close lesson → DS-006 cleanup |
+| `UC-009` Canonical target-address construction | DS-002 uses the backend-SDK builder when a precise binding feeds a reusable/projected target, then ordinary DS-003/DS-004/DS-007 use and Orchestration authorization; bindingId-only one-shot input DTOs enter DS-004 directly |
 
-## 18. Persisted Data Decision
+## 18. Expanded Composite Journey
+
+`DS-017` does not add another framework transport or owner. It stretches the real mounted Socratic product journey across the already-owned business, standard communication, runtime, artifact, notification, and terminal spines. The live event return and in-turn artifact/notification/refresh return are siblings with no cross-plane ordering guarantee. Socratic alone joins them through its existing pre-input tutor-message baseline and orthogonal local state. Because that is one slot, the Socratic session synchronously admits one initial/follow-up/hint turn, its runtime dispatches only an accepted private handle, and its renderer disables competing actions while Close lesson remains available. Re-entry stops before baseline mutation or GraphQL; saved join releases one next action only on an active connection. The standard connection remains multi-request capable. No framework correlation store, second queue, public turn ID, single-flight policy, or generic accumulator is added. Exact sequence, admission matrix, both-order frontend transitions, effective Codex launch configuration, assertions, and cleanup are defined in [`socratic-math-live-journey.md`](./socratic-math-live-journey.md).
+
+## 19. Persisted Data Decision
 
 `Directly Usable — No Migration`.
 
-Existing bindings and artifacts retain their current stored meaning. The new target address, network connection, subscription, request, queue, and sequence are transient. No DDL, migration, replay/checkpoint store, compatibility reader, connection-grant storage, or data rewrite is part of this ticket.
+Existing bindings and artifacts retain their current stored meaning. Builder results, target address, network connection, subscription, request, queue, and sequence are transient. No DDL, migration, replay/checkpoint store, compatibility reader, connection-grant storage, correlation store, or data rewrite is part of this ticket.
+
+Generic binding-to-business-record correlation and a generic chat/live-output accumulator remain explicitly deferred. Applications may append the standard `TEXT_DELTA` directly or use backend observation/custom WebSockets for genuinely business-specific transformation. Future framework variants extend the closed projector contract only after a reachable vertical-application need; they do not change these communication boundaries.

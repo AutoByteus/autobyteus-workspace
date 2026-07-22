@@ -2,21 +2,23 @@
 
 ## Investigation Status
 
-`Current through 2026-07-21. Material requirements change, exact two-binding vocabulary, and desktop-only application scope are user-approved. The exact manifest/exposure correction remains; the unsupported paired-mobile credential premise has been removed. Implementation remains blocked pending fresh architecture review.`
+`Current through 2026-07-22 at stopped source HEAD 3e48c0ea2c9ccabe52c3126f0db799b3865186a3. The framework, Socratic integration/fixes, target-address builders, and builder handoff are committed. A real mounted Codex journey was subsequently executed: READY/input/tool/artifact/durable transcript/config/cleanup paths worked, native backend observation contained 135 assistant-text characters, but the standard application selected-member stream exposed zero text and no completion. Source comparison proves a broad application-projector semantic divergence, not a Codex adapter or transport failure. The user approved a minimal five-variant application stream. Architecture round 16 confirmed that framework boundary and the corrected sibling-return join, then returned one bounded Socratic-local sequential-turn admission correction. Implementation remains halted. Two uncommitted projector/test edits are preserved but unapproved; all attempted Codex adapter edits were reverted.`
 
-## Request Evolution
+## Request Evolution And Current Reset
 
-The initial request asked how application frontends could receive live output from agents or agent teams while preserving the existing durable artifact path. Investigation and user discussion progressed through three models:
+The request evolved through these approved product decisions:
 
-1. direct read-only frontend live-output subscription;
-2. application-defined WebSocket route → application backend handler → backend event subscription/proxy; and
-3. the current approved direction: a framework-standard frontend application-agent connection addressed by an application-bound target, with no mandatory application route/proxy/mapping.
+1. preserve durable application artifact processing while adding live agent/team information;
+2. use a standard application-scoped agent connection rather than forcing each application to invent a WebSocket proxy;
+3. expose exactly two binding concepts, one canonical target address, provider-neutral application events, and a desktop-only frontend SDK connection;
+4. retain custom backend WebSockets and backend event subscriptions as optional advanced capabilities;
+5. after the framework was implemented and deterministically validated, prove it in the real Socratic Math Teacher application with the requested Codex tutor configuration and a complete live UI journey; and
+6. standardize deterministic agent, whole-team, and static-team-member target-address construction in the backend SDK, while deferring less-proven correlation and live-output accumulation abstractions; and
+7. after real execution exposed projector drift, contract application streaming v1 to exact text deltas plus minimal turn/error lifecycle instead of reproducing the native AutoByteus chat event surface.
 
-The user explicitly rejected framework-level `assistant` naming. An assistant is only one possible application role. The target subject is application-bound agent communication for an individual bound agent, whole bound agent team, or selected bound team member.
+The last decision is a user-approved design reset grounded in an observed product path. The previous framework transport/authorization/lifecycle evidence remains useful, but the broad event projection and Socratic consumption contract are superseded. The prior `96.7%` score remains historical for the earlier deterministic scope.
 
-The user approved continuing the standardization/refactor direction on 2026-07-21, confirmed that `ApplicationAgentExecutionBinding` is a misleading third concept that must not exist, and directed solution design to send the package for review after strict data-flow and design-principle validation.
-
-After architecture round 6, the user clarified that application features exist only in the desktop product and have no paired-mobile/phone entry point. That evidence invalidated the temporary premise that application WebSockets should adopt the existing mobile remote-access token mechanism. Architecture review and implementation were stopped; the corrected target exposes no application-client authentication or credential contract.
+The dictated model phrase “codex gpt 5.6 solr high” was investigated rather than copied literally. The installed Codex App Server catalog identifies the model as `gpt-5.6-sol`; `high` is a supported explicit reasoning effort; there is no `solr` identifier or unsuffixed `gpt-5.6` alias in the observed catalog.
 
 ## Environment / Bootstrap Context
 
@@ -26,297 +28,376 @@ After architecture round 6, the user clarified that application features exist o
 | Dedicated task worktree | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming` |
 | Ticket branch | `codex/application-agent-streaming` |
 | Authoritative base/finalization branch | `origin/personal` |
-| Recorded base/HEAD | `534210b9e1dffff6c22855ae89ddb3d2afef5a9b` |
+| Current task HEAD | `3e48c0ea2c9ccabe52c3126f0db799b3865186a3` |
+| Current tracked base | `origin/personal` at `dd815ee9d83d253ab9bb586a7391b5ba6da18d53` (task branch currently ahead 20 / behind 13) |
+| Merge base | `965f97685c08569a98186b2a894243c0b3f602d3` |
 | Ticket artifact folder | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming` |
 | Persisted-data decision | `Directly Usable — No Migration` |
 
-Bootstrap commands:
+Bootstrap/current-stage commands:
 
 ```text
 git status --short --branch
 git branch --show-current
 git rev-parse HEAD
+git rev-parse origin/personal
 git merge-base HEAD origin/personal
-git show HEAD:<path>
+git log --oneline --decorate -15
 ```
 
-Because the worktree now contains stopped partial implementation, `git show HEAD:<path>` is the authority for current production source. Worktree files are used only to classify partial salvage/rewrite/discard.
+The current HEAD contains the implemented framework, round-11 Socratic integration/fixes, target-address builder implementation `cee41e917...`, and builder handoff `3e48c0ea2...`. The worktree is intentionally dirty: downstream artifacts/evidence plus implementation-owned partial changes to `application-agent-stream-public-event-projector.ts` and its focused test. Those partial edits preserve exact whitespace and read `segment_type`, but they retain the superseded broad projector and are not design authority. All attempted Codex source/test edits were reverted; zero Codex diffs remain. Solution design must preserve downstream-owned evidence and may not treat dirty source as approved.
 
-## Requirement-Gap Preservation Handoff
+## Downstream Reset Evidence
 
-The implementation engineer stopped immediately after the user changed the approved basis.
+Prior and current downstream evidence is preserved with exact commit scope:
 
-Preserved state:
+- architecture review round 9: `Pass` for the desktop-only standard framework;
+- deterministic framework API/E2E: `Pass`, final historical confidence `96.7%`, followed by proportional test-code review `Pass`;
+- pre-Socratic integrated baseline: `69fae2e424a708fe9a0d038077346d5b95b41df6`;
+- round-11 Socratic source/test implementation: `4732df357706a9dfa1798193ed02162cae715b13`;
+- lifecycle source-review fix: `6896bd413f62ec887884a579648ed83c71cb59a5`;
+- start-ownership source-review fix: `e9c130a52b9f790505a4fd472149790ddcaecafd`;
+- builder implementation: `cee41e91788d97d98955c3d960f9d1e511d19eb0`;
+- current implementation-handoff HEAD: `3e48c0ea2c9ccabe52c3126f0db799b3865186a3`;
+- code-review round 7 passed the builder delta and preserved earlier source fixes;
+- API/E2E then executed the real mounted Socratic/Codex journey. READY, one accepted input, tool lifecycle, artifact notification/projection, durable transcript, effective config, qualitative response, and cleanup succeeded. The standard selected-member application stream remained at `textLength: 0` and `responseCompleted: false` for 180 seconds, while native backend event monitoring observed 135 assistant-text characters; and
+- code review initially proposed CR-007 as a Codex adapter local fix. Implementation/source comparison disproved that ownership: Codex already emitted canonical `SEGMENT_CONTENT`/`TURN_COMPLETED`, the native mapper/frontend consumed them successfully, and the broad application projector independently missed/changed those semantics. Implementation stopped and returned `Design Impact`.
 
-- no implementation commit or implementation handoff exists;
-- HEAD remains `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`;
-- `git diff --stat` reported 146 tracked files changed, 1,224 insertions, and 1,405 deletions, plus extensive untracked source/generated/ticket files;
-- partial work includes generic backend WebSockets, iframe/frontend/backend v4 changes, agent-stream contracts/services, terminal lifecycle coordination, engine/worker protocol/host changes, notification/worker renames, REST splits, built-ins, generated/vendor output, documentation, and tests;
-- an earlier `pnpm -C autobyteus-server-ts build` passed, but later frontend WebSocket edits were not rebuilt; no focused suite, final generation, or API/E2E work completed;
-- dependencies were installed with `pnpm install --frozen-lockfile`.
-
-The partial tree must not be represented as current, reviewed, or fully checked. The replacement design requires file-by-file conformance reconciliation before implementation resumes.
-
-Status evidence was retained in `/tmp/application-agent-streaming-status.txt` during solution redesign.
+The canonical downstream reports remain authoritative for their exact commit/scope. The live failure evidence under `evidence/ac018-ac019-round3/` is the current runtime authority. The code-review report's earlier Codex-fix ownership is superseded by the implementation engineer's source comparison and this revised design; downstream-owned reports are preserved rather than rewritten by solution design.
 
 ## Supplemental Task Artifact Inventory
 
 | Artifact | Canonical Path | Purpose / Scope | Status | Approval Applicability | Related IDs |
 | --- | --- | --- | --- | --- | --- |
-| Application agent communication contract | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-agent-communication-contract.md` | bindings/address, standard desktop frontend connection/fixed URL/wire protocol, exact event projection, backend adapter, lifecycle/failures | design-ready | approved requirements basis | `REQ-001`–`REQ-009`, `REQ-013`–`REQ-017` |
-| Application backend WebSocket contract | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-backend-websocket-contract.md` | optional custom desktop frontend connection, exact manifest/exposure authority, route/request/session/handler contract, readiness, frames, ordering, bounds, failures, cleanup | design-ready | approved requirements basis; technical promotion/correction for `DR-010` | `REQ-010`, `REQ-011`, `REQ-015`, `REQ-016`; `AC-010`, `AC-015`, `AC-016` |
-| Application communication boundaries | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-communication-boundaries.md` | module boundaries and `DS-001` through `DS-016` | design-ready | approved requirements basis | all |
+| Application agent communication contract | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-agent-communication-contract.md` | exact bindings/address/builders/connection plus revised five-variant stream, projector, backend subscription, lifecycle/failure contract | implemented baseline plus user-approved design-ready stream contraction | approved revised requirements basis | `REQ-001`–`REQ-009`, `REQ-013`–`REQ-019` |
+| Application backend WebSocket contract | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-backend-websocket-contract.md` | optional custom desktop backend WebSocket contract | implemented reviewed baseline | approved requirements basis | `REQ-010`, `REQ-011`, `REQ-015`, `REQ-016` |
+| Application communication boundaries | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-communication-boundaries.md` | framework entity/module boundaries and `DS-001`–`DS-016`, including shared canonical event source and minimal projector in `DS-005`/`DS-012` | implemented baseline plus user-approved design-ready stream contraction | approved revised requirements basis | `BEH-001`–`BEH-012`, `UC-001`–`UC-009` |
+| Socratic Math live journey | `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/socratic-math-live-journey.md` | exact tutor config/address, mounted UI journey, minimal text/turn/error stream, durable convergence, assertions, preflight, retry, cleanup, generated propagation | committed application path plus user-approved design-ready stream-consumer correction; live rerun pending | approved revised requirements basis | `BEH-004`, `BEH-011`, `UC-008`, `REQ-018`, `AC-018`, `DS-017` |
 
-Superseded supplement:
+`application-agent-streaming-contract.md` remains superseded by `application-agent-communication-contract.md` and is not part of the package.
 
-- `application-agent-streaming-contract.md` was renamed/replaced by `application-agent-communication-contract.md`; the former backend-proxy-only authority must not remain in the package.
+## Relevant Behavior And Current Production Evidence
 
-Reviewer-owned report:
+| Behavior ID | Current Evidence | Current / Target Consequence |
+| --- | --- | --- |
+| `BEH-001` | Current contracts, backend SDK, Engine Host, and Application Orchestration implement precise agent/team binding creation and lifecycle. | Preserve; Socratic continues to create a team binding through application business logic. |
+| `BEH-002` | Frontend SDK exposes `applicationClient.agentCommunication.connect(address)`, and current Socratic source consumes it through its focused tutor session. | Preserve connection/input/lifecycle; contract only the application stream events. |
+| `BEH-003` | Native raw-ID agent/team sockets remain separate. | Do not use them in the Socratic journey. |
+| `BEH-004` | Shared address/builders and Socratic member-builder adoption are committed. Follow-up/hint paths separately construct one-shot whole-team input DTOs from persisted binding ID. | Preserve unchanged. |
+| `BEH-005` | The broad projector independently maps 23 agent and 4 team variants. It originally ignored `segment_type`, trimmed delta through generic string normalization, and maps AutoByteus-only `ASSISTANT_COMPLETE` to invented `AGENT_RESPONSE_COMPLETED`. Native mapping preserves canonical text and treats `TURN_COMPLETED`/idle as completion. | Replace the broad mapper with a five-variant projector over canonical `AgentRunEvent`; exact text becomes `TEXT_DELTA`, `TURN_COMPLETED` is sole success, and all rich/internal events are dropped. |
+| `BEH-006` | Notification hub remains a separate one-way application plane. | Existing `lesson.response_received` refresh remains unchanged. |
+| `BEH-007` | Artifacts remain durably stored, authorized, projected, and read. | Durable lesson transcript stays source of truth after live draft rendering. |
+| `BEH-008` | Grouped backend/notifications/agentCommunication frontend APIs, strict v4 manifests, custom backend WebSockets, and focused Backend Host/Gateway owners are implemented. | Preserve runtime/network owners; only event contracts/projector/consumers/generated copies change. |
+| `BEH-009` | Streaming, lifecycle, backpressure, and backend observer paths are implemented and passed deterministic live-socket/worker coverage. | Reuse exactly; do not create a Socratic-specific stream mapper/queue. |
+| `BEH-010` | Application features remain desktop-only with no application-client authentication/mobile path. | Live acceptance uses the mounted desktop application only; no credential/mobile work. |
+| `BEH-011` | Current source/config/builders are committed. The real mounted Codex journey executed and proved native text/artifact success but no public application text/completion. | Socratic consumes only `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and `ERROR`; remove tool status and `AGENT_RESPONSE_COMPLETED`; rerun live acceptance. |
+| `BEH-012` | Brief Studio and Socratic keep application-owned business correlation. Socratic's prior rich reducer was not a universal vertical-application need. | Defer generic correlation/chat accumulation; retain a small explicit projector boundary for future evidence-backed variants. |
 
-- `design-review-report.md` records the obsoleted round-7 pass and the latest `Blocked — Requirement Gap` return. `DR-010`'s exact manifest/exposure correction remains; `MP-R6-001`/the mobile premise behind `DR-012` is `Not Reachable` and removed from the active design.
+## Implemented Framework Source Read
 
-## Authoritative Current-State Source Log (`HEAD`)
+Representative implemented framework owners inspected at current HEAD:
 
-### Application binding creation/control
-
-- `autobyteus-application-sdk-contracts/src/index.ts`
-- `autobyteus-server-ts/src/application-orchestration/domain/models.ts`
-- `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts`
-- `autobyteus-server-ts/src/application-orchestration/services/application-run-binding-launch-service.ts`
-- `autobyteus-server-ts/src/application-orchestration/services/application-run-observer-service.ts`
-- `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-recovery-service.ts`
-- `autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts`
-- `autobyteus-server-ts/src/application-orchestration/stores/application-run-lookup-store.ts`
-- `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts`
-- `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
-
-Observed production path:
-
-```text
-application handler
-→ worker context capability
-→ Application Engine Host trusted application scope
-→ Application Orchestration
-→ execution-resource resolver
-→ AgentRun/TeamRun creation
-→ ApplicationRunBinding persistence + lookup + lifecycle observation
-→ optional initial input
-→ ApplicationRunBindingSummary
-```
-
-Current `ApplicationAgentExecution` uses one `ApplicationRunBindingSummary` return for `startAgent` and `startAgentTeam`; `sendInput` repeats binding ID plus optional member route/path selectors. The revised contract tightens this into agent/team variants and one address.
-
-### Frontend bootstrap/client/backend gateway
-
-- `autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
+- `autobyteus-application-sdk-contracts/src/application-agent-bindings.ts`
+- `autobyteus-application-sdk-contracts/src/application-agent-communication.ts`
+- `autobyteus-application-sdk-contracts/src/application-agent-events.ts`
+- `autobyteus-application-sdk-contracts/src/application-agent-target-path.ts`
 - `autobyteus-application-frontend-sdk/src/application-client.ts`
-- `autobyteus-application-frontend-sdk/src/application-client-transport.ts`
-- `autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts`
-- `autobyteus-application-frontend-sdk/src/hosted-application-startup.ts`
-- `autobyteus-web/utils/application/applicationHostTransport.ts`
-- `autobyteus-web/components/applications/ApplicationIframeHost.vue`
-- `autobyteus-server-ts/src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts`
-- `autobyteus-server-ts/src/api/rest/application-backends.ts`
-- `autobyteus-server-ts/src/api/websocket/application-backend-notifications.ts`
+- `autobyteus-application-frontend-sdk/src/application-agent-connection.ts`
+- `autobyteus-server-ts/src/application-agent-communication/**`
+- `autobyteus-server-ts/src/application-agent-streaming/services/application-agent-streaming-service.ts`
+- `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts`
+- `autobyteus-server-ts/src/application-orchestration/services/application-agent-target-authorization-service.ts`
 
-At `HEAD`, iframe contract v3 bootstraps `backendBaseUrl` and `backendNotificationsUrl`. Frontend methods are flat. There is no backend custom WebSocket base or standard agent communication base.
-
-`applicationHostTransport.ts` derives clean HTTP/WS URLs from trusted bound-node endpoints. `ApplicationSurface.vue` builds the bootstrap only after validating the iframe ready signal, so that trusted desktop host point is the correct existing owner for application-scoped direct WebSocket bases. No application authentication field is needed or approved.
-
-`ApplicationBackendApiGatewayService` owns active application checks, application bundle existence, request/response invocation through Engine Host, and notification bridging. Its name is accurate only for managed application backend entry; the new direct agent communication path must not be placed inside it.
-
-### Application manifest, backend bundle, and exposure authority
-
-- `autobyteus-application-sdk-contracts/src/manifests.ts`
-- `autobyteus-application-sdk-contracts/src/index.ts`
-- `autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts`
-- `autobyteus-server-ts/src/application-bundles/utils/application-backend-manifest.ts`
-- `autobyteus-server-ts/src/application-engine/worker/application-worker-runtime.ts`
-- `autobyteus-application-devkit/src/config/application-devkit-config.ts`
-- `autobyteus-application-devkit/src/package/backend-bundle-manifest-writer.ts`
-- `autobyteus-application-devkit/src/validation/application-root-validator.ts`
-- `autobyteus-application-devkit/src/validation/backend-manifest-validator.ts`
-- `applications/brief-studio/{application.json,backend/bundle.json}` and Socratic equivalents
-
-Exact `HEAD` findings:
-
-- `ApplicationManifestV3.backend` contains only `bundleManifest`; its UI declares frontend SDK `"3"` and it has no exposure flags.
-- `ApplicationBackendBundleManifestV1.supportedExposures` is the one declared backend capability record, currently six booleans: queries, commands, routes, GraphQL, notifications, and event handlers.
-- Bundle `sdkCompatibility` independently requires backend definition `"3"` and frontend SDK `"3"`.
-- `ApplicationBackendDefinition` uses definition contract `"3"` and carries actual handler declarations.
-- `ApplicationBackendExposureSummary` copies the bundle allowlist and adds derived discovered handlers; the worker validates that a disabled bundle flag cannot have a corresponding definition handler.
-- Devkit configuration/writer and built-ins write the bundle record; they do not write exposure flags into `application.json`.
-
-Therefore the clean target must preserve the pointer/authority split: application manifest v4 points to the bundle; the current backend bundle v1 record gains the required `webSockets` flag; compatibility becomes v4/v4; definition v4 adds actual `webSocketRoutes`; the summary adds derived route paths. Adding `backend.supportedExposures` to the application manifest would create a second authority and contradict current ownership.
-
-### Native agent/team WebSockets
-
-- `autobyteus-server-ts/src/api/websocket/agent.ts`
-- `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts`
-- `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
-- `autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts`
-- `autobyteus-server-ts/src/services/agent-streaming/team-run-event-websocket-message-mapper.ts`
-- `autobyteus-web/services/agentStreaming/AgentStreamingService.ts`
-- `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
-- `autobyteus-web/services/agentStreaming/protocol/**`
-- `autobyteus-web/utils/nodeEndpoints.ts`
-
-Observed native endpoints:
+The current framework path is:
 
 ```text
-/ws/agent/:runId
-/ws/agent-team/:teamRunId
+mounted desktop application frontend
+→ ApplicationClient.agentCommunication.connect(address)
+→ standard application WebSocket adapter
+→ ApplicationAgentCommunicationService
+→ ApplicationAgentStreamingService
+→ Application Orchestration authorization/lifecycle lease
+→ bound AgentRun/TeamRun source
+→ current broad public projector/ordered bounded subscription
+→ ApplicationAgentConnection event listeners
 ```
 
-They authorize remote WebSocket access, then connect raw runtime IDs to native session handlers. Native commands include send message, interrupt, tool approval/denial, and native UI event payloads. They are useful evidence for transport lifecycle and runtime event breadth but are invalid application boundaries because they lack application binding authorization and expose the native protocol.
+Input travels over the same connection through Communication and Orchestration to the addressed bound target. Durable artifacts and application notifications remain separate return paths.
 
-### Rejected paired-mobile WebSocket premise
+## Observed Live Failure And Event-Ownership Comparison
 
-- `autobyteus-server-ts/src/api/websocket/remote-access-websocket-auth.ts`
-- `autobyteus-server-ts/src/remote-access/domain/models.ts`
-- `autobyteus-server-ts/src/api/security/redact-sensitive-url.ts`
-- `autobyteus-server-ts/src/remote-access/services/remote-access-auth-service.ts`
-- `autobyteus-web/utils/remoteAccess/websocketAuth.ts`
-- `autobyteus-web/utils/remoteAccess/authorizedTransport.ts`
-- `autobyteus-web/utils/application/applicationHostTransport.ts`
+Retained API/E2E evidence records the supported mounted path:
 
-`HEAD` contains a paired-mobile remote-access WebSocket credential mechanism for other product surfaces. The application menu and hosted application UI, however, are desktop-only and have no paired-mobile/phone route. The user's product-reachability clarification is authoritative: those mobile files are evidence of an unrelated capability, not a dependency of application communication.
+```text
+desktop Socratic UI
+→ selected tutor-member standard connection READY
+→ exactly one accepted input
+→ real Codex gpt-5.6-sol/high turn
+→ tool execution + publish_artifacts + notification + durable transcript
+→ cleanup
+```
 
-Consequences:
+The standard public stream received tool events but accumulated `textLength: 0` and never set completion within 180 seconds. The native backend event monitor observed 135 assistant-text characters for the same run, and the durable transcript converged. This rules out address authorization, input routing, provider execution, artifact processing, and absence of model output as the primary failure.
 
-- `ApplicationRequestContext` continues to contain trusted desktop application ID only;
-- application WebSocket bootstrap/client/connection contracts expose no login, token, or credential field;
-- standard and custom application adapters validate active application scope, and Orchestration additionally validates same-application binding/target membership;
-- the existing mobile security mechanism, its query key, and its coverage are `Not Affected`; and
-- address possession is never authorization, but no speculative end-user grant or credential subsystem is introduced.
+Exact source comparison:
 
-### Runtime event evidence
+| Boundary | Current behavior | Consequence |
+| --- | --- | --- |
+| Codex converter | emits `AgentRunEventType.SEGMENT_CONTENT` with `segment_type: "text"` and exact `delta`; emits `TURN_COMPLETED` plus status | already supplies canonical text and completion |
+| Claude converter | emits the same canonical text fields and `TURN_COMPLETED` | same internal semantics |
+| AutoByteus converter | converts native stream segments to `AgentRunEvent`, carries canonical `segment_type`, and emits `TURN_COMPLETED`; also emits `ASSISTANT_COMPLETE` as an extra native event | common turn completion plus one provider-specific duplicate |
+| `AgentRunEventMessageMapper` | preserves segment payload/delta and maps `TURN_COMPLETED` directly | native transport receives working semantics |
+| native web `AgentStreamingService` | appends nonempty segment delta exactly; completes on `TURN_COMPLETED`, idle status, or assistant-complete | explains why normal AutoByteus works |
+| application public projector | separately infers many aliases/kinds/errors, previously omitted canonical `segment_type`, trim-normalizes general strings, and maps only `ASSISTANT_COMPLETE` to `AGENT_RESPONSE_COMPLETED` | duplicates semantic interpretation and drifts from the working path |
+| Socratic tutor session | appends only public `SEGMENT_CONTENT`/`kind=TEXT`, waits for `AGENT_RESPONSE_COMPLETED`, and renders tool lifecycle | depends on projector-only concepts unavailable on the Codex completion path |
 
-- `autobyteus-server-ts/src/agent-execution/domain/agent-run-event.ts`
-- `autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts`
-- `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`
-- `autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts`
-- AutoByteus/Codex/Claude converter files recorded in the prior investigation
-- task delegation and team communication publishers
-- native message types/parsers/mappers
+Root-cause classification: `Boundary Or Ownership Issue` plus `Duplicated Policy Or Coordination`. Provider-native conversion already has owners and `AgentRunEvent` is the shared internal event boundary. The application layer still needs redaction, but not a second general event interpreter.
 
-Current normalized runtime events remain broad and may carry provider-derived nested records. Generic JSON serialization cannot enforce provider neutrality. Exact field-by-field projection remains required. The prior architecture review resolved this point with closed 23-agent/4-team maps; the revised contract preserves the closed mapping but renames public completion to neutral `AGENT_RESPONSE_COMPLETED` and removes adapter-specific `subscriptionId` from `ApplicationAgentEvent`.
+User-approved proportional response:
 
-### Terminal binding writers
+- keep provider adapters, native mapper/frontend, transport, authorization, lifecycle, and queues unchanged;
+- replace the broad application projector with `ApplicationAgentStreamEventProjector`;
+- expose only `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and stable `ERROR`;
+- drop thinking, tools, status, segment structure, team coordination, provider data, artifacts/files, and `ASSISTANT_COMPLETE`;
+- remove `AGENT_RESPONSE_COMPLETED`; use canonical `TURN_COMPLETED` as sole application success;
+- keep artifacts as the durable whole/structured business result; and
+- keep the projector as a closed internal extension boundary without adding a plugin/strategy registry or generic chat accumulator.
 
-- explicit `ApplicationOrchestrationHostService.terminateRunBinding(...)`;
-- `ApplicationRunObserverService` observed termination;
-- `ApplicationOrchestrationRecoveryService` orphaning.
+The preserved dirty projector/test edit only repairs `segment_type` and whitespace in the broad model. It must be discarded/reimplemented from the approved contracted design; no partial Codex changes remain or are allowed.
 
-All are normal supported lifecycle paths. The prior reviewed keyed terminal-transition owner, one-shot lifecycle hub, and listener-before-final-read Orchestration lease remain valid and are reused. The communication/streaming services may not read binding store/hub directly.
+## Socratic Math Teacher Current Source Read
 
-### Published artifacts and notifications
+Authoritative application sources inspected:
 
-- artifact relay/projection/revision services and application handler contract;
-- `ApplicationBackendNotificationStreamService` and notification WebSocket adapter.
+- `applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json`
+- `applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent.md`
+- `applications/socratic-math-teacher/agent-teams/socratic-math-team/team-config.json`
+- `applications/socratic-math-teacher/application.json`
+- `applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts`
+- `applications/socratic-math-teacher/backend-src/services/lesson-read-service.ts`
+- `applications/socratic-math-teacher/backend-src/services/lesson-projection-service.ts`
+- `applications/socratic-math-teacher/backend-src/event-handlers/on-artifact.ts`
+- `applications/socratic-math-teacher/backend-src/domain/lesson-model.ts`
+- `applications/socratic-math-teacher/backend-src/graphql/index.ts`
+- `applications/socratic-math-teacher/api/graphql/schema.graphql`
+- `applications/socratic-math-teacher/frontend-src/socratic-runtime.js`
+- `applications/socratic-math-teacher/frontend-src/socratic-renderer.js`
+- `applications/socratic-math-teacher/scripts/build-package.mjs`
 
-Artifacts are durable and backend-business-projected. Notifications are live one-way topics. Neither has the semantics needed for bidirectional ordered agent communication. The revised design preserves both and renames the notification fan-out owner to `ApplicationBackendNotificationHub`.
+Observed committed journey at current HEAD (Socratic source introduced/fixed at `e9c130a52`, builder adopted at `cee41e917`):
+
+```text
+frontend start form
+→ GraphQL startLesson(prompt)
+→ persist lesson + student message
+→ resolve required lessonTutorTeam slot
+→ build configured team launch with llmConfig.reasoning_effort = high
+→ startAgentTeam(no initialInput)
+→ persist binding correlation
+→ return lesson + tutorTargetAddress
+→ frontend focused tutor session connects and registers listeners
+→ READY → send stored problem exactly once
+→ broad application text/tool/completion reducer
+→ artifact publish/handler/projection
+→ application notification
+→ frontend GraphQL refresh
+```
+
+Material findings:
+
+- source and generated tutor configs contain exact `codex_app_server`, `gpt-5.6-sol`, and `llmConfig.reasoning_effort: "high"`;
+- backend-SDK launch helpers accept/clone neutral `llmConfig`, and Socratic passes high effort while preserving saved runtime/model precedence;
+- `startLesson` creates the team without launch-time `initialInput`;
+- the lesson projection exposes a typed `tutorTargetAddress` through the committed backend-SDK member builder;
+- `askFollowUp` and `requestHint` are mounted-product-reachable GraphQL paths that own only `bindingId`, immediately construct an `AGENT_TEAM_RUN` DTO for `sendInput`, and depend on Orchestration for current authorization;
+- `frontend-src/socratic-tutor-session.js` owns standard connection/listeners/READY/send-once/public-event state, while `socratic-runtime.js` owns mounted selection/start/disposal coordination; the session currently consumes broad text/tool/`AGENT_RESPONSE_COMPLETED` events and is the intended minimal-consumer change site;
+- mounted **Request hint** and **Send follow-up** remain enabled throughout an active lesson, and both runtime handlers call `beginObservedTurn(...)` before GraphQL without checking whether the prior one-slot join remains unresolved;
+- the standard frontend/server input protocol supports distinct pending request IDs, so Socratic cannot rely on hidden framework single-flight behavior;
+- `6896bd413` prevents stale async work from reconnecting after disposal/selection changes, and `e9c130a52` preserves exactly one initial send across notification-first and GraphQL-first start returns;
+- the one static team member has route key `tutor`, so the business-selected member target is unambiguous;
+- the tutor instructions require one `publish_artifacts` call for every response using the allowed normal/hint paths; the tool executes inside the still-active turn and does not establish delivery order against later live events; and
+- artifact projection plus notification already creates the durable tutor transcript and must remain authoritative.
+
+## Exact Codex Model And Configuration Probe
+
+Repository/config sources:
+
+- `autobyteus-server-ts/docs/modules/codex_integration.md`
+- `autobyteus-ts/docs/provider_model_catalogs.md`
+- `autobyteus-server-ts/src/launch-preferences/default-launch-config.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/codex/codex-thread-bootstrapper.ts`
+
+Local live probe commands on 2026-07-22:
+
+```text
+codex --version
+codex login status
+
+cd autobyteus-server-ts
+node --input-type=module <<'NODE'
+import { CodexModelCatalog } from './dist/llm-management/services/codex-model-catalog.js';
+import { getCodexAppServerClientManager } from './dist/runtime-management/codex/client/codex-app-server-client-manager.js';
+try {
+  const models = await new CodexModelCatalog().listModels(process.cwd());
+  console.log(models);
+} finally {
+  await getCodexAppServerClientManager().close();
+}
+NODE
+```
+
+Observed:
+
+- Codex CLI: `codex-cli 0.144.6`;
+- login: `Logged in using ChatGPT`;
+- real App Server `model/list`: seven models, including exact identifier/value `gpt-5.6-sol`;
+- that row supports `low`, `medium`, `high`, `xhigh`, `max`, and `ultra`; current default is `low`;
+- `llmConfig.reasoning_effort` is accepted and reaches the Codex turn-start boundary; and
+- `service_tier` is independent and is intentionally omitted.
+
+This proves current local catalog and authentication preflight, not a successful live tutor turn. Solution design did not spend a live inference turn.
+
+## Effective Launch Propagation — Closed In Current Source
+
+Inspected:
+
+- `autobyteus-application-backend-sdk/src/launch-profile.ts`
+- shared `ApplicationTeamRunPreset` / `ApplicationTeamMemberLaunchConfig` contracts;
+- Socratic `resolveConfiguredTeamLaunchProfile(...)` and `buildConfiguredTeamRunLaunch(...)` call.
+
+Current facts at `e9c130a52`:
+
+- shared team preset/member launch contracts support optional `llmConfig`;
+- `buildConfiguredTeamRunLaunch(...)` and member construction accept optional neutral `llmConfig`, structured-clone it into produced preset/member outputs, and preserve saved application runtime/model precedence;
+- Socratic passes `{ reasoning_effort: "high" }` through the helper;
+- backend-SDK tests cover propagation, omission, cloning, and saved runtime/model/workspace precedence; and
+- no manifest, profile-persistence, platform GraphQL, or standard connection contract was expanded.
+
+Design consequence: preserve this committed helper and its tests unchanged. The builder delta does not reopen launch configuration design.
+
+## Target-Address Builder And Deferred-Pattern Evidence
+
+Focused source searches inspected:
+
+- `autobyteus-application-sdk-contracts/src/application-agent-bindings.ts` and `src/index.ts`;
+- `autobyteus-application-backend-sdk/src/index.ts`;
+- Brief Studio and Socratic `scripts/build-package.mjs` backend-SDK vendor synchronization;
+- Socratic `backend-src/domain/lesson-model.ts` and its focused projection tests;
+- standard communication integration tests that instantiate all three address variants;
+- Brief Studio and Socratic `backend-src/services/run-binding-correlation-service.ts`; and
+- Socratic `frontend-src/socratic-tutor-session.js`.
+
+Observed address-construction facts at the pre-builder review baseline (now resolved by committed `cee41e917`):
+
+- the canonical type and target discriminants originally existed without backend-SDK construction functions;
+- Socratic originally repeated `{ bindingId, target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" } }`; current source uses the member builder;
+- framework integration tests also instantiate agent/team/member variants, confirming that the shared address remains a valid direct DTO as well as a candidate for typed builder construction;
+- the application backend is the correct public owner because it chooses the binding/member exposed to its frontend; the frontend should continue receiving an already-selected address; and
+- construction cannot replace authorization. Active application, same-application binding, nonterminal status, member validity at use time, and runtime availability remain Orchestration decisions.
+- current Socratic follow-up/hint input paths do not retain a precise `ApplicationAgentTeamBinding`; fetching one only to invoke the whole-team builder would add an unnecessary authority/network step without improving their one-shot DTO semantics.
+- both built-in application build scripts copy every backend-SDK `dist/*.js`/map into their checked-in runtime/importable vendor layers, so adding one public SDK module requires regenerating both applications' vendor mirrors even though only Socratic business source consumes the builder.
+
+Resolved consequence: the three explicit pure backend-SDK functions and Socratic member adoption are committed. They remain preserved behavior and are not part of the pending event-projector refactor.
+
+Observed extraction-pressure facts:
+
+- Brief Studio and Socratic contain similar pending-launch/binding-correlation services, but ephemeral applications do not require durable business-record correlation and different vertical applications can need one-to-one, one-to-many, or no relationship;
+- Socratic's live session handles connection readiness, sequence suppression, text/tool/completion presentation, and cleanup, but the user clarified that vertical applications need a much smaller text-stream experience rather than the native product's rich chat surface; and
+- the existing framework already supports both direct provider-neutral frontend events and advanced backend `subscribeEventStream(...)` plus optional custom WebSockets for app-specific transformation.
+
+Decision: do not add a correlation repository/protocol or generic live-output accumulator. Contract the standard application stream itself to minimal text/turn/error variants and retain optional backend/custom transformation for special cases. This is deliberate proportionality, not a framework capability blocker.
 
 ## Current And Target Spine Findings
 
-| Evidence ID | Current Finding | Target Consequence |
+| Evidence ID | Finding | Design Consequence |
 | --- | --- | --- |
-| `CS-001` | backend request/response spine is healthy | group under backend; preserve |
-| `CS-002` | binding creation/control spine is healthy | preserve Orchestration; tighten public binding/address types |
-| `CS-003` | notification spine is separate but owner name is unclear | preserve, rename Hub |
-| `CS-004` | artifact spine is durable and separate | preserve; filter from live event |
-| `CS-005` | native stream is direct/raw-ID/native-protocol | do not reuse |
-| `CS-006` | generic app backend WebSocket is absent at HEAD | add optional custom capability |
-| `CS-007` | backend live event observation is absent | add advanced adapter over shared Streaming |
-| `CS-008` | standard frontend application-agent connection is absent | add direct Communication owner and fixed endpoint |
-| `CS-009` | terminal writers do not fan out to proposed consumers | consolidate terminal owner + lifecycle lease/hub |
-| `CS-010` | application manifest points to backend bundle; bundle is sole current exposure authority | preserve split; exact manifest-v4/bundle-v1/definition-v4/derived-summary target |
-| `CS-011` | paired-mobile WebSocket credentials exist for other product surfaces, but application features have no mobile route | treat mobile credential machinery as `Not Affected`; keep application client desktop-only with no auth surface |
-
-## Partial Implementation Reconciliation Inventory
-
-### Likely retain after conformance review
-
-- field-by-field public projector/event maps and provider fixtures;
-- host-side streaming source/subscription/service structure;
-- Orchestration authorization lease, lifecycle hub, terminal transition service;
-- JSON-line frame writer and backend observer activation barrier;
-- generic backend WebSocket transport/session/worker support as optional custom capability;
-- `ApplicationBackendNotificationHub`, `ApplicationBackendHost`, route-adapter splits;
-- strict v4 propagation scaffolding, built-in/generated update coverage.
-
-### Must rewrite
-
-- public event envelope to remove `subscriptionId` and use `ApplicationAgentEvent`;
-- public binding types into individual/team discriminated variants;
-- frontend grouping to sibling `backend`, `notifications`, and `agentCommunication`;
-- bootstrap transport to include both custom backend and standard agent communication bases;
-- manifest partials so the type is truly `ApplicationManifestV4` while bundle-v1 remains the sole seven-flag exposure authority; do not retain a V3 type with v4 nested fields;
-- custom WebSocket request normalization so only normalized path, params, business query, sanitized headers, and trusted application scope cross Gateway-to-worker IPC;
-- docs/tests that require app-defined WebSocket proxying for the standard agent use case;
-- Streaming/Engine APIs so direct network and worker adapters share one exact event owner;
-- generic event name `ASSISTANT_COMPLETE` in the application public projection to neutral `AGENT_RESPONSE_COMPLETED`.
-
-### Must add
-
-- standard target-path codec;
-- `ApplicationAgentConnection` and browser transport;
-- standard agent WebSocket adapter;
-- `ApplicationAgentCommunicationService` and per-session state/protocol/input registry;
-- strict desktop host bootstrap for fixed standard/custom WebSocket bases;
-- direct standard integration/browser coverage.
-
-### Must discard/remove
-
-- any mandatory standard-agent dependency on application backend custom WebSocket route/handler;
-- adapter-specific IDs in public event payloads;
-- v3/flat API compatibility aliases and obsolete owner files;
-- any generated output produced before final source contract stabilizes.
+| `CS-001` | standard agent communication framework is implemented and reviewed | preserve; use directly |
+| `CS-002` | deterministic socket/worker coverage proves the framework without a provider | retain as regression evidence, not final live proof |
+| `CS-003` | Current Socratic source uses the framework-supported two-phase flow: start without input, connect/READY, then send | preserve; optional `initialInput` remains valid elsewhere |
+| `CS-004` | Socratic business owns lesson↔binding correlation and chooses static member `tutor`; committed builder returns its exact address | preserve |
+| `CS-005` | focused frontend tutor session/live state and mounted lifecycle coordination are committed; broad event consumption failed the real provider journey | retain connection/lifecycle/send-once, replace only broad reducer semantics with minimal stream consumption |
+| `CS-006` | artifact/notification transcript path is already durable and healthy | preserve; reconcile ephemeral live draft to durable record |
+| `CS-007` | tutor source/generated config already has exact Codex defaults; application configuration intentionally retains higher runtime/model precedence | preserve and configure the application slot exactly for live acceptance |
+| `CS-008` | backend SDK helper already propagates/clones optional neutral `llmConfig` | preserve; no parallel Socratic launcher |
+| `CS-009` | current source/generated mirrors are synchronized by existing build owners | contracted shared event type/validator and Socratic reducer require normal regeneration/drift checks |
+| `CS-010` | mounted desktop application is a real supported product surface | browser-equivalent/full hosted journey is reachable and required |
+| `CS-011` | live provider output is nondeterministic but bounded | separate deterministic assertions from qualitative assertions; one clean retry only for defined external causes |
+| `CS-012` | previous final score explicitly retained live-provider inference as residual uncertainty | recalculate confidence after `AC-018`; do not copy 96.7% forward |
+| `CS-013` | target-address builders/adoption are committed and working | preserve; no reopening |
+| `CS-014` | rich chat accumulation is not a universal vertical-application need; exact text streaming is the proven common need | expose five minimal stream variants; defer generic accumulator/rich variants |
+| `CS-015` | native backend observation saw 135 assistant-text characters while the standard application stream exposed zero text/completion | projector semantic divergence is the observed root cause; provider/transport/artifact paths stay unchanged |
 
 ## Material Premise Classifications
 
 | Premise ID | Premise | Classification | Witness / Consequence |
 | --- | --- | --- | --- |
-| `MP-001` | frontend socket closes while application/target attach is pending | Reachable | normal browser/network close after connect; requires pending cancellation |
-| `MP-002` | binding terminates while standard connection is pending or active | Reachable | explicit terminate, observed terminate, recovery orphan; requires lifecycle lease outcome |
-| `MP-003` | runtime listener can throw into source dispatch | Reachable | synchronous `subscribeToEvents` callback contract; requires no-throw guard |
-| `MP-004` | consumer/network slower than whole-team event source | Reachable | asynchronous finite transport; requires bounds/isolation |
-| `MP-005` | event is accepted before later network/IPC write fails | Reachable | synchronous acceptance plus async drain; may leave unseen terminal sequence only |
-| `MP-006` | hosted application has a separate end-user identity requiring signed per-target grant | Not Reachable in current contract | request context contains application ID only; do not invent grant subsystem |
-| `MP-007` | old released data requires transformation | Not Reachable / not required | feature pre-release and stored fields/semantics unchanged |
-| `MP-008` | frontend needs native tool approval/interrupt through standard v1 | Unclear / not approved | exclude; custom/backend APIs remain available |
-| `MP-009` | paired-mobile application WebSocket access | Not Reachable / out of scope | application menu/UI exists only in desktop; no mobile route can initiate either application WebSocket plane |
-| `MP-010` | application-client access-token collision | Not Reachable | the desktop application client exposes no auth token or reserved credential query namespace |
-| `MP-011` | application credential leaking into worker/app/logs | Not Reachable | this capability creates and forwards no application credential; normalized custom business query still crosses only its defined adapter boundary |
-| `MP-012` | old six-flag/v3 packages need a compatibility reader | Not Reachable / not required | application feature pre-release, all built-ins/generated packages cut over together; reject rather than default |
+| `MP-001`–`MP-012` | previously reviewed standard framework lifecycle, scope, migration, and mobile premises | Unchanged | implemented round-9 baseline remains authoritative; paired-mobile application access remains Not Reachable |
+| `MP-013` | a user starts a lesson in the mounted Socratic desktop application | Reachable / user-required | real application form → GraphQL start → bound tutor team; drives `DS-017` |
+| `MP-014` | a live Codex tutor emits nondeterministic delta boundaries/wording | Reachable | exact requested runtime/model; assert contract/liveness deterministically and pedagogy qualitatively |
+| `MP-015` | source agent defaults can be overridden by configured resource launch data | Reachable | required `lessonTutorTeam` slot resolves a saved launch profile before helper construction; require effective-config proof |
+| `MP-016` | transient Codex service/rate/transport failure | Reachable under external service contract | permit one clean new-run retry; persistent dependency failure is Blocked with evidence |
+| `MP-017` | mobile application credential handling is required for the live journey | Not Reachable | application product surface is desktop-only; add no token/auth machinery |
+| `MP-018` | build/package validation alone proves the user journey | Contradicted by user acceptance | execute the mounted application and real live model |
+| `MP-019` | mounted Socratic follow-up/hint actions construct whole-team input addresses from persisted binding ID | Reachable | desktop UI → GraphQL `askFollowUp`/`requestHint` → lesson runtime → inline `AGENT_TEAM_RUN` DTO → `sendInput` → Orchestration; preserve without a builder-only binding fetch |
+| `MP-020` | vertical applications require the complete native AutoByteus chat event surface | Not Reachable / rejected by user | current Socratic business journey needs immediate answer text plus durable artifact; do not project thinking/tools/status/team internals speculatively |
+| `MP-021` | standard application text/completion can diverge from the native path | Reachable and observed | same canonical Codex `AgentRunEvent` produced native text/completion while broad application interpretation produced neither; drives projector contraction/parity coverage |
+| `MP-022` | Socratic durable refresh can precede later live text/completion for the same active turn | Reachable and observed product path | mounted Start lesson → READY/input → in-turn `publish_artifacts` → asynchronous artifact relay/notification/refresh, independently of later canonical live return; drives only an app-local two-fact join and order-permutation tests |
+| `MP-023` | mounted follow-up/hint can be invoked while the prior one-slot join is unresolved | Reachable current product path | active lesson renderer exposes both controls → runtime calls `beginObservedTurn` → GraphQL/sendInput while prior live/artifact returns still target the same session; drives a local synchronous admission guard and re-entry tests only |
 
-## Existing Executable Coverage Inventory
+The product-reachability rule is applied from supported user journeys, not imaginative technical states. `MP-013` is reachable because the current application menu/mount and lesson form are actual desktop product paths. `MP-019` separately records the mounted follow-up/hint paths so construction policy does not erase or overcomplicate them. Mobile/token scenarios remain excluded.
 
-Current relevant suites:
+## Revised Composite Journey / `DS-017`
 
-- application backend REST/GraphQL/route/notification integration;
-- gateway, Engine Host, Orchestration host/binding launch/observer/recovery units;
-- native agent/team stream units;
-- SDK iframe/startup/transport units and types;
-- web application iframe host/surface/transport tests;
-- devkit/bundle/manifest/built-in package tests.
+```text
+desktop user
+→ mounted Socratic frontend
+→ GraphQL startLesson (persist prompt; start team without initial input)
+→ Application Orchestration (binding)
+→ backend-SDK static-member target-address builder
+→ lesson projection with tutor-member target address
+→ ApplicationClient.agentCommunication.connect
+→ Socratic synchronously reserves its one local turn slot
+→ Communication/Streaming READY
+→ connection.sendInput(stored problem)
+→ bound Codex tutor member gpt-5.6-sol/high
+   ├─ sibling live return: canonical events → TEXT_DELTA(s) → live terminal
+   └─ sibling durable return: in-turn publish_artifacts → async relay → notification/GraphQL refresh
+→ Socratic local join using pre-input tutor-message baseline
+→ visibly streamed draft, then one authoritative durable tutor transcript in either order
+→ release one next follow-up/hint only if lesson/connection remain active
+→ closeLesson/terminate → BINDING_ENDED → exact cleanup
+```
 
-Partial implementation added/modified focused backend WebSocket, streaming, lifecycle, projector, worker, and generated tests, but no API/E2E execution occurred. The API/E2E engineer must independently investigate validity after an approved replacement implementation.
+There is no ordering edge between the two sibling returns. Live-first retains the completed draft until durable observation. Durable-first records the new row but presentation-defers only newly added tutor rows so later deltas remain visibly streamed; live terminal then reveals the row and clears the draft. Durable success remains monotonic across later interruption/error/close, while a later durable result upgrades an earlier live failure. Because the reducer owns one baseline, the session admits only `available`, synchronously rejects double/cross-action attempts before mutation/GraphQL, keeps ambiguous request failures locked, and leaves Close lesson available. The standard connection remains multi-request capable. This is local Socratic session/runtime/renderer state, not a framework queue, correlation store, public turn ID, single-flight rule, or accumulator.
 
-Target coverage must add:
+The detailed sequence, UI states, assertion split, timing/retry policy, and propagation map are authoritative in [`socratic-math-live-journey.md`](./socratic-math-live-journey.md).
 
-- exact address URL encode/decode for all three targets;
-- standard connect/READY/input ack/event/error/close integration;
-- direct-session READY/terminal/cancel/transport commit interleavings with paused-event retain/drop and exact SDK callback outcomes;
-- direct-path structural assertion excluding Engine Host/worker;
-- pending application/attach/terminal races;
-- exact neutral public projection and no adapter IDs;
-- network/backpressure isolation;
-- backend observer reuse;
-- exact custom WebSocket path/query/route/readiness/text/binary/early-frame/bounds/worker-network/cleanup coverage plus notification/artifact/native regression;
-- exact manifest-v4 → bundle-v1 authority, seven required exposure flags, v4/v4 compatibility, definition-v4 gating, derived-summary, built-in/devkit/generated rejection coverage;
-- strict desktop bootstrap/client contracts with no application authentication surface, exact standard target URL derivation, and custom path/business-query normalization;
-- realistic browser-equivalent SDK connection behavior.
+## Executable Coverage Evidence And New Gap
+
+The previous API/E2E report remains authoritative for the implemented framework and records:
+
+- live loopback standard agent WebSocket integration;
+- custom backend WebSocket and real child worker IPC;
+- backend observer activation/delivery;
+- deterministic public projection, sequencing, lifecycle, backpressure, authorization, and failure coverage;
+- strict v4/generated-package validation;
+- independent notifications/artifacts; and
+- desktop bootstrap/no-auth scope.
+
+Expanded-scope preparation against the committed Socratic source and later builder HEAD records:
+
+1. exact Codex binary/login/model/high preflight: `Pass`;
+2. backend-SDK/package build and source/generated idempotency: `1 file / 3 tests` plus drift checks `Pass`;
+3. focused Socratic deterministic suite: `6 files / 29 tests` `Pass`;
+4. server production build: `Pass`;
+5. affected application/framework regressions: `18 files / 146 tests` `Pass`;
+6. web-host regressions: `5 files / 13 tests` `Pass`; and
+7. builder implementation/source review/package propagation: `Pass` at `cee41e917` / `3e48c0ea2`.
+
+The next retained run under `evidence/ac018-ac019-round3/` executed the real mounted journey. It proved exact model/config, READY, one input/acceptance, tool activity, nonempty native backend text (`135` characters), artifact publication, notification, durable transcript, mathematical relevance, and cleanup. It failed only the standard selected-member public stream assertion: no application text and no completion within `180s`. No retry was allowed because this was deterministic framework behavior, not provider nondeterminism.
+
+These are preserved execution facts, not final sign-off. After the revised event contract/projector/Socratic consumer passes architecture and source review, API/E2E must proportionately rerun contract/socket/package coverage and the same bounded live journey, then recalculate confidence. It must assert `TEXT_DELTA`/`TURN_COMPLETED`, not the superseded broad event union.
 
 ## Persisted Data Evidence
 
@@ -324,129 +405,67 @@ Decision: `Directly Usable — No Migration`.
 
 | Area | Evidence |
 | --- | --- |
-| binding data | same binding/application/runtime/member/status fields and meaning; only TypeScript/public naming tightens |
-| binding store | current JSON hydration already uses runtime subject; no column/physical format change |
-| artifacts | reader/writer/authorization unchanged |
-| application DB | application business mapping unchanged |
-| new state | connection/session/request/subscription/queue/sequence are memory-only |
-| preservation | existing bindings/artifacts/projections remain readable exactly as stored |
+| application lessons/messages | no new column or stored-format requirement; target address is transiently built from the authoritative binding plus static member key |
+| framework bindings/artifacts | unchanged implemented reader/writer semantics |
+| launch defaults | source/package configuration and in-memory launch object, not application database schema |
+| live UI state | memory-only connection/draft state |
+| build outputs | regenerated artifacts, not migrated user data |
+| preservation | existing lesson/binding/artifact data remains readable without version branching |
 
-Forbidden: DDL, schema migration, replay/checkpoint store, access-grant persistence, compatibility reader, binding rewrite, or data cleanup.
+Forbidden: new DDL, migration service/script, replay/checkpoint store, compatibility reader, credential/grant persistence, or mobile-specific path.
+
+## Exact User-Approved Expanded Direction
+
+1. Use exact `codex_app_server` / `gpt-5.6-sol` / `reasoning_effort: high` for the Socratic tutor.
+2. Prove the effective team-member launch configuration, not only source JSON.
+3. Make the real Socratic mounted UI use the standard application-agent connection.
+4. Start the team without initial input, then connect/READY/send so the first response is observable.
+5. Let Socratic business select static member `tutor` and return the exact address produced by the backend-SDK member builder.
+6. Render only ordered `TEXT_DELTA` and minimal turn/error lifecycle while retaining the artifact transcript as durable source of truth.
+7. Execute one bounded real Codex application journey with clear deterministic/qualitative assertions, environment dependencies, retry policy, and cleanup.
+8. Recalculate API/E2E confidence; preserve `96.7%` only as historical prior-scope evidence.
+9. Preserve desktop-only/no-application-auth scope and all existing framework boundaries.
+10. Preserve the committed typed target-address builders and Socratic member adoption.
+11. Do not add generic binding/business correlation support, a chat accumulator, or rich native event projection; revisit only with more vertical-application evidence.
+12. Use `ApplicationAgentStreamEventProjector` as a small closed extension boundary: text plus turn/error now, additional transformations only after a reachable product journey proves them.
+
+No open user requirement question blocks fresh architecture review.
 
 ## Material Investigation Commands
 
 ```text
-git status --short --untracked-files=all
-git diff --stat
-git show HEAD:<relevant source path>
-rg -n "ApplicationRunBinding|startAgent|startAgentTeam|sendInput|agentExecution" ...
-rg -n "ws/agent|ws/agent-team|WebSocket" ...
-sed -n ... application-iframe-contract.ts
-sed -n ... application-client.ts
-sed -n ... application-backend-api-gateway-service.ts
-sed -n ... api/websocket/agent.ts
-sed -n ... agent-stream-handler.ts / agent-team-stream-handler.ts
-sed -n ... remote-access-websocket-auth.ts
-git show HEAD:autobyteus-application-sdk-contracts/src/manifests.ts
-git show HEAD:autobyteus-application-sdk-contracts/src/index.ts
-git show HEAD:autobyteus-server-ts/src/application-bundles/utils/application-backend-manifest.ts
-git show HEAD:autobyteus-server-ts/src/application-engine/worker/application-worker-runtime.ts
-git show HEAD:autobyteus-web/utils/application/applicationHostTransport.ts
-git show HEAD:autobyteus-web/utils/remoteAccess/{authorizedTransport,websocketAuth}.ts
-git grep -n "ApplicationBackendBundleManifestV1\|supportedExposures\|access_token" HEAD -- ...
+git status --short --branch
+git rev-parse HEAD origin/personal
+git log --oneline --decorate -15
+rg -n "agentCommunication|ApplicationAgentTargetAddress|ApplicationAgentStreamingService" autobyteus-* applications
+rg -n -U "bindingId:\s*[^,]+,\s*\n\s*target:\s*\{" applications autobyteus-* --glob '!**/dist/**' --glob '!**/vendor/**'
+rg -n "createApplicationAgent(Target|TeamTarget|TeamMemberTarget)Address" autobyteus-* applications
+find applications -path '*/backend-src/services/run-binding-correlation-service.ts' -not -path '*/dist/*' -print
+rg -n "lastSequence|SEGMENT_CONTENT|AGENT_RESPONSE_COMPLETED|connection.ready" applications/socratic-math-teacher/frontend-src/socratic-tutor-session.js
+find applications/socratic-math-teacher -maxdepth 5 -type f | sort
+rg -n "startLesson|startAgentTeam|initialInput|buildConfiguredTeamRunLaunch|lessonTutorTeam" applications/socratic-math-teacher autobyteus-application-backend-sdk/src/launch-profile.ts
+sed -n ... applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts
+sed -n ... applications/socratic-math-teacher/frontend-src/socratic-runtime.js
+sed -n ... autobyteus-application-backend-sdk/src/launch-profile.ts
+cat applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json
+cat applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json
+codex --version
+codex login status
+# real Codex App Server model/list probe shown above
 ```
 
-No internet research was required; the question is repository-specific and current source is authoritative.
-
-## User-Approved Exact Direction
-
-The approved clean-cut choices are:
-
-1. frontend API: `applicationClient.agentCommunication.connect(address)`;
-2. returned type: `ApplicationAgentConnection`;
-3. exactly two binding types: `ApplicationAgentBinding` and `ApplicationAgentTeamBinding`; mixed-result APIs spell their explicit union and no `ApplicationAgentExecutionBinding` exists;
-4. fixed target URL suffixes under `/ws/applications/:applicationId/agent-communication`;
-5. sibling frontend groups `backend`, `notifications`, and `agentCommunication`;
-6. standard v1 supports input + provider-neutral events, but not native approval/interrupt/binary commands;
-7. generic backend WebSockets and backend event subscriptions remain optional advanced capabilities;
-8. no signed/persisted frontend target grant in v1 because no current user identity contract exists.
-
-No open user requirement question blocks fresh architecture review.
-
-## Architecture Round-5 Design-Impact Investigation
-
-The architecture reviewer recorded `DR-009`–`DR-011` in [`design-review-report.md`](./design-review-report.md). No user clarification was required.
-
-### `DR-009` — reachable direct-session commit gap
-
-The reviewed sequence returned a Streaming subscription as active before Communication wrote `READY`. Binding terminal is produced by the supported explicit-terminate, run-observer, and recovery paths, so a terminal callback can reach the paused interval through normal production execution. The corrected target uses:
-
-- `ACTIVE_PAUSED` Streaming state with one accepted-event FIFO and disabled drain;
-- one `ApplicationAgentCommunicationSession` synchronous transition serializer for READY, terminal, client/abort close, and transport failure;
-- a no-`await` READY write/open/enable-drain commit;
-- exact SDK `ready`/`onError`/`onClose`/close-reason mapping; and
-- retain-on-READY versus drop-on-any-other-winner pre-ready event disposition.
-
-No new service, persistence, or second event queue is introduced.
-
-### `DR-010` — missing custom WebSocket authority
-
-Authoritative `HEAD` confirms there is no generic custom application-backend WebSocket capability. The following stopped partial files were inspected only as candidate/evidence input, not behavior authority:
-
-- `autobyteus-application-sdk-contracts/src/application-websockets.ts`;
-- `autobyteus-application-frontend-sdk/src/application-backend-websocket-connection.ts`;
-- `autobyteus-application-frontend-sdk/src/application-backend-websocket-transport.ts`;
-- `autobyteus-server-ts/src/api/websocket/application-backends.ts`;
-- `autobyteus-server-ts/src/application-backend-api-gateway/websockets/application-backend-websocket-session-service.ts`;
-- `autobyteus-server-ts/src/application-engine/worker/application-websocket-session-registry.ts`;
-- `autobyteus-server-ts/src/application-engine/worker/application-backend-host.ts`; and
-- `autobyteus-server-ts/src/application-engine/worker/application-backend-definition-loader.ts`.
-
-Material candidate findings retained in the normative supplement are the typed text/binary frame, fixed route mount, reserved readiness, Gateway/Engine/Backend Host ownership, backend `webSocketRoutes`, `open(request, session, context)`, process-boundary limits, and correlated cleanup. The target corrects or completes candidate gaps by defining deterministic non-ambiguous route validation, trusted request context, rejection of raw early inbound frames, bounded backend-early outbound ordering after READY, serialized handler delivery, exact frontend errors, and first-cause cleanup.
-
-### `DR-011` — exact public binding surface
-
-The common binding-field shape remains useful source composition but is now private/non-exported. Only `ApplicationAgentBinding` and `ApplicationAgentTeamBinding` are exported. Mixed return types spell their union. Type/export tests must fail if `ApplicationAgentBindingBase`, `ApplicationAgentExecutionBinding`, or `ApplicationRunBindingSummary` is publicly reachable.
-
-## Architecture Round-6 And Post-Review Requirement Correction
-
-The architecture reviewer resolved `DR-009` and `DR-011`, found `DR-010` substantially complete but internally inconsistent only at manifest authority, and opened `DR-012` from an assumed paired-mobile remote-access requirement. The user then supplied material product-reachability evidence: application features are desktop-only. That clarification made the `DR-012` premise `Not Reachable`, obsoleted the subsequent pass, and returned the package to solution design.
-
-### `DR-010` remaining — manifest/exposure authority
-
-The stopped partial source used an `ApplicationManifestV3` type with frontend SDK `"4"`, left the backend bundle at V1, and added `webSockets` to the bundle exposure record. The supplement incorrectly described a nonexistent nested `backend.supportedExposures` on “Manifest v4.” `HEAD` evidence proves the correct owner chain: application manifest pointer → backend bundle capability declaration → backend definition handlers → derived exposure summary.
-
-The corrected target names `ApplicationManifestV4`, keeps its backend field as the bundle pointer only, keeps `ApplicationBackendBundleManifestV1.supportedExposures` as the single authority with seven required booleans, declares exact v4/v4 compatibility, uses backend definition v4 for actual routes, and derives `webSocketRoutes` into the summary. The pre-release cutover rejects missing/stale fields and adds no compatibility reader.
-
-### `DR-012` / `MP-R6-001` — obsolete / not reachable
-
-The repository does contain a complete paired-mobile WebSocket credential contract, but no supported application path can reach it. The earlier design mistakenly generalized that unrelated capability into this ticket. The corrected target removes application credential selection/injection, reserved query behavior, collision rules, mobile error cases, and mobile coverage from every active artifact.
-
-The remaining boundary is simpler and product-aligned:
-
-- trusted desktop web host: application ID and fixed standard/custom/notification bases;
-- frontend SDK: standard target-path encoding or distinct custom path/business-query construction;
-- standard adapter: active application scope plus delegation to Communication/Orchestration;
-- custom adapter/Gateway/Engine/worker: active application/exposure validation and normalized custom request.
-
-Existing platform/network security remains unchanged and outside the application contract.
+No internet research was required; repository source plus the locally installed Codex App Server catalog are the relevant authorities.
 
 ## Documentation Validation Status
 
-Completed for the revised solution-designer-owned package:
+Completed for the revised seven-artifact solution-designer package after architecture round-16 rework:
 
-- reciprocal relative links resolve and the superseded `application-agent-streaming-contract.md` file is absent;
-- `REQ-001`–`REQ-017`, `AC-001`–`AC-017`, `BEH-001`–`BEH-010`, `UC-001`–`UC-007`, and `DS-001`–`DS-016` are continuous/unique in their governing artifacts;
-- Markdown backtick/tilde fences are balanced and artifact files have final newlines/no trailing whitespace;
-- every use case is mapped to its applicable primary, return/event, and bounded-local spines; preserved notifications and durable artifacts retain independent complete spines;
-- all 24 current Mermaid blocks parsed/rendered with `@mermaid-js/mermaid-cli` 11.9.0 after replacing the obsolete credential diagram with the desktop-only access-boundary view; evidence is under `/tmp/application-agent-communication-mermaid-desktop/out-v2`;
-- focused searches confirmed the standard API/path/binding/event names are consistent, no exported `ApplicationAgentBindingBase`, `ApplicationAgentExecutionBinding` definition, or duplicate `ApplicationAgentConnectionInput` remains, and adapter IDs are absent from `ApplicationAgentEvent`;
-- the round-5 correction audit confirms the Communication-owned READY commit, exact four-state SDK mapping, pre-ready event retain/drop, and every required custom-WebSocket frontend/backend/readiness/frame/route/bounds/failure/cleanup contract element are present;
-- the round-6 audit confirms one exact `ApplicationManifestV4 → ApplicationBackendBundleManifestV1 → ApplicationBackendDefinition v4 → derived summary` authority chain, with no nested application-manifest exposure and no six-flag fallback;
-- the post-review scope audit confirms desktop-only application reachability, no application-client authentication surface, no paired-mobile credential behavior, and unchanged external platform/network security;
-- the design-principle audit passed approved-behavior, spine-span, ownership, authoritative-boundary, reuse, empty-indirection, shared-structure, clean-removal, persisted-data, and reachability checks;
-- the redundancy audit assigns one owner to target authorization, public projection, event buffering, target-path coding, custom path/query normalization, exposure declaration, terminal coordination, and public contracts; it explicitly forbids an artificial authentication composer, exposure copies, adapter mapping, a second server event FIFO, parallel input DTOs, and superseded standard/custom proxy paths;
-- migration assertions consistently state `Directly Usable — No Migration` and prohibit DDL/replay/checkpoints/grant persistence;
-- no source/build/test command was run by solution design because the preserved dirty implementation is intentionally stopped and stale.
+- every relative Markdown link resolves; all fences are balanced; all files end with a newline;
+- stable IDs remain continuous and unique: `BEH-001`–`BEH-012`, `REQ-001`–`REQ-019`, `AC-001`–`AC-019`, `UC-001`–`UC-009`, and `DS-001`–`DS-018`;
+- all `27` Mermaid blocks rendered successfully with `@mermaid-js/mermaid-cli` `11.9.0`; extraction manifest and SVG evidence are under `/tmp/app-stream-r16-mermaid.DPOvLL`;
+- `git diff --check` passes for all seven solution-designer-owned core/supplement artifacts;
+- focused searches find no active assertion that builders remain unimplemented, that the real Codex journey was not run, or that Socratic must consume the superseded broad completion/text contract;
+- removed event/type names appear only in current-state evidence, explicit removal rules, negative tests, or compatibility rejection; and
+- no production source, generated package, provider runtime, or live inference was changed/run by solution design during this revision.
 
-The dirty source status is preserved unchanged apart from solution-designer-owned ticket artifacts. Repository-wide `git diff --check` is not used as a claim about the stopped implementation; downstream reconciliation must validate source after the replacement design is approved.
+Architecture round 16 resolved `DR-015`/`DR-016`, confirmed the minimal framework event boundary and sibling-return join, and returned `DR-017`. This revision defines the bounded Socratic-local sequential-turn admission invariant and is ready for a fresh architecture gate. Downstream-owned dirty reports/logs/evidence and the two implementation-owned uncommitted broad-projector edits remain preserved; repository-wide cleanliness is not claimed.

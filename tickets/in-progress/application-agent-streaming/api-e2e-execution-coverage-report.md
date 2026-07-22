@@ -9,127 +9,149 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-agent-communication-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-backend-websocket-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/application-communication-boundaries.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/socratic-math-live-journey.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/code-review-report.md`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/api-e2e-coverage-investigation.md`
-- Current Execution Round: `1`
-- Trigger: implementation-source review round 3 Pass at artifact HEAD `6b2cdce571fa8d1920f7ad57ede0e8309b94c0ad`, including CR-004 test-alignment commit `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`.
-- Prior Round Reviewed: `N/A`
-- Latest Authoritative Round: `Round 1`
+- Current Execution Round: `3`
+- Trigger: implementation-source review round 11 Pass for `CR-008` completion commit `46d14542a023f06e44a4e5af4375fed2fbcfbbf8` at handoff HEAD `b2615e1661d5a1351c292f247e6e432af2669517`.
+- Prior Round Reviewed: execution round 2, whose real `ASE-018-LIVE` attempt failed at the superseded broad application event projection. The current round had to recheck that exact live boundary plus `AC-019`, deterministic close convergence, inventories, and cleanup.
+- Latest Authoritative Round: `3`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | source-review Pass; API/E2E requested | N/A | None in authoritative build/test/inventory surfaces | Pass | Yes | Added two live cross-boundary integrations and updated one worker integration. A non-authoritative whole-project typecheck command exposed a recorded-base `tsconfig.json` rootDir/include defect; it is not changed by this task and does not contradict the passing production build or tests. |
+| 1 | original application-agent streaming framework scope | None | None | Pass | No | Historical 96.7% baseline; it predates expanded real Socratic acceptance and `AC-019`. |
+| 2 | first expanded builder plus real mounted Socratic/Codex scope | None | `ASE-018-LIVE` | Fail | No | Provider/tool/artifact/durable paths worked, but the superseded broad public stream delivered neither text nor completion. |
+| 3 | revised five-event projection, Socratic live/durable join and admission, then `CR-008` monotonic close | `ASE-018-LIVE` | None | **Pass** | **Yes** | The same real path now delivered 45 `TEXT_DELTA` events and `TURN_COMPLETED`, joined durable output, and closed cleanly. |
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/api-e2e-coverage-investigation.md`
-- Investigation completed before durable coverage changes or final execution: `Yes`
-- Investigation plan followed: `Yes` — the selected broader validation was encoded as durable integration coverage rather than a disposable harness.
-- Existing coverage decisions revised during execution, with evidence: the stale backend `sendInput({bindingId,...})` fixture was confirmed invalid against the approved exact `{address,input}` contract and updated. No test was removed.
-- Reroute required before or during execution: `No`
-- Notes: all upstream requirements, supplements, design review, implementation handoff, and source-review report were used as the validation basis.
+- Coverage investigation artifact: canonical round-4 investigation at the path above.
+- Investigation completed before durable coverage changes or final execution: `Yes`.
+- Investigation plan followed: `Yes`.
+- Material setup/probe corrections before the acceptance run:
+  - two post-build temporary probes initially read `defaultConfig` instead of `defaultLaunchConfig` and supplied `AGENT_TEAM` instead of canonical `TEAM_RUN`; corrected probes passed and no product command failed;
+  - the first catalog-only probe read obsolete `parameter_schema` rather than `config_schema.parameters`; the corrected production catalog probe passed and neither probe started a paid turn;
+  - initial isolated server/setup attempts supplied neither the task-owned `.env` host value nor the required team `memberProfiles`; these test-environment inputs were added before any lesson, browser journey, or model turn.
+- Existing coverage decisions revised during execution: `No`. Source-reviewed durable coverage remained current. The authenticated paid journey remained a temporary acceptance harness.
+- Reroute required before or during execution: `No`.
+- Durable API/E2E test changes this round: none.
 
 ## Compatibility / Legacy Scope Check
 
-- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
-- Compatibility-only or legacy-retention behavior observed in implementation: `No`
-- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes`
-- Durable coverage added or retained only for compatibility-only behavior: `No`
-- If compatibility-related invalid scope was observed, reroute classification used: `N/A`
-- Upstream recipient notified: `N/A`
+- Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`.
+- Compatibility-only or legacy-retention behavior observed in implementation: `No`.
+- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes` — `Directly Usable — No Migration`.
+- Durable coverage added or retained only for compatibility-only behavior: `No`.
+- Compatibility-related reroute: `N/A`.
+- Upstream recipient notified: `N/A`.
 
 ## Changed Boundary And Evidence Matrix
 
 | Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| `ASE-001` | exact shared address; agent/team/member target semantics; READY, input, projected event, terminal, invalid target (`AC-002`–`009`, `AC-013/014`) | frontend SDK → real Fastify standard WS → Communication/Streaming/Orchestration | loopback TCP/WebSocket with production SDK/services | Durable + Live | Pass | `application-agent-communication-ws.integration.test.ts`; `evidence/03-focused-streaming.log` |
-| `ASE-002` | custom backend WS route/query/context; hidden readiness; text/binary ordering; exposure preflight; exactly-once close; worker failure (`AC-010/015/016`) | frontend SDK → real Fastify Gateway → Engine Host → child Backend Host | loopback TCP/WebSocket plus child-process JSON-line IPC | Durable + Live + Worker | Pass | `application-backend-custom-websocket.integration.test.ts`; `evidence/03-focused-streaming.log` |
-| `ASE-003` | backend observer activation barrier, event envelope, unsubscribe, exact input shape (`AC-002/009/013/015`) | backend SDK capability → Backend Host → worker/Engine Host reverse IPC → Streaming owner | real child worker with deterministic host-side emitter | Durable + Worker | Pass | updated `application-context-capabilities.integration.test.ts`; `evidence/03-focused-streaming.log` |
-| `ASE-004` | race winners, bounds, authorization, projection closure/provider neutrality, sequence, recovery (`AC-004/007/008/013`–`015`) | Communication/Streaming/Gateway/Engine/Orchestration owners | deterministic unit plus combined focused/broad suites | Durable | Pass | `evidence/03-focused-streaming.log`; `evidence/04-affected-server.log` |
-| `ASE-005` | strict iframe v4 / bundle v1 / backend+frontend v4 chain; exactly seven flags; no stale token/fallback (`AC-016`) | contracts, SDK/devkit, bundle generation, built-ins | type/contract tests, builds, generated diff, source inventories | Durable + Temporary | Pass | `evidence/01-contract-sdk-devkit.log`; `evidence/05-builtins-generated.log`; `evidence/07-final-inventories.log` |
-| `ASE-006` | notifications and durable artifacts remain separate; REST/WS/GraphQL regressions; Brief early final (`AC-011/012`) | unchanged business planes across imported package and worker | affected integration suite | Durable | Pass | `evidence/04-affected-server.log` — 29 files / 156 tests, including all 3 Brief imported-package tests cleanly. |
-| `ASE-007` | existing binding/artifact data directly usable; fresh storage; no migration (`AC-017`) | storage/package/recovery and platform/app schemas | isolated temp roots/SQLite plus migration/schema inventory | Durable + Temporary | Pass | `evidence/04-affected-server.log`; `evidence/07-final-inventories.log` |
-| `ASE-008` | desktop-only bootstrap, fixed WebSocket bases, unsupported mobile/no application-client credential surface (`AC-005/007/011/016`) | Nuxt host/bootstrap and public frontend API | focused Nuxt tests plus active-source inventory | Durable + Temporary | Pass | `evidence/06-web-focused.log`; `evidence/07-final-inventories.log` |
+| `ASE-019-PKG` | three canonical target-address builders, exports, exact validation/freshness/nonmutation, runtime mirrors (`AC-019`) | backend SDK distribution and Brief/Socratic normal/importable packages | package tests/builds, five runtime imports, hash/mirror inventory | Durable + Temporary | Pass | `01-contracts-sdks.log`; `03-builds-generated.log`; `03a-corrected-probes.log`; `12-final-inventories.log` |
+| `ASE-019-ADOPTION` | Socratic `tutor` projection, nullable/configuration cases, direct one-shot DTOs, use-time authorization (`AC-019`) | Socratic backend → canonical address → Orchestration/Communication | focused/broad tests plus real mounted target use | Durable + Live | Pass | `02-focused-revised-stream.log`; `04-affected-regressions.log`; `10-live-journey-redacted.json` |
+| `ASE-018-PRE` | exact current Codex login/model/high configuration (`AC-018`) | CLI/catalog, saved slot, effective tutor run metadata | current preflight plus isolated live resume metadata | Temporary + Live | Pass | `06-codex-preflight.log`; `06a-corrected-catalog-probe.log`; `08-live-saved-config-redacted.json`; `10-live-journey-redacted.json` |
+| `ASE-018-LIVE` | READY/one-send, minimal public stream, live/durable join, artifact, qualitative Socratic journey (`AC-018`) | generated Chrome UI → SDK/WS → server worker/Engine/Codex/projector → notification/GraphQL/artifact | fresh isolated browser, actual workers, one paid exact-model turn | Browser + Live + Process | **Pass** | `09-live-harness.log`; `10-live-journey-redacted.json`; safe initial screenshot `09-mounted-initial.png` |
+| `ASE-018-CLOSE` | `CR-008` monotonic close, final controls, terminal binding, one close/no resend/reconnect (`AC-018`) | mounted runtime/UI → backend close → binding/Communication/process lifecycle | deterministic late-refresh coverage plus real mounted Close | Durable + Browser + Live + Process | Pass | `02-focused-revised-stream.log`; `10-live-journey-redacted.json`; `11-live-process-state.log`; `13-cleanup.log` |
+| `ASE-018-INV` | removed-token, generated-output, no-migration, drift, resource cleanup (`AC-017/018/019`) | repository/package/process/filesystem | final inventories and exact owned-resource cleanup | Temporary | Pass | `12-final-inventories.log`; `13-cleanup.log` |
 
 ## Additional Repository Coverage Execution
 
-The coverage investigation contains the authoritative command table. No new command was required after the final score and broader-validation decision because the required live API/worker validation was implemented and executed as durable repository integration coverage in the same staged run.
+The updated coverage investigation is authoritative for the repository plan. All repository checks below were executed fresh before the broader-validation decision was closed.
+
+| Order | Command / Mode | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
+| --- | --- | --- | --- | --- | --- |
+| 1 | package `pnpm test`/build/type-test for application contracts, frontend SDK, backend SDK | each SDK package root | exact five-event contract/validator and all three builders | Pass: contracts 6/6; frontend 12/12 plus type test; backend 2 files/9 tests plus build | `evidence/ac018-ac019-round4/01-contracts-sdks.log` |
+| 2 | `pnpm exec vitest run --no-watch` on exact projector/runtime-source/subscription/standard-WS/backend-observer/Socratic session-renderer-mounted files | `autobyteus-server-ts` | revised real failure boundary, join/admission, and `CR-008` close ordering | Pass: 8 files/49 tests; mounted lifecycle 12/12 | `02-focused-revised-stream.log` |
+| 3 | server `pnpm build`; Socratic/Brief typecheck/build twice; normal imports/config/hash/mirror probes | worktree package roots | production build, propagation, exact config, `AC-019` runtime distribution | Pass; 706-file build hash stable | `03-builds-generated.log`; `03a-corrected-probes.log` |
+| 4 | `pnpm exec vitest run --no-watch` on affected server/API/transport/Codex/package/artifact/storage/orchestration suites | `autobyteus-server-ts` | preserved external/API/worker/authorization/lifecycle behavior | Pass: 26 files/169 tests | `04-affected-regressions.log` |
+| 5 | `pnpm test:nuxt ... --run` on iframe host/surface/setup/asset/transport suites | `autobyteus-web` | host bootstrap and web-equivalent regression behavior | Pass: 5 files/12 tests | `05-web-host-regressions.log` |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
-| --- | ---: | ---: | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 97% | 97% | — | every critical AC maps to passing direct or boundary-appropriate evidence | no live third-party provider inference; deterministic projection contract is directly tested |
-| Changed-boundary execution directness | 98% | 98% | — | production SDK/routes/services/worker host executed over actual sockets and child IPC | destructive OS-buffer saturation not induced |
-| Cross-boundary integration realism and mock gap | 97% | 97% | — | real loopback TCP/WS and child process; preserved REST/notification/artifact/GraphQL paths | deterministic runtime event sources replace live LLM providers |
-| Environment, configuration, identity, and fixture fidelity | 96% | 96% | — | Node 22, package builds, Fastify, real worker, fresh temp SQLite/app roots, trusted/disabled identities | packaged Electron distribution not launched |
-| Failure, edge-case, lifecycle, and recovery evidence | 97% | 97% | — | early/malformed frames, invalid target, terminal binding, exposure denial, worker stop, close-once, bounds/races/recovery | kernel-level exhaustion not induced live |
-| User-surface, browser, and desktop-shell confidence | 95% | 95% | — | browser-compatible production SDK over real WS plus 4-file Nuxt host/bootstrap suite | no full browser/Electron run; no visual or shell boundary changed |
-| Durable regression coverage quality and relevance | 97% | 97% | — | two focused live integrations added, one stale worker fixture corrected/extended, narrow and broad reruns pass | proportional test-code review pending |
+| --- | ---: | ---: | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 86% | **97%** | +11 | Exact real `AC-018` journey and `AC-019` package/adoption pass in addition to deterministic order/admission/error matrices. | One paid qualitative turn by design; stable permutations remain deterministic. |
+| Changed-boundary execution directness | 93% | **98%** | +5 | Generated UI, SDK, HTTP/GraphQL/WS, worker, Engine, Codex, projector, notification, artifact, and close path executed directly. | None material. |
+| Cross-boundary integration realism and mock gap | 88% | **98%** | +10 | No provider or transport mock in the critical path; public/UI/durable/artifact state was correlated. | Unrelated live applications were not exercised. |
+| Environment, configuration, identity, and fixture fidelity | 82% | **98%** | +16 | Current ChatGPT login/catalog, fresh generated import/current stores, exact saved/effective config, isolated workspace/profile/ports. | Shared user data was intentionally excluded. |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | **98%** | +2 | Exact late-close regression, broader error/terminal coverage, real terminal binding/socket/process cleanup, and final inventories pass. | Natural live run sampled one success ordering; the other orderings are deterministic. |
+| User-surface, browser, and desktop-shell confidence | 86% | **97%** | +11 | Generated Socratic visibly streamed, saved, and closed in installed Chrome; semantic DOM transitions were captured. | Electron-only shell behavior is inapplicable; harness host produced one harmless missing-favicon 404. |
+| Durable regression coverage quality and relevance | 98% | **98%** | 0 | Current contracts/projector/session/renderer/mounted lifecycle and broad affected suites passed without an API/E2E test delta. | Paid/authenticated journey correctly remains temporary. |
 
-- Overall post-repository confidence: `96.7%`
-- Overall final confidence: `96.7%`
-- Calculation method: simple average of seven applicable category scores (`677 / 7 = 96.7%`, rounded to one decimal place).
-- Confidence change produced by broader validation: the required broader/live evidence was incorporated into durable repository tests before the final repository score, so no separate post-score increment applies.
-- Every critical acceptance criterion directly proven: `Yes`
-- Any final applicable category below `90%`: `No`
-- Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: bounded, non-material uncertainty remains around live provider inference, packaged Electron execution, and destructive network/OS saturation. None is a changed boundary or critical acceptance criterion.
+- Overall post-repository confidence: `89.9%`.
+- Overall final confidence: `97.7%` (`684 / 7`, rounded to one decimal place).
+- Calculation method: simple average of seven applicable categories; critical criteria remain hard gates.
+- Confidence change produced by broader validation: `+7.8 percentage points`; it closed the prior real text/completion, environment, browser, and natural close gaps.
+- Every critical acceptance criterion directly proven: `Yes`.
+- Any final applicable category below 90%: `No`.
+- Default final confidence target of 95% met: `Yes`.
+- Confidence-limiting residual risks: no material residual. Bounded residuals are the approved one-paid-turn cost limit and intentionally inapplicable Electron-shell behavior.
 
 ## Broader Validation Decision And Execution
 
-- Decision and selected execution mode from the coverage investigation: `Required` — Live API + Worker/Distributed + browser-equivalent SDK transport.
-- Material deviation from the planned mode or rationale: none. The live journeys were retained as durable Vitest integrations rather than a temporary script.
-- Confidence gap or residual risk actually addressed: real WS handshakes/framing/close behavior, READY sequencing, binary handling, route/query/context transport, custom worker IPC, worker shutdown, and backend observer activation/delivery.
-- If `Not Required`: N/A.
-- If `Blocked`: N/A.
-- Startup order, commands, and readiness results: build contracts/backend SDK/server; tests listen on `127.0.0.1:0`; standard SDK waits for exact READY; Engine Host starts a generated v4 backend child and waits for exposure/READY; every selected check passed.
-- Environment choices that materially affected the run: isolated task worktree, ephemeral loopback ports, isolated temporary application/storage roots, no shared user data, deterministic runtime/provider fixtures.
-- Seed data, fixtures, identities, authentication, permissions, or session state: deterministic agent and team bindings; agent/team/member targets; trusted route application ID; disabled custom-WebSocket exposure negative; no client token because the approved desktop application client has no credential API.
+- Decision and selected execution mode: `Required` — fresh generated package + Live API + installed Chrome + application/Engine worker lifecycle + real Codex App Server.
+- Material deviation: none after the pre-journey environment/probe corrections listed above. Exactly one paid turn started; no retry occurred.
+- Confidence gap addressed: the historical real public-text/completion failure, natural live/durable order, exact effective model config, provider-neutral wire contract, actual mounted state, artifact convergence, and final close cleanup.
+- Startup order and readiness:
+  1. verified `codex --version`, ChatGPT login, exact model, and `high` in the production catalog;
+  2. built and copied a fresh generated Socratic importable package into a task-owned root;
+  3. started compiled `autobyteus-server-ts/dist/app.js` on task-owned loopback ports with isolated data/current SQLite and explicit isolated host configuration;
+  4. imported the package and saved `lessonTutorTeam` with exact runtime/model/workspace/member profile until slot status was `READY`;
+  5. ran the retained temporary mounted harness in installed Chrome.
+- Environment: task-owned application data, current SQLite DBs, copied package, tutor workspace, browser profile, ports `55291/55292`, and no shared application data.
+- Identity/authentication: current Codex ChatGPT login; no API-key substitution, fallback, service tier, or credential capture.
 
 | Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| standard connect and input | all three target variants become ready; input uses the same address and reaches the selected target | agent/team/member connections opened and all three inputs routed as specified | `application-agent-communication-ws.integration.test.ts`; `03-focused-streaming.log` | Pass |
-| standard event and terminal | provider-neutral closed events preserve sequence/filtering; binding terminal maps to `BINDING_ENDED`; invalid target fails safely | exact envelopes/order/filtering observed; expected terminal and establishment errors observed | same | Pass |
-| custom socket open/data/close | backend open-time send follows hidden READY; path/query/context are exact; text/binary order is preserved; close callback runs once | all observables matched; worker close log contained the single expected close record | `application-backend-custom-websocket.integration.test.ts`; `03-focused-streaming.log` | Pass |
-| custom negative/lifecycle | early client frame closes with 1002; disabled exposure is rejected before Engine open; worker stop produces safe terminal behavior | all expected negative/terminal results observed, including `BACKEND_UNAVAILABLE` and 1012 | same | Pass |
-| backend observer | subscription promise resolves before callback delivery; exact event crosses worker IPC; unsubscribe succeeds | observed exact event and activation ordering; callback-before-resolution flag remained false | updated context integration; `03-focused-streaming.log` | Pass |
+| current prerequisite | installed CLI logged in; exact `gpt-5.6-sol` supports `high` | `codex-cli 0.145.0`, ChatGPT login, exact model and `high` present | `06a-corrected-catalog-probe.log` | Pass |
+| fresh package and configuration | package imported; slot READY; source/importable/saved/effective tutor exact; no service tier | runtime `codex_app_server`, model `gpt-5.6-sol`, config `{ reasoning_effort: "high" }`, isolated workspace, no service tier | `07-live-environment-redacted.json`; `08-live-saved-config-redacted.json`; `10-live-journey-redacted.json` | Pass |
+| mounted generated UI | v4 host bootstrap and exact generated UI ready | safe initial Socratic UI rendered in Chrome | `09-mounted-initial.png`; `10-live-journey-redacted.json` | Pass |
+| start/target/send ownership | builder-backed member address; READY before one exact input and one acceptance | target `AGENT_TEAM_MEMBER/tutor`; connection/READY/INPUT/INPUT_ACCEPTED each 1; request IDs matched; exact prompt and metadata sent | `10-live-journey-redacted.json` | Pass |
+| provider-neutral stream | only approved five-event union, increasing sequence, nonempty live text, success terminal | `TURN_STARTED`, 45 `TEXT_DELTA` values growing to 134 characters, then `TURN_COMPLETED`; no interrupted/error/tool/thinking/native/obsolete event | `09-live-harness.log`; `10-live-journey-redacted.json` | Pass |
+| live UI and sequential admission | text visibly streams; unresolved next actions disabled; saved join clears draft, presents one authoritative tutor row, and re-enables one next action | semantic observations captured all required connecting/streaming/saved transitions and control states; no resend | `10-live-journey-redacted.json` | Pass |
+| durable sibling path | notification/GraphQL/artifact converge independently and durable text becomes authoritative | topics included `lesson.started`, `lesson.response_received`, `lesson.closed`; one `lesson_response`; successful `publish_artifacts`; allowed `socratic-math/lesson-response.md` content exactly matched durable tutor text | `10-live-journey-redacted.json` | Pass |
+| qualitative tutor output | relevant Socratic next step, not unrelated/full walkthrough | response subtracted 5 from both sides and asked what the equation simplifies to; six math markers and a focused question passed | `10-live-journey-redacted.json` | Pass |
+| close and monotonic convergence | mounted Close remains available, final detail/actions closed, binding terminal, one socket close, no reconnect/second input | closed detail/label/actions observed after final refresh; binding terminal; connection close exactly 1; connections/input remained 1 | `10-live-journey-redacted.json`; `11-live-process-state.log` | Pass |
+| owned-resource cleanup | lesson/binding/browser/host/server/worker/listeners/workspace/package/DB/temp removed exactly | all task-owned processes/listeners/files/root absent; lesson closed and binding terminal before shutdown | `13-cleanup.log` | Pass |
 
-## Desktop Application Validation (When Applicable)
+The approved retry policy permits one clean retry only for an identified transient external Codex failure or completed qualitative noncompliance. The first and only paid turn passed, so no retry was used.
 
-- Validation approach executed and any deviation from the investigation: focused Nuxt tests plus the production frontend SDK using repository `ws` through its browser-compatible `addEventListener` API against real Fastify; no deviation.
-- Browser-tested web-equivalent behavior and evidence: real browser-style WebSocket construction/events, URL composition, READY, text/binary messages, errors, and close; `03-focused-streaming.log`. Nuxt host/bootstrap state passed 4 files / 11 tests; `06-web-focused.log`.
-- Shell-specific or lifecycle behavior and evidence: no Electron preload, IPC, window, packaging, or shell lifecycle code changed; actual desktop launch was therefore not warranted.
+## Desktop Application Validation
+
+- Validation approach: installed Chrome exercised the exact web-equivalent generated iframe/bootstrap path; Electron was not launched.
+- Browser-tested behavior: host bootstrap, generated UI, GraphQL, backend notification WebSocket, standard selected-member application-agent WebSocket, live rendering, durable join, controls, and close.
+- Shell-specific behavior: none changed or required; no preload, IPC, window, updater, or packaging boundary is implicated.
 - Effect on any already-running desktop application: `None`.
-- Behavior not directly proven and confidence consequence: packaged Electron execution was not run; user-surface confidence remains 95%, with no material task risk.
+- Behavior not directly proven: Electron-shell-only behavior, intentionally inapplicable with negligible confidence consequence.
+- Screenshot policy: the safe initial screenshot is retained. Streaming/saved/closed screenshots were visually inspected, but they displayed isolated runtime identifiers and were discarded under the approved redaction contract; semantic DOM transitions and redacted correlated JSON are the authoritative live-state evidence.
 
 ## Platform / Runtime Targets
 
-- Operating system / platform: macOS 26.5.2, arm64.
-- Runtime and relevant framework versions: Node `v22.23.1`; pnpm `10.28.2`; Fastify `^4.29.1`; `@fastify/websocket` `^10.0.1`; Vitest `^4.0.18`; `ws` `^8.18.1`; Nuxt `^3.21.0`.
-- Browser / engine and version: no full browser; repository `ws` used its browser-compatible event surface.
-- Device, viewport, locale, timezone, or accessibility settings: not applicable to the transport-only change; execution timezone Europe/Berlin.
+- Operating system/platform: macOS `26.5.2` (`25F84`), arm64.
+- Runtime/tooling: Node `v22.23.1`, pnpm `10.28.2`, server Vitest `4.0.18`, web Vitest `3.2.4`, Codex CLI `0.145.0`.
+- Browser: installed Google Chrome `150.0.7871.130`, headless persistent context.
+- Viewport/locale/timezone: `1440 x 1100`, `en-US`, `Europe/Berlin`.
+- External model: `gpt-5.6-sol`, `reasoning_effort: high`, ChatGPT login, no service tier.
 
 ## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
 - Approved persisted-data decision: `Directly Usable — No Migration`.
-- Representative existing data exercised: isolated current binding rows, storage lifecycle, application package state, artifact/Brief projections, and launch-correlation recovery.
-- Direct-use, discard/rebuild, or migration result and evidence: Pass through context/storage/package/recovery/Brief integrations; task diff contains no Prisma/schema/migration path (`04-affected-server.log`, `07-final-inventories.log`).
-- Migration completion/recovery evidence, only when `Migration Required`: `N/A`.
+- Representative data: current binding/address, fresh lesson/message, published-artifact metadata, current platform/application SQLite schemas.
+- Result: the builder-backed address operated through the normal live reader/transport; the transcript and artifact were read through normal current GraphQL/filesystem paths; the close projected a terminal binding.
+- Migration completion/recovery: `N/A`.
 - Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`.
-- Residual untested persisted-data risk: none material; connection/session state is not persisted by design.
+- Task-range Prisma/schema/migration diff: empty.
+- Residual persisted-data risk: none material.
 
 ## Tests Implemented Or Updated
 
-| Path / Scenario | Change | Requirement / Boundary | Execution Result | Notes |
-| --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts` / `ASE-001` | Added | real standard SDK/WS/Communication/Streaming/Orchestration for all targets | Pass | 3 direct cases in the new-file run; rerun in focused and broad suites. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts` / `ASE-002` | Added | real custom SDK/Gateway/Engine/worker/Backend Host | Pass | 2 direct cases covering success, early-frame/exposure, and worker-stop behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts` / `ASE-003` | Updated | exact `{address,input}` plus real child-worker observer reverse IPC | Pass | stale fixture corrected; subscription activation/event/unsubscribe added. |
+None during this API/E2E round. All repository-resident durable coverage was already part of the implementation-source-reviewed package.
 
 ## Tests Removed As Stale Or Obsolete
 
@@ -137,91 +159,103 @@ None.
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `Yes`
-- Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts`
+- Repository-resident durable coverage added, updated, or removed this round: `No`.
+- Paths added or updated: none.
 - Paths removed: none.
-- Added or updated paths attached for proportional test-code review: `Yes`
-- Diff or repository evidence supplied for removed paths: `N/A`
+- Added or updated paths attached for proportional test-code review: `Not Applicable`.
+- Diff/repository evidence: `12-final-inventories.log` proves no uncommitted product/test/generated drift; API/E2E changed only canonical ticket reports and temporary/redacted evidence.
+- Proportional review request: record `Not Applicable` for round-3 API/E2E-owned durable test code while retaining the earlier review history for implementation-owned tests.
 
 ## Other Execution Artifacts
 
-| Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
+All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/evidence/ac018-ac019-round4/`.
+
+| Artifact | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `tickets/in-progress/application-agent-streaming/evidence/01-contract-sdk-devkit.log` | contract/SDK/devkit execution | Retained | all authoritative commands passed |
-| `tickets/in-progress/application-agent-streaming/evidence/02-server-build.log` | production server build/bootstrap | Retained | passed |
-| `tickets/in-progress/application-agent-streaming/evidence/02a-auxiliary-typecheck.log` | auxiliary invalid-script evidence | Retained | pre-existing rootDir/include conflict; not a task failure |
-| `tickets/in-progress/application-agent-streaming/evidence/03-focused-streaming.log` | new and focused changed-boundary coverage | Retained | 3/6 and 16/72 passed |
-| `tickets/in-progress/application-agent-streaming/evidence/04-affected-server.log` | broader affected server regression | Retained | 29 files / 156 tests passed |
-| `tickets/in-progress/application-agent-streaming/evidence/05-builtins-generated.log` | built-in builds and drift check | Retained | passed, no generated drift |
-| `tickets/in-progress/application-agent-streaming/evidence/06-web-focused.log` | Nuxt transport/bootstrap checks | Retained | 4 files / 11 tests passed |
-| `tickets/in-progress/application-agent-streaming/evidence/07-final-inventories.log` | removed-symbol, prohibited dependency/auth/migration, manifest, and hygiene inventories | Retained | all pass |
-| `tickets/in-progress/application-agent-streaming/evidence/08-cleanup.log` | cleanup/process/status evidence | Retained | all owned resources cleaned |
+| `01-contracts-sdks.log` | contracts/frontend/backend SDK tests/builds | Retained | Pass |
+| `02-focused-revised-stream.log` | exact revised stream/Socratic/close suite | Retained | 8 files/49 tests pass |
+| `03-builds-generated.log` | production/package builds and generated idempotency | Retained | builds passed; 706-file hash stable; two stale temporary probe assumptions are transparently corrected by `03a` |
+| `03a-corrected-probes.log` | corrected exact config/builder normal imports | Retained | Pass |
+| `04-affected-regressions.log` | broad affected server/API/worker regression | Retained | 26 files/169 tests pass |
+| `05-web-host-regressions.log` | web host/setup/asset/transport regression | Retained | 5 files/12 tests pass |
+| `06-codex-preflight.log` | CLI/login plus first safe catalog-shape probe | Retained | CLI/login pass; catalog field assumption corrected in `06a`; no paid turn |
+| `06a-corrected-catalog-probe.log` | current exact model/high catalog proof | Retained | Pass |
+| `07-live-environment-redacted.json` | isolated live environment record | Retained | identifiers/root redacted |
+| `08-live-saved-config-redacted.json` | exact public saved slot configuration | Retained | READY; exact values |
+| `09-live-harness.log` | safe live summary | Retained | Pass |
+| `09-mounted-initial.png` | safe mounted UI visual | Retained | no credential/runtime identifier |
+| `10-live-journey-redacted.json` | correlated wire/UI/durable/artifact/close proof | Retained | authoritative live result; no hidden reasoning/raw provider payload/identifier |
+| `11-live-process-state.log` | post-close/pre-server-stop state | Retained | lesson/socket/host/browser checks |
+| `12-final-inventories.log` | legacy/generated/config/builder/schema/drift inventory | Retained | Pass |
+| `13-cleanup.log` | exact task-owned cleanup | Retained | Pass |
 
 ## Temporary Execution Methods / Scaffolding
 
 | Path / Method | Why Needed | Result / Evidence | Cleanup Result |
 | --- | --- | --- | --- |
-| ephemeral Fastify listeners on `127.0.0.1:0` | prove actual network adapters without port collision | live integrations passed | listeners closed by test teardown; no process remains |
-| generated temporary v4 backend bundle and application/storage roots | load a real custom backend in a child worker and isolate SQLite/files | worker integration passed | removed by test teardown |
-| devkit `.tmp-tests` and `dist` | devkit package test/build outputs | devkit 17/17 | removed after execution |
-| one initial broad-suite shell attempt using unavailable macOS Bash `mapfile` | command assembly only; no product scenario | immediately stopped and rerun with an explicit file list; authoritative run passed | process terminated; successful log is canonical |
+| `.../evidence/ac018-ac019-round4/live-mounted-socratic-harness.mjs` | mount the generated UI through the real host contract, assert exact public frames and semantic DOM state, and retain only safe evidence | `ASE-018-LIVE`/`CLOSE` passed; retained for review/reproducibility, not a durable test | browser context and host closed |
+| task-owned generated package/data/SQLite/workspace/browser-profile root | isolate public import, storage, model workspace, and browser state | exact environment and one live turn executed | recursively removed |
+| task-owned compiled server/application worker/Codex children and loopback ports | execute the real process/transport boundary | public/live/durable/close path passed | interrupted only after binding termination; all absent |
+| `/tmp` control/setup scripts | coordinate isolated setup without shared state | setup completed before the paid turn | removed |
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| LLM/provider runtime | deterministic in-memory AgentRun/TeamRun-compatible sources and exact provider-event fixtures | framework routing/projection is deterministic; live inference adds timing/network/secret noise and is not an acceptance criterion | low; provider-specific service availability/output is not claimed |
-| hosted browser/Electron | production SDK with repository `ws` browser-compatible API plus Nuxt component tests | no DOM/visual/preload/IPC/packaging behavior changed | low; browser/shell execution is not claimed |
+| deterministic repository suites | existing deterministic emitters/fixtures where designed | race, ordering, error, authorization, and join matrices must be stable/repeatable | none for those invariants; not counted as live-provider proof |
+| critical `ASE-018-LIVE` provider/browser/process path | **not mocked** | actual acceptance required | none from mocking |
+| Electron shell | Chrome browser-equivalent host | no shell-specific source/requirement changed | negligible/inapplicable |
 
 ## Prior Failure Resolution Check
 
-Not applicable in execution round 1. The pre-handoff Brief timing observation was not an unresolved API/E2E failure; the unchanged three-test Brief imported-package file passed cleanly within the authoritative 29-file / 156-test broader run.
+| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 2 | `ASE-018-LIVE`: actual Codex assistant output existed, but the superseded public projection emitted no text/completion | deterministic implementation/design mismatch in broad projector semantics; subsequently resolved through revised architecture and implementation | **Resolved** — current exact path emits 45 ordered `TEXT_DELTA` events and `TURN_COMPLETED`; UI streams and saves | `02-focused-revised-stream.log`; `09-live-harness.log`; `10-live-journey-redacted.json` | Tool/native events are now correctly private rather than the acceptance oracle. |
 
 ## Result Summary
 
 | Result | Scenario IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | `ASE-001`–`ASE-008` | every critical standard/custom/observer, strict-cutover, preserved-plane, direct-use storage, and frontend bootstrap boundary passed with direct or boundary-appropriate evidence. |
-| Out Of Scope | live provider inference; packaged Electron launch | not required for deterministic framework/protocol behavior; no provider-specific or shell-specific boundary changed. |
+| **Pass** | `ASE-019-PKG`, `ASE-019-ADOPTION`, `ASE-018-PRE`, `ASE-018-LIVE`, `ASE-018-CLOSE`, `ASE-018-INV` | builders/package/adoption/authorization, revised minimal real stream, live/durable/artifact/UI convergence, qualitative Socratic behavior, monotonic close, inventories, and cleanup all passed. |
 
 ## Cleanup Performed
 
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Fastify listeners and WebSocket clients | API/E2E tests | close in teardown | Pass; no task-worktree Fastify/Vitest process remains |
-| Engine/Application Backend child workers | API/E2E tests | `stopApplicationEngine`/test teardown | Pass; no task-worktree worker process remains |
-| temporary application/storage roots and SQLite files | API/E2E tests | recursive teardown | Pass; no disposable test directory remains |
-| `autobyteus-application-devkit/.tmp-tests` and `dist` | generated by this validation | removed after checks | Pass |
-| upstream dirty `code-review-report.md` | upstream reviewer | deliberately preserved | Pass; no unrelated reset or deletion |
+| live lesson/binding | fresh task-owned Socratic lesson | mounted Close; wait for closed detail and terminal binding | Pass |
+| standard agent socket | task-owned mounted session | application close path | Pass: exactly one close, no reconnect/input resend |
+| Codex/app worker/server | children of task-owned isolated server | close binding first, then expected SIGINT to server | Pass: all absent |
+| server/host listeners | task-owned loopback `55291/55292` | harness/server shutdown | Pass: absent |
+| Chrome context/profile | task-owned persistent context/profile | harness `finally` close, then root removal | Pass: no owned process/profile |
+| app data/DB/package/workspace/artifact/browser root | task-owned isolated root | recursive deletion after safe evidence extraction | Pass: root absent |
+| `/tmp` control/setup files | task-owned | unlink after cleanup verification | Pass: absent |
+| identifier-bearing live screenshots | task-owned temporary visual evidence | inspect, then discard under redaction contract | Pass: only safe initial screenshot retained |
 
 ## Classification
 
-`Pass`. No product, design, requirement, durable-test, environment, or execution failure remains. The optional `pnpm -C autobyteus-server-ts typecheck` command fails identically by construction at the recorded base because `tsconfig.json` includes tests outside `rootDir`; it is not the documented authoritative server build and the task does not change that configuration.
+- Outcome classification: `Pass`.
+- No `Local Fix`, `Design Impact`, `Requirement Gap`, or `Unclear` issue remains.
+- The harmless host-page 404 is the expected unserved favicon request from the temporary one-route host, not an application/API failure.
 
 ## Recommended Recipient
 
-`code_reviewer` for the separate proportional review of the three added/updated durable test paths.
+`code_reviewer` for the separate proportional API/E2E test-code review. API/E2E changed no durable test, so the proportional result should be `Not Applicable` rather than reopening source review or confidence.
 
 ## Evidence / Notes
 
-- Authoritative server build passed, including production TypeScript compilation and built-in bootstrap smoke.
-- Focused new/changed coverage passed 3 files / 6 tests; combined owner coverage passed 16 files / 72 tests.
-- Broader affected server coverage passed 29 files / 156 tests. The Brief imported-package lifecycle suite passed cleanly; the prior transient wait timing was not reproduced and no LLM/provider was involved.
-- Contracts passed 6/6; frontend SDK passed 11/11 plus its compile-time type test; devkit passed 17/17; backend SDK built.
-- Focused web coverage passed 4 files / 11 tests.
-- Both built-ins built without generated-output drift. Removed-token, stale-input, prohibited standard-path dependency, prohibited auth, and migration/schema inventories are empty; exact v4/v1/v4 and seven-flag assertions pass.
-- No production source changed during API/E2E.
+- This is real acceptance evidence, not build/package-only proof: the actual generated Socratic UI, actual standard WebSocket, actual server/worker/Engine processes, current authenticated Codex App Server, actual notification/GraphQL persistence, and actual artifact tool path ran together.
+- The prior real failure is directly resolved rather than inferred from deterministic tests.
+- The tutor produced a relevant Socratic next step; this was not a model timeout or a synthetic fixture response.
+- No retry, API-key substitution, fallback model, service tier, shared data, hidden reasoning capture, raw provider payload capture, or retained runtime identifier was used.
+- No production source or repository-resident durable test changed during API/E2E.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Final validation confidence: `96.7%`
-- Default `95%` confidence target met: `Yes`
-- Any final applicable confidence category below `90%`: `No`
-- Broader validation decision: `Required — completed as durable live API and real child-worker integration coverage`
-- Critical acceptance criteria lacking direct proof: none.
-- Required next recipient: `code_reviewer` for proportional test-code review.
-- Notes: the residual non-material exclusions are live third-party inference, packaged Electron execution, and destructive OS-buffer saturation; none affects the Pass decision.
+- Result: **Pass**
+- Final validation confidence: `97.7%`
+- Default 95% confidence target met: `Yes`
+- Any final applicable confidence category below 90%: `No`
+- Broader validation decision: `Required — executed and passed`
+- Critical acceptance criteria lacking direct proof: `None`
+- Required next recipient: `code_reviewer` for proportional test-code review (`Not Applicable` for API/E2E-owned durable test changes)
+- Notes: `AC-018` and `AC-019` passed at reviewed HEAD `b2615e1661d5a1351c292f247e6e432af2669517`; cleanup passed.

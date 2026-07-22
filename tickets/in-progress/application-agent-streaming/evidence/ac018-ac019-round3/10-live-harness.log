@@ -1,0 +1,12 @@
+NOTE: initial temporary harness startup used named ESM import against a CommonJS Playwright entrypoint and stopped before browser/application/model work; corrected to the normal default export.
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/evidence/ac018-ac019-round3/live-mounted-socratic-harness.mjs:68
+  throw new Error(`Timed out after ${timeoutMs}ms waiting for ${label}. Latest=${redact(JSON.stringify(latest))}`);
+        ^
+
+Error: Timed out after 180000ms waiting for live TEXT, response completion, and publish_artifacts success. Latest={"textLength":0,"completed":false,"toolStarted":true,"toolSucceeded":true}
+    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/evidence/ac018-ac019-round3/live-mounted-socratic-harness.mjs:68:9)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processTimers (node:internal/timers:518:9)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/evidence/ac018-ac019-round3/live-mounted-socratic-harness.mjs:290:3
+
+Node.js v22.23.1

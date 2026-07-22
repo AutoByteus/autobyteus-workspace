@@ -10,21 +10,21 @@ This is the pre-verification delivery record for the integrated application-agen
 - Handoff summary status: `Updated`
 - Notes: Records the standard/direct agent path, optional custom backend WebSockets, backend observer, preserved notification/artifact planes, strict v4 cutover, desktop/no-auth posture, data decision, authoritative gates, latest-base merge, integrated-state checks, docs sync, user-test Electron build, and requested user-verification steps.
 
-## Initial Delivery Integration Refresh
+## Latest-Base Integration Refresh
 
 - Bootstrap base reference: `origin/personal` at `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`
-- Latest tracked remote base reference checked: `origin/personal` at `9b4e038a40e0b6358fe53ca101406e0f6446e790` after `git fetch --prune origin` on 2026-07-21
-- Base advanced since bootstrap or previous refresh: `Yes` — five commits for the unrelated nested Mermaid overlay ticket and workspace release `v1.4.23`
+- Latest tracked remote base reference checked: `origin/personal` at `965f97685c08569a98186b2a894243c0b3f602d3` after the final `git fetch --prune origin` on 2026-07-22
+- Base advanced since bootstrap or previous refresh: `Yes` — 38 commits from bootstrap, including the unrelated nested Mermaid overlay history, agent-run-history work, workspace release `v1.4.24`, and the final delivery-only record
 - New base commits integrated into the ticket branch: `Yes`
-- Local checkpoint commit result: `Completed` — `9b2543ee7a0342e1a42fd71a38f51d282978c844` preserves the reviewed implementation, durable tests, reports, and API/E2E evidence
+- Local checkpoint commit result: `Completed` — `9b2543ee7a0342e1a42fd71a38f51d282978c844` preserves the reviewed implementation/API/E2E package; `4d5ea95b2cb180d9e4302248dcaf37aa273ef955` and `77e616f30c9e3e7e234366adf7b322fdebf6912e` preserve delivery artifacts around the later refreshes
 - Integration method: `Merge`
-- Integration result: `Completed` — `1fa7fa24d2ce80950778a0572ba4332f56c514c3`, no conflicts
+- Integration result: `Completed` — initial merge `1fa7fa24d2ce80950778a0572ba4332f56c514c3`, substantive `v1.4.24` refresh merge `cf520cc23f081a5ddf650f78209b36ac7d36252e`, and final delivery-only refresh merge `69fae2e424a708fe9a0d038077346d5b95b41df6`; no conflicts
 - Post-integration executable checks rerun: `Yes`
-- Post-integration verification result: `Passed` — server build and focused three-file/six-test live-worker integration suite
+- Post-integration verification result: `Passed` — server build and focused three-file/six-test live-worker integration suite after the substantive refresh, followed by the complete README-prescribed Electron build from final merge `69fae2e424a708fe9a0d038077346d5b95b41df6`
 - No-rerun rationale (only if no new base commits were integrated): N/A
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
-- Changed-path overlap: None between the ticket delta and the five new base commits
+- Changed-path overlap: None between the ticket delta and either later base increment
 - Refresh evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-refresh.log`
 - Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-build.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-verification.log`
 - Blocker (if applicable): N/A
@@ -41,13 +41,13 @@ This is the pre-verification delivery record for the integrated application-agen
 
 - README method: `autobyteus-web/README.md`, **macOS Build With Logs (No Notarization)**
 - Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
-- Source: integrated ticket HEAD `1fa7fa24d2ce80950778a0572ba4332f56c514c3` with fetched base `9b4e038a40e0b6358fe53ca101406e0f6446e790`
-- Result: `Passed` on 2026-07-21; macOS ARM64, version `1.4.23`, bundle identifier `com.autobyteus.app`
+- Source: integrated ticket HEAD `69fae2e424a708fe9a0d038077346d5b95b41df6` with fetched base `965f97685c08569a98186b2a894243c0b3f602d3`
+- Result: `Passed` on 2026-07-22; macOS ARM64, version `1.4.24`, bundle identifier `com.autobyteus.app`
 - Application bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.zip`
-- DMG SHA-256: `ba07337336fbd82fc5504ade405e64df20b72591d67f0a25afc54f916dd7321b`
-- ZIP SHA-256: `97f7314583602d81e9e9a8264d2ff7fda843cc80128e3e24a1924cb4b6439b34`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.zip`
+- DMG SHA-256: `ed9a72686f745a0d019f0c255871f6a443814655299a15a61cb950cd99ef7a96`
+- ZIP SHA-256: `e9c3fe3f5e87e4f5971ccac6b900a2fbb29dd376b2545332439bdfea05a68473`
 - Validation: app metadata and ARM64 executable passed; DMG checksum and ZIP integrity passed; no tracked source diff was introduced.
 - Signing posture: Electron Builder explicitly skipped macOS signing. The executable carries only an ad-hoc linker signature; no Team ID or notarization is present, and strict deep signature verification fails as expected for this README-prescribed local build. This is a user-test artifact, not a release artifact.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-electron-mac-build.log`
@@ -67,19 +67,19 @@ This is the pre-verification delivery record for the integrated application-agen
 
 ## Version / Tag / Release Commit
 
-Not required or authorized for this pre-verification candidate. The refreshed base already contains the unrelated workspace tag/version `v1.4.23`; this ticket has not selected a new version, changed package versions, created or moved a tag, amended shared release notes, published, or deployed.
+Not required or authorized for this pre-verification candidate. The refreshed base already contains the unrelated workspace tag/version `v1.4.24`; this ticket has not selected a new version, changed package versions, created or moved a tag, amended shared release notes, published, or deployed.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/investigation-notes.md`
 - Ticket branch: `codex/application-agent-streaming`
-- Ticket branch commit result: Safety checkpoint only at `9b2543ee7a0342e1a42fd71a38f51d282978c844`; delivery-owned reports remain uncommitted pending verification
+- Ticket branch commit result: Local pre-verification safety checkpoints at `9b2543ee7a0342e1a42fd71a38f51d282978c844`, `4d5ea95b2cb180d9e4302248dcaf37aa273ef955`, and `77e616f30c9e3e7e234366adf7b322fdebf6912e`; final refresh/build report updates remain uncommitted pending verification
 - Ticket branch push result: Not attempted before user verification
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: N/A — verification has not yet been received
-- Delivery-owned edits protected before re-integration: `Not needed` at this stage; the reviewed state was protected by the checkpoint before the initial latest-base merge
-- Re-integration before final merge result: `Not needed` at this stage; the target will be fetched again after user verification
+- Delivery-owned edits protected before re-integration: `Yes` — each later refresh was preceded by a local checkpoint
+- Re-integration before final merge result: Pre-verification refresh is current through `965f97685c08569a98186b2a894243c0b3f602d3`; the target will still be fetched again after user verification
 - Target branch update result: Deferred pending user verification
 - Merge into target result: Deferred pending user verification
 - Push target branch result: Deferred pending user verification
@@ -127,10 +127,10 @@ None. No environment deployment or live rollout is in scope.
 
 ## Verification Checks
 
-- Remote refresh — passed; latest tracked `origin/personal` resolved to `9b4e038a40e0b6358fe53ca101406e0f6446e790`.
-- Safety checkpoint — completed at `9b2543ee7a0342e1a42fd71a38f51d282978c844`.
-- Latest-base merge — passed without conflicts at `1fa7fa24d2ce80950778a0572ba4332f56c514c3`.
-- `git rev-list --left-right --count HEAD...origin/personal` after integration — `8 0`; the ticket misses no fetched target commit.
+- Remote refresh — passed; latest tracked `origin/personal` resolved to `965f97685c08569a98186b2a894243c0b3f602d3` and remained stable in the post-build fetch.
+- Safety checkpoints — completed at `9b2543ee7a0342e1a42fd71a38f51d282978c844`, `4d5ea95b2cb180d9e4302248dcaf37aa273ef955`, and `77e616f30c9e3e7e234366adf7b322fdebf6912e`.
+- Latest-base merges — passed without conflicts; final integrated candidate is `69fae2e424a708fe9a0d038077346d5b95b41df6`.
+- `git rev-list --left-right --count origin/personal...HEAD` after final integration — `0 12`; the ticket misses no fetched target commit.
 - Ticket/base changed-path overlap — none.
 - `pnpm -C autobyteus-server-ts build` — passed, including shared builds, Prisma generation, server compile, managed assets, and built-in-agent bootstrap smoke.
 - Focused standard/custom/observer integration command — passed `3` files / `6` tests on the integrated state.
@@ -145,7 +145,7 @@ None. No environment deployment or live rollout is in scope.
 - Persisted-data boundary inventory — passed; no migration/schema path changed.
 - API/E2E execution — `Pass`, confidence `96.7%`, every category at least `95%`.
 - Proportional durable-test review — `Pass`, no findings.
-- README-prescribed local Electron build — passed from integrated HEAD `1fa7fa24d2ce80950778a0572ba4332f56c514c3` for macOS ARM64/version `1.4.23`.
+- README-prescribed local Electron build — passed from final integrated HEAD `69fae2e424a708fe9a0d038077346d5b95b41df6` for macOS ARM64/version `1.4.24`.
 - Electron artifact checks — app metadata and ARM64 executable passed; DMG checksum valid; ZIP integrity passed; DMG/ZIP SHA-256 digests recorded in the handoff and this report.
 - Electron source-preservation check — `git diff --exit-code` passed after packaging; only untracked delivery reports/evidence remained, while packaging outputs were ignored build artifacts.
 

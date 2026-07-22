@@ -5,8 +5,8 @@
 - Ticket: `application-agent-streaming`
 - Trigger: Delivery-stage audit after implementation-source review `Pass` at `6b2cdce571fa8d1920f7ad57ede0e8309b94c0ad`, API/E2E `Pass` at `96.7%` confidence, and proportional durable-test review `Pass` with no unresolved findings.
 - Bootstrap base reference: `origin/personal` at `534210b9e1dffff6c22855ae89ddb3d2afef5a9b`.
-- Integrated base reference used for docs sync: Refreshed `origin/personal` at `9b4e038a40e0b6358fe53ca101406e0f6446e790` (containing `v1.4.23`), merged into the ticket branch by `1fa7fa24d2ce80950778a0572ba4332f56c514c3` after safety checkpoint `9b2543ee7a0342e1a42fd71a38f51d282978c844`.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-build.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-verification.log` — the server build passed and the three focused live/worker integration files passed `6/6` tests.
+- Integrated base reference used for docs sync: Refreshed `origin/personal` through `965f97685c08569a98186b2a894243c0b3f602d3` (history contains `v1.4.24`) and merged it into final user-test candidate `69fae2e424a708fe9a0d038077346d5b95b41df6`. The reviewed package and delivery evidence were protected by local checkpoints `9b2543ee7a0342e1a42fd71a38f51d282978c844`, `4d5ea95b2cb180d9e4302248dcaf37aa273ef955`, and `77e616f30c9e3e7e234366adf7b322fdebf6912e`.
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-build.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-verification.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-electron-mac-build.log` — the server build passed, the three focused live/worker integration files passed `6/6` tests, and the full README-prescribed Electron build passed again from the final latest-base merge.
 - Integration refresh reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-integration-refresh.log`.
 - Documentation audit reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/delivery-docs-audit.log`.
 
@@ -73,7 +73,7 @@ N/A — this ticket has material documentation impact. The reviewed implementati
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: The latest base advanced by five unrelated nested-Mermaid-overlay/release commits and merged without conflicts or changed-path overlap. The integrated server build and focused three-file/six-test live-worker suite passed. All 13 changed long-lived docs exist, contain current public concepts, have no removed active contract terms, and resolve all `41/41` checked relative links. No migration/schema path changed.
+- Notes: The latest base ultimately advanced by 38 commits from the bootstrap reference, including workspace `v1.4.24`, the unrelated agent-run-history ticket, and its delivery-only finalization record. The refreshes merged without conflicts or ticket/base changed-path overlap. The integrated server build, focused three-file/six-test live-worker suite, and final full Electron build passed. All 13 changed long-lived docs exist, contain current public concepts, have no removed active contract terms, and resolve all `41/41` checked relative links. No migration/schema path changed.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

@@ -1,0 +1,1001 @@
+{
+  "result": "PASS",
+  "scenarios": [
+    "ASE-018-LIVE",
+    "ASE-018-CLOSE"
+  ],
+  "execution": {
+    "generatedPackageImportedFresh": true,
+    "mountedGeneratedUiInChrome": true,
+    "prompt": "Solve 3x + 5 = 20",
+    "retryUsed": false,
+    "paidLiveTurnsStarted": 1,
+    "streamingScreenshotCaptured": true
+  },
+  "effectiveTutorConfig": {
+    "runtimeKind": "codex_app_server",
+    "llmModelIdentifier": "gpt-5.6-sol",
+    "llmConfig": {
+      "reasoning_effort": "high"
+    },
+    "serviceTierPresent": false,
+    "workspaceMatchesOwnedIsolatedPath": true
+  },
+  "targetAndWire": {
+    "target": {
+      "kind": "AGENT_TEAM_MEMBER",
+      "memberRouteKey": "tutor"
+    },
+    "connectionCount": 1,
+    "connectionCloseCount": 1,
+    "readyCount": 1,
+    "inputCount": 1,
+    "acceptedCount": 1,
+    "readyBeforeInput": true,
+    "acceptedRequestMatched": true,
+    "exactPromptSent": true,
+    "metadataKeys": [
+      "lessonId",
+      "requestKind"
+    ],
+    "increasingTextLengths": [
+      3,
+      5,
+      11,
+      14,
+      18,
+      23,
+      26,
+      28,
+      33,
+      36,
+      41,
+      42,
+      51,
+      52,
+      53,
+      58,
+      63,
+      69,
+      72,
+      73,
+      75,
+      76,
+      77,
+      79,
+      80,
+      81,
+      83,
+      84,
+      85,
+      87,
+      88,
+      90,
+      92,
+      93,
+      94,
+      95,
+      96,
+      99,
+      103,
+      108,
+      112,
+      121,
+      130,
+      133,
+      134
+    ],
+    "publicEvents": [
+      {
+        "sequence": 1,
+        "type": "TURN_STARTED",
+        "producerMemberRouteKey": "tutor"
+      },
+      {
+        "sequence": 2,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 3,
+        "cumulativeTextLength": 3
+      },
+      {
+        "sequence": 3,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 5
+      },
+      {
+        "sequence": 4,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 6,
+        "cumulativeTextLength": 11
+      },
+      {
+        "sequence": 5,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 3,
+        "cumulativeTextLength": 14
+      },
+      {
+        "sequence": 6,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 4,
+        "cumulativeTextLength": 18
+      },
+      {
+        "sequence": 7,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 5,
+        "cumulativeTextLength": 23
+      },
+      {
+        "sequence": 8,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 3,
+        "cumulativeTextLength": 26
+      },
+      {
+        "sequence": 9,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 28
+      },
+      {
+        "sequence": 10,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 5,
+        "cumulativeTextLength": 33
+      },
+      {
+        "sequence": 11,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 3,
+        "cumulativeTextLength": 36
+      },
+      {
+        "sequence": 12,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 5,
+        "cumulativeTextLength": 41
+      },
+      {
+        "sequence": 13,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 42
+      },
+      {
+        "sequence": 14,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 9,
+        "cumulativeTextLength": 51
+      },
+      {
+        "sequence": 15,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 52
+      },
+      {
+        "sequence": 16,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 53
+      },
+      {
+        "sequence": 17,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 5,
+        "cumulativeTextLength": 58
+      },
+      {
+        "sequence": 18,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 5,
+        "cumulativeTextLength": 63
+      },
+      {
+        "sequence": 19,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 6,
+        "cumulativeTextLength": 69
+      },
+      {
+        "sequence": 20,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 3,
+        "cumulativeTextLength": 72
+      },
+      {
+        "sequence": 21,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 73
+      },
+      {
+        "sequence": 22,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 75
+      },
+      {
+        "sequence": 23,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 76
+      },
+      {
+        "sequence": 24,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 77
+      },
+      {
+        "sequence": 25,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 79
+      },
+      {
+        "sequence": 26,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 80
+      },
+      {
+        "sequence": 27,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 81
+      },
+      {
+        "sequence": 28,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 83
+      },
+      {
+        "sequence": 29,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 84
+      },
+      {
+        "sequence": 30,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 85
+      },
+      {
+        "sequence": 31,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 87
+      },
+      {
+        "sequence": 32,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 88
+      },
+      {
+        "sequence": 33,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 90
+      },
+      {
+        "sequence": 34,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 2,
+        "cumulativeTextLength": 92
+      },
+      {
+        "sequence": 35,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 93
+      },
+      {
+        "sequence": 36,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 94
+      },
+      {
+        "sequence": 37,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 95
+      },
+      {
+        "sequence": 38,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 96
+      },
+      {
+        "sequence": 39,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 3,
+        "cumulativeTextLength": 99
+      },
+      {
+        "sequence": 40,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 4,
+        "cumulativeTextLength": 103
+      },
+      {
+        "sequence": 41,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 5,
+        "cumulativeTextLength": 108
+      },
+      {
+        "sequence": 42,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 4,
+        "cumulativeTextLength": 112
+      },
+      {
+        "sequence": 43,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 9,
+        "cumulativeTextLength": 121
+      },
+      {
+        "sequence": 44,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 9,
+        "cumulativeTextLength": 130
+      },
+      {
+        "sequence": 45,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 3,
+        "cumulativeTextLength": 133
+      },
+      {
+        "sequence": 46,
+        "type": "TEXT_DELTA",
+        "producerMemberRouteKey": "tutor",
+        "textDeltaLength": 1,
+        "cumulativeTextLength": 134
+      },
+      {
+        "sequence": 47,
+        "type": "TURN_COMPLETED",
+        "producerMemberRouteKey": "tutor"
+      }
+    ],
+    "onlyApprovedFiveEventTypes": true,
+    "prohibitedPublicToolThinkingProviderNativeOrObsoleteEventsObserved": false
+  },
+  "liveAndDurable": {
+    "publicLiveText": "Let’s solve it one step at a time.\n\nFirst, subtract 5 from both sides:\n\n\\[\n3x + 5 - 5 = 20 - 5\n\\]\n\nWhat does the equation simplify to?",
+    "turnCompleted": true,
+    "notificationTopics": [
+      "lesson.started",
+      "lesson.response_received",
+      "lesson.closed"
+    ],
+    "durableMessageKind": "lesson_response",
+    "durableTutorText": "Let’s solve it one step at a time.\n\nFirst, undo the **+5** by subtracting 5 from both sides:\n\n\\[\n3x + 5 - 5 = 20 - 5\n\\]\n\nWhat does the equation simplify to?",
+    "durableTutorMessageCount": 1,
+    "uiVisiblyStreamedText": true,
+    "uiReachedSavedState": true,
+    "singleAuthoritativeTutorTranscriptRow": true,
+    "backendMonitorAssistantText": "Let’s solve it one step at a time.\n\nFirst, subtract 5 from both sides:\n\n\\[\n3x + 5 - 5 = 20 - 5\n\\]\n\nWhat does the equation simplify to?",
+    "publishArtifactsSucceeded": true,
+    "artifact": {
+      "status": "available",
+      "pathSuffix": "socratic-math/lesson-response.md",
+      "type": "file",
+      "sourceFileName": "lesson-response.md",
+      "description": "First guided step for solving the equation"
+    },
+    "artifactMatchesDurableTutorText": true
+  },
+  "qualitative": {
+    "mathMarkers": [
+      "3x",
+      "20",
+      "subtract",
+      "both sides",
+      "equation",
+      "5"
+    ],
+    "focusedSocraticCue": true,
+    "relevantAndSocratic": true
+  },
+  "uiStateSummary": {
+    "openTurnControlsFenced": true,
+    "savedJoinReenabledOneNextTurn": true,
+    "finalClosedMonotonic": true,
+    "observationCount": 52,
+    "stateTransitions": [
+      {
+        "liveState": null,
+        "liveTextLength": 0,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": null,
+        "followUpDisabled": null,
+        "closeDisabled": null,
+        "closeLabel": null,
+        "lessonStatus": null
+      },
+      {
+        "liveState": "connecting",
+        "liveTextLength": 0,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 0,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 3,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 5,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 11,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 14,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 18,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 23,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 26,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 28,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 33,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 36,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 41,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 42,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 51,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 52,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 53,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 58,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 63,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 69,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 72,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 73,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 75,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 76,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 77,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 79,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 80,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 81,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 83,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 84,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 85,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 87,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 88,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 90,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 92,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 93,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 94,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 95,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 96,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 99,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 103,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 108,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 112,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 121,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 130,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 133,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "streaming",
+        "liveTextLength": 134,
+        "tutorTranscriptRows": 0,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "saved",
+        "liveTextLength": 0,
+        "tutorTranscriptRows": 1,
+        "hintDisabled": false,
+        "followUpDisabled": false,
+        "closeDisabled": false,
+        "closeLabel": "Close lesson",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "saved",
+        "liveTextLength": 0,
+        "tutorTranscriptRows": 1,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": true,
+        "closeLabel": "Closing lesson…",
+        "lessonStatus": "active"
+      },
+      {
+        "liveState": "saved",
+        "liveTextLength": 0,
+        "tutorTranscriptRows": 1,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": true,
+        "closeLabel": "Closing lesson…",
+        "lessonStatus": "closed"
+      },
+      {
+        "liveState": "saved",
+        "liveTextLength": 0,
+        "tutorTranscriptRows": 1,
+        "hintDisabled": true,
+        "followUpDisabled": true,
+        "closeDisabled": true,
+        "closeLabel": "Lesson closed",
+        "lessonStatus": "closed"
+      }
+    ]
+  },
+  "closure": {
+    "lessonClosed": true,
+    "closedAtPresent": true,
+    "terminalBindingObserved": true,
+    "oneConnectionClose": true,
+    "reconnectObserved": false,
+    "secondInputObserved": false,
+    "browserConsoleWarningsOrErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
+  },
+  "evidencePolicy": {
+    "credentialsRetained": false,
+    "hiddenReasoningRetained": false,
+    "rawProviderPayloadsRetained": false,
+    "runtimeIdentifiersRetained": false,
+    "toolInternalsRetained": false
+  }
+}

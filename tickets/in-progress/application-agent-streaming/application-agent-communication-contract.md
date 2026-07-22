@@ -4,7 +4,7 @@
 
 This is a normative intended-behavior supplement to [`requirements.md`](./requirements.md) and [`design-spec.md`](./design-spec.md). It supersedes the earlier backend-proxy-only streaming contract.
 
-Status: `Approved intended-behavior basis; desktop-only scope clarified with no application-client authentication surface.`
+Status: `User-approved revised intended-behavior basis at source HEAD 3e48c0ea2c9ccabe52c3126f0db799b3865186a3. Binding/address/connection/input/lifecycle/builders are implemented. The unimplemented delta is the clean-cut contraction from the broad application event union to the five-variant text/turn/error stream and corresponding projector/consumer/generated-package updates.`
 
 The framework subject is **application-bound agent communication**. `assistant` is only a possible application role. Framework names use `agent`, `agent team`, `binding`, `target address`, `event`, and `connection`.
 
@@ -94,6 +94,54 @@ Address invariants:
 5. Raw agent/team/member run IDs are not accepted.
 6. The address identifies a target but never authorizes it. Every consumer passes the authorization path in section 8.
 7. The address is reusable by frontend connect, backend input, and backend event observation.
+
+### 1.1 Backend-SDK target-address builders
+
+When application backend business code already owns a precise binding and needs a reusable/projected target address, `@autobyteus/application-backend-sdk` provides the preferred typed constructors:
+
+```ts
+export const createApplicationAgentTargetAddress = (
+  binding: ApplicationAgentBinding,
+): ApplicationAgentTargetAddress;
+
+export const createApplicationAgentTeamTargetAddress = (
+  binding: ApplicationAgentTeamBinding,
+): ApplicationAgentTargetAddress;
+
+export const createApplicationAgentTeamMemberTargetAddress = (
+  binding: ApplicationAgentTeamBinding,
+  memberRouteKey: string,
+): ApplicationAgentTargetAddress;
+```
+
+Normative behavior:
+
+1. Every call returns a new address object and does not mutate the supplied binding.
+2. Every builder trims and requires a non-empty `binding.bindingId`, emits the trimmed value, and verifies the expected `binding.runtime.subject` at runtime so JavaScript/malformed boundary input fails locally.
+3. The member builder trims and requires the supplied route key, matches only exact `binding.runtime.members[].memberRouteKey`, and rejects an absent key. It never falls back to member name, display name, path, or run ID.
+4. The returned variants are exactly `AGENT_RUN`, `AGENT_TEAM_RUN`, and `AGENT_TEAM_MEMBER` respectively; no additional fields are emitted.
+5. These are structural construction/validation helpers only. They do not inspect active application state, binding terminal state, runtime availability, or authorization. Section 8 remains authoritative when the address is connected, sent to, or observed.
+6. The builders are backend-facing exports because application business chooses which binding/member to expose. The frontend SDK continues to receive and use an address; it gains no binding discovery or execution capability.
+
+Failure behavior is ordinary synchronous `Error`; no new public error class is introduced:
+
+| Condition | Exact message |
+| --- | --- |
+| missing/blank binding ID | `Application agent target address requires binding.bindingId.` |
+| agent builder receives non-`AGENT_RUN` subject | `Application agent target address requires an AGENT_RUN binding.` |
+| team or team-member builder receives non-`TEAM_RUN` subject | `Application agent-team target address requires a TEAM_RUN binding.` |
+| blank member route key | `Application agent-team member target address requires memberRouteKey.` |
+| member route key absent from the binding | `Application agent-team binding '<bindingId>' does not contain memberRouteKey '<memberRouteKey>'.` |
+
+Validation order is binding ID, expected runtime subject, then member key/membership.
+
+Construction policy:
+
+- The shared `ApplicationAgentTargetAddress` DTO remains a valid public input contract; builders do not become an authorization gate or mandatory fetch boundary.
+- Application backend code should use a builder when it already has the corresponding precise binding and is creating a reusable/projected address, especially a static member address that benefits from membership validation.
+- A caller that owns only `bindingId` and immediately sends a one-shot address may construct the exact DTO directly. It must not fetch a binding solely to satisfy a builder; Orchestration still validates the address at use time.
+- In this ticket, Socratic's projected `tutorTargetAddress` adopts the member builder. Its supported `askFollowUp` and `requestHint` paths retain their inline `AGENT_TEAM_RUN` DTOs because they own only the persisted binding ID and immediately call `sendInput`.
+- Low-level codec/protocol/authorization tests may instantiate explicit valid or deliberately malformed DTOs.
 
 ## 2. Target Semantics
 
@@ -220,389 +268,148 @@ type ApplicationAgentServerFrame =
 
 `READY` is the first application-agent protocol frame. The server gates event draining until it is written. Unknown protocol/type, binary input, duplicate request ID, malformed input, oversized frame, or input after closing is rejected according to section 10.
 
-## 5. Shared Public Application-Agent Event Contract
+## 5. Minimal Public Application-Agent Stream Contract
 
-The public contract is a closed discriminated union. `data` is **not** a `Record<string, unknown>` and no public payload type has an index signature.
+The public contract is intentionally smaller than the native AutoByteus agent protocol. It supports a focused vertical-application text experience rather than a general agent-debugging/chat workspace.
 
 ```ts
+export type ApplicationAgentStreamEvent =
+  | { type: "TURN_STARTED" }
+  | { type: "TEXT_DELTA"; delta: string }
+  | { type: "TURN_COMPLETED" }
+  | { type: "TURN_INTERRUPTED" }
+  | { type: "ERROR"; message: string };
+
 export type ApplicationAgentEvent = {
   sequence: number;
   observedAt: string;
   applicationId: string;
   address: ApplicationAgentTargetAddress;
   runtimeSubject: "AGENT_RUN" | "TEAM_RUN";
-  producer: ApplicationExecutionProducer | null;
-  event: ApplicationAgentRunPublicEvent | ApplicationAgentTeamPublicEvent;
-};
-
-export type ApplicationAgentRunPublicEvent = {
-  [T in keyof ApplicationAgentRunPublicDataByType]: {
-    source: "AGENT";
-    type: T;
-    data: ApplicationAgentRunPublicDataByType[T];
-  }
-}[keyof ApplicationAgentRunPublicDataByType];
-
-export type ApplicationAgentTeamPublicEvent = {
-  [T in keyof ApplicationAgentTeamPublicDataByType]: {
-    source: "AGENT_TEAM";
-    type: T;
-    data: ApplicationAgentTeamPublicDataByType[T];
-  }
-}[keyof ApplicationAgentTeamPublicDataByType];
-```
-
-Shared closed shapes:
-
-```ts
-export type ApplicationAgentEventSafeErrorCode =
-  | "RUNTIME_ERROR"
-  | "TOOL_EXECUTION_ERROR"
-  | "COMPACTION_ERROR"
-  | "SEGMENT_ERROR"
-  | "UNKNOWN_ERROR";
-
-export type ApplicationAgentEventSafeError = {
-  code: ApplicationAgentEventSafeErrorCode;
-  message: string;
-};
-
-export type ApplicationAgentEventSegmentKind =
-  | "TEXT"
-  | "REASONING"
-  | "TOOL_CALL"
-  | "COMMAND"
-  | "FILE_EDIT"
-  | "MEDIA"
-  | "OTHER";
-
-export type ApplicationAgentEventStatus =
-  | "OFFLINE"
-  | "INITIALIZING"
-  | "IDLE"
-  | "RUNNING"
-  | "ERROR";
-
-export type ApplicationAgentEventTodoItem = {
-  id: string;
-  description: string;
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "UNKNOWN";
-};
-
-export type ApplicationAgentEventParticipant =
-  | { kind: "TEAM"; memberRouteKey: string | null }
-  | { kind: "MEMBER"; memberRouteKey: string };
-
-export type ApplicationAgentEventToolRef = {
-  invocationId: string | null;
-  toolName: string | null;
-  turnId: string | null;
-};
-```
-
-Exact agent-event data map:
-
-```ts
-export type ApplicationAgentRunPublicDataByType = {
-  TURN_STARTED: { turnId: string | null };
-  TURN_COMPLETED: { turnId: string | null };
-  TURN_INTERRUPTED: { turnId: string | null; reason: string | null };
-
-  SEGMENT_START: {
-    segmentId: string;
-    turnId: string | null;
-    kind: ApplicationAgentEventSegmentKind;
-    toolName: string | null;
-  };
-  SEGMENT_CONTENT: {
-    segmentId: string;
-    turnId: string | null;
-    kind: ApplicationAgentEventSegmentKind;
-    delta: string;
-  };
-  SEGMENT_END: {
-    segmentId: string;
-    turnId: string | null;
-    kind: ApplicationAgentEventSegmentKind;
-    interrupted: boolean;
-    failed: boolean;
-    reason: string | null;
-    error: ApplicationAgentEventSafeError | null;
-  };
-
-  AGENT_STATUS: {
-    status: ApplicationAgentEventStatus;
-    canInterrupt: boolean;
-    trigger: string | null;
-    toolName: string | null;
-    error: ApplicationAgentEventSafeError | null;
-  };
-  COMPACTION_STATUS: {
-    phase: "REQUESTED" | "STARTED" | "COMPLETED" | "FAILED" | "UNKNOWN";
-    turnId: string | null;
-    trigger: string | null;
-    selectedBlockCount: number | null;
-    compactedBlockCount: number | null;
-    error: ApplicationAgentEventSafeError | null;
-  };
-  TOKEN_USAGE_UPDATED: {
-    usageEventId: string | null;
-    observedAt: string | null;
-    turnId: string | null;
-    inputTokens: number | null;
-    cachedInputTokens: number | null;
-    outputTokens: number | null;
-    reasoningOutputTokens: number | null;
-    totalTokens: number | null;
-    contextWindowUsagePercent: number | null;
-  };
-  AGENT_RESPONSE_COMPLETED: { content: string | null; reasoning: string | null };
-
-  TOOL_APPROVAL_REQUESTED: ApplicationAgentEventToolRef & { argumentSummary: string | null };
-  TOOL_APPROVED: ApplicationAgentEventToolRef & { reason: string | null };
-  TOOL_DENIED: ApplicationAgentEventToolRef & {
-    argumentSummary: string | null;
-    reason: string | null;
-    error: ApplicationAgentEventSafeError | null;
-  };
-  TOOL_EXECUTION_STARTED: ApplicationAgentEventToolRef & { argumentSummary: string | null };
-  TOOL_EXECUTION_SUCCEEDED: ApplicationAgentEventToolRef & { resultSummary: string | null };
-  TOOL_EXECUTION_FAILED: ApplicationAgentEventToolRef & { error: ApplicationAgentEventSafeError };
-  TOOL_EXECUTION_INTERRUPTED: ApplicationAgentEventToolRef & { reason: string };
-  TOOL_LOG: ApplicationAgentEventToolRef & { entry: string };
-
-  TODO_LIST_UPDATE: { items: ApplicationAgentEventTodoItem[] };
-  INTER_AGENT_MESSAGE: {
-    messageId: string | null;
-    senderMemberRouteKey: string | null;
-    receiverMemberRouteKey: string | null;
-    content: string;
-    messageType: string | null;
-    createdAt: string | null;
-  };
-  TEAM_COMMUNICATION_MESSAGE: {
-    messageId: string;
-    sender: ApplicationAgentEventParticipant;
-    receiver: ApplicationAgentEventParticipant;
-    content: string;
-    messageType: string;
-    createdAt: string;
-  };
-  SYSTEM_TASK_NOTIFICATION: { content: string };
-  ERROR: { error: ApplicationAgentEventSafeError };
-};
-```
-
-Exact team-event data map:
-
-```ts
-export type ApplicationAgentTeamPublicDataByType = {
-  TEAM_STATUS: {
-    status: ApplicationAgentEventStatus;
-    error: ApplicationAgentEventSafeError | null;
-  };
-  TASK_DELEGATION_EVENT: {
-    delegationEventType:
-      | "ACTIVATED"
-      | "STATUS_UPDATED"
-      | "RESULT_SUBMITTED"
-      | "RESULT_REVIEWED"
-      | "TERMINAL_STATUS";
-    taskId: string | null;
-    taskIds: string[];
-    taskLabel: string | null;
-    description: string | null;
-    status: string | null;
-    previousStatus: string | null;
-    target: ApplicationAgentEventParticipant | null;
-    executionKind: "AGENT" | "TEAM" | null;
-    terminal: boolean;
-    message: string | null;
-    occurredAt: string | null;
-  };
-  TEAM_COMMUNICATION_MESSAGE: {
-    messageId: string;
-    sender: ApplicationAgentEventParticipant;
-    receiver: ApplicationAgentEventParticipant;
-    content: string;
-    messageType: string;
-    createdAt: string;
-  };
-  MEMBER_INPUT_MESSAGE: {
-    messageId: string;
-    inputOrigin: "USER_MESSAGE" | "INTER_AGENT_DELIVERY";
-    recipientMemberRouteKey: string;
-    senderMemberRouteKey: string | null;
-    content: string;
-    receivedAt: string;
-    parentCommunicationMessageId: string | null;
-  };
+  producer: ApplicationExecutionProducer;
+  event: ApplicationAgentStreamEvent;
 };
 ```
 
 Envelope invariants:
 
-- `sequence` starts at `1` for each connection or backend subscription and increases by one only for an event successfully projected and accepted into that consumer queue.
-- `observedAt` is assigned by the application streaming owner when the projected source event is accepted.
-- `applicationId` comes from the trusted application connection/subscription scope, not application input.
-- `address`, `runtimeSubject`, and `producer` must agree with the authorized binding.
-- `producer` reuses the existing `ApplicationExecutionProducer` shape and is the only agent/member/task-agent attribution surface; source payload identities do not get spread into `data`.
-- Every `source: "AGENT"` event has a non-null producer resolved from the authorized standalone binding member, static team member, or normalized task-agent instance carried by the team wrapper. For a selected-member subscription its `memberRouteKey` must equal the target.
-- Every `source: "AGENT_TEAM"` event has `producer: null`; team/member participants or delegation targets are represented only by the closed participant fields in that event's `data`.
-- The framework public projector constructs a new closed object for each event type, then runs the lower-level JSON-serializability check. Generic JSON serialization is defense in depth, not the public projection policy.
+- `sequence` starts at `1` per connection or backend subscription and advances only when a projected event is accepted atomically into that consumer's bounded queue;
+- `observedAt`, `applicationId`, `address`, and `runtimeSubject` come from trusted framework scope and the authorized source descriptor, never source-event payloads;
+- `producer` is always non-null because every v1 public event originates from a bound standalone agent, static team member, or attributed task-agent member; a whole-team connection distinguishes member text by this envelope field;
+- selected-member connections deliver only the selected member's events; standalone/whole-team semantics remain those authorized by Orchestration;
+- `subscriptionId`, `connectionId`, provider session/thread/item IDs, raw physical target selection, and source payload identities never enter the envelope; and
+- the application event is ephemeral/future-only. It is not replay, durable transcript, or artifact recovery.
 
-### 5.1 Public projection rules
+### 5.1 Canonical source and single interpretation
 
-| Source condition | Mapper outcome | Sequence / consumer outcome |
-| --- | --- | --- |
-| Allowed type with valid required fields | Copy only the documented fields; normalize enums/casing/names | Enqueue; consume the next sequence when accepted |
-| Unknown extra key at any source nesting level | Ignore it; never spread the source object | No error; projected event may continue |
-| Optional value is absent or malformed | Emit the documented `null`, `false`, empty-array, or `UNKNOWN` default | Projected event may continue |
-| Required primary content/identity field is absent, wrong type, non-finite, or exceeds the owned frame/text limit | Return mapping failure | Emit isolated `EVENT_MAPPING_FAILED`, then `STREAM_FAILED`; no sequence consumed |
-| Unknown internal event type | Deliberately drop and record a metric/debug log | No event, no error, no sequence consumed |
-| `ARTIFACT_PERSISTED`, `FILE_CHANGE`, or another explicitly excluded family | Deliberately drop | No event, no error, no sequence consumed |
-| Projected closed object still fails JSON serialization | Serialization failure | Emit isolated `EVENT_SERIALIZATION_FAILED`, then `STREAM_FAILED`; no sequence consumed |
-
-Normalization rules are field-specific:
-
-- `turnId`, `segmentId`, invocation/tool names, route keys, message IDs, and timestamps are trimmed strings or their declared `null` defaults; required IDs/content cannot default.
-- source segment names map into the closed public segment-kind enum; unknown names become `OTHER`.
-- public status/todo/delegation enums are normalized into the closed values shown above.
-- `argumentSummary` and `resultSummary` may use only an already-normalized scalar string or a recognized `text`, `content`, `message`, or `summary` string member. The mapper never JSON-stringifies or recursively copies an arguments/result/provider object.
-- safe errors contain only a family-derived closed public `code` and a bounded single-line `message`; provider error codes are not forwarded, newline/stack-shaped suffixes are removed, and absent messages use stable generic fallbacks. `stack`, `cause`, `details`, raw exception objects, and nested provider failures are never read into the public object.
-- file/reference arrays, artifact/file descriptors, provider session/thread/item IDs, model-provider metadata, raw trace objects, runtime configuration, approval tokens, and physical run/member IDs from source data are not public data fields. Authorized producer attribution stays in the envelope.
-
-Owned text/array/frame bounds are implementation constants in the streaming subsystem. Exceeding a required-field bound is a mapping failure rather than silent content truncation; optional summaries may normalize to `null`.
-
-### 5.2 Per-event source projection matrix
-
-The table is exhaustive. “Optional/defaulted” means the event is delivered with the exact nullable/defaulted fields declared above; it never means that the source record is forwarded.
-
-| Public type | Source-to-public normalization | Required to deliver | Producer / metadata rule |
-| --- | --- | --- | --- |
-| `TURN_STARTED` | `turn_id \| turnId` → `turnId` | event type only | non-null authorized agent producer; no other metadata |
-| `TURN_COMPLETED` | `turn_id \| turnId` → `turnId` | event type only | same agent producer rule |
-| `TURN_INTERRUPTED` | turn alias + scalar `reason` | event type only; fields default null | same agent producer rule |
-| `SEGMENT_START` | `id \| segment_id` → `segmentId`; turn alias; segment name → closed `kind`; recognized tool name | non-empty `segmentId` | same agent producer rule; source `metadata` is not copied |
-| `SEGMENT_CONTENT` | segment/turn aliases; segment name → `kind`; scalar `delta` | non-empty `segmentId` and `delta` | same agent producer rule |
-| `SEGMENT_END` | segment/turn/kind aliases; booleans; scalar reason; family-safe error | non-empty `segmentId` | same agent producer rule; no source metadata/result |
-| `AGENT_STATUS` | canonical status → closed uppercase status; `can_interrupt`; scalar trigger/tool; safe error | recognized status | same agent producer rule; source agent/run IDs are ignored |
-| `COMPACTION_STATUS` | phase/status → closed phase; turn/trigger; finite selected/compacted counts; safe error | event type only; unknown phase allowed | same agent producer rule; provider/session/boundary/raw metadata is ignored |
-| `TOKEN_USAGE_UPDATED` | canonical finite token totals/context percentage + usage/turn/observation IDs | event type only; absent numbers null | same agent producer rule; provider/model/pricing/execution-address metadata is ignored |
-| internal assistant/response completion | public `AGENT_RESPONSE_COMPLETED` with scalar `content` and `reasoning` only | normalized public event type; both fields may be null | same agent producer rule; usage/media/provider objects ignored |
-| `TOOL_APPROVAL_REQUESTED` | invocation/tool/turn aliases + recognized scalar argument summary | event type only; reference fields may be null | same agent producer rule; arguments/approval token ignored |
-| `TOOL_APPROVED` | invocation/tool/turn aliases + scalar reason | event type only | same agent producer rule |
-| `TOOL_DENIED` | invocation/tool/turn aliases + scalar argument summary/reason + family-safe error | event type only | same agent producer rule; raw arguments/error object ignored |
-| `TOOL_EXECUTION_STARTED` | invocation/tool/turn aliases + scalar argument summary | event type only | same agent producer rule; raw arguments ignored |
-| `TOOL_EXECUTION_SUCCEEDED` | invocation/tool/turn aliases + recognized scalar result summary | event type only | same agent producer rule; raw result/provider object ignored |
-| `TOOL_EXECUTION_FAILED` | invocation/tool/turn aliases + family-safe error | event type; safe error always produced | same agent producer rule; provider code/stack/details ignored |
-| `TOOL_EXECUTION_INTERRUPTED` | invocation/tool/turn aliases + scalar reason | non-empty `reason` | same agent producer rule |
-| `TOOL_LOG` | invocation alias + tool/turn aliases + scalar `log_entry \| entry` | non-empty `entry` | same agent producer rule; raw response item ignored |
-| `TODO_LIST_UPDATE` | recognized todo array; each item maps id/description/closed status | event type; malformed optional items are dropped | same agent producer rule; unknown todo fields ignored |
-| `INTER_AGENT_MESSAGE` | normalized message/sender/receiver route aliases, content/type/time | non-empty `content` | same receiving/emitting agent producer rule; addresses, run IDs, references ignored |
-| agent `TEAM_COMMUNICATION_MESSAGE` | normalized message ID, public sender/receiver participant, content/type/time | all non-null declared fields and valid participants | non-null agent producer; reference files ignored |
-| `SYSTEM_TASK_NOTIFICATION` | scalar `content` | non-empty `content` | same agent producer rule; sender/runtime metadata ignored |
-| `ERROR` | event family → closed code; bounded first-line message | event type; stable fallback message allowed | same agent producer rule; provider code/exception internals ignored |
-| `TEAM_STATUS` | canonical team status → closed status + safe error | recognized status | `producer: null`; source path/subteam aliases ignored |
-| `TASK_DELEGATION_EVENT` | closed event-kind mapping; normalized task fields/participant/execution kind/terminal/time | recognized delegation event kind | `producer: null`; target is closed data, while execution/task arguments/references/run IDs are ignored |
-| team `TEAM_COMMUNICATION_MESSAGE` | normalized message ID, public sender/receiver participant, content/type/time | all non-null declared fields and valid participants | `producer: null`; reference files/source aliases ignored |
-| `MEMBER_INPUT_MESSAGE` | message/origin/recipient/sender/content/time/parent aliases → closed shape | message ID, known origin, recipient route, content, received time | `producer: null`; context/reference files, run IDs, task instance objects ignored |
-
-## 6. Provider/Team Projection Examples And Exclusions
-
-### 6.1 Equivalent provider text events
-
-AutoByteus, Codex, and Claude source records may contain different provider-only members, but an equivalent text delta has one public shape:
-
-```ts
-// Source examples (not public)
-{ id: "seg-1", turn_id: "turn-7", delta: "Hello", provider_response: { /* ... */ } }
-{ item: { id: "seg-1", type: "agent_message" }, delta: "Hello", threadId: "codex-thread" }
-{ id: "seg-1", delta: "Hello", session_id: "claude-session", raw: { /* ... */ } }
-
-// Public event data for all three
-{ segmentId: "seg-1", turnId: "turn-7", kind: "TEXT", delta: "Hello" }
-```
-
-`provider_response`, `item`, `threadId`, `session_id`, `raw`, and any unknown sibling/nested keys are absent.
-
-### 6.2 Tool and error examples
-
-```ts
-// Codex/Claude source may include arguments, result objects, raw response and stack data.
-{
-  invocation_id: "tool-9",
-  tool_name: "search_web",
-  result: { text: "3 sources found", raw_response: { /* ... */ } },
-  stack: "internal"
-}
-
-// Public TOOL_EXECUTION_SUCCEEDED data
-{
-  invocationId: "tool-9",
-  toolName: "search_web",
-  turnId: null,
-  resultSummary: "3 sources found"
-}
-```
-
-A provider error `{code: "provider_specific", message, stack, cause, details, response}` becomes a family-derived shape such as `{error: {code: "TOOL_EXECUTION_ERROR", message}}`; only the closed code and safe message cross the boundary.
-
-### 6.3 Team and task attribution examples
-
-A member agent event in an `AGENT_TEAM_RUN` subscription remains an agent event. Its static or task-agent identity is represented by the authorized envelope `producer`; provider/runtime identity fields are not duplicated into `data`.
-
-A task-delegation source may contain `target`, `execution`, `taskArguments`, reference files, physical run IDs, and nested task/team instances. The public projector retains only the closed `TASK_DELEGATION_EVENT` fields above, for example:
-
-```ts
-{
-  delegationEventType: "STATUS_UPDATED",
-  taskId: "task-12",
-  taskIds: ["task-12"],
-  taskLabel: "Verify invoice",
-  description: "Verify invoice",
-  status: "awaiting_review",
-  previousStatus: "active",
-  target: { kind: "MEMBER", memberRouteKey: "reviewer" },
-  executionKind: "AGENT",
-  terminal: false,
-  message: null,
-  occurredAt: "2026-07-21T10:30:00.000Z"
-}
-```
-
-No task arguments, reference/file payloads, physical run IDs, or nested execution objects cross.
-
-### 6.4 Explicitly excluded event data
+The provider adapters already translate provider-native traffic into the shared internal `AgentRunEvent` boundary:
 
 ```text
-ARTIFACT_PERSISTED and artifact/revision/file payloads
-FILE_CHANGE and file content/diff/path payloads
-raw provider events/responses/session/thread/item objects
-provider-only metadata and unknown extra keys
-unserialized exceptions, stack, cause, details, or response objects
-runtime objects or mutable runtime configuration references
-approval tokens and physical source identities duplicated inside data
+Codex / Claude / AutoByteus provider event
+→ existing provider adapter
+→ AgentRunEvent
+├─→ existing AgentRunEventMessageMapper → native AutoByteus frontend
+└─→ ApplicationAgentStreamEventProjector → minimal application event
 ```
 
-Artifacts remain durable and application-readable through `artifactHandlers.persisted` and `context.publishedArtifacts`. File changes remain an internal/native concern.
+`AgentRunEvent` event type plus its established canonical segment fields are the shared semantic source. The target design does **not** add another provider adapter, general event normalizer, native-message dependency, or application-specific alias parser. The native mapper and native frontend remain unchanged.
 
-### 6.5 Mandatory public-projection contract tests
+The application projector has one narrow responsibility: select the five public variants from canonical internal events and construct new closed objects. It does not spread a source payload, infer provider aliases, assemble a full response, interpret thinking/tools/team coordination, or decide runtime lifecycle.
 
-- one table-driven fixture for every key of both public data maps asserts exact deep equality and exact key sets;
-- equivalent AutoByteus, Codex, and Claude text/turn/tool fixtures produce the same public shapes;
-- unknown fields at the root and in nested source objects never appear in the result;
-- error fixtures prove provider-specific codes normalize to the closed family code and that `stack`, `cause`, `details`, provider response, and exception objects are absent;
-- artifact/file/reference fixtures prove excluded events are dropped and sequence is unchanged;
-- whole-team/member/task-agent fixtures prove envelope producer attribution is correct without duplicating run/member identity in `data`;
-- task-delegation/member-input/communication fixtures prove task arguments, nested execution objects, and reference-file records are absent;
-- malformed required-field fixtures produce only that consumer's `EVENT_MAPPING_FAILED`/`STREAM_FAILED`, while malformed optional fields use documented defaults;
-- a source object with cycles, class instances, functions, symbols, bigint values, and unknown nested keys cannot escape through the closed projector;
-- binding end at each pre-commit await point rejects with the exact `SUBSCRIPTION_NOT_AVAILABLE` code/message/recoverability, removes worker observer/request and host pending state, releases late acquisitions, and invokes no callback;
-- when host `ACTIVE` wins, the correlated success/public promise continuation precedes a queued event or `BINDING_ENDED` callback;
-- queue-acceptance tests prove only accepted envelopes consume sequence, terminal drain retains assigned values, and excluded/malformed/serialization/overflow cases do not advance the counter; and
-- injected IPC failure after acceptance may leave that assigned value unseen but closes before any later sequence can be delivered.
+### 5.2 Exact projection table
 
+| Canonical `AgentRunEvent` condition | Public result | Exact rule |
+| --- | --- | --- |
+| `TURN_STARTED` | `{ type: "TURN_STARTED" }` | source payload is ignored |
+| `SEGMENT_CONTENT` with `payload.segment_type === "text"` and a nonempty string `payload.delta` within the owned text/frame bound | `{ type: "TEXT_DELTA", delta }` | preserve `delta` byte-for-byte; do not trim, normalize whitespace, concatenate, or copy segment/provider metadata |
+| `TURN_COMPLETED` | `{ type: "TURN_COMPLETED" }` | sole successful response-completion signal; source payload is ignored |
+| `TURN_INTERRUPTED` | `{ type: "TURN_INTERRUPTED" }` | source reason/details are not exposed in v1 |
+| `ERROR` | `{ type: "ERROR", message: "The agent response failed." }` | stable bounded message; never read/copy provider codes, error objects, stack, cause, or details |
+| `SEGMENT_CONTENT` with reasoning/non-text/missing type | deliberate drop | no public event and no sequence consumed |
+| empty text delta | deliberate drop | no public event and no sequence consumed |
+| oversized or non-string text delta | isolated mapping failure | affected consumer receives existing `EVENT_MAPPING_FAILED` then `STREAM_FAILED`; no sequence consumed |
+| every other agent or team event | deliberate drop | includes segment start/end, status, compaction, token, `ASSISTANT_COMPLETE`, tools, todo, inter-agent/team communication, delegation/member input, artifacts, files, and unknown events |
+
+Important semantic decisions:
+
+- `TEXT_DELTA` is a presentation-safe application transformation of canonical text `SEGMENT_CONTENT`; it intentionally hides segment IDs/kinds and all thinking/reasoning.
+- `TURN_COMPLETED` is common to current AutoByteus, Codex, and Claude adapters and is already consumed as completion by the native frontend. It is therefore the only application success boundary.
+- `ASSISTANT_COMPLETE` remains a native AutoByteus event where currently supported, but the application projector drops it. `AGENT_RESPONSE_COMPLETED` is removed from all application contracts, validators, generated copies, sample code, and tests.
+- The framework never emits a full accumulated assistant response. Applications append `TEXT_DELTA` for ephemeral presentation; published artifacts remain the durable structured/whole-result mechanism.
+- Whole-team subscriptions expose the same five agent-origin variants with producer attribution. Team status/delegation/communication internals are not application streaming v1 events.
+
+### 5.3 Projector extension rule
+
+`ApplicationAgentStreamEventProjector` is the owned extension boundary. A future application transformation is added only by:
+
+1. establishing a reachable vertical-application need;
+2. adding one explicit closed `ApplicationAgentStreamEvent` variant;
+3. adding one exact canonical-source projection rule and exclusion/redaction rule;
+4. updating shared contracts, frontend validation, generated/vendor packages, and parity tests; and
+5. leaving connection, authorization, sequencing, queueing, WebSocket, worker, artifact, and notification owners unchanged.
+
+Version one adds no plugin registry, strategy registry, application-supplied projector, arbitrary callback, provider switch, generic chat reducer, or full native-event pass-through.
+
+## 6. Projection, Parity, And Exclusion Examples
+
+### 6.1 Text parity
+
+All current provider adapters already emit the same canonical meaning for assistant text:
+
+```ts
+// Existing internal AgentRunEvent examples after provider conversion.
+{
+  eventType: AgentRunEventType.SEGMENT_CONTENT,
+  payload: { id: "segment-1", segment_type: "text", delta: "Hello " },
+  runId: "...",
+  statusHint: null,
+}
+```
+
+The existing native mapper continues to preserve the native payload. The application projector returns only:
+
+```ts
+{ type: "TEXT_DELTA", delta: "Hello " }
+```
+
+`"Hello "`, `"\n"`, and `" "` remain exact if the canonical event contains them. Provider adapters retain their existing authority over whether a provider-native fragment becomes an `AgentRunEvent`; the application projector does not repair or reinterpret provider-native traffic.
+
+### 6.2 Completion parity
+
+```ts
+// Canonical event produced by AutoByteus, Codex, and Claude adapters.
+{ eventType: AgentRunEventType.TURN_COMPLETED, payload: { /* ignored */ }, ... }
+
+// Application projection.
+{ type: "TURN_COMPLETED" }
+```
+
+Socratic and other vertical applications finish the current live draft on this event. They do not wait for `ASSISTANT_COMPLETE`, an idle status, a tool completion, or artifact persistence.
+
+### 6.3 Explicit exclusions
+
+The application projector never exposes:
+
+- reasoning/thinking deltas or reasoning snapshots;
+- segment IDs, segment kinds, metadata, or segment start/end details;
+- tool names, arguments, results, approvals, logs, or tool lifecycle;
+- token usage, compaction, internal status, todo, delegation, team communication, or member-input internals;
+- provider/native response objects, model/session/thread/item IDs, runtime configuration, raw exceptions, stacks, causes, or details;
+- artifacts, file changes, reference-file data, workspaces, or filesystem paths; or
+- complete accumulated response content.
+
+### 6.4 Mandatory contract tests
+
+- real-shaped AutoByteus, Codex, and Claude canonical text fixtures each produce `TEXT_DELTA` with exact bytes;
+- whitespace-only canonical deltas are preserved; empty deltas are dropped; invalid/oversized deltas fail only the affected consumer;
+- real-shaped canonical `TURN_STARTED`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, and `ERROR` fixtures produce the exact closed variants;
+- same-input parity tests send one canonical text/completion event through the native mapper and application projector and prove identical text bytes/completion meaning while the native message shape remains unchanged;
+- standalone, whole-team, selected-member, and task-agent wrapper fixtures prove non-null correct producer attribution and filtering;
+- exhaustive current `AgentRunEventType` and `TeamRunEventSourceType` tables prove every non-v1 event is dropped and consumes no sequence;
+- application shared-contract/frontend-validator tests reject `SEGMENT_CONTENT`, `AGENT_RESPONSE_COMPLETED`, `ASSISTANT_COMPLETE`, tool/team public events, extra keys, nullable producer, and provider/native fields;
+- Socratic session/runtime/renderer/browser tests append only increasing-sequence `TEXT_DELTA`, complete only on `TURN_COMPLETED`, fail safely on `TURN_INTERRUPTED`/`ERROR`, ignore no longer existent tool/thinking/full-response behavior, exercise both live-first and durable-first convergence, and prove double/cross-action one-turn admission without a second GraphQL/input send;
+- generated/vendor drift tests prove the contracted five-variant API propagates to the built-in application packages; and
+- the real Socratic journey proves nonempty text plus completion through the standard selected-member connection while artifact publication remains separately durable.
 
 
 ## 7. Backend Event Subscription Adapter
@@ -906,13 +713,15 @@ Desktop-scope coverage additionally proves strict host bootstrap contains the st
 ### Individual bound agent
 
 ```ts
-const address: ApplicationAgentTargetAddress = {
-  bindingId: agentBinding.bindingId,
-  target: { kind: "AGENT_RUN" },
-};
+// Application backend:
+const address = createApplicationAgentTargetAddress(agentBinding);
 
+// Address returned to application frontend:
 const connection = applicationClient.agentCommunication.connect(address);
-connection.onEvent(renderAgentActivity);
+connection.onEvent(({ event }) => {
+  if (event.type === "TEXT_DELTA") appendText(event.delta);
+  if (event.type === "TURN_COMPLETED") markResponseComplete();
+});
 await connection.ready;
 await connection.sendInput({ text: "Analyse this request." });
 ```
@@ -920,26 +729,30 @@ await connection.sendInput({ text: "Analyse this request." });
 ### Whole bound team
 
 ```ts
-const connection = applicationClient.agentCommunication.connect({
-  bindingId: teamBinding.bindingId,
-  target: { kind: "AGENT_TEAM_RUN" },
+// Application backend:
+const teamAddress = createApplicationAgentTeamTargetAddress(teamBinding);
+
+// Address returned to application frontend:
+const connection = applicationClient.agentCommunication.connect(teamAddress);
+connection.onEvent(({ producer, event }) => {
+  if (event.type === "TEXT_DELTA") appendMemberText(producer.memberRouteKey, event.delta);
 });
-connection.onEvent(renderTeamTimeline);
 ```
 
 ### Selected team member
 
 ```ts
-const reviewerAddress: ApplicationAgentTargetAddress = {
-  bindingId: teamBinding.bindingId,
-  target: {
-    kind: "AGENT_TEAM_MEMBER",
-    memberRouteKey: "reviewer",
-  },
-};
+// Application backend:
+const reviewerAddress = createApplicationAgentTeamMemberTargetAddress(
+  teamBinding,
+  "reviewer",
+);
 
+// Address returned to application frontend:
 const connection = applicationClient.agentCommunication.connect(reviewerAddress);
-connection.onEvent(renderReviewerEvents);
+connection.onEvent(({ event }) => {
+  if (event.type === "TEXT_DELTA") appendReviewerText(event.delta);
+});
 await connection.ready;
 await connection.sendInput({ text: "Explain the current finding." });
 ```
@@ -966,6 +779,10 @@ agent communication                  → standard address-based live input/event
 ```
 
 The standard agent connection does not invoke the application worker, native stream handler, notification hub, or artifact relay. Artifact/file events are excluded from its public event projector. The independent custom backend WebSocket plane is governed by [`application-backend-websocket-contract.md`](./application-backend-websocket-contract.md); its reserved readiness frame and application-defined messages are not agent-communication frames.
+
+For one application business turn, agent communication and published-artifact return are siblings rather than ordered stages. An in-turn `publish_artifacts` call may reach its application notification/refresh before or after later canonical text/completion reaches the standard connection. The framework adds no cross-plane join, correlation, queue, or replay. A vertical application that presents both owns its bounded local policy; the normative Socratic policy and deterministic order tests are in [`socratic-math-live-journey.md`](./socratic-math-live-journey.md).
+
+The standard connection does not enforce one input at a time: distinct valid input requests retain their existing request IDs and independent settlement. Socratic's one-turn-at-a-time behavior is an application-local presentation invariant because that sample owns one live/durable baseline. Its private synchronous admission handle cannot change this protocol, block other consumers, or become a public turn identity. Concurrent-turn applications require separately proven correlation/presentation requirements rather than an implicit framework queue.
 
 ## 14. Persistence Decision
 

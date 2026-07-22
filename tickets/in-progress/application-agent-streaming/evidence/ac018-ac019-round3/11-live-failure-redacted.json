@@ -1,0 +1,102 @@
+{
+  "result": "FAIL",
+  "scenarioId": "ASE-018-LIVE",
+  "acceptanceCriterion": "AC-018",
+  "execution": {
+    "generatedPackageImportedFresh": true,
+    "mountedGeneratedUiInInstalledChrome": true,
+    "prompt": "Solve 3x + 5 = 20",
+    "paidLiveTurnsStarted": 1,
+    "retryUsed": false,
+    "retryReason": "Not permitted for a deterministic acceptance failure."
+  },
+  "expected": {
+    "standardSelectedMemberStream": "One READY, exactly one INPUT after READY, increasing non-empty provider-neutral TEXT segments, publish_artifacts tool lifecycle, and AGENT_RESPONSE_COMPLETED.",
+    "durableAppState": "Tutor lesson_response and published artifact converge."
+  },
+  "observed": {
+    "standardSelectedMemberStream": {
+      "readyCount": 1,
+      "inputCount": 1,
+      "inputAcceptedCount": 1,
+      "textLength": 0,
+      "responseCompleted": false,
+      "publishArtifactsStarted": true,
+      "publishArtifactsSucceeded": true
+    },
+    "backendEventMonitor": {
+      "cursorStatus": "VALID",
+      "publicAssistantTextLength": 135,
+      "publicAssistantText": "Let’s isolate \\(x\\) one step at a time. Since the left side has \\(+5\\), what operation should you apply to **both sides** to remove it?",
+      "publicVisuals": [
+        {
+          "type": "user",
+          "textMatchesApprovedPrompt": true
+        },
+        {
+          "type": "tool",
+          "toolName": "edit_file",
+          "statusKey": "success",
+          "pathSuffix": "socratic-math/lesson-response.md"
+        },
+        {
+          "type": "tool",
+          "toolName": "publish_artifacts",
+          "statusKey": "success"
+        },
+        {
+          "type": "assistant_text",
+          "content": "Let’s isolate \\(x\\) one step at a time. Since the left side has \\(+5\\), what operation should you apply to **both sides** to remove it?"
+        }
+      ],
+      "thinkingVisualsObservedButContentNotQueriedOrRetained": 1
+    },
+    "durableAppState": {
+      "lessonStatusBeforeCleanup": "active",
+      "bindingStatusBeforeCleanup": "ATTACHED",
+      "target": {
+        "kind": "AGENT_TEAM_MEMBER",
+        "memberRouteKey": "tutor"
+      },
+      "tutorLessonResponseCount": 1,
+      "durableResponse": "Let’s isolate \\(x\\) one step at a time. Since the left side has **+5**, what operation should you apply to **both sides** of\n\n\\[\n3x + 5 = 20\n\\]\n\nto remove that 5?",
+      "artifactResponseMatchesDurableResponse": true,
+      "lessonResponseNotificationObserved": true,
+      "publishedArtifactAndDurableTranscriptConverged": true
+    },
+    "qualitative": {
+      "relevantMathMarkers": [
+        "3x",
+        "20",
+        "both sides",
+        "isolate",
+        "5"
+      ],
+      "socraticCue": true,
+      "pass": true
+    }
+  },
+  "effectiveTutorConfig": {
+    "runtimeKind": "codex_app_server",
+    "llmModelIdentifier": "gpt-5.6-sol",
+    "llmConfig": {
+      "reasoning_effort": "high"
+    },
+    "serviceTierPresent": false,
+    "workspaceMatchesOwnedIsolatedPath": true
+  },
+  "publishedArtifact": {
+    "status": "available",
+    "pathSuffix": "socratic-math/lesson-response.md",
+    "type": "file",
+    "sourceFileName": "lesson-response.md",
+    "description": "First Socratic step for solving the equation"
+  },
+  "safety": {
+    "credentialsRetained": false,
+    "rawProviderTraceRetained": false,
+    "hiddenReasoningRetained": false,
+    "identifiersRetained": false,
+    "ownedRootRetained": false
+  }
+}

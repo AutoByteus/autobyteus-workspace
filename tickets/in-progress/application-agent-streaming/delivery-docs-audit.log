@@ -55,3 +55,11 @@ RESULT=PASS directly usable, no migration path changed
 RESULT=PASS no changed-path overlap
 
 result=PASS
+
+## latest-base recheck on 2026-07-22
+integrated_head=69fae2e424a708fe9a0d038077346d5b95b41df6
+integrated_base=965f97685c08569a98186b2a894243c0b3f602d3
+base_version=v1.4.24
+ticket/base_changed_path_overlap=0
+latest_additional_base_commit_scope=tickets/done/agent-run-history-performance delivery evidence only
+result=PASS no application-agent-streaming documentation correction required
