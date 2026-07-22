@@ -117,8 +117,9 @@ The reviewed Codex reasoning-lifecycle correction was synchronized with its reco
 - Remote ticket branch: removed after the ticket head was proven contained in `origin/personal` and `v1.4.25`.
 - Local ticket branch: removed after the same containment proof.
 - Worktree prune: completed.
-- Temporary release worktree/branch: scheduled for removal immediately after this durable report commit is pushed; final primary-worktree sync evidence will record completion.
-- Evidence: `evidence/delivery/process-identity-before-cleanup-20260722.log`; `evidence/delivery/post-publication-cleanup-20260722.log`.
+- Temporary release worktree/branch: removed after its publication-report commit was pushed and proven contained in `origin/personal`.
+- Primary `personal` worktree: fast-forwarded to the published/reporting state while preserving the pre-existing untracked `.article-work/` directory.
+- Evidence: `evidence/delivery/process-identity-before-cleanup-20260722.log`; `evidence/delivery/post-publication-cleanup-20260722.log`; `evidence/delivery/final-administrative-cleanup-20260722.log`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -131,4 +132,4 @@ The published `v1.4.25` tag is immutable. If a release problem is discovered, pr
 
 ## Final Status
 
-`Complete`. The user verified the candidate, `personal` contains the ticket state, stable `v1.4.25` is published, all five release workflows passed, assets and Docker tags were verified, and dedicated ticket resources were cleaned up. Only the disposable delivery worktree/branch self-cleanup and local primary sync remain as administrative actions after this report commit.
+`Complete`. The user verified the candidate, `personal` contains the ticket state, stable `v1.4.25` is published, all five release workflows passed, assets and Docker tags were verified, all dedicated ticket/release resources were cleaned up, and the primary `personal` worktree was synchronized without disturbing unrelated untracked work.
