@@ -62,6 +62,17 @@
 - Docs report: `tickets/in-progress/agent-event-monitor-tool-render-flicker/docs-sync-report.md`
 - Release notes: `tickets/in-progress/agent-event-monitor-tool-render-flicker/release-notes.md`
 
+## Electron Test Candidate
+
+- Build result: `Pass` using the README's verbose local macOS/no-notarization command.
+- Source checkpoint: `b60c8faa647a12ba587ea43644f0b74bcb38b49e`; latest `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3` was re-fetched and already contained.
+- Direct app path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG SHA-256: `953a89639a965aec1d639159ba0cc09a06d7e02a359f03a775b54644cea95578`
+- ZIP SHA-256: `4a4e189bd0ab90750d79f03f34917a0ca559bda4cfdee415d00c08ddef3cd9ef`
+- Verification: version `1.4.24`, ARM64 Mach-O, bundled server present, DMG checksum valid, ZIP integrity valid.
+- Runtime safety: the existing `/Applications/AutoByteus.app` server on port `29695` was preserved; the candidate was not launched. Quit the installed app normally before manually opening this candidate.
+- Detailed report: `tickets/in-progress/agent-event-monitor-tool-render-flicker/electron-test-build-report.md`
+
 ## Suggested Hands-On Verification
 
 1. Run or resume a Codex agent with several Thinking/tool cycles and confirm a terminal tool card does not disappear when later Thinking arrives.

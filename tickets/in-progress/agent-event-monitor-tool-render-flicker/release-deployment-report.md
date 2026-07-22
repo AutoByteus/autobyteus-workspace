@@ -8,7 +8,7 @@ This delivery stage accepted the fully reviewed Codex reasoning-lifecycle correc
 
 - Handoff summary artifact: `tickets/in-progress/agent-event-monitor-tool-render-flicker/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: The package is ready for user verification. No Electron shell source changed and no new Electron build was requested or produced in this delivery stage.
+- Notes: The package is ready for user verification. No Electron shell source changed. At the user's request, a fresh artifact-only macOS ARM64 candidate was built from the current local handoff checkpoint and was not launched.
 
 ## Initial Delivery Integration Refresh
 
@@ -26,6 +26,21 @@ This delivery stage accepted the fully reviewed Codex reasoning-lifecycle correc
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker: `None`
 - Evidence: `tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt`
+
+## Local User-Test Electron Build
+
+- Build report: `tickets/in-progress/agent-event-monitor-tool-render-flicker/electron-test-build-report.md`
+- README command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
+- Source checkpoint: `b60c8faa647a12ba587ea43644f0b74bcb38b49e`
+- Latest base check: `origin/personal@965f97685c08569a98186b2a894243c0b3f602d3` remained unchanged and contained.
+- Result: `Pass`, exit status `0`
+- Candidate: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Package/version/architecture: `enterprise` / `1.4.24` / macOS ARM64
+- DMG SHA-256: `953a89639a965aec1d639159ba0cc09a06d7e02a359f03a775b54644cea95578`
+- ZIP SHA-256: `4a4e189bd0ab90750d79f03f34917a0ca559bda4cfdee415d00c08ddef3cd9ef`
+- Integrity: DMG verification, ZIP integrity, bundle version, executable architecture, and bundled server entry passed.
+- Runtime action: artifact-only. The existing installed AutoByteus process/server on `29695` remained running and untouched; the new candidate was not launched.
+- Evidence: `evidence/delivery/delivery-electron-macos-arm64-prebuild-20260722.txt`, `evidence/delivery/delivery-electron-macos-arm64-build-20260722.log`, and `evidence/delivery/delivery-electron-macos-arm64-verification-20260722.txt`.
 
 ## User Verification
 
