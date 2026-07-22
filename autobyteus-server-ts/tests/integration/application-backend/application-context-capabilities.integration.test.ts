@@ -9,7 +9,8 @@ import type {
 import type {
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
@@ -102,8 +103,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "3",
-      frontendSdkContractVersion: "3",
+      backendDefinitionContractVersion: "4",
+      frontendSdkContractVersion: "4",
     },
     supportedExposures: {
       queries: false,
@@ -112,6 +113,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
       graphql: false,
       notifications: false,
       eventHandlers: false,
+      webSockets: false,
     },
     migrationsDirPath: null,
     migrationsDirRelativePath: null,
@@ -129,7 +131,7 @@ const writeCapabilityBackend = async (applicationRootPath: string): Promise<void
     `import { DatabaseSync } from 'node:sqlite'
 
 export default {
-  definitionContractVersion: '3',
+  definitionContractVersion: '4',
   commands: {
     'capabilities.exercise': async (_input, context) => {
       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
@@ -172,19 +174,37 @@ export default {
         },
       })
 
-      const sent = await context.agentExecution.sendInput({
+      const teamAddress = {
         bindingId: team.bindingId,
-        text: 'team follow-up input',
-        targetMemberRouteKey: 'researcher',
-        targetMemberPath: ['researcher'],
-        contextFiles: [{
-          uri: 'file:///tmp/context.md',
-          fileType: 'markdown',
-          fileName: 'context.md',
-          metadata: { source: 'fixture' },
-        }],
-        metadata: { phase: 'follow-up' },
+        target: { kind: 'AGENT_TEAM_MEMBER', memberRouteKey: 'researcher' },
+      }
+      const sent = await context.agentExecution.sendInput({
+        address: teamAddress,
+        input: {
+          text: 'team follow-up input',
+          contextFiles: [{
+            uri: 'file:///tmp/context.md',
+            fileType: 'markdown',
+            fileName: 'context.md',
+            metadata: { source: 'fixture' },
+          }],
+          metadata: { phase: 'follow-up' },
+        },
       })
+      const observedEvents = []
+      let observerCallbackBeforeSubscribeResolved = false
+      let subscribeResolved = false
+      const subscription = await context.agentExecution.subscribeEventStream(teamAddress, {
+        onEvent(event) {
+          if (!subscribeResolved) observerCallbackBeforeSubscribeResolved = true
+          observedEvents.push(event)
+        },
+      })
+      subscribeResolved = true
+      for (let attempt = 0; attempt < 100 && observedEvents.length === 0; attempt += 1) {
+        await new Promise((resolve) => setTimeout(resolve, 5))
+      }
+      await subscription.unsubscribe()
       const fetched = await context.agentExecution.get(agent.bindingId)
       const missing = await context.agentExecution.get('missing-binding')
       const listed = await context.agentExecution.list({ status: 'ATTACHED' })
@@ -287,6 +307,8 @@ export default {
         agent,
         team,
         sent,
+        observedEvents,
+        observerCallbackBeforeSubscribeResolved,
         fetched,
         missing,
         listed,
@@ -417,7 +439,7 @@ describe("Application context capability integration", () => {
     const ingressService = {
       appendBindingLifecycleEvent: vi.fn(async (input: {
         family: "RUN_TERMINATED";
-        binding: ApplicationRunBindingSummary;
+        binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
         payload: unknown;
       }) => journalStore.appendEventAwaitable(input.binding.applicationId, {
         eventId: `termination-${++journalSequence}`,
@@ -459,7 +481,7 @@ describe("Application context capability integration", () => {
       bindingStore,
       lookupStore,
       runObserverService: {
-        attachBinding: vi.fn(async (binding: ApplicationRunBindingSummary) => {
+        attachBinding: vi.fn(async (binding: ApplicationAgentBinding | ApplicationAgentTeamBinding) => {
           if (binding.launchRequestId === "recovery-launch-request-1") {
             throw new Error("simulated post-persist launch handoff failure");
           }
@@ -477,6 +499,34 @@ describe("Application context capability integration", () => {
       applicationBundleService: bundleService as never,
       storageLifecycleService,
       orchestrationHostService,
+      agentStreamingService: {
+        subscribe: vi.fn(async (input: {
+          applicationId: string;
+          subscriptionId: string;
+          address: { bindingId: string; target: { kind: string; memberRouteKey?: string } };
+          emitter: { emitEvent: (event: unknown) => Promise<void> };
+        }) => {
+          await input.emitter.emitEvent({
+            sequence: 1,
+            observedAt: "2026-07-21T10:00:00.000Z",
+            applicationId: input.applicationId,
+            address: input.address,
+            runtimeSubject: "TEAM_RUN",
+            producer: {
+              runId: "team-run-1::researcher",
+              runtimeKind: "AGENT_TEAM_MEMBER",
+              memberRouteKey: "researcher",
+              memberName: "researcher",
+              displayName: "researcher",
+              teamPath: ["researcher"],
+            },
+            event: { type: "TURN_STARTED" },
+          });
+          return { subscriptionId: input.subscriptionId };
+        }),
+        unsubscribe: vi.fn(async () => undefined),
+        stopApplication: vi.fn(),
+      } as never,
     });
 
     const result = await engineHostService.invokeApplicationCommand(APPLICATION_ID, {
@@ -487,25 +537,34 @@ describe("Application context capability integration", () => {
       requestContext: { applicationId: string };
       resources: ApplicationExecutionResourceSummary[];
       configured: { slotKey: string; executionResourceRef: ApplicationExecutionResourceRef };
-      agent: ApplicationRunBindingSummary;
-      team: ApplicationRunBindingSummary;
-      sent: ApplicationRunBindingSummary;
-      fetched: ApplicationRunBindingSummary | null;
-      missing: ApplicationRunBindingSummary | null;
-      listed: ApplicationRunBindingSummary[];
-      found: ApplicationRunBindingSummary | null;
-      notFound: ApplicationRunBindingSummary | null;
+      agent: ApplicationAgentBinding | ApplicationAgentTeamBinding;
+      team: ApplicationAgentBinding | ApplicationAgentTeamBinding;
+      sent: ApplicationAgentBinding | ApplicationAgentTeamBinding;
+      observedEvents: Array<{
+        sequence: number;
+        applicationId: string;
+        address: { bindingId: string; target: { kind: string; memberRouteKey?: string } };
+        runtimeSubject: string;
+        producer: unknown;
+        event: { type: string };
+      }>;
+      observerCallbackBeforeSubscribeResolved: boolean;
+      fetched: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      missing: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      listed: Array<ApplicationAgentBinding | ApplicationAgentTeamBinding>;
+      found: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      notFound: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
       artifacts: typeof artifactSummary[];
       revision: string | null;
       recoveryLaunchFailure: string | null;
-      recovered: ApplicationRunBindingSummary | null;
+      recovered: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
       recoveryState: {
         status: string;
         pendingBindingId: string;
         objectBindingId: string;
       };
-      terminatedAgent: ApplicationRunBindingSummary | null;
-      terminatedTeam: ApplicationRunBindingSummary | null;
+      terminatedAgent: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
+      terminatedTeam: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
     };
 
     expect(result.requestContext).toEqual({ applicationId: APPLICATION_ID });
@@ -531,6 +590,26 @@ describe("Application context capability integration", () => {
       },
     });
     expect(result.sent.bindingId).toBe(result.team.bindingId);
+    expect(result.observerCallbackBeforeSubscribeResolved).toBe(false);
+    expect(result.observedEvents).toEqual([{
+      sequence: 1,
+      observedAt: "2026-07-21T10:00:00.000Z",
+      applicationId: APPLICATION_ID,
+      address: {
+        bindingId: result.team.bindingId,
+        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+      },
+      runtimeSubject: "TEAM_RUN",
+      producer: {
+        runId: "team-run-1::researcher",
+        runtimeKind: "AGENT_TEAM_MEMBER",
+        memberRouteKey: "researcher",
+        memberName: "researcher",
+        displayName: "researcher",
+        teamPath: ["researcher"],
+      },
+      event: { type: "TURN_STARTED" },
+    }]);
     expect(result.fetched?.bindingId).toBe(result.agent.bindingId);
     expect(result.missing).toBeNull();
     expect(result.listed).toHaveLength(2);
@@ -582,7 +661,7 @@ describe("Application context capability integration", () => {
         })],
         metadata: { phase: "follow-up" },
       }),
-      { kind: "path", memberPath: ["researcher"] },
+      { kind: "route_key", memberRouteKey: "researcher" },
     );
     expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith("agent-run-1");
     expect(teamRunService.terminateTeamRun).toHaveBeenCalledWith("team-run-1");

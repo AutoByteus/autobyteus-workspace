@@ -5,6 +5,7 @@ Backend helper package for application bundle backends executed by the AutoByteu
 ## What it owns
 
 - `defineApplication(...)`
+- pure target-address builders for bound agents, whole teams, and static team members
 - re-exported backend definition, handler, request, storage, notification, named context-capability, resource-slot, and execution-event types from `@autobyteus/application-sdk-contracts`
 
 
@@ -18,7 +19,7 @@ For new external applications, use `@autobyteus/application-devkit` and the guid
 import { defineApplication } from '@autobyteus/application-backend-sdk'
 
 export default defineApplication({
-  definitionContractVersion: '3',
+  definitionContractVersion: '4',
   graphql: {
     execute: async (request, context) => {
       if (request.operationName === 'StatusQuery') {
@@ -49,17 +50,54 @@ export default defineApplication({
 })
 ```
 
+## Application agent target addresses
+
+When backend business code already owns a precise binding and needs a reusable or projected address, prefer the matching typed builder:
+
+```ts
+import {
+  createApplicationAgentTargetAddress,
+  createApplicationAgentTeamMemberTargetAddress,
+  createApplicationAgentTeamTargetAddress,
+} from '@autobyteus/application-backend-sdk'
+
+const agentAddress = createApplicationAgentTargetAddress(agentBinding)
+const wholeTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding)
+const reviewerAddress = createApplicationAgentTeamMemberTargetAddress(
+  teamBinding,
+  'reviewer',
+)
+```
+
+The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. They do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
+
+The shared address DTO remains directly constructible. Code that owns only a `bindingId` and immediately performs a one-shot send should not fetch a binding solely to use a builder:
+
+```ts
+await context.agentExecution.sendInput({
+  address: {
+    bindingId,
+    target: { kind: 'AGENT_TEAM_RUN' },
+  },
+  input: { text: 'Continue the team task.' },
+})
+```
+
 ## Bundle expectations
 
 - The worker loads a self-contained ESM backend module.
-- The exported definition contract version must be `"3"`; v2 definitions are rejected before handler invocation.
+- The exported definition contract version must be `"4"`; stale definitions are rejected before handler invocation.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
+- Optional `webSocketRoutes` require the bundle manifest's `webSockets` exposure flag and remain separate from standard agent communication.
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.
 - `application.json` may declare `executionResourceSlots[]`; app backends should resolve launch resources through `context.agentResources.getConfigured(slotKey)` instead of hardcoded runtime targets.
 - App code and manifests use `executionResourceRef` / `source` together with the `agentResources` capability.
 - Launch-profile helpers normalize missing skill access to `PRELOADED_ONLY`, which means the selected agent or team member uses the skills configured on its definition. `NONE` is the only explicit no-skill override. `GLOBAL_DISCOVERY` is rejected; app-owned broad agents must be configured with the desired skill names instead of requesting all-installed skills at launch.
+- `buildConfiguredTeamRunLaunch(...)` accepts optional transport-neutral `llmConfig`, clones it independently into the produced preset or member configs, and leaves host-saved runtime/model selection precedence unchanged.
 - `artifactHandlers.persisted` is the live published-artifact callback. It is separate from lifecycle `eventHandlers`, which continue to receive only `RUN_*` journal envelopes.
 - Applications that need guaranteed artifact catch-up should use `agentExecution.list(...)`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`, then apply their own idempotency keyed by `revisionId`.
+- Application backends may observe a bound agent target through `agentExecution.subscribeEventStream(address, observer, options)` and send input through the same `ApplicationAgentTargetAddress` using `agentExecution.sendInput({ address, input })`.
+- Backend observers receive the same minimal provider-neutral stream as frontend connections: `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, or safe `ERROR`; durable structured results continue through published artifacts.
 - App-authored migrations run only against `app.sqlite`; platform-owned `platform.sqlite` remains reserved.
 
 ## Teaching samples

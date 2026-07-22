@@ -1,6 +1,6 @@
+import { toPublicApplicationAgentBinding, type ApplicationAgentBindingRecord } from "../domain/models.js";
 import type {
   ApplicationPublishedArtifactEvent,
-  ApplicationRunBindingSummary,
 } from "@autobyteus/application-sdk-contracts";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import {
@@ -132,7 +132,7 @@ export class ApplicationPublishedArtifactRelayService {
   }
 
   private buildArtifactEvent(
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     producer: NonNullable<AgentRun["config"]["applicationExecutionContext"]>["producer"],
     artifact: PublishedArtifactSummary,
   ): ApplicationPublishedArtifactEvent {
@@ -144,7 +144,7 @@ export class ApplicationPublishedArtifactRelayService {
       description: artifact.description ?? null,
       fileKind: artifact.type,
       publishedAt: artifact.updatedAt,
-      binding: structuredClone(binding),
+      binding: toPublicApplicationAgentBinding(binding),
       producer: structuredClone(producer),
     };
   }

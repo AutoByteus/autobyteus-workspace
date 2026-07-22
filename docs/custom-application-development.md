@@ -1,6 +1,6 @@
 # Custom Application Development — Milestone 1
 
-Milestone 1 gives external AutoByteus application authors a reusable devkit, a canonical source layout, a package validator, and a local iframe-contract v3 dev host.
+External AutoByteus application authors use the devkit, canonical source layout, package validator, and local iframe-contract v4 dev host described here.
 
 ## Installable packages
 
@@ -81,7 +81,7 @@ Import `dist/importable-package` into AutoByteus. Do not import the source repos
 autobyteus-app validate --package-root dist/importable-package
 ```
 
-The devkit validator checks package-root shape, application manifest v3 fields, generated UI files, backend bundle manifest v1 fields, backend entry file presence, SDK contract versions, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
+The devkit validator checks package-root shape, application manifest v4 fields, generated UI files, the backend bundle manifest v1 seven-flag exposure authority, backend entry file presence, v4 SDK/backend-definition versions, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
 
 ## Local frontend dev bootstrap
 
@@ -89,9 +89,9 @@ The devkit validator checks package-root shape, application manifest v3 fields, 
 autobyteus-app dev
 ```
 
-The dev host serves the generated frontend through iframe contract v3. The iframe URL includes:
+The dev host serves the generated frontend through iframe contract v4. The iframe URL includes:
 
-- `autobyteusContractVersion=3`
+- `autobyteusContractVersion=4`
 - `autobyteusApplicationId`
 - `autobyteusIframeLaunchId`
 - `autobyteusHostOrigin`
@@ -107,6 +107,8 @@ autobyteus-app dev \
 ```
 
 Real-backend dev mode uses the same id in launch hints, bootstrap `application.applicationId`, and `requestContext.applicationId`. Without real backend URLs, dev mode uses a local mock backend for startup and transport-shape testing.
+
+When the application needs live transports in real-backend mode, pass their fixed desktop bases explicitly with `--backend-notifications-url`, `--backend-websocket-base-url`, and `--agent-communication-websocket-base-url`. The resulting v4 bootstrap transport has exactly those three fields plus `backendBaseUrl`; it has no application credential field.
 
 ## Agent-published artifacts
 

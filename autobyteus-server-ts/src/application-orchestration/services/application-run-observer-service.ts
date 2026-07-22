@@ -1,10 +1,14 @@
-import type { ApplicationRunBindingSummary } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import type { BoundRunRuntimeDescriptor } from "../domain/models.js";
 import { ApplicationBoundRunLifecycleGateway } from "./application-bound-run-lifecycle-gateway.js";
 import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+import {
+  ApplicationRunBindingTerminalTransitionService,
+  getApplicationRunBindingTerminalTransitionService,
+} from "./application-run-binding-terminal-transition-service.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -27,12 +31,12 @@ type ObserverRegistration = {
   rejectInitialAttachedEvent: (error: unknown) => void;
 };
 
-const buildRuntimeDescriptor = (binding: ApplicationRunBindingSummary): BoundRunRuntimeDescriptor => ({
+const buildRuntimeDescriptor = (binding: ApplicationAgentBindingRecord): BoundRunRuntimeDescriptor => ({
   runtimeSubject: binding.runtime.subject,
   runId: binding.runtime.runId,
 });
 
-const collectBindingRunIds = (binding: ApplicationRunBindingSummary): string[] =>
+const collectBindingRunIds = (binding: ApplicationAgentBindingRecord): string[] =>
   Array.from(
     new Set([
       binding.runtime.runId,
@@ -75,6 +79,7 @@ export class ApplicationRunObserverService {
       bindingStore?: ApplicationRunBindingStore;
       lookupStore?: ApplicationRunLookupStore;
       ingressService?: ApplicationExecutionEventIngressService;
+      terminalTransitionService?: ApplicationRunBindingTerminalTransitionService;
     } = {},
   ) {}
 
@@ -94,8 +99,20 @@ export class ApplicationRunObserverService {
     return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
   }
 
+  private get terminalTransitionService(): ApplicationRunBindingTerminalTransitionService {
+    if (this.dependencies.terminalTransitionService) return this.dependencies.terminalTransitionService;
+    if (this.dependencies.bindingStore || this.dependencies.lookupStore || this.dependencies.ingressService) {
+      return new ApplicationRunBindingTerminalTransitionService({
+        bindingStore: this.bindingStore,
+        lookupStore: this.lookupStore,
+        ingressService: this.ingressService,
+      });
+    }
+    return getApplicationRunBindingTerminalTransitionService();
+  }
+
   async attachBinding(
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     options: { emitAttachedEvent?: boolean } = {},
   ): Promise<boolean> {
     await this.detachBinding(binding.bindingId);
@@ -202,14 +219,14 @@ export class ApplicationRunObserverService {
 
   private async handleAttached(
     bindingId: string,
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
   ): Promise<void> {
     const registration = this.registrations.get(bindingId);
     if (!registration) {
       return;
     }
 
-    const attachedBinding: ApplicationRunBindingSummary = binding.status === "ATTACHED"
+    const attachedBinding: ApplicationAgentBindingRecord = binding.status === "ATTACHED"
       ? binding
       : {
           ...binding,
@@ -249,7 +266,7 @@ export class ApplicationRunObserverService {
 
   private async handleFailed(
     bindingId: string,
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     event: ObservedRunLifecycleEvent,
   ): Promise<void> {
     if (binding.status === "TERMINATED" || binding.status === "ORPHANED") {
@@ -257,7 +274,7 @@ export class ApplicationRunObserverService {
       return;
     }
 
-    const failedBinding: ApplicationRunBindingSummary = {
+    const failedBinding: ApplicationAgentBindingRecord = {
       ...binding,
       status: "FAILED",
       updatedAt: event.occurredAt,
@@ -276,7 +293,7 @@ export class ApplicationRunObserverService {
 
   private async handleTerminated(
     bindingId: string,
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     event: ObservedRunLifecycleEvent,
   ): Promise<void> {
     if (binding.status === "TERMINATED" || binding.status === "ORPHANED") {
@@ -284,23 +301,20 @@ export class ApplicationRunObserverService {
       return;
     }
 
-    const terminatedBinding: ApplicationRunBindingSummary = {
-      ...binding,
-      status: "TERMINATED",
-      updatedAt: event.occurredAt,
-      terminatedAt: event.occurredAt,
-    };
-    await this.bindingStore.persistBinding(terminatedBinding);
-    this.lookupStore.removeBindingLookups(terminatedBinding.applicationId, terminatedBinding.bindingId);
-    await this.ingressService.appendBindingLifecycleEvent({
-      family: "RUN_TERMINATED",
-      binding: terminatedBinding,
-      payload: { reason: "runtime_terminated" },
-    });
-    this.releaseRegistration(bindingId);
+    try {
+      await this.terminalTransitionService.transition({
+        applicationId: binding.applicationId,
+        bindingId,
+        status: "TERMINATED",
+        occurredAt: event.occurredAt,
+        reason: "runtime_terminated",
+      });
+    } finally {
+      this.releaseRegistration(bindingId);
+    }
   }
 
-  private async findBinding(bindingId: string): Promise<ApplicationRunBindingSummary | null> {
+  private async findBinding(bindingId: string): Promise<ApplicationAgentBindingRecord | null> {
     const registration = this.registrations.get(bindingId);
     if (!registration) {
       return null;

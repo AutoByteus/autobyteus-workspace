@@ -1,0 +1,86 @@
+# Delivery Documentation Audit
+
+integrated_head=467dc6db762224f47ef4f6dcd52d4359ff27e90c
+integrated_base=dd815ee9d83d253ab9bb586a7391b5ba6da18d53
+base_version=v1.4.25
+reviewed_implementation_head=b2615e1661d5a1351c292f247e6e432af2669517
+
+## changed long-lived docs inventory
+PASS applications/socratic-math-teacher/README.md
+PASS autobyteus-application-backend-sdk/README.md
+PASS autobyteus-application-devkit/README.md
+PASS autobyteus-application-frontend-sdk/README.md
+PASS autobyteus-application-sdk-contracts/README.md
+PASS autobyteus-server-ts/docs/modules/application_backend_api_gateway.md
+PASS autobyteus-server-ts/docs/modules/application_communication_model.md
+PASS autobyteus-server-ts/docs/modules/application_engine.md
+PASS autobyteus-server-ts/docs/modules/application_orchestration.md
+PASS autobyteus-server-ts/docs/modules/application_sessions.md
+PASS autobyteus-server-ts/docs/modules/applications.md
+PASS autobyteus-web/docs/application-bundle-iframe-contract-v4.md
+PASS autobyteus-web/docs/applications.md
+PASS docs/custom-application-development.md
+RESULT docs=14/14
+
+## revised-scope durable-doc delta
+PASS applications/socratic-math-teacher/README.md
+PASS autobyteus-application-backend-sdk/README.md
+PASS autobyteus-application-frontend-sdk/README.md
+PASS autobyteus-application-sdk-contracts/README.md
+RESULT revised_scope_docs=4/4
+
+## current contract and obsolete-token cutover
+PASS absent=AGENT_RESPONSE_COMPLETED count=0
+PASS absent=ApplicationAgentPublicEvent count=0
+PASS absent=ApplicationAgentExecutionBinding count=0
+PASS absent=ApplicationRunBindingSummary count=0
+PASS absent=ApplicationWorkerRuntime count=0
+PASS absent=ApplicationBackendNotificationStreamService count=0
+RESULT=PASS
+
+## canonical public and Socratic concepts
+PASS term=applicationClient.agentCommunication.connect docs=5 occurrences=6
+PASS term=applicationClient.backend.connectWebSocket docs=3 occurrences=3
+PASS term=applicationClient.notifications.subscribe docs=2 occurrences=3
+PASS term=ApplicationAgentStreamEvent docs=1 occurrences=2
+PASS term=ApplicationAgentTargetAddress docs=2 occurrences=5
+PASS term=createApplicationAgentTargetAddress docs=1 occurrences=2
+PASS term=createApplicationAgentTeamTargetAddress docs=1 occurrences=2
+PASS term=createApplicationAgentTeamMemberTargetAddress docs=1 occurrences=2
+PASS term=TURN_STARTED docs=3 occurrences=3
+PASS term=TEXT_DELTA docs=3 occurrences=3
+PASS term=TURN_COMPLETED docs=3 occurrences=3
+PASS term=TURN_INTERRUPTED docs=3 occurrences=3
+PASS term=ERROR docs=3 occurrences=3
+PASS term=READY docs=4 occurrences=6
+PASS term=publish_artifacts docs=1 occurrences=3
+RESULT=PASS
+
+## changed long-lived documentation links
+PASS file=applications/socratic-math-teacher/README.md relative_links=0
+PASS file=autobyteus-application-backend-sdk/README.md relative_links=0
+PASS file=autobyteus-application-devkit/README.md relative_links=0
+PASS file=autobyteus-application-frontend-sdk/README.md relative_links=0
+PASS file=autobyteus-application-sdk-contracts/README.md relative_links=0
+PASS file=autobyteus-server-ts/docs/modules/application_backend_api_gateway.md relative_links=6
+PASS file=autobyteus-server-ts/docs/modules/application_communication_model.md relative_links=4
+PASS file=autobyteus-server-ts/docs/modules/application_engine.md relative_links=4
+PASS file=autobyteus-server-ts/docs/modules/application_orchestration.md relative_links=9
+PASS file=autobyteus-server-ts/docs/modules/application_sessions.md relative_links=5
+PASS file=autobyteus-server-ts/docs/modules/applications.md relative_links=12
+PASS file=autobyteus-web/docs/application-bundle-iframe-contract-v4.md relative_links=1
+PASS file=autobyteus-web/docs/applications.md relative_links=0
+PASS file=docs/custom-application-development.md relative_links=0
+RESULT links=41/41
+
+## persisted-data boundary
+PASS no ticket-added migration/schema path
+RESULT=PASS directly usable, no migration path changed
+
+## revised-ticket/latest-base overlap
+revised_ticket_paths=147
+latest_base_increment_paths=85
+overlap=0
+RESULT=PASS no changed-path overlap
+
+result=PASS

@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
   type ApplicationBackendBundleManifestV1,
 } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationBackendBundle } from "../domain/models.js";
@@ -35,6 +35,18 @@ const normalizeOptionalString = (value: unknown): string | null => {
   }
   const normalized = value.trim();
   return normalized ? normalized : null;
+};
+
+const rejectUnknownFields = (
+  record: Record<string, unknown>,
+  allowedFields: readonly string[],
+  fieldName: string,
+): void => {
+  const allowed = new Set(allowedFields);
+  const unknown = Object.keys(record).find((key) => !allowed.has(key));
+  if (unknown) {
+    throw new ApplicationBackendManifestParseError(`${fieldName} contains unsupported key '${unknown}'.`);
+  }
 };
 
 const normalizeBackendRelativePath = (
@@ -80,6 +92,11 @@ const normalizeBooleanRecord = (
     throw new ApplicationBackendManifestParseError(`${fieldName} must be an object.`);
   }
   const record = value as Record<string, unknown>;
+  const allowedKeys = new Set(["queries", "commands", "routes", "graphql", "notifications", "eventHandlers", "webSockets"]);
+  const unknownKey = Object.keys(record).find((key) => !allowedKeys.has(key));
+  if (unknownKey) {
+    throw new ApplicationBackendManifestParseError(`${fieldName} contains unsupported key '${unknownKey}'.`);
+  }
   const readFlag = (key: keyof ApplicationBackendBundleManifestV1["supportedExposures"]): boolean => {
     if (typeof record[key] !== "boolean") {
       throw new ApplicationBackendManifestParseError(`${fieldName}.${key} must be a boolean.`);
@@ -94,6 +111,7 @@ const normalizeBooleanRecord = (
     graphql: readFlag("graphql"),
     notifications: readFlag("notifications"),
     eventHandlers: readFlag("eventHandlers"),
+    webSockets: readFlag("webSockets"),
   };
 };
 
@@ -115,6 +133,17 @@ export const parseApplicationBackendManifest = (
   }
 
   const manifest = payload as ApplicationBackendBundleManifestV1 & Record<string, unknown>;
+  rejectUnknownFields(manifest, [
+    "contractVersion",
+    "entryModule",
+    "moduleFormat",
+    "distribution",
+    "targetRuntime",
+    "sdkCompatibility",
+    "supportedExposures",
+    "migrationsDir",
+    "assetsDir",
+  ], "Application backend bundle manifest");
   const contractVersion = normalizeRequiredString(manifest.contractVersion, "contractVersion");
   if (contractVersion !== APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1) {
     throw new ApplicationBackendManifestParseError(
@@ -137,6 +166,7 @@ export const parseApplicationBackendManifest = (
   if (!targetRuntime || typeof targetRuntime !== "object" || Array.isArray(targetRuntime)) {
     throw new ApplicationBackendManifestParseError("targetRuntime must be an object.");
   }
+  rejectUnknownFields(targetRuntime, ["engine", "semver"], "targetRuntime");
   const engine = normalizeRequiredString(targetRuntime.engine, "targetRuntime.engine");
   if (engine !== "node") {
     throw new ApplicationBackendManifestParseError("targetRuntime.engine must be 'node'.");
@@ -147,11 +177,16 @@ export const parseApplicationBackendManifest = (
   if (!sdkCompatibility || typeof sdkCompatibility !== "object" || Array.isArray(sdkCompatibility)) {
     throw new ApplicationBackendManifestParseError("sdkCompatibility must be an object.");
   }
+  rejectUnknownFields(
+    sdkCompatibility,
+    ["backendDefinitionContractVersion", "frontendSdkContractVersion"],
+    "sdkCompatibility",
+  );
   const backendDefinitionContractVersion = normalizeRequiredString(
     sdkCompatibility.backendDefinitionContractVersion,
     "sdkCompatibility.backendDefinitionContractVersion",
   );
-  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3) {
+  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4) {
     throw new ApplicationBackendManifestParseError(
       `Unsupported backendDefinitionContractVersion '${backendDefinitionContractVersion}'.`,
     );
@@ -160,7 +195,7 @@ export const parseApplicationBackendManifest = (
     sdkCompatibility.frontendSdkContractVersion,
     "sdkCompatibility.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4) {
     throw new ApplicationBackendManifestParseError(
       `Unsupported frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
     );
@@ -189,8 +224,8 @@ export const parseApplicationBackendManifest = (
       semver,
     },
     sdkCompatibility: {
-      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
-      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
+      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
+      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
     },
     supportedExposures: normalizeBooleanRecord(manifest.supportedExposures, "supportedExposures"),
     migrationsDirPath: migrationsDirRelativePath ? path.resolve(bundleRootPath, migrationsDirRelativePath) : null,

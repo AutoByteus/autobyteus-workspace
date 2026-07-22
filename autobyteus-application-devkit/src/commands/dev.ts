@@ -9,6 +9,8 @@ export const runDevCommand = async (args: string[]): Promise<void> => {
     applicationId: readStringFlag(options, 'application-id'),
     backendBaseUrl: readStringFlag(options, 'backend-base-url'),
     backendNotificationsUrl: readStringFlag(options, 'backend-notifications-url'),
+    backendWebSocketBaseUrl: readStringFlag(options, 'backend-websocket-base-url'),
+    agentCommunicationWebSocketBaseUrl: readStringFlag(options, 'agent-communication-websocket-base-url'),
     mockBackend: readBooleanFlag(options, 'mock-backend'),
   });
   console.log(`AutoByteus application dev host: ${server.url}`);

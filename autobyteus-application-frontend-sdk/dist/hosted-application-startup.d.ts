@@ -1,4 +1,4 @@
-import { type ApplicationBootstrapPayloadV3 } from "@autobyteus/application-sdk-contracts";
+import { type ApplicationBootstrapPayloadV4 } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationClient } from "./application-client.js";
 import { type HostedApplicationStartupState } from "./default-startup-screen.js";
 export type HostedApplicationRootElement = HTMLElement;
@@ -18,7 +18,7 @@ type HostedApplicationWindowLike = {
     removeEventListener: (type: "message", listener: (event: HostedApplicationMessageEvent) => void) => void;
 };
 export type HostedApplicationBootstrappedContext = {
-    bootstrap: ApplicationBootstrapPayloadV3;
+    bootstrap: ApplicationBootstrapPayloadV4;
     applicationClient: ApplicationClient;
     rootElement: HostedApplicationRootElement;
 };

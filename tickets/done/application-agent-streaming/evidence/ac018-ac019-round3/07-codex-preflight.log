@@ -1,0 +1,25 @@
+Codex prerequisite preflight — fresh round 3
+$ codex --version
+codex-cli 0.144.6
+$ codex login status
+Logged in using ChatGPT
+$ production CodexModelCatalog.listModels() — safe normalized exact row only
+{
+  "model_identifier": "gpt-5.6-sol",
+  "display_name": "GPT-5.6-Sol (default reasoning: low)",
+  "reasoning_effort": {
+    "enum_values": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max",
+      "ultra"
+    ],
+    "default_value": "low"
+  },
+  "exact_high_available": true
+}
+PASS: authenticated exact-model/high preflight
+No paid model turn occurred in this preflight.
+RESULT=PASS

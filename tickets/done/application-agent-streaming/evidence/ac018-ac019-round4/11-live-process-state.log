@@ -1,0 +1,9 @@
+LIVE_PROCESS_STATE=PASS
+application_server_pid=25051
+isolated_server_listener=present
+temporary_host_listener=absent
+application_server_descendant_processes=1
+owned_browser_profile_processes=absent
+mounted_host_closed=true
+lesson_closed=true
+standard_agent_socket_closed_exactly_once=true

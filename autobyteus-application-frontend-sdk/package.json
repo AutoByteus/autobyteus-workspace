@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "pnpm build && node --test tests/hosted-application-startup.test.mjs && tsc -p tsconfig.type-tests.json --noEmit"
+    "test": "pnpm build && node --test tests/hosted-application-startup.test.mjs tests/application-connections.test.mjs && tsc -p tsconfig.type-tests.json --noEmit"
   },
   "dependencies": {
     "@autobyteus/application-sdk-contracts": "workspace:*"

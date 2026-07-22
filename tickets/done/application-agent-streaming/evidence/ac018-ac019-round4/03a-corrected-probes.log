@@ -1,0 +1,17 @@
+Correction to 03-builds-generated.log local probe assumptions
+The production builds/typechecks/idempotency/mirror checks in 03 passed.
+Two post-build temporary probes used stale field/fixture assumptions:
+- read defaultConfig instead of current defaultLaunchConfig;
+- supplied AGENT_TEAM rather than canonical TEAM_RUN as the binding runtime subject.
+They were probe errors, not product/build failures. Corrected probes follow.
+
+PASS exact config: applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json
+PASS exact config: applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/agent-teams/socratic-math-team/agents/socratic-math-tutor/agent-config.json
+
+PASS: sdk-dist three callable builders and exact member address
+PASS: brief-runtime three callable builders and exact member address
+PASS: brief-importable three callable builders and exact member address
+PASS: socratic-runtime three callable builders and exact member address
+PASS: socratic-importable three callable builders and exact member address
+
+RESULT=PASS

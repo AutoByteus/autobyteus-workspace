@@ -1,0 +1,24 @@
+Correction to 06-codex-preflight.log catalog-shape assumption
+CLI version and login checks in 06 passed. The first safe catalog probe read obsolete parameter_schema instead of current config_schema.parameters and therefore failed locally before any paid turn.
+Corrected production catalog probe follows.
+codex-cli 0.145.0
+Logged in using ChatGPT
+{
+  "model_identifier": "gpt-5.6-sol",
+  "display_name": "GPT-5.6-Sol (default reasoning: low)",
+  "reasoning_effort": {
+    "enum_values": [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max",
+      "ultra"
+    ],
+    "default_value": "low"
+  },
+  "exact_high_available": true
+}
+PASS: authenticated exact-model/high preflight
+No paid model turn occurred in either preflight probe.
+RESULT=PASS

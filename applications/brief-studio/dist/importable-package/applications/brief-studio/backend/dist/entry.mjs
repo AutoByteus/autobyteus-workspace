@@ -7,7 +7,7 @@ import { onRunTerminated } from "./event-handlers/on-run-terminated.js";
 import { executeBriefStudioGraphql } from "./graphql/index.js";
 import { createBriefArtifactReconciliationService } from "./services/brief-artifact-reconciliation-service.js";
 export default defineApplication({
-    definitionContractVersion: "3",
+    definitionContractVersion: "4",
     lifecycle: {
         onStart: async (context) => {
             await createBriefArtifactReconciliationService(context).reconcilePublishedArtifacts();

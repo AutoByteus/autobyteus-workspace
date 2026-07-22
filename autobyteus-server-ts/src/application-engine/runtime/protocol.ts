@@ -5,8 +5,13 @@ import type {
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteRequest,
-  ApplicationRunBindingListFilter,
-  ApplicationRuntimeInputContextFile,
+  ApplicationAgentBindingListFilter,
+  ApplicationAgentInput,
+  ApplicationAgentTargetAddress,
+  ApplicationAgentEvent,
+  ApplicationAgentEventStreamError,
+  ApplicationAgentEventStreamClose,
+  ApplicationWebSocketRequest,
   ApplicationExecutionResourceKind,
   ApplicationExecutionResourceSource,
   ApplicationStartAgentInput,
@@ -24,6 +29,13 @@ export const APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL = "executeApplicationGrap
 export const APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER = "invokeApplicationEventHandler" as const;
 export const APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER = "invokeApplicationArtifactHandler" as const;
 export const APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY = "invokeContextCapability" as const;
+export const APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET = "openApplicationWebSocket" as const;
+export const APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE = "deliverApplicationWebSocketMessage" as const;
+export const APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET = "closeApplicationWebSocket" as const;
+export const APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION = "invokeApplicationWebSocketAction" as const;
+export const APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_EVENT = "application.agentStream.event" as const;
+export const APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_ERROR = "application.agentStream.error" as const;
+export const APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_CLOSED = "application.agentStream.closed" as const;
 export const APPLICATION_ENGINE_METHOD_STOP = "stopApplication" as const;
 
 export type ApplicationWorkerLoadDefinitionInput = {
@@ -74,17 +86,23 @@ export type ApplicationWorkerContextCapabilityInput =
       capability: "agentExecution";
       operation: "sendInput";
       input: {
-        bindingId: string;
-        text: string;
-        targetMemberRouteKey?: string | null;
-        targetMemberPath?: string[] | null;
-        contextFiles?: ApplicationRuntimeInputContextFile[] | null;
-        metadata?: Record<string, unknown> | null;
+        address: ApplicationAgentTargetAddress;
+        input: ApplicationAgentInput;
       };
+    }
+  | {
+      capability: "agentExecution";
+      operation: "subscribeEventStream";
+      input: { subscriptionId: string; address: ApplicationAgentTargetAddress };
+    }
+  | {
+      capability: "agentExecution";
+      operation: "unsubscribeEventStream";
+      input: { subscriptionId: string; reason: "UNSUBSCRIBED" | "ABORTED" };
     }
   | { capability: "agentExecution"; operation: "terminate"; input: { bindingId: string } }
   | { capability: "agentExecution"; operation: "get"; input: { bindingId: string } }
-  | { capability: "agentExecution"; operation: "list"; input: ApplicationRunBindingListFilter | null }
+  | { capability: "agentExecution"; operation: "list"; input: ApplicationAgentBindingListFilter | null }
   | { capability: "agentExecution"; operation: "findByLaunchRequestId"; input: { launchRequestId: string } }
   | {
       capability: "agentResources";
@@ -118,3 +136,32 @@ export type ApplicationWorkerStatusResult = {
 export type ApplicationExecutionEventDispatchResult = {
   status: "acknowledged" | "missing_handler";
 };
+
+export type ApplicationWebSocketIpcFrame =
+  | { kind: "text"; text: string }
+  | { kind: "binary"; dataBase64: string };
+
+export type ApplicationWorkerOpenWebSocketInput = {
+  sessionId: string;
+  request: ApplicationWebSocketRequest;
+};
+
+export type ApplicationWorkerWebSocketMessageInput = {
+  sessionId: string;
+  frame: ApplicationWebSocketIpcFrame;
+};
+
+export type ApplicationWorkerCloseWebSocketInput = {
+  sessionId: string;
+  code: number;
+  reason: string;
+};
+
+export type ApplicationWorkerWebSocketActionInput =
+  | { action: "send"; sessionId: string; frame: ApplicationWebSocketIpcFrame }
+  | { action: "close"; sessionId: string; code: number; reason: string };
+
+export type ApplicationAgentStreamWorkerNotification =
+  | { method: typeof APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_EVENT; params: { subscriptionId: string; event: ApplicationAgentEvent } }
+  | { method: typeof APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_ERROR; params: { subscriptionId: string; error: ApplicationAgentEventStreamError } }
+  | { method: typeof APPLICATION_ENGINE_NOTIFICATION_AGENT_STREAM_CLOSED; params: { subscriptionId: string; close: ApplicationAgentEventStreamClose } };

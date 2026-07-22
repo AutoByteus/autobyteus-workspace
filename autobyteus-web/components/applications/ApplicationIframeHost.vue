@@ -12,11 +12,11 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import {
   APPLICATION_IFRAME_CHANNEL,
-  APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V4,
   APPLICATION_IFRAME_READY_EVENT,
-  isApplicationIframeEnvelopeV3,
-  isApplicationUiReadyEnvelopeV3,
-  type ApplicationHostBootstrapEnvelopeV3,
+  isApplicationIframeEnvelopeV4,
+  isApplicationUiReadyEnvelopeV4,
+  type ApplicationHostBootstrapEnvelopeV4,
   type ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import { useLocalization } from '~/composables/useLocalization'
@@ -27,7 +27,7 @@ import {
 
 const props = defineProps<{
   descriptor: ApplicationIframeLaunchDescriptor
-  bootstrapEnvelope: ApplicationHostBootstrapEnvelopeV3 | null
+  bootstrapEnvelope: ApplicationHostBootstrapEnvelopeV4 | null
 }>()
 
 const emit = defineEmits<{
@@ -54,7 +54,7 @@ const emitBridgeError = (message: string): void => {
   emit('bridgeError', message)
 }
 
-const postBootstrapEnvelope = (envelope: ApplicationHostBootstrapEnvelopeV3): void => {
+const postBootstrapEnvelope = (envelope: ApplicationHostBootstrapEnvelopeV4): void => {
   const bootstrapKey = `${envelope.payload.application.applicationId}::${envelope.payload.iframeLaunchId}`
   if (deliveredBootstrapKey.value === bootstrapKey) {
     return
@@ -96,7 +96,7 @@ const handleIframeMessage = (event: MessageEvent): void => {
   }
 
   const payload = event.data
-  if (!isApplicationIframeEnvelopeV3(payload)) {
+  if (!isApplicationIframeEnvelopeV4(payload)) {
     return
   }
   if (payload.channel !== APPLICATION_IFRAME_CHANNEL) {
@@ -105,16 +105,16 @@ const handleIframeMessage = (event: MessageEvent): void => {
   if (payload.eventName !== APPLICATION_IFRAME_READY_EVENT) {
     return
   }
-  if (payload.contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V3) {
+  if (payload.contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V4) {
     emitBridgeError(
       $t('applications.components.applications.ApplicationIframeHost.unsupportedContractVersion', {
         actual: payload.contractVersion,
-        expected: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+        expected: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
       }),
     )
     return
   }
-  if (!isApplicationUiReadyEnvelopeV3(payload)) {
+  if (!isApplicationUiReadyEnvelopeV4(payload)) {
     return
   }
   if (payload.payload.applicationId !== props.descriptor.applicationId) {

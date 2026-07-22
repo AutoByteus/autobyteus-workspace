@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import type {
-  ApplicationHostBootstrapEnvelopeV3,
+  ApplicationHostBootstrapEnvelopeV4,
   ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationSurface from '../ApplicationSurface.vue'
@@ -12,7 +12,7 @@ import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/appl
 const hostHarness = vi.hoisted(() => ({
   props: {
     descriptor: null as ApplicationIframeLaunchDescriptor | null,
-    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelopeV3 | null,
+    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelopeV4 | null,
   },
   bindingRevision: 0,
 }))
@@ -65,7 +65,7 @@ const ApplicationIframeHostStub = defineComponent({
   setup(props) {
     return () => {
       hostHarness.props.descriptor = props.descriptor as ApplicationIframeLaunchDescriptor
-      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelopeV3 | null
+      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelopeV4 | null
       return h('div', { 'data-testid': 'iframe-host' })
     }
   },
@@ -145,6 +145,19 @@ describe('ApplicationSurface', () => {
     expect(hostHarness.props.bootstrapEnvelope?.payload.iframeLaunchId).toBe(descriptor.iframeLaunchId)
     expect(hostHarness.props.bootstrapEnvelope?.payload).not.toHaveProperty('session')
     expect(hostHarness.props.bootstrapEnvelope?.payload).not.toHaveProperty('runtime')
+    const transport = hostHarness.props.bootstrapEnvelope!.payload.transport
+    expect(Object.keys(transport)).toEqual([
+      'backendBaseUrl',
+      'backendNotificationsUrl',
+      'backendWebSocketBaseUrl',
+      'agentCommunicationWebSocketBaseUrl',
+    ])
+    expect(transport).toEqual({
+      backendBaseUrl: `http://127.0.0.1:43123/rest/applications/${descriptor.applicationId}/backend`,
+      backendNotificationsUrl: `ws://127.0.0.1:43123/ws/applications/${descriptor.applicationId}/backend/notifications`,
+      backendWebSocketBaseUrl: `ws://127.0.0.1:43123/ws/applications/${descriptor.applicationId}/backend/routes`,
+      agentCommunicationWebSocketBaseUrl: `ws://127.0.0.1:43123/ws/applications/${descriptor.applicationId}/agent-communication`,
+    })
 
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('bootstrap-delivered', {
       applicationId: descriptor.applicationId,

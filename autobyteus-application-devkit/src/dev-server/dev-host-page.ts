@@ -1,15 +1,15 @@
 import {
   APPLICATION_IFRAME_BOOTSTRAP_EVENT,
   APPLICATION_IFRAME_CHANNEL,
-  APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V4,
   APPLICATION_IFRAME_READY_EVENT,
   APPLICATION_IFRAME_QUERY_APPLICATION_ID,
   APPLICATION_IFRAME_QUERY_CONTRACT_VERSION,
   APPLICATION_IFRAME_QUERY_HOST_ORIGIN,
   APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID,
-  createApplicationHostBootstrapEnvelopeV3,
-  type ApplicationBootstrapPayloadV3,
-  type ApplicationHostBootstrapEnvelopeV3,
+  createApplicationHostBootstrapEnvelopeV4,
+  type ApplicationBootstrapPayloadV4,
+  type ApplicationHostBootstrapEnvelopeV4,
 } from '@autobyteus/application-sdk-contracts';
 
 export type DevBootstrapSession = {
@@ -20,7 +20,7 @@ export type DevBootstrapSession = {
   applicationName: string;
   iframePath: string;
   launchQueryString: string;
-  bootstrapEnvelope: ApplicationHostBootstrapEnvelopeV3;
+  bootstrapEnvelope: ApplicationHostBootstrapEnvelopeV4;
 };
 
 const escapeHtml = (value: string): string => (
@@ -48,7 +48,7 @@ export const buildLaunchQueryString = (input: {
   hostOrigin: string;
 }): string => {
   const searchParams = new URLSearchParams({
-    [APPLICATION_IFRAME_QUERY_CONTRACT_VERSION]: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+    [APPLICATION_IFRAME_QUERY_CONTRACT_VERSION]: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
     [APPLICATION_IFRAME_QUERY_APPLICATION_ID]: input.applicationId,
     [APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID]: input.iframeLaunchId,
     [APPLICATION_IFRAME_QUERY_HOST_ORIGIN]: input.hostOrigin,
@@ -64,6 +64,8 @@ export const createDevBootstrapSession = (input: {
   applicationName: string;
   backendBaseUrl: string;
   backendNotificationsUrl: string | null;
+  backendWebSocketBaseUrl: string | null;
+  agentCommunicationWebSocketBaseUrl: string | null;
   entryHtml?: string | null;
 }): DevBootstrapSession => {
   const launchQueryString = buildLaunchQueryString({
@@ -72,7 +74,7 @@ export const createDevBootstrapSession = (input: {
     hostOrigin: input.hostOrigin,
   });
   const entryHtml = input.entryHtml?.trim() || 'index.html';
-  const bootstrapPayload: ApplicationBootstrapPayloadV3 = {
+  const bootstrapPayload: ApplicationBootstrapPayloadV4 = {
     host: { origin: input.hostOrigin },
     application: {
       applicationId: input.applicationId,
@@ -87,6 +89,8 @@ export const createDevBootstrapSession = (input: {
     transport: {
       backendBaseUrl: input.backendBaseUrl,
       backendNotificationsUrl: input.backendNotificationsUrl,
+      backendWebSocketBaseUrl: input.backendWebSocketBaseUrl,
+      agentCommunicationWebSocketBaseUrl: input.agentCommunicationWebSocketBaseUrl,
     },
   };
 
@@ -98,7 +102,7 @@ export const createDevBootstrapSession = (input: {
     applicationName: input.applicationName,
     iframePath: `/ui/${entryHtml}?${launchQueryString}`,
     launchQueryString,
-    bootstrapEnvelope: createApplicationHostBootstrapEnvelopeV3(bootstrapPayload),
+    bootstrapEnvelope: createApplicationHostBootstrapEnvelopeV4(bootstrapPayload),
   };
 };
 
@@ -118,7 +122,7 @@ export const renderDevHostPage = (session: DevBootstrapSession): string => `<!do
   </head>
   <body>
     <div class="host-bar">
-      <strong>AutoByteus dev iframe contract v3</strong>
+      <strong>AutoByteus dev iframe contract v4</strong>
       <span>applicationId: ${escapeHtml(session.applicationId)}</span>
       <span>iframeLaunchId: ${escapeHtml(session.iframeLaunchId)}</span>
       <span id="status" class="status">waiting for ${escapeHtml(APPLICATION_IFRAME_READY_EVENT)}</span>
@@ -130,7 +134,7 @@ export const renderDevHostPage = (session: DevBootstrapSession): string => `<!do
       const bootstrapEnvelope = ${encodeScriptJson(session.bootstrapEnvelope)};
       const constants = ${encodeScriptJson({
         channel: APPLICATION_IFRAME_CHANNEL,
-        contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+        contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
         readyEvent: APPLICATION_IFRAME_READY_EVENT,
         bootstrapEvent: APPLICATION_IFRAME_BOOTSTRAP_EVENT,
         applicationId: session.applicationId,

@@ -261,6 +261,14 @@ details[open] .details-summary::before {
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
+button:disabled,
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none;
+  box-shadow: none;
+}
+
 .content-grid {
   display: grid;
   gap: 18px;
@@ -342,6 +350,92 @@ details[open] .details-summary::before {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.live-tutor {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid #d8d0ff;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f9f7ff 0%, #f3f7ff 100%);
+}
+
+.live-tutor::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: #7c5ce7;
+  content: "";
+}
+
+.live-tutor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.live-status-dot {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #94a3b8;
+  box-shadow: 0 0 0 5px rgba(148, 163, 184, 0.16);
+}
+
+.live-tutor[data-live-state="connecting"] .live-status-dot,
+.live-tutor[data-live-state="ready"] .live-status-dot,
+.live-tutor[data-live-state="streaming"] .live-status-dot {
+  background: #5b3fd6;
+  box-shadow: 0 0 0 5px rgba(91, 63, 214, 0.14);
+}
+
+.live-tutor[data-live-state="completed"] .live-status-dot {
+  background: #2563eb;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.14);
+}
+
+.live-tutor[data-live-state="saved"] .live-status-dot {
+  background: #15803d;
+  box-shadow: 0 0 0 5px rgba(21, 128, 61, 0.14);
+}
+
+.live-tutor[data-live-state="failed"] .live-status-dot {
+  background: #dc2626;
+  box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.12);
+}
+
+.live-tutor-text {
+  margin-top: 14px;
+  color: #202a44;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.live-tutor-placeholder {
+  margin-top: 12px;
+  line-height: 1.55;
+}
+
+.live-error,
+.live-warning {
+  margin-top: 12px;
+  border-radius: 12px;
+  padding: 9px 11px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.live-error {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.live-warning {
+  background: #fff7ed;
+  color: #9a3412;
 }
 
 .artifact-grid {

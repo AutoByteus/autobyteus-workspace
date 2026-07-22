@@ -10,7 +10,7 @@ Commands:
   create <dir> --id <local-id> --name <name>   Create a starter custom app project
   pack [--project-root <path>] [--out <path>]  Build dist/importable-package
   validate [--package-root <path>]             Validate a generated package root
-  dev [--project-root <path>] [--port <port>]  Serve iframe-contract v3 dev host
+  dev [--project-root <path>] [--port <port>]  Serve iframe-contract v4 dev host
 `;
 
 export const runCli = async (argv: string[] = process.argv.slice(2)): Promise<void> => {

@@ -1,5 +1,5 @@
 import {
-  APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V4,
   type ApplicationIframeLaunchHints,
 } from '@autobyteus/application-sdk-contracts'
 import {
@@ -18,7 +18,7 @@ export type ApplicationIframeLaunchDescriptor = {
   entryHtmlUrl: string
   expectedIframeOrigin: string
   normalizedHostOrigin: string
-  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V3
+  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V4
   iframeLaunchId: string
 }
 
@@ -27,7 +27,7 @@ export type ApplicationIframeLaunchDescriptorInputs = {
   entryHtmlAssetPath: string
   restBaseUrl: string
   normalizedHostOrigin: string
-  contractVersion?: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V3
+  contractVersion?: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V4
 }
 
 export const areApplicationIframeDescriptorInputsEqual = (
@@ -38,8 +38,8 @@ export const areApplicationIframeDescriptorInputsEqual = (
   && left?.entryHtmlAssetPath === right?.entryHtmlAssetPath
   && left?.restBaseUrl === right?.restBaseUrl
   && left?.normalizedHostOrigin === right?.normalizedHostOrigin
-  && (left?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V3)
-    === (right?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V3)
+  && (left?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V4)
+    === (right?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V4)
 )
 
 export const createApplicationIframeLaunchId = (
@@ -61,7 +61,7 @@ export const buildApplicationIframeLaunchDescriptor = (
     entryHtmlUrl,
     expectedIframeOrigin: resolveApplicationAssetOrigin(entryHtmlUrl),
     normalizedHostOrigin: inputs.normalizedHostOrigin,
-    contractVersion: inputs.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+    contractVersion: inputs.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V4,
     iframeLaunchId,
   }
 }

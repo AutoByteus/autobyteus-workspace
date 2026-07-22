@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type {
   ApplicationHandlerContext,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
 } from "@autobyteus/application-backend-sdk";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import {
@@ -23,7 +24,7 @@ const requireNonEmptyString = (value: string, fieldName: string): string => {
 
 const toBindingRecord = (
   briefId: string,
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
   updatedAt: string,
 ): BriefBindingRecord => ({
   briefId,
@@ -40,7 +41,7 @@ const ensureBindingConsistency = (
   existingBinding: BriefBindingRecord | null,
   input: {
     briefId: string;
-    binding: ApplicationRunBindingSummary;
+    binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
   },
 ): void => {
   if (pendingLaunchRequest && pendingLaunchRequest.briefId !== input.briefId) {
@@ -60,7 +61,7 @@ const ensureBindingConsistency = (
   }
 };
 
-const requireLaunchRequestId = (binding: ApplicationRunBindingSummary): string =>
+const requireLaunchRequestId = (binding: ApplicationAgentBinding | ApplicationAgentTeamBinding): string =>
   requireNonEmptyString(binding.launchRequestId, "binding.launchRequestId");
 
 export const createRunBindingCorrelationService = (context: ApplicationHandlerContext) => ({
@@ -87,7 +88,7 @@ export const createRunBindingCorrelationService = (context: ApplicationHandlerCo
 
   finalizeBindingForBrief(input: {
     briefId: string;
-    binding: ApplicationRunBindingSummary;
+    binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
     committedAt?: string;
   }): void {
     const launchRequestId = requireLaunchRequestId(input.binding);
@@ -117,7 +118,7 @@ export const createRunBindingCorrelationService = (context: ApplicationHandlerCo
     });
   },
 
-  resolveBriefIdForBinding(binding: ApplicationRunBindingSummary): string {
+  resolveBriefIdForBinding(binding: ApplicationAgentBinding | ApplicationAgentTeamBinding): string {
     const launchRequestId = requireLaunchRequestId(binding);
 
     return withAppDatabase(context.storage.appDatabasePath, (db) =>
@@ -150,7 +151,7 @@ export const createRunBindingCorrelationService = (context: ApplicationHandlerCo
 
   async reconcileLaunchRequest(launchRequestId: string): Promise<{
     briefId: string;
-    binding: ApplicationRunBindingSummary;
+    binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
   } | null> {
     const normalizedLaunchRequestId = requireNonEmptyString(launchRequestId, "launchRequestId");
     const pendingLaunchRequest = withAppDatabase(context.storage.appDatabasePath, (db) =>

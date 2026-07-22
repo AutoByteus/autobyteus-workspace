@@ -1,3 +1,4 @@
+import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import {
   buildScopedMemberResolutionContext,
   resolveScopedAgentMemberRef,
@@ -7,8 +8,7 @@ import { randomUUID } from "node:crypto";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type {
   ApplicationAgentRunLaunch,
-  ApplicationRunBindingMemberSummary,
-  ApplicationRunBindingSummary,
+  ApplicationAgentTeamBindingMember,
   ApplicationExecutionResourceRef,
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
@@ -39,7 +39,7 @@ type TeamMemberDescriptor = {
   agentDefinitionId: string;
 };
 
-const collectBindingRunIds = (binding: ApplicationRunBindingSummary): string[] =>
+const collectBindingRunIds = (binding: ApplicationAgentBindingRecord): string[] =>
   Array.from(
     new Set([
       binding.runtime.runId,
@@ -137,7 +137,7 @@ export class ApplicationRunBindingLaunchService {
   async startAgentRunBinding(
     applicationId: string,
     input: ApplicationStartAgentInput,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     requireMethodLaunchKind("startAgent", "AGENT", input.launch);
     const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
     requireMethodResourceKind("startAgent", "AGENT", resource);
@@ -154,7 +154,7 @@ export class ApplicationRunBindingLaunchService {
   async startAgentTeamRunBinding(
     applicationId: string,
     input: ApplicationStartAgentTeamInput,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     requireMethodLaunchKind("startAgentTeam", "AGENT_TEAM", input.launch);
     const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
     requireMethodResourceKind("startAgentTeam", "AGENT_TEAM", resource);
@@ -173,7 +173,7 @@ export class ApplicationRunBindingLaunchService {
     executionResourceRef: ApplicationExecutionResourceRef,
     resource: ResolvedApplicationExecutionResource,
     launch: ApplicationAgentRunLaunch,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     const memberSummary = await this.buildSingleAgentMemberSummary(resource);
     const applicationExecutionContext = this.buildExecutionContext(bindingSeed, memberSummary);
     const agentRun = await this.agentRunService.createAgentRun({
@@ -190,7 +190,7 @@ export class ApplicationRunBindingLaunchService {
     applicationExecutionContext.producer.runId = agentRun.runId;
 
     const now = new Date().toISOString();
-    const binding: ApplicationRunBindingSummary = {
+    const binding: ApplicationAgentBindingRecord = {
       bindingId: bindingSeed.bindingId,
       applicationId: bindingSeed.applicationId,
       launchRequestId: bindingSeed.launchRequestId,
@@ -217,7 +217,7 @@ export class ApplicationRunBindingLaunchService {
     executionResourceRef: ApplicationExecutionResourceRef,
     resource: ResolvedApplicationExecutionResource,
     launch: ApplicationTeamRunLaunch,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     const memberDescriptors = await this.collectTeamMemberDescriptors(resource.definitionId);
     const memberConfigs = launch.mode === "preset"
       ? await this.teamRunService.buildMemberConfigsFromLaunchPreset({
@@ -284,7 +284,7 @@ export class ApplicationRunBindingLaunchService {
     });
 
     const now = new Date().toISOString();
-    const binding: ApplicationRunBindingSummary = {
+    const binding: ApplicationAgentBindingRecord = {
       bindingId: bindingSeed.bindingId,
       applicationId: bindingSeed.applicationId,
       launchRequestId: bindingSeed.launchRequestId,
@@ -308,7 +308,7 @@ export class ApplicationRunBindingLaunchService {
 
   private async buildSingleAgentMemberSummary(
     resource: ResolvedApplicationExecutionResource,
-  ): Promise<ApplicationRunBindingMemberSummary> {
+  ): Promise<ApplicationAgentTeamBindingMember> {
     const definition = await this.agentDefinitionService.getAgentDefinitionById(resource.definitionId);
     const memberName = resource.localId ?? (definition?.name?.trim() || resource.definitionId);
     return {
@@ -324,7 +324,7 @@ export class ApplicationRunBindingLaunchService {
   private buildTeamMemberSummary(
     descriptor: TeamMemberDescriptor,
     runId: string,
-  ): ApplicationRunBindingMemberSummary {
+  ): ApplicationAgentTeamBindingMember {
     return {
       memberName: descriptor.memberName,
       memberRouteKey: descriptor.memberRouteKey,
@@ -337,7 +337,7 @@ export class ApplicationRunBindingLaunchService {
 
   private buildExecutionContext(
     bindingSeed: { applicationId: string; bindingId: string; launchRequestId: string },
-    member: ApplicationRunBindingMemberSummary,
+    member: ApplicationAgentTeamBindingMember,
   ): ApplicationExecutionContext {
     return {
       applicationId: bindingSeed.applicationId,

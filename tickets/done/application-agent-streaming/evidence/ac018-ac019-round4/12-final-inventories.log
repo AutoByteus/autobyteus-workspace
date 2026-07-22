@@ -1,0 +1,36 @@
+AC-018/AC-019 round-4 final inventories
+HEAD=b2615e1661d5a1351c292f247e6e432af2669517
+BASE=534210b9e1dffff6c22855ae89ddb3d2afef5a9b
+
+$ git diff --check
+PASS: tracked diff whitespace hygiene
+
+$ uncommitted product/test/generated working-tree drift
+PASS: no uncommitted production source, durable test, package, or generated-output drift
+
+$ full task-range Prisma/schema/migration inventory
+PASS: no Prisma schema or migration path changed
+
+$ obsolete active public-event and Socratic-presentation inventory
+PASS: obsolete whole-response, broad-public-event, and tool-presentation tokens absent from active production/generated consumers
+
+$ obsolete notification-owner and duplicate-close inventory
+PASS: obsolete notification stream owner and closeByClient duplicate are absent
+
+$ Socratic reusable target construction inventory
+PASS: Socratic source uses the canonical team-member target builder and contains no manual reusable member target
+
+$ exact source/importable tutor configuration
+PASS: exact codex_app_server / gpt-5.6-sol / high / publish_artifacts config in source and importable package
+
+$ target-builder runtime entrypoints and mirror equality
+PASS: all five normal SDK/built-in/importable entrypoints expose three callable builders
+PASS: builder mirrors and all four runtime/renderer mirrors are byte-identical
+
+$ generated build idempotency evidence
+PASS: 706 tracked Brief/Socratic files retained the same post-second-build hash bfb0799c3430c35c48dec71a7ca1f9c43b2252f9d976300d620e092fdb5d785b (03-builds-generated.log)
+
+$ API/E2E durable coverage delta
+PASS: round 4 changed no repository-resident durable test; only ticket reports and retained temporary/redacted evidence changed
+
+RESULT=PASS

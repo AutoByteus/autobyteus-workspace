@@ -1,8 +1,11 @@
 import type {
   ApplicationExecutionEvent,
   ApplicationExecutionProducer,
-  ApplicationRunBindingRuntimeSubject,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentBindingStatus,
+  ApplicationAgentTeamBinding,
+  ApplicationAgentTeamBindingMember,
+  ApplicationExecutionResourceRef,
 } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_EXECUTION_CONTEXT_KEY = "application_execution_context" as const;
@@ -35,8 +38,44 @@ export type ApplicationRunLookupRecord = {
 };
 
 export type BoundRunRuntimeDescriptor = {
-  runtimeSubject: ApplicationRunBindingRuntimeSubject;
+  runtimeSubject: "AGENT_RUN" | "TEAM_RUN";
   runId: string;
 };
 
-export type PersistedBindingRecord = ApplicationRunBindingSummary;
+export type ApplicationAgentBindingRecord = {
+  bindingId: string;
+  applicationId: string;
+  launchRequestId: string;
+  status: ApplicationAgentBindingStatus;
+  executionResourceRef: ApplicationExecutionResourceRef;
+  runtime: {
+    subject: "AGENT_RUN" | "TEAM_RUN";
+    runId: string;
+    definitionId: string;
+    members: ApplicationAgentTeamBindingMember[];
+  };
+  createdAt: string;
+  updatedAt: string;
+  terminatedAt: string | null;
+  lastErrorMessage: string | null;
+};
+
+export const toPublicApplicationAgentBinding = (
+  record: ApplicationAgentBindingRecord,
+): ApplicationAgentBinding | ApplicationAgentTeamBinding => {
+  const common = {
+    bindingId: record.bindingId,
+    applicationId: record.applicationId,
+    launchRequestId: record.launchRequestId,
+    status: record.status,
+    executionResourceRef: structuredClone(record.executionResourceRef),
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
+    terminatedAt: record.terminatedAt,
+    lastErrorMessage: record.lastErrorMessage,
+  };
+  return record.runtime.subject === "AGENT_RUN"
+    ? { ...common, runtime: { subject: "AGENT_RUN", runId: record.runtime.runId, definitionId: record.runtime.definitionId, members: [] } }
+    : { ...common, runtime: { ...record.runtime, subject: "TEAM_RUN", members: structuredClone(record.runtime.members) } };
+};
+export type PersistedBindingRecord = ApplicationAgentBindingRecord;

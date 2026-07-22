@@ -2,18 +2,20 @@
 
 ## Scope
 
-Owns the platform-facing transport boundary for application backends: engine status, explicit backend `ensure-ready`, queries, commands, GraphQL execution, arbitrary REST-style routes, and backend notification fan-out.
+Owns the platform-facing transport boundary for application backends: engine status, explicit backend `ensure-ready`, queries, commands, GraphQL execution, arbitrary REST-style routes, optional application-defined WebSockets, and backend notification fan-out. Standard application-bound agent communication is a separate direct capability and never traverses this gateway.
 
 ## TS Source
 
 - `src/application-backend-api-gateway`
 - `src/api/rest/application-backends.ts`
 - `src/api/websocket/application-backend-notifications.ts`
+- `src/api/websocket/application-backends.ts`
 
 ## Main Service And Supporting Owners
 
 - `src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts`
-- `src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.ts`
+- `src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts`
+- `src/application-backend-api-gateway/websockets/application-backend-websocket-session-service.ts`
 - `src/application-engine/services/application-engine-host-service.ts`
 
 ## Authority Boundary
@@ -56,11 +58,19 @@ Those setup routes feed the authoritative pre-entry setup gate on `/applications
 
 The gateway bridges worker-published notifications into a per-application websocket stream. Notification payloads stay app-defined; transport ownership stays platform-owned.
 
+### Optional custom backend WebSockets
+
+- `GET /ws/applications/:applicationId/backend/routes/*`
+
+The gateway validates active application/exposure state, forwards only normalized path, decoded business query/params, sanitized headers, and trusted application scope, and coordinates the network session with the Engine Host. The worker-owned `ApplicationBackendHost` selects one exact `webSocketRoutes` declaration and owns application handler execution. Framework readiness precedes application frames, text/binary delivery is bounded and ordered, and two-sided cleanup is exactly once.
+
+This escape hatch is not used to implement `applicationClient.agentCommunication.connect(address)`.
+
 ## Engine Handoff
 
 - `ensure-ready`, query, command, route, GraphQL, and event-handler dispatch invocations all rely on `ApplicationEngineHostService`.
 - Status reads do not implicitly start the worker.
-- Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationBackendNotificationStreamService`.
+- Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationBackendNotificationHub`.
 - For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, agent execution and resources), see [`application_communication_model.md`](./application_communication_model.md).
 
 ## Error Behavior
@@ -78,6 +88,6 @@ The gateway bridges worker-published notifications into a per-application websoc
 - [`application_storage.md`](./application_storage.md)
 - [`application_communication_model.md`](./application_communication_model.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`

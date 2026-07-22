@@ -3,6 +3,8 @@ import {
   APPLICATION_ENGINE_NOTIFICATION_METHOD,
   type ApplicationWorkerNotificationParams,
 } from "./protocol.js";
+import { JsonLineFrameWriter } from "./json-line-frame-writer.js";
+import { ApplicationAgentEventStreamSubscribeError } from "@autobyteus/application-sdk-contracts";
 
 type JsonRpcId = string | number;
 
@@ -13,6 +15,13 @@ type PendingRequest = {
 };
 
 type JsonRpcRequestHandler = (params: Record<string, unknown>) => Promise<unknown> | unknown;
+
+export class ApplicationEngineResponseAfterWrite {
+  constructor(
+    readonly result: unknown,
+    readonly afterWrite: () => void,
+  ) {}
+}
 
 export type ApplicationEngineClientNotification = ApplicationWorkerNotificationParams;
 
@@ -25,6 +34,7 @@ export class ApplicationEngineClient {
   private stdoutBuffer = "";
   private nextRequestId = 1;
   private closed = false;
+  private frameWriter: JsonLineFrameWriter | null = null;
 
   attach(process: ChildProcessWithoutNullStreams): void {
     if (this.process) {
@@ -32,6 +42,7 @@ export class ApplicationEngineClient {
     }
 
     this.process = process;
+    this.frameWriter = new JsonLineFrameWriter(process.stdin);
     this.closed = false;
     process.stdout.on("data", (chunk: Buffer) => {
       this.onStdout(chunk.toString("utf-8"));
@@ -62,7 +73,10 @@ export class ApplicationEngineClient {
     }
     this.closed = true;
     this.process = null;
-    this.failAllPending(new Error("Application engine client closed."));
+    const closeError = new Error("Application engine client closed.");
+    this.frameWriter?.fail(closeError);
+    this.frameWriter = null;
+    this.failAllPending(closeError);
     try {
       proc.kill("SIGTERM");
     } catch {
@@ -116,13 +130,24 @@ export class ApplicationEngineClient {
       });
     });
 
-    this.writeFrame({
+    void this.writeFrame({
       jsonrpc: "2.0",
       id,
       method,
       params: params ?? {},
+    }).catch((error) => {
+      const pending = this.pendingRequests.get(id);
+      if (!pending) return;
+      this.pendingRequests.delete(id);
+      clearTimeout(pending.timeoutHandle);
+      pending.reject(error instanceof Error ? error : new Error(String(error)));
     });
     return promise;
+  }
+
+  notify(method: string, params: Record<string, unknown>): Promise<void> {
+    this.ensureAttached();
+    return this.writeFrame({ jsonrpc: "2.0", method, params });
   }
 
   private emitClose(error: Error | null): void {
@@ -149,11 +174,11 @@ export class ApplicationEngineClient {
     }
   }
 
-  private writeFrame(frame: Record<string, unknown>): void {
-    if (!this.process) {
+  private writeFrame(frame: Record<string, unknown>): Promise<void> {
+    if (!this.process || !this.frameWriter) {
       throw new Error("Application engine client is not attached to a worker process.");
     }
-    this.process.stdin.write(`${JSON.stringify(frame)}\n`);
+    return this.frameWriter.write(frame);
   }
 
   private onStdout(chunk: string): void {
@@ -233,7 +258,7 @@ export class ApplicationEngineClient {
   ): Promise<void> {
     const handler = this.requestHandlers.get(method);
     if (!handler) {
-      this.writeFrame({
+      await this.writeFrame({
         jsonrpc: "2.0",
         id,
         error: { message: `Unsupported worker request '${method}'.` },
@@ -242,13 +267,19 @@ export class ApplicationEngineClient {
     }
 
     try {
-      const result = await handler(params);
-      this.writeFrame({ jsonrpc: "2.0", id, result });
+      const handled = await handler(params);
+      const result = handled instanceof ApplicationEngineResponseAfterWrite ? handled.result : handled;
+      await this.writeFrame({ jsonrpc: "2.0", id, result });
+      if (handled instanceof ApplicationEngineResponseAfterWrite) handled.afterWrite();
     } catch (error) {
-      this.writeFrame({
+      const streamError = error instanceof ApplicationAgentEventStreamSubscribeError ? error : null;
+      await this.writeFrame({
         jsonrpc: "2.0",
         id,
-        error: { message: error instanceof Error ? error.message : String(error) },
+        error: {
+          message: error instanceof Error ? error.message : String(error),
+          ...(streamError ? { code: streamError.code, recoverable: streamError.recoverable } : {}),
+        },
       });
     }
   }

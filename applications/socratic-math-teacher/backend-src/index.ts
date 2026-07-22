@@ -8,7 +8,7 @@ import { executeSocraticMathGraphql } from "./graphql/index.js";
 import { createLessonArtifactReconciliationService } from "./services/lesson-artifact-reconciliation-service.js";
 
 export default defineApplication({
-  definitionContractVersion: "3",
+  definitionContractVersion: "4",
   lifecycle: {
     onStart: async (context) => {
       await createLessonArtifactReconciliationService(context).reconcilePublishedArtifacts();

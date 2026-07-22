@@ -1,0 +1,58 @@
+{
+  "slot": {
+    "slotKey": "lessonTutorTeam",
+    "name": "Lesson Tutor Team",
+    "description": "Team resource used when the app starts a new long-lived lesson conversation.",
+    "allowedExecutionResourceKinds": [
+      "AGENT_TEAM"
+    ],
+    "allowedExecutionResourceSources": [
+      "bundle",
+      "shared"
+    ],
+    "required": true,
+    "supportedLaunchConfig": {
+      "AGENT_TEAM": {
+        "llmModelIdentifier": true,
+        "runtimeKind": true,
+        "workspaceRootPath": true,
+        "memberOverrides": {
+          "llmModelIdentifier": true,
+          "runtimeKind": true
+        }
+      }
+    },
+    "defaultExecutionResourceRef": {
+      "source": "bundle",
+      "kind": "AGENT_TEAM",
+      "localId": "socratic-math-team"
+    }
+  },
+  "updatedAt": "2026-07-22T11:30:50.676Z",
+  "status": "READY",
+  "configuration": {
+    "slotKey": "lessonTutorTeam",
+    "executionResourceRef": {
+      "source": "bundle",
+      "kind": "AGENT_TEAM",
+      "localId": "socratic-math-team"
+    },
+    "launchProfile": {
+      "kind": "AGENT_TEAM",
+      "defaults": {
+        "llmModelIdentifier": "gpt-5.6-sol",
+        "runtimeKind": "codex_app_server",
+        "workspaceRootPath": "<owned-temporary-root>/tutor-workspace"
+      },
+      "memberProfiles": [
+        {
+          "memberRouteKey": "tutor",
+          "memberName": "tutor",
+          "agentDefinitionId": "<isolated-team-local-agent-definition-id>"
+        }
+      ]
+    }
+  },
+  "invalidSavedConfiguration": null,
+  "issue": null
+}

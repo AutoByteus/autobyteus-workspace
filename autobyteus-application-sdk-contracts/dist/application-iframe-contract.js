@@ -1,5 +1,5 @@
 export const APPLICATION_IFRAME_CHANNEL = "autobyteus.application.host";
-export const APPLICATION_IFRAME_CONTRACT_VERSION_V3 = "3";
+export const APPLICATION_IFRAME_CONTRACT_VERSION_V4 = "4";
 export const APPLICATION_IFRAME_READY_EVENT = "autobyteus.application.ui.ready";
 export const APPLICATION_IFRAME_BOOTSTRAP_EVENT = "autobyteus.application.host.bootstrap";
 export const APPLICATION_IFRAME_QUERY_CONTRACT_VERSION = "autobyteusContractVersion";
@@ -34,7 +34,7 @@ export const doesApplicationHostOriginMatch = (expectedNormalizedHostOrigin, act
     }
     return normalizedActualOrigin === expectedNormalizedHostOrigin;
 };
-export const isApplicationIframeEnvelopeV3 = (value) => {
+export const isApplicationIframeEnvelopeV4 = (value) => {
     if (!isObjectRecord(value)) {
         return false;
     }
@@ -43,7 +43,7 @@ export const isApplicationIframeEnvelopeV3 = (value) => {
         && typeof value.eventName === "string"
         && isObjectRecord(value.payload));
 };
-export const isApplicationUiReadyPayloadV3 = (value) => {
+export const isApplicationUiReadyPayloadV4 = (value) => {
     if (!isObjectRecord(value)) {
         return false;
     }
@@ -51,19 +51,21 @@ export const isApplicationUiReadyPayloadV3 = (value) => {
         && isNonEmptyString(value.applicationId)
         && isNonEmptyString(value.iframeLaunchId));
 };
-export const isApplicationUiReadyEnvelopeV3 = (value) => (isApplicationIframeEnvelopeV3(value)
-    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V3
+export const isApplicationUiReadyEnvelopeV4 = (value) => (isApplicationIframeEnvelopeV4(value)
+    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V4
     && value.eventName === APPLICATION_IFRAME_READY_EVENT
-    && isApplicationUiReadyPayloadV3(value.payload));
+    && isApplicationUiReadyPayloadV4(value.payload));
 const isApplicationHostTransport = (value) => {
     if (!isObjectRecord(value)) {
         return false;
     }
-    return (hasOnlyKeys(value, ["backendBaseUrl", "backendNotificationsUrl"])
+    return (hasOnlyKeys(value, ["backendBaseUrl", "backendNotificationsUrl", "backendWebSocketBaseUrl", "agentCommunicationWebSocketBaseUrl"])
         && isNullableString(value.backendBaseUrl)
-        && isNullableString(value.backendNotificationsUrl));
+        && isNullableString(value.backendNotificationsUrl)
+        && isNullableString(value.backendWebSocketBaseUrl)
+        && isNullableString(value.agentCommunicationWebSocketBaseUrl));
 };
-export const isApplicationBootstrapPayloadV3 = (value) => {
+export const isApplicationBootstrapPayloadV4 = (value) => {
     if (!isObjectRecord(value)) {
         return false;
     }
@@ -87,19 +89,19 @@ export const isApplicationBootstrapPayloadV3 = (value) => {
         && isNonEmptyString(requestContext.applicationId)
         && isApplicationHostTransport(transport));
 };
-export const isApplicationHostBootstrapEnvelopeV3 = (value) => (isApplicationIframeEnvelopeV3(value)
-    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V3
+export const isApplicationHostBootstrapEnvelopeV4 = (value) => (isApplicationIframeEnvelopeV4(value)
+    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V4
     && value.eventName === APPLICATION_IFRAME_BOOTSTRAP_EVENT
-    && isApplicationBootstrapPayloadV3(value.payload));
-export const createApplicationUiReadyEnvelopeV3 = (payload) => ({
+    && isApplicationBootstrapPayloadV4(value.payload));
+export const createApplicationUiReadyEnvelopeV4 = (payload) => ({
     channel: APPLICATION_IFRAME_CHANNEL,
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
     eventName: APPLICATION_IFRAME_READY_EVENT,
     payload,
 });
-export const createApplicationHostBootstrapEnvelopeV3 = (payload) => ({
+export const createApplicationHostBootstrapEnvelopeV4 = (payload) => ({
     channel: APPLICATION_IFRAME_CHANNEL,
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
     eventName: APPLICATION_IFRAME_BOOTSTRAP_EVENT,
     payload,
 });
@@ -109,14 +111,14 @@ export const readApplicationIframeLaunchHints = (search) => {
     const applicationId = searchParams.get(APPLICATION_IFRAME_QUERY_APPLICATION_ID)?.trim() ?? "";
     const iframeLaunchId = searchParams.get(APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID)?.trim() ?? "";
     const hostOrigin = searchParams.get(APPLICATION_IFRAME_QUERY_HOST_ORIGIN)?.trim() ?? "";
-    if (contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V3
+    if (contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V4
         || !applicationId
         || !iframeLaunchId
         || !hostOrigin) {
         return null;
     }
     return {
-        contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+        contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
         applicationId,
         iframeLaunchId,
         hostOrigin,

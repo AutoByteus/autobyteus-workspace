@@ -1,0 +1,58 @@
+AC-019 builder/package execution — fresh round 3
+HEAD=3e48c0ea2c9ccabe52c3126f0db799b3865186a3
+NODE=v22.23.1 PNPM=10.28.2
+
+=== backend SDK focused test ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-application-backend-sdk
+
+ ✓ tests/application-agent-target-address.test.ts (6 tests) 4ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  08:53:34
+   Duration  170ms (transform 62ms, setup 0ms, import 72ms, tests 4ms, environment 0ms)
+
+
+=== backend SDK full package tests ===
+
+> @autobyteus/application-backend-sdk@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-application-backend-sdk
+> vitest run --no-watch
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-application-backend-sdk
+
+ ✓ tests/launch-profile.test.ts (3 tests) 4ms
+ ✓ tests/application-agent-target-address.test.ts (6 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+   Start at  08:53:35
+   Duration  141ms (transform 74ms, setup 0ms, import 93ms, tests 8ms, environment 0ms)
+
+
+=== backend SDK build ===
+
+> @autobyteus/application-backend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-application-backend-sdk
+> tsc -p tsconfig.build.json
+
+
+=== normal ESM imports from SDK dist and all built-in runtime mirrors ===
+sdk-dist: 3 callable exports; exact shapes/errors/freshness/nonmutation PASS
+brief-runtime: 3 callable exports; exact shapes/errors/freshness/nonmutation PASS
+brief-importable: 3 callable exports; exact shapes/errors/freshness/nonmutation PASS
+socratic-runtime: 3 callable exports; exact shapes/errors/freshness/nonmutation PASS
+socratic-importable: 3 callable exports; exact shapes/errors/freshness/nonmutation PASS
+
+=== public docs boundary inventory ===
+55:When backend business code already owns a precise binding and needs a reusable or projected address, prefer the matching typed builder:
+59:  createApplicationAgentTargetAddress,
+60:  createApplicationAgentTeamMemberTargetAddress,
+61:  createApplicationAgentTeamTargetAddress,
+64:const agentAddress = createApplicationAgentTargetAddress(agentBinding)
+65:const wholeTeamAddress = createApplicationAgentTeamTargetAddress(teamBinding)
+66:const reviewerAddress = createApplicationAgentTeamMemberTargetAddress(
+72:The builders return fresh canonical `ApplicationAgentTargetAddress` values and validate only local binding/target structure. They do not decide application activity, binding liveness, runtime availability, or authorization. Application Orchestration performs those authoritative checks whenever an address is connected, observed, or sent to.
+74:The shared address DTO remains directly constructible. Code that owns only a `bindingId` and immediately performs a one-shot send should not fetch a binding solely to use a builder:
+92:- `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.
+RESULT=PASS

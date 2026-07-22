@@ -1,5 +1,5 @@
 import type { DatabaseSync } from "node:sqlite";
-import type { LessonDetail, LessonSummary, LessonStatus } from "../domain/lesson-model.js";
+import type { LessonRecord, LessonSummary, LessonStatus } from "../domain/lesson-model.js";
 
 type LessonRow = {
   lesson_id: string;
@@ -15,7 +15,7 @@ type LessonRow = {
   artifact_catchup_completed_at: string | null;
 };
 
-const mapRow = (row: LessonRow): LessonDetail => ({
+const mapRow = (row: LessonRow): LessonRecord => ({
   lessonId: row.lesson_id,
   prompt: row.prompt,
   status: row.status,
@@ -30,7 +30,7 @@ const mapRow = (row: LessonRow): LessonDetail => ({
 });
 
 export const createLessonRepository = (db: DatabaseSync) => ({
-  getById(lessonId: string): LessonDetail | null {
+  getById(lessonId: string): LessonRecord | null {
     const row = db
       .prepare(
         `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at, artifact_catchup_completed_at
@@ -41,7 +41,7 @@ export const createLessonRepository = (db: DatabaseSync) => ({
     return row ? mapRow(row) : null;
   },
 
-  getByBindingId(bindingId: string): LessonDetail | null {
+  getByBindingId(bindingId: string): LessonRecord | null {
     const row = db
       .prepare(
         `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at, artifact_catchup_completed_at

@@ -114,13 +114,13 @@ const readGraphqlField = async (promise, fieldName) => {
 export const createBriefStudioGraphqlClient = (applicationClient) => {
   const execute = (query, operationName, variables, fieldName) =>
     readGraphqlField(
-      applicationClient.graphql({ query, operationName, variables }),
+      applicationClient.backend.graphql({ query, operationName, variables }),
       fieldName,
     );
 
   return {
     getApplicationInfo: applicationClient.getApplicationInfo,
-    subscribeNotifications: applicationClient.subscribeNotifications,
+    subscribeNotifications: applicationClient.notifications.subscribe,
     briefs: () => execute(BRIEFS_QUERY, "BriefsQuery", null, "briefs"),
     brief: (briefId) => execute(BRIEF_QUERY, "BriefQuery", { briefId }, "brief"),
     briefExecutions: (briefId) =>

@@ -1,0 +1,24 @@
+$ final active removed-symbol inventory across source, tests, and docs (generated/dependencies/history excluded)
+PASS: no active removed symbols
+$ stale pre-address sendInput payload inventory
+PASS: no stale sendInput payload
+$ prohibited standard-path Gateway/Engine/worker dependency inventory
+PASS: standard path is independent of Gateway/Engine/worker
+$ prohibited application-client auth/credential surface inventory
+PASS: no application-client auth/credential surface
+$ prohibited task migration/schema diff inventory (committed range plus working tree)
+PASS: no task migration/schema paths
+$ exact built-in manifest chain and seven exposure flags
+PASS: applications/brief-studio/(source)/ = application v4, bundle v1, SDK v4/v4, seven flags
+PASS: applications/brief-studio/dist/importable-package/applications/brief-studio/ = application v4, bundle v1, SDK v4/v4, seven flags
+PASS: applications/socratic-math-teacher/(source)/ = application v4, bundle v1, SDK v4/v4, seven flags
+PASS: applications/socratic-math-teacher/dist/importable-package/applications/socratic-math-teacher/ = application v4, bundle v1, SDK v4/v4, seven flags
+$ generated built-in output drift
+PASS: no generated built-in drift
+$ tracked diff hygiene
+PASS: git diff --check
+$ untracked durable-test/report whitespace hygiene
+PASS: no trailing whitespace in new durable files
+$ final post-report hygiene
+PASS: no trailing whitespace in all three durable test paths and both canonical API/E2E reports
+PASS: git diff --check after final report creation

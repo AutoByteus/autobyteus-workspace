@@ -13,7 +13,15 @@ import {
   ApplicationOrchestrationHostService,
   getApplicationOrchestrationHostService,
 } from "../../application-orchestration/services/application-orchestration-host-service.js";
-import { ApplicationEngineClient, type ApplicationEngineClientNotification } from "../runtime/application-engine-client.js";
+import {
+  ApplicationEngineClient,
+  ApplicationEngineResponseAfterWrite,
+  type ApplicationEngineClientNotification,
+} from "../runtime/application-engine-client.js";
+import {
+  ApplicationAgentStreamingService,
+  getApplicationAgentStreamingService,
+} from "../../application-agent-streaming/services/application-agent-streaming-service.js";
 import { ApplicationWorkerSupervisor } from "../runtime/application-worker-supervisor.js";
 import {
   APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL,
@@ -26,6 +34,10 @@ import {
   APPLICATION_ENGINE_METHOD_ROUTE_REQUEST,
   APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
   APPLICATION_ENGINE_METHOD_STOP,
+  APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET,
+  APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE,
+  APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET,
+  APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION,
   type ApplicationExecutionEventDispatchResult,
   type ApplicationWorkerExecuteGraphqlInput,
   type ApplicationWorkerInvokeArtifactHandlerInput,
@@ -35,7 +47,12 @@ import {
   type ApplicationWorkerLoadDefinitionResult,
   type ApplicationWorkerRouteRequestInput,
   type ApplicationWorkerContextCapabilityInput,
+  type ApplicationWorkerOpenWebSocketInput,
+  type ApplicationWorkerWebSocketMessageInput,
+  type ApplicationWorkerCloseWebSocketInput,
+  type ApplicationWorkerWebSocketActionInput,
 } from "../runtime/protocol.js";
+import { createApplicationAgentStreamObserverActivationBarrier } from "./application-agent-stream-observer-activation-barrier.js";
 
 const createBaseStatus = (applicationId: string): ApplicationEngineStatus => ({
   applicationId,
@@ -70,15 +87,19 @@ export class ApplicationEngineHostService {
   private readonly statusByApplicationId = new Map<string, ApplicationEngineStatus>();
   private readonly runtimeHandleByApplicationId = new Map<string, ApplicationEngineRuntimeHandle>();
   private readonly startupPromiseByApplicationId = new Map<string, Promise<ApplicationEngineStatus>>();
-  private readonly notificationListeners = new Set<(
-    event: { applicationId: string; message: ApplicationEngineClientNotification },
-  ) => void>();
+  private readonly notificationListeners = new Set<(event: { applicationId: string; message: ApplicationEngineClientNotification }) => void>();
+  private readonly webSocketActionListeners = new Set<(event: { applicationId: string; action: ApplicationWorkerWebSocketActionInput }) => Promise<void> | void>();
+  private readonly workerCloseListeners = new Set<(event: {
+    applicationId: string;
+    error: Error | null;
+  }) => void>();
 
   constructor(
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
       storageLifecycleService?: ApplicationStorageLifecycleService;
       orchestrationHostService?: ApplicationOrchestrationHostService;
+      agentStreamingService?: ApplicationAgentStreamingService;
     } = {},
   ) {}
 
@@ -94,6 +115,10 @@ export class ApplicationEngineHostService {
     return this.dependencies.orchestrationHostService ?? getApplicationOrchestrationHostService();
   }
 
+  private get agentStreamingService(): ApplicationAgentStreamingService {
+    return this.dependencies.agentStreamingService ?? getApplicationAgentStreamingService();
+  }
+
   onNotification(
     listener: (event: { applicationId: string; message: ApplicationEngineClientNotification }) => void,
   ): () => void {
@@ -101,6 +126,19 @@ export class ApplicationEngineHostService {
     return () => {
       this.notificationListeners.delete(listener);
     };
+  }
+
+  onWebSocketAction(listener: (event: {
+    applicationId: string;
+    action: ApplicationWorkerWebSocketActionInput;
+  }) => Promise<void> | void): () => void {
+    this.webSocketActionListeners.add(listener);
+    return () => this.webSocketActionListeners.delete(listener);
+  }
+
+  onWorkerClose(listener: (event: { applicationId: string; error: Error | null }) => void): () => void {
+    this.workerCloseListeners.add(listener);
+    return () => this.workerCloseListeners.delete(listener);
   }
 
   async ensureApplicationEngine(applicationId: string): Promise<ApplicationEngineStatus> {
@@ -149,6 +187,30 @@ export class ApplicationEngineHostService {
     return this.requireRuntimeHandle(applicationId).client.request(APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL, input as Record<string, unknown>);
   }
 
+  async openApplicationWebSocket(applicationId: string, input: ApplicationWorkerOpenWebSocketInput): Promise<void> {
+    await this.ensureApplicationEngine(applicationId);
+    await this.requireRuntimeHandle(applicationId).client.request(
+      APPLICATION_ENGINE_METHOD_OPEN_WEBSOCKET,
+      input as unknown as Record<string, unknown>,
+    );
+  }
+
+  async deliverApplicationWebSocketMessage(applicationId: string, input: ApplicationWorkerWebSocketMessageInput): Promise<void> {
+    await this.requireRuntimeHandle(applicationId).client.request(
+      APPLICATION_ENGINE_METHOD_WEBSOCKET_MESSAGE,
+      input as unknown as Record<string, unknown>,
+    );
+  }
+
+  async closeApplicationWebSocket(applicationId: string, input: ApplicationWorkerCloseWebSocketInput): Promise<void> {
+    const handle = this.runtimeHandleByApplicationId.get(applicationId);
+    if (!handle) return;
+    await handle.client.request(
+      APPLICATION_ENGINE_METHOD_CLOSE_WEBSOCKET,
+      input as unknown as Record<string, unknown>,
+    );
+  }
+
   async invokeApplicationEventHandler(
     applicationId: string,
     input: ApplicationWorkerInvokeEventHandlerInput,
@@ -189,6 +251,7 @@ export class ApplicationEngineHostService {
     await runtimeHandle.client.close();
     await runtimeHandle.supervisor.stop();
     this.runtimeHandleByApplicationId.delete(applicationId);
+    this.agentStreamingService.stopApplication(applicationId);
     this.updateStatus(applicationId, createBaseStatus(applicationId));
   }
 
@@ -223,7 +286,18 @@ export class ApplicationEngineHostService {
     client.attach(childProcess);
     client.registerRequestHandler(
       APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
-      async (params) => this.handleContextCapability(applicationId, params as unknown as ApplicationWorkerContextCapabilityInput),
+      async (params) => this.handleContextCapability(
+        applicationId,
+        params as unknown as ApplicationWorkerContextCapabilityInput,
+        client,
+      ),
+    );
+    client.registerRequestHandler(
+      APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION,
+      async (params) => this.handleWebSocketAction(
+        applicationId,
+        params as unknown as ApplicationWorkerWebSocketActionInput,
+      ),
     );
 
     client.onNotification((message) => {
@@ -240,6 +314,8 @@ export class ApplicationEngineHostService {
         return;
       }
       this.runtimeHandleByApplicationId.delete(applicationId);
+      this.agentStreamingService.stopApplication(applicationId);
+      this.publishWorkerClose(applicationId, error);
       this.updateStatus(applicationId, {
         ...createBaseStatus(applicationId),
         state: error ? "failed" : "stopped",
@@ -249,6 +325,11 @@ export class ApplicationEngineHostService {
     supervisor.onExit(({ expected, code, signal }) => {
       if (!expected && this.runtimeHandleByApplicationId.has(applicationId)) {
         this.runtimeHandleByApplicationId.delete(applicationId);
+        this.agentStreamingService.stopApplication(applicationId);
+        this.publishWorkerClose(
+          applicationId,
+          new Error(`Application worker exited unexpectedly (code=${String(code)}, signal=${String(signal)}).`),
+        );
         this.updateStatus(applicationId, {
           ...createBaseStatus(applicationId),
           state: "failed",
@@ -306,6 +387,7 @@ export class ApplicationEngineHostService {
   private async handleContextCapability(
     applicationId: string,
     input: ApplicationWorkerContextCapabilityInput,
+    client: ApplicationEngineClient,
   ): Promise<unknown> {
     switch (input.capability) {
       case "agentExecution":
@@ -328,6 +410,33 @@ export class ApplicationEngineHostService {
             return this.orchestrationHostService.listRunBindings(applicationId, input.input);
           case "sendInput":
             return this.orchestrationHostService.sendRunInput(applicationId, input.input);
+          case "subscribeEventStream": {
+            const barrier = createApplicationAgentStreamObserverActivationBarrier(
+              client,
+              input.input.subscriptionId,
+              () => {
+                void this.agentStreamingService.unsubscribe(
+                  applicationId,
+                  input.input.subscriptionId,
+                  "UNSUBSCRIBED",
+                );
+              },
+            );
+            const result = await this.agentStreamingService.subscribe({
+              applicationId,
+              subscriptionId: input.input.subscriptionId,
+              address: input.input.address,
+              emitter: barrier.emitter,
+            });
+            return new ApplicationEngineResponseAfterWrite(result, barrier.activate);
+          }
+          case "unsubscribeEventStream":
+            await this.agentStreamingService.unsubscribe(
+              applicationId,
+              input.input.subscriptionId,
+              input.input.reason,
+            );
+            return { unsubscribed: true };
           case "terminate":
             return this.orchestrationHostService.terminateRunBinding(
               applicationId,
@@ -365,6 +474,16 @@ export class ApplicationEngineHostService {
     throw new Error("Unsupported application context capability request.");
   }
 
+  private async handleWebSocketAction(
+    applicationId: string,
+    action: ApplicationWorkerWebSocketActionInput,
+  ): Promise<{ accepted: true }> {
+    for (const listener of this.webSocketActionListeners) {
+      await listener({ applicationId, action });
+    }
+    return { accepted: true };
+  }
+
   private requireRuntimeHandle(applicationId: string): ApplicationEngineRuntimeHandle {
     const handle = this.runtimeHandleByApplicationId.get(applicationId);
     if (!handle) {
@@ -397,6 +516,12 @@ export class ApplicationEngineHostService {
       }
     } catch {
       return true;
+    }
+  }
+
+  private publishWorkerClose(applicationId: string, error: Error | null): void {
+    for (const listener of this.workerCloseListeners) {
+      try { listener({ applicationId, error }); } catch { /* lifecycle listeners are isolated */ }
     }
   }
 

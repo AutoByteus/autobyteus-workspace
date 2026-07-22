@@ -1,0 +1,17 @@
+AC-018/AC-019 round-3 owned-resource cleanup
+Lesson close: PASS (closed; binding settled TERMINATED before server shutdown).
+Owned PID 10099 before temp-root removal: ABSENT
+Owned PID 24977 before temp-root removal: ABSENT
+Owned PID 24978 before temp-root removal: ABSENT
+Owned listener 53147 before temp-root removal: ABSENT
+Owned listener 53148 before temp-root removal: ABSENT
+Process command referencing owned temporary root before removal: ABSENT
+Owned temporary root removed: PASS
+Control and one-off gather scripts removed: PASS
+Owned PID 10099 after cleanup: ABSENT
+Owned PID 24977 after cleanup: ABSENT
+Owned PID 24978 after cleanup: ABSENT
+Owned listener 53147 after cleanup: ABSENT
+Owned listener 53148 after cleanup: ABSENT
+Owned Chrome profile process after cleanup: ABSENT
+Task-owned live resources cleanup result: PASS

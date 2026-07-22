@@ -274,8 +274,8 @@ const writeBackendBundleManifest = async (targetApplicationRoot) => {
       semver: ">=22 <23",
     },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "3",
-      frontendSdkContractVersion: "3",
+      backendDefinitionContractVersion: "4",
+      frontendSdkContractVersion: "4",
     },
     supportedExposures: {
       queries: false,
@@ -284,6 +284,7 @@ const writeBackendBundleManifest = async (targetApplicationRoot) => {
       graphql: true,
       notifications: true,
       eventHandlers: true,
+      webSockets: false,
     },
     migrationsDir: "backend/migrations",
   };

@@ -25,6 +25,7 @@ export declare const buildConfiguredTeamMemberLaunchConfigs: (input: {
     launchProfile: ApplicationConfiguredTeamLaunchProfile;
     workspaceRootPath: string;
     llmModelIdentifier?: string | null;
+    llmConfig?: Record<string, unknown> | null;
     runtimeKind?: string | null;
     skillAccessMode?: ApplicationSkillAccessMode | null;
 }) => ApplicationTeamMemberLaunchConfig[];
@@ -32,6 +33,7 @@ export declare const buildConfiguredTeamRunLaunch: (input: {
     launchProfile: ApplicationConfiguredTeamLaunchProfile | null | undefined;
     workspaceRootPath: string;
     llmModelIdentifier?: string | null;
+    llmConfig?: Record<string, unknown> | null;
     runtimeKind?: string | null;
     skillAccessMode?: ApplicationSkillAccessMode | null;
 }) => ApplicationTeamRunLaunch;

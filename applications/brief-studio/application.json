@@ -1,12 +1,12 @@
 {
-  "manifestVersion": "3",
+  "manifestVersion": "4",
   "id": "brief-studio",
   "name": "Brief Studio",
   "description": "External teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.",
   "icon": "ui/icon.svg",
   "ui": {
     "entryHtml": "ui/index.html",
-    "frontendSdkContractVersion": "3"
+    "frontendSdkContractVersion": "4"
   },
   "backend": {
     "bundleManifest": "backend/bundle.json"
