@@ -1,0 +1,135 @@
+## Code-review independent focused checks — 2026-07-22
+
+$ pnpm -C autobyteus-server-ts exec vitest run <six focused files>
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (21 tests) 68ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (54 tests) 23ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts (51 tests) 25ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts (7 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-ordered-tool-boundary-tracker.test.ts (4 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts (1 test) 2ms
+
+ Test Files  6 passed (6)
+      Tests  138 passed (138)
+   Start at  07:52:50
+   Duration  1.71s (transform 315ms, setup 62ms, import 446ms, tests 125ms, environment 1ms)
+
+
+$ pnpm -C autobyteus-web exec vitest run <three focused files>
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts (3 tests) 5ms
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests) 16ms
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (9 tests) 787ms
+   ✓ recent Event Monitor production dispatch coverage > keeps standalone center and Activity state bounded and duplicate-free after 1,001 mixed live messages  324ms
+
+ Test Files  3 passed (3)
+      Tests  34 passed (34)
+   Start at  07:52:54
+   Duration  6.69s (transform 3.09s, setup 15.09s, collect 148ms, tests 808ms, environment 810ms, prepare 461ms)
+
+
+$ pnpm -C autobyteus-web guard:web-boundary
+
+> autobyteus@1.4.24 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+$ pnpm -C autobyteus-web guard:localization-boundary
+
+> autobyteus@1.4.24 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+$ git diff --check 965f...be527...
+tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/web-typecheck-20260722.txt:351: trailing whitespace.
++    at async runMain (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:285:10)

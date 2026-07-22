@@ -38,6 +38,7 @@ const expectBoundaryDisposition = (
   if (expected === "clear") {
     expect(boundaryEvents[0]).toMatchObject({
       eventType: AgentRunEventType.SEGMENT_END,
+      statusHint: null,
       payload: {
         id: before.payload.id,
         turn_id: "turn-1",
@@ -207,6 +208,48 @@ describe("Codex reasoning block conversion", () => {
   );
 
   it.each([
+    [
+      "turn completion",
+      CodexThreadEventName.TURN_COMPLETED,
+      { turnId: "turn-1" },
+      [AgentRunEventType.TURN_COMPLETED, AgentRunEventType.AGENT_STATUS],
+      "IDLE",
+    ],
+    [
+      "turn start",
+      CodexThreadEventName.TURN_STARTED,
+      { turnId: "turn-2" },
+      [AgentRunEventType.TURN_STARTED, AgentRunEventType.AGENT_STATUS],
+      "ACTIVE",
+    ],
+    [
+      "terminal error",
+      CodexThreadEventName.ERROR,
+      { message: "boom" },
+      [AgentRunEventType.AGENT_STATUS, AgentRunEventType.ERROR],
+      "ERROR",
+    ],
+  ] as Array<[string, string, JsonObject, AgentRunEventType[], "ACTIVE" | "IDLE" | "ERROR"]>) (
+    "keeps the reasoning end neutral before status-bearing %s outputs",
+    (_label, method, params, boundaryEventTypes, expectedHint) => {
+      const converter = new CodexThreadEventConverter("run-1");
+      emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
+
+      const events = converter.convert({ method, params });
+
+      expect(events[0]).toMatchObject({
+        eventType: AgentRunEventType.SEGMENT_END,
+        statusHint: null,
+      });
+      expect(events.slice(1).map((event) => event.eventType)).toEqual(boundaryEventTypes);
+      expect(events.slice(1).map((event) => event.statusHint)).toEqual([
+        expectedHint,
+        expectedHint,
+      ]);
+    },
+  );
+
+  it.each([
     ["non-tool completion", CodexThreadEventName.ITEM_COMPLETED, { turnId: "turn-1", item: { type: "agentMessage", id: "message-1" } }],
     ["ignored tool call request", CodexThreadEventName.ITEM_TOOL_CALL, { turnId: "turn-1" }],
     ["ignored permission request", CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL, { turnId: "turn-1" }],
@@ -343,9 +386,10 @@ describe("Codex reasoning block conversion", () => {
         event.eventType,
         event.payload.id,
         event.payload.turn_id,
+        event.statusHint,
       ])).toEqual([
-        [AgentRunEventType.SEGMENT_END, firstA.payload.id, "turn-a"],
-        [AgentRunEventType.SEGMENT_END, firstB.payload.id, "turn-b"],
+        [AgentRunEventType.SEGMENT_END, firstA.payload.id, "turn-a", null],
+        [AgentRunEventType.SEGMENT_END, firstB.payload.id, "turn-b", null],
       ]);
       expect(converter.convert({ method, params })
         .filter((event) => event.eventType === AgentRunEventType.SEGMENT_END)).toEqual([]);

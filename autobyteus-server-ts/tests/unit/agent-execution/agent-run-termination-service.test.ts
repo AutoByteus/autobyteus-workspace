@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 
 describe("AgentRunService termination", () => {
   const createSubject = (options: { metadata?: Record<string, unknown> | null } = {}) => {
@@ -151,5 +154,48 @@ describe("AgentRunService termination", () => {
     const written = mocks.metadataService.writeMetadata.mock.calls[0][1];
     expect(written).not.toHaveProperty("lastKnownStatus");
     expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "run-4" });
+  });
+
+  it("ignores a neutral reasoning end and retains the following terminal error message", async () => {
+    const { service, mocks } = createSubject();
+    let emitRunEvent: (event: unknown) => void = () => {
+      throw new Error("Run lifecycle listener was not attached.");
+    };
+    mocks.agentRunManager.getActiveRun.mockReturnValue({
+      runId: "run-codex-error",
+      isActive: vi.fn().mockReturnValue(true),
+      subscribeToEvents: vi.fn().mockImplementation((listener) => {
+        emitRunEvent = listener;
+        return vi.fn();
+      }),
+    });
+    const observed = vi.fn();
+    const stopObserving = await service.observeAgentRunLifecycle("run-codex-error", observed);
+    const converter = new CodexThreadEventConverter("run-codex-error");
+    converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        turnId: "turn-1",
+        item: { type: "reasoning", id: "reason-1", summary: [{ text: "inspect" }] },
+      },
+    });
+    const errorEvents = converter.convert({
+      method: CodexThreadEventName.ERROR,
+      params: { message: "provider exploded" },
+    });
+    const reasoningEnd = errorEvents[0]!;
+    const actualError = errorEvents.find((event) => event.eventType === AgentRunEventType.ERROR)!;
+
+    emitRunEvent(reasoningEnd);
+    emitRunEvent(actualError);
+
+    expect(reasoningEnd.statusHint).toBeNull();
+    expect(observed).toHaveBeenNthCalledWith(1, expect.objectContaining({ phase: "ATTACHED" }));
+    expect(observed).toHaveBeenNthCalledWith(2, expect.objectContaining({
+      phase: "FAILED",
+      errorMessage: "provider exploded",
+    }));
+    expect(observed).toHaveBeenCalledTimes(2);
+    stopObserving?.();
   });
 });

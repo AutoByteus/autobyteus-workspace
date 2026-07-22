@@ -298,12 +298,12 @@ export class CodexThreadEventConverter {
           id: action.segmentId,
           delta: action.delta,
           segment_type: "reasoning",
-        })
+        }, null)
       : this.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
           id: action.segmentId,
           turn_id: action.turnId,
           segment_type: "reasoning",
-        }));
+        }, null));
   }
 
   private createTextSegmentContentEvent(
@@ -311,9 +311,7 @@ export class CodexThreadEventConverter {
     payload: JsonObject,
   ): AgentRunEvent | null {
     const delta = this.itemEventPayloadParser.resolveDelta(payload);
-    if (!delta) {
-      return null;
-    }
+    if (!delta) return null;
     return this.createEvent(
       codexEventName,
       AgentRunEventType.SEGMENT_CONTENT,
@@ -341,6 +339,7 @@ export class CodexThreadEventConverter {
     codexEventName: string,
     eventType: AgentRunEventType,
     payload: Record<string, unknown>,
+    statusHint: AgentRunEvent["statusHint"] = deriveCodexAgentRunStatusHint(codexEventName),
   ): AgentRunEvent {
     const normalizedPayload =
       eventType === AgentRunEventType.ARTIFACT_PERSISTED
@@ -354,7 +353,7 @@ export class CodexThreadEventConverter {
       eventType,
       runId: this.runId,
       payload: normalizedPayload,
-      statusHint: deriveCodexAgentRunStatusHint(codexEventName),
+      statusHint,
     };
   }
 
