@@ -31,10 +31,7 @@
       "protobufjs",
       "sharp",
       "vue-demi"
-    ],
-    "patchedDependencies": {
-      "repository_prisma@1.0.6": "patches/repository_prisma@1.0.6.patch"
-    }
+    ]
   },
   "license": "Apache-2.0"
 }

@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import fsp from 'node:fs/promises';
 import os from 'node:os';
 import { SecretStorageError } from '../../domain/secret-storage-types.js';
+import { assertWindowsExclusiveAcl } from '../../windows-exclusive-acl.js';
 
 const unavailable = (cause?: unknown): SecretStorageError =>
   new SecretStorageError('BACKEND_UNAVAILABLE', true, 'SECRET_BACKEND_UNAVAILABLE', { cause });
@@ -19,13 +20,21 @@ const hardenWindowsAcl = (filePath: string): void => {
   }
 };
 
+const assertWindowsPrivateAcl = (filePath: string): void => {
+  try {
+    assertWindowsExclusiveAcl(filePath);
+  } catch (cause) {
+    throw unavailable(cause);
+  }
+};
+
 export const assertPrivatePath = async (
   filePath: string,
   expectedType: 'file' | 'directory',
 ): Promise<void> => {
   const stat = await fsp.stat(filePath);
   if (process.platform === 'win32') {
-    hardenWindowsAcl(filePath);
+    assertWindowsPrivateAcl(filePath);
     if (expectedType === 'file' && !stat.isFile()) throw unavailable();
     if (expectedType === 'directory' && !stat.isDirectory()) throw unavailable();
     return;

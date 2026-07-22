@@ -1,13 +1,16 @@
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
 import { TextDecoder } from 'node:util';
 import type { Stats } from 'node:fs';
 import type { FileHandle } from 'node:fs/promises';
 import type { SecretDefinitionId } from '../domain/secret-binding.js';
 import { legacyDefinitionForAlias } from './legacy-secret-alias-map.js';
 import { LocalLegacyEnvironmentImportError } from './local-legacy-environment-import.js';
+import {
+  assertWindowsExclusiveAcl,
+  type WindowsAclCommandRunner,
+} from '../windows-exclusive-acl.js';
 
 const MAX_SOURCE_BYTES = 1024 * 1024;
 const SECRET_LIKE_NAME = /(?:^|_)(?:API_?KEY|KEY|TOKEN|SECRET|PASSWORD|PASSWD|PRIVATE_?KEY|CREDENTIALS?|ACCESS_?KEY|SESSION|COOKIE)(?:_|$)/;
@@ -40,34 +43,12 @@ const verifyPosixPrivateOwner = (stat: Stats): void => {
   }
 };
 
-export type WindowsAclCommandRunner = (
-  executable: string,
-  args: readonly string[],
-  options: { windowsHide: boolean; stdio: 'ignore' },
-) => unknown;
-
 export const verifyWindowsExclusiveAcl = (
   sourcePath: string,
-  runCommand: WindowsAclCommandRunner = execFileSync,
+  runCommand?: WindowsAclCommandRunner,
 ): void => {
-  const script = [
-    '$ErrorActionPreference = "Stop"',
-    '$acl = Get-Acl -LiteralPath $args[0]',
-    '$user = [Security.Principal.WindowsIdentity]::GetCurrent().User.Value',
-    '$owner = $acl.Owner',
-    'try { $owner = (New-Object Security.Principal.NTAccount($owner)).Translate([Security.Principal.SecurityIdentifier]).Value } catch {}',
-    '$allowed = @($acl.Access | Where-Object { $_.AccessControlType -eq "Allow" })',
-    '$exclusive = $allowed.Count -gt 0',
-    'foreach ($rule in $allowed) {',
-    '  try { $sid = $rule.IdentityReference.Translate([Security.Principal.SecurityIdentifier]).Value } catch { exit 1 }',
-    '  if ($sid -ne $user) { $exclusive = $false }',
-    '}',
-    'if ($owner -ne $user -or -not $exclusive) { exit 1 }',
-  ].join('; ');
   try {
-    runCommand('powershell.exe', [
-      '-NoLogo', '-NoProfile', '-NonInteractive', '-Command', script, sourcePath,
-    ], { windowsHide: true, stdio: 'ignore' });
+    assertWindowsExclusiveAcl(sourcePath, runCommand);
   } catch {
     fail('IMPORT_SOURCE_UNTRUSTED');
   }

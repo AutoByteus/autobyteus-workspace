@@ -1,9 +1,11 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import dotenv from 'dotenv';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppConfig } from '../../../src/config/app-config.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
+import { parseNonSecretEnvironment } from '../../../src/config/non-secret-environment-projection.js';
 import {
   CustomLlmProviderStore,
   CustomLlmProviderStoreError,
@@ -43,6 +45,36 @@ describe('legacy source non-authority', () => {
     }
     originalParentValues.clear();
     await fs.rm(root, { recursive: true, force: true });
+  });
+
+  it('excludes mapped assignments by name before invoking the generic environment parser', () => {
+    const canary = 'synthetic-name-first-canary';
+    const source = [
+      `OPENAI_API_KEY="${canary}`,
+      'AUTOBYTEUS_SERVER_HOST=http://inside-excluded-value.invalid',
+      '"',
+      `export AUTOBYTEUS_API_KEY = '${canary}-second'`,
+      'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
+      'AUTOBYTEUS_LLM_SERVER_HOSTS=http://localhost:9000',
+      '',
+    ].join('\n');
+    const genericParser = vi.fn((admitted: string) => dotenv.parse(admitted));
+
+    const projected = parseNonSecretEnvironment(
+      source,
+      new Set<string>(LEGACY_SECRET_ALIASES),
+      genericParser,
+    );
+
+    expect(genericParser).toHaveBeenCalledOnce();
+    const admitted = genericParser.mock.calls[0]?.[0] ?? '';
+    expect(admitted).not.toContain(canary);
+    expect(admitted).not.toContain('OPENAI_API_KEY');
+    expect(admitted).not.toContain('AUTOBYTEUS_API_KEY');
+    expect(projected).toEqual({
+      AUTOBYTEUS_SERVER_HOST: 'http://localhost:8000',
+      AUTOBYTEUS_LLM_SERVER_HOSTS: 'http://localhost:9000',
+    });
   });
 
   it('leaves canonical application bytes and parent aliases unchanged while projecting approved non-secret settings', async () => {

@@ -121,7 +121,7 @@ export class LocalLegacyEnvironmentImportService {
 
       const provisioning = this.provisioningFactory(this.targetResolver.resolve(request.target));
       const snapshot = await provisioning.inspectExact(definitionIds);
-      const plan = this.buildPlan(snapshot, definitionIds, request.overwrite, request.target);
+      const plan = this.buildPlan(snapshot, definitionIds, request.overwrite);
       return { source, provisioning, plan };
     } catch (error) {
       source.release();
@@ -134,7 +134,6 @@ export class LocalLegacyEnvironmentImportService {
     snapshot: LocalProvisioningTargetSnapshot,
     definitionIds: readonly SecretDefinitionId[],
     overwrite: boolean,
-    target: LocalLegacyEnvironmentImportTarget,
   ): LocalLegacyEnvironmentImportPlan {
     if (snapshot.targetStatus.state === 'INITIALIZATION_REQUIRED') {
       return {
@@ -143,7 +142,7 @@ export class LocalLegacyEnvironmentImportService {
       };
     }
     if (snapshot.targetStatus.state !== 'READY' || !snapshot.definitionStatus) {
-      throw new LocalLegacyEnvironmentImportError('IMPORT_TARGET_NOT_READY', target);
+      return { targetStatus: snapshot.targetStatus, entries: [] };
     }
     return {
       targetStatus: snapshot.targetStatus,

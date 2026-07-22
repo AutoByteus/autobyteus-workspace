@@ -8,7 +8,10 @@ import {
   type SecretBackendHealth,
 } from '../../domain/secret-storage-types.js';
 import { LocalSecretStoreBatchPreconditionError } from './local-encrypted-secret-repository.js';
-import { LocalWritableSecretStorageBackend } from './local-secret-storage-backend.js';
+import {
+  LocalReadOnlySecretStorageBackend,
+  LocalWritableSecretStorageBackend,
+} from './local-secret-storage-backend.js';
 import {
   LocalSecretStoreInitializer,
   type LocalStoreConfiguration,
@@ -103,10 +106,7 @@ export class LocalSecretStoreProvisioningService {
       };
     }
 
-    const backend = await LocalWritableSecretStorageBackend.open(
-      this.target,
-      { initializeIfAbsent: false },
-    );
+    const backend = await LocalReadOnlySecretStorageBackend.open(this.target);
     try {
       const health = await backend.health();
       if (health.state !== 'READY') return { targetStatus: health, definitionStatus: null };

@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import dotenv from "dotenv";
 import {
   listExistingAbsoluteDirectoryPaths,
   listExistingDirectoryPaths,
@@ -10,6 +9,7 @@ import {
   parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
+import { parseNonSecretEnvironment } from "./non-secret-environment-projection.js";
 import { LEGACY_SECRET_ALIASES } from "../secret-management/provisioning/legacy-secret-alias-map.js";
 
 const forbiddenGenericSettingNames = new Set<string>(LEGACY_SECRET_ALIASES);
@@ -143,10 +143,7 @@ export class AppConfig {
         throw new Error("Config file path not set");
       }
       const contents = fs.readFileSync(this.configFile, "utf-8");
-      const parsed = dotenv.parse(contents);
-      this.configData = Object.fromEntries(
-        Object.entries(parsed).filter(([key]) => !forbiddenGenericSettingNames.has(key)),
-      );
+      this.configData = parseNonSecretEnvironment(contents, forbiddenGenericSettingNames);
     } catch (error) {
       const message = `Failed to parse configuration file: ${String(error)}`;
       console.error(`ERROR: ${message}`);

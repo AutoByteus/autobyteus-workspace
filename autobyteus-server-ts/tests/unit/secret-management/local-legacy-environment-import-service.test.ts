@@ -63,6 +63,44 @@ describe('LocalLegacyEnvironmentImportService', () => {
 
   const targetConfig = (target: 'default' | 'e2e'): LocalStoreConfiguration => resolver.resolve(target);
 
+  const storeSnapshot = async (target: 'default' | 'e2e') => {
+    const configuration = targetConfig(target);
+    const database = new DatabaseSync(configuration.databasePath, { readOnly: true });
+    let journalMode: unknown;
+    let metadata: unknown;
+    let recordIds: unknown;
+    try {
+      journalMode = database.prepare('PRAGMA journal_mode').get();
+      metadata = database.prepare(`
+        SELECT schema_version, encryption_format_version, pair_verifier_format_version
+          FROM store_metadata WHERE singleton_id = 1
+      `).get();
+      recordIds = database.prepare(
+        'SELECT definition_id FROM secret_records ORDER BY definition_id',
+      ).all();
+    } finally {
+      database.close();
+    }
+    const sidecars = await Promise.all(
+      ['-wal', '-shm', '-journal'].map(async (suffix) => {
+        const sidecarPath = `${configuration.databasePath}${suffix}`;
+        const bytes = await fs.readFile(sidecarPath).catch((error: NodeJS.ErrnoException) => {
+          if (error.code === 'ENOENT') return null;
+          throw error;
+        });
+        return [suffix, bytes] as const;
+      }),
+    );
+    return {
+      journalMode,
+      metadata,
+      recordIds,
+      databaseBytes: await fs.readFile(configuration.databasePath),
+      keyBytes: await fs.readFile(configuration.keyPath),
+      sidecars,
+    };
+  };
+
   const status = async (
     target: 'default' | 'e2e',
     definition: string,
@@ -215,22 +253,125 @@ describe('LocalLegacyEnvironmentImportService', () => {
     await expect(fs.stat(targetConfig('default').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
-  it('reports a partial selected Store pair as unavailable without repairing or initializing it', async () => {
+  it('keeps an existing selected Store byte-identical through preview and cancelled overwrite attempts', async () => {
+    await writeSource('OPENAI_API_KEY=synthetic-replacement\n');
+    const configuration = targetConfig('default');
+    await new LocalSecretStoreProvisioningService(configuration).provisionExact(
+      secretDefinitionId('provider.openai.api-key'),
+      SecretValue.fromString('synthetic-original'),
+    );
+    const database = new DatabaseSync(configuration.databasePath);
+    try {
+      database.exec('PRAGMA wal_checkpoint(TRUNCATE); PRAGMA journal_mode=DELETE;');
+    } finally {
+      database.close();
+    }
+    const before = await storeSnapshot('default');
+    expect(before.journalMode).toEqual({ journal_mode: 'delete' });
+
+    const service = new LocalLegacyEnvironmentImportService(resolver);
+    const plan = await service.preview({
+      sourceAbsolutePath: sourcePath,
+      target: 'default',
+      dryRun: true,
+      overwrite: true,
+    });
+    expect(plan).toEqual({
+      targetStatus: { state: 'READY' },
+      entries: [{ definitionId: 'provider.openai.api-key', action: 'REPLACE' }],
+    });
+    expect(await storeSnapshot('default')).toEqual(before);
+
+    for (const response of ['IMPORT REAL-E2E STORE', null] as const) {
+      const error = await service.execute({
+        sourceAbsolutePath: sourcePath,
+        target: 'default',
+        dryRun: false,
+        overwrite: true,
+      }, confirmation(response)).catch((caught) => caught);
+      expect(error.toJSON()).toEqual({ code: 'IMPORT_CANCELLED', target: 'default' });
+      expect(await storeSnapshot('default')).toEqual(before);
+    }
+
+    const nonTtyError = await service.execute({
+      sourceAbsolutePath: sourcePath,
+      target: 'default',
+      dryRun: false,
+      overwrite: true,
+    }, {
+      isDirectTty: () => false,
+      readChallenge: vi.fn(),
+    }).catch((caught) => caught);
+    expect(nonTtyError.toJSON()).toEqual({
+      code: 'IMPORT_CONFIRMATION_REQUIRED',
+      target: 'default',
+    });
+    expect(await storeSnapshot('default')).toEqual(before);
+  });
+
+  it('reports a partial selected Store pair as exactly corrupt without definition projection or mutation', async () => {
     await writeSource('OPENAI_API_KEY=synthetic-openai\n');
     const configuration = targetConfig('default');
     await fs.mkdir(path.dirname(configuration.keyPath), { recursive: true, mode: 0o700 });
     await fs.writeFile(configuration.keyPath, Buffer.alloc(32), { mode: 0o600 });
 
-    const error = await new LocalLegacyEnvironmentImportService(resolver).preview({
+    const service = new LocalLegacyEnvironmentImportService(resolver);
+    const plan = await service.preview({
       sourceAbsolutePath: sourcePath,
       target: 'default',
       dryRun: true,
       overwrite: false,
-    }).catch((caught) => caught);
+    });
 
-    expect(error.toJSON()).toEqual({ code: 'IMPORT_TARGET_NOT_READY', target: 'default' });
+    expect(plan).toEqual({
+      targetStatus: { state: 'CORRUPT', instructionCode: 'SECRET_BACKEND_CORRUPT' },
+      entries: [],
+    });
+    const result = await service.execute({
+      sourceAbsolutePath: sourcePath,
+      target: 'default',
+      dryRun: false,
+      overwrite: false,
+    }, {
+      isDirectTty: vi.fn(() => {
+        throw new Error('confirmation must not be consulted');
+      }),
+      readChallenge: vi.fn(),
+    });
+    expect(result).toEqual({
+      targetStatus: { state: 'CORRUPT', instructionCode: 'SECRET_BACKEND_CORRUPT' },
+      definitionIds: [],
+      configuredCount: 0,
+      skippedCount: 0,
+      replacedCount: 0,
+      instructionCode: 'NONE',
+    });
     await expect(fs.stat(configuration.databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
     expect((await fs.stat(configuration.keyPath)).isFile()).toBe(true);
+  });
+
+  it.each([
+    { state: 'LOCKED', instructionCode: 'SECRET_BACKEND_LOCKED' },
+    { state: 'UNAVAILABLE', instructionCode: 'SECRET_BACKEND_UNAVAILABLE' },
+    { state: 'INCOMPATIBLE', instructionCode: 'SECRET_BACKEND_INCOMPATIBLE' },
+  ] as const)('preserves $state target health without definition projection', async (targetStatus) => {
+    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
+    const inspectExact = vi.fn().mockResolvedValue({ targetStatus, definitionStatus: null });
+    const service = new LocalLegacyEnvironmentImportService(
+      resolver,
+      undefined,
+      () => ({ inspectExact }) as unknown as LocalSecretStoreProvisioningService,
+    );
+
+    const plan = await service.preview({
+      sourceAbsolutePath: sourcePath,
+      target: 'e2e',
+      dryRun: true,
+      overwrite: false,
+    });
+
+    expect(plan).toEqual({ targetStatus, entries: [] });
+    expect(inspectExact).toHaveBeenCalledWith([secretDefinitionId('provider.openai.api-key')]);
   });
 
   it('rolls back the entire batch when a create precondition changes after confirmation planning', async () => {
