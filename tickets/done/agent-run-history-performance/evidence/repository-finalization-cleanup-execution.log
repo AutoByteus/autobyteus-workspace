@@ -1,0 +1,22 @@
+CANDIDATE_STOP_START_UTC=2026-07-21T19:41:03Z
+CANDIDATE_APP_PID=27606
+CANDIDATE_APP_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+STOP_SCOPE=exact ticket-worktree candidate only; no unrelated /Applications app process targeted
+STOP_COMMAND=kill -TERM 27606
+CANDIDATE_STOP_CONFIRMED_UTC=2026-07-22T03:35:28Z
+REMAINING_EXACT_CANDIDATE_PROCESSES=none
+CANDIDATE_STOP_RESULT=PASS
+PRESERVED_USER_APP_PID=82961
+PRESERVED_USER_APP_COMMAND=/Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+Deleted branch codex/agent-run-history-performance (was 040866eea).
+remote:
+remote: GitHub found 588 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (14 critical, 236 high, 284 moderate, 54 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/agent-run-history-performance
+TICKET_WORKTREE_REMOVE=PASS
+LOCAL_TICKET_BRANCH_DELETE=PASS
+REMOTE_TICKET_BRANCH_DELETE=PASS
+WORKTREE_PRUNE=PASS
+TICKET_CLEANUP_UTC=2026-07-22T03:35:49Z

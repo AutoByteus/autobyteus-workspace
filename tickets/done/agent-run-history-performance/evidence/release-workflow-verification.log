@@ -1,0 +1,359 @@
+VERIFICATION_UTC=2026-07-22T03:36:26Z
+RELEASE_TAG=v1.4.24
+RELEASE_COMMIT=71875b938a4b984f2010eae76230b429ff2d2de8
+EXPECTED_WORKFLOWS=5
+POLL_HISTORY_BEGIN
+POLL=1 UTC=2026-07-21T19:14:27Z RUN_COUNT=5
+  Android APK Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=2 UTC=2026-07-21T19:14:58Z RUN_COUNT=5
+  Android APK Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=3 UTC=2026-07-21T19:15:29Z RUN_COUNT=5
+  Android APK Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=4 UTC=2026-07-21T19:16:00Z RUN_COUNT=5
+  Android APK Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=5 UTC=2026-07-21T19:16:31Z RUN_COUNT=5
+  Android APK Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=6 UTC=2026-07-21T19:17:02Z RUN_COUNT=5
+  Android APK Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=7 UTC=2026-07-21T19:17:33Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=8 UTC=2026-07-21T19:18:04Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=9 UTC=2026-07-21T19:18:35Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=10 UTC=2026-07-21T19:19:06Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=11 UTC=2026-07-21T19:19:37Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=12 UTC=2026-07-21T19:20:08Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=13 UTC=2026-07-21T19:20:39Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=14 UTC=2026-07-21T19:21:10Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=15 UTC=2026-07-21T19:21:41Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=16 UTC=2026-07-21T19:22:12Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=17 UTC=2026-07-21T19:22:43Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=18 UTC=2026-07-21T19:23:14Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=19 UTC=2026-07-21T19:23:44Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=20 UTC=2026-07-21T19:24:15Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=21 UTC=2026-07-21T19:24:46Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=22 UTC=2026-07-21T19:25:17Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=23 UTC=2026-07-21T19:25:48Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=24 UTC=2026-07-21T19:26:19Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=25 UTC=2026-07-21T19:26:50Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=26 UTC=2026-07-21T19:27:21Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=27 UTC=2026-07-21T19:27:52Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=28 UTC=2026-07-21T19:28:23Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=29 UTC=2026-07-21T19:28:54Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=30 UTC=2026-07-21T19:29:25Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=31 UTC=2026-07-21T19:29:56Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=32 UTC=2026-07-21T19:30:27Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=33 UTC=2026-07-21T19:30:58Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=34 UTC=2026-07-21T19:31:29Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=35 UTC=2026-07-21T19:32:00Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=36 UTC=2026-07-21T19:32:31Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=37 UTC=2026-07-21T19:33:02Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=38 UTC=2026-07-21T19:33:33Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=39 UTC=2026-07-21T19:34:04Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=40 UTC=2026-07-21T19:34:35Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=41 UTC=2026-07-21T19:35:06Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=42 UTC=2026-07-21T19:35:36Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=43 UTC=2026-07-21T19:36:07Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=44 UTC=2026-07-21T19:36:38Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=45 UTC=2026-07-21T19:37:09Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=46 UTC=2026-07-21T19:37:40Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: in_progress/pending https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+POLL=47 UTC=2026-07-21T19:38:11Z RUN_COUNT=5
+  Android APK Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645
+  Desktop Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777
+  Release Messaging Gateway: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628
+  Server Docker Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690
+  iOS App Store Connect Release: completed/success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686
+WORKFLOW_RESULT=PASS
+POLL_HISTORY_END
+FINAL_RUNS_JSON_BEGIN
+[
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-21T19:13:50Z",
+    "databaseId": 29860622628,
+    "displayTitle": "chore(release): bump workspace release version to 1.4.24",
+    "event": "push",
+    "headBranch": "v1.4.24",
+    "headSha": "71875b938a4b984f2010eae76230b429ff2d2de8",
+    "status": "completed",
+    "updatedAt": "2026-07-21T19:16:29Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622628",
+    "workflowName": "Release Messaging Gateway"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-21T19:13:50Z",
+    "databaseId": 29860622645,
+    "displayTitle": "chore(release): bump workspace release version to 1.4.24",
+    "event": "push",
+    "headBranch": "v1.4.24",
+    "headSha": "71875b938a4b984f2010eae76230b429ff2d2de8",
+    "status": "completed",
+    "updatedAt": "2026-07-21T19:17:23Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622645",
+    "workflowName": "Android APK Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-21T19:13:50Z",
+    "databaseId": 29860622686,
+    "displayTitle": "chore(release): bump workspace release version to 1.4.24",
+    "event": "push",
+    "headBranch": "v1.4.24",
+    "headSha": "71875b938a4b984f2010eae76230b429ff2d2de8",
+    "status": "completed",
+    "updatedAt": "2026-07-21T19:23:43Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622686",
+    "workflowName": "iOS App Store Connect Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-21T19:13:50Z",
+    "databaseId": 29860622690,
+    "displayTitle": "chore(release): bump workspace release version to 1.4.24",
+    "event": "push",
+    "headBranch": "v1.4.24",
+    "headSha": "71875b938a4b984f2010eae76230b429ff2d2de8",
+    "status": "completed",
+    "updatedAt": "2026-07-21T19:37:58Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622690",
+    "workflowName": "Server Docker Release"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-07-21T19:13:50Z",
+    "databaseId": 29860622777,
+    "displayTitle": "chore(release): bump workspace release version to 1.4.24",
+    "event": "push",
+    "headBranch": "v1.4.24",
+    "headSha": "71875b938a4b984f2010eae76230b429ff2d2de8",
+    "status": "completed",
+    "updatedAt": "2026-07-21T19:29:14Z",
+    "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29860622777",
+    "workflowName": "Desktop Release"
+  }
+]
+FINAL_RUNS_JSON_END
+WORKFLOW_RESULT=PASS

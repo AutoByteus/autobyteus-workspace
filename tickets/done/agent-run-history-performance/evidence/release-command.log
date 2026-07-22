@@ -1,0 +1,56 @@
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/finalize-agent-run-history-performance-v1.4.24
+> bash scripts/desktop-release.sh release 1.4.24 -- --release-notes tickets/done/agent-run-history-performance/release-notes.md --branch delivery/agent-run-history-performance-v1.4.24 --no-push
+
+Updating autobyteus-web/package.json: 1.4.23 -> 1.4.24
+Updating autobyteus-message-gateway/package.json: 1.4.23 -> 1.4.24
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.24
+Synced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/finalize-agent-run-history-performance-v1.4.24/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+Release tag: v1.4.24
+Server version: 0.1.1
+[delivery/agent-run-history-performance-v1.4.24 71875b938] chore(release): bump workspace release version to 1.4.24
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 35 insertions(+), 14 deletions(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin delivery/agent-run-history-performance-v1.4.24
+  git push origin v1.4.24
+RELEASE_HELPER_EXIT_STATUS=0
+RELEASE_COMMIT=71875b938a4b984f2010eae76230b429ff2d2de8
+TAG_COMMIT=71875b938a4b984f2010eae76230b429ff2d2de8
+RECOVERY_UTC=2026-07-21T19:13:38Z
+RECOVERY_REASON=validation wrapper quoting error after successful local release helper; no repository push had occurred
+RELEASE_COMMIT=71875b938a4b984f2010eae76230b429ff2d2de8
+TAG_COMMIT=71875b938a4b984f2010eae76230b429ff2d2de8
+WEB_VERSION=1.4.24
+GATEWAY_VERSION=1.4.24
+Managed messaging release manifest matches release tag v1.4.24.
+Repository artifact hygiene check passed.
+Tracked files scanned: 15971
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+REMOTE_PERSONAL_BEFORE_RELEASE_PUSH=5413126e5d79ebfc52683f1999fac09ffb9703c1
+remote:
+remote: GitHub found 582 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (14 critical, 236 high, 280 moderate, 52 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   5413126e5..71875b938  HEAD -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.24 -> v1.4.24
+REMOTE_PERSONAL_AFTER_RELEASE_PUSH=71875b938a4b984f2010eae76230b429ff2d2de8
+REMOTE_TAG_COMMIT=71875b938a4b984f2010eae76230b429ff2d2de8
+RELEASE_PUSH_RESULT=PASS
