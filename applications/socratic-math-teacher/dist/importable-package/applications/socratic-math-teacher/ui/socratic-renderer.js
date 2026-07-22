@@ -306,16 +306,23 @@ export const renderLessonDetail = ({
 
   const live = state.tutorLive?.lessonId === lesson.lessonId ? state.tutorLive : null;
   const closeDispatching = state.closingLessonId === lesson.lessonId;
+  const closeAvailable = lesson.status === "active" && !closeDispatching;
   const nextTurnAvailable = Boolean(
     !closeDispatching
     && lesson.status === "active"
     && live?.turnAdmission === "available"
   );
-  const turnHelp = closeDispatching
-    ? "This lesson is closing. Follow-up and hint actions stay unavailable."
-    : nextTurnAvailable
-      ? "Send one follow-up or request one hint. The next action becomes available after the tutor response is saved."
-      : "Wait for the current tutor response to be saved before sending another.";
+  let turnHelp = "Wait for the current tutor response to be saved before sending another.";
+  if (closeDispatching) {
+    turnHelp = "This lesson is closing. Follow-up and hint actions stay unavailable.";
+  } else if (lesson.status !== "active") {
+    turnHelp = "This lesson is closed. Follow-up and hint actions are unavailable.";
+  } else if (nextTurnAvailable) {
+    turnHelp = "Send one follow-up or request one hint. The next action becomes available after the tutor response is saved.";
+  }
+  const closeLabel = closeDispatching
+    ? "Closing lesson…"
+    : closeAvailable ? "Close lesson" : "Lesson closed";
   const transcriptMessages = visibleTranscriptMessages(lesson.messages, live);
 
   elements.lessonDetail.className = "detail-grid";
@@ -350,7 +357,7 @@ export const renderLessonDetail = ({
       </div>
       <div class="action-row">
         <button id="request-hint" class="secondary-button" type="button"${nextTurnAvailable ? "" : " disabled"}>Request hint</button>
-        <button id="close-lesson" class="danger-button" type="button"${closeDispatching ? " disabled" : ""}>${closeDispatching ? "Closing lesson…" : "Close lesson"}</button>
+        <button id="close-lesson" class="danger-button" type="button"${closeAvailable ? "" : " disabled"}>${closeLabel}</button>
       </div>
     </section>
 

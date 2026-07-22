@@ -53,6 +53,7 @@ export const mountSocraticMathTeacher = ({
   let disposed = false;
   let lifecycleGeneration = 0;
   let pendingStartOperation = null;
+  let activeCloseClaim = null;
 
   const captureOperation = (lessonId = state.selectedLessonId) => ({
     generation: lifecycleGeneration,
@@ -130,6 +131,7 @@ export const mountSocraticMathTeacher = ({
   const replaceSelection = (lessonId, { cancelPendingStart = true } = {}) => {
     lifecycleGeneration += 1;
     tutorSession.close();
+    activeCloseClaim = null;
     state.closingLessonId = null;
     state.selectedLessonId = lessonId;
     if (cancelPendingStart) {
@@ -151,8 +153,12 @@ export const mountSocraticMathTeacher = ({
     });
   };
 
-  const refreshDetail = async (operation, { allowConnection = true } = {}) => {
-    if (!isOperationCurrent(operation)) return;
+  const refreshDetail = async (operation, { allowConnection = true, closeClaim = null } = {}) => {
+    const isCommitCurrent = () => Boolean(
+      isOperationCurrent(operation)
+      && (!closeClaim || activeCloseClaim === closeClaim)
+    );
+    if (!isCommitCurrent()) return;
     if (!operation.lessonId) {
       state.detail = null;
       tutorSession.close();
@@ -164,10 +170,10 @@ export const mountSocraticMathTeacher = ({
     try {
       detail = await client.lesson(operation.lessonId);
     } catch (error) {
-      if (isOperationCurrent(operation)) throw error;
+      if (isCommitCurrent()) throw error;
       return;
     }
-    if (!isOperationCurrent(operation)) return;
+    if (!isCommitCurrent()) return;
 
     state.detail = detail;
     tutorSession.reconcileDurableLesson(state.detail);
@@ -181,7 +187,7 @@ export const mountSocraticMathTeacher = ({
       try {
         await connectionAttempt;
       } catch (error) {
-        if (isOperationCurrent(operation)) throw error;
+        if (isCommitCurrent()) throw error;
       }
     } else if (!state.detail?.tutorTargetAddress) {
       tutorSession.close();
@@ -195,6 +201,11 @@ export const mountSocraticMathTeacher = ({
     let operation = startingOperation;
     if (!isOperationCurrent(operation)) return false;
     const closeOwnsLifecycle = isLessonClosing(operation.lessonId);
+    const closeClaim = closeOwnsLifecycle ? activeCloseClaim : null;
+    const isCommitCurrent = () => Boolean(
+      isOperationCurrent(operation)
+      && (!closeClaim || activeCloseClaim === closeClaim)
+    );
     if (!isPendingStartCurrent() && !closeOwnsLifecycle) {
       setStatus("Loading lessons through the hosted GraphQL backend mount…");
     }
@@ -202,10 +213,10 @@ export const mountSocraticMathTeacher = ({
     try {
       lessons = await client.lessons();
     } catch (error) {
-      if (isOperationCurrent(operation)) handleUiError(error);
+      if (isCommitCurrent()) handleUiError(error);
       return false;
     }
-    if (!isOperationCurrent(operation)) return false;
+    if (!isCommitCurrent()) return false;
 
     state.lessons = Array.isArray(lessons) ? lessons : [];
     if (!state.selectedLessonId || !state.lessons.some((lesson) => lesson.lessonId === state.selectedLessonId)) {
@@ -214,12 +225,15 @@ export const mountSocraticMathTeacher = ({
       }
     }
     try {
-      await refreshDetail(operation, { allowConnection: !closeOwnsLifecycle });
+      await refreshDetail(operation, {
+        allowConnection: !closeOwnsLifecycle,
+        closeClaim,
+      });
     } catch (error) {
-      if (isOperationCurrent(operation)) handleUiError(error);
+      if (isCommitCurrent()) handleUiError(error);
       return false;
     }
-    if (!isOperationCurrent(operation)) return false;
+    if (!isCommitCurrent()) return false;
     render();
     if (!isPendingStartCurrent() && !closeOwnsLifecycle) {
       setReadyStatus();
@@ -332,7 +346,10 @@ export const mountSocraticMathTeacher = ({
     const currentOperation = captureOperation();
     if (!isOperationCurrent(currentOperation) || !currentOperation.lessonId) return;
     if (isLessonClosing(currentOperation.lessonId)) return;
+    if (state.detail?.lessonId !== currentOperation.lessonId || state.detail.status !== "active") return;
     const operation = advanceOperation();
+    const closeClaim = {};
+    activeCloseClaim = closeClaim;
     state.closingLessonId = operation.lessonId;
     tutorSession.close();
     renderDetail();
@@ -340,16 +357,18 @@ export const mountSocraticMathTeacher = ({
     try {
       await client.closeLesson({ lessonId: operation.lessonId });
     } catch (error) {
-      if (isOperationCurrent(operation)) {
+      if (isOperationCurrent(operation) && activeCloseClaim === closeClaim) {
+        activeCloseClaim = null;
         state.closingLessonId = null;
         renderDetail();
       }
       if (isOperationCurrent(operation)) throw error;
       return;
     }
-    if (!isOperationCurrent(operation)) return;
+    if (!isOperationCurrent(operation) || activeCloseClaim !== closeClaim) return;
     const refreshed = await refresh(operation);
-    if (!isOperationCurrent(operation)) return;
+    if (!isOperationCurrent(operation) || activeCloseClaim !== closeClaim) return;
+    activeCloseClaim = null;
     state.closingLessonId = null;
     renderDetail();
     if (refreshed) setReadyStatus();
@@ -388,6 +407,7 @@ export const mountSocraticMathTeacher = ({
     disposed = true;
     lifecycleGeneration += 1;
     pendingStartOperation = null;
+    activeCloseClaim = null;
     tutorSession.close();
     state.notificationHandle?.close?.();
     elements.refreshButton?.removeEventListener("click", onRefresh);

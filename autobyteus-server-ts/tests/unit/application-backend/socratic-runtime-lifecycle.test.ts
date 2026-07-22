@@ -499,9 +499,16 @@ describe("Socratic mounted runtime lifecycle", () => {
   it("keeps Close authoritative across notification refresh and stale turn settlement", async () => {
     const pendingFollowUp = deferred<unknown>();
     const pendingClose = deferred<unknown>();
-    let currentLesson = buildLesson("lesson-a");
+    const pendingNotificationDetail = deferred<ReturnType<typeof buildLesson>>();
+    const staleActiveLesson = buildLesson("lesson-a");
+    let currentLesson = staleActiveLesson;
+    let lessonRequestCount = 0;
     const lessons = vi.fn(async () => [currentLesson]);
-    const lesson = vi.fn(async () => currentLesson);
+    const lesson = vi.fn(() => {
+      lessonRequestCount += 1;
+      if (lessonRequestCount === 2) return pendingNotificationDetail.promise;
+      return Promise.resolve(currentLesson);
+    });
     const askFollowUp = vi.fn(() => pendingFollowUp.promise);
     const requestHint = vi.fn(async () => undefined);
     const closeLesson = vi.fn(() => pendingClose.promise);
@@ -556,13 +563,6 @@ describe("Socratic mounted runtime lifecycle", () => {
     expect(requestHint).not.toHaveBeenCalled();
     expect(prompt).not.toHaveBeenCalled();
 
-    pendingFollowUp.resolve(undefined);
-    await pendingFollowUp.promise;
-    await settle();
-    expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledTimes(1);
-    expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(true);
-    expect(harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")?.disabled).toBe(true);
-
     currentLesson = {
       ...buildLesson("lesson-a", { target: false }),
       status: "closed",
@@ -579,7 +579,39 @@ describe("Socratic mounted runtime lifecycle", () => {
     expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledTimes(1);
     expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(true);
     expect(harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")?.disabled).toBe(true);
+    expect(harness.rootElement.querySelector<HTMLButtonElement>("#close-lesson")?.disabled).toBe(true);
+    expect(harness.rootElement.querySelector("#close-lesson")?.textContent).toContain("Lesson closed");
     expect(harness.rootElement.querySelector("#turn-admission-help")?.textContent).not.toContain("lesson is closing");
+
+    pendingNotificationDetail.resolve(staleActiveLesson);
+    await pendingNotificationDetail.promise;
+    await settle();
+    expect(harness.rootElement.querySelector("#lesson-detail")?.textContent).toContain("Status closed");
+    expect(harness.rootElement.querySelector("#lesson-detail")?.textContent).not.toContain("Status active");
+    expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledTimes(1);
+
+    pendingFollowUp.resolve(undefined);
+    await pendingFollowUp.promise;
+    await settle();
+    const closedTextarea = harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")!;
+    closedTextarea.value = "Must not send after close";
+    harness.rootElement.querySelector<HTMLFormElement>("#follow-up-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")!
+      .dispatchEvent(new Event("click", { bubbles: true, cancelable: true }));
+    harness.rootElement.querySelector<HTMLButtonElement>("#close-lesson")!
+      .dispatchEvent(new Event("click", { bubbles: true, cancelable: true }));
+    await Promise.resolve();
+
+    expect(closeLesson).toHaveBeenCalledOnce();
+    expect(askFollowUp).toHaveBeenCalledOnce();
+    expect(requestHint).not.toHaveBeenCalled();
+    expect(prompt).not.toHaveBeenCalled();
+    expect(harness.applicationClient.agentCommunication.connect).toHaveBeenCalledTimes(1);
+    expect(harness.rootElement.querySelector("#lesson-detail")?.textContent).toContain("Status closed");
+    expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(true);
+    expect(harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")?.disabled).toBe(true);
+    expect(harness.rootElement.querySelector<HTMLButtonElement>("#close-lesson")?.disabled).toBe(true);
   });
 
   it("keeps a post-claim request failure uncertain and lets Close lesson invalidate late settlement", async () => {
