@@ -348,7 +348,7 @@ utils/fileExplorer/__tests__/stateSync.test.ts(80,11): error TS2739: Type '{ id:
     at async Object.run (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/typecheck-C8wVgBzd.mjs:66:3)
     at async runCommand (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:188:47)
     at async runCommand (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:185:21)
-    at async runMain (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:285:10) 
+    at async runMain (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/node_modules/.pnpm/citty@0.2.1/node_modules/citty/dist/index.mjs:285:10)
 
 
 exit_status=1
