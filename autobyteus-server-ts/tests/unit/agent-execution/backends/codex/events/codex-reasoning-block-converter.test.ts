@@ -2,6 +2,11 @@ import { describe, expect, it } from "vitest";
 import type { JsonObject } from "../../../../../../src/agent-execution/backends/codex/codex-app-server-json.js";
 import { CodexThreadEventConverter } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
 import { CodexThreadEventName } from "../../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
+
+const isReasoningEnd = (event: { eventType: AgentRunEventType; payload: Record<string, unknown> }) =>
+  event.eventType === AgentRunEventType.SEGMENT_END &&
+  event.payload.segment_type === "reasoning";
 
 const emitCompletedReasoning = (
   converter: CodexThreadEventConverter,
@@ -27,13 +32,31 @@ const expectBoundaryDisposition = (
 ) => {
   const converter = new CodexThreadEventConverter("run-1");
   const before = emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
-  converter.convert({ method, params });
+  const boundaryEvents = converter.convert({ method, params });
   const after = emitCompletedReasoning(converter, "turn-1", "provider-b", "second");
 
   if (expected === "clear") {
+    expect(boundaryEvents[0]).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      statusHint: null,
+      payload: {
+        id: before.payload.id,
+        turn_id: "turn-1",
+        segment_type: "reasoning",
+      },
+    });
+    expect(boundaryEvents.filter(isReasoningEnd))
+      .toHaveLength(1);
+    expect(Object.keys(boundaryEvents[0]!.payload).sort()).toEqual([
+      "id",
+      "segment_type",
+      "turn_id",
+    ]);
     expect(after.payload.id).not.toBe(before.payload.id);
     expect(after.payload.delta).toBe("second");
   } else {
+    expect(boundaryEvents.some(isReasoningEnd))
+      .toBe(false);
     expect(after.payload.id).toBe(before.payload.id);
     expect(after.payload.delta).toBe("\n\nsecond");
   }
@@ -46,9 +69,11 @@ const expectMatchingToolUpdatePreserves = (
   const converter = new CodexThreadEventConverter("run-1");
   converter.convert(start);
   const before = emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
-  converter.convert(update);
+  const updateEvents = converter.convert(update);
   const after = emitCompletedReasoning(converter, "turn-1", "provider-b", "second");
 
+  expect(updateEvents.some(isReasoningEnd))
+    .toBe(false);
   expect(after.payload).toMatchObject({
     id: before.payload.id,
     delta: "\n\nsecond",
@@ -70,12 +95,49 @@ describe("Codex reasoning block conversion", () => {
 
     expect(first.payload.id).toEqual(expect.stringMatching(/^reasoning-block:[^:]+:1$/));
     expect(first.payload.id).not.toBe("provider-a");
+    expect(first.payload).toMatchObject({
+      turnId: "turn-1",
+      item: { type: "reasoning", id: "provider-a", summary: [{ text: "first" }] },
+      delta: "first",
+      segment_type: "reasoning",
+    });
     expect(second.payload).toMatchObject({
       id: first.payload.id,
       delta: "\n\nsecond",
       segment_type: "reasoning",
     });
     expect(repeated).toEqual([]);
+  });
+
+  it("emits adjacent content and end with one identity when a completed snapshot has no turn", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+    const events = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        timestamp: 123,
+        item: { type: "reasoning", id: "provider-a", summary: [{ text: "first" }] },
+      },
+    });
+
+    expect(events.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_CONTENT,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(events[0]!.payload).toMatchObject({
+      id: events[1]!.payload.id,
+      timestamp: 123,
+      delta: "first",
+      segment_type: "reasoning",
+    });
+    expect(events[1]!.payload).toEqual({
+      id: events[0]!.payload.id,
+      turn_id: null,
+      segment_type: "reasoning",
+    });
+    expect(converter.convert({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: {},
+    }).filter((event) => event.eventType === AgentRunEventType.SEGMENT_END)).toEqual([]);
   });
 
   it("treats current and legacy reasoning text deltas as permanent state-free no-ops", () => {
@@ -143,6 +205,48 @@ describe("Codex reasoning block conversion", () => {
   ] as Array<[string, string, JsonObject]>) (
     "clears for ordered-card creation: %s",
     (_label, method, params) => expectBoundaryDisposition(method, params, "clear"),
+  );
+
+  it.each([
+    [
+      "turn completion",
+      CodexThreadEventName.TURN_COMPLETED,
+      { turnId: "turn-1" },
+      [AgentRunEventType.TURN_COMPLETED, AgentRunEventType.AGENT_STATUS],
+      "IDLE",
+    ],
+    [
+      "turn start",
+      CodexThreadEventName.TURN_STARTED,
+      { turnId: "turn-2" },
+      [AgentRunEventType.TURN_STARTED, AgentRunEventType.AGENT_STATUS],
+      "ACTIVE",
+    ],
+    [
+      "terminal error",
+      CodexThreadEventName.ERROR,
+      { message: "boom" },
+      [AgentRunEventType.AGENT_STATUS, AgentRunEventType.ERROR],
+      "ERROR",
+    ],
+  ] as Array<[string, string, JsonObject, AgentRunEventType[], "ACTIVE" | "IDLE" | "ERROR"]>) (
+    "keeps the reasoning end neutral before status-bearing %s outputs",
+    (_label, method, params, boundaryEventTypes, expectedHint) => {
+      const converter = new CodexThreadEventConverter("run-1");
+      emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
+
+      const events = converter.convert({ method, params });
+
+      expect(events[0]).toMatchObject({
+        eventType: AgentRunEventType.SEGMENT_END,
+        statusHint: null,
+      });
+      expect(events.slice(1).map((event) => event.eventType)).toEqual(boundaryEventTypes);
+      expect(events.slice(1).map((event) => event.statusHint)).toEqual([
+        expectedHint,
+        expectedHint,
+      ]);
+    },
   );
 
   it.each([
@@ -225,18 +329,24 @@ describe("Codex reasoning block conversion", () => {
       params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "sleep 1" } },
     });
     const reasoningA = emitCompletedReasoning(converter, "turn-1", "provider-a", "A");
-    converter.convert({
+    const matchingResult = converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-1", command: "sleep 1", status: "completed" } },
     });
     const reasoningB = emitCompletedReasoning(converter, "turn-1", "provider-b", "B");
-    converter.convert({
+    const nextTool = converter.convert({
       method: CodexThreadEventName.ITEM_STARTED,
       params: { turnId: "turn-1", item: { type: "commandExecution", id: "tool-2", command: "pwd" } },
     });
     const afterBoundary = emitCompletedReasoning(converter, "turn-1", "provider-c", "C");
 
     expect(reasoningB.payload).toMatchObject({ id: reasoningA.payload.id, delta: "\n\nB" });
+    expect(matchingResult.some((event) => event.eventType === AgentRunEventType.SEGMENT_END))
+      .toBe(false);
+    expect(nextTool[0]).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      payload: { id: reasoningA.payload.id },
+    });
     expect(afterBoundary.payload.id).not.toBe(reasoningA.payload.id);
   });
 
@@ -244,14 +354,45 @@ describe("Codex reasoning block conversion", () => {
     const converter = new CodexThreadEventConverter("run-1");
     const firstA = emitCompletedReasoning(converter, "turn-a", "provider-a", "a");
     const firstB = emitCompletedReasoning(converter, "turn-b", "provider-b", "b");
-    converter.convert({
+    const ends = converter.convert({
       method: CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
       params: { delta: "" },
     });
 
+    expect(ends.map((event) => [event.eventType, event.payload.id, event.payload.turn_id]))
+      .toEqual([
+        [AgentRunEventType.SEGMENT_END, firstA.payload.id, "turn-a"],
+        [AgentRunEventType.SEGMENT_END, firstB.payload.id, "turn-b"],
+      ]);
     expect(emitCompletedReasoning(converter, "turn-a", "provider-a", "a2").payload.id)
       .not.toBe(firstA.payload.id);
     expect(emitCompletedReasoning(converter, "turn-b", "provider-b", "b2").payload.id)
       .not.toBe(firstB.payload.id);
   });
+
+  it.each([
+    [CodexThreadEventName.TURN_STARTED, { turnId: "turn-c" }],
+    [CodexThreadEventName.ERROR, { message: "failed" }],
+  ] as Array<[string, JsonObject]>) (
+    "closes all tracked identities deterministically before reachable %s output",
+    (method, params) => {
+      const converter = new CodexThreadEventConverter("run-1");
+      const firstA = emitCompletedReasoning(converter, "turn-a", "provider-a", "a");
+      const firstB = emitCompletedReasoning(converter, "turn-b", "provider-b", "b");
+
+      const boundaryEvents = converter.convert({ method, params });
+
+      expect(boundaryEvents.slice(0, 2).map((event) => [
+        event.eventType,
+        event.payload.id,
+        event.payload.turn_id,
+        event.statusHint,
+      ])).toEqual([
+        [AgentRunEventType.SEGMENT_END, firstA.payload.id, "turn-a", null],
+        [AgentRunEventType.SEGMENT_END, firstB.payload.id, "turn-b", null],
+      ]);
+      expect(converter.convert({ method, params })
+        .filter((event) => event.eventType === AgentRunEventType.SEGMENT_END)).toEqual([]);
+    },
+  );
 });

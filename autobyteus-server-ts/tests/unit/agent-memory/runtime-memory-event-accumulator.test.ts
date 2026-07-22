@@ -12,6 +12,8 @@ import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-sto
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 
 const tempDirs = new Set<string>();
 
@@ -52,6 +54,102 @@ const createAccumulator = (
 });
 
 describe("RuntimeMemoryEventAccumulator", () => {
+  it("persists converter-owned reasoning closure exactly once before the next tool", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const converter = new CodexThreadEventConverter("run-1");
+    const convertAndRecord = (method: string, params: Record<string, unknown>) => {
+      const events = converter.convert({ method, params });
+      events.forEach((runEvent) => accumulator.recordRunEvent(runEvent));
+      return events;
+    };
+
+    convertAndRecord(CodexThreadEventName.TURN_STARTED, { turnId: "turn-1" });
+    convertAndRecord(CodexThreadEventName.ITEM_STARTED, {
+      turnId: "turn-1",
+      item: { type: "commandExecution", id: "tool-1", command: "sleep 1" },
+    });
+    convertAndRecord(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-1",
+      item: { type: "reasoning", id: "reason-a", summary: [{ text: "A" }] },
+    });
+    convertAndRecord(CodexThreadEventName.ITEM_COMPLETED, {
+      turnId: "turn-1",
+      item: { type: "commandExecution", id: "tool-1", command: "sleep 1", status: "completed" },
+    });
+    convertAndRecord(CodexThreadEventName.ITEM_REASONING_COMPLETED, {
+      turnId: "turn-1",
+      item: { type: "reasoning", id: "reason-b", summary: [{ text: "B" }] },
+    });
+    const nextToolEvents = convertAndRecord(CodexThreadEventName.ITEM_STARTED, {
+      turnId: "turn-1",
+      item: { type: "commandExecution", id: "tool-2", command: "pwd" },
+    });
+    const turnEvents = convertAndRecord(CodexThreadEventName.TURN_COMPLETED, {
+      turnId: "turn-1",
+    });
+
+    expect(nextToolEvents.map((runEvent) => runEvent.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_END,
+      AgentRunEventType.TOOL_EXECUTION_STARTED,
+    ]);
+    expect(turnEvents.filter((runEvent) => runEvent.eventType === AgentRunEventType.SEGMENT_END))
+      .toEqual([]);
+    const view = readView(memoryDir);
+    expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content, trace.toolCallId]))
+      .toEqual([
+        ["tool_call", "", "tool-1"],
+        ["tool_result", "", "tool-1"],
+        ["reasoning", "A\n\nB", null],
+        ["tool_call", "", "tool-2"],
+      ]);
+    expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
+    expect(view.workingContext).toEqual(expect.arrayContaining([
+      expect.objectContaining({ role: "assistant", reasoning: "A\n\nB" }),
+    ]));
+  });
+
+  it("projects adjacent missing-turn reasoning content and end onto one fallback turn", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const events = converter.convert({
+      method: CodexThreadEventName.ITEM_REASONING_COMPLETED,
+      params: {
+        item: { type: "reasoning", id: "reason-orphan", summary: [{ text: "orphan reasoning" }] },
+      },
+    });
+    events.forEach((runEvent) => accumulator.recordRunEvent(runEvent));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-after-orphan-reasoning",
+      segment_type: "text",
+      delta: "fallback answer",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-after-orphan-reasoning",
+      segment_type: "text",
+    }));
+
+    expect(events.map((runEvent) => runEvent.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_CONTENT,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(events.map((runEvent) => runEvent.payload.turn_id)).toEqual([undefined, null]);
+    const view = readView(memoryDir);
+    expect(view.rawTraces).toEqual([
+      expect.objectContaining({ traceType: "reasoning", turnId: "fallback-turn-1", content: "orphan reasoning" }),
+      expect.objectContaining({ traceType: "assistant", turnId: "fallback-turn-1", content: "fallback answer" }),
+    ]);
+    expect(view.workingContext).toEqual([
+      expect.objectContaining({
+        role: "assistant",
+        reasoning: "orphan reasoning",
+        content: "fallback answer",
+      }),
+    ]);
+  });
+
   it("persists one trace for adjacent reasoning deltas and a new trace after a tool boundary", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = createAccumulator(memoryDir);

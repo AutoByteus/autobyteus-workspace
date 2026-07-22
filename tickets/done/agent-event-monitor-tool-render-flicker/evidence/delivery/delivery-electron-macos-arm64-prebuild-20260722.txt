@@ -1,0 +1,20 @@
+# Electron pre-build state — 2026-07-22
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker
+branch=codex/agent-event-monitor-tool-render-flicker
+source_checkpoint=b60c8faa647a12ba587ea43644f0b74bcb38b49e
+latest_origin_personal=965f97685c08569a98186b2a894243c0b3f602d3
+merge_base=965f97685c08569a98186b2a894243c0b3f602d3
+ahead_behind=7	0
+origin_personal_contained=yes
+platform=Darwin-arm64
+node=v22.23.1
+pnpm=10.28.2
+readme_command=NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+existing_listener_29695:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 82961 normy   27u  IPv4 0x301041605de90ae6      0t0  TCP *:29695 (LISTEN)
+listener_process_names:
+82961 82357 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+runtime_safety=build artifacts only; existing /Applications/AutoByteus.app and listener are not stopped, modified, or restarted; candidate will not be launched
+status_before_build:
+?? tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-prebuild-20260722.txt

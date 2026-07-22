@@ -1,0 +1,215 @@
+# Stable v1.4.25 release execution — 2026-07-22
++ git fetch origin personal --tags
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
++ git merge --ff-only origin/personal
+Updating 965f97685..4a5117403
+Fast-forward
+ .../docs/design/codex_raw_event_mapping.md         |   57 +-
+ .../docs/modules/codex_integration.md              |   33 +-
+ .../codex/events/codex-item-event-converter.ts     |  108 +-
+ .../events/codex-item-event-payload-parser.ts      |   14 +-
+ .../events/codex-raw-response-event-converter.ts   |   38 +-
+ .../codex/events/codex-reasoning-block-tracker.ts  |   60 +-
+ .../events/codex-reasoning-event-normalizer.ts     |   19 +-
+ .../codex/events/codex-thread-event-converter.ts   |   77 +-
+ .../codex-thread-lifecycle-event-converter.ts      |    5 +-
+ .../codex/events/codex-turn-event-converter.ts     |   16 +-
+ ...ndalone-send-message-global-routing.e2e.test.ts |  480 +++++--
+ .../agent/agent-team-websocket.integration.test.ts |   12 +-
+ ...emory-layout-and-projection.integration.test.ts |    7 +-
+ .../agent-run-termination-service.test.ts          |   46 +
+ .../events/codex-reasoning-block-converter.test.ts |  151 ++-
+ .../events/codex-reasoning-block-tracker.test.ts   |   90 +-
+ .../runtime-memory-event-accumulator.test.ts       |   98 ++
+ .../recentEventMonitorProductionDispatch.spec.ts   |   50 +-
+ .../handlers/__tests__/segmentHandler.spec.ts      |   27 +
+ .../api-e2e-coverage-investigation.md              |  226 ++++
+ .../api-e2e-execution-coverage-report.md           |  240 ++++
+ .../api-e2e-test-review-report.md                  |   55 +
+ .../code-review-report.md                          |  228 ++++
+ .../design-review-report.md                        |  279 ++++
+ .../design-spec.md                                 |  384 ++++++
+ .../docs-sync-report.md                            |   68 +
+ .../electron-test-build-report.md                  |   79 ++
+ .../affected-repository-round2-20260722.log        |  289 ++++
+ .../api-e2e/api-e2e-scenario-summary-20260722.json |  134 ++
+ .../api-e2e/durable-test-fixes-final-20260722.log  |  230 ++++
+ .../api-e2e/live-codex-memory-20260722.log         |  155 +++
+ .../api-e2e/live-codex-memory-high-20260722.log    |  155 +++
+ .../live-codex-standalone-websocket-20260722.log   |  285 ++++
+ ...e-codex-standalone-websocket-gpt53-20260722.log |  288 ++++
+ ...-codex-standalone-websocket-round2-20260722.log |  288 ++++
+ ...one-websocket-round2-deterministic-20260722.log |  230 ++++
+ ...ndalone-websocket-round2-qualified-20260722.log |  272 ++++
+ ...e-websocket-round2-qualified-gpt53-20260722.log |  288 ++++
+ ...andalone-websocket-round2-validity-20260722.log |  324 +++++
+ .../api-e2e/live-codex-team-websocket-20260722.log |  281 ++++
+ .../live-codex-team-websocket-round2-20260722.log  |  278 ++++
+ .../api-e2e/repository-build-guards-20260722.log   |  305 +++++
+ .../api-e2e/repository-history-api-20260722.log    |  327 +++++
+ .../repository-memory-layout-test-fix-20260722.log |  100 ++
+ .../api-e2e/repository-server-focused-20260722.log |  106 ++
+ ...repository-team-websocket-test-fix-20260722.log |  198 +++
+ .../repository-transport-integration-20260722.log  |  326 +++++
+ .../api-e2e/repository-web-focused-20260722.log    |   40 +
+ ...repository-web-selection-hydration-20260722.log |  151 +++
+ .../temporary-production-spine-20260722.log        |   29 +
+ ...emporary-production-spine-probe-20260722.ts.txt |  186 +++
+ .../delivery/delivery-docs-checks-20260722.txt     |   26 +
+ ...elivery-electron-macos-arm64-build-20260722.log | 1412 ++++++++++++++++++++
+ ...very-electron-macos-arm64-prebuild-20260722.txt |   20 +
+ ...-electron-macos-arm64-verification-20260722.txt |   49 +
+ ...livery-finalization-target-refresh-20260722.txt |   21 +
+ .../delivery-integration-refresh-20260722.txt      |   25 +
+ .../code-review-focused-checks-20260722.txt        |  135 ++
+ .../code-review-round2-checks-20260722.txt         |  165 +++
+ .../code-review-status-hint-probe-20260722.txt     |   82 ++
+ .../implementation-checks-20260722.txt             |  230 ++++
+ .../implementation/web-typecheck-20260722.txt      |  354 +++++
+ .../investigation/runtime-probes-20260722.txt      |  113 ++
+ .../user-report/01-initial-thinking-only-feed.png  |  Bin 0 -> 728942 bytes
+ .../user-report/02-tools-eventually-rendered.png   |  Bin 0 -> 754707 bytes
+ .../03-selected-solution-designer-row.png          |  Bin 0 -> 25847 bytes
+ .../04-live-tool-visible-after-thinking-burst.png  |  Bin 0 -> 754324 bytes
+ .../evidence/user-report/sha256.txt                |    4 +
+ .../handoff-summary.md                             |   90 ++
+ .../implementation-handoff.md                      |  130 ++
+ .../investigation-notes.md                         |  216 +++
+ .../release-deployment-report.md                   |  144 ++
+ .../release-notes.md                               |   28 +
+ .../requirements-doc.md                            |  157 +++
+ 74 files changed, 11274 insertions(+), 339 deletions(-)
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/code-review-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/design-review-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/design-spec.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/docs-sync-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/electron-test-build-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/affected-repository-round2-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/api-e2e-scenario-summary-20260722.json
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/durable-test-fixes-final-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-memory-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-memory-high-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-gpt53-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-deterministic-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-qualified-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-qualified-gpt53-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-validity-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-team-websocket-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-team-websocket-round2-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-build-guards-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-history-api-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-memory-layout-test-fix-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-server-focused-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-team-websocket-test-fix-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-transport-integration-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-web-focused-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-web-selection-hydration-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/temporary-production-spine-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/temporary-production-spine-probe-20260722.ts.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-docs-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-build-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-prebuild-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-verification-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-finalization-target-refresh-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-focused-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-round2-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-status-hint-probe-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/implementation-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/web-typecheck-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/investigation/runtime-probes-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/01-initial-thinking-only-feed.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/02-tools-eventually-rendered.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/03-selected-solution-designer-row.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/04-live-tool-visible-after-thinking-burst.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/sha256.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/handoff-summary.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/implementation-handoff.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/investigation-notes.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/release-deployment-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/requirements-doc.md
+release_base=4a5117403449fb64e095dfb7fc3b4d80988a5130
+branch=delivery/agent-event-monitor-tool-render-flicker-finalize-v1.4.25
++ pnpm release 1.4.25 -- --release-notes tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md --branch delivery/agent-event-monitor-tool-render-flicker-finalize-v1.4.25 --no-push
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/finalize-agent-event-monitor-tool-render-flicker-v1.4.25
+> bash scripts/desktop-release.sh release 1.4.25 -- --release-notes tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md --branch delivery/agent-event-monitor-tool-render-flicker-finalize-v1.4.25 --no-push
+
+Updating autobyteus-web/package.json: 1.4.24 -> 1.4.25
+Updating autobyteus-message-gateway/package.json: 1.4.24 -> 1.4.25
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.25
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/finalize-agent-event-monitor-tool-render-flicker-v1.4.25/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.25[0m
+[32mServer version: 0.1.1[0m
+[delivery/agent-event-monitor-tool-render-flicker-finalize-v1.4.25 6b1093d46] chore(release): bump workspace release version to 1.4.25
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 27 insertions(+), 31 deletions(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin delivery/agent-event-monitor-tool-render-flicker-finalize-v1.4.25
+  git push origin v1.4.25
+release_commit=6b1093d46558db7dad2f20b0ecaccef4b2964757
+tag_commit=6b1093d46558db7dad2f20b0ecaccef4b2964757
+/bin/bash: command substitution: line 18: syntax error near unexpected token `('
+/bin/bash: command substitution: line 18: `node -p \"require('./autobyteus-web/package.json').version\"'
+web_version=
+/bin/bash: command substitution: line 19: syntax error near unexpected token `('
+/bin/bash: command substitution: line 19: `node -p \"require('./autobyteus-message-gateway/package.json').version\"'
+gateway_version=
+/bin/bash: command substitution: line 20: syntax error near unexpected token `('
+/bin/bash: command substitution: line 20: `node -p \"require('./autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json').releaseTag\"'
+manifest_tag=
+curated_release_notes_byte_equal=yes
+Repository artifact hygiene check passed.
+Tracked files scanned: 16030
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+status_after_helper:
++ final pre-publish verification
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+remote_personal=4a5117403449fb64e095dfb7fc3b4d80988a5130
+release_parent=4a5117403449fb64e095dfb7fc3b4d80988a5130
+web_version=1.4.25
+gateway_version=1.4.25
+manifest_tag=undefined
++ corrected final pre-publish verification
+web_version=1.4.25
+gateway_version=1.4.25
+manifest_tag=v1.4.25
+manifest_artifact_version=1.4.25
+curated_release_notes_byte_equal=yes
+release_diff_hygiene=pass
++ git push origin HEAD:personal
+remote:
+remote: GitHub found 596 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (16 critical, 238 high, 288 moderate, 54 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   4a5117403..6b1093d46  HEAD -> personal
++ git push origin v1.4.25
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.25 -> v1.4.25
+remote_personal_after_release=6b1093d46558db7dad2f20b0ecaccef4b2964757
+remote_tag_object=bfebc73a573bef0b3eef80238f33091b6f6dc30e
+remote_tag_commit=6b1093d46558db7dad2f20b0ecaccef4b2964757

@@ -1,0 +1,82 @@
+## TURN_COMPLETED
+[
+  {
+    "eventType": "SEGMENT_END",
+    "payload": {
+      "id": "reasoning-block:ce2f860b-7338-43d8-86aa-a62eadbe3b7a:1",
+      "turn_id": "turn-1",
+      "segment_type": "reasoning"
+    },
+    "statusHint": "IDLE"
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "payload": {
+      "turnId": "turn-1"
+    },
+    "statusHint": "IDLE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "payload": {
+      "status": "offline",
+      "can_interrupt": false
+    },
+    "statusHint": "IDLE"
+  }
+]
+## TURN_STARTED
+[
+  {
+    "eventType": "SEGMENT_END",
+    "payload": {
+      "id": "reasoning-block:f5fa569d-4778-4a46-bc3f-9ff072d9f48c:1",
+      "turn_id": "turn-1",
+      "segment_type": "reasoning"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "payload": {
+      "turnId": "turn-2"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "payload": {
+      "status": "offline",
+      "can_interrupt": false
+    },
+    "statusHint": "ACTIVE"
+  }
+]
+## ERROR
+[
+  {
+    "eventType": "SEGMENT_END",
+    "payload": {
+      "id": "reasoning-block:a7713838-585d-490b-bec3-16097a94bd8d:1",
+      "turn_id": "turn-1",
+      "segment_type": "reasoning"
+    },
+    "statusHint": "ERROR"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "payload": {
+      "status": "error",
+      "can_interrupt": false
+    },
+    "statusHint": "ERROR"
+  },
+  {
+    "eventType": "ERROR",
+    "payload": {
+      "code": "RUNTIME_ERROR",
+      "message": "boom"
+    },
+    "statusHint": "ERROR"
+  }
+]

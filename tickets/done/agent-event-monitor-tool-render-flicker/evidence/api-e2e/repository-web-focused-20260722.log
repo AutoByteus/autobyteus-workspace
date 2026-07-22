@@ -1,0 +1,40 @@
+
+> autobyteus@1.4.24 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts (3 tests) 5ms
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests) 15ms
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (9 tests) 804ms
+   ✓ recent Event Monitor production dispatch coverage > keeps standalone center and Activity state bounded and duplicate-free after 1,001 mixed live messages  328ms
+
+ Test Files  3 passed (3)
+      Tests  34 passed (34)
+   Start at  08:19:14
+   Duration  7.34s (transform 3.33s, setup 17.20s, collect 129ms, tests 824ms, environment 882ms, prepare 561ms)
+

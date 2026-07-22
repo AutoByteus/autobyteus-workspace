@@ -298,8 +298,8 @@ describe("memory layout and projection integration", () => {
       "rt-boundary",
       "rt-active-assistant",
     ]);
-    expect(projection.summary).toBe("hello from archived user");
-    expect(projection.conversation).toHaveLength(2);
+    expect(projection.summary).toBeNull();
+    expect(projection.conversation).toHaveLength(1);
     expect(projection.activities).toEqual([
       expect.objectContaining({
         kind: "compaction",
@@ -308,8 +308,7 @@ describe("memory layout and projection integration", () => {
         provider: "codex",
       }),
     ]);
-    expect(projection.conversation[0]?.content).toBe("hello from archived user");
-    expect(projection.conversation[1]?.content).toBe("hello from active assistant");
+    expect(projection.conversation[0]?.content).toBe("hello from active assistant");
     expect(projection.lastActivityAt).toBe("1970-01-01T00:00:02.000Z");
     },
   );

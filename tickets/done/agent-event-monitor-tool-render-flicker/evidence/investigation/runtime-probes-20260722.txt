@@ -1,0 +1,113 @@
+Agent Event Monitor tool-render flicker — sanitized investigation probes
+Date: 2026-07-22 (Europe/Berlin)
+
+Privacy note
+------------
+Only run labels, event kinds, counts, timings, and file-span counts are retained here.
+No conversation content, tool arguments/results, credentials, or provider identifiers are copied.
+
+1. Installed application topology (read-only observation)
+--------------------------------------------------------
+- /Applications/AutoByteus.app main process was running.
+- Its packaged local server was listening on 127.0.0.1:29695 with data directory
+  /Users/normy/.autobyteus/server-data.
+- The installed app and server were not stopped or modified.
+
+2. Final GraphQL projection probes
+----------------------------------
+Method: POST getTeamMemberRunProjection three times per user-reported team/member to
+http://127.0.0.1:29695/graphql; parse only kind/order/count metadata.
+
+Run A
+attempt 1: 0.0188 s; 20 conversation entries; 10 reasoning, 9 tool_call, 1 message;
+           19 adjacent kind alternations; 9 unique tool identities; 10 activities;
+           hasEarlierActiveTraceEvents=false
+attempt 2: 0.0089 s; same counts/order summary
+attempt 3: 0.0089 s; same counts/order summary
+
+Run B
+attempt 1: 0.0164 s; 72 conversation entries; 32 reasoning, 37 tool_call, 3 message;
+           64 adjacent kind alternations; 37 unique tool identities; 38 activities;
+           hasEarlierActiveTraceEvents=false
+attempt 2: 0.0164 s; same counts/order summary
+attempt 3: 0.0162 s; same counts/order summary
+
+Interpretation: settled backend projections were fast, complete, and tool-inclusive. The
+multi-second visible state is not explained by the final GraphQL projection itself.
+
+3. Sanitized persisted-trace reachability scan
+-----------------------------------------------
+Method: read raw_traces_[0-9]*.jsonl and raw_traces_active.jsonl for the two reported
+solution-designer runs; group by turn_id; count trace_type only. No payload fields were
+printed or retained.
+
+Run A, archived files only:
+- files: 16; turns: 117; records: 3,645; reasoning: 1,146; tool_call: 1,121
+- largest reasoning+tool turns: 173 (83 reasoning, 90 tool, 2 files),
+  151 (73/78, 2 files), 118 (59/59, 2 files), 112 (55/57, 1 file),
+  112 (48/64, 1 file), 100 (50/50, 2 files)
+
+Run B, archived + active files at probe time:
+- files: 19; turns: 126; records: 4,105; reasoning: 1,289; tool_call: 1,276
+- largest reasoning+tool turns: 385 (186 reasoning, 199 tool, 3 files),
+  235 (105/130, 2 files), 215 (102/113, 2 files), 209 (102/107, 1 file),
+  174 (87/87, 3 files), 166 (81/85, 2 files), 159 (79/80, 2 files)
+
+Interpretation: supported real Codex team runs routinely exceed the 100-visual live window
+within one turn. The missing reasoning-completion lifecycle is product-reachable, not only a
+synthetic mechanical possibility.
+
+4. Deterministic frontend recent-window probe
+----------------------------------------------
+Setup:
+- pnpm install --offline --frozen-lockfile
+- pnpm -C autobyteus-web exec nuxt prepare
+- disposable Vitest spec (removed after the probe)
+
+Fixture/result:
+- Start with 99 incomplete stream-identified Think segments.
+- Append one terminal-success tool: 100 visuals, trailing kinds [think, think, tool_call],
+  tool present.
+- Append the 100th incomplete Think and commit the normal recent-window mutation.
+- Result: retentionChanged=true, completedEvictions=1, forcedMutableEvictions=0,
+  presentationChanged=true; final 100 visuals are all Think; the tool is absent from the
+  canonical frontend conversation.
+- Vitest: 1/1 passed.
+
+Interpretation: this exactly reproduces the reported live transition "tool visible -> later
+Thinking -> tool disappears" when completed tools compete with stale mutable Think blocks.
+
+5. Existing server converter check
+----------------------------------
+Command:
+pnpm -C autobyteus-server-ts exec vitest run \
+  tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts \
+  --no-watch --reporter=verbose
+
+Result: 48/48 passed.
+
+Interpretation: the present grouping/boundary matrix is internally consistent, but the tests
+only assert that a boundary drops the tracker's active ID. They do not require a SEGMENT_END
+for the reasoning block whose identity was dropped.
+
+6. Isolated browser/dev observation
+-----------------------------------
+Setup:
+- Investigation-owned Nuxt dev server on 127.0.0.1:3187, pointed at the installed backend
+  on 127.0.0.1:29695.
+- No user messages were sent and no run data was mutated intentionally.
+
+Observed settled DOM/state:
+- Run A: 47 Think cards, 39 tool indicators, 77 adjacent kind alternations.
+- Run B: 32 Think cards, 37 tool indicators.
+- After both contexts were hydrated, a B -> A switch sampled every 20 ms for 5 seconds moved
+  from B at 0 ms to A by about 53 ms and never produced a Thinking-only intermediate frame.
+
+Cleanup:
+- The investigation-owned Nuxt server was stopped.
+
+Interpretation: ordinary cached selection and synchronous Vue tool components do not create
+the defect from a coherent context. Switching exposes a live context that can already have
+been degraded by the retention/lifecycle interaction. The exact later repair trigger seen in
+the installed session was not independently reproduced; a later projection or lifecycle
+update can restore/recreate tool rows, but no 5-second tree refresh rewrites conversation state.

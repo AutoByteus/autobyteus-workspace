@@ -7,7 +7,7 @@ import type { AIResponseSegment, AIResponseTextSegment } from '~/types/segments'
 import { AgentStreamingService } from '../AgentStreamingService';
 import { dispatchGenericTeamMemberMessage } from '../teamStreamGenericMessageDispatcher';
 import type { ServerMessage } from '../protocol';
-import { setStreamSegmentIdentity } from '../handlers/segmentIdentity';
+import { getStreamSegmentIdentity, setStreamSegmentIdentity } from '../handlers/segmentIdentity';
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
@@ -156,6 +156,54 @@ describe('recent Event Monitor production dispatch coverage', () => {
     expect(delivered).toBe(1_001);
     assertBoundedUniqueState(context);
   }, 20_000);
+
+  it.each([
+    ['standalone', (message: ServerMessage, context: AgentContext) => {
+      const service = new AgentStreamingService('ws://localhost:8000/ws/agent');
+      (service as any).dispatchMessage(message, context);
+    }],
+    ['team member', dispatchGenericTeamMemberMessage],
+  ])('keeps terminal tools in the latest-100 %s feed when interleaved reasoning receives generic ends', (_label, dispatch) => {
+    const context = buildContext(`reasoning-tool-retention-${_label}`);
+
+    for (let index = 0; index < 110; index += 1) {
+      const turnId = `turn-${index}`;
+      const reasoningId = `reasoning-block:test:${index}`;
+      dispatch({
+        type: 'SEGMENT_CONTENT',
+        payload: { id: reasoningId, turn_id: turnId, segment_type: 'reasoning', delta: `thinking-${index}` },
+      } as ServerMessage, context);
+      dispatch({
+        type: 'SEGMENT_END',
+        payload: { id: reasoningId, turn_id: turnId, segment_type: 'reasoning' },
+      } as ServerMessage, context);
+      dispatch({
+        type: 'TOOL_EXECUTION_SUCCEEDED',
+        payload: {
+          invocation_id: `tool-${index}`,
+          turn_id: turnId,
+          tool_name: 'run_bash',
+          arguments: { command: `echo ${index}` },
+          result: { stdout: `${index}` },
+        },
+      } as ServerMessage, context);
+    }
+
+    const retainedSegments = context.conversation.messages.flatMap((message) =>
+      message.type === 'ai' ? message.segments : []);
+    const retainedThinking = retainedSegments.filter((segment) => segment.type === 'think');
+    const retainedTools = retainedSegments.filter((segment) =>
+      segment.type === 'tool_call'
+      || segment.type === 'terminal_command'
+      || segment.type === 'edit_file'
+      || segment.type === 'write_file');
+    expect(retainedSegments).toHaveLength(100);
+    expect(retainedThinking).toHaveLength(50);
+    expect(retainedThinking.every((segment) =>
+      getStreamSegmentIdentity(segment)?.presentationComplete === true)).toBe(true);
+    expect(retainedTools).toHaveLength(50);
+    expect(retainedTools.at(-1)).toMatchObject({ invocationId: 'tool-109', status: 'success' });
+  });
 
   it('revises member attachment echoes only when the retained presentation changes', () => {
     const context = buildContext('team-member-attachment-echo');

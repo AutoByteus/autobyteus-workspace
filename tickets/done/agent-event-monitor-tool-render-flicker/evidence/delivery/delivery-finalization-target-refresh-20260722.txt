@@ -1,0 +1,21 @@
+# Finalization target refresh — 2026-07-22
+user_verification=task is done
+user_authorization=finalize and release a new version
+ticket_branch=codex/agent-event-monitor-tool-render-flicker
+verified_candidate_source=b60c8faa647a12ba587ea43644f0b74bcb38b49e
+pre_refresh_ticket_head=2445775d18d22130ecd2b0dc589dd96645c47431
+pre_refresh_origin_personal=965f97685c08569a98186b2a894243c0b3f602d3
++ git fetch origin personal --tags
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_refresh_origin_personal=965f97685c08569a98186b2a894243c0b3f602d3
+merge_base=965f97685c08569a98186b2a894243c0b3f602d3
+ahead_behind=8	0
+origin_personal_contained=yes
+target_advanced_after_user_verification=no
+renewed_verification_required=no
+status:
+?? tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-finalization-target-refresh-20260722.txt
+next_version=1.4.25
+local_tag_v1.4.25_absent=yes
+remote_tag_v1.4.25_absent=yes

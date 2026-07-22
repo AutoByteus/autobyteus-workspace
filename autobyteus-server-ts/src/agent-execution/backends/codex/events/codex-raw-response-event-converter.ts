@@ -15,7 +15,10 @@ export type CodexRawResponseEventConverterContext = {
   resolveItemType: (payload: JsonObject) => string | null;
   resolveInvocationId: (payload: JsonObject) => string | null;
   resolveLogEntry: (payload: JsonObject) => string;
-  clearReasoningBlockForBoundary: (payload: JsonObject) => void;
+  closeReasoningBlocksForBoundary: (
+    codexEventName: string,
+    payload: JsonObject,
+  ) => AgentRunEvent[];
   classifyToolLifecycleUpdate: (payload: JsonObject) => CodexToolLifecyclePlacement;
   createCompactionBoundaryEvent: (
     sourceSurface: "codex.raw_response_compaction_item",
@@ -30,30 +33,37 @@ export const convertCodexRawResponseEvent = (
   context: CodexRawResponseEventConverterContext,
   codexEventName: string,
   payload: JsonObject,
-): AgentRunEvent | null => {
+): AgentRunEvent[] => {
   if (codexEventName !== CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED) {
-    return null;
+    return [];
   }
 
   const itemType = context.resolveItemType(payload);
   if (isCodexCompletedCompactionItemType(itemType)) {
-    return context.createCompactionBoundaryEvent("codex.raw_response_compaction_item", payload);
+    const event = context.createCompactionBoundaryEvent(
+      "codex.raw_response_compaction_item",
+      payload,
+    );
+    return event ? [event] : [];
   }
   if (itemType !== "functioncalloutput") {
-    return null;
+    return [];
   }
   const invocationId = context.resolveInvocationId(payload);
   const logEntry = context.resolveLogEntry(payload);
   if (!logEntry) {
-    return null;
+    return [];
   }
-  if (context.classifyToolLifecycleUpdate(payload) === "result_first_creation") {
-    context.clearReasoningBlockForBoundary(payload);
-  }
+  const reasoningEnds = context.classifyToolLifecycleUpdate(payload) === "result_first_creation"
+    ? context.closeReasoningBlocksForBoundary(codexEventName, payload)
+    : [];
 
-  return context.createEvent(codexEventName, AgentRunEventType.TOOL_LOG, {
-    ...serializePayload(payload),
-    ...(invocationId ? { tool_invocation_id: invocationId } : {}),
-    log_entry: logEntry,
-  });
+  return [
+    ...reasoningEnds,
+    context.createEvent(codexEventName, AgentRunEventType.TOOL_LOG, {
+      ...serializePayload(payload),
+      ...(invocationId ? { tool_invocation_id: invocationId } : {}),
+      log_entry: logEntry,
+    }),
+  ];
 };

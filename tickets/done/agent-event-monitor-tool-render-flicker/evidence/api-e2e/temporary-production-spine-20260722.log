@@ -1,0 +1,29 @@
+
+> autobyteus@1.4.24 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/__tests__/apiE2eCodexReasoningSpine.tmp.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web
+
+stderr | services/agentStreaming/__tests__/apiE2eCodexReasoningSpine.tmp.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/apiE2eCodexReasoningSpine.tmp.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/apiE2eCodexReasoningSpine.tmp.spec.ts > temporary API/E2E Codex reasoning production spine > keeps tools present immediately through 110 grouped reasoning/tool cycles: 'standalone'
+[api-e2e-codex-reasoning-spine] {"label":"standalone","cycles":110,"providerReasoningSnapshots":220,"uniqueReasoningBlocks":110,"neutralReasoningEnds":110,"retainedVisuals":100,"retainedThinking":50,"retainedTools":50,"newestRetainedTool":"tool-109"}
+
+stdout | services/agentStreaming/__tests__/apiE2eCodexReasoningSpine.tmp.spec.ts > temporary API/E2E Codex reasoning production spine > keeps tools present immediately through 110 grouped reasoning/tool cycles: 'focused-team-member'
+[api-e2e-codex-reasoning-spine] {"label":"focused-team-member","cycles":110,"providerReasoningSnapshots":220,"uniqueReasoningBlocks":110,"neutralReasoningEnds":110,"retainedVisuals":100,"retainedThinking":50,"retainedTools":50,"newestRetainedTool":"tool-109"}
+
+ ✓ services/agentStreaming/__tests__/apiE2eCodexReasoningSpine.tmp.spec.ts (2 tests) 418ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  08:25:05
+   Duration  5.53s (transform 3.00s, setup 4.35s, collect 230ms, tests 418ms, environment 159ms, prepare 145ms)
+

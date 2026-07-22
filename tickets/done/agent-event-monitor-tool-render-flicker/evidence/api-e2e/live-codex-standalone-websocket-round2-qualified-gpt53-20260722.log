@@ -1,0 +1,288 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:39338) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9EbvE9
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-standalone-send-message-e2e-9EbvE9/.env
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-22T07:11:06.426Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=47
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=38
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Agent Definition created successfully with ID: codex-direct-sender-c8d4d4f0-8671-49f4-a8bc-73ac070e1dc7
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Agent Definition created successfully with ID: codex-direct-target-4962fdb3-7c6d-4de0-b28f-0c9b144c4306
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-fZNAAK
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-fZNAAK.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Created and registered workspace ID: agent_ws_9565694d8ac2402920b91563ff9be19b5a5b7160a76788e6b4e2f9e421e78a8e
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-fZNAAK
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-target-fZNAAK.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Reusing registered workspace ID: agent_ws_9565694d8ac2402920b91563ff9be19b5a5b7160a76788e6b4e2f9e421e78a8e
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=291
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=295
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Finished Autobyteus audio model discovery. Total models registered: 8
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Successfully created codex_app_server agent run 'codex_direct_target_4962fdb3_7c6d_4de0_b28f_0c9b_588ea6bdcd2c49179bbe0f09933f2920'.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-T2AjLi
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-T2AjLi.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Created and registered workspace ID: agent_ws_28da15f7552d173943a2ff6215cc2996a72eb3dec1e39c0fe97d82f8c877bf27
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-T2AjLi
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-direct-sender-T2AjLi.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Reusing registered workspace ID: agent_ws_28da15f7552d173943a2ff6215cc2996a72eb3dec1e39c0fe97d82f8c877bf27
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Successfully created codex_app_server agent run 'codex_direct_sender_c8d4d4f0_8671_49f4_a8bc_73ac_2db4a8fbb6464a9c9bbbfb4d2605bcc7'.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Agent websocket attached for run codex_direct_target_4962fdb3_7c6d_4de0_b28f_0c9b_588ea6bdcd2c49179bbe0f09933f2920
+Created agent session a4b27b7e-7cea-4db1-8719-4ab7fb29a506 for run codex_direct_target_4962fdb3_7c6d_4de0_b28f_0c9b_588ea6bdcd2c49179bbe0f09933f2920
+Agent WebSocket connected: session=a4b27b7e-7cea-4db1-8719-4ab7fb29a506, run=codex_direct_target_4962fdb3_7c6d_4de0_b28f_0c9b_588ea6bdcd2c49179bbe0f09933f2920
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Agent websocket attached for run codex_direct_sender_c8d4d4f0_8671_49f4_a8bc_73ac_2db4a8fbb6464a9c9bbbfb4d2605bcc7
+Created agent session 3c56fc97-59ca-4ee0-abbd-dad3aa19729c for run codex_direct_sender_c8d4d4f0_8671_49f4_a8bc_73ac_2db4a8fbb6464a9c9bbbfb4d2605bcc7
+Agent WebSocket connected: session=3c56fc97-59ca-4ee0-abbd-dad3aa19729c, run=codex_direct_sender_c8d4d4f0_8671_49f4_a8bc_73ac_2db4a8fbb6464a9c9bbbfb4d2605bcc7
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+[LIVE-002 same-thread Agent Tools MCP evidence] {"senderRunId":"codex_direct_sender_c8d4d4f0_8671_49f4_a8bc_73ac_2db4a8fbb6464a9c9bbbfb4d2605bcc7","senderThreadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","modelIdentifier":"gpt-5.4-mini","redactedDescriptorAndConfig":{"serverName":"autobyteus_agent_tools","url":"http://127.0.0.1:54113/mcp/agent-tools/%3Credacted%3E","http_headers":{"Authorization":"Bearer <redacted>"},"enabled_tools":["send_message_to"],"startup_timeout_sec":5},"authenticatedSession":{"ownerRunId":"codex_direct_sender_c8d4d4f0_8671_49f4_a8bc_73ac_2db4a8fbb6464a9c9bbbfb4d2605bcc7","sessionId":"<redacted>","enabledTools":["send_message_to"],"toolsList":["send_message_to"]},"appServer":{"startupObservations":[{"sequence":1,"method":"mcpServer/startupStatus/updated","threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","name":"autobyteus_agent_tools","status":"starting","error":null,"failureReason":null},{"sequence":2,"method":"mcpServer/startupStatus/updated","threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","name":"autobyteus_agent_tools","status":"ready","error":null,"failureReason":null}],"statusList":{"name":"autobyteus_agent_tools","authStatus":"bearerToken","toolNames":["send_message_to"]}},"ordering":{"createAgentRunReturnedSequence":3,"authenticatedToolsListSequence":4,"readySequence":2,"appServerStatusListSequence":5,"firstToolDirectedTurnSequence":6}}
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Finished Autobyteus discovery. Total models registered: 74
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Closed agent session 3c56fc97-59ca-4ee0-abbd-dad3aa19729c
+Agent WebSocket disconnected: 3c56fc97-59ca-4ee0-abbd-dad3aa19729c
+
+stdout | tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Closed agent session a4b27b7e-7cea-4db1-8719-4ab7fb29a506
+Agent WebSocket disconnected: a4b27b7e-7cea-4db1-8719-4ab7fb29a506
+
+ ❯ tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts (1 test | 1 failed) 182479ms
+     × delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination 182404ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts > Codex standalone send_message_to global direct routing e2e > delivers from a real standalone Codex sender to an active standalone target by exact run id and rejects the same id after target termination
+Error: Timed out waiting for websocket message 'sender send_message_to SEGMENT_START'. preview='SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" unable","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text"," | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" to","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" access","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text"," | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" the","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","tur | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" requested","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" `","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_ | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"m","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_i | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"cp","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_ | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"__","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_ | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"aut","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"oby","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"te","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_ | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"us","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_ | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"_agent","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","t | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"_tools","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","t | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"__","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_ | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"send","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","tur | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"_message","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text", | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"_to","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":"`","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_i | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" tool","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","tu | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" from","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","tu | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" this","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","tu | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":" environment","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"te | SEGMENT_CONTENT:{"threadId":"019f88a9-f318-72b1-ad02-d52acf0855d2","itemId":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","delta":".","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","segment_type":"text","turn_i | SEGMENT_END:{"item":{"type":"agentMessage","id":"msg_06b2a7cdf04c6613016a606d2cfc788191aa73c9125397dcba","text":"I’m unable to access the requested `send_message_to` tool from this environment.","phase":"final_answer","memoryCitatio | TOKEN_USAGE_UPDATED:{"usage_event_id":"2fdf5623-a7be-47fe-8754-485e8a580e34","idempotency_key":"codex_token_usage:codex_direct_sender_c8d4d4f0_8671_49f4_a8bc_73ac_2db4a8fbb6464a9c9bbbfb4d2605bcc7:019f88a9-f318-72b1-ad02-d52acf0855d2:019f88a | AGENT_STATUS:{"status":"idle","can_interrupt":false} | TURN_COMPLETED:{"turnId":"019f88a9-f980-7023-be4f-149a78535aa3","turn_id":"019f88a9-f980-7023-be4f-149a78535aa3"} | AGENT_STATUS:{"status":"idle","can_interrupt":false}'
+ ❯ waitForMessageAfter tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts:273:9
+    271|     )
+    272|     .join(" | ");
+    273|   throw new Error(
+       |         ^
+    274|     `Timed out waiting for websocket message '${label}'. preview='${pr…
+    275|   );
+ ❯ tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts:798:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  09:11:01
+   Duration  187.45s (transform 3.10s, setup 17ms, import 4.49s, tests 182.48s, environment 0ms)
+
