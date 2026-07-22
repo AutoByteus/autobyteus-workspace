@@ -1,5 +1,7 @@
 import {
   startHostedApplication,
+  type ApplicationAgentEvent,
+  type ApplicationAgentStreamEvent,
   type ApplicationClient,
   type HostedApplicationBootstrappedContext,
 } from '../dist/index.js';
@@ -17,11 +19,27 @@ type BackendNotificationAliasAbsent = Assert<Equal<
   Extract<keyof ApplicationClient['backend'], 'subscribeNotifications'>,
   never
 >>;
+type ExactApplicationAgentStreamEvent = Assert<Equal<
+  ApplicationAgentStreamEvent,
+  | { type: 'TURN_STARTED' }
+  | { type: 'TEXT_DELTA'; delta: string }
+  | { type: 'TURN_COMPLETED' }
+  | { type: 'TURN_INTERRUPTED' }
+  | { type: 'ERROR'; message: string }
+>>;
+type ApplicationAgentProducerIsRequired = Assert<Equal<
+  Extract<ApplicationAgentEvent['producer'], null>,
+  never
+>>;
 
 const exactApplicationCapabilityGroups: ExactApplicationCapabilityGroups = true;
 const backendNotificationAliasAbsent: BackendNotificationAliasAbsent = true;
+const exactApplicationAgentStreamEvent: ExactApplicationAgentStreamEvent = true;
+const applicationAgentProducerIsRequired: ApplicationAgentProducerIsRequired = true;
 void exactApplicationCapabilityGroups;
 void backendNotificationAliasAbsent;
+void exactApplicationAgentStreamEvent;
+void applicationAgentProducerIsRequired;
 
 const requireHTMLElement = (element: HTMLElement): void => {
   element.querySelector('#mounted');

@@ -53,14 +53,37 @@ const bootstrap = {
   },
 };
 
-const buildConnection = () => ({
-  ready: Promise.resolve(),
-  sendInput: vi.fn(async () => undefined),
-  onEvent: vi.fn(() => vi.fn()),
-  onError: vi.fn(() => vi.fn()),
-  onClose: vi.fn(() => vi.fn()),
-  close: vi.fn(),
-});
+const buildConnection = () => {
+  let eventListener: ((event: unknown) => void) | null = null;
+  let errorListener: ((error: Error) => void) | null = null;
+  let closeListener: (() => void) | null = null;
+  return {
+    ready: Promise.resolve(),
+    sendInput: vi.fn(async () => undefined),
+    onEvent: vi.fn((listener: (event: unknown) => void) => {
+      eventListener = listener;
+      return () => { if (eventListener === listener) eventListener = null; };
+    }),
+    onError: vi.fn((listener: (error: Error) => void) => {
+      errorListener = listener;
+      return () => { if (errorListener === listener) errorListener = null; };
+    }),
+    onClose: vi.fn((listener: () => void) => {
+      closeListener = listener;
+      return () => { if (closeListener === listener) closeListener = null; };
+    }),
+    close: vi.fn(),
+    emitEvent(sequence: number, event: Record<string, unknown>) {
+      eventListener?.({ sequence, event });
+    },
+    emitError(error: Error) {
+      errorListener?.(error);
+    },
+    emitClose() {
+      closeListener?.();
+    },
+  };
+};
 
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
 const mountedDisposers: Array<() => void> = [];
@@ -390,5 +413,130 @@ describe("Socratic mounted runtime lifecycle", () => {
     expect(lessonsRequest).toHaveBeenCalledTimes(1);
     expect(harness.connections[0].close).not.toHaveBeenCalled();
     expect(harness.rootElement.querySelector("#lesson-detail")?.textContent).toContain("Problem lesson-b");
+  });
+
+  it("admits one follow-up across same-tick and hint re-entry, then enables the next action only after the saved join", async () => {
+    const pendingFollowUp = deferred<unknown>();
+    let currentLesson = buildLesson("lesson-a");
+    const lessons = vi.fn(async () => [currentLesson]);
+    const lesson = vi.fn(async () => currentLesson);
+    const askFollowUp = vi.fn(() => pendingFollowUp.promise);
+    const requestHint = vi.fn(async () => undefined);
+    const prompt = vi.spyOn(window, "prompt").mockReturnValue("A smaller step");
+    const harness = createHarness({ lessons, lesson, askFollowUp, requestHint });
+
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(false);
+    });
+    let textarea = harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")!;
+    textarea.value = "Why subtract first?";
+    harness.rootElement.querySelector<HTMLFormElement>("#follow-up-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    await vi.waitFor(() => expect(askFollowUp).toHaveBeenCalledOnce());
+
+    expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(true);
+    expect(harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")?.disabled).toBe(true);
+    expect(harness.rootElement.querySelector<HTMLButtonElement>("#close-lesson")?.disabled).toBe(false);
+
+    textarea = harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")!;
+    textarea.value = "A duplicate follow-up";
+    harness.rootElement.querySelector<HTMLFormElement>("#follow-up-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")!
+      .dispatchEvent(new Event("click", { bubbles: true, cancelable: true }));
+    expect(askFollowUp).toHaveBeenCalledOnce();
+    expect(requestHint).not.toHaveBeenCalled();
+    expect(harness.rootElement.querySelector("#workspace-status")?.textContent).toContain(
+      "Wait for the current tutor response to be saved before sending another.",
+    );
+
+    pendingFollowUp.resolve(undefined);
+    await pendingFollowUp.promise;
+    await vi.waitFor(() => expect(lesson).toHaveBeenCalledTimes(2));
+    harness.connections[0].emitEvent(1, { type: "TEXT_DELTA", delta: "What should you subtract?" });
+    harness.connections[0].emitEvent(2, { type: "TURN_COMPLETED" });
+    currentLesson = {
+      ...currentLesson,
+      messages: [
+        { role: "student", body: "Problem lesson-a" },
+        { role: "tutor", body: "What should you subtract?" },
+      ],
+    };
+    harness.emitNotification({ topic: "lesson.updated", payload: { lessonId: "lesson-a" } });
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")?.disabled).toBe(false);
+    });
+
+    harness.rootElement.querySelector<HTMLButtonElement>("#request-hint")!.click();
+    await vi.waitFor(() => expect(requestHint).toHaveBeenCalledOnce());
+    expect(prompt).toHaveBeenCalledOnce();
+  });
+
+  it("leaves admission available after blank follow-up validation", async () => {
+    const currentLesson = buildLesson("lesson-a");
+    const askFollowUp = vi.fn(async () => undefined);
+    const harness = createHarness({
+      lessons: vi.fn(async () => [currentLesson]),
+      lesson: vi.fn(async () => currentLesson),
+      askFollowUp,
+    });
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(false);
+    });
+
+    harness.rootElement.querySelector<HTMLFormElement>("#follow-up-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    expect(askFollowUp).not.toHaveBeenCalled();
+    expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(false);
+
+    const textarea = harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")!;
+    textarea.value = "Why subtract first?";
+    harness.rootElement.querySelector<HTMLFormElement>("#follow-up-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    await vi.waitFor(() => expect(askFollowUp).toHaveBeenCalledOnce());
+  });
+
+  it("keeps a post-claim request failure uncertain and lets Close lesson invalidate late settlement", async () => {
+    const pendingFollowUp = deferred<unknown>();
+    let currentLesson = buildLesson("lesson-a");
+    const askFollowUp = vi.fn(() => pendingFollowUp.promise);
+    const closeLesson = vi.fn(async () => {
+      currentLesson = { ...buildLesson("lesson-a", { target: false }), status: "closed" };
+      return currentLesson;
+    });
+    const harness = createHarness({
+      lessons: vi.fn(async () => [currentLesson]),
+      lesson: vi.fn(async () => currentLesson),
+      askFollowUp,
+      closeLesson,
+    });
+
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(false);
+    });
+    const textarea = harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")!;
+    textarea.value = "Why subtract first?";
+    harness.rootElement.querySelector<HTMLFormElement>("#follow-up-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    await vi.waitFor(() => expect(askFollowUp).toHaveBeenCalledOnce());
+    pendingFollowUp.reject(new Error("Follow-up acceptance is unknown."));
+    await expect(pendingFollowUp.promise).rejects.toThrow("Follow-up acceptance is unknown.");
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector("#workspace-status")?.textContent).toContain("acceptance is unknown");
+      expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(true);
+    });
+
+    const duplicate = harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")!;
+    duplicate.value = "Must not send";
+    harness.rootElement.querySelector<HTMLFormElement>("#follow-up-form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    expect(askFollowUp).toHaveBeenCalledOnce();
+
+    harness.rootElement.querySelector<HTMLButtonElement>("#close-lesson")!.click();
+    await vi.waitFor(() => expect(closeLesson).toHaveBeenCalledOnce());
+    expect(harness.connections[0].close).toHaveBeenCalledOnce();
+    await vi.waitFor(() => {
+      expect(harness.rootElement.querySelector<HTMLTextAreaElement>("#follow-up-input")?.disabled).toBe(true);
+    });
   });
 });

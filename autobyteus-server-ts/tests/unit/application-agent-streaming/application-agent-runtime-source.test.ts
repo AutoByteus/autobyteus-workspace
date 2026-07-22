@@ -56,9 +56,26 @@ describe("ApplicationAgentStreamRuntimeSource team attribution", () => {
     const mapped = new ApplicationAgentEventMapper().map(captured[0]);
     expect(mapped).toEqual({
       producer: { runId: "task-run-1", memberRouteKey: "researcher", memberName: "Researcher", displayName: "Researcher", runtimeKind: "AGENT_TEAM_MEMBER", teamPath: ["researcher"] },
-      event: { source: "AGENT", type: "TURN_STARTED", data: { turnId: "turn-1" } },
+      event: { type: "TURN_STARTED" },
     });
     expect(JSON.stringify(mapped)).not.toContain("providerThreadId");
     expect(JSON.stringify(mapped)).not.toContain("instance-secret");
+  });
+
+  it("drops every non-agent team source before public projection", () => {
+    const mapper = new ApplicationAgentEventMapper();
+    for (const eventSourceType of Object.values(TeamRunEventSourceType)) {
+      if (eventSourceType === TeamRunEventSourceType.AGENT) continue;
+      expect(mapper.map({
+        source: "AGENT_TEAM",
+        producer: null,
+        event: {
+          eventSourceType,
+          teamRunId: "team-run-1",
+          sourcePath: [],
+          data: { providerSecret: "must-not-cross" },
+        } as never,
+      })).toBeNull();
+    }
   });
 });

@@ -512,12 +512,15 @@ describe("Application context capability integration", () => {
             applicationId: input.applicationId,
             address: input.address,
             runtimeSubject: "TEAM_RUN",
-            producer: null,
-            event: {
-              source: "AGENT_TEAM",
-              type: "TEAM_STATUS",
-              data: { status: "IDLE", error: null },
+            producer: {
+              runId: "team-run-1::researcher",
+              runtimeKind: "AGENT_TEAM_MEMBER",
+              memberRouteKey: "researcher",
+              memberName: "researcher",
+              displayName: "researcher",
+              teamPath: ["researcher"],
             },
+            event: { type: "TURN_STARTED" },
           });
           return { subscriptionId: input.subscriptionId };
         }),
@@ -543,7 +546,7 @@ describe("Application context capability integration", () => {
         address: { bindingId: string; target: { kind: string; memberRouteKey?: string } };
         runtimeSubject: string;
         producer: unknown;
-        event: { source: string; type: string; data: unknown };
+        event: { type: string };
       }>;
       observerCallbackBeforeSubscribeResolved: boolean;
       fetched: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
@@ -597,12 +600,15 @@ describe("Application context capability integration", () => {
         target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
       },
       runtimeSubject: "TEAM_RUN",
-      producer: null,
-      event: {
-        source: "AGENT_TEAM",
-        type: "TEAM_STATUS",
-        data: { status: "IDLE", error: null },
+      producer: {
+        runId: "team-run-1::researcher",
+        runtimeKind: "AGENT_TEAM_MEMBER",
+        memberRouteKey: "researcher",
+        memberName: "researcher",
+        displayName: "researcher",
+        teamPath: ["researcher"],
       },
+      event: { type: "TURN_STARTED" },
     }]);
     expect(result.fetched?.bindingId).toBe(result.agent.bindingId);
     expect(result.missing).toBeNull();

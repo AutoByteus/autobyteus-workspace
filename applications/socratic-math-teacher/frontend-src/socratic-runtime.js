@@ -5,6 +5,7 @@ import {
   renderSocraticMathTeacherShell,
 } from "./socratic-renderer.js";
 import {
+  SOCRATIC_TURN_BUSY_NOTICE,
   createIdleSocraticTutorState,
   createSocraticTutorSession,
 } from "./socratic-tutor-session.js";
@@ -21,6 +22,7 @@ export const mountSocraticMathTeacher = ({
   const client = createSocraticMathGraphqlClient(applicationClient);
   const state = {
     bootstrap,
+    closingLessonId: null,
     detail: null,
     lessons: [],
     notificationHandle: null,
@@ -114,6 +116,7 @@ export const mountSocraticMathTeacher = ({
   const replaceSelection = (lessonId, { cancelPendingStart = true } = {}) => {
     lifecycleGeneration += 1;
     tutorSession.close();
+    state.closingLessonId = null;
     state.selectedLessonId = lessonId;
     if (cancelPendingStart) {
       pendingStartOperation = null;
@@ -154,15 +157,19 @@ export const mountSocraticMathTeacher = ({
 
     state.detail = detail;
     tutorSession.reconcileDurableLesson(state.detail);
-    renderDetail();
     if (state.detail?.tutorTargetAddress && !tutorSession.matchesLesson(state.detail)) {
+      const connectionAttempt = tutorSession.connectLesson({ lesson: state.detail });
+      renderDetail();
       try {
-        await tutorSession.connectLesson({ lesson: state.detail });
+        await connectionAttempt;
       } catch (error) {
         if (isOperationCurrent(operation)) throw error;
       }
     } else if (!state.detail?.tutorTargetAddress) {
       tutorSession.close();
+      renderDetail();
+    } else {
+      renderDetail();
     }
   };
 
@@ -236,8 +243,9 @@ export const mountSocraticMathTeacher = ({
       pendingStartOperation = operation;
       state.detail = lesson;
       state.lessons = [lesson, ...state.lessons.filter((item) => item.lessonId !== lesson.lessonId)];
+      const connectionAttempt = tutorSession.connectLesson({ lesson, sendInitialProblem: true });
       render();
-      await tutorSession.connectLesson({ lesson, sendInitialProblem: true });
+      await connectionAttempt;
       if (!isOperationCurrent(operation)) return;
       if (pendingStartOperation === operation) pendingStartOperation = null;
       if (elements.lessonPromptInput) elements.lessonPromptInput.value = "";
@@ -259,15 +267,20 @@ export const mountSocraticMathTeacher = ({
       setStatus("Enter a follow-up message before sending.", "error");
       return;
     }
+    const admission = tutorSession.tryBeginObservedTurn(state.detail);
+    if (!admission) {
+      setStatus(SOCRATIC_TURN_BUSY_NOTICE, "error");
+      return;
+    }
     setStatus("Sending your follow-up…");
-    tutorSession.beginObservedTurn(state.detail);
     try {
       await client.askFollowUp({ lessonId: operation.lessonId, text });
     } catch (error) {
+      admission.markDispatchFailed(error);
       if (!isOperationCurrent(operation)) return;
-      tutorSession.markFailed(error);
       throw error;
     }
+    admission.markDispatchAccepted();
     if (!isOperationCurrent(operation)) return;
     if (textarea) textarea.value = "";
     await refresh(operation);
@@ -276,35 +289,48 @@ export const mountSocraticMathTeacher = ({
   const requestHint = async () => {
     const operation = captureOperation();
     if (!isOperationCurrent(operation) || !operation.lessonId) return;
+    const admission = tutorSession.tryBeginObservedTurn(state.detail);
+    if (!admission) {
+      setStatus(SOCRATIC_TURN_BUSY_NOTICE, "error");
+      return;
+    }
     const text = browserWindow.prompt("Optional hint request detail", "") || "";
     setStatus("Requesting a hint…");
-    tutorSession.beginObservedTurn(state.detail);
     try {
       await client.requestHint({
         lessonId: operation.lessonId,
         text: text.trim() || null,
       });
     } catch (error) {
+      admission.markDispatchFailed(error);
       if (!isOperationCurrent(operation)) return;
-      tutorSession.markFailed(error);
       throw error;
     }
+    admission.markDispatchAccepted();
     if (!isOperationCurrent(operation)) return;
     await refresh(operation);
   };
 
   const closeLesson = async () => {
-    const operation = captureOperation();
+    const operation = advanceOperation();
     if (!isOperationCurrent(operation) || !operation.lessonId) return;
+    if (state.closingLessonId === operation.lessonId) return;
+    state.closingLessonId = operation.lessonId;
+    tutorSession.close();
+    renderDetail();
     setStatus("Closing lesson…");
     try {
       await client.closeLesson({ lessonId: operation.lessonId });
     } catch (error) {
+      if (isOperationCurrent(operation)) {
+        state.closingLessonId = null;
+        renderDetail();
+      }
       if (isOperationCurrent(operation)) throw error;
       return;
     }
     if (!isOperationCurrent(operation)) return;
-    tutorSession.close();
+    state.closingLessonId = null;
     await refresh(operation);
   };
 

@@ -8,10 +8,8 @@ import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event
 import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 
 export {
-  APPLICATION_AGENT_EVENT_ARRAY_LIMIT,
   APPLICATION_AGENT_EVENT_QUEUE_LIMIT,
   APPLICATION_AGENT_EVENT_SERIALIZED_FRAME_LIMIT,
-  APPLICATION_AGENT_EVENT_SUMMARY_LIMIT,
   APPLICATION_AGENT_EVENT_TEXT_LIMIT,
 } from "../../application-communication-limits.js";
 

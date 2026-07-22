@@ -1,8 +1,6 @@
 const isRecord = (value) => Boolean(value) && typeof value === "object" && !Array.isArray(value);
 const isString = (value) => typeof value === "string";
-const isBoolean = (value) => typeof value === "boolean";
 const isNullableString = (value) => value === null || isString(value);
-const isNullableNumber = (value) => value === null || (typeof value === "number" && Number.isFinite(value));
 const isStringArray = (value) => Array.isArray(value) && value.every(isString);
 const isOneOf = (...allowed) => (value) => typeof value === "string" && allowed.includes(value);
 const exact = (value, shape) => {
@@ -10,145 +8,6 @@ const exact = (value, shape) => {
         return false;
     const keys = Object.keys(shape);
     return Object.keys(value).length === keys.length && keys.every((key) => Object.prototype.hasOwnProperty.call(value, key) && shape[key](value[key]));
-};
-const nullable = (validator) => (value) => value === null || validator(value);
-const isSafeError = (value) => exact(value, {
-    code: isOneOf("RUNTIME_ERROR", "TOOL_EXECUTION_ERROR", "COMPACTION_ERROR", "SEGMENT_ERROR", "UNKNOWN_ERROR"),
-    message: isString,
-});
-const isParticipant = (value) => {
-    if (!isRecord(value) || typeof value.kind !== "string")
-        return false;
-    if (value.kind === "TEAM")
-        return exact(value, { kind: isOneOf("TEAM"), memberRouteKey: isNullableString });
-    return value.kind === "MEMBER" && exact(value, { kind: isOneOf("MEMBER"), memberRouteKey: isString });
-};
-const toolRef = {
-    invocationId: isNullableString,
-    toolName: isNullableString,
-    turnId: isNullableString,
-};
-const isTodoItem = (value) => exact(value, {
-    id: isString,
-    description: isString,
-    status: isOneOf("PENDING", "IN_PROGRESS", "COMPLETED", "UNKNOWN"),
-});
-const isTodoItems = (value) => Array.isArray(value) && value.every(isTodoItem);
-const teamMessage = {
-    messageId: isString,
-    sender: isParticipant,
-    receiver: isParticipant,
-    content: isString,
-    messageType: isString,
-    createdAt: isString,
-};
-const agentDataValidators = {
-    TURN_STARTED: (value) => exact(value, { turnId: isNullableString }),
-    TURN_COMPLETED: (value) => exact(value, { turnId: isNullableString }),
-    TURN_INTERRUPTED: (value) => exact(value, { turnId: isNullableString, reason: isNullableString }),
-    SEGMENT_START: (value) => exact(value, {
-        segmentId: isString,
-        turnId: isNullableString,
-        kind: isOneOf("TEXT", "REASONING", "TOOL_CALL", "COMMAND", "FILE_EDIT", "MEDIA", "OTHER"),
-        toolName: isNullableString,
-    }),
-    SEGMENT_CONTENT: (value) => exact(value, {
-        segmentId: isString,
-        turnId: isNullableString,
-        kind: isOneOf("TEXT", "REASONING", "TOOL_CALL", "COMMAND", "FILE_EDIT", "MEDIA", "OTHER"),
-        delta: isString,
-    }),
-    SEGMENT_END: (value) => exact(value, {
-        segmentId: isString,
-        turnId: isNullableString,
-        kind: isOneOf("TEXT", "REASONING", "TOOL_CALL", "COMMAND", "FILE_EDIT", "MEDIA", "OTHER"),
-        interrupted: isBoolean,
-        failed: isBoolean,
-        reason: isNullableString,
-        error: nullable(isSafeError),
-    }),
-    AGENT_STATUS: (value) => exact(value, {
-        status: isOneOf("OFFLINE", "INITIALIZING", "IDLE", "RUNNING", "ERROR"),
-        canInterrupt: isBoolean,
-        trigger: isNullableString,
-        toolName: isNullableString,
-        error: nullable(isSafeError),
-    }),
-    COMPACTION_STATUS: (value) => exact(value, {
-        phase: isOneOf("REQUESTED", "STARTED", "COMPLETED", "FAILED", "UNKNOWN"),
-        turnId: isNullableString,
-        trigger: isNullableString,
-        selectedBlockCount: isNullableNumber,
-        compactedBlockCount: isNullableNumber,
-        error: nullable(isSafeError),
-    }),
-    TOKEN_USAGE_UPDATED: (value) => exact(value, {
-        usageEventId: isNullableString,
-        observedAt: isNullableString,
-        turnId: isNullableString,
-        inputTokens: isNullableNumber,
-        cachedInputTokens: isNullableNumber,
-        outputTokens: isNullableNumber,
-        reasoningOutputTokens: isNullableNumber,
-        totalTokens: isNullableNumber,
-        contextWindowUsagePercent: isNullableNumber,
-    }),
-    AGENT_RESPONSE_COMPLETED: (value) => exact(value, { content: isNullableString, reasoning: isNullableString }),
-    TOOL_APPROVAL_REQUESTED: (value) => exact(value, { ...toolRef, argumentSummary: isNullableString }),
-    TOOL_APPROVED: (value) => exact(value, { ...toolRef, reason: isNullableString }),
-    TOOL_DENIED: (value) => exact(value, {
-        ...toolRef,
-        argumentSummary: isNullableString,
-        reason: isNullableString,
-        error: nullable(isSafeError),
-    }),
-    TOOL_EXECUTION_STARTED: (value) => exact(value, { ...toolRef, argumentSummary: isNullableString }),
-    TOOL_EXECUTION_SUCCEEDED: (value) => exact(value, { ...toolRef, resultSummary: isNullableString }),
-    TOOL_EXECUTION_FAILED: (value) => exact(value, { ...toolRef, error: isSafeError }),
-    TOOL_EXECUTION_INTERRUPTED: (value) => exact(value, { ...toolRef, reason: isString }),
-    TOOL_LOG: (value) => exact(value, { ...toolRef, entry: isString }),
-    TODO_LIST_UPDATE: (value) => exact(value, { items: isTodoItems }),
-    INTER_AGENT_MESSAGE: (value) => exact(value, {
-        messageId: isNullableString,
-        senderMemberRouteKey: isNullableString,
-        receiverMemberRouteKey: isNullableString,
-        content: isString,
-        messageType: isNullableString,
-        createdAt: isNullableString,
-    }),
-    TEAM_COMMUNICATION_MESSAGE: (value) => exact(value, teamMessage),
-    SYSTEM_TASK_NOTIFICATION: (value) => exact(value, { content: isString }),
-    ERROR: (value) => exact(value, { error: isSafeError }),
-};
-const teamDataValidators = {
-    TEAM_STATUS: (value) => exact(value, {
-        status: isOneOf("OFFLINE", "INITIALIZING", "IDLE", "RUNNING", "ERROR"),
-        error: nullable(isSafeError),
-    }),
-    TASK_DELEGATION_EVENT: (value) => exact(value, {
-        delegationEventType: isOneOf("ACTIVATED", "STATUS_UPDATED", "RESULT_SUBMITTED", "RESULT_REVIEWED", "TERMINAL_STATUS"),
-        taskId: isNullableString,
-        taskIds: isStringArray,
-        taskLabel: isNullableString,
-        description: isNullableString,
-        status: isNullableString,
-        previousStatus: isNullableString,
-        target: nullable(isParticipant),
-        executionKind: nullable(isOneOf("AGENT", "TEAM")),
-        terminal: isBoolean,
-        message: isNullableString,
-        occurredAt: isNullableString,
-    }),
-    TEAM_COMMUNICATION_MESSAGE: (value) => exact(value, teamMessage),
-    MEMBER_INPUT_MESSAGE: (value) => exact(value, {
-        messageId: isString,
-        inputOrigin: isOneOf("USER_MESSAGE", "INTER_AGENT_DELIVERY"),
-        recipientMemberRouteKey: isString,
-        senderMemberRouteKey: isNullableString,
-        content: isString,
-        receivedAt: isString,
-        parentCommunicationMessageId: isNullableString,
-    }),
 };
 export const isApplicationAgentTargetAddress = (value) => {
     if (!isRecord(value) || !exact(value, { bindingId: isString, target: isRecord }))
@@ -174,6 +33,28 @@ const isProducer = (value) => exact(value, {
     runtimeKind: isOneOf("AGENT", "AGENT_TEAM_MEMBER"),
     teamPath: isStringArray,
 });
+const isStreamEvent = (value) => {
+    if (!isRecord(value) || typeof value.type !== "string")
+        return false;
+    switch (value.type) {
+        case "TURN_STARTED":
+        case "TURN_COMPLETED":
+        case "TURN_INTERRUPTED":
+            return exact(value, { type: isOneOf(value.type) });
+        case "TEXT_DELTA":
+            return exact(value, {
+                type: isOneOf("TEXT_DELTA"),
+                delta: (delta) => typeof delta === "string" && delta.length > 0,
+            });
+        case "ERROR":
+            return exact(value, {
+                type: isOneOf("ERROR"),
+                message: (message) => typeof message === "string" && message.length > 0,
+            });
+        default:
+            return false;
+    }
+};
 export const isApplicationAgentEvent = (value) => {
     if (!isRecord(value) || !exact(value, {
         sequence: (sequence) => typeof sequence === "number" && Number.isSafeInteger(sequence) && sequence > 0,
@@ -181,23 +62,12 @@ export const isApplicationAgentEvent = (value) => {
         applicationId: isString,
         address: isApplicationAgentTargetAddress,
         runtimeSubject: isOneOf("AGENT_RUN", "TEAM_RUN"),
-        producer: nullable(isProducer),
-        event: isRecord,
-    }) || !isRecord(value.event))
+        producer: isProducer,
+        event: isStreamEvent,
+    }))
         return false;
     const address = value.address;
     const expectedRuntimeSubject = address.target.kind === "AGENT_RUN" ? "AGENT_RUN" : "TEAM_RUN";
-    if (value.runtimeSubject !== expectedRuntimeSubject)
-        return false;
-    const publicEvent = value.event;
-    if (!exact(publicEvent, { source: isString, type: isString, data: isRecord }))
-        return false;
-    const validators = publicEvent.source === "AGENT"
-        ? agentDataValidators
-        : publicEvent.source === "AGENT_TEAM"
-            ? teamDataValidators
-            : null;
-    return validators !== null && typeof publicEvent.type === "string" &&
-        Object.prototype.hasOwnProperty.call(validators, publicEvent.type) && validators[publicEvent.type](publicEvent.data);
+    return value.runtimeSubject === expectedRuntimeSubject;
 };
 //# sourceMappingURL=application-agent-event-validator.js.map

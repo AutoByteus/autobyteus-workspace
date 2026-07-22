@@ -392,6 +392,11 @@ input:disabled {
   box-shadow: 0 0 0 5px rgba(91, 63, 214, 0.14);
 }
 
+.live-tutor[data-live-state="completed"] .live-status-dot {
+  background: #2563eb;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.14);
+}
+
 .live-tutor[data-live-state="saved"] .live-status-dot {
   background: #15803d;
   box-shadow: 0 0 0 5px rgba(21, 128, 61, 0.14);
@@ -414,9 +419,8 @@ input:disabled {
   line-height: 1.55;
 }
 
-.live-tool-status,
-.live-completion,
-.live-error {
+.live-error,
+.live-warning {
   margin-top: 12px;
   border-radius: 12px;
   padding: 9px 11px;
@@ -424,15 +428,14 @@ input:disabled {
   font-weight: 650;
 }
 
-.live-tool-status,
-.live-completion {
-  background: rgba(255, 255, 255, 0.78);
-  color: #4338ca;
-}
-
 .live-error {
   background: #fef2f2;
   color: #991b1b;
+}
+
+.live-warning {
+  background: #fff7ed;
+  color: #9a3412;
 }
 
 .artifact-grid {

@@ -182,6 +182,16 @@ export const renderLessonList = ({ state, elements, onSelectLesson, onError }) =
   }
 };
 
+const visibleTranscriptMessages = (messages, tutorLive) => {
+  if (!Array.isArray(messages) || !tutorLive?.deferDurableTutorMessages) return messages;
+  let tutorMessageCount = 0;
+  return messages.filter((message) => {
+    if (message?.role !== "tutor") return true;
+    tutorMessageCount += 1;
+    return tutorMessageCount <= tutorLive.durableTutorMessageBaseline;
+  });
+};
+
 const renderTranscript = (messages) => {
   if (!Array.isArray(messages) || messages.length === 0) {
     return `<div class="empty-state">No lesson messages yet.</div>`;
@@ -237,6 +247,7 @@ const LIVE_STATUS_LABELS = {
   connecting: "Connecting to the tutor…",
   ready: "Tutor connected",
   streaming: "Tutor is responding…",
+  completed: "Tutor response complete · saving transcript…",
   saved: "Tutor response saved",
   failed: "Tutor connection failed",
   closed: "Tutor connection closed",
@@ -248,9 +259,13 @@ const renderLiveTutor = (state, lesson) => {
   const status = belongsToLesson ? live.status : "idle";
   const statusLabel = LIVE_STATUS_LABELS[status] ?? LIVE_STATUS_LABELS.idle;
   const text = belongsToLesson ? live.text : "";
-  const toolStatus = belongsToLesson ? live.toolStatus : "";
   const errorMessage = belongsToLesson ? live.errorMessage : null;
-  const responseCompleted = belongsToLesson && live.responseCompleted;
+  const liveWarning = belongsToLesson ? live.liveWarning : null;
+  const placeholder = status === "saved"
+    ? "The authoritative tutor response is shown in the transcript below."
+    : status === "completed"
+      ? "The live response is complete and is waiting for the durable transcript."
+      : "Live text appears here while the tutor responds. Completed turns remain in the transcript below.";
 
   return `
     <section class="live-tutor" data-live-state="${escapeHtml(status)}" aria-live="polite" aria-atomic="false">
@@ -263,10 +278,9 @@ const renderLiveTutor = (state, lesson) => {
       </div>
       ${text
         ? `<p class="live-tutor-text">${escapeHtml(text)}</p>`
-        : `<p class="muted small live-tutor-placeholder">Live text appears here while the tutor responds. Completed turns remain in the transcript below.</p>`}
-      ${toolStatus ? `<p class="live-tool-status">${escapeHtml(toolStatus)}</p>` : ""}
-      ${responseCompleted ? `<p class="live-completion">Response complete · waiting for or showing the durable transcript.</p>` : ""}
+        : `<p class="muted small live-tutor-placeholder">${escapeHtml(placeholder)}</p>`}
       ${errorMessage ? `<p class="live-error" role="alert">${escapeHtml(errorMessage)}</p>` : ""}
+      ${liveWarning ? `<p class="live-warning">${escapeHtml(liveWarning)}</p>` : ""}
     </section>
   `;
 };
@@ -289,6 +303,17 @@ export const renderLessonDetail = ({
     elements.lessonDetail.textContent = "Select a lesson to continue the tutoring conversation and review past guidance.";
     return;
   }
+
+  const live = state.tutorLive?.lessonId === lesson.lessonId ? state.tutorLive : null;
+  const nextTurnAvailable = Boolean(
+    lesson.status === "active"
+    && live?.turnAdmission === "available"
+  );
+  const turnHelp = nextTurnAvailable
+    ? "Send one follow-up or request one hint. The next action becomes available after the tutor response is saved."
+    : "Wait for the current tutor response to be saved before sending another.";
+  const closeDispatching = state.closingLessonId === lesson.lessonId;
+  const transcriptMessages = visibleTranscriptMessages(lesson.messages, live);
 
   elements.lessonDetail.className = "detail-grid";
   elements.lessonDetail.innerHTML = `
@@ -321,8 +346,8 @@ export const renderLessonDetail = ({
         </div>
       </div>
       <div class="action-row">
-        <button id="request-hint" class="secondary-button" type="button">Request hint</button>
-        <button id="close-lesson" class="danger-button" type="button">Close lesson</button>
+        <button id="request-hint" class="secondary-button" type="button"${nextTurnAvailable ? "" : " disabled"}>Request hint</button>
+        <button id="close-lesson" class="danger-button" type="button"${closeDispatching ? " disabled" : ""}>${closeDispatching ? "Closing lesson…" : "Close lesson"}</button>
       </div>
     </section>
 
@@ -333,12 +358,13 @@ export const renderLessonDetail = ({
         <h3>Transcript</h3>
         <p class="muted">The lesson keeps the tutoring conversation and student follow-ups together in one record.</p>
       </div>
-      ${renderTranscript(lesson.messages)}
+      ${renderTranscript(transcriptMessages)}
       <form id="follow-up-form" class="note-composer">
-        <textarea id="follow-up-input" placeholder="Send the next follow-up question or answer"></textarea>
+        <textarea id="follow-up-input" placeholder="Send the next follow-up question or answer"${nextTurnAvailable ? "" : " disabled"}></textarea>
         <div class="action-row">
-          <button class="primary-button" type="submit">Send follow-up</button>
+          <button class="primary-button" type="submit"${nextTurnAvailable ? "" : " disabled"}>Send follow-up</button>
         </div>
+        <p id="turn-admission-help" class="muted small">${escapeHtml(turnHelp)}</p>
       </form>
     </section>
 

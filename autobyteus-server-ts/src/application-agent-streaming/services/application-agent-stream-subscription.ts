@@ -17,7 +17,7 @@ import {
   type ApplicationAgentStreamSourceEvent,
 } from "../domain/application-agent-streaming-models.js";
 import { ApplicationAgentEventMapper } from "./application-agent-stream-event-mapper.js";
-import { ApplicationAgentStreamProjectionError } from "./application-agent-stream-public-event-projector.js";
+import { ApplicationAgentStreamProjectionError } from "./application-agent-stream-event-projector.js";
 import { ApplicationAgentStreamRuntimeSource } from "./application-agent-stream-runtime-source.js";
 
 type State =

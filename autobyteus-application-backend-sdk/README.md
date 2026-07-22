@@ -97,6 +97,7 @@ await context.agentExecution.sendInput({
 - `artifactHandlers.persisted` is the live published-artifact callback. It is separate from lifecycle `eventHandlers`, which continue to receive only `RUN_*` journal envelopes.
 - Applications that need guaranteed artifact catch-up should use `agentExecution.list(...)`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`, then apply their own idempotency keyed by `revisionId`.
 - Application backends may observe a bound agent target through `agentExecution.subscribeEventStream(address, observer, options)` and send input through the same `ApplicationAgentTargetAddress` using `agentExecution.sendInput({ address, input })`.
+- Backend observers receive the same minimal provider-neutral stream as frontend connections: `TURN_STARTED`, exact `TEXT_DELTA`, `TURN_COMPLETED`, `TURN_INTERRUPTED`, or safe `ERROR`; durable structured results continue through published artifacts.
 - App-authored migrations run only against `app.sqlite`; platform-owned `platform.sqlite` remains reserved.
 
 ## Teaching samples

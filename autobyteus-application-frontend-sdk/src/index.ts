@@ -55,5 +55,6 @@ export type {
   ApplicationAgentConnectionErrorCode,
   ApplicationAgentConnectionClose,
   ApplicationAgentEvent,
+  ApplicationAgentStreamEvent,
   ApplicationAgentTargetAddress,
 } from "@autobyteus/application-sdk-contracts";

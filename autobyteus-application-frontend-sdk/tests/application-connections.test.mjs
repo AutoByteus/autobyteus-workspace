@@ -121,28 +121,102 @@ test('standard connection accepts exact events and rejects malformed nested payl
   connection.onError((error) => observedErrors.push(error.code));
   socket.emit('message', { data: JSON.stringify({ protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL, type: 'READY', address }) });
   await connection.ready;
-  const event = {
+  const event = (sequence, publicEvent) => ({
+    sequence,
+    observedAt: '2026-07-21T00:00:00.000Z',
+    applicationId: 'app',
+    address,
+    runtimeSubject: 'AGENT_RUN',
+    producer: {
+      runId: 'run-1',
+      memberRouteKey: 'root',
+      memberName: null,
+      displayName: null,
+      runtimeKind: 'AGENT',
+      teamPath: [],
+    },
+    event: publicEvent,
+  });
+  const exactEvents = [
+    event(1, { type: 'TURN_STARTED' }),
+    event(2, { type: 'TEXT_DELTA', delta: ' exact \n' }),
+    event(3, { type: 'TURN_COMPLETED' }),
+    event(4, { type: 'TURN_INTERRUPTED' }),
+    event(5, { type: 'ERROR', message: 'The agent response failed.' }),
+  ];
+  for (const exactEvent of exactEvents) {
+    socket.emit('message', { data: JSON.stringify({
+      protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
+      type: 'EVENT',
+      event: exactEvent,
+    }) });
+  }
+  await tick();
+  assert.deepEqual(observedEvents, exactEvents);
+
+  socket.emit('message', { data: JSON.stringify({
+    protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
+    type: 'EVENT',
+    event: event(6, { type: 'AGENT_RESPONSE_COMPLETED', content: 'removed' }),
+  }) });
+  await tick();
+  assert.deepEqual(observedEvents, exactEvents);
+  assert.deepEqual(observedErrors, ['PROTOCOL_ERROR']);
+  assert.deepEqual(socket.closeCalls.at(-1), { code: 1002, reason: 'Protocol error' });
+});
+
+test('standard connection rejects removed event shapes, nullable producers, and extra fields', async () => {
+  const address = { bindingId: 'binding-1', target: { kind: 'AGENT_RUN' } };
+  const producer = {
+    runId: 'run-1',
+    memberRouteKey: 'root',
+    memberName: null,
+    displayName: null,
+    runtimeKind: 'AGENT',
+    teamPath: [],
+  };
+  const envelope = (event, overrides = {}) => ({
     sequence: 1,
     observedAt: '2026-07-21T00:00:00.000Z',
     applicationId: 'app',
     address,
     runtimeSubject: 'AGENT_RUN',
-    producer: null,
-    event: { source: 'AGENT', type: 'TURN_STARTED', data: { turnId: 'turn-1' } },
-  };
-  socket.emit('message', { data: JSON.stringify({ protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL, type: 'EVENT', event }) });
-  await tick();
-  assert.deepEqual(observedEvents, [event]);
+    producer,
+    event,
+    ...overrides,
+  });
+  const malformedEvents = [
+    envelope({ type: 'SEGMENT_CONTENT', delta: 'removed' }),
+    envelope({ type: 'AGENT_RESPONSE_COMPLETED', content: 'removed' }),
+    envelope({ type: 'ASSISTANT_COMPLETE', content: 'removed' }),
+    envelope({ type: 'TOOL_EXECUTION_STARTED', toolName: 'publish_artifacts' }),
+    envelope({ type: 'TEAM_STATUS', status: 'IDLE' }),
+    envelope({ type: 'TEXT_DELTA', delta: 'valid', providerThreadId: 'secret' }),
+    envelope({ type: 'TURN_COMPLETED', content: 'not allowed' }),
+    envelope({ type: 'TURN_STARTED' }, { producer: null }),
+  ];
 
-  socket.emit('message', { data: JSON.stringify({
-    protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
-    type: 'EVENT',
-    event: { ...event, event: { ...event.event, data: { turnId: 'turn-2', providerRecord: 'private' } } },
-  }) });
-  await tick();
-  assert.deepEqual(observedEvents, [event]);
-  assert.deepEqual(observedErrors, ['PROTOCOL_ERROR']);
-  assert.deepEqual(socket.closeCalls.at(-1), { code: 1002, reason: 'Protocol error' });
+  for (const malformedEvent of malformedEvents) {
+    const socket = createSocket();
+    const connection = createTransport({ agentCommunicationWebSocketFactory: () => socket })
+      .connectAgentCommunication(address);
+    const errors = [];
+    connection.onError((error) => errors.push(error.code));
+    socket.emit('message', { data: JSON.stringify({
+      protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
+      type: 'READY',
+      address,
+    }) });
+    await connection.ready;
+    socket.emit('message', { data: JSON.stringify({
+      protocol: APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
+      type: 'EVENT',
+      event: malformedEvent,
+    }) });
+    await tick();
+    assert.deepEqual(errors, ['PROTOCOL_ERROR']);
+    assert.deepEqual(socket.closeCalls.at(-1), { code: 1002, reason: 'Protocol error' });
+  }
 });
 
 test('standard connection rejects unsupported frames and unserializable or oversized input safely', async () => {

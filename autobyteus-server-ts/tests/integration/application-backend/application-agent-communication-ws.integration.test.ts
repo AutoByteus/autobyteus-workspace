@@ -274,7 +274,7 @@ describe("Application agent communication WebSocket integration", () => {
       payload: {
         segmentId: "segment-1",
         turnId: "turn-1",
-        type: "text",
+        segment_type: "text",
         delta: "hello",
         providerSecret: "must-not-cross",
       },
@@ -313,7 +313,7 @@ describe("Application agent communication WebSocket integration", () => {
     }
 
     await waitFor(
-      () => agentEvents.length === 1 && teamEvents.length === 3 && memberEvents.length === 1,
+      () => agentEvents.length === 1 && teamEvents.length === 2 && memberEvents.length === 1,
       "projected application agent events",
     );
     expect(agentEvents[0]).toMatchObject({
@@ -321,16 +321,12 @@ describe("Application agent communication WebSocket integration", () => {
       applicationId: APPLICATION_ID,
       address: agentAddress,
       runtimeSubject: "AGENT_RUN",
-      event: {
-        source: "AGENT",
-        type: "SEGMENT_CONTENT",
-        data: { segmentId: "segment-1", turnId: "turn-1", kind: "TEXT", delta: "hello" },
-      },
+      producer: { runId: "agent-run", runtimeKind: "AGENT" },
+      event: { type: "TEXT_DELTA", delta: "hello" },
     });
     expect(JSON.stringify(agentEvents[0])).not.toContain("providerSecret");
-    expect(teamEvents.map((event) => event.sequence)).toEqual([1, 2, 3]);
+    expect(teamEvents.map((event) => event.sequence)).toEqual([1, 2]);
     expect(teamEvents.map((event) => event.event.type)).toEqual([
-      "TEAM_STATUS",
       "TURN_STARTED",
       "TURN_STARTED",
     ]);
@@ -338,7 +334,7 @@ describe("Application agent communication WebSocket integration", () => {
       sequence: 1,
       address: memberAddress,
       producer: { memberRouteKey: "researcher", runId: "researcher-run" },
-      event: { source: "AGENT", type: "TURN_STARTED", data: { turnId: "turn-researcher" } },
+      event: { type: "TURN_STARTED" },
     });
 
     const closePromise = waitForClose(agentConnection);

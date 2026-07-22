@@ -56,7 +56,7 @@ describe("ApplicationAgentStreamSubscription", () => {
     await flush();
     expect(harness.emitted).toHaveLength(1);
     expect(harness.emitted[0]?.kind).toBe("event");
-    expect(harness.emitted[0]?.value).toMatchObject({ sequence: 1, applicationId: "app-1", producer, event: { source: "AGENT", type: "TURN_STARTED", data: { turnId: "turn-1" } } });
+    expect(harness.emitted[0]?.value).toMatchObject({ sequence: 1, applicationId: "app-1", producer, event: { type: "TURN_STARTED" } });
     expect(JSON.stringify(harness.emitted[0]?.value)).not.toContain("providerSecret");
   });
 
@@ -78,7 +78,7 @@ describe("ApplicationAgentStreamSubscription", () => {
     await harness.subscription.establishPaused();
     expect(harness.subscription.beginReadyCommit()).toBe(true);
     expect(harness.subscription.enableDrain()).toBe(true);
-    harness.emit({ source: "AGENT", producer, event: event(AgentRunEventType.SEGMENT_CONTENT, { segmentId: "segment-1" }) });
+    harness.emit({ source: "AGENT", producer, event: event(AgentRunEventType.SEGMENT_CONTENT, { segment_type: "text" }) });
     await flush();
     expect(harness.emitted).toEqual([
       { kind: "error", value: { code: "EVENT_MAPPING_FAILED", message: "The application agent event could not be projected safely.", recoverable: false } },
@@ -95,7 +95,7 @@ describe("ApplicationAgentStreamSubscription", () => {
     expect(harness.subscription.enableDrain()).toBe(true);
     await flush();
     expect(harness.emitted.map((entry) => entry.kind)).toEqual(["event", "closed"]);
-    expect(harness.emitted[0]?.value).toMatchObject({ sequence: 1, event: { data: { turnId: "turn-1" } } });
+    expect(harness.emitted[0]?.value).toMatchObject({ sequence: 1, event: { type: "TURN_STARTED" } });
     expect(harness.emitted[1]?.value).toEqual({ reason: "BINDING_ENDED" });
   });
 
