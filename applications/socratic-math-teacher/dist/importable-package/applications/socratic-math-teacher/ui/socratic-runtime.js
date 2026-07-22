@@ -49,8 +49,31 @@ export const mountSocraticMathTeacher = ({
   };
 
   let disposed = false;
+  let lifecycleGeneration = 0;
+
+  const captureOperation = (lessonId = state.selectedLessonId) => ({
+    generation: lifecycleGeneration,
+    lessonId,
+  });
+
+  const isOperationCurrent = (operation) => Boolean(
+    !disposed
+    && operation.generation === lifecycleGeneration
+    && operation.lessonId === state.selectedLessonId
+  );
+
+  const advanceOperation = () => {
+    lifecycleGeneration += 1;
+    return captureOperation();
+  };
+
+  const setStartLessonBusy = (busy) => {
+    if (elements.startLessonButton) elements.startLessonButton.disabled = busy;
+    if (elements.lessonPromptInput) elements.lessonPromptInput.disabled = busy;
+  };
 
   const setStatus = (text, tone = "idle") => {
+    if (disposed) return;
     state.statusText = text;
     state.statusTone = tone;
     if (elements.workspaceStatus) {
@@ -60,6 +83,7 @@ export const mountSocraticMathTeacher = ({
   };
 
   const handleUiError = (error) => {
+    if (disposed) return;
     setStatus(error instanceof Error ? error.message : String(error), "error");
   };
 
@@ -75,10 +99,19 @@ export const mountSocraticMathTeacher = ({
   const tutorSession = createSocraticTutorSession({
     agentCommunication: applicationClient.agentCommunication,
     onStateChange: (tutorLive) => {
+      if (disposed) return;
       state.tutorLive = tutorLive;
       renderDetail();
     },
   });
+
+  const replaceSelection = (lessonId, { cancelPendingStart = true } = {}) => {
+    lifecycleGeneration += 1;
+    tutorSession.close();
+    state.selectedLessonId = lessonId;
+    if (cancelPendingStart) setStartLessonBusy(false);
+    return captureOperation(lessonId);
+  };
 
   const render = () => {
     renderApp({
@@ -92,32 +125,62 @@ export const mountSocraticMathTeacher = ({
     });
   };
 
-  const refreshDetail = async () => {
-    if (!state.selectedLessonId) {
+  const refreshDetail = async (operation) => {
+    if (!isOperationCurrent(operation)) return;
+    if (!operation.lessonId) {
       state.detail = null;
       tutorSession.close();
       renderDetail();
       return;
     }
 
-    state.detail = await client.lesson(state.selectedLessonId);
+    let detail;
+    try {
+      detail = await client.lesson(operation.lessonId);
+    } catch (error) {
+      if (isOperationCurrent(operation)) throw error;
+      return;
+    }
+    if (!isOperationCurrent(operation)) return;
+
+    state.detail = detail;
     tutorSession.reconcileDurableLesson(state.detail);
     renderDetail();
     if (state.detail?.tutorTargetAddress && !tutorSession.matchesLesson(state.detail)) {
-      await tutorSession.connectLesson({ lesson: state.detail });
+      try {
+        await tutorSession.connectLesson({ lesson: state.detail });
+      } catch (error) {
+        if (isOperationCurrent(operation)) throw error;
+      }
     } else if (!state.detail?.tutorTargetAddress) {
       tutorSession.close();
     }
   };
 
-  const refresh = async () => {
+  const refresh = async (startingOperation = captureOperation()) => {
+    let operation = startingOperation;
+    if (!isOperationCurrent(operation)) return;
     setStatus("Loading lessons through the hosted GraphQL backend mount…");
-    const lessons = await client.lessons();
+    let lessons;
+    try {
+      lessons = await client.lessons();
+    } catch (error) {
+      if (isOperationCurrent(operation)) handleUiError(error);
+      return;
+    }
+    if (!isOperationCurrent(operation)) return;
+
     state.lessons = Array.isArray(lessons) ? lessons : [];
     if (!state.selectedLessonId || !state.lessons.some((lesson) => lesson.lessonId === state.selectedLessonId)) {
-      state.selectedLessonId = state.lessons[0]?.lessonId || null;
+      operation = replaceSelection(state.lessons[0]?.lessonId || null);
     }
-    await refreshDetail();
+    try {
+      await refreshDetail(operation);
+    } catch (error) {
+      if (isOperationCurrent(operation)) handleUiError(error);
+      return;
+    }
+    if (!isOperationCurrent(operation)) return;
     render();
     setStatus(
       state.lessons.length === 0
@@ -128,9 +191,15 @@ export const mountSocraticMathTeacher = ({
   };
 
   const selectLesson = async (lessonId) => {
-    tutorSession.close();
-    state.selectedLessonId = lessonId;
-    await refreshDetail();
+    if (disposed) return;
+    const operation = replaceSelection(lessonId);
+    state.detail = null;
+    render();
+    try {
+      await refreshDetail(operation);
+    } catch (error) {
+      if (isOperationCurrent(operation)) throw error;
+    }
   };
 
   const startLesson = async () => {
@@ -140,27 +209,31 @@ export const mountSocraticMathTeacher = ({
       return;
     }
 
-    if (elements.startLessonButton) elements.startLessonButton.disabled = true;
-    if (elements.lessonPromptInput) elements.lessonPromptInput.disabled = true;
+    let operation = advanceOperation();
+    setStartLessonBusy(true);
     setStatus("Starting a new lesson…");
     try {
       const lesson = await client.startLesson({ prompt });
-      tutorSession.close();
-      state.selectedLessonId = lesson.lessonId;
+      if (!isOperationCurrent(operation)) return;
+
+      operation = replaceSelection(lesson.lessonId, { cancelPendingStart: false });
       state.detail = lesson;
       state.lessons = [lesson, ...state.lessons.filter((item) => item.lessonId !== lesson.lessonId)];
       render();
       await tutorSession.connectLesson({ lesson, sendInitialProblem: true });
+      if (!isOperationCurrent(operation)) return;
       if (elements.lessonPromptInput) elements.lessonPromptInput.value = "";
-      await refresh();
+      await refresh(operation);
+    } catch (error) {
+      if (isOperationCurrent(operation)) throw error;
     } finally {
-      if (elements.startLessonButton) elements.startLessonButton.disabled = false;
-      if (elements.lessonPromptInput) elements.lessonPromptInput.disabled = false;
+      if (isOperationCurrent(operation)) setStartLessonBusy(false);
     }
   };
 
   const askFollowUp = async () => {
-    if (!state.selectedLessonId) return;
+    const operation = captureOperation();
+    if (!isOperationCurrent(operation) || !operation.lessonId) return;
     const textarea = elements.lessonDetail?.querySelector("#follow-up-input");
     const text = textarea?.value?.trim() || "";
     if (!text) {
@@ -170,40 +243,54 @@ export const mountSocraticMathTeacher = ({
     setStatus("Sending your follow-up…");
     tutorSession.beginObservedTurn(state.detail);
     try {
-      await client.askFollowUp({ lessonId: state.selectedLessonId, text });
+      await client.askFollowUp({ lessonId: operation.lessonId, text });
     } catch (error) {
+      if (!isOperationCurrent(operation)) return;
       tutorSession.markFailed(error);
       throw error;
     }
-    await refresh();
+    if (!isOperationCurrent(operation)) return;
+    if (textarea) textarea.value = "";
+    await refresh(operation);
   };
 
   const requestHint = async () => {
-    if (!state.selectedLessonId) return;
+    const operation = captureOperation();
+    if (!isOperationCurrent(operation) || !operation.lessonId) return;
     const text = browserWindow.prompt("Optional hint request detail", "") || "";
     setStatus("Requesting a hint…");
     tutorSession.beginObservedTurn(state.detail);
     try {
       await client.requestHint({
-        lessonId: state.selectedLessonId,
+        lessonId: operation.lessonId,
         text: text.trim() || null,
       });
     } catch (error) {
+      if (!isOperationCurrent(operation)) return;
       tutorSession.markFailed(error);
       throw error;
     }
-    await refresh();
+    if (!isOperationCurrent(operation)) return;
+    await refresh(operation);
   };
 
   const closeLesson = async () => {
-    if (!state.selectedLessonId) return;
+    const operation = captureOperation();
+    if (!isOperationCurrent(operation) || !operation.lessonId) return;
     setStatus("Closing lesson…");
-    await client.closeLesson({ lessonId: state.selectedLessonId });
+    try {
+      await client.closeLesson({ lessonId: operation.lessonId });
+    } catch (error) {
+      if (isOperationCurrent(operation)) throw error;
+      return;
+    }
+    if (!isOperationCurrent(operation)) return;
     tutorSession.close();
-    await refresh();
+    await refresh(operation);
   };
 
   const pushNotification = (notification) => {
+    if (disposed) return;
     state.notifications = [notification, ...state.notifications].slice(0, 12);
     renderNotifications({ state, elements });
   };
@@ -211,12 +298,21 @@ export const mountSocraticMathTeacher = ({
   const connectNotifications = () => {
     state.notificationHandle?.close?.();
     state.notificationHandle = client.subscribeNotifications((notification) => {
+      if (disposed) return;
       pushNotification(notification);
-      refresh().catch(handleUiError);
+      const operation = captureOperation();
+      refresh(operation).catch((error) => {
+        if (isOperationCurrent(operation)) handleUiError(error);
+      });
     });
   };
 
-  const onRefresh = () => refresh().catch(handleUiError);
+  const onRefresh = () => {
+    const operation = captureOperation();
+    refresh(operation).catch((error) => {
+      if (isOperationCurrent(operation)) handleUiError(error);
+    });
+  };
   const onStartLesson = (event) => {
     event.preventDefault();
     startLesson().catch(handleUiError);
@@ -224,6 +320,7 @@ export const mountSocraticMathTeacher = ({
   const dispose = () => {
     if (disposed) return;
     disposed = true;
+    lifecycleGeneration += 1;
     tutorSession.close();
     state.notificationHandle?.close?.();
     elements.refreshButton?.removeEventListener("click", onRefresh);
@@ -237,6 +334,9 @@ export const mountSocraticMathTeacher = ({
   elements.startLessonForm?.addEventListener("submit", onStartLesson);
   browserWindow.addEventListener("beforeunload", dispose, { once: true });
 
-  void refresh().catch(handleUiError);
+  const initialOperation = captureOperation();
+  void refresh(initialOperation).catch((error) => {
+    if (isOperationCurrent(initialOperation)) handleUiError(error);
+  });
   return dispose;
 };
