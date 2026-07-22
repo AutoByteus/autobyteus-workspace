@@ -96,7 +96,6 @@ const recognizeAssignmentName = (line: string): string | null =>
   /^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)/.exec(line)?.[1] ?? null;
 
 const parseSource = (sourceText: string): LocalEnvironmentMappedCredential[] => {
-  if (/\r(?!\n)/.test(sourceText)) fail('IMPORT_SOURCE_SYNTAX_INVALID');
   const credentials: LocalEnvironmentMappedCredential[] = [];
   const seenNames = new Set<string>();
   try {
@@ -106,6 +105,7 @@ const parseSource = (sourceText: string): LocalEnvironmentMappedCredential[] => 
         ? localImportDefinitionForAlias(recognizedName)
         : null;
       if (!definitionId) continue;
+      if (line.includes('\r')) fail('IMPORT_SOURCE_SYNTAX_INVALID');
 
       const assignment = parseAssignment(line);
       if (seenNames.has(assignment.name)) fail('IMPORT_SOURCE_DUPLICATE_ASSIGNMENT');

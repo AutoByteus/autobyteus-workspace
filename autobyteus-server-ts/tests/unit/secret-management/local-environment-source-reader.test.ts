@@ -111,6 +111,23 @@ describe('LocalEnvironmentSourceReader', () => {
     }
   });
 
+  it('ignores bare carriage returns in unrelated lines while retaining selected-assignment validation', async () => {
+    const sourcePath = path.join(directory, 'mixed-physical-lines');
+    await privateFile(
+      sourcePath,
+      'UNRELATED_SETTING=unparsed\rmalformed-fragment\nOPENAI_API_KEY=synthetic-openai\n',
+    );
+
+    const result = await new LocalEnvironmentSourceReader().read(sourcePath);
+    try {
+      expect(result.credentials).toHaveLength(1);
+      expect(result.credentials[0]?.definitionId).toBe('provider.openai.api-key');
+      expect(result.credentials[0]?.valueBytes.toString('utf8')).toBe('synthetic-openai');
+    } finally {
+      result.release();
+    }
+  });
+
   it.each([
     ['duplicate', 'OPENAI_API_KEY=synthetic-one\nOPENAI_API_KEY=synthetic-two', 'IMPORT_SOURCE_DUPLICATE_ASSIGNMENT'],
     ['empty', 'OPENAI_API_KEY=   ', 'IMPORT_SOURCE_EMPTY_CREDENTIAL'],
