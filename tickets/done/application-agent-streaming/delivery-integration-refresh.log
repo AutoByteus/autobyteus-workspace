@@ -535,3 +535,175 @@ origin_personal_after_fetch=965f97685c08569a98186b2a894243c0b3f602d3
 build_source_head=69fae2e424a708fe9a0d038077346d5b95b41df6
 build_source_base=965f97685c08569a98186b2a894243c0b3f602d3
 divergence_origin_to_head=0	12
+
+=== Revised-scope delivery refresh round 4 ===
+started_at=2026-07-22T11:51:04Z
+reviewed_head=b2615e1661d5a1351c292f247e6e432af2669517
+package_checkpoint=1a796005c420273063b55a34283bf2120f4b2d5b
+pre_merge_head=1a796005c420273063b55a34283bf2120f4b2d5b
+latest_origin_personal=dd815ee9d83d253ab9bb586a7391b5ba6da18d53
+pre_merge_divergence_origin_to_head=13	27
+new_base_commit_count=13
+new_base_path_count=85
+ticket_base_path_overlap=0
+Merge made by the 'ort' strategy.
+ .github/release-notes/release-notes.md             |   44 +-
+ autobyteus-message-gateway/package.json            |    2 +-
+ .../docs/design/codex_raw_event_mapping.md         |   57 +-
+ .../docs/modules/codex_integration.md              |   33 +-
+ .../codex/events/codex-item-event-converter.ts     |  108 +-
+ .../events/codex-item-event-payload-parser.ts      |   14 +-
+ .../events/codex-raw-response-event-converter.ts   |   38 +-
+ .../codex/events/codex-reasoning-block-tracker.ts  |   60 +-
+ .../events/codex-reasoning-event-normalizer.ts     |   19 +-
+ .../codex/events/codex-thread-event-converter.ts   |   77 +-
+ .../codex-thread-lifecycle-event-converter.ts      |    5 +-
+ .../codex/events/codex-turn-event-converter.ts     |   16 +-
+ .../messaging-gateway/release-manifest.json        |   10 +-
+ ...ndalone-send-message-global-routing.e2e.test.ts |  480 +++++--
+ .../agent/agent-team-websocket.integration.test.ts |   12 +-
+ ...emory-layout-and-projection.integration.test.ts |    7 +-
+ .../agent-run-termination-service.test.ts          |   46 +
+ .../events/codex-reasoning-block-converter.test.ts |  151 ++-
+ .../events/codex-reasoning-block-tracker.test.ts   |   90 +-
+ .../runtime-memory-event-accumulator.test.ts       |   98 ++
+ autobyteus-web/package.json                        |    2 +-
+ .../recentEventMonitorProductionDispatch.spec.ts   |   50 +-
+ .../handlers/__tests__/segmentHandler.spec.ts      |   27 +
+ .../api-e2e-coverage-investigation.md              |  226 ++++
+ .../api-e2e-execution-coverage-report.md           |  240 ++++
+ .../api-e2e-test-review-report.md                  |   55 +
+ .../code-review-report.md                          |  228 ++++
+ .../design-review-report.md                        |  279 ++++
+ .../design-spec.md                                 |  384 ++++++
+ .../docs-sync-report.md                            |   68 +
+ .../electron-test-build-report.md                  |   79 ++
+ .../affected-repository-round2-20260722.log        |  289 ++++
+ .../api-e2e/api-e2e-scenario-summary-20260722.json |  134 ++
+ .../api-e2e/durable-test-fixes-final-20260722.log  |  230 ++++
+ .../api-e2e/live-codex-memory-20260722.log         |  155 +++
+ .../api-e2e/live-codex-memory-high-20260722.log    |  155 +++
+ .../live-codex-standalone-websocket-20260722.log   |  285 ++++
+ ...e-codex-standalone-websocket-gpt53-20260722.log |  288 ++++
+ ...-codex-standalone-websocket-round2-20260722.log |  288 ++++
+ ...one-websocket-round2-deterministic-20260722.log |  230 ++++
+ ...ndalone-websocket-round2-qualified-20260722.log |  272 ++++
+ ...e-websocket-round2-qualified-gpt53-20260722.log |  288 ++++
+ ...andalone-websocket-round2-validity-20260722.log |  324 +++++
+ .../api-e2e/live-codex-team-websocket-20260722.log |  281 ++++
+ .../live-codex-team-websocket-round2-20260722.log  |  278 ++++
+ .../api-e2e/repository-build-guards-20260722.log   |  305 +++++
+ .../api-e2e/repository-history-api-20260722.log    |  327 +++++
+ .../repository-memory-layout-test-fix-20260722.log |  100 ++
+ .../api-e2e/repository-server-focused-20260722.log |  106 ++
+ ...repository-team-websocket-test-fix-20260722.log |  198 +++
+ .../repository-transport-integration-20260722.log  |  326 +++++
+ .../api-e2e/repository-web-focused-20260722.log    |   40 +
+ ...repository-web-selection-hydration-20260722.log |  151 +++
+ .../temporary-production-spine-20260722.log        |   29 +
+ ...emporary-production-spine-probe-20260722.ts.txt |  186 +++
+ .../delivery/delivery-docs-checks-20260722.txt     |   26 +
+ ...elivery-electron-macos-arm64-build-20260722.log | 1412 ++++++++++++++++++++
+ ...very-electron-macos-arm64-prebuild-20260722.txt |   20 +
+ ...-electron-macos-arm64-verification-20260722.txt |   49 +
+ ...livery-finalization-target-refresh-20260722.txt |   21 +
+ .../delivery-integration-refresh-20260722.txt      |   25 +
+ .../final-administrative-cleanup-20260722.log      |  175 +++
+ .../delivery/post-publication-cleanup-20260722.log |   43 +
+ .../process-identity-before-cleanup-20260722.log   |   37 +
+ .../evidence/delivery/release-command-20260722.log |  215 +++
+ .../release-publication-verification-20260722.log  |   60 +
+ .../release-workflow-verification-20260722.log     |  343 +++++
+ .../delivery/repository-finalization-20260722.log  |   40 +
+ .../code-review-focused-checks-20260722.txt        |  135 ++
+ .../code-review-round2-checks-20260722.txt         |  165 +++
+ .../code-review-status-hint-probe-20260722.txt     |   82 ++
+ .../implementation-checks-20260722.txt             |  230 ++++
+ .../implementation/web-typecheck-20260722.txt      |  354 +++++
+ .../investigation/runtime-probes-20260722.txt      |  113 ++
+ .../user-report/01-initial-thinking-only-feed.png  |  Bin 0 -> 728942 bytes
+ .../user-report/02-tools-eventually-rendered.png   |  Bin 0 -> 754707 bytes
+ .../03-selected-solution-designer-row.png          |  Bin 0 -> 25847 bytes
+ .../04-live-tool-visible-after-thinking-burst.png  |  Bin 0 -> 754324 bytes
+ .../evidence/user-report/sha256.txt                |    4 +
+ .../handoff-summary.md                             |   70 +
+ .../implementation-handoff.md                      |  130 ++
+ .../investigation-notes.md                         |  216 +++
+ .../release-deployment-report.md                   |  135 ++
+ .../release-notes.md                               |   28 +
+ .../requirements-doc.md                            |  157 +++
+ 85 files changed, 12185 insertions(+), 370 deletions(-)
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/code-review-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/design-review-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/design-spec.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/docs-sync-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/electron-test-build-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/affected-repository-round2-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/api-e2e-scenario-summary-20260722.json
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/durable-test-fixes-final-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-memory-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-memory-high-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-gpt53-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-deterministic-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-qualified-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-qualified-gpt53-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-round2-validity-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-team-websocket-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-team-websocket-round2-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-build-guards-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-history-api-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-memory-layout-test-fix-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-server-focused-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-team-websocket-test-fix-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-transport-integration-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-web-focused-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/repository-web-selection-hydration-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/temporary-production-spine-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/api-e2e/temporary-production-spine-probe-20260722.ts.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-docs-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-build-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-prebuild-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-verification-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-finalization-target-refresh-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-integration-refresh-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/final-administrative-cleanup-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/post-publication-cleanup-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/process-identity-before-cleanup-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/release-command-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/release-publication-verification-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/release-workflow-verification-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/delivery/repository-finalization-20260722.log
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-focused-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-round2-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-status-hint-probe-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/implementation-checks-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/implementation/web-typecheck-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/investigation/runtime-probes-20260722.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/01-initial-thinking-only-feed.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/02-tools-eventually-rendered.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/03-selected-solution-designer-row.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/04-live-tool-visible-after-thinking-burst.png
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/evidence/user-report/sha256.txt
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/handoff-summary.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/implementation-handoff.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/investigation-notes.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/release-deployment-report.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/release-notes.md
+ create mode 100644 tickets/done/agent-event-monitor-tool-render-flicker/requirements-doc.md
+merge_exit_code=0
+post_merge_head=467dc6db762224f47ef4f6dcd52d4359ff27e90c
+post_merge_divergence_origin_to_head=0	28
+finished_at=2026-07-22T11:51:04Z
+
+=== Revised-scope delivery round 5 post-Electron remote stability recheck ===
+checked_at=2026-07-22T11:59:06Z
+command=git fetch --prune origin
+origin_personal=dd815ee9d83d253ab9bb586a7391b5ba6da18d53
+integrated_head=467dc6db762224f47ef4f6dcd52d4359ff27e90c
+origin_personal_vs_head=0 28
+result=PASS origin/personal remained stable at dd815ee9d83d253ab9bb586a7391b5ba6da18d53 after the Electron build; candidate is 0 behind and 28 ahead
