@@ -12,3 +12,491 @@ integration_method=merge
 integration_result=PASS
 integration_merge=1fa7fa24d2ce80950778a0572ba4332f56c514c3
 post_merge_divergence_head_vs_origin_personal=8 0
+
+=== Delivery refresh round 2: latest origin/personal rebuild ===
+started_at=2026-07-22T03:37:58Z
+pre_merge_head=4d5ea95b2cb180d9e4302248dcaf37aa273ef955
+delivery_checkpoint=4d5ea95b2cb180d9e4302248dcaf37aa273ef955
+latest_origin_personal=71875b938a4b984f2010eae76230b429ff2d2de8
+pre_merge_divergence_origin_to_head=32	9
+new_base_path_overlap=0
+Merge made by the 'ort' strategy.
+ .github/release-notes/release-notes.md             |   35 +-
+ autobyteus-message-gateway/package.json            |    2 +-
+ .../src/agent-memory/domain/models.ts              |    4 +-
+ .../agent-memory/services/agent-memory-service.ts  |    9 +
+ .../services/raw-trace-record-normalizer.ts        |   19 +-
+ .../src/agent-memory/store/memory-file-store.ts    |   54 +
+ .../types/event-monitor-active-trace-page.ts       |  131 +
+ .../src/api/graphql/types/run-history.ts           |   12 +
+ .../src/api/graphql/types/team-run-history.ts      |   14 +
+ .../messaging-gateway/release-manifest.json        |   10 +-
+ .../projection/active-trace-event-page-policy.ts   |  107 +
+ .../event-monitor-active-trace-page-projection.ts  |  141 +
+ .../event-monitor-active-trace-page-types.ts       |   91 +
+ .../projection/historical-replay-event-identity.ts |   90 +
+ .../projection/historical-replay-event-types.ts    |   17 +-
+ .../claude-run-view-projection-provider.ts         |   20 +-
+ .../codex-run-view-projection-provider.ts          |   27 +-
+ .../local-memory-run-view-projection-provider.ts   |   67 +-
+ .../projection/recent-run-projection-policy.ts     |    7 +
+ .../run-history/projection/run-projection-types.ts |    1 +
+ .../run-history/projection/run-projection-utils.ts |    1 +
+ .../raw-trace-to-historical-replay-events.ts       |   44 +-
+ .../services/agent-run-view-projection-service.ts  |   59 +-
+ .../team-member-run-view-projection-service.ts     |   32 +
+ .../recent-run-projection-graphql.e2e.test.ts      |  673 ++
+ .../run-projection-toolcalls-graphql.e2e.test.ts   |    6 +-
+ .../raw-trace-record-normalizer.test.ts            |   17 +
+ .../active-trace-event-page-policy.test.ts         |   57 +
+ ...nt-monitor-active-trace-page-projection.test.ts |  106 +
+ ...cal-memory-run-view-projection-provider.test.ts |  190 +-
+ .../raw-trace-to-historical-replay-events.test.ts  |   27 +
+ .../recent-run-projection-policy.test.ts           |   27 +
+ ...team-member-run-view-projection-service.test.ts |   27 +
+ .../components/conversation/ToolCallIndicator.vue  |   55 +-
+ .../__tests__/ToolCallIndicator.spec.ts            |   23 +-
+ .../segments/EditFileCommandSegment.vue            |   11 +-
+ .../segments/TerminalCommandSegment.vue            |   16 +-
+ .../conversation/segments/ToolCallSegment.vue      |   11 +-
+ .../segments/WriteFileCommandSegment.vue           |   11 +-
+ .../segments/__tests__/ThinkSegment.spec.ts        |   32 +
+ autobyteus-web/components/mobile/MobileChat.vue    |    3 +
+ .../workspace/agent/AgentConversationFeed.vue      |  601 +-
+ .../workspace/agent/AgentEventMonitor.vue          |   28 +-
+ .../workspace/agent/AgentWorkspaceView.vue         |   24 +-
+ .../workspace/agent/CompactionStatusRow.vue        |   17 +-
+ .../agent/EventMonitorBrowseAssistantRow.vue       |   64 +
+ .../__tests__/AgentCompactionLiveFlow.spec.ts      |    1 +
+ .../agent/__tests__/AgentConversationFeed.spec.ts  |  535 +-
+ .../agent/__tests__/AgentEventMonitor.spec.ts      |    9 +-
+ .../agent/__tests__/AgentWorkspaceView.spec.ts     |    5 +
+ .../EventMonitorBrowseAssistantRow.spec.ts         |   36 +
+ .../workspace/team/AgentTeamEventMonitor.vue       |   10 +
+ .../team/__tests__/TeamFocusSendWorkflow.spec.ts   |   36 +-
+ .../docs/agent_execution_architecture.md           |  100 +-
+ autobyteus-web/docs/settings.md                    |  100 +-
+ autobyteus-web/generated/graphql.ts                |  386 +-
+ .../queries/__tests__/runHistoryQueries.spec.ts    |   23 +-
+ .../graphql/queries/runHistoryQueries.ts           |   61 +
+ .../__tests__/eventMonitorFeedCatalog.spec.ts      |   25 +
+ .../messages/en/workspace.generated.ts             |    1 -
+ .../localization/messages/en/workspace.ts          |    4 +
+ .../messages/zh-CN/workspace.generated.ts          |    1 -
+ .../localization/messages/zh-CN/workspace.ts       |    4 +
+ autobyteus-web/package.json                        |    2 +-
+ .../agentStreaming/AgentStreamingService.ts        |    6 +
+ .../__tests__/AgentStreamingService.spec.ts        |   60 +
+ .../__tests__/TeamStreamingService.spec.ts         |   83 +-
+ .../recentEventMonitorProductionDispatch.spec.ts   |  268 +
+ .../teamStreamGenericMessageDispatcher.spec.ts     |   46 +
+ .../__tests__/teamTaskExecutionEventRouter.spec.ts |    3 +
+ .../handlers/__tests__/agentStatusHandler.spec.ts  |    3 +-
+ .../agentStreaming/handlers/agentStatusHandler.ts  |   44 +-
+ .../handlers/externalUserMessageHandler.ts         |    2 +-
+ .../handlers/memberInputMessageHandler.ts          |    2 +-
+ .../agentStreaming/handlers/segmentHandler.ts      |   35 +-
+ .../agentStreaming/handlers/segmentIdentity.ts     |   11 +
+ .../handlers/systemTaskNotificationHandler.ts      |    2 +-
+ .../agentStreaming/handlers/teamHandler.ts         |   24 +-
+ .../handlers/toolLifecycleHandler.ts               |   32 +-
+ .../agentStreaming/handlers/toolLifecycleState.ts  |   15 +-
+ .../teamStreamGenericMessageDispatcher.ts          |    6 +
+ .../eventMonitorActiveTraceBrowse.spec.ts          |  147 +
+ ...entMonitorActiveTraceBrowsePresentation.spec.ts |  120 +
+ .../recentEventMonitorMutationCommit.spec.ts       |  121 +
+ .../recentEventMonitorPresentationWitness.spec.ts  |  187 +
+ .../__tests__/recentEventMonitorWindow.spec.ts     |   88 +
+ .../eventMonitor/eventMonitorActiveTraceBrowse.ts  |  203 +
+ .../eventMonitorActiveTraceBrowsePresentation.ts   |  143 +
+ .../eventMonitorActiveTracePageService.ts          |   44 +
+ .../eventMonitor/recentEventMonitorCompletion.ts   |   37 +
+ .../recentEventMonitorMutationCommit.ts            |   41 +
+ .../recentEventMonitorPresentationWitness.ts       |  159 +
+ .../eventMonitor/recentEventMonitorSelection.ts    |   64 +
+ .../recentEventMonitorUsagePresentation.ts         |   38 +
+ .../eventMonitor/recentEventMonitorWindow.ts       |  202 +
+ .../runProjectionActivityHydration.spec.ts         |    1 +
+ .../runHydration/runContextHydrationService.ts     |    4 +
+ .../runHydration/runProjectionActivityHydration.ts |    5 +-
+ .../runHydration/runProjectionConversation.ts      |    5 +-
+ .../__tests__/teamRunOpenCoordinator.spec.ts       |   14 +
+ .../services/runOpen/teamRunOpenCoordinator.ts     |    2 +
+ .../__tests__/localUserSubmission.spec.ts          |   23 +
+ .../services/runSubmission/localUserSubmission.ts  |   10 +
+ .../stores/__tests__/agentActivityStore.spec.ts    |   25 +
+ autobyteus-web/stores/agentActivityStore.ts        |  122 +-
+ autobyteus-web/stores/agentContextsStore.ts        |    5 +
+ autobyteus-web/stores/agentTeamRunStore.ts         |    6 +
+ .../runHistoryTeamMemberProjectionHydrator.ts      |    3 +
+ autobyteus-web/stores/runHistoryTypes.ts           |    1 +
+ autobyteus-web/types/agent/AgentRunState.ts        |   10 +
+ autobyteus-web/types/segments.ts                   |    1 +
+ .../utils/__tests__/toolCardPresentation.spec.ts   |   70 +
+ .../utils/compactionActivityPresentation.ts        |   19 +-
+ autobyteus-web/utils/toolCardPresentation.ts       |  148 +
+ .../api-e2e-coverage-investigation.md              |  651 ++
+ .../api-e2e-execution-coverage-report.md           |  648 ++
+ .../api-e2e-test-review-report.md                  |   65 +
+ .../architecture-diagrams.md                       |  215 +
+ .../code-review-report.md                          |  193 +
+ .../delivery-live-validation-observation.md        |   37 +
+ .../design-review-report.md                        |  270 +
+ .../agent-run-history-performance/design-spec.md   |  990 +++
+ .../docs-sync-report.md                            |   55 +
+ .../evidence/api-e2e-round2/browser-probe.txt      |   67 +
+ .../browser/integrated-event-monitor-en-zh.png     |  Bin 0 -> 61414 bytes
+ .../browser/integrated-event-monitor-metrics.json  |   67 +
+ .../api-e2e-round2/integrated-diff-check.txt       |    6 +
+ .../api-e2e-round2/live-http-curl-metrics.txt      |    3 +
+ .../evidence/api-e2e-round2/live-http-fixture.json |    1 +
+ .../api-e2e-round2/live-http-response-summary.json |   11 +
+ .../evidence/api-e2e-round2/live-http-server.txt   |  106 +
+ .../api-e2e-round2/member-echo-focused.txt         |   25 +
+ .../api-e2e-round2/nuxt-browser-server.txt         |   35 +
+ .../api-e2e-round2/nuxt-typecheck-final.txt        |  352 +
+ .../api-e2e-round2/server-build-integrated.txt     |   54 +
+ .../server-run-history-integrated.txt              |  160 +
+ .../api-e2e-round2/server-typecheck-final.txt      | 2134 ++++++
+ .../api-e2e-round2/web-expanded-integrated.txt     |  297 +
+ .../api-e2e-round2/web-focused-integrated.txt      |  113 +
+ .../api-e2e-round2/web-guards-integrated.txt       |   19 +
+ .../api-e2e-round3-corrected-live/preflight.txt    |   60 +
+ .../browser-active-trace-en-zh.png                 |  Bin 0 -> 52013 bytes
+ .../browser-active-trace-metrics.json              |  333 +
+ .../browser-active-trace-run-attempt3.txt          |   13 +
+ .../browser-active-trace-run-attempt4.txt          |   11 +
+ .../browser-active-trace-run.txt                   |   83 +
+ .../browser-backend.txt                            |  391 +
+ .../api-e2e-round4-active-trace/browser-nuxt.txt   |   51 +
+ .../browser-process-audit.txt                      |   20 +
+ .../api-e2e-round4-active-trace/cleanup.txt        |    8 +
+ .../live-http-metrics.txt                          |    3 +
+ .../api-e2e-round4-active-trace/live-http-run.txt  |  158 +
+ .../live-http-server.txt                           |  221 +
+ .../live-http-summary.json                         |  208 +
+ .../server-active-trace-expanded.txt               |  165 +
+ .../server-build-typecheck.txt                     |    1 +
+ .../server-paging-graphql-focused-attempt1.txt     |  167 +
+ .../server-paging-graphql-focused-attempt2.txt     |  159 +
+ .../server-paging-graphql-focused.txt              |  129 +
+ .../server-production-build.txt                    |   58 +
+ .../server-run-history-e2e.txt                     |  174 +
+ .../web-active-trace-focused.txt                   |   77 +
+ .../web-audit-localization.txt                     |   10 +
+ .../web-guard-boundary.txt                         |    6 +
+ .../web-guard-localization.txt                     |    6 +
+ .../web-ticket-expanded.txt                        |  270 +
+ .../web-typecheck-8gb.txt                          | 8038 ++++++++++++++++++++
+ .../api-e2e-round4-active-trace/web-typecheck.txt  |   35 +
+ .../PRE-SUPERSESSION-NOTICE.md                     |   20 +
+ .../api-e2e-round5-zero-layout/server-expanded.txt |  287 +
+ .../server-graphql-focused.txt                     |  172 +
+ .../api-e2e-round5-zero-layout/web-expanded.txt    |  107 +
+ .../api-e2e-round5-zero-layout/web-focused.txt     |   75 +
+ .../api-e2e-round6-centered-arrow/browser-run.txt  |   17 +
+ .../browser/browser-validation.json                | 5034 ++++++++++++
+ .../browser/narrow390-agent-browse-cta.png         |  Bin 0 -> 53822 bytes
+ .../browser/narrow390-agent-expired-cta.png        |  Bin 0 -> 53822 bytes
+ .../browser/narrow390-agent-ordinary-cta.png       |  Bin 0 -> 47786 bytes
+ .../browser/narrow390-team-member-browse-cta.png   |  Bin 0 -> 54539 bytes
+ .../browser/narrow390-team-member-expired-cta.png  |  Bin 0 -> 54539 bytes
+ .../browser/narrow390-team-member-ordinary-cta.png |  Bin 0 -> 48502 bytes
+ .../browser/wide-agent-browse-cta.png              |  Bin 0 -> 118008 bytes
+ .../browser/wide-agent-expired-cta.png             |  Bin 0 -> 118008 bytes
+ .../browser/wide-agent-ordinary-cta.png            |  Bin 0 -> 114607 bytes
+ .../browser/wide-team-member-browse-cta.png        |  Bin 0 -> 118786 bytes
+ .../browser/wide-team-member-expired-cta.png       |  Bin 0 -> 118786 bytes
+ .../browser/wide-team-member-ordinary-cta.png      |  Bin 0 -> 115249 bytes
+ .../api-e2e-round6-centered-arrow/cleanup.txt      |   14 +
+ .../diff-static-guards.txt                         |    4 +
+ .../execution-summary.json                         |  177 +
+ .../live-fixture-path.txt                          |    1 +
+ .../live-hashes-after.json                         |   14 +
+ .../live-hashes-before.json                        |   14 +
+ .../live-http-metrics.json                         |   77 +
+ .../api-e2e-round6-centered-arrow/live-server.txt  |  106 +
+ .../native-gutter-availability.txt                 |    3 +
+ .../native-gutter-controlled.json                  |  370 +
+ .../native-gutter-controlled.txt                   |  165 +
+ .../nuxt-browser-server.txt                        |   14 +
+ .../api-e2e-round6-centered-arrow/server-build.txt |   54 +
+ .../server-expanded.txt                            |  276 +
+ .../server-graphql-focused.txt                     |  153 +
+ .../api-e2e-round6-centered-arrow/web-expanded.txt |  271 +
+ .../api-e2e-round6-centered-arrow/web-focused.txt  |   71 +
+ .../api-e2e-round6-centered-arrow/web-guards.txt   |   24 +
+ .../evidence/api-e2e/browser-probe.txt             |   58 +
+ .../browser/event-monitor-browser-en-zh.png        |  Bin 0 -> 59886 bytes
+ .../browser/event-monitor-browser-metrics.json     |   58 +
+ .../evidence/api-e2e/live-http-curl-metrics.txt    |    3 +
+ .../evidence/api-e2e/live-http-fixture.json        |    1 +
+ .../api-e2e/live-http-response-summary.json        |   11 +
+ .../evidence/api-e2e/live-http-server.txt          |  106 +
+ .../evidence/api-e2e/nuxt-browser-server.txt       |   35 +
+ .../evidence/api-e2e/nuxt-typecheck-final.txt      |  353 +
+ .../evidence/api-e2e/nuxt-typecheck-rerun.txt      |  355 +
+ .../evidence/api-e2e/nuxt-typecheck.txt            |  353 +
+ .../evidence/api-e2e/server-build.txt              |   55 +
+ .../evidence/api-e2e/server-focused.txt            |  118 +
+ .../evidence/api-e2e/server-run-history.txt        |  160 +
+ .../evidence/api-e2e/server-stale-test-update.txt  |  108 +
+ .../evidence/api-e2e/server-typecheck.txt          | 2134 ++++++
+ .../evidence/api-e2e/web-expanded.txt              |  217 +
+ .../evidence/api-e2e/web-focused.txt               |   33 +
+ .../evidence/api-e2e/web-guards.txt                |   22 +
+ ...current-screenshot-run-projection-1.metrics.txt |   27 +
+ ...current-screenshot-run-projection-2.metrics.txt |   27 +
+ ...d-arrow-electron-macos-arm64-build-20260721.log | 1418 ++++
+ ...arrow-electron-macos-arm64-restart-20260721.txt |   29 +
+ ...-electron-macos-arm64-verification-20260721.txt |   28 +
+ ...elivery-centered-arrow-integration-20260721.txt |   55 +
+ .../evidence/delivery-docs-and-handoff-check.txt   |   23 +
+ .../delivery-electron-linux-arm64-build.log        |  688 ++
+ .../delivery-electron-linux-arm64-start.log        |  275 +
+ ...acos-arm64-latest-personal-rebuild-20260721.log |  Bin 0 -> 103831 bytes
+ ...acos-arm64-latest-personal-restart-20260721.txt |   23 +
+ ...arm64-latest-personal-verification-20260721.txt |   58 +
+ ...ivery-electron-macos-arm64-rebuild-20260721.log |  Bin 0 -> 104258 bytes
+ ...n-macos-arm64-rebuild-verification-20260721.txt |   60 +
+ .../delivery-initial-integration-conflicts.txt     |  173 +
+ ...ry-latest-personal-refresh-rebuild-20260721.txt |  414 +
+ .../delivery-post-refresh-check-20260721.txt       |  210 +
+ ...rontend-projection-dedupe-benchmark-results.txt |    8 +
+ .../frontend-projection-dedupe-benchmark.mjs       |   77 +
+ ...mplementation-active-trace-browse-local-fix.png |  Bin 0 -> 61195 bytes
+ ...mplementation-active-trace-browse-local-fix.txt |   23 +
+ .../implementation-active-trace-browse.png         |  Bin 0 -> 103847 bytes
+ .../implementation-active-trace-browse.txt         |   13 +
+ .../implementation-browser-interaction.txt         |   35 +
+ .../implementation-centered-arrow-20260721.json    |  779 ++
+ ...plementation-centered-arrow-checks-20260721.txt |   52 +
+ ...plementation-centered-arrow-narrow-20260721.png |  Bin 0 -> 45626 bytes
+ ...implementation-centered-arrow-wide-20260721.png |  Bin 0 -> 97106 bytes
+ .../implementation-event-monitor-round4.png        |  Bin 0 -> 121146 bytes
+ .../implementation-event-monitor-unseen.png        |  Bin 0 -> 115427 bytes
+ .../implementation-post-integration-browser.png    |  Bin 0 -> 104493 bytes
+ .../implementation-post-integration-browser.txt    |   22 +
+ .../implementation-post-integration-guards.txt     |   24 +
+ .../implementation-post-integration-typecheck.txt  |  354 +
+ .../implementation-zero-layout-browse-20260721.png |  Bin 0 -> 88382 bytes
+ ...ntation-zero-layout-event-monitor-20260721.json |   51 +
+ ...implementation-zero-layout-loading-20260721.png |  Bin 0 -> 93422 bytes
+ .../large-marketing-run-projection-1.metrics.txt   |   27 +
+ .../large-marketing-run-projection-2.metrics.txt   |   27 +
+ ...bserved-active-only-frontend-dedupe.metrics.txt |    1 +
+ ...est-observed-active-only-projection.metrics.txt |   26 +
+ ...gacy-local-build-logs-preservation-20260721.txt |   27 +
+ .../repository-finalization-and-cleanup.log        |   18 +
+ .../handoff-summary.md                             |   97 +
+ .../history-window-ui-ux-spec.md                   |  275 +
+ .../implementation-handoff.md                      |  163 +
+ .../integrated-live-validation-plan.md             |  230 +
+ .../investigation-notes.md                         |  355 +
+ .../release-deployment-report.md                   |  135 +
+ .../agent-run-history-performance/release-notes.md |   32 +
+ .../requirements-doc.md                            |  195 +
+ 275 files changed, 42287 insertions(+), 465 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/api/graphql/types/event-monitor-active-trace-page.ts
+ create mode 100644 autobyteus-server-ts/src/run-history/projection/active-trace-event-page-policy.ts
+ create mode 100644 autobyteus-server-ts/src/run-history/projection/event-monitor-active-trace-page-projection.ts
+ create mode 100644 autobyteus-server-ts/src/run-history/projection/event-monitor-active-trace-page-types.ts
+ create mode 100644 autobyteus-server-ts/src/run-history/projection/historical-replay-event-identity.ts
+ create mode 100644 autobyteus-server-ts/src/run-history/projection/recent-run-projection-policy.ts
+ create mode 100644 autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/run-history/projection/active-trace-event-page-policy.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/run-history/projection/recent-run-projection-policy.test.ts
+ create mode 100644 autobyteus-web/components/conversation/segments/__tests__/ThinkSegment.spec.ts
+ create mode 100644 autobyteus-web/components/workspace/agent/EventMonitorBrowseAssistantRow.vue
+ create mode 100644 autobyteus-web/components/workspace/agent/__tests__/EventMonitorBrowseAssistantRow.spec.ts
+ create mode 100644 autobyteus-web/localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts
+ create mode 100644 autobyteus-web/services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+ create mode 100644 autobyteus-web/services/agentStreaming/__tests__/teamStreamGenericMessageDispatcher.spec.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/__tests__/eventMonitorActiveTraceBrowse.spec.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/__tests__/eventMonitorActiveTraceBrowsePresentation.spec.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/__tests__/recentEventMonitorMutationCommit.spec.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowse.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/eventMonitorActiveTracePageService.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/recentEventMonitorCompletion.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/recentEventMonitorMutationCommit.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/recentEventMonitorPresentationWitness.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/recentEventMonitorSelection.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/recentEventMonitorUsagePresentation.ts
+ create mode 100644 autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts
+ create mode 100644 autobyteus-web/utils/__tests__/toolCardPresentation.spec.ts
+ create mode 100644 autobyteus-web/utils/toolCardPresentation.ts
+ create mode 100644 tickets/done/agent-run-history-performance/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/agent-run-history-performance/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/agent-run-history-performance/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/agent-run-history-performance/architecture-diagrams.md
+ create mode 100644 tickets/done/agent-run-history-performance/code-review-report.md
+ create mode 100644 tickets/done/agent-run-history-performance/delivery-live-validation-observation.md
+ create mode 100644 tickets/done/agent-run-history-performance/design-review-report.md
+ create mode 100644 tickets/done/agent-run-history-performance/design-spec.md
+ create mode 100644 tickets/done/agent-run-history-performance/docs-sync-report.md
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/browser-probe.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/browser/integrated-event-monitor-en-zh.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/browser/integrated-event-monitor-metrics.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/integrated-diff-check.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/live-http-curl-metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/live-http-fixture.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/live-http-response-summary.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/live-http-server.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/member-echo-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/nuxt-browser-server.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/nuxt-typecheck-final.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/server-build-integrated.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/server-run-history-integrated.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/server-typecheck-final.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/web-expanded-integrated.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/web-focused-integrated.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round2/web-guards-integrated.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round3-corrected-live/preflight.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-active-trace-en-zh.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-active-trace-metrics.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-active-trace-run-attempt3.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-active-trace-run-attempt4.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-active-trace-run.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-backend.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-nuxt.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/browser-process-audit.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/cleanup.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/live-http-metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/live-http-run.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/live-http-server.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/live-http-summary.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/server-active-trace-expanded.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/server-build-typecheck.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/server-paging-graphql-focused-attempt1.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/server-paging-graphql-focused-attempt2.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/server-paging-graphql-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/server-production-build.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/server-run-history-e2e.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/web-active-trace-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/web-audit-localization.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/web-guard-boundary.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/web-guard-localization.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/web-ticket-expanded.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/web-typecheck-8gb.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round4-active-trace/web-typecheck.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/PRE-SUPERSESSION-NOTICE.md
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/server-expanded.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/server-graphql-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/web-expanded.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round5-zero-layout/web-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser-run.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/browser-validation.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/narrow390-agent-browse-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/narrow390-agent-expired-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/narrow390-agent-ordinary-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/narrow390-team-member-browse-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/narrow390-team-member-expired-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/narrow390-team-member-ordinary-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/wide-agent-browse-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/wide-agent-expired-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/wide-agent-ordinary-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/wide-team-member-browse-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/wide-team-member-expired-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/browser/wide-team-member-ordinary-cta.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/cleanup.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/diff-static-guards.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/execution-summary.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/live-fixture-path.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/live-hashes-after.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/live-hashes-before.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/live-http-metrics.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/live-server.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/native-gutter-availability.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/native-gutter-controlled.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/native-gutter-controlled.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/nuxt-browser-server.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/server-build.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/server-expanded.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/server-graphql-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/web-expanded.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/web-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e-round6-centered-arrow/web-guards.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/browser-probe.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/browser/event-monitor-browser-en-zh.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/browser/event-monitor-browser-metrics.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/live-http-curl-metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/live-http-fixture.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/live-http-response-summary.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/live-http-server.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/nuxt-browser-server.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/nuxt-typecheck-final.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/nuxt-typecheck-rerun.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/nuxt-typecheck.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/server-build.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/server-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/server-run-history.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/server-stale-test-update.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/server-typecheck.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/web-expanded.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/web-focused.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/api-e2e/web-guards.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/current-screenshot-run-projection-1.metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/current-screenshot-run-projection-2.metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-centered-arrow-electron-macos-arm64-build-20260721.log
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-centered-arrow-electron-macos-arm64-restart-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-centered-arrow-electron-macos-arm64-verification-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-centered-arrow-integration-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-docs-and-handoff-check.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-electron-linux-arm64-build.log
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-electron-linux-arm64-start.log
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-electron-macos-arm64-latest-personal-rebuild-20260721.log
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-electron-macos-arm64-latest-personal-restart-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-electron-macos-arm64-latest-personal-verification-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-electron-macos-arm64-rebuild-20260721.log
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-electron-macos-arm64-rebuild-verification-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-initial-integration-conflicts.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-latest-personal-refresh-rebuild-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/delivery-post-refresh-check-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/frontend-projection-dedupe-benchmark-results.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/frontend-projection-dedupe-benchmark.mjs
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-active-trace-browse-local-fix.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-active-trace-browse-local-fix.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-active-trace-browse.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-active-trace-browse.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-browser-interaction.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-20260721.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-checks-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-narrow-20260721.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-centered-arrow-wide-20260721.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-event-monitor-round4.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-event-monitor-unseen.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-post-integration-browser.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-post-integration-browser.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-post-integration-guards.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-post-integration-typecheck.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-zero-layout-browse-20260721.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-zero-layout-event-monitor-20260721.json
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/implementation-zero-layout-loading-20260721.png
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/large-marketing-run-projection-1.metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/large-marketing-run-projection-2.metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/largest-observed-active-only-frontend-dedupe.metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/largest-observed-active-only-projection.metrics.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/legacy-local-build-logs-preservation-20260721.txt
+ create mode 100644 tickets/done/agent-run-history-performance/evidence/repository-finalization-and-cleanup.log
+ create mode 100644 tickets/done/agent-run-history-performance/handoff-summary.md
+ create mode 100644 tickets/done/agent-run-history-performance/history-window-ui-ux-spec.md
+ create mode 100644 tickets/done/agent-run-history-performance/implementation-handoff.md
+ create mode 100644 tickets/done/agent-run-history-performance/integrated-live-validation-plan.md
+ create mode 100644 tickets/done/agent-run-history-performance/investigation-notes.md
+ create mode 100644 tickets/done/agent-run-history-performance/release-deployment-report.md
+ create mode 100644 tickets/done/agent-run-history-performance/release-notes.md
+ create mode 100644 tickets/done/agent-run-history-performance/requirements-doc.md
+merge_exit_code=0
+post_merge_head=cf520cc23f081a5ddf650f78209b36ac7d36252e
+post_merge_divergence_origin_to_head=0	10
+finished_at=2026-07-22T03:37:59Z
+
+=== Delivery refresh round 2 post-build remote recheck ===
+post_build_fetch_result=origin/personal advanced during the build from 71875b938a4b984f2010eae76230b429ff2d2de8 to 965f97685c08569a98186b2a894243c0b3f602d3
+superseded_build_head=cf520cc23f081a5ddf650f78209b36ac7d36252e
+superseded_build_version=1.4.24
+action=Preserve round-2 evidence, integrate the new remote commit, rerun the integrated checks, and rebuild before handoff.
