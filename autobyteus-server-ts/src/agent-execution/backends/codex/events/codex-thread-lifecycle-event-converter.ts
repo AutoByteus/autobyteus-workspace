@@ -16,7 +16,7 @@ export type CodexThreadLifecycleEventConverterContext = {
     payload: Record<string, unknown>,
   ) => AgentRunEvent;
   createStatusEvent: (codexEventName: string, payload?: Partial<AgentStatusPayload>) => AgentRunEvent;
-  clearAllReasoningBlocks: () => void;
+  closeAllReasoningBlocks: (codexEventName: string) => AgentRunEvent[];
   clearAllOrderedTools: () => void;
 };
 
@@ -39,12 +39,13 @@ export const convertCodexThreadLifecycleEvent = (
     case CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED:
       return [];
     case CodexThreadEventName.ERROR: {
-      context.clearAllReasoningBlocks();
+      const reasoningEnds = context.closeAllReasoningBlocks(codexEventName);
       context.clearAllOrderedTools();
       const nestedError = asObject(payload.error);
       const errorCode = nestedError?.code ?? payload.code;
       const errorMessage = nestedError?.message ?? payload.message;
       return [
+        ...reasoningEnds,
         context.createStatusEvent(codexEventName, { status: "error", can_interrupt: false }),
         context.createEvent(codexEventName, AgentRunEventType.ERROR, {
           code: typeof errorCode === "string" ? errorCode : "RUNTIME_ERROR",

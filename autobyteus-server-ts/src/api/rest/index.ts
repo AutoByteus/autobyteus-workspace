@@ -11,6 +11,8 @@ import { registerTeamCommunicationRoutes } from "./team-communication.js";
 import { registerTaskDelegationRoutes } from "./task-delegation.js";
 import { registerApplicationBundleRoutes } from "./application-bundles.js";
 import { registerApplicationBackendRoutes } from "./application-backends.js";
+import { registerApplicationAvailabilityRoutes } from "./application-availability.js";
+import { registerApplicationExecutionResourceRoutes } from "./application-execution-resources.js";
 import { registerRemoteAccessRoutes } from "./remote-access.js";
 import { registerMemorySyncRoutes } from "./memory-sync.js";
 
@@ -29,4 +31,6 @@ export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
   await registerDefaultChannelIngressRoutes(app);
   await registerApplicationBundleRoutes(app);
   await registerApplicationBackendRoutes(app);
+  await registerApplicationAvailabilityRoutes(app);
+  await registerApplicationExecutionResourceRoutes(app);
 }

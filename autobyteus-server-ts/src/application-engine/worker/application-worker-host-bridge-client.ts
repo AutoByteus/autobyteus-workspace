@@ -1,7 +1,13 @@
 import {
   APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY,
+  APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION,
   type ApplicationWorkerContextCapabilityInput,
+  type ApplicationWorkerWebSocketActionInput,
 } from "../runtime/protocol.js";
+import {
+  ApplicationAgentEventStreamSubscribeError,
+  type ApplicationAgentEventStreamSubscribeErrorCode,
+} from "@autobyteus/application-sdk-contracts";
 
 type JsonRpcId = string;
 
@@ -16,11 +22,15 @@ export class ApplicationWorkerHostBridgeClient {
   private nextRequestId = 1;
 
   constructor(
-    private readonly writeFrame: (frame: Record<string, unknown>) => void,
+    private readonly writeFrame: (frame: Record<string, unknown>) => Promise<void>,
   ) {}
 
   async invokeContextCapability(input: ApplicationWorkerContextCapabilityInput): Promise<unknown> {
     return this.request(APPLICATION_ENGINE_METHOD_CONTEXT_CAPABILITY, input as unknown as Record<string, unknown>);
+  }
+
+  async invokeWebSocketAction(input: ApplicationWorkerWebSocketActionInput): Promise<unknown> {
+    return this.request(APPLICATION_ENGINE_METHOD_WEBSOCKET_ACTION, input as unknown as Record<string, unknown>);
   }
 
   handleResponse(payload: Record<string, unknown>): boolean {
@@ -40,7 +50,24 @@ export class ApplicationWorkerHostBridgeClient {
         errorPayload && typeof errorPayload.message === "string"
           ? errorPayload.message
           : "Host bridge request failed.";
-      pending.reject(new Error(message));
+      const code = errorPayload && typeof errorPayload.code === "string"
+        ? errorPayload.code as ApplicationAgentEventStreamSubscribeErrorCode
+        : null;
+      if (code && [
+        "SUBSCRIPTION_NOT_AVAILABLE",
+        "INVALID_STREAM_TARGET",
+        "RUNTIME_NOT_ACTIVE",
+        "SUBSCRIPTION_ABORTED",
+        "WORKER_TRANSPORT_FAILED",
+      ].includes(code)) {
+        pending.reject(new ApplicationAgentEventStreamSubscribeError({
+          code,
+          message,
+          recoverable: errorPayload?.recoverable === true,
+        }));
+      } else {
+        pending.reject(new Error(message));
+      }
       return true;
     }
 
@@ -68,7 +95,7 @@ export class ApplicationWorkerHostBridgeClient {
       });
     });
 
-    this.writeFrame({
+    await this.writeFrame({
       jsonrpc: "2.0",
       id,
       method,

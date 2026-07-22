@@ -1,8 +1,8 @@
 import path from 'node:path';
 import {
   APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
 } from '@autobyteus/application-sdk-contracts';
 import { errorDiagnostic, type ValidationDiagnostic } from './validation-result.js';
 import {
@@ -10,6 +10,7 @@ import {
   pathExists,
   pushExistingPathDiagnostic,
   pushVersionDiagnostic,
+  pushUnknownKeyDiagnostics,
   readJsonFile,
   validateManifestPath,
   validateSupportedExposures,
@@ -29,6 +30,9 @@ const validateBackendRuntimeFields = (
   if (!targetRuntime || targetRuntime.engine !== 'node' || typeof targetRuntime.semver !== 'string') {
     diagnostics.push(errorDiagnostic('INVALID_BACKEND_MANIFEST', 'targetRuntime must declare node and semver.', 'targetRuntime'));
   }
+  if (targetRuntime) {
+    pushUnknownKeyDiagnostics(diagnostics, targetRuntime, ['engine', 'semver'], 'targetRuntime', 'INVALID_BACKEND_MANIFEST');
+  }
 };
 
 const validateBackendSdkCompatibility = (
@@ -40,16 +44,23 @@ const validateBackendSdkCompatibility = (
     diagnostics.push(errorDiagnostic('INVALID_BACKEND_MANIFEST', 'sdkCompatibility must be an object.', 'sdkCompatibility'));
     return;
   }
+  pushUnknownKeyDiagnostics(
+    diagnostics,
+    sdkCompatibility,
+    ['backendDefinitionContractVersion', 'frontendSdkContractVersion'],
+    'sdkCompatibility',
+    'INVALID_BACKEND_MANIFEST',
+  );
   pushVersionDiagnostic(
     diagnostics,
     sdkCompatibility.backendDefinitionContractVersion,
-    APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3,
+    APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
     'sdkCompatibility.backendDefinitionContractVersion',
   );
   pushVersionDiagnostic(
     diagnostics,
     sdkCompatibility.frontendSdkContractVersion,
-    APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
+    APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
     'sdkCompatibility.frontendSdkContractVersion',
   );
 };
@@ -98,6 +109,14 @@ export const validateBackendManifest = async (input: {
     input.diagnostics.push(errorDiagnostic('INVALID_BACKEND_MANIFEST', 'backend bundle manifest must be an object.', input.manifestRelativePath));
     return;
   }
+
+  pushUnknownKeyDiagnostics(
+    input.diagnostics,
+    rawManifest,
+    ['contractVersion', 'entryModule', 'moduleFormat', 'distribution', 'targetRuntime', 'sdkCompatibility', 'supportedExposures', 'migrationsDir', 'assetsDir'],
+    'backend',
+    'INVALID_BACKEND_MANIFEST',
+  );
 
   pushVersionDiagnostic(input.diagnostics, rawManifest.contractVersion, APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1, 'backend.contractVersion');
   const entryModule = validateManifestPath({

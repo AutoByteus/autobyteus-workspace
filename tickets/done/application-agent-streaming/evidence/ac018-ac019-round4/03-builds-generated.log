@@ -1,0 +1,130 @@
+Production/build/generated coverage — fresh round 4
+HEAD=b2615e1661d5a1351c292f247e6e432af2669517
+TRACKED_APPLICATION_FILES=706
+PRE_BUILD_HASH=bfb0799c3430c35c48dec71a7ca1f9c43b2252f9d976300d620e092fdb5d785b
+
+=== server production build ===
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 107ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:14989) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+
+=== Socratic typecheck/build ===
+
+> @autobyteus-example/socratic-math-teacher-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher
+> node ./scripts/build-package.mjs
+
+Socratic Math Teacher importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher/dist/importable-package
+
+=== Brief typecheck/build ===
+
+> @autobyteus-example/brief-studio-authoring@ typecheck:backend /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio
+> tsc -p tsconfig.backend.json --noEmit
+
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio
+> node ./scripts/build-package.mjs
+
+Brief Studio importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio/dist/importable-package
+
+=== second generated build for idempotency ===
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher
+> node ./scripts/build-package.mjs
+
+Socratic Math Teacher importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher/dist/importable-package
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio
+> node ./scripts/build-package.mjs
+
+Brief Studio importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio/dist/importable-package
+POST_SECOND_BUILD_HASH=bfb0799c3430c35c48dec71a7ca1f9c43b2252f9d976300d620e092fdb5d785b
+PASS: tracked Brief/Socratic application tree is idempotent
+
+=== exact config/source/generated checks ===
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/[eval1]:8
+ if(v.runtimeKind!=='codex_app_server'||v.llmModelIdentifier!=='gpt-5.6-sol'||JSON.stringify(v.llmConfig)!==JSON.stringify({reasoning_effort:'high'})||Object.hasOwn(v.llmConfig,'service_tier')) throw Error('bad config '+f);
+      ^
+
+TypeError: Cannot read properties of undefined (reading 'runtimeKind')
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/[eval1]:8:7
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)
+    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.1
+
+=== builder normal-import probes ===
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-application-backend-sdk/dist/application-agent-target-address.js:14
+    throw new Error("Application agent-team target address requires a TEAM_RUN binding.");
+          ^
+
+Error: Application agent-team target address requires a TEAM_RUN binding.
+    at requireRuntimeSubject (file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-application-backend-sdk/dist/application-agent-target-address.js:14:11)
+    at Module.createApplicationAgentTeamMemberTargetAddress (file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/autobyteus-application-backend-sdk/dist/application-agent-target-address.js:34:5)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/[eval1]:14:12
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
+
+=== exact generated mirror equality ===
+PASS: four Socratic runtime mirrors byte-identical
+PASS: four Socratic renderer mirrors byte-identical
+
+RESULT=PASS

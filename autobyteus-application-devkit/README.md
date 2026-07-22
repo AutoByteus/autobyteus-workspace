@@ -21,7 +21,7 @@ The generated source project uses editable `src/frontend` and `src/backend` inpu
   Local application ids must start with a letter or number and contain only letters, numbers, underscores, or hyphens.
 - `autobyteus-app pack [--project-root <path>] [--out <path>]` builds `dist/importable-package`.
 - `autobyteus-app validate [--package-root <path>]` checks a generated package root before distribution.
-- `autobyteus-app dev [--project-root <path>] [--port <n>] [--application-id <id>] [--backend-base-url <url>]` serves a local iframe-contract v3 bootstrap host.
+- `autobyteus-app dev [--project-root <path>] [--port <n>] [--application-id <id>] [--backend-base-url <url>] [--backend-notifications-url <url>] [--backend-websocket-base-url <url>] [--agent-communication-websocket-base-url <url>]` serves a local iframe-contract v4 bootstrap host.
 
 Real-backend dev mode requires `--application-id`; the same id is used in iframe launch hints, bootstrap `application.applicationId`, and `requestContext.applicationId`.
 

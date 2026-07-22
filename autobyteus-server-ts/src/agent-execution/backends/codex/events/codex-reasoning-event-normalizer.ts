@@ -1,6 +1,6 @@
 import {
   CodexReasoningBlockTracker,
-  type CodexReasoningBlockUpdate,
+  type CodexReasoningLifecycleAction,
 } from "./codex-reasoning-block-tracker.js";
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -15,9 +15,9 @@ export class CodexReasoningEventNormalizer {
 
   public resolveCompletedSnapshot(
     payload: Record<string, unknown>,
-  ): CodexReasoningBlockUpdate | null {
+  ): CodexReasoningLifecycleAction[] {
     const snapshot = this.resolveSnapshot(payload);
-    if (!snapshot) return null;
+    if (!snapshot) return [];
 
     return this.blockTracker.append({
       turnId: this.resolveTurnId(payload),
@@ -26,17 +26,18 @@ export class CodexReasoningEventNormalizer {
     });
   }
 
-  public clearForBoundary(payload: Record<string, unknown>): void {
+  public closeForBoundary(
+    payload: Record<string, unknown>,
+  ): CodexReasoningLifecycleAction[] {
     const turnId = this.resolveTurnId(payload);
     if (turnId) {
-      this.blockTracker.clearForTurn(turnId);
-      return;
+      return this.blockTracker.closeForTurn(turnId);
     }
-    this.blockTracker.clearAll();
+    return this.blockTracker.closeAll();
   }
 
-  public clearAll(): void {
-    this.blockTracker.clearAll();
+  public closeAll(): CodexReasoningLifecycleAction[] {
+    return this.blockTracker.closeAll();
   }
 
   private resolveSnapshot(payload: Record<string, unknown>): string {

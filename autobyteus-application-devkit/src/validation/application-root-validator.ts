@@ -1,7 +1,7 @@
 import path from 'node:path';
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
-  APPLICATION_MANIFEST_VERSION_V3,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
+  APPLICATION_MANIFEST_VERSION_V4,
 } from '@autobyteus/application-sdk-contracts';
 import { validateBackendManifestIfPresent } from './backend-manifest-validator.js';
 import { getLocalApplicationIdValidationError } from './local-application-id.js';
@@ -10,6 +10,7 @@ import {
   isObjectRecord,
   pushExistingPathDiagnostic,
   pushRequiredStringDiagnostic,
+  pushUnknownKeyDiagnostics,
   pushVersionDiagnostic,
   readJsonFile,
   validateManifestPath,
@@ -24,13 +25,14 @@ const validateUiManifestSection = async (input: {
     input.diagnostics.push(errorDiagnostic('INVALID_MANIFEST', 'ui must be an object.', 'ui'));
     return;
   }
+  pushUnknownKeyDiagnostics(input.diagnostics, input.ui, ["entryHtml", "frontendSdkContractVersion"], "ui", "INVALID_MANIFEST");
   const entryHtml = validateManifestPath({
     diagnostics: input.diagnostics,
     value: input.ui.entryHtml,
     fieldName: 'ui.entryHtml',
     requiredPrefix: 'ui/',
   });
-  pushVersionDiagnostic(input.diagnostics, input.ui.frontendSdkContractVersion, APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3, 'ui.frontendSdkContractVersion');
+  pushVersionDiagnostic(input.diagnostics, input.ui.frontendSdkContractVersion, APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4, 'ui.frontendSdkContractVersion');
   if (entryHtml) {
     await pushExistingPathDiagnostic({
       diagnostics: input.diagnostics,
@@ -51,6 +53,7 @@ const validateBackendManifestSection = async (input: {
     input.diagnostics.push(errorDiagnostic('INVALID_MANIFEST', 'backend must be an object.', 'backend'));
     return;
   }
+  pushUnknownKeyDiagnostics(input.diagnostics, input.backend, ["bundleManifest"], "backend", "INVALID_MANIFEST");
   const backendManifest = validateManifestPath({
     diagnostics: input.diagnostics,
     value: input.backend.bundleManifest,
@@ -97,7 +100,15 @@ export const validateApplicationRoot = async (input: {
     return;
   }
 
-  pushVersionDiagnostic(input.diagnostics, rawManifest.manifestVersion, APPLICATION_MANIFEST_VERSION_V3, 'manifestVersion');
+  pushUnknownKeyDiagnostics(
+    input.diagnostics,
+    rawManifest,
+    ["manifestVersion", "id", "name", "description", "icon", "ui", "backend", "executionResourceSlots"],
+    "",
+    "INVALID_MANIFEST",
+  );
+
+  pushVersionDiagnostic(input.diagnostics, rawManifest.manifestVersion, APPLICATION_MANIFEST_VERSION_V4, 'manifestVersion');
   const manifestId = pushRequiredStringDiagnostic(input.diagnostics, rawManifest, 'id', 'id');
   pushRequiredStringDiagnostic(input.diagnostics, rawManifest, 'name', 'name');
   if (manifestId) {

@@ -1,0 +1,14 @@
+$ removed API/E2E-owned generated devkit output
+PASS: removed autobyteus-application-devkit/.tmp-tests and autobyteus-application-devkit/dist
+$ owned live process inventory
+PASS: no task-worktree Vitest/Fastify/application-worker process remains
+$ disposable test directory inventory
+PASS: no owned disposable test directory remains
+$ final git status --short
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M tickets/in-progress/application-agent-streaming/code-review-report.md
+?? autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+?? autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+?? tickets/in-progress/application-agent-streaming/api-e2e-coverage-investigation.md
+?? tickets/in-progress/application-agent-streaming/evidence/
+NOTE: upstream-modified code-review-report.md was preserved unchanged; only three durable test paths and API/E2E artifacts/evidence remain uncommitted from this stage.

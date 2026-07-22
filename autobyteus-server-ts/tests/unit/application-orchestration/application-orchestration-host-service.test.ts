@@ -1,6 +1,6 @@
+import type { ApplicationAgentBindingRecord } from "../../../src/application-orchestration/domain/models.js";
 import { describe, expect, it, vi } from "vitest";
 import type {
-  ApplicationRunBindingSummary,
   ApplicationRunLookupRecord,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
@@ -22,9 +22,9 @@ const createDeferred = () => {
   return { promise, resolve, reject };
 };
 
-const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
+const cloneBinding = (binding: ApplicationAgentBindingRecord): ApplicationAgentBindingRecord => structuredClone(binding);
 
-const buildBinding = (): ApplicationRunBindingSummary => ({
+const buildBinding = (): ApplicationAgentBindingRecord => ({
   bindingId,
   applicationId,
   launchRequestId: "launch-request-1",
@@ -55,7 +55,7 @@ const buildBinding = (): ApplicationRunBindingSummary => ({
   lastErrorMessage: null,
 });
 
-const buildTeamBinding = (): ApplicationRunBindingSummary => ({
+const buildTeamBinding = (): ApplicationAgentBindingRecord => ({
   bindingId,
   applicationId,
   launchRequestId: "launch-request-1",
@@ -88,14 +88,14 @@ const buildTeamBinding = (): ApplicationRunBindingSummary => ({
 
 describe("ApplicationOrchestrationHostService startAgent", () => {
   it("waits for RUN_STARTED journaling before initialInput is forwarded to the runtime", async () => {
-    const bindings = new Map<string, ApplicationRunBindingSummary>();
+    const bindings = new Map<string, ApplicationAgentBindingRecord>();
     const lookups = new Map<string, ApplicationRunLookupRecord>();
     const committedFamilies: string[] = [];
     const runStartedCommit = createDeferred();
     let runStartedAppendSeen = false;
 
     const bindingStore = {
-      persistBinding: vi.fn(async (binding: ApplicationRunBindingSummary) => {
+      persistBinding: vi.fn(async (binding: ApplicationAgentBindingRecord) => {
         bindings.set(`${binding.applicationId}:${binding.bindingId}`, cloneBinding(binding));
         return cloneBinding(binding);
       }),
@@ -257,7 +257,10 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
 
     await expect(
       hostService.findRunBindingByLaunchRequestId(applicationId, binding.launchRequestId),
-    ).resolves.toEqual(binding);
+    ).resolves.toEqual({
+      ...binding,
+      runtime: { ...binding.runtime, members: [] },
+    });
     expect(bindingStore.findBindingByLaunchRequestId).toHaveBeenCalledWith(applicationId, binding.launchRequestId);
   });
 
@@ -451,9 +454,11 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
     });
 
     await hostService.sendRunInput(applicationId, {
-      bindingId,
-      text: "please research",
-      targetMemberRouteKey: "researcher",
+      address: {
+        bindingId,
+        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+      },
+      input: { text: "please research" },
     });
 
     expect(postMessage).toHaveBeenCalledWith(
@@ -482,9 +487,14 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
 
     await expect(
       hostService.sendRunInput(applicationId, {
-        bindingId,
-        text: "please research",
-        targetMemberName: "researcher",
+        address: {
+          bindingId,
+          target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "researcher" },
+        },
+        input: {
+          text: "please research",
+          targetMemberName: "researcher",
+        },
       } as never),
     ).rejects.toThrow("targetMemberName is not supported");
     expect(postMessage).not.toHaveBeenCalled();

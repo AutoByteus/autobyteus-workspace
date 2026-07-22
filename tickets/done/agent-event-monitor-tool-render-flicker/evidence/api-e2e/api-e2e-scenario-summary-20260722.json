@@ -1,0 +1,134 @@
+{
+  "sourceCommit": "710ab2f46f1a1bf559b735a8ef5863faed025777",
+  "packagingCommit": "c93c84b69d1a60156735ea6763fb977c23d10db5",
+  "latestAuthoritativeRound": 2,
+  "result": "Pass",
+  "finalValidationConfidence": 95,
+  "roundHistory": [
+    {
+      "round": 1,
+      "result": "Fail",
+      "confidence": 89,
+      "unresolvedScenario": "LIVE-002",
+      "note": "Model refusal was incorrectly treated as proof that the configured standalone tool was absent."
+    },
+    {
+      "round": 2,
+      "result": "Pass",
+      "confidence": 95,
+      "resolvedFinding": "CR-003",
+      "note": "Exact same-thread MCP exposure, readiness, deterministic execution, fresh focused-team model lifecycle, and affected repository coverage passed."
+    }
+  ],
+  "scenarios": {
+    "SPINE-001": {
+      "result": "Pass",
+      "mode": "deterministic production converter -> standalone mapper JSON round-trip -> production web dispatcher",
+      "cycles": 110,
+      "providerReasoningSnapshots": 220,
+      "uniqueReasoningBlocks": 110,
+      "neutralReasoningEnds": 110,
+      "retainedVisuals": 100,
+      "retainedThinking": 50,
+      "retainedTools": 50,
+      "newestRetainedTool": "tool-109",
+      "toolPresenceCheckedSynchronouslyBeforeAndAfterEveryBoundary": true
+    },
+    "SPINE-002": {
+      "result": "Pass",
+      "mode": "deterministic production converter -> production team event mapper JSON round-trip -> focused team-member dispatcher",
+      "cycles": 110,
+      "providerReasoningSnapshots": 220,
+      "uniqueReasoningBlocks": 110,
+      "neutralReasoningEnds": 110,
+      "retainedVisuals": 100,
+      "retainedThinking": 50,
+      "retainedTools": 50,
+      "newestRetainedTool": "tool-109",
+      "teamIdentityEnvelopeVerified": true,
+      "toolPresenceCheckedSynchronouslyBeforeAndAfterEveryBoundary": true
+    },
+    "LIVE-001": {
+      "result": "Pass",
+      "mode": "real Codex App Server standalone memory E2E",
+      "runs": 2,
+      "reasoningEfforts": [
+        "low",
+        "high"
+      ],
+      "note": "Both isolated runs persisted raw traces and working context; their provider reasoning items carried no completed summary content."
+    },
+    "LIVE-002": {
+      "result": "Pass",
+      "mode": "exact real standalone Codex thread -> Agent Tools MCP -> exact target WebSocket",
+      "sameObservedAppServerClient": true,
+      "materializedConfigEnabledTools": [
+        "send_message_to"
+      ],
+      "authenticatedSessionOwnerMatchedSenderRun": true,
+      "authenticatedSessionToolsList": [
+        "send_message_to"
+      ],
+      "appServerStatusCatalogTools": [
+        "send_message_to"
+      ],
+      "startupOrdering": {
+        "starting": 1,
+        "ready": 2,
+        "createRunReturned": 3,
+        "authenticatedToolsList": 4,
+        "statusList": 5,
+        "firstToolCall": 6
+      },
+      "arbitrarySleepUsed": false,
+      "activeExactTarget": {
+        "isError": false,
+        "targetWebSocketReceivedInterAgentMessage": true,
+        "teamEnvelopeObserved": false
+      },
+      "inactiveExactTarget": {
+        "isError": true,
+        "exactInactiveTargetMessageVerified": true
+      },
+      "redaction": {
+        "bearerTokenRetained": false,
+        "sessionIdentifierRetained": false
+      },
+      "diagnosticModelAutonomy": {
+        "qualifiedPromptPasses": 1,
+        "qualifiedPromptRefusals": 1,
+        "decision": "observational only; not a deterministic tool-readiness oracle"
+      }
+    },
+    "LIVE-003": {
+      "result": "Pass",
+      "mode": "real Codex focused-team GraphQL launch + team WebSocket + model-driven send_message_to + memory",
+      "reasoningEffort": "ultra",
+      "assertedHops": 2,
+      "freshRound2DurationSeconds": 48.6,
+      "note": "Ping-to-pong and pong-to-ping tool start/success, communication receipt, recipient completion, and exactly-once memory traces passed."
+    },
+    "AFFECTED-REPOSITORY-ROUND2": {
+      "result": "Pass",
+      "testFilesPassed": 9,
+      "liveFilesCorrectlyEnvironmentSkipped": 1,
+      "testsPassed": 169,
+      "testsSkipped": 1,
+      "diffCheckPassed": true
+    }
+  },
+  "durableTestChanges": [
+    "autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts",
+    "autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts",
+    "autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts"
+  ],
+  "cleanup": {
+    "temporaryProbeRemovedFromTestTree": true,
+    "suiteOwnedTempAppDataAndWorkspacesRemoved": true,
+    "suiteOwnedWebSocketsAndCodexClientsClosed": true,
+    "installedAutoByteusApplicationMutated": false,
+    "installedUserHistoryMutated": false,
+    "sharedWorktreeCleanedOrReset": false,
+    "pushReleaseOrFinalizationPerformed": false
+  }
+}

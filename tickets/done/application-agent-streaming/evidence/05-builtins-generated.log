@@ -1,0 +1,13 @@
+$ pnpm -C applications/brief-studio build
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio
+> node ./scripts/build-package.mjs
+
+Brief Studio importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/brief-studio/dist/importable-package
+$ pnpm -C applications/socratic-math-teacher build
+
+> @autobyteus-example/socratic-math-teacher-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher
+> node ./scripts/build-package.mjs
+
+Socratic Math Teacher importable package generated at /Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/applications/socratic-math-teacher/dist/importable-package
+$ git diff --exit-code -- applications/brief-studio applications/socratic-math-teacher

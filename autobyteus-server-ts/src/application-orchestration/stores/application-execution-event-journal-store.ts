@@ -3,6 +3,7 @@ import {
   APPLICATION_EVENT_DELIVERY_SEMANTICS,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
+import { toPublicApplicationAgentBinding, type ApplicationAgentBindingRecord } from "../domain/models.js";
 import type {
   ApplicationExecutionEventJournalEvent,
   ApplicationExecutionEventJournalRecord,
@@ -49,7 +50,9 @@ const hydrateJournalRecord = (row: Record<string, unknown>): ApplicationExecutio
     applicationId: String(row.application_id),
     family: row.family as ApplicationExecutionEventJournalEvent["family"],
     publishedAt: String(row.published_at),
-    binding: JSON.parse(String(row.binding_json)) as ApplicationExecutionEventJournalEvent["binding"],
+    binding: toPublicApplicationAgentBinding(
+      JSON.parse(String(row.binding_json)) as ApplicationAgentBindingRecord,
+    ),
     producer: row.producer_json ? JSON.parse(String(row.producer_json)) as ApplicationExecutionEventJournalEvent["producer"] : null,
     payload: JSON.parse(String(row.payload_json)) as ApplicationExecutionEventJournalEvent["payload"],
   },

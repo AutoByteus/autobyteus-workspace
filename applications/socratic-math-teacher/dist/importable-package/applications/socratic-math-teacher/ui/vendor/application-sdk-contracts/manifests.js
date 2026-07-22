@@ -1,2 +1,2 @@
-export const APPLICATION_MANIFEST_VERSION_V3 = "3";
+export const APPLICATION_MANIFEST_VERSION_V4 = "4";
 //# sourceMappingURL=manifests.js.map

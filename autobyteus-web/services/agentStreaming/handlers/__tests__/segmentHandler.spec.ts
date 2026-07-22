@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { findSegmentById, handleSegmentContent, handleSegmentEnd, handleSegmentStart } from '../segmentHandler';
+import { getStreamSegmentIdentity } from '../segmentIdentity';
 import type { SegmentStartPayload } from '../../protocol/messageTypes';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
@@ -471,6 +472,32 @@ describe('segmentHandler', () => {
   });
 
   describe('handleSegmentEnd', () => {
+    it('marks a non-empty reasoning segment presentation-complete through the generic end contract', () => {
+      handleSegmentContent(
+        {
+          id: 'reasoning-block:test:1',
+          turn_id: 'turn-1',
+          delta: 'inspect the tool result',
+          segment_type: 'reasoning',
+        },
+        mockContext,
+      );
+
+      const segment = findSegmentById(mockContext, 'reasoning-block:test:1')!;
+      expect(getStreamSegmentIdentity(segment)?.presentationComplete).toBe(false);
+
+      handleSegmentEnd(
+        {
+          id: 'reasoning-block:test:1',
+          turn_id: 'turn-1',
+        },
+        mockContext,
+      );
+
+      expect(getStreamSegmentIdentity(segment)?.presentationComplete).toBe(true);
+      expect(findSegmentById(mockContext, 'reasoning-block:test:1')).toBe(segment);
+    });
+
     it('retains write_file content when the segment ends', () => {
       handleSegmentStart(
         {

@@ -1,8 +1,8 @@
+import type { ApplicationAgentBindingRecord } from "../../../src/application-orchestration/domain/models.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ApplicationRunBindingSummary } from "@autobyteus/application-sdk-contracts";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
@@ -12,7 +12,7 @@ import { ApplicationRunLookupStore } from "../../../src/application-orchestratio
 
 const applicationId = "bundle-app__pkg__brief-studio";
 
-const buildBinding = (): ApplicationRunBindingSummary => ({
+const buildBinding = (): ApplicationAgentBindingRecord => ({
   bindingId: "binding-1",
   applicationId,
   launchRequestId: "launch-request-1",

@@ -69,6 +69,7 @@ const DEFAULT_SUPPORTED_EXPOSURES: ApplicationBackendSupportedExposures = {
   graphql: false,
   notifications: false,
   eventHandlers: false,
+  webSockets: false,
 };
 
 export const DEFAULT_APPLICATION_DEVKIT_CONFIG: ResolvedApplicationDevkitConfig = {
@@ -148,6 +149,7 @@ export const resolveApplicationDevkitConfig = (
         graphql: Boolean(supportedExposures.graphql),
         notifications: Boolean(supportedExposures.notifications),
         eventHandlers: Boolean(supportedExposures.eventHandlers),
+        webSockets: Boolean(supportedExposures.webSockets),
       },
       migrationsDir: readOptionalString(config?.backend?.migrationsDir, defaults.backend.migrationsDir),
       assetsDir: readOptionalString(config?.backend?.assetsDir, defaults.backend.assetsDir),

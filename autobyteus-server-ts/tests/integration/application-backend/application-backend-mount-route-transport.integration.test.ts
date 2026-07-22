@@ -7,7 +7,7 @@ import { createApplicationBackendMountTransport } from "../../../../autobyteus-a
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
-import { ApplicationBackendNotificationStreamService } from "../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js";
+import { ApplicationBackendNotificationHub } from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
 
@@ -63,8 +63,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "3",
-      frontendSdkContractVersion: "3",
+      backendDefinitionContractVersion: "4",
+      frontendSdkContractVersion: "4",
     },
     supportedExposures: {
       queries: false,
@@ -73,6 +73,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
       graphql: false,
       notifications: false,
       eventHandlers: false,
+      webSockets: false,
     },
     migrationsDirPath: null,
     migrationsDirRelativePath: null,
@@ -110,8 +111,8 @@ describe("Application backend mount route transport integration", () => {
         distribution: "self-contained",
         targetRuntime: { engine: "node", semver: ">=22 <23" },
         sdkCompatibility: {
-          backendDefinitionContractVersion: "3",
-          frontendSdkContractVersion: "3",
+          backendDefinitionContractVersion: "4",
+          frontendSdkContractVersion: "4",
         },
         supportedExposures: {
           queries: false,
@@ -120,6 +121,7 @@ describe("Application backend mount route transport integration", () => {
           graphql: false,
           notifications: false,
           eventHandlers: false,
+          webSockets: false,
         },
       }, null, 2)}
 `,
@@ -128,7 +130,7 @@ describe("Application backend mount route transport integration", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-  definitionContractVersion: '3',
+  definitionContractVersion: '4',
   routes: [
     {
       method: 'POST',
@@ -167,7 +169,7 @@ describe("Application backend mount route transport integration", () => {
     applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       engineHostService,
-      notificationStreamService: new ApplicationBackendNotificationStreamService(),
+      notificationHub: new ApplicationBackendNotificationHub(),
     });
 
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });

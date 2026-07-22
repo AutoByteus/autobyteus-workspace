@@ -1,5 +1,5 @@
 import type { ApplicationExecutionResourceKind, ApplicationExecutionResourceSource, ApplicationExecutionResourceRef } from "./execution-resources.js";
-export declare const APPLICATION_MANIFEST_VERSION_V3: "3";
+export declare const APPLICATION_MANIFEST_VERSION_V4: "4";
 export type ApplicationSupportedAgentLaunchConfigDeclaration = {
     llmModelIdentifier?: boolean | null;
     runtimeKind?: boolean | null;
@@ -29,15 +29,15 @@ export type ApplicationExecutionResourceSlotDeclaration = {
     supportedLaunchConfig?: ApplicationSupportedLaunchConfigDeclaration | null;
     defaultExecutionResourceRef?: ApplicationExecutionResourceRef | null;
 };
-export type ApplicationManifestV3 = {
-    manifestVersion: typeof APPLICATION_MANIFEST_VERSION_V3;
+export type ApplicationManifestV4 = {
+    manifestVersion: typeof APPLICATION_MANIFEST_VERSION_V4;
     id: string;
     name: string;
     description?: string | null;
     icon?: string | null;
     ui: {
         entryHtml: string;
-        frontendSdkContractVersion: "3";
+        frontendSdkContractVersion: "4";
     };
     backend: {
         bundleManifest: string;

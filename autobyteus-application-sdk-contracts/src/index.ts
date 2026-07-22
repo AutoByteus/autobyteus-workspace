@@ -5,15 +5,34 @@ import type {
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
 } from "./execution-resources.js";
-import type { ApplicationManifestV3 } from "./manifests.js";
+import type {
+  ApplicationAgentEventStreamObserver,
+  ApplicationAgentEventStreamOptions,
+  ApplicationAgentEventStreamSubscription,
+} from "./application-agent-communication.js";
+import type {
+  ApplicationAgentBinding,
+  ApplicationAgentBindingListFilter,
+  ApplicationAgentInput,
+  ApplicationAgentTeamBinding,
+  ApplicationAgentTargetAddress,
+  ApplicationExecutionProducer,
+  ApplicationRuntimeInputContextFile,
+} from "./application-agent-bindings.js";
+import type { ApplicationWebSocketRouteDefinition } from "./application-websockets.js";
 
 export * from "./manifests.js";
 export * from "./execution-resources.js";
 export * from "./application-iframe-contract.js";
+export * from "./application-agent-bindings.js";
+export * from "./application-agent-events.js";
+export * from "./application-agent-communication.js";
+export * from "./application-agent-target-path.js";
+export * from "./application-websockets.js";
 
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3 = "3" as const;
-export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3 = "3" as const;
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4 = "4" as const;
+export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4 = "4" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
 export type ApplicationRouteMethod =
@@ -33,6 +52,7 @@ export type ApplicationBackendSupportedExposures = {
   graphql: boolean;
   notifications: boolean;
   eventHandlers: boolean;
+  webSockets: boolean;
 };
 
 export type ApplicationBackendBundleManifestV1 = {
@@ -45,8 +65,8 @@ export type ApplicationBackendBundleManifestV1 = {
     semver: string;
   };
   sdkCompatibility: {
-    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3;
-    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3;
+    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
+    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4;
   };
   supportedExposures: ApplicationBackendSupportedExposures;
   migrationsDir?: string | null;
@@ -71,13 +91,6 @@ export type ApplicationNotificationMessage = {
   topic: string;
   payload: unknown;
   publishedAt: string;
-};
-
-export type ApplicationRuntimeInputContextFile = {
-  uri: string;
-  fileType?: string | null;
-  fileName?: string | null;
-  metadata?: Record<string, unknown> | null;
 };
 
 export type ApplicationRuntimeInput = {
@@ -147,56 +160,6 @@ export type ApplicationStartAgentTeamInput = {
   initialInput?: ApplicationRuntimeInput | null;
 };
 
-export type ApplicationRunBindingStatus =
-  | "ATTACHED"
-  | "TERMINATING"
-  | "TERMINATED"
-  | "FAILED"
-  | "ORPHANED";
-
-export type ApplicationRunBindingRuntimeSubject = "AGENT_RUN" | "TEAM_RUN";
-export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
-
-export type ApplicationRunBindingMemberSummary = {
-  memberName: string;
-  memberRouteKey: string;
-  displayName: string;
-  teamPath: string[];
-  runId: string;
-  runtimeKind: ApplicationExecutionProducerRuntimeKind;
-};
-
-export type ApplicationRunBindingSummary = {
-  bindingId: string;
-  applicationId: string;
-  launchRequestId: string;
-  status: ApplicationRunBindingStatus;
-  executionResourceRef: ApplicationExecutionResourceRef;
-  runtime: {
-    subject: ApplicationRunBindingRuntimeSubject;
-    runId: string;
-    definitionId: string;
-    members: ApplicationRunBindingMemberSummary[];
-  };
-  createdAt: string;
-  updatedAt: string;
-  terminatedAt: string | null;
-  lastErrorMessage: string | null;
-};
-
-export type ApplicationRunBindingListFilter = {
-  status?: ApplicationRunBindingStatus | null;
-};
-
-export type ApplicationExecutionProducer = {
-  runId: string;
-  memberRouteKey: string;
-  memberName: string | null;
-  displayName: string | null;
-  runtimeKind: ApplicationExecutionProducerRuntimeKind;
-  teamPath: string[];
-};
-
 export type ApplicationPublishedArtifactFileKind =
   | "file"
   | "image"
@@ -215,7 +178,7 @@ export type ApplicationPublishedArtifactEvent = {
   description: string | null;
   fileKind: ApplicationPublishedArtifactFileKind;
   publishedAt: string;
-  binding: ApplicationRunBindingSummary;
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
   producer: ApplicationExecutionProducer | null;
 };
 
@@ -231,7 +194,7 @@ export type ApplicationExecutionEvent<TPayload = unknown> = {
   applicationId: string;
   family: ApplicationExecutionEventFamily;
   publishedAt: string;
-  binding: ApplicationRunBindingSummary;
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
   producer: ApplicationExecutionProducer | null;
   payload: TPayload;
 };
@@ -246,20 +209,21 @@ export type ApplicationExecutionEventEnvelope<TPayload = unknown> = {
 };
 
 export type ApplicationAgentExecution = {
-  startAgent: (input: ApplicationStartAgentInput) => Promise<ApplicationRunBindingSummary>;
-  startAgentTeam: (input: ApplicationStartAgentTeamInput) => Promise<ApplicationRunBindingSummary>;
+  startAgent: (input: ApplicationStartAgentInput) => Promise<ApplicationAgentBinding>;
+  startAgentTeam: (input: ApplicationStartAgentTeamInput) => Promise<ApplicationAgentTeamBinding>;
   sendInput: (input: {
-    bindingId: string;
-    text: string;
-    targetMemberRouteKey?: string | null;
-    targetMemberPath?: string[] | null;
-    contextFiles?: ApplicationRuntimeInputContextFile[] | null;
-    metadata?: Record<string, unknown> | null;
-  }) => Promise<ApplicationRunBindingSummary>;
-  terminate: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
-  get: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
-  list: (filter?: ApplicationRunBindingListFilter | null) => Promise<ApplicationRunBindingSummary[]>;
-  findByLaunchRequestId: (launchRequestId: string) => Promise<ApplicationRunBindingSummary | null>;
+    address: ApplicationAgentTargetAddress;
+    input: ApplicationAgentInput;
+  }) => Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding>;
+  subscribeEventStream: (
+    address: ApplicationAgentTargetAddress,
+    observer: ApplicationAgentEventStreamObserver,
+    options?: ApplicationAgentEventStreamOptions,
+  ) => Promise<ApplicationAgentEventStreamSubscription>;
+  terminate: (bindingId: string) => Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding | null>;
+  get: (bindingId: string) => Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding | null>;
+  list: (filter?: ApplicationAgentBindingListFilter | null) => Promise<Array<ApplicationAgentBinding | ApplicationAgentTeamBinding>>;
+  findByLaunchRequestId: (launchRequestId: string) => Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding | null>;
 };
 
 export type ApplicationAgentResources = {
@@ -367,7 +331,7 @@ export type ApplicationRouteDefinition = {
 };
 
 export type ApplicationBackendDefinition = {
-  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V3;
+  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
   lifecycle?: {
     onStart?: ApplicationLifecycleHook;
     onStop?: ApplicationLifecycleHook;
@@ -375,6 +339,7 @@ export type ApplicationBackendDefinition = {
   queries?: Record<string, ApplicationQueryHandler>;
   commands?: Record<string, ApplicationCommandHandler>;
   routes?: ApplicationRouteDefinition[];
+  webSocketRoutes?: ApplicationWebSocketRouteDefinition[];
   graphql?: {
     execute: ApplicationGraphqlExecutor;
   };
@@ -389,6 +354,7 @@ export type ApplicationBackendExposureSummary = {
   queries: string[];
   commands: string[];
   routes: Array<Pick<ApplicationRouteDefinition, "method" | "path">>;
+  webSocketRoutes: Array<Pick<ApplicationWebSocketRouteDefinition, "path">>;
   graphql: boolean;
   notifications: boolean;
   eventHandlers: ApplicationExecutionEventFamily[];

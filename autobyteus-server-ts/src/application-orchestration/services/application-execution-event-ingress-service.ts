@@ -1,8 +1,8 @@
+import { toPublicApplicationAgentBinding, type ApplicationAgentBindingRecord } from "../domain/models.js";
 import { randomUUID } from "node:crypto";
 import type {
   ApplicationExecutionEventFamily,
   ApplicationExecutionProducer,
-  ApplicationRunBindingSummary,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationExecutionEventJournalStore } from "../stores/application-execution-event-journal-store.js";
 import type { ApplicationExecutionEventPayload } from "../domain/models.js";
@@ -29,7 +29,7 @@ export class ApplicationExecutionEventIngressService {
 
   async appendBindingLifecycleEvent(input: {
     family: ApplicationExecutionEventFamily;
-    binding: ApplicationRunBindingSummary;
+    binding: ApplicationAgentBindingRecord;
     producer?: ApplicationExecutionProducer | null;
     payload?: { reason?: string | null; errorMessage?: string | null } | null;
   }): Promise<void> {
@@ -45,7 +45,7 @@ export class ApplicationExecutionEventIngressService {
   private async appendEvent(input: {
     applicationId: string;
     family: ApplicationExecutionEventFamily;
-    binding: ApplicationRunBindingSummary;
+    binding: ApplicationAgentBindingRecord;
     producer: ApplicationExecutionProducer | null;
     payload: ApplicationExecutionEventPayload;
   }): Promise<void> {
@@ -54,7 +54,7 @@ export class ApplicationExecutionEventIngressService {
       applicationId: input.applicationId,
       family: input.family,
       publishedAt: new Date().toISOString(),
-      binding: structuredClone(input.binding),
+      binding: toPublicApplicationAgentBinding(input.binding),
       producer: input.producer ? structuredClone(input.producer) : null,
       payload: structuredClone(input.payload),
     });

@@ -4,14 +4,14 @@ startHostedApplication({
   rootElement: document.getElementById('app-root'),
   onBootstrapped: async ({ bootstrap, applicationClient, rootElement }) => {
     const appInfo = applicationClient.getApplicationInfo();
-    const status = await applicationClient.query('status');
+    const status = await applicationClient.backend.query('status');
 
     rootElement.innerHTML = `
       <section class="app-shell">
         <article class="app-card">
           <h1>${escapeHtml(bootstrap.application.name)}</h1>
           <p>
-            This custom application started through the AutoByteus iframe contract v3.
+            This custom application started through the AutoByteus iframe contract v4.
             Business UI begins only after <code>startHostedApplication(...)</code> receives bootstrap data.
           </p>
           <pre>${escapeHtml(JSON.stringify({ appInfo, status }, null, 2))}</pre>

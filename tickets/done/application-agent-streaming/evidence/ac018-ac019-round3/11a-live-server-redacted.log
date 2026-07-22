@@ -1,0 +1,10 @@
+ASE-018 live server/process evidence (redacted)
+- Fresh isolated server listened on the task-owned loopback origin and task-owned port.
+- Fresh generated Socratic package imported and its application worker started.
+- One application team run and one tutor member run started through the real application worker/engine host boundary.
+- One Codex app-server child process started for the approved live turn.
+- The app worker log recorded the public lesson.response_received notification topic.
+- The Codex app-server process exited after CloseLessonMutation terminated the binding.
+- Post-close application projection: lesson=closed, binding=TERMINATED.
+- No run, binding, lesson, message, thread, or raw provider identifiers are retained.
+- No credentials, provider raw events, or hidden reasoning are retained.

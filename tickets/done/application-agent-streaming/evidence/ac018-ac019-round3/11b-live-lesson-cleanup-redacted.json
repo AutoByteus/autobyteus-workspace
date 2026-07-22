@@ -1,0 +1,6 @@
+{
+  "lessonClosed": true,
+  "closedAtRecorded": true,
+  "bindingStatusReturnedByClose": "ATTACHED",
+  "bindingStatusAfterTerminationSettled": "TERMINATED"
+}

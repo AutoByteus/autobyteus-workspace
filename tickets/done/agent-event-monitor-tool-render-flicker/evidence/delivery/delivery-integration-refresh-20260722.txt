@@ -1,0 +1,25 @@
+# Delivery integrated-state check — 2026-07-22
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker
+branch=codex/agent-event-monitor-tool-render-flicker
+bootstrap_base=965f97685c08569a98186b2a894243c0b3f602d3
+latest_tracked_remote_base=965f97685c08569a98186b2a894243c0b3f602d3
+reviewed_source_commit=710ab2f46f1a1bf559b735a8ef5863faed025777
+handoff_packaging_commit=c93c84b69d1a60156735ea6763fb977c23d10db5
+delivery_safety_checkpoint=8e9a88a153e17ebe0a3678f764496e372a355a01
+merge_base_with_origin_personal=965f97685c08569a98186b2a894243c0b3f602d3
+ahead_behind_head_vs_origin_personal=5	0
+origin_personal_is_ancestor=yes
+reviewed_source_is_ancestor=yes
+handoff_packaging_is_ancestor=yes
+base_advanced_since_bootstrap=no
+integration_method=already_current
+new_base_commits_integrated=no
+post_integration_executable_rerun=no
+no_rerun_rationale=origin/personal remained at the reviewed bootstrap base; API/E2E round 2 passed at 95 percent on the same integrated production source; only reviewed durable tests and cumulative reports/evidence were checkpointed after c93c84b69.
+production_source_changes_after_reviewed_source=0
+latest_api_e2e_result=- Result: `Pass`
+latest_test_review_result=- Result: `Pass`
+status_before_delivery_docs_commit:
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/codex_integration.md
+?? tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/

@@ -23,6 +23,7 @@ const LESSON_QUERY = `query LessonQuery($lessonId: ID!) {
     updatedAt
     createdAt
     closedAt
+    tutorTargetAddress
     messages {
       messageId
       lessonId
@@ -46,6 +47,7 @@ const START_LESSON_MUTATION = `mutation StartLessonMutation($input: StartLessonI
     updatedAt
     createdAt
     closedAt
+    tutorTargetAddress
     messages {
       messageId
       lessonId
@@ -69,6 +71,7 @@ const ASK_FOLLOW_UP_MUTATION = `mutation AskFollowUpMutation($input: AskFollowUp
     updatedAt
     createdAt
     closedAt
+    tutorTargetAddress
     messages {
       messageId
       lessonId
@@ -92,6 +95,7 @@ const REQUEST_HINT_MUTATION = `mutation RequestHintMutation($input: RequestHintI
     updatedAt
     createdAt
     closedAt
+    tutorTargetAddress
     messages {
       messageId
       lessonId
@@ -115,6 +119,7 @@ const CLOSE_LESSON_MUTATION = `mutation CloseLessonMutation($input: CloseLessonI
     updatedAt
     createdAt
     closedAt
+    tutorTargetAddress
     messages {
       messageId
       lessonId
@@ -140,13 +145,13 @@ const readGraphqlField = async (promise, fieldName) => {
 export const createSocraticMathGraphqlClient = (applicationClient) => {
   const execute = (query, operationName, variables, fieldName) =>
     readGraphqlField(
-      applicationClient.graphql({ query, operationName, variables }),
+      applicationClient.backend.graphql({ query, operationName, variables }),
       fieldName,
     );
 
   return {
     getApplicationInfo: applicationClient.getApplicationInfo,
-    subscribeNotifications: applicationClient.subscribeNotifications,
+    subscribeNotifications: applicationClient.notifications.subscribe,
     lessons: () => execute(LESSONS_QUERY, "LessonsQuery", null, "lessons"),
     lesson: (lessonId) => execute(LESSON_QUERY, "LessonQuery", { lessonId }, "lesson"),
     startLesson: (input) => execute(START_LESSON_MUTATION, "StartLessonMutation", { input }, "startLesson"),

@@ -15,7 +15,7 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 - `src/application-engine/runtime/application-worker-supervisor.ts`
 - `src/application-engine/runtime/application-engine-client.ts`
 - `src/application-engine/runtime/protocol.ts`
-- `src/application-engine/worker/application-worker-runtime.ts`
+- `src/application-engine/worker/application-backend-host.ts`
 - `src/application-storage/services/application-storage-lifecycle-service.ts`
 - `src/application-orchestration/services/application-orchestration-host-service.ts`
 
@@ -49,8 +49,9 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 ## Worker Contract
 
 - The worker loads a self-contained ESM backend module.
-- The backend definition contract version must be `"3"`; v2 is rejected before any handler or lifecycle hook runs.
+- The backend definition contract version must be `"4"`; stale definitions are rejected before any handler or lifecycle hook runs.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
+- Custom `webSocketRoutes` run in the worker-owned `ApplicationBackendHost`; standard application-agent communication never traverses the engine or worker.
 - Lifecycle hooks (`onStart`, `onStop`) run inside the worker with the same storage context shape used by query/command/route/event handlers.
 - Worker notifications flow back to the host over the engine protocol and are re-published by the backend API gateway.
 - Worker-side `context.agentExecution`, `context.agentResources`, and `context.publishedArtifacts` calls are bridged back to `ApplicationOrchestrationHostService` through one discriminated engine protocol; application backends do not launch agent/team runs directly inside the worker process.
@@ -63,7 +64,9 @@ Once ready, the engine is the only owner used to invoke:
 - application commands,
 - application routes,
 - application GraphQL execution,
+- custom application WebSocket session open/message/close handling,
 - application event handlers, and
+- optional backend agent-event observer callbacks, and
 - worker-originated context-capability requests.
 
 The gateway and orchestration owners both depend on this boundary instead of reaching into worker details directly.

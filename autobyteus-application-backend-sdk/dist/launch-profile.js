@@ -68,6 +68,7 @@ export const buildConfiguredTeamMemberLaunchConfigs = (input) => {
         autoExecuteTools: true,
         skillAccessMode,
         workspaceRootPath,
+        ...(input.llmConfig === undefined ? {} : { llmConfig: structuredClone(input.llmConfig) }),
         runtimeKind: normalizeOptionalString(memberProfile.runtimeKind) ?? defaultRuntimeKind ?? null,
     }));
 };
@@ -81,6 +82,7 @@ export const buildConfiguredTeamRunLaunch = (input) => {
                 llmModelIdentifier: requireNonEmptyString(input.llmModelIdentifier, "llmModelIdentifier"),
                 autoExecuteTools: true,
                 skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
+                ...(input.llmConfig === undefined ? {} : { llmConfig: structuredClone(input.llmConfig) }),
                 runtimeKind: normalizeOptionalString(input.runtimeKind) ?? null,
             },
         };
@@ -92,6 +94,7 @@ export const buildConfiguredTeamRunLaunch = (input) => {
             launchProfile: input.launchProfile,
             workspaceRootPath: input.workspaceRootPath,
             llmModelIdentifier: input.llmModelIdentifier,
+            llmConfig: input.llmConfig,
             runtimeKind: input.runtimeKind,
             skillAccessMode: input.skillAccessMode,
         }),

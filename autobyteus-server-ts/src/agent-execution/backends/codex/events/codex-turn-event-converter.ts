@@ -13,8 +13,11 @@ export type CodexTurnEventConverterContext = {
     payload: Record<string, unknown>,
   ) => AgentRunEvent;
   createStatusEvent: (codexEventName: string, payload?: Partial<AgentStatusPayload>) => AgentRunEvent;
-  clearReasoningBlockForBoundary: (payload: JsonObject) => void;
-  clearAllReasoningBlocks: () => void;
+  closeReasoningBlocksForBoundary: (
+    codexEventName: string,
+    payload: JsonObject,
+  ) => AgentRunEvent[];
+  closeAllReasoningBlocks: (codexEventName: string) => AgentRunEvent[];
   clearOrderedToolsForBoundary: (payload: JsonObject) => void;
   clearAllOrderedTools: () => void;
 };
@@ -30,18 +33,23 @@ export const convertCodexTurnEvent = (
   const turnId = resolveTurnIdFromAppServerMessage(payload);
   switch (codexEventName) {
     case CodexThreadEventName.TURN_STARTED:
-      context.clearAllReasoningBlocks();
+      const startReasoningEnds = context.closeAllReasoningBlocks(codexEventName);
       context.clearAllOrderedTools();
       return [
+        ...startReasoningEnds,
         context.createEvent(codexEventName, AgentRunEventType.TURN_STARTED, {
           ...(turnId ? { turnId } : {}),
         }),
         context.createStatusEvent(codexEventName),
       ];
     case CodexThreadEventName.TURN_COMPLETED:
-      context.clearReasoningBlockForBoundary(payload);
+      const completionReasoningEnds = context.closeReasoningBlocksForBoundary(
+        codexEventName,
+        payload,
+      );
       context.clearOrderedToolsForBoundary(payload);
       return [
+        ...completionReasoningEnds,
         context.createEvent(codexEventName, AgentRunEventType.TURN_COMPLETED, {
           ...(turnId ? { turnId } : {}),
         }),

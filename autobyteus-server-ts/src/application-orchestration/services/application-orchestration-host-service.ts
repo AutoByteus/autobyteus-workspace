@@ -1,17 +1,22 @@
+import { toPublicApplicationAgentBinding, type ApplicationAgentBindingRecord } from "../domain/models.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type {
   ApplicationConfiguredExecutionResource,
-  ApplicationRunBindingListFilter,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentInput,
+  ApplicationAgentTeamBinding,
+  ApplicationAgentTargetAddress,
+  ApplicationAgentBindingListFilter,
   ApplicationRuntimeInput,
   ApplicationRuntimeInputContextFile,
   ApplicationExecutionResourceSummary,
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
+import { requireApplicationAgentInputWithinLimits } from "../domain/application-agent-input-validator.js";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
@@ -44,8 +49,16 @@ import {
   selectorToRouteKey,
   type TeamMemberSelector,
 } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import {
+  ApplicationAgentTargetAuthorizationService,
+  type ApplicationAgentTargetAuthorizationLease,
+} from "./application-agent-target-authorization-service.js";
+import {
+  ApplicationRunBindingTerminalTransitionService,
+  getApplicationRunBindingTerminalTransitionService,
+} from "./application-run-binding-terminal-transition-service.js";
 
-const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
+const cloneBinding = (binding: ApplicationAgentBindingRecord): ApplicationAgentBindingRecord => structuredClone(binding);
 
 const normalizeContextFiles = (
   contextFiles: ApplicationRuntimeInputContextFile[] | null | undefined,
@@ -101,6 +114,8 @@ export class ApplicationOrchestrationHostService {
       ingressService?: ApplicationExecutionEventIngressService;
       publishedArtifactProjectionService?: PublishedArtifactProjectionService;
       memoryLocationService?: AgentMemoryLocationService;
+      agentTargetAuthorizationService?: ApplicationAgentTargetAuthorizationService;
+      terminalTransitionService?: ApplicationRunBindingTerminalTransitionService;
     } = {},
   ) {}
 
@@ -168,6 +183,26 @@ export class ApplicationOrchestrationHostService {
     return this.dependencies.memoryLocationService ?? getAgentMemoryLocationService();
   }
 
+  private get agentTargetAuthorizationService(): ApplicationAgentTargetAuthorizationService {
+    return this.dependencies.agentTargetAuthorizationService ?? new ApplicationAgentTargetAuthorizationService({
+      startupGate: this.startupGate,
+      availabilityService: this.availabilityService,
+      bindingStore: this.bindingStore,
+    });
+  }
+
+  private get terminalTransitionService(): ApplicationRunBindingTerminalTransitionService {
+    if (this.dependencies.terminalTransitionService) return this.dependencies.terminalTransitionService;
+    if (this.dependencies.bindingStore || this.dependencies.lookupStore || this.dependencies.ingressService) {
+      return new ApplicationRunBindingTerminalTransitionService({
+        bindingStore: this.bindingStore,
+        lookupStore: this.lookupStore,
+        ingressService: this.ingressService,
+      });
+    }
+    return getApplicationRunBindingTerminalTransitionService();
+  }
+
   private async requireApplicationActive(applicationId: string): Promise<void> {
     await this.availabilityService.requireApplicationActive(applicationId);
   }
@@ -193,27 +228,41 @@ export class ApplicationOrchestrationHostService {
   async startAgent(
     applicationId: string,
     input: ApplicationStartAgentInput,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBinding> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    const binding = await this.runBindingLaunchService.startAgentRunBinding(applicationId, input);
-    return this.completeStartedBinding(binding, input.initialInput);
+    const binding = await this.completeStartedBinding(
+      await this.runBindingLaunchService.startAgentRunBinding(applicationId, input),
+      input.initialInput,
+    );
+    const publicBinding = toPublicApplicationAgentBinding(binding);
+    if (publicBinding.runtime.subject !== "AGENT_RUN") {
+      throw new Error("Agent launch returned a non-agent binding.");
+    }
+    return publicBinding as ApplicationAgentBinding;
   }
 
   async startAgentTeam(
     applicationId: string,
     input: ApplicationStartAgentTeamInput,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentTeamBinding> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    const binding = await this.runBindingLaunchService.startAgentTeamRunBinding(applicationId, input);
-    return this.completeStartedBinding(binding, input.initialInput);
+    const binding = await this.completeStartedBinding(
+      await this.runBindingLaunchService.startAgentTeamRunBinding(applicationId, input),
+      input.initialInput,
+    );
+    const publicBinding = toPublicApplicationAgentBinding(binding);
+    if (publicBinding.runtime.subject !== "TEAM_RUN") {
+      throw new Error("Agent-team launch returned a non-team binding.");
+    }
+    return publicBinding as ApplicationAgentTeamBinding;
   }
 
   private async completeStartedBinding(
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     initialInput: ApplicationRuntimeInput | null | undefined,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     const attached = await this.runObserverService.attachBinding(binding, { emitAttachedEvent: true });
     if (!attached) {
       throw new Error(`Runtime observer could not attach to application run binding '${binding.bindingId}'.`);
@@ -227,28 +276,30 @@ export class ApplicationOrchestrationHostService {
   async getRunBinding(
     applicationId: string,
     bindingId: string,
-  ): Promise<ApplicationRunBindingSummary | null> {
+  ): Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding | null> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.bindingStore.getBinding(applicationId, bindingId);
+    const binding = await this.bindingStore.getBinding(applicationId, bindingId);
+    return binding ? toPublicApplicationAgentBinding(binding) : null;
   }
 
   async findRunBindingByLaunchRequestId(
     applicationId: string,
     launchRequestId: string,
-  ): Promise<ApplicationRunBindingSummary | null> {
+  ): Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding | null> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.bindingStore.findBindingByLaunchRequestId(applicationId, launchRequestId);
+    const binding = await this.bindingStore.findBindingByLaunchRequestId(applicationId, launchRequestId);
+    return binding ? toPublicApplicationAgentBinding(binding) : null;
   }
 
   async listRunBindings(
     applicationId: string,
-    filter?: ApplicationRunBindingListFilter | null,
-  ): Promise<ApplicationRunBindingSummary[]> {
+    filter?: ApplicationAgentBindingListFilter | null,
+  ): Promise<Array<ApplicationAgentBinding | ApplicationAgentTeamBinding>> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.bindingStore.listBindings(applicationId, filter);
+    return (await this.bindingStore.listBindings(applicationId, filter)).map(toPublicApplicationAgentBinding);
   }
 
   async listRunPublishedArtifacts(
@@ -287,25 +338,23 @@ export class ApplicationOrchestrationHostService {
   async sendRunInput(
     applicationId: string,
     input: {
-      bindingId: string;
-      text: string;
-      targetMemberRouteKey?: string | null;
-      targetMemberPath?: string[] | null;
-      contextFiles?: ApplicationRuntimeInputContextFile[] | null;
-      metadata?: Record<string, unknown> | null;
+      address: ApplicationAgentTargetAddress;
+      input: ApplicationAgentInput;
     },
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding> {
     await this.startupGate.awaitReady();
-    await this.requireApplicationActive(applicationId);
-    const binding = await this.requireBinding(applicationId, input.bindingId);
-    await this.postRunInputInternal(binding, input);
-    return cloneBinding(binding);
+    rejectUnsupportedApplicationAgentInput(input.input);
+    requireApplicationAgentInputWithinLimits(input.input);
+    const descriptor = await this.agentTargetAuthorizationService.authorizeTarget(applicationId, input.address);
+    const binding = await this.requireBinding(applicationId, descriptor.address.bindingId);
+    await this.postAddressedRunInputInternal(binding, input.address, input.input);
+    return toPublicApplicationAgentBinding(binding);
   }
 
   async terminateRunBinding(
     applicationId: string,
     bindingId: string,
-  ): Promise<ApplicationRunBindingSummary | null> {
+  ): Promise<ApplicationAgentBinding | ApplicationAgentTeamBinding | null> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
 
@@ -314,7 +363,7 @@ export class ApplicationOrchestrationHostService {
       return null;
     }
     if (binding.status === "TERMINATED" || binding.status === "ORPHANED") {
-      return cloneBinding(binding);
+      return toPublicApplicationAgentBinding(binding);
     }
 
     await this.runObserverService.detachBinding(binding.bindingId);
@@ -324,27 +373,27 @@ export class ApplicationOrchestrationHostService {
       await this.teamRunService.terminateTeamRun(binding.runtime.runId);
     }
 
-    const terminatedAt = new Date().toISOString();
-    const terminatedBinding: ApplicationRunBindingSummary = {
-      ...binding,
+    const transitioned = await this.terminalTransitionService.transition({
+      applicationId,
+      bindingId,
       status: "TERMINATED",
-      updatedAt: terminatedAt,
-      terminatedAt,
-    };
-    await this.bindingStore.persistBinding(terminatedBinding);
-    this.lookupStore.removeBindingLookups(applicationId, binding.bindingId);
-    await this.ingressService.appendBindingLifecycleEvent({
-      family: "RUN_TERMINATED",
-      binding: terminatedBinding,
-      payload: { reason: "explicit_terminate" },
+      reason: "explicit_terminate",
     });
-    return cloneBinding(terminatedBinding);
+    return transitioned ? toPublicApplicationAgentBinding(transitioned) : null;
+  }
+
+  async openAgentEventStreamLease(
+    applicationId: string,
+    address: ApplicationAgentTargetAddress,
+    onBindingEnded: () => void,
+  ): Promise<ApplicationAgentTargetAuthorizationLease> {
+    return this.agentTargetAuthorizationService.openLease(applicationId, address, onBindingEnded);
   }
 
   private async requireBinding(
     applicationId: string,
     bindingId: string,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     const binding = await this.bindingStore.getBinding(applicationId, bindingId);
     if (!binding) {
       throw new Error(`Application run binding '${bindingId}' was not found.`);
@@ -358,7 +407,7 @@ export class ApplicationOrchestrationHostService {
   private async requireBindingForRun(
     applicationId: string,
     runId: string,
-  ): Promise<ApplicationRunBindingSummary> {
+  ): Promise<ApplicationAgentBindingRecord> {
     const bindings = await this.bindingStore.listBindings(applicationId, null);
     const binding = bindings.find((candidate) =>
       candidate.runtime.runId === runId || candidate.runtime.members.some((member) => member.runId === runId),
@@ -370,7 +419,7 @@ export class ApplicationOrchestrationHostService {
   }
 
   private async resolveBoundMemberMemoryDir(
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     runId: string,
   ): Promise<string | null> {
     if (!binding.runtime.members.some((member) => member.runId === runId)) {
@@ -393,7 +442,7 @@ export class ApplicationOrchestrationHostService {
   }
 
   private async postRunInputInternal(
-    binding: ApplicationRunBindingSummary,
+    binding: ApplicationAgentBindingRecord,
     input: ApplicationRuntimeInput,
   ): Promise<void> {
     rejectUnsupportedApplicationRuntimeTargetName(input);
@@ -419,6 +468,42 @@ export class ApplicationOrchestrationHostService {
       throw new Error(result.message ?? "Application runtime rejected the input.");
     }
   }
+
+  private async postAddressedRunInputInternal(
+    binding: ApplicationAgentBindingRecord,
+    address: ApplicationAgentTargetAddress,
+    input: ApplicationAgentInput,
+  ): Promise<void> {
+    rejectUnsupportedApplicationAgentInput(input);
+    const message = buildRuntimeInputMessage(input);
+    if (binding.runtime.subject === "AGENT_RUN") {
+      if (address.target.kind !== "AGENT_RUN") {
+        throw new Error("Application agent input target does not match the bound runtime.");
+      }
+      const run = await this.agentRunService.resolveAgentRun(binding.runtime.runId);
+      if (!run) throw new Error(`Application runtime '${binding.runtime.runId}' is not available.`);
+      const result = await run.postUserMessage(message);
+      if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
+      return;
+    }
+    if (address.target.kind === "AGENT_RUN") {
+      throw new Error("Application agent input target does not match the bound runtime.");
+    }
+    const run = await this.teamRunService.resolveTeamRun(binding.runtime.runId);
+    if (!run) throw new Error(`Application runtime '${binding.runtime.runId}' is not available.`);
+    const targetMemberRouteKey = address.target.kind === "AGENT_TEAM_MEMBER"
+      ? address.target.memberRouteKey
+      : null;
+    const selector = targetMemberRouteKey
+      ? selectorFromMemberRouteKey(targetMemberRouteKey)
+      : null;
+    if (targetMemberRouteKey &&
+        !binding.runtime.members.some((member) => member.memberRouteKey === targetMemberRouteKey)) {
+      throw new Error("Application agent input target does not belong to the bound team runtime.");
+    }
+    const result = await run.postMessage(message, selector);
+    if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
+  }
 }
 
 const buildApplicationRuntimeInputTargetSelector = (
@@ -439,6 +524,13 @@ const buildApplicationRuntimeInputTargetSelector = (
     return pathSelector;
   }
   return targetMemberRouteKey ? selectorFromMemberRouteKey(targetMemberRouteKey) : null;
+};
+
+const rejectUnsupportedApplicationAgentInput = (input: ApplicationAgentInput): void => {
+  const allowed = new Set(["text", "contextFiles", "metadata"]);
+  const unknown = Object.keys(input as Record<string, unknown>).find((key) => !allowed.has(key));
+  if (unknown) throw new Error(`${unknown} is not supported in application agent input.`);
+  if (typeof input.text !== "string") throw new Error("Application agent input text must be a string.");
 };
 
 const rejectUnsupportedApplicationRuntimeTargetName = (

@@ -5,9 +5,19 @@ export const defineApplication = <TDefinition extends ApplicationBackendDefiniti
 ): TDefinition => definition;
 
 export * from "./launch-profile.js";
+export * from "./application-agent-target-address.js";
 
 export type {
   ApplicationAgentRunLaunch,
+  ApplicationAgentEventStreamObserver,
+  ApplicationAgentEventStreamOptions,
+  ApplicationAgentEventStreamSubscription,
+  ApplicationAgentEventStreamSubscribeErrorCode,
+  ApplicationAgentTarget,
+  ApplicationAgentTargetAddress,
+  ApplicationAgentEvent,
+  ApplicationAgentEventStreamError,
+  ApplicationAgentEventStreamClose,
   ApplicationAgentExecution,
   ApplicationAgentResources,
   ApplicationArtifactHandler,
@@ -43,7 +53,16 @@ export type {
   ApplicationRouteMethod,
   ApplicationRouteRequest,
   ApplicationRouteResponse,
-  ApplicationRunBindingSummary,
+  ApplicationWebSocketFrame,
+  ApplicationWebSocketRequest,
+  ApplicationWebSocketRouteDefinition,
+  ApplicationWebSocketSession,
+  ApplicationWebSocketSessionHandler,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
+  ApplicationAgentTeamBindingMember,
+  ApplicationAgentBindingStatus,
+  ApplicationAgentInput,
   ApplicationRuntimeInput,
   ApplicationRuntimeInputContextFile,
   ApplicationSkillAccessMode,

@@ -337,15 +337,18 @@ The normal display projection path uses:
 - Codex thread ids only as runtime-native metadata, not as display-source
   selectors.
 
-For Codex live streams, the server-owned memory recorder and
-`RuntimeMemoryEventAccumulator` must persist open reasoning before the next
-same-turn visible write. This includes explicit tool calls, inferred tool calls
-from terminal tool-result events, assistant text, and assistant-complete output.
-That write boundary is what lets restart/history reload show thinking rows
-before the corresponding local replay tool cards or assistant text. If a Codex
-run ends with open reasoning and no later visible write or `TURN_COMPLETED`
-boundary, the local replay can still be incomplete rather than recovered from
-Codex native history.
+For Codex live streams, the provider adapter closes each content-bearing logical
+reasoning block through the generic `SEGMENT_END(reasoning)` lifecycle before
+the real transcript/lifecycle boundary that ended it. The server-owned memory
+recorder and `RuntimeMemoryEventAccumulator` flush that exact block at the end
+event, before a new ordered tool card, assistant text, turn transition, or
+terminal error is applied. The accumulator's existing generic visible-write
+flushes remain idempotent safeguards, not a substitute for provider lifecycle
+completion. This ordering lets restart/history reload show thinking rows before
+the corresponding local replay tool cards or assistant text without duplicating
+the reasoning record. An abnormal provider/process disappearance that supplies
+neither a supported boundary nor a terminal error is not speculatively repaired
+from Codex native history.
 
 Tool replay uses one complete-corpus logical interaction per compound identity.
 New minimal results carry the verified canonical name locally and obtain
@@ -393,6 +396,18 @@ conversation is being applied.
 ## Event-Normalization Rules
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
+- Completed Codex reasoning snapshots are grouped under one allocator-owned
+  logical segment id per active turn. A real ordered boundary emits exactly one
+  status-neutral `SEGMENT_END(reasoning)` for that id before the boundary's own
+  event(s). Real boundaries include user/non-reasoning transcript items,
+  assistant text, first creation of an ordered tool card (including a
+  result-first creation), turn completion/start, and terminal error. Matching
+  updates to an already-positioned tool card and provider-maintenance/no-effect
+  events do not close the block. A completed snapshot without a correlatable
+  turn emits adjacent content/end events with the same id and `turn_id: null`.
+  Turn-start/error global cleanup closes every active content-bearing block in
+  deterministic order. Generic transport, frontend retention, and memory code
+  must consume this lifecycle without adding Codex-specific completion logic.
 - `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for non-migrated Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
 - `item/started` with `item.type = mcpToolCall` follows the split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's canonicalized tool name, turn id, and arguments. Those terminal fields serve live lifecycle consumers and missing-call materialization; the recorder verifies any supplied terminal name against lifecycle state, persists that canonical name on the raw result, and continues to keep arguments call-only.
 - `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)` but omits `arguments` for a provider placeholder; completion supplies the authoritative action arguments in exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`. Storage therefore defers the call until terminal readiness instead of persisting placeholder `{}`.

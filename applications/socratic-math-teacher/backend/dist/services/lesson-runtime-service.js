@@ -35,13 +35,6 @@ const ensureOpenBinding = (lesson) => {
     }
     return lesson.latestBindingId;
 };
-const buildTutorPrompt = (studentPrompt) => [
-    "You are guiding one student through a math problem.",
-    "Ask one focused question or give one concise hint at a time.",
-    "After every tutor response, call publish_artifacts with a one-item artifacts array so the application can project your turn into lesson history.",
-    `Publish normal turns with artifacts: [{ path: "socratic-math/lesson-response.md" }] and hint turns with artifacts: [{ path: "socratic-math/lesson-hint.md" }].`,
-    `Student problem: ${studentPrompt}`,
-].join("\n\n");
 const resolveStartLessonProjection = (input) => {
     const currentBindingProjection = input.currentLesson?.latestBindingId === input.binding.bindingId
         ? input.currentLesson
@@ -102,11 +95,8 @@ export const createLessonRuntimeService = (context) => ({
                     launchProfile: tutorTeam.launchProfile,
                     workspaceRootPath,
                     llmModelIdentifier: input.llmModelIdentifier,
+                    llmConfig: { reasoning_effort: "high" },
                 }),
-                initialInput: {
-                    text: buildTutorPrompt(prompt),
-                    metadata: { lessonId },
-                },
             });
             withAppDatabase(context.storage.appDatabasePath, (db) => {
                 withTransaction(db, () => {
@@ -196,9 +186,11 @@ export const createLessonRuntimeService = (context) => ({
             });
         });
         await context.agentExecution.sendInput({
-            bindingId,
-            text,
-            metadata: { lessonId },
+            address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+            input: {
+                text,
+                metadata: { lessonId },
+            },
         });
         return createLessonReadService(context).getLesson(lessonId);
     },
@@ -235,9 +227,11 @@ export const createLessonRuntimeService = (context) => ({
             });
         });
         await context.agentExecution.sendInput({
-            bindingId,
-            text: `The student requests a hint. ${detail}`,
-            metadata: { lessonId, requestKind: "hint" },
+            address: { bindingId, target: { kind: "AGENT_TEAM_RUN" } },
+            input: {
+                text: `The student requests a hint. ${detail}`,
+                metadata: { lessonId, requestKind: "hint" },
+            },
         });
         return createLessonReadService(context).getLesson(lessonId);
     },

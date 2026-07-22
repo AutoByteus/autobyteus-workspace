@@ -1,0 +1,11 @@
+{
+  "isolatedRoot": "<owned-temporary-root>",
+  "applicationData": "<owned-temporary-root>/app-data",
+  "packageRoot": "<owned-temporary-root>/package-root",
+  "tutorWorkspace": "<owned-temporary-root>/tutor-workspace",
+  "browserProfile": "<owned-temporary-root>/browser-profile",
+  "serverOrigin": "<isolated-loopback-origin>",
+  "hostOrigin": "<isolated-loopback-host-origin>",
+  "sharedUserDataUsed": false,
+  "generatedPackageCopiedFresh": true
+}

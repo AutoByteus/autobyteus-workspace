@@ -7,7 +7,8 @@ import type {
   ApplicationExecutionEventEnvelope,
   ApplicationHandlerContext,
   ApplicationPublishedArtifactEvent,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
 import { createBriefRunLaunchService } from "../../../../applications/brief-studio/backend-src/services/brief-run-launch-service.ts";
 import { createBriefArtifactReconciliationService } from "../../../../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts";
@@ -140,7 +141,36 @@ const createTempDatabase = async (prefix: string, migrationsDir: string): Promis
   return dbPath;
 };
 
-const buildBriefBinding = (launchRequestId: string): ApplicationRunBindingSummary => ({
+const seedActiveLesson = (dbPath: string, lessonId = "lesson-1"): void => {
+  const db = new DatabaseSync(dbPath);
+  try {
+    db.prepare(
+      `INSERT INTO lessons (
+         lesson_id,
+         prompt,
+         status,
+         latest_binding_id,
+         latest_run_id,
+         latest_binding_status,
+         last_error_message,
+         created_at,
+         updated_at,
+         closed_at
+       ) VALUES (?, ?, 'active', ?, ?, 'ATTACHED', NULL, ?, ?, NULL)`,
+    ).run(
+      lessonId,
+      "Solve 3x + 5 = 20",
+      "binding-lesson-1",
+      "team-run-lesson-1",
+      "2026-07-22T12:00:00.000Z",
+      "2026-07-22T12:00:00.000Z",
+    );
+  } finally {
+    db.close();
+  }
+};
+
+const buildBriefBinding = (launchRequestId: string): ApplicationAgentBinding | ApplicationAgentTeamBinding => ({
   bindingId: "binding-brief-1",
   applicationId: "brief-studio",
   launchRequestId,
@@ -181,8 +211,8 @@ const buildBriefBinding = (launchRequestId: string): ApplicationRunBindingSummar
 
 const buildLessonBinding = (
   launchRequestId: string,
-  overrides: Partial<Pick<ApplicationRunBindingSummary, "status" | "updatedAt" | "terminatedAt" | "lastErrorMessage">> = {},
-): ApplicationRunBindingSummary => ({
+  overrides: Partial<Pick<ApplicationAgentBinding | ApplicationAgentTeamBinding, "status" | "updatedAt" | "terminatedAt" | "lastErrorMessage">> = {},
+): ApplicationAgentBinding | ApplicationAgentTeamBinding => ({
   bindingId: "binding-lesson-1",
   applicationId: "socratic-math-teacher",
   launchRequestId,
@@ -219,7 +249,7 @@ const buildRevisionReader = (entries: Record<string, string>) => ({
 });
 
 const buildBriefArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-brief-1::researcher",
   artifactId: "team-run-brief-1::researcher:/tmp/downloads/brief-studio/research.md",
@@ -240,7 +270,7 @@ const buildBriefArtifactEvent = (
 });
 
 const buildBriefFinalArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-brief-1::writer",
   artifactId: "team-run-brief-1::writer:/tmp/downloads/final-brief.md",
@@ -261,7 +291,7 @@ const buildBriefFinalArtifactEvent = (
 });
 
 const buildLessonArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-lesson-1::tutor",
   artifactId: "team-run-lesson-1::tutor:/tmp/downloads/socratic-math/lesson-response.md",
@@ -282,7 +312,7 @@ const buildLessonArtifactEvent = (
 });
 
 const buildLessonHintArtifactEvent = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-lesson-1::tutor",
   artifactId: "team-run-lesson-1::tutor:/tmp/downloads/lesson-hint.md",
@@ -303,7 +333,7 @@ const buildLessonHintArtifactEvent = (
 });
 
 const buildLessonLifecycleEnvelope = (
-  binding: ApplicationRunBindingSummary,
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
   family: "RUN_FAILED" | "RUN_STARTED" | "RUN_ORPHANED" | "RUN_TERMINATED",
 ): ApplicationExecutionEventEnvelope => ({
   event: {
@@ -740,6 +770,8 @@ describe("App-owned launchRequestId correlation", () => {
       }),
     ).rejects.toThrow("lesson start failed after binding creation");
 
+    const startRequest = vi.mocked(capabilities.agentExecution.startAgentTeam).mock.calls[0]?.[0];
+    expect(startRequest).not.toHaveProperty("initialInput");
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
@@ -747,6 +779,7 @@ describe("App-owned launchRequestId correlation", () => {
         launchPreset: expect.objectContaining({
           llmModelIdentifier: "gpt-test",
           autoExecuteTools: true,
+          llmConfig: { reasoning_effort: "high" },
         }),
       }),
     }));
@@ -786,6 +819,86 @@ describe("App-owned launchRequestId correlation", () => {
     }
   });
 
+  it("keeps askFollowUp on the inline whole-team DTO without a pre-send binding fetch", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-follow-up-", SOCRATIC_MIGRATIONS_DIR);
+    seedActiveLesson(appDatabasePath);
+    const binding = buildLessonBinding("lesson-launch-request-1");
+    const sendInput = vi.fn(async () => binding);
+    const get = vi.fn(async () => binding);
+    const capabilities = buildCapabilities({ sendInput, get });
+    const context = createHandlerContext({ appDatabasePath, capabilities });
+
+    const lesson = await createLessonRuntimeService(context).askFollowUp({
+      lessonId: "lesson-1",
+      text: "Why should I subtract five first?",
+    });
+
+    expect(sendInput).toHaveBeenCalledWith({
+      address: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_RUN" },
+      },
+      input: {
+        text: "Why should I subtract five first?",
+        metadata: { lessonId: "lesson-1" },
+      },
+    });
+    expect(get).toHaveBeenCalledOnce();
+    expect(get).toHaveBeenCalledWith("binding-lesson-1");
+    expect(sendInput.mock.invocationCallOrder[0]).toBeLessThan(get.mock.invocationCallOrder[0]!);
+    expect(lesson).toMatchObject({
+      tutorTargetAddress: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+      },
+      messages: [expect.objectContaining({
+        role: "student",
+        kind: "follow_up",
+        body: "Why should I subtract five first?",
+      })],
+    });
+  });
+
+  it("keeps requestHint on the inline whole-team DTO without a pre-send binding fetch", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-hint-", SOCRATIC_MIGRATIONS_DIR);
+    seedActiveLesson(appDatabasePath);
+    const binding = buildLessonBinding("lesson-launch-request-1");
+    const sendInput = vi.fn(async () => binding);
+    const get = vi.fn(async () => binding);
+    const capabilities = buildCapabilities({ sendInput, get });
+    const context = createHandlerContext({ appDatabasePath, capabilities });
+
+    const lesson = await createLessonRuntimeService(context).requestHint({
+      lessonId: "lesson-1",
+      text: "Help with the first step.",
+    });
+
+    expect(sendInput).toHaveBeenCalledWith({
+      address: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_RUN" },
+      },
+      input: {
+        text: "The student requests a hint. Help with the first step.",
+        metadata: { lessonId: "lesson-1", requestKind: "hint" },
+      },
+    });
+    expect(get).toHaveBeenCalledOnce();
+    expect(get).toHaveBeenCalledWith("binding-lesson-1");
+    expect(sendInput.mock.invocationCallOrder[0]).toBeLessThan(get.mock.invocationCallOrder[0]!);
+    expect(lesson).toMatchObject({
+      tutorTargetAddress: {
+        bindingId: "binding-lesson-1",
+        target: { kind: "AGENT_TEAM_MEMBER", memberRouteKey: "tutor" },
+      },
+      messages: [expect.objectContaining({
+        role: "student",
+        kind: "hint_request",
+        body: "Help with the first step.",
+      })],
+    });
+  });
+
   it("launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-defaults-", SOCRATIC_MIGRATIONS_DIR);
     const capabilities = buildCapabilities({
@@ -813,16 +926,19 @@ describe("App-owned launchRequestId correlation", () => {
         },
       })),
       startAgentTeam: vi.fn(async (input: StartAgentTeamRequest) => buildLessonBinding(input.launchRequestId)),
+      get: vi.fn(async () => buildLessonBinding("lesson-launch-request-1")),
     });
     const context = createHandlerContext({
       appDatabasePath,
       capabilities,
     });
 
-    await createLessonRuntimeService(context).startLesson({
+    const lesson = await createLessonRuntimeService(context).startLesson({
       prompt: "Solve 2x + 3 = 11",
     });
 
+    const startRequest = vi.mocked(capabilities.agentExecution.startAgentTeam).mock.calls[0]?.[0];
+    expect(startRequest).not.toHaveProperty("initialInput");
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
@@ -834,10 +950,23 @@ describe("App-owned launchRequestId correlation", () => {
             llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
             workspaceRootPath: "/tmp/lessons",
             autoExecuteTools: true,
+            llmConfig: { reasoning_effort: "high" },
           }),
         ],
       }),
     }));
+    expect(lesson).toMatchObject({
+      lessonId: expect.any(String),
+      tutorTargetAddress: {
+        bindingId: "binding-lesson-1",
+        target: {
+          kind: "AGENT_TEAM_MEMBER",
+          memberRouteKey: "tutor",
+        },
+      },
+    });
+    expect(capabilities.agentExecution.get).toHaveBeenCalledOnce();
+    expect(capabilities.agentExecution.get).toHaveBeenCalledWith("binding-lesson-1");
   });
 
   it("launches Socratic lessons from explicit per-member team profiles when defaults are null", async () => {
@@ -875,6 +1004,8 @@ describe("App-owned launchRequestId correlation", () => {
       prompt: "Solve 2x + 3 = 11",
     });
 
+    const startRequest = vi.mocked(capabilities.agentExecution.startAgentTeam).mock.calls[0]?.[0];
+    expect(startRequest).not.toHaveProperty("initialInput");
     expect(capabilities.agentExecution.startAgentTeam).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
@@ -886,6 +1017,7 @@ describe("App-owned launchRequestId correlation", () => {
             llmModelIdentifier: "openai/gpt-5",
             workspaceRootPath: context.storage.runtimePath,
             autoExecuteTools: true,
+            llmConfig: { reasoning_effort: "high" },
           }),
         ],
       }),
@@ -1054,6 +1186,7 @@ describe("App-owned launchRequestId correlation", () => {
       latestBindingStatus: "FAILED",
       lastErrorMessage: "Tutor session failed before launch completion.",
       closedAt: null,
+      tutorTargetAddress: null,
     });
   });
 

@@ -1,0 +1,186 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
+import type { Conversation } from '~/types/conversation';
+import type { AIResponseSegment } from '~/types/segments';
+import { AgentStreamingService } from '../AgentStreamingService';
+import { dispatchGenericTeamMemberMessage } from '../teamStreamGenericMessageDispatcher';
+import type { ServerMessage } from '../protocol';
+import { getStreamSegmentIdentity } from '../handlers/segmentIdentity';
+import { CodexThreadEventConverter } from '../../../../autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter';
+import { CodexThreadEventName } from '../../../../autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-name';
+import { AgentRunEventType, type AgentRunEvent } from '../../../../autobyteus-server-ts/src/agent-execution/domain/agent-run-event';
+import { AgentRunEventMessageMapper } from '../../../../autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper';
+import { convertTeamRunEventToServerMessage } from '../../../../autobyteus-server-ts/src/services/agent-streaming/team-run-event-websocket-message-mapper';
+import { TeamRunEventSourceType, type TeamRunEvent } from '../../../../autobyteus-server-ts/src/agent-team-execution/domain/team-run-event';
+import { RuntimeKind } from '../../../../autobyteus-server-ts/src/runtime-management/runtime-kind-enum';
+
+vi.mock('../transport', () => ({
+  WebSocketClient: vi.fn().mockImplementation(() => ({
+    connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), on: vi.fn(), off: vi.fn(), state: 'disconnected',
+  })),
+  ConnectionState: {
+    DISCONNECTED: 'disconnected', CONNECTING: 'connecting', CONNECTED: 'connected', DISCONNECTING: 'disconnecting',
+  },
+}));
+
+vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
+  handleBrowserToolExecutionSucceeded: vi.fn(),
+}));
+
+const buildContext = (runId: string): AgentContext => {
+  const conversation: Conversation = {
+    id: runId,
+    createdAt: new Date(0).toISOString(),
+    updatedAt: new Date(0).toISOString(),
+    messages: [],
+  };
+  return new AgentContext({} as any, new AgentRunState(runId, conversation));
+};
+
+const jsonRoundTrip = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
+const segments = (context: AgentContext): AIResponseSegment[] =>
+  context.conversation.messages.flatMap((message) => message.type === 'ai' ? message.segments : []);
+
+const retainedToolIds = (context: AgentContext): string[] =>
+  segments(context).flatMap((segment) => 'invocationId' in segment && typeof segment.invocationId === 'string'
+    ? [segment.invocationId]
+    : []);
+
+type DispatchMode = {
+  label: 'standalone' | 'focused-team-member';
+  dispatch: (event: AgentRunEvent, context: AgentContext) => void;
+};
+
+describe('temporary API/E2E Codex reasoning production spine', () => {
+  beforeEach(() => setActivePinia(createPinia()));
+
+  const mapper = new AgentRunEventMessageMapper();
+  const modes: DispatchMode[] = [
+    {
+      label: 'standalone',
+      dispatch: (event, context) => {
+        const message = jsonRoundTrip(mapper.map(event)) as ServerMessage;
+        const service = new AgentStreamingService('ws://127.0.0.1/ws/agent');
+        (service as any).dispatchMessage(message, context);
+      },
+    },
+    {
+      label: 'focused-team-member',
+      dispatch: (event, context) => {
+        const teamEvent: TeamRunEvent = {
+          eventSourceType: TeamRunEventSourceType.AGENT,
+          teamRunId: 'team-spine',
+          sourcePath: ['worker'],
+          data: {
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+            memberName: 'worker',
+            memberRunId: 'member-worker',
+            memberPath: ['worker'],
+            memberRouteKey: 'worker',
+            agentEvent: event,
+          },
+        };
+        const message = jsonRoundTrip(convertTeamRunEventToServerMessage(teamEvent, mapper)) as ServerMessage;
+        expect(message.payload).toMatchObject({
+          agent_name: 'worker',
+          agent_id: 'member-worker',
+          member_route_key: 'worker',
+        });
+        dispatchGenericTeamMemberMessage(message, context);
+      },
+    },
+  ];
+
+  it.each(modes)('keeps tools present immediately through 110 grouped reasoning/tool cycles: $label', ({ label, dispatch }) => {
+    const converter = new CodexThreadEventConverter(`run-${label}`);
+    const context = buildContext(`run-${label}`);
+    const turnId = 'turn-long';
+    const emittedEvents: AgentRunEvent[] = [];
+    const blockIds: string[] = [];
+
+    const convertDispatch = (method: string, params: Record<string, unknown>) => {
+      const events = converter.convert({ method, params });
+      emittedEvents.push(...events);
+      events.forEach((event) => dispatch(event, context));
+      return events;
+    };
+
+    convertDispatch(CodexThreadEventName.TURN_STARTED, { turnId });
+
+    for (let index = 0; index < 110; index += 1) {
+      const first = convertDispatch(CodexThreadEventName.ITEM_COMPLETED, {
+        turnId,
+        item: { type: 'reasoning', id: `reasoning-${index}-a`, summary: [{ text: `thinking-${index}-a` }] },
+      });
+      const second = convertDispatch(CodexThreadEventName.ITEM_REASONING_COMPLETED, {
+        turnId,
+        item: { type: 'reasoning', id: `reasoning-${index}-b`, summary: [{ text: `thinking-${index}-b` }] },
+      });
+      const firstContent = first.find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)!;
+      const secondContent = second.find((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT)!;
+      expect(firstContent.payload.id).toBe(secondContent.payload.id);
+      blockIds.push(String(firstContent.payload.id));
+
+      if (index > 0) {
+        expect(retainedToolIds(context)).toContain(`tool-${index - 1}`);
+      }
+
+      const toolStart = convertDispatch(CodexThreadEventName.ITEM_STARTED, {
+        turnId,
+        item: { type: 'commandExecution', id: `tool-${index}`, command: `printf ${index}` },
+      });
+      expect(toolStart[0]).toMatchObject({
+        eventType: AgentRunEventType.SEGMENT_END,
+        statusHint: null,
+        payload: { id: firstContent.payload.id, turn_id: turnId, segment_type: 'reasoning' },
+      });
+      expect(toolStart.filter((event) =>
+        event.eventType === AgentRunEventType.SEGMENT_END
+        && event.payload.segment_type === 'reasoning')).toHaveLength(1);
+
+      const matchingToolUpdate = convertDispatch(CodexThreadEventName.ITEM_COMPLETED, {
+        turnId,
+        item: {
+          type: 'commandExecution', id: `tool-${index}`, command: `printf ${index}`,
+          status: 'completed', aggregatedOutput: String(index),
+        },
+      });
+      expect(matchingToolUpdate.some((event) =>
+        event.eventType === AgentRunEventType.SEGMENT_END
+        && event.payload.segment_type === 'reasoning')).toBe(false);
+      expect(retainedToolIds(context)).toContain(`tool-${index}`);
+    }
+
+    expect(new Set(blockIds).size).toBe(110);
+    const reasoningEnds = emittedEvents.filter((event) =>
+      event.eventType === AgentRunEventType.SEGMENT_END
+      && event.payload.segment_type === 'reasoning');
+    expect(reasoningEnds).toHaveLength(110);
+    expect(reasoningEnds.every((event) => event.statusHint === null)).toBe(true);
+
+    const retained = segments(context);
+    const retainedThinking = retained.filter((segment) => segment.type === 'think');
+    const retainedTools = retained.filter((segment) => 'invocationId' in segment);
+    expect(retained).toHaveLength(100);
+    expect(retainedThinking).toHaveLength(50);
+    expect(retainedThinking.every((segment) =>
+      getStreamSegmentIdentity(segment)?.presentationComplete === true)).toBe(true);
+    expect(retainedTools).toHaveLength(50);
+    expect(retainedToolIds(context).at(-1)).toBe('tool-109');
+
+    console.log('[api-e2e-codex-reasoning-spine]', JSON.stringify({
+      label,
+      cycles: 110,
+      providerReasoningSnapshots: 220,
+      uniqueReasoningBlocks: new Set(blockIds).size,
+      neutralReasoningEnds: reasoningEnds.length,
+      retainedVisuals: retained.length,
+      retainedThinking: retainedThinking.length,
+      retainedTools: retainedTools.length,
+      newestRetainedTool: retainedToolIds(context).at(-1),
+    }));
+  }, 30_000);
+});

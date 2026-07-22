@@ -8,6 +8,15 @@ export {
   createApplicationBackendMountTransport,
   deriveApplicationBackendMountEndpoints,
 } from "./create-application-backend-mount-transport.js";
+export {
+  ApplicationBackendWebSocketConnectionError,
+} from "./application-backend-websocket-connection.js";
+export { ApplicationAgentConnectionError } from "@autobyteus/application-sdk-contracts";
+export type {
+  ApplicationAgentConnection,
+  ApplicationAgentConnectionOptions,
+  ApplicationAgentConnectionState,
+} from "./application-agent-connection.js";
 
 export type {
   ApplicationClient,
@@ -20,6 +29,13 @@ export type {
   ApplicationBackendMountRouteRequest,
 } from "./create-application-backend-mount-transport.js";
 export type { ApplicationClientTransport } from "./application-client-transport.js";
+export type {
+  ApplicationBackendWebSocketCloseEvent,
+  ApplicationBackendWebSocketConnection,
+  ApplicationBackendWebSocketConnectionErrorCode,
+  ApplicationBackendWebSocketConnectionState,
+  ApplicationBackendWebSocketConnectOptions,
+} from "./application-backend-websocket-connection.js";
 export type {
   HostedApplicationBootstrappedContext,
   HostedApplicationRootElement,
@@ -35,4 +51,10 @@ export type {
   ApplicationRequestContext,
   ApplicationRouteRequest,
   ApplicationRouteResponse,
+  ApplicationWebSocketFrame,
+  ApplicationAgentConnectionErrorCode,
+  ApplicationAgentConnectionClose,
+  ApplicationAgentEvent,
+  ApplicationAgentStreamEvent,
+  ApplicationAgentTargetAddress,
 } from "@autobyteus/application-sdk-contracts";

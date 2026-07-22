@@ -58,6 +58,56 @@ test('pack emits a valid importable package under dist/importable-package', asyn
 
   const validation = await validateApplicationPackage(result.packageRoot);
   assert.equal(validation.valid, true);
+  const applicationManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'application.json'), 'utf8'));
+  const backendManifest = JSON.parse(await fs.readFile(path.join(appRoot, 'backend/bundle.json'), 'utf8'));
+  assert.equal(applicationManifest.manifestVersion, '4');
+  assert.equal(applicationManifest.ui.frontendSdkContractVersion, '4');
+  assert.deepEqual(Object.keys(applicationManifest.backend), ['bundleManifest']);
+  assert.deepEqual(backendManifest.sdkCompatibility, {
+    backendDefinitionContractVersion: '4',
+    frontendSdkContractVersion: '4',
+  });
+  assert.deepEqual(Object.keys(backendManifest.supportedExposures).sort(), [
+    'commands', 'eventHandlers', 'graphql', 'notifications', 'queries', 'routes', 'webSockets',
+  ]);
+});
+
+test('validator rejects stale manifests, nested exposure authority, and six-flag backend bundles', async (t) => {
+  const cases = [
+    {
+      name: 'stale-application-v3',
+      mutate: (applicationManifest) => { applicationManifest.manifestVersion = '3'; },
+      expectedPath: 'manifestVersion',
+    },
+    {
+      name: 'nested-application-exposures',
+      mutate: (applicationManifest) => { applicationManifest.backend.supportedExposures = { webSockets: true }; },
+      expectedPath: 'backend.supportedExposures',
+    },
+    {
+      name: 'missing-websocket-exposure',
+      mutate: (_applicationManifest, backendManifest) => { delete backendManifest.supportedExposures.webSockets; },
+      expectedPath: 'supportedExposures.webSockets',
+    },
+  ];
+  for (const scenario of cases) {
+    await t.test(scenario.name, async () => {
+      const target = path.join(await createTempDirectory(scenario.name), 'sample-app');
+      await materializeApplicationTemplate({ targetDirectory: target, applicationId: 'sample-app', applicationName: 'Sample App' });
+      const result = await packApplicationProject({ projectRoot: target });
+      const appRoot = path.join(result.packageRoot, 'applications/sample-app');
+      const appPath = path.join(appRoot, 'application.json');
+      const backendPath = path.join(appRoot, 'backend/bundle.json');
+      const applicationManifest = JSON.parse(await fs.readFile(appPath, 'utf8'));
+      const backendManifest = JSON.parse(await fs.readFile(backendPath, 'utf8'));
+      scenario.mutate(applicationManifest, backendManifest);
+      await fs.writeFile(appPath, `${JSON.stringify(applicationManifest, null, 2)}\n`);
+      await fs.writeFile(backendPath, `${JSON.stringify(backendManifest, null, 2)}\n`);
+      const validation = await validateApplicationPackage(result.packageRoot);
+      assert.equal(validation.valid, false);
+      assert.equal(validation.diagnostics.some((diagnostic) => diagnostic.path === scenario.expectedPath), true);
+    });
+  }
 });
 
 test('validator reports actionable diagnostics for missing generated files', async () => {
@@ -78,8 +128,8 @@ test('validator reports actionable diagnostics for missing generated files', asy
   )), true);
 });
 
-test('validator rejects an explicit v2 backend-definition compatibility fixture', async () => {
-  const target = path.join(await createTempDirectory('backend-v2-rejection'), 'sample-app');
+test('validator rejects an explicit v3 backend-definition compatibility fixture', async () => {
+  const target = path.join(await createTempDirectory('backend-v3-rejection'), 'sample-app');
   await materializeApplicationTemplate({
     targetDirectory: target,
     applicationId: 'sample-app',
@@ -91,7 +141,7 @@ test('validator rejects an explicit v2 backend-definition compatibility fixture'
     'applications/sample-app/backend/bundle.json',
   );
   const backendManifest = JSON.parse(await fs.readFile(backendManifestPath, 'utf8'));
-  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '2';
+  backendManifest.sdkCompatibility.backendDefinitionContractVersion = '3';
   await fs.writeFile(
     backendManifestPath,
     `${JSON.stringify(backendManifest, null, 2)}\n`,
@@ -103,7 +153,7 @@ test('validator rejects an explicit v2 backend-definition compatibility fixture'
   assert.equal(validation.diagnostics.some((diagnostic) => (
     diagnostic.code === 'UNSUPPORTED_CONTRACT_VERSION'
     && diagnostic.path === 'sdkCompatibility.backendDefinitionContractVersion'
-    && diagnostic.message.includes('must be "3"')
+    && diagnostic.message.includes('must be "4"')
   )), true);
 });
 
@@ -203,7 +253,7 @@ test('validator reports unsafe local application ids in generated packages', asy
   )), true);
 });
 
-test('dev bootstrap session uses v3 launch hints and one real-backend application identity', () => {
+test('dev bootstrap session uses v4 launch hints, direct WebSocket bases, and one real-backend application identity', () => {
   const session = createDevBootstrapSession({
     hostOrigin: 'http://127.0.0.1:43124',
     iframeLaunchId: 'application-local:%2Fworkspace__sample-app::dev-launch',
@@ -212,15 +262,19 @@ test('dev bootstrap session uses v3 launch hints and one real-backend applicatio
     applicationName: 'Sample App',
     backendBaseUrl: 'http://127.0.0.1:43123/rest/applications/application-local:%2Fworkspace__sample-app/backend',
     backendNotificationsUrl: null,
+    backendWebSocketBaseUrl: 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/backend/routes',
+    agentCommunicationWebSocketBaseUrl: 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/agent-communication',
   });
 
-  assert.match(session.iframePath, /autobyteusContractVersion=3/);
+  assert.match(session.iframePath, /autobyteusContractVersion=4/);
   assert.match(session.iframePath, /autobyteusApplicationId=application-local/);
   assert.match(session.iframePath, /autobyteusIframeLaunchId=/);
   assert.match(session.iframePath, /autobyteusHostOrigin=http/);
   assert.equal(session.bootstrapEnvelope.payload.application.applicationId, 'application-local:%2Fworkspace__sample-app');
   assert.equal(session.bootstrapEnvelope.payload.requestContext.applicationId, 'application-local:%2Fworkspace__sample-app');
   assert.equal(session.bootstrapEnvelope.payload.iframeLaunchId, 'application-local:%2Fworkspace__sample-app::dev-launch');
+  assert.equal(session.bootstrapEnvelope.payload.transport.backendWebSocketBaseUrl, 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/backend/routes');
+  assert.equal(session.bootstrapEnvelope.payload.transport.agentCommunicationWebSocketBaseUrl, 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/agent-communication');
 });
 
 const rewriteApplicationManifest = async (projectRoot, overrides) => {

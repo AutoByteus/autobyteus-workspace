@@ -3,6 +3,7 @@ import type {
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteRequest,
+  ApplicationWebSocketRequest,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
@@ -11,9 +12,13 @@ import {
   getApplicationEngineHostService,
 } from "../../application-engine/services/application-engine-host-service.js";
 import {
-  ApplicationBackendNotificationStreamService,
-  getApplicationBackendNotificationStreamService,
-} from "../streaming/application-backend-notification-stream-service.js";
+  ApplicationBackendNotificationHub,
+  getApplicationBackendNotificationHub,
+} from "../notifications/application-backend-notification-hub.js";
+import {
+  ApplicationBackendWebSocketSessionService,
+  type ApplicationBackendNetworkWebSocket,
+} from "../websockets/application-backend-websocket-session-service.js";
 
 const normalizeRequestContext = (
   applicationId: string,
@@ -45,13 +50,15 @@ export class ApplicationBackendApiGatewayService {
   }
 
   private subscribedToEngineNotifications = false;
+  private webSocketSessionServiceInstance: ApplicationBackendWebSocketSessionService | null = null;
 
   constructor(
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
       availabilityService?: ApplicationAvailabilityService;
       engineHostService?: ApplicationEngineHostService;
-      notificationStreamService?: ApplicationBackendNotificationStreamService;
+      notificationHub?: ApplicationBackendNotificationHub;
+      webSocketSessionService?: ApplicationBackendWebSocketSessionService;
     } = {},
   ) {
     this.ensureNotificationBridge();
@@ -69,8 +76,16 @@ export class ApplicationBackendApiGatewayService {
     return this.dependencies.engineHostService ?? getApplicationEngineHostService();
   }
 
-  private get notificationStreamService(): ApplicationBackendNotificationStreamService {
-    return this.dependencies.notificationStreamService ?? getApplicationBackendNotificationStreamService();
+  private get notificationHub(): ApplicationBackendNotificationHub {
+    return this.dependencies.notificationHub ?? getApplicationBackendNotificationHub();
+  }
+
+  private get webSocketSessionService(): ApplicationBackendWebSocketSessionService {
+    if (this.dependencies.webSocketSessionService) return this.dependencies.webSocketSessionService;
+    this.webSocketSessionServiceInstance ??= new ApplicationBackendWebSocketSessionService({
+      engineHostService: this.engineHostService,
+    });
+    return this.webSocketSessionServiceInstance;
   }
 
   private ensureNotificationBridge(): void {
@@ -82,7 +97,7 @@ export class ApplicationBackendApiGatewayService {
     }
     this.subscribedToEngineNotifications = true;
     this.engineHostService.onNotification(({ applicationId, message }) => {
-      this.notificationStreamService.publish({
+      this.notificationHub.publish({
         applicationId,
         topic: message.topic,
         payload: message.payload,
@@ -91,11 +106,19 @@ export class ApplicationBackendApiGatewayService {
     });
   }
 
-  private async requireApplication(applicationId: string): Promise<void> {
+  private async requireApplication(applicationId: string) {
     await this.availabilityService.requireApplicationActive(applicationId);
     const application = await this.applicationBundleService.getApplicationById(applicationId);
     if (!application) {
       throw new Error(`Application '${applicationId}' was not found.`);
+    }
+    return application;
+  }
+
+  private async requireApplicationWebSocketExposure(applicationId: string): Promise<void> {
+    const application = await this.requireApplication(applicationId);
+    if (!application.backend.supportedExposures.webSockets) {
+      throw new Error(`Application '${applicationId}' does not support backend WebSockets.`);
     }
   }
 
@@ -158,6 +181,17 @@ export class ApplicationBackendApiGatewayService {
     return this.engineHostService.executeApplicationGraphql(applicationId, {
       requestContext: normalizeRequestContext(applicationId, requestContext),
       request,
+    });
+  }
+
+  connectApplicationWebSocket(input: {
+    applicationId: string;
+    request: ApplicationWebSocketRequest;
+    socket: ApplicationBackendNetworkWebSocket;
+  }): string {
+    return this.webSocketSessionService.connect({
+      ...input,
+      requireApplication: () => this.requireApplicationWebSocketExposure(input.applicationId),
     });
   }
 }

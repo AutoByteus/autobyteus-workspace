@@ -1,0 +1,49 @@
+# Electron macOS ARM64 candidate verification — 2026-07-22
+source_checkpoint=b60c8faa647a12ba587ea43644f0b74bcb38b49e
+latest_origin_personal=965f97685c08569a98186b2a894243c0b3f602d3
+app_path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg_path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.dmg
+zip_path=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.zip
+artifacts_present=pass
+bundle_identifier=com.autobyteus.app
+bundle_short_version=1.4.24
+bundle_build_version=1.4.24
+executable_info=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+dmg_sha256=953a89639a965aec1d639159ba0cc09a06d7e02a359f03a775b54644cea95578
+zip_sha256=4a4e189bd0ab90750d79f03f34917a0ca559bda4cfdee415d00c08ddef3cd9ef
+AutoByteus_enterprise_macos-arm64-1.4.24.dmg.blockmap_sha256=b06fdfbf8053f62fccc57ece985cdd2f8582cf6d50e62c732695df22bdbf407a
+AutoByteus_enterprise_macos-arm64-1.4.24.zip.blockmap_sha256=234fcc76f1edd099363cb638980b86b5100d947fe898299a726677be306b8501
++ hdiutil verify
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $CDFDBA7F
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $8B832990
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $657D094E
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $886D72DA
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $657D094E
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $3AB97112
+Die überprüfte CRC32-Prüfsumme ist $298597D5
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.dmg" is VALID
+dmg_verify=pass
++ unzip -tq
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.24.zip.
+zip_integrity=pass
+bundled_server_entry_present=yes
+existing_listener_29695_after_build:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 82961 normy   27u  IPv4 0x301041605de90ae6      0t0  TCP *:29695 (LISTEN)
+listener_process_names:
+82961 82357 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+candidate_launched=no
+existing_installed_app_stopped_or_restarted=no
+verification=pass
+git_status_after_build:
+?? tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-build-20260722.log
+?? tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-prebuild-20260722.txt
+?? tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/delivery/delivery-electron-macos-arm64-verification-20260722.txt

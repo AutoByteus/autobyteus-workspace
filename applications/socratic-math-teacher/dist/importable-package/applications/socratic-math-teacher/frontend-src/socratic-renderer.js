@@ -24,8 +24,8 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
         <div class="eyebrow">Built-in teaching sample</div>
         <h1>Socratic Math Teacher</h1>
         <p class="lede">
-          Start lessons, ask follow-up questions, and request hints while the app keeps one lesson-centric
-          conversation flow over the hosted backend mount.
+          Start lessons, follow the tutor's live guidance, and keep every completed turn in one durable
+          lesson transcript.
         </p>
       </header>
 
@@ -62,7 +62,7 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
         <div class="panel-header">
           <div>
             <h2>Start lesson</h2>
-            <p class="muted">Create one lesson record and begin the tutoring conversation. Runtime, model, and workspace defaults come from the host-managed launch setup surface.</p>
+            <p class="muted">Create one lesson, connect to its tutor, and send the problem after the live connection is ready. Host-managed runtime and model selections keep their configured priority.</p>
           </div>
         </div>
         <form id="start-lesson-form" class="brief-composer">
@@ -73,8 +73,8 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
             </label>
           </div>
           <div class="action-row">
-            <button class="primary-button" type="submit">Start lesson</button>
-            <span class="muted small">The app keeps later student questions on the same lesson record while the host supplies runtime defaults.</span>
+            <button id="start-lesson-button" class="primary-button" type="submit">Start lesson</button>
+            <span class="muted small">The first response streams live, then the published tutor turn becomes the durable transcript.</span>
           </div>
         </form>
       </section>
@@ -182,6 +182,16 @@ export const renderLessonList = ({ state, elements, onSelectLesson, onError }) =
   }
 };
 
+const visibleTranscriptMessages = (messages, tutorLive) => {
+  if (!Array.isArray(messages) || !tutorLive?.deferDurableTutorMessages) return messages;
+  let tutorMessageCount = 0;
+  return messages.filter((message) => {
+    if (message?.role !== "tutor") return true;
+    tutorMessageCount += 1;
+    return tutorMessageCount <= tutorLive.durableTutorMessageBaseline;
+  });
+};
+
 const renderTranscript = (messages) => {
   if (!Array.isArray(messages) || messages.length === 0) {
     return `<div class="empty-state">No lesson messages yet.</div>`;
@@ -232,6 +242,49 @@ const renderRuntimeDiagnostics = (lesson) => `
   </details>
 `;
 
+const LIVE_STATUS_LABELS = {
+  idle: "Tutor not connected",
+  connecting: "Connecting to the tutor…",
+  ready: "Tutor connected",
+  streaming: "Tutor is responding…",
+  completed: "Tutor response complete · saving transcript…",
+  saved: "Tutor response saved",
+  failed: "Tutor connection failed",
+  closed: "Tutor connection closed",
+};
+
+const renderLiveTutor = (state, lesson) => {
+  const live = state.tutorLive;
+  const belongsToLesson = live?.lessonId === lesson.lessonId;
+  const status = belongsToLesson ? live.status : "idle";
+  const statusLabel = LIVE_STATUS_LABELS[status] ?? LIVE_STATUS_LABELS.idle;
+  const text = belongsToLesson ? live.text : "";
+  const errorMessage = belongsToLesson ? live.errorMessage : null;
+  const liveWarning = belongsToLesson ? live.liveWarning : null;
+  const placeholder = status === "saved"
+    ? "The authoritative tutor response is shown in the transcript below."
+    : status === "completed"
+      ? "The live response is complete and is waiting for the durable transcript."
+      : "Live text appears here while the tutor responds. Completed turns remain in the transcript below.";
+
+  return `
+    <section class="live-tutor" data-live-state="${escapeHtml(status)}" aria-live="polite" aria-atomic="false">
+      <div class="live-tutor-header">
+        <div>
+          <span class="label">Live tutor</span>
+          <strong>${escapeHtml(statusLabel)}</strong>
+        </div>
+        <span class="live-status-dot" aria-hidden="true"></span>
+      </div>
+      ${text
+        ? `<p class="live-tutor-text">${escapeHtml(text)}</p>`
+        : `<p class="muted small live-tutor-placeholder">${escapeHtml(placeholder)}</p>`}
+      ${errorMessage ? `<p class="live-error" role="alert">${escapeHtml(errorMessage)}</p>` : ""}
+      ${liveWarning ? `<p class="live-warning">${escapeHtml(liveWarning)}</p>` : ""}
+    </section>
+  `;
+};
+
 export const renderLessonDetail = ({
   state,
   elements,
@@ -250,6 +303,27 @@ export const renderLessonDetail = ({
     elements.lessonDetail.textContent = "Select a lesson to continue the tutoring conversation and review past guidance.";
     return;
   }
+
+  const live = state.tutorLive?.lessonId === lesson.lessonId ? state.tutorLive : null;
+  const closeDispatching = state.closingLessonId === lesson.lessonId;
+  const closeAvailable = lesson.status === "active" && !closeDispatching;
+  const nextTurnAvailable = Boolean(
+    !closeDispatching
+    && lesson.status === "active"
+    && live?.turnAdmission === "available"
+  );
+  let turnHelp = "Wait for the current tutor response to be saved before sending another.";
+  if (closeDispatching) {
+    turnHelp = "This lesson is closing. Follow-up and hint actions stay unavailable.";
+  } else if (lesson.status !== "active") {
+    turnHelp = "This lesson is closed. Follow-up and hint actions are unavailable.";
+  } else if (nextTurnAvailable) {
+    turnHelp = "Send one follow-up or request one hint. The next action becomes available after the tutor response is saved.";
+  }
+  const closeLabel = closeDispatching
+    ? "Closing lesson…"
+    : closeAvailable ? "Close lesson" : "Lesson closed";
+  const transcriptMessages = visibleTranscriptMessages(lesson.messages, live);
 
   elements.lessonDetail.className = "detail-grid";
   elements.lessonDetail.innerHTML = `
@@ -282,22 +356,25 @@ export const renderLessonDetail = ({
         </div>
       </div>
       <div class="action-row">
-        <button id="request-hint" class="secondary-button" type="button">Request hint</button>
-        <button id="close-lesson" class="danger-button" type="button">Close lesson</button>
+        <button id="request-hint" class="secondary-button" type="button"${nextTurnAvailable ? "" : " disabled"}>Request hint</button>
+        <button id="close-lesson" class="danger-button" type="button"${closeAvailable ? "" : " disabled"}>${closeLabel}</button>
       </div>
     </section>
+
+    ${renderLiveTutor(state, lesson)}
 
     <section class="detail-section">
       <div>
         <h3>Transcript</h3>
         <p class="muted">The lesson keeps the tutoring conversation and student follow-ups together in one record.</p>
       </div>
-      ${renderTranscript(lesson.messages)}
+      ${renderTranscript(transcriptMessages)}
       <form id="follow-up-form" class="note-composer">
-        <textarea id="follow-up-input" placeholder="Send the next follow-up question or answer"></textarea>
+        <textarea id="follow-up-input" placeholder="Send the next follow-up question or answer"${nextTurnAvailable ? "" : " disabled"}></textarea>
         <div class="action-row">
-          <button class="primary-button" type="submit">Send follow-up</button>
+          <button class="primary-button" type="submit"${nextTurnAvailable ? "" : " disabled"}>Send follow-up</button>
         </div>
+        <p id="turn-admission-help" class="muted small">${escapeHtml(turnHelp)}</p>
       </form>
     </section>
 
@@ -306,13 +383,13 @@ export const renderLessonDetail = ({
     </section>
   `;
 
-  document.getElementById("request-hint")?.addEventListener("click", () => {
+  elements.lessonDetail.querySelector("#request-hint")?.addEventListener("click", () => {
     onRequestHint().catch(onError);
   });
-  document.getElementById("close-lesson")?.addEventListener("click", () => {
+  elements.lessonDetail.querySelector("#close-lesson")?.addEventListener("click", () => {
     onCloseLesson().catch(onError);
   });
-  document.getElementById("follow-up-form")?.addEventListener("submit", (event) => {
+  elements.lessonDetail.querySelector("#follow-up-form")?.addEventListener("submit", (event) => {
     event.preventDefault();
     onAskFollowUp().catch(onError);
   });

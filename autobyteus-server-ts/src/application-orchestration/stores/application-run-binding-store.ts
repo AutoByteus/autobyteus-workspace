@@ -1,7 +1,7 @@
+import type { ApplicationAgentBindingRecord } from "../domain/models.js";
 import { DatabaseSync } from "node:sqlite";
 import type {
-  ApplicationRunBindingListFilter,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBindingListFilter,
   ApplicationExecutionResourceRef,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
@@ -43,10 +43,10 @@ const ensureTables = (db: DatabaseSync): void => {
   `);
 };
 
-const cloneSummary = (summary: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(summary);
+const cloneSummary = (summary: ApplicationAgentBindingRecord): ApplicationAgentBindingRecord => structuredClone(summary);
 
-const hydrateSummary = (row: { summary_json: string }): ApplicationRunBindingSummary =>
-  JSON.parse(row.summary_json) as ApplicationRunBindingSummary;
+const hydrateSummary = (row: { summary_json: string }): ApplicationAgentBindingRecord =>
+  JSON.parse(row.summary_json) as ApplicationAgentBindingRecord;
 
 const normalizeResourceColumns = (executionResourceRef: ApplicationExecutionResourceRef) => ({
   source: executionResourceRef.source,
@@ -88,7 +88,7 @@ export class ApplicationRunBindingStore {
     return Array.from(applicationIds).sort((left, right) => left.localeCompare(right));
   }
 
-  async persistBinding(summary: ApplicationRunBindingSummary): Promise<ApplicationRunBindingSummary> {
+  async persistBinding(summary: ApplicationAgentBindingRecord): Promise<ApplicationAgentBindingRecord> {
     return this.platformStateStore.withTransaction(summary.applicationId, (db) => {
       ensureTables(db);
       const resourceColumns = normalizeResourceColumns(summary.executionResourceRef);
@@ -173,7 +173,7 @@ export class ApplicationRunBindingStore {
   async getBinding(
     applicationId: string,
     bindingId: string,
-  ): Promise<ApplicationRunBindingSummary | null> {
+  ): Promise<ApplicationAgentBindingRecord | null> {
     return this.platformStateStore.withDatabase(applicationId, (db) => {
       ensureTables(db);
       const row = db
@@ -186,7 +186,7 @@ export class ApplicationRunBindingStore {
   async findBindingByLaunchRequestId(
     applicationId: string,
     launchRequestId: string,
-  ): Promise<ApplicationRunBindingSummary | null> {
+  ): Promise<ApplicationAgentBindingRecord | null> {
     return this.platformStateStore.withDatabase(applicationId, (db) => {
       ensureTables(db);
       const row = db
@@ -203,8 +203,8 @@ export class ApplicationRunBindingStore {
 
   async listBindings(
     applicationId: string,
-    filter?: ApplicationRunBindingListFilter | null,
-  ): Promise<ApplicationRunBindingSummary[]> {
+    filter?: ApplicationAgentBindingListFilter | null,
+  ): Promise<ApplicationAgentBindingRecord[]> {
     return this.platformStateStore.withDatabase(applicationId, (db) => {
       ensureTables(db);
       const conditions = ["1 = 1"];
@@ -225,7 +225,7 @@ export class ApplicationRunBindingStore {
     });
   }
 
-  async listNonterminalBindings(applicationId: string): Promise<ApplicationRunBindingSummary[]> {
+  async listNonterminalBindings(applicationId: string): Promise<ApplicationAgentBindingRecord[]> {
     return this.platformStateStore.withDatabase(applicationId, (db) => {
       ensureTables(db);
       const rows = db

@@ -2,7 +2,7 @@
 
 ## Delivery Status
 
-- Current status: `User-verified; archived and authorized for repository finalization plus stable v1.4.24 release`
+- Current status: `Completed — merged, released as stable v1.4.24, publication verified, and ticket cleanup finished`
 - Ticket state: `tickets/done/agent-run-history-performance/`
 - Ticket branch: `codex/agent-run-history-performance`
 - Finalization target: `origin/personal`
@@ -12,6 +12,9 @@
 - Corrected implementation-handoff commit: `5eb12b42e13890bd1d304ce1052d3235a67f48fd`
 - Delivery safety checkpoint preserving the cumulative reviewed package and evidence: `096a60418c8747f8741ecd2909794247b244270f`
 - Finalization authorization: Received. The user reported `its working` and explicitly requested ticket finalization plus a new release on 2026-07-21.
+- Final ticket commit: `040866eeaeae0bebe56d16ef01e386c914e0645d`
+- Personal merge commit: `5413126e5d79ebfc52683f1999fac09ffb9703c1`
+- Release commit/tag: `71875b938a4b984f2010eae76230b429ff2d2de8` / `v1.4.24`
 
 ## Delivery Integration Refresh
 
@@ -70,11 +73,11 @@ Current behavior:
 
 - Build result: `Pass` on 2026-07-21 using the README's verbose local macOS/no-notarization command; command exit status `0`.
 - Candidate source checkpoint: ticket HEAD `096a60418c8747f8741ecd2909794247b244270f`, containing reviewed source `70a2ddc626d9e9e834b3b6b322fb09183f5b76e7` and latest `origin/personal@9b4e038a40e0b6358fe53ca101406e0f6446e790`. No uncommitted production source or durable test change existed at build time.
-- Unpacked ARM64 app: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.dmg`; SHA-256 `ba31b99437eca3d2ae70de12732eea1514964c4df1022a1e5981d013e17446ed`.
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.23.zip`; SHA-256 `2e05558132331e60b9c28329bbbebc459b574eaf12633af4829d19a125e27351`.
+- Historical local ARM64 app: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-history-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`; removed only after successful user verification and release publication as part of authorized ticket-worktree cleanup.
+- Historical local DMG SHA-256: `ba31b99437eca3d2ae70de12732eea1514964c4df1022a1e5981d013e17446ed`.
+- Historical local ZIP SHA-256: `2e05558132331e60b9c28329bbbebc459b574eaf12633af4829d19a125e27351`.
 - Verification: bundle version `1.4.23`, Mach-O `arm64`, DMG checksum verification passed, and ZIP integrity test passed.
-- Runtime action: artifact-only build. Per the user's direction, delivery did not stop `/Applications/AutoByteus.app` on port `29695` and did not launch the rebuilt candidate. The user will quit the existing app and start the candidate manually when ready.
+- Runtime/cleanup action: delivery initially left `/Applications/AutoByteus.app` untouched and did not auto-launch the candidate. The user launched and verified the worktree candidate manually. After verification, only that exact worktree candidate was stopped for cleanup; the separate installed `/Applications/AutoByteus.app` process was not targeted and remained available.
 - Evidence: `evidence/delivery-centered-arrow-electron-macos-arm64-build-20260721.log`, `evidence/delivery-centered-arrow-electron-macos-arm64-verification-20260721.txt`, and `evidence/delivery-centered-arrow-electron-macos-arm64-restart-20260721.txt`.
 
 ## Hands-On Verification Checklist
@@ -94,4 +97,8 @@ Current behavior:
 - Authorization: The user explicitly requested `now finalize the ticket, and release a new version`.
 - Final target refresh: `origin/personal` remained unchanged at `9b4e038a40e0b6358fe53ca101406e0f6446e790`, already contained in the verified ticket state; renewed hands-on verification is not required.
 - Ticket archive: Completed at `tickets/done/agent-run-history-performance/` before the final ticket commit.
-- Planned stable release: `v1.4.24` through the repository's documented desktop release helper and tag-triggered workflows.
+- Stable release: `v1.4.24` published at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.24`.
+- Release result: stable/non-draft/non-prerelease with `21` assets; all five tag-triggered workflows succeeded.
+- Published macOS ARM64 DMG: `AutoByteus_personal_macos-arm64-1.4.24.dmg`; SHA-256 `9490563d5b7f62668076e90c3b795b4f1bef519cb635f64586f9acda5448eb9c`.
+- Docker result: `autobyteus/autobyteus-server:1.4.24` and `:latest` share digest `sha256:4f87d403ef191e542b049400c21db549fae2f8afe5b9a11247c2502443ff4a0a` for `linux/amd64` and `linux/arm64`.
+- Cleanup: dedicated ticket worktree and local/remote ticket branches removed; pre-existing scratch logs preserved externally with a checked-in hash inventory.

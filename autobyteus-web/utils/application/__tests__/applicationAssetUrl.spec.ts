@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V4,
   APPLICATION_IFRAME_QUERY_APPLICATION_ID,
   APPLICATION_IFRAME_QUERY_CONTRACT_VERSION,
   APPLICATION_IFRAME_QUERY_HOST_ORIGIN,
@@ -29,14 +29,14 @@ describe('applicationAssetUrl', () => {
     expect(resolveApplicationAssetOrigin(absoluteEntryHtmlUrl)).toBe('http://127.0.0.1:43123')
 
     const iframeSrc = appendApplicationIframeLaunchHints(absoluteEntryHtmlUrl, {
-      contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+      contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
       applicationId: 'bundle-app__sample-package__sample-app',
       iframeLaunchId: 'bundle-app__sample-package__sample-app::iframe-launch-1',
       hostOrigin: normalizeApplicationHostOrigin('null', 'file:'),
     })
 
     const launchUrl = new URL(iframeSrc)
-    expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_CONTRACT_VERSION)).toBe('3')
+    expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_CONTRACT_VERSION)).toBe('4')
     expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_APPLICATION_ID)).toBe(
       'bundle-app__sample-package__sample-app',
     )

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { startHostedApplication } from '../dist/index.js';
-import { createApplicationHostBootstrapEnvelopeV3 } from '../../autobyteus-application-sdk-contracts/dist/index.js';
+import { createApplicationHostBootstrapEnvelopeV4 } from '../../autobyteus-application-sdk-contracts/dist/index.js';
 
-const IFRAME_LAUNCH_SEARCH = '?autobyteusContractVersion=3&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123';
+const IFRAME_LAUNCH_SEARCH = '?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123';
 const IFRAME_LAUNCH_ID = 'bundle-app__pkg__sample-app::iframe-launch-1';
 const APPLICATION_ID = 'bundle-app__pkg__sample-app';
 const HOST_ORIGIN = 'http://127.0.0.1:43123';
@@ -13,7 +13,7 @@ const flushMicrotasks = async () => {
 };
 
 const createBootstrapEnvelope = (overrides = {}) => {
-  const envelope = createApplicationHostBootstrapEnvelopeV3({
+  const envelope = createApplicationHostBootstrapEnvelopeV4({
     host: { origin: HOST_ORIGIN },
     application: {
       applicationId: APPLICATION_ID,
@@ -28,6 +28,8 @@ const createBootstrapEnvelope = (overrides = {}) => {
     transport: {
       backendBaseUrl: `http://127.0.0.1:43123/rest/applications/${APPLICATION_ID}/backend`,
       backendNotificationsUrl: null,
+      backendWebSocketBaseUrl: null,
+      agentCommunicationWebSocketBaseUrl: null,
     },
   });
 

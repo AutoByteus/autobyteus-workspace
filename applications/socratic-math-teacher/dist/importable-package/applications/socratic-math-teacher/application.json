@@ -1,12 +1,12 @@
 {
-  "manifestVersion": "3",
+  "manifestVersion": "4",
   "id": "socratic-math-teacher",
   "name": "Socratic Math Teacher",
   "description": "Built-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.",
   "icon": "ui/icon.svg",
   "ui": {
     "entryHtml": "ui/index.html",
-    "frontendSdkContractVersion": "3"
+    "frontendSdkContractVersion": "4"
   },
   "backend": {
     "bundleManifest": "backend/bundle.json"

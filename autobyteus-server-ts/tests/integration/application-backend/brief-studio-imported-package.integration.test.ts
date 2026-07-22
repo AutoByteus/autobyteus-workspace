@@ -9,7 +9,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type {
   ApplicationNotificationMessage,
   ApplicationPublishedArtifactEvent,
-  ApplicationRunBindingSummary,
+  ApplicationAgentBinding,
+  ApplicationAgentTeamBinding,
 } from "@autobyteus/application-sdk-contracts";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
@@ -22,9 +23,9 @@ import { ApplicationPlatformStateStore } from "../../../src/application-storage/
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import {
-  ApplicationBackendNotificationStreamService,
+  ApplicationBackendNotificationHub,
   type ApplicationBackendNotificationStreamMessage,
-} from "../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js";
+} from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import { ApplicationExecutionEventDispatchService } from "../../../src/application-orchestration/services/application-execution-event-dispatch-service.js";
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
@@ -41,6 +42,7 @@ import { ApplicationRunBindingStore } from "../../../src/application-orchestrati
 import { ApplicationRunLookupStore } from "../../../src/application-orchestration/stores/application-run-lookup-store.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import { registerApplicationBackendRoutes } from "../../../src/api/rest/application-backends.js";
+import { registerApplicationAvailabilityRoutes } from "../../../src/api/rest/application-availability.js";
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
@@ -51,7 +53,7 @@ import { buildPublishedArtifactId } from "../../../src/services/published-artifa
 
 const applicationBackendState = vi.hoisted(() => ({
   apiGatewayService: null as ApplicationBackendApiGatewayService | null,
-  notificationStreamService: null as ApplicationBackendNotificationStreamService | null,
+  notificationHub: null as ApplicationBackendNotificationHub | null,
 }));
 
 vi.mock("../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js", async () => {
@@ -69,17 +71,17 @@ vi.mock("../../../src/application-backend-api-gateway/services/application-backe
   };
 });
 
-vi.mock("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js", async () => {
+vi.mock("../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js", async () => {
   const actual = await vi.importActual<
-    typeof import("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js")
-  >("../../../src/application-backend-api-gateway/streaming/application-backend-notification-stream-service.js");
+    typeof import("../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js")
+  >("../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js");
   return {
     ...actual,
-    getApplicationBackendNotificationStreamService: () => {
-      if (!applicationBackendState.notificationStreamService) {
-        throw new Error("Integration test notification stream service was not initialized.");
+    getApplicationBackendNotificationHub: () => {
+      if (!applicationBackendState.notificationHub) {
+        throw new Error("Integration test notification hub was not initialized.");
       }
-      return applicationBackendState.notificationStreamService;
+      return applicationBackendState.notificationHub;
     },
   };
 });
@@ -259,11 +261,11 @@ const expectGraphqlField = async <T>(
   return payload.result.data[fieldName] as T;
 };
 
-const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
+const cloneBinding = (binding: ApplicationAgentBinding | ApplicationAgentTeamBinding): ApplicationAgentBinding | ApplicationAgentTeamBinding => structuredClone(binding);
 
 const persistPublishedArtifactForRun = async (input: {
   runId: string;
-  binding: ApplicationRunBindingSummary;
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
   producer: NonNullable<ApplicationPublishedArtifactEvent["producer"]>;
   path: string;
   body: string;
@@ -358,7 +360,7 @@ const persistPublishedArtifactForRun = async (input: {
 };
 
 const buildDirectArtifactEvent = (input: {
-  binding: ApplicationRunBindingSummary;
+  binding: ApplicationAgentBinding | ApplicationAgentTeamBinding;
   runId: string;
   memberRouteKey: string;
   memberName: string;
@@ -402,7 +404,7 @@ describe("Brief Studio imported package integration", () => {
   let ingressService: ApplicationExecutionEventIngressService;
   let bindingStore: ApplicationRunBindingStore;
   let lookupStore: ApplicationRunLookupStore;
-  let latestBinding: ApplicationRunBindingSummary | null;
+  let latestBinding: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
   let latestTeamRunId: string | null;
   let executionContextByRouteKey: Map<string, ApplicationExecutionContext>;
   let memberRunIdByRouteKey: Map<string, string>;
@@ -706,12 +708,12 @@ describe("Brief Studio imported package integration", () => {
     });
     engineHostServiceRef = engineHostService;
 
-    applicationBackendState.notificationStreamService = new ApplicationBackendNotificationStreamService();
+    applicationBackendState.notificationHub = new ApplicationBackendNotificationHub();
     applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
       applicationBundleService: bundleService as never,
       availabilityService,
       engineHostService,
-      notificationStreamService: applicationBackendState.notificationStreamService,
+      notificationHub: applicationBackendState.notificationHub,
     });
 
     availabilityService.synchronizeWithCatalogSnapshot(await bundleService.getCatalogSnapshot());
@@ -722,6 +724,7 @@ describe("Brief Studio imported package integration", () => {
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(websocket);
     await app.register(async (restApp) => {
+      await registerApplicationAvailabilityRoutes(restApp);
       await registerApplicationBackendRoutes(restApp);
     }, { prefix: "/rest" });
     await registerApplicationBackendNotificationWebsocket(app);
@@ -743,7 +746,7 @@ describe("Brief Studio imported package integration", () => {
     }
     await fs.rm(tempRoot, { recursive: true, force: true });
     applicationBackendState.apiGatewayService = null;
-    applicationBackendState.notificationStreamService = null;
+    applicationBackendState.notificationHub = null;
     appConfigProvider.resetForTests();
   });
 
@@ -1580,7 +1583,7 @@ describe("Brief Studio imported package integration", () => {
       seededDb.close();
     }
 
-    const binding: ApplicationRunBindingSummary = {
+    const binding: ApplicationAgentBinding | ApplicationAgentTeamBinding = {
       bindingId: "binding-unexpected-1",
       applicationId,
       launchRequestId: "launch-request-unexpected-1",
