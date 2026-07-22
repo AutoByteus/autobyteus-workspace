@@ -7,10 +7,18 @@ export type CodexReasoningBlockInput = {
   snapshot: string;
 };
 
-export type CodexReasoningBlockUpdate = {
-  segmentId: string;
-  delta: string;
-};
+export type CodexReasoningLifecycleAction =
+  | {
+      kind: "content";
+      segmentId: string;
+      turnId: string | null;
+      delta: string;
+    }
+  | {
+      kind: "end";
+      segmentId: string;
+      turnId: string | null;
+    };
 
 type ActiveReasoningBlock = {
   segmentId: string;
@@ -25,7 +33,7 @@ export class CodexReasoningBlockTracker {
 
   constructor(private readonly instanceNonce = randomUUID()) {}
 
-  public append(input: CodexReasoningBlockInput): CodexReasoningBlockUpdate | null {
+  public append(input: CodexReasoningBlockInput): CodexReasoningLifecycleAction[] {
     const activeBlock = input.turnId
       ? this.activeBlockByTurnId.get(input.turnId)
       : undefined;
@@ -33,7 +41,7 @@ export class CodexReasoningBlockTracker {
       Boolean(activeBlock) &&
       input.providerItemId !== null &&
       activeBlock?.currentProviderItemId === input.providerItemId;
-    if (repeatedKnownProviderItem) return null;
+    if (repeatedKnownProviderItem) return [];
 
     const block = activeBlock ?? this.createBlock(input.providerItemId);
     const needsSeparator = block.hasContent;
@@ -45,7 +53,16 @@ export class CodexReasoningBlockTracker {
       this.rememberActiveBlock(input.turnId, block);
     }
 
-    debugCodexThreadEvent("Resolved reasoning block update", {
+    const content: CodexReasoningLifecycleAction = {
+      kind: "content",
+      segmentId: block.segmentId,
+      turnId: input.turnId,
+      delta,
+    };
+    const actions: CodexReasoningLifecycleAction[] = input.turnId
+      ? [content]
+      : [content, { kind: "end", segmentId: block.segmentId, turnId: null }];
+    debugCodexThreadEvent("Resolved reasoning block lifecycle actions", {
       segmentId: block.segmentId,
       turnId: input.turnId,
       providerItemId: input.providerItemId,
@@ -53,21 +70,40 @@ export class CodexReasoningBlockTracker {
       reusedActiveBlock: Boolean(activeBlock),
       insertedSeparator: needsSeparator,
       cacheSize: this.activeBlockByTurnId.size,
+      actionKinds: actions.map((action) => action.kind),
     });
-    return { segmentId: block.segmentId, delta };
+    return actions;
   }
 
-  public clearForTurn(turnId: string): void {
+  public closeForTurn(turnId: string): CodexReasoningLifecycleAction[] {
+    const block = this.activeBlockByTurnId.get(turnId);
+    if (!block) return [];
     this.activeBlockByTurnId.delete(turnId);
-    debugCodexThreadEvent("Cleared reasoning block for turn", {
+    const actions: CodexReasoningLifecycleAction[] = block.hasContent
+      ? [{ kind: "end", segmentId: block.segmentId, turnId }]
+      : [];
+    debugCodexThreadEvent("Closed reasoning block for turn", {
       turnId,
       cacheSize: this.activeBlockByTurnId.size,
+      actionCount: actions.length,
     });
+    return actions;
   }
 
-  public clearAll(): void {
+  public closeAll(): CodexReasoningLifecycleAction[] {
+    const actions = [...this.activeBlockByTurnId.entries()]
+      .filter(([, block]) => block.hasContent)
+      .map(([turnId, block]): CodexReasoningLifecycleAction => ({
+        kind: "end",
+        segmentId: block.segmentId,
+        turnId,
+      }));
     this.activeBlockByTurnId.clear();
-    debugCodexThreadEvent("Cleared all reasoning blocks", { cacheSize: 0 });
+    debugCodexThreadEvent("Closed all reasoning blocks", {
+      cacheSize: 0,
+      actionCount: actions.length,
+    });
+    return actions;
   }
 
   private createBlock(providerItemId: string | null): ActiveReasoningBlock {

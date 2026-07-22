@@ -1,0 +1,4 @@
+097ab6de846bedb7b9a9424834874adf37db687806ee485eac6a789f5191509d  tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/user-report/01-initial-thinking-only-feed.png
+1ba5e73553af4c921c8a75aa9168f21a53b1e48273044ce908dd603e84a920d7  tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/user-report/02-tools-eventually-rendered.png
+245d1e9453ef6c3c5f77cf9d790d299acdff16d799db657e3f70e4dc44110d1b  tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/user-report/03-selected-solution-designer-row.png
+a5d31a196e84e0d10e690d2ab041f831a8cd5b5f1a4dee2c6264fa286043f054  tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/user-report/04-live-tool-visible-after-thinking-burst.png

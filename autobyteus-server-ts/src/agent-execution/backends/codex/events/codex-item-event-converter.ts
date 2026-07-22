@@ -10,7 +10,6 @@ import {
 import { isCodexAgentToolsSendMessageToolName, normalizeCodexAgentToolsToolNameForEvent } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
 import { createTerminalToolExecutionEvent } from "./codex-terminal-tool-execution-event.js";
-import type { CodexReasoningBlockUpdate } from "./codex-reasoning-block-tracker.js";
 import type { CodexToolLifecyclePlacement } from "./codex-ordered-tool-boundary-tracker.js";
 
 export type CodexItemEventConverterContext = CodexItemCompactionEventConverterContext & {
@@ -23,8 +22,14 @@ export type CodexItemEventConverterContext = CodexItemCompactionEventConverterCo
     codexEventName: string,
     payload: JsonObject,
   ) => AgentRunEvent | null;
-  resolveCompletedReasoningSnapshot: (payload: JsonObject) => CodexReasoningBlockUpdate | null;
-  clearReasoningBlockForBoundary: (payload: JsonObject) => void;
+  resolveCompletedReasoningEvents: (
+    codexEventName: string,
+    payload: JsonObject,
+  ) => AgentRunEvent[];
+  closeReasoningBlocksForBoundary: (
+    codexEventName: string,
+    payload: JsonObject,
+  ) => AgentRunEvent[];
   classifyToolLifecycleUpdate: (payload: JsonObject) => CodexToolLifecyclePlacement;
   isUserMessageItem: (itemType: string | null) => boolean;
   isReasoningItem: (itemType: string | null) => boolean;
@@ -222,31 +227,14 @@ const createFileChangeSegmentEndEvent = (
   });
 };
 
-const createReasoningContentEvent = (
+const applyToolLifecyclePlacement = (
   context: CodexItemEventConverterContext,
   codexEventName: string,
   payload: JsonObject,
-): AgentRunEvent[] => {
-  const update = context.resolveCompletedReasoningSnapshot(payload);
-  if (!update) return [];
-  return [
-    context.createEvent(codexEventName, AgentRunEventType.SEGMENT_CONTENT, {
-      ...serializeCodexItemEventPayload(payload),
-      id: update.segmentId,
-      delta: update.delta,
-      segment_type: "reasoning",
-    }),
-  ];
-};
-
-const applyToolLifecyclePlacement = (
-  context: CodexItemEventConverterContext,
-  payload: JsonObject,
-): void => {
-  if (context.classifyToolLifecycleUpdate(payload) === "result_first_creation") {
-    context.clearReasoningBlockForBoundary(payload);
-  }
-};
+): AgentRunEvent[] =>
+  context.classifyToolLifecycleUpdate(payload) === "result_first_creation"
+    ? context.closeReasoningBlocksForBoundary(codexEventName, payload)
+    : [];
 
 export const convertCodexItemEvent = (
   context: CodexItemEventConverterContext,
@@ -261,8 +249,7 @@ export const convertCodexItemEvent = (
       const itemFamily = resolveCodexToolItemFamily(itemType);
       if (context.isReasoningItem(itemType)) return [];
       if (context.isUserMessageItem(itemType)) {
-        context.clearReasoningBlockForBoundary(payload);
-        return [];
+        return context.closeReasoningBlocksForBoundary(codexEventName, payload);
       }
       if (itemFamily === "command_execution") {
         const invocationId = context.resolveInvocationId(payload);
@@ -274,8 +261,9 @@ export const convertCodexItemEvent = (
         ) {
           return [];
         }
-        applyToolLifecyclePlacement(context, payload);
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
+          ...reasoningEnds,
           context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
             ...serializeCodexItemEventPayload(payload),
             ...(invocationId ? { invocation_id: invocationId } : {}),
@@ -285,38 +273,40 @@ export const convertCodexItemEvent = (
         ];
       }
       if (itemFamily === "web_search") {
-        applyToolLifecyclePlacement(context, payload);
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
+          ...reasoningEnds,
           createWebSearchSegmentStartEvent(context, codexEventName, payload),
           createWebSearchLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
       if (itemFamily === "file_change") {
-        applyToolLifecyclePlacement(context, payload);
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
+          ...reasoningEnds,
           createFileChangeSegmentStartEvent(context, codexEventName, payload),
           createFileChangeLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
       if (itemFamily === "mcp_tool_call" || itemFamily === "dynamic_tool_call") {
-        applyToolLifecyclePlacement(context, payload);
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
+          ...reasoningEnds,
           createDynamicToolSegmentStartEvent(context, codexEventName, payload),
           createDynamicToolLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
       const segmentType = context.resolveSegmentType(payload);
-      if (
+      const reasoningEnds = (
         segmentType === "tool_call" ||
         segmentType === "run_bash" ||
         segmentType === "edit_file"
-      ) {
-        applyToolLifecyclePlacement(context, payload);
-      } else {
-        context.clearReasoningBlockForBoundary(payload);
-      }
+      )
+        ? applyToolLifecyclePlacement(context, codexEventName, payload)
+        : context.closeReasoningBlocksForBoundary(codexEventName, payload);
       const segmentMetadata = context.resolveSegmentMetadata(payload);
       return [
+        ...reasoningEnds,
         context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
           ...serializeCodexItemEventPayload(payload),
           id: context.resolveSegmentStartId(payload, segmentType),
@@ -333,9 +323,9 @@ export const convertCodexItemEvent = (
       ];
     }
     case CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA: {
-      context.clearReasoningBlockForBoundary(payload);
+      const reasoningEnds = context.closeReasoningBlocksForBoundary(codexEventName, payload);
       const textEvent = context.createTextSegmentContentEvent(codexEventName, payload);
-      return textEvent ? [textEvent] : [];
+      return textEvent ? [...reasoningEnds, textEvent] : reasoningEnds;
     }
     case CodexThreadEventName.ITEM_COMPLETED: {
       const compactionEvents = convertCodexItemCompactionEvent(context, codexEventName, payload);
@@ -346,7 +336,7 @@ export const convertCodexItemEvent = (
         return [];
       }
       if (context.isReasoningItem(itemType)) {
-        return createReasoningContentEvent(context, codexEventName, payload);
+        return context.resolveCompletedReasoningEvents(codexEventName, payload);
       }
       if (itemFamily === "command_execution") {
         const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, "run_bash"));
@@ -357,14 +347,17 @@ export const convertCodexItemEvent = (
         ) {
           return [];
         }
-        applyToolLifecyclePlacement(context, payload);
-        return [createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash")];
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
+        return [
+          ...reasoningEnds,
+          createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash"),
+        ];
       }
       if (itemFamily === "file_change") {
-        applyToolLifecyclePlacement(context, payload);
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         const invocationId = context.resolveInvocationId(payload);
         const serializedPayload = serializeCodexItemEventPayload(payload);
-        const events: AgentRunEvent[] = [];
+        const events: AgentRunEvent[] = [...reasoningEnds];
         const failed = context.isExecutionFailure(payload);
         const declined = context.resolveExecutionStatus(payload)?.toLowerCase() === "declined";
 
@@ -402,15 +395,17 @@ export const convertCodexItemEvent = (
         return events;
       }
       if (itemFamily === "dynamic_tool_call") {
-        applyToolLifecyclePlacement(context, payload);
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
+          ...reasoningEnds,
           createTerminalToolExecutionEvent(context, codexEventName, payload),
           createSegmentEndEvent(context, codexEventName, payload),
         ];
       }
       if (itemFamily === "web_search") {
-        applyToolLifecyclePlacement(context, payload);
+        const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
         return [
+          ...reasoningEnds,
           createWebSearchTerminalLifecycleEvent(context, codexEventName, payload),
           createWebSearchSegmentEndEvent(context, codexEventName, payload),
         ];
@@ -424,7 +419,7 @@ export const convertCodexItemEvent = (
     case CodexThreadEventName.ITEM_REASONING_SUMMARY_TEXT_DELTA:
       return [];
     case CodexThreadEventName.ITEM_REASONING_COMPLETED: {
-      return createReasoningContentEvent(context, codexEventName, payload);
+      return context.resolveCompletedReasoningEvents(codexEventName, payload);
     }
     case CodexThreadEventName.ITEM_PLAN_DELTA:
       return [
@@ -437,7 +432,7 @@ export const convertCodexItemEvent = (
     case CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL:
     case CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL:
     case CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED: {
-      applyToolLifecyclePlacement(context, payload);
+      const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
       const invocationId = context.resolveInvocationId(payload);
       const fallbackToolName =
         codexEventName === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL
@@ -447,6 +442,7 @@ export const convertCodexItemEvent = (
         context.resolveToolName(payload, fallbackToolName),
       );
       return [
+        ...reasoningEnds,
         context.createEvent(codexEventName, AgentRunEventType.TOOL_APPROVAL_REQUESTED, {
           ...serializeCodexItemEventPayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
@@ -456,11 +452,12 @@ export const convertCodexItemEvent = (
       ];
     }
     case CodexThreadEventName.LOCAL_TOOL_APPROVED: {
-      applyToolLifecyclePlacement(context, payload);
+      const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
       const invocationId = context.resolveInvocationId(payload);
       const toolName = normalizeCodexAgentToolsToolNameForEvent(context.resolveToolName(payload, "run_bash"));
       const reason = context.resolveToolDecisionReason(payload);
       return [
+        ...reasoningEnds,
         context.createEvent(codexEventName, AgentRunEventType.TOOL_APPROVED, {
           ...serializeCodexItemEventPayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
@@ -469,17 +466,22 @@ export const convertCodexItemEvent = (
         }),
       ];
     }
-    case CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED:
-      applyToolLifecyclePlacement(context, payload);
-      return [createTerminalToolExecutionEvent(context, codexEventName, payload)];
+    case CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED: {
+      const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
+      return [
+        ...reasoningEnds,
+        createTerminalToolExecutionEvent(context, codexEventName, payload),
+      ];
+    }
     case CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA: {
       const invocationId = context.resolveInvocationId(payload);
       const logEntry = context.resolveLogEntry(payload);
       if (!invocationId || !logEntry) {
         return [];
       }
-      applyToolLifecyclePlacement(context, payload);
+      const reasoningEnds = applyToolLifecyclePlacement(context, codexEventName, payload);
       return [
+        ...reasoningEnds,
         context.createEvent(codexEventName, AgentRunEventType.TOOL_LOG, {
           ...serializeCodexItemEventPayload(payload),
           tool_invocation_id: invocationId,

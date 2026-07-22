@@ -8,7 +8,7 @@ import {
   CodexReasoningEventNormalizer,
 } from "./codex-reasoning-event-normalizer.js";
 import type {
-  CodexReasoningBlockUpdate,
+  CodexReasoningLifecycleAction,
 } from "./codex-reasoning-block-tracker.js";
 import {
   normalizeCodexAgentToolsToolNameForEvent,
@@ -172,16 +172,18 @@ export class CodexItemEventPayloadParser {
 
   public resolveCompletedReasoningSnapshot(
     payload: Record<string, unknown>,
-  ): CodexReasoningBlockUpdate | null {
+  ): CodexReasoningLifecycleAction[] {
     return this.reasoningEventNormalizer.resolveCompletedSnapshot(payload);
   }
 
-  public clearReasoningBlockForBoundary(payload: Record<string, unknown>): void {
-    this.reasoningEventNormalizer.clearForBoundary(payload);
+  public closeReasoningBlocksForBoundary(
+    payload: Record<string, unknown>,
+  ): CodexReasoningLifecycleAction[] {
+    return this.reasoningEventNormalizer.closeForBoundary(payload);
   }
 
-  public clearAllReasoningBlocks(): void {
-    this.reasoningEventNormalizer.clearAll();
+  public closeAllReasoningBlocks(): CodexReasoningLifecycleAction[] {
+    return this.reasoningEventNormalizer.closeAll();
   }
 
   public resolveItemType(payload: Record<string, unknown>): string | null {
