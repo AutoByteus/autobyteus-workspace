@@ -8,6 +8,7 @@ import {
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
@@ -177,8 +178,15 @@ class FakeTeamRun {
     };
   }
 
-  async postMessage(message: AgentInputUserMessage, target: unknown): Promise<{ accepted: true }> {
-    await this.team.postMessage(message, selectorRouteKey(target));
+  async postMessageToConversationTarget(
+    message: AgentInputUserMessage,
+    address: ConversationTargetAddress,
+  ): Promise<{ accepted: true }> {
+    const target = address.segments.at(-1);
+    const targetRouteKey = target?.kind === "member"
+      ? target.memberRouteKey ?? target.memberPath?.join("/") ?? null
+      : null;
+    await this.team.postMessage(message, targetRouteKey);
     return { accepted: true };
   }
 

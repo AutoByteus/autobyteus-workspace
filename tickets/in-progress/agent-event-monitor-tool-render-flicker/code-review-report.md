@@ -2,109 +2,114 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/requirements-doc.md`
-- Supplemental Task Artifacts Reviewed As Context: investigation runtime probes and user-report screenshots listed in the investigation notes; no separate behavior-defining supplement exists.
-- Current Review Round: `1`
-- Trigger: implementation handoff for source/evidence commit `be527c762d12a34fea415e64501d845ea45f4300` and packaging commit `b3cb111bf568f5088a50b01914b0c32c1f8d492e`, reviewed against base `965f97685c08569a98186b2a894243c0b3f602d3`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Supplemental Task Artifacts Reviewed As Context: investigation runtime probes and user-report screenshots inventoried by the investigation notes; no separate behavior-defining supplement exists.
+- Current Review Round: `3`
+- Trigger: API/E2E round 1 `Fail` at 89% confidence for `LIVE-002`: two real standalone Codex runs did not emit the configured `send_message_to` tool start and instead produced text saying the tool was unavailable. Focused failure-origin review was requested against unchanged reviewed source/evidence commit `710ab2f46f1a1bf559b735a8ef5863faed025777` and handoff packaging commit `c93c84b69d1a60156735ea6763fb977c23d10db5`.
+- Prior Review Round Reviewed: `2`
+- Latest Authoritative Round: `3`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/design-review-report.md` — architecture round 1 `Pass`.
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/implementation-handoff.md`
-- Coverage Investigation Reviewed (failure-origin entry point): `N/A`
-- Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
-- Failing Scenario IDs: `N/A`
-- Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: `N/A`
+- Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/api-e2e-execution-coverage-report.md`
+- Failing Scenario IDs: `LIVE-002`
+- Exact Failing Commands / Execution Mode: `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts --no-watch`; repeat with `RUN_CODEX_E2E=1 CODEX_E2E_TOOL_MODEL=gpt-5.3-codex ...`; both were real Codex App Server standalone GraphQL/WebSocket runs and timed out after about 180 seconds awaiting the tool `SEGMENT_START`.
+- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-20260722.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-standalone-websocket-gpt53-20260722.log`; comparison pass `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/api-e2e/live-codex-team-websocket-20260722.log`; summary `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/api-e2e/api-e2e-scenario-summary-20260722.json`.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial implementation-source review | N/A | `CR-001`, `CR-002` | `Fail` | Yes | The reasoning lifecycle structure is otherwise coherent, but prefixed completion events inherit boundary lifecycle status and can preempt the actual boundary; committed evidence also fails diff hygiene. |
+| 1 | Initial implementation-source review | N/A | `CR-001`, `CR-002` | `Fail` | No | Prefixed reasoning completion inherited boundary status; committed evidence failed diff hygiene. |
+| 2 | Replacement implementation after bounded local fix | `CR-001`, `CR-002` | None | `Pass` | No | Reasoning lifecycle events are explicitly neutral; actual boundaries retain their hints; downstream error observation and diff hygiene pass. |
+| 3 | API/E2E round 1 failure-origin review for `LIVE-002` | No unresolved implementation finding; round 2 source decision rechecked | `CR-003` | `Fail` | Yes | The scenario is a supported standalone-tool contract, but the execution infers tool absence only from model behavior and never proves the same live thread's MCP exposure/readiness. Route a bounded execution/report fix to API/E2E; do not reopen implementation source on the present evidence. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-`N/A — first review round.`
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `CR-001` | High | `Resolved` | `codex-thread-event-converter.ts` passes `null` explicitly for reasoning content/end construction; converter tests assert neutral ends before `TURN_COMPLETED`, `TURN_STARTED`, and `ERROR` while actual outputs retain `IDLE`, `ACTIVE`, and `ERROR`; `agent-run-termination-service.test.ts` proves the following actual error retains `provider exploded`. Independent 7-file/147-test server run passed. | No design or requirement change was needed. |
+| 1 | `CR-002` | Low | `Resolved` | `git diff --check` passes for both `965f9768..710ab2f4` and `965f9768..c93c84b6`; committed implementation and prior-review evidence whitespace is normalized. | Packaging traceability is refreshed. |
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the Codex reasoning update-only/void-clear replacement with ordered content/end actions; all item/raw/turn/thread boundary composition; missing-turn and global-close behavior; generic frontend completion, recent-window, and runtime-memory regression coverage; removal and packaging evidence.
-- Files / areas reviewed: all eight changed server implementation files; five changed server/web test files; Codex backend dispatch; event pipeline and sequential listener dispatch; `AgentRun`, `AgentRunService`, command coordination, compaction output, generic web segment handling, recent-window behavior, and cumulative ticket artifacts.
-- Explicit exclusions: no rendered frontend production validation because no web production source changed; no broader API/E2E or live standalone/team execution at this gate; repository-wide typecheck baseline failures were not treated as change-owned defects.
-- Independent checks: focused server `6 files / 138 tests` passed; focused web `3 files / 34 tests` passed; web and localization boundary guards passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-focused-checks-20260722.txt`.
+- Round 3 changed implementation and behavior reviewed: none; the reviewed production source remains `710ab2f46f1a1bf559b735a8ef5863faed025777`.
+- Round 3 files / areas reviewed: `LIVE-002` test and logs; API/E2E coverage/execution reports; standalone definition-to-Codex-thread Agent Tools MCP materialization; MCP route/catalog exposure; thread-start propagation; focused-team comparison path; ticket requirements/design and the established standalone `send_message_to` contract.
+- Round 3 explicit exclusions: no full source or scorecard re-review; no proportional review yet of the two API/E2E-owned durable fixture updates because execution has not passed; no speculative source fix without direct live-thread exposure evidence.
+- Preserved round 2 implementation scope/evidence: full base-to-replacement reasoning lifecycle implementation and neutral-status fix passed implementation review, including independent server `7 files / 147 tests`, web `3 files / 34 tests`, guards, and diff hygiene at `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-round2-checks-20260722.txt`.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. The first faulty boundary is missing Codex-provider reasoning completion; generic retention, transport, selection, hydration, storage, and UI policy remain unchanged.
-- Design-spec behavior map verified against the implementation: Partially. Tracker action ownership, exact identity, ordered prefix composition, missing-turn completion, and downstream generic consumption match the reviewed design. The status semantics of prefixed events do not.
+- Approved requirements basis understood: Yes; correct the missing Codex reasoning completion invariant at the provider adapter and preserve generic downstream policy.
+- Design-spec behavior map verified against the implementation: Yes.
 - Design review report and round confirmed: architecture round 1 `Pass`.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. `CR-001` is a bounded implementation defect on already-approved error/turn boundary behavior, not a new product behavior.
-- Remaining material ambiguity, if any: None; supported triggers, dispatch path, and consequences are directly evidenced.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: None.
+- Remaining material ambiguity, if any: none in intended behavior; the same-thread live MCP exposure/readiness state is unobserved and is classified below as an API/E2E execution-evidence gap rather than a requirement ambiguity.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Codex adapter closes reasoning upstream; selection/hydration and web production source are unchanged. Focused standalone/team production-dispatch tests pass. | N/A |
-| `BEH-002` | Confirmed | `SEGMENT_END` reaches unchanged generic completion and completion-aware recent-window logic; >100 interleaved standalone/team test coverage passes. | N/A |
-| `BEH-003` | Contradicted | Tracker emits one stable grouped identity and sub-converters physically prepend one end before supported boundary outputs. | `CodexThreadEventConverter.mapReasoningLifecycleActions` calls the general `createEvent`; that method derives `statusHint` from the closing provider event. Ends before `ERROR`, `TURN_COMPLETED`, and `TURN_STARTED` therefore carry `ERROR`, `IDLE`, and `ACTIVE` respectively and themselves act as the lifecycle boundary before the real boundary output. See `MP-CR-001` and `MP-CR-002`. |
-| `BEH-004` | Contradicted | Missing-turn content/end is adjacent and global close order is deterministic/idempotent. | Reachable error/turn-start global closes return status-bearing ends, so the returned generic completion is not lifecycle-neutral. See `MP-CR-001` and `MP-CR-002`. |
-| `BEH-005` | Confirmed | Runtime-memory coverage proves one logical reasoning contribution and stable reasoning/tool order; no schema, reader, API, or migration change exists. | N/A |
+| `BEH-001` | Confirmed | Codex adapter closes reasoning upstream; selection/hydration and web production source remain unchanged. Deterministic standalone/team production-spine checks pass. `LIVE-002` directly shows the corrected reasoning content/end/text order, while real standalone tool invocation remains unproven because live MCP exposure/readiness was not observed. | N/A |
+| `BEH-002` | Confirmed | Neutral `SEGMENT_END` reaches unchanged generic completion and completion-aware latest-window logic; >100 interleaved standalone/team coverage passes. | N/A |
+| `BEH-003` | Confirmed | Stable grouped identity, exactly one neutral end, explicit pre-boundary order, matching-tool preservation, and preserved actual boundary hints are directly asserted. | N/A |
+| `BEH-004` | Confirmed | Missing-turn content/end is adjacent; reachable global closure is deterministic/idempotent; all reasoning actions are status-neutral. | N/A |
+| `BEH-005` | Confirmed | Runtime-memory coverage proves one logical reasoning contribution and stable order; storage schema/readers and migration posture remain unchanged. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The missing-invariant classification, bounded provider refactor, preserved generic owners, and rejected capacity premise remain intact. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | No separate behavior-defining supplement exists; investigation/user evidence is consistent with the implemented first-boundary correction. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | `DS-001` through `DS-004` remain traceable from provider notification through converter, dispatch, generic web/window, persistence, and selection. | None. |
-| Ownership boundary preservation and clarity | Pass | Tracker owns state/actions; governing converter owns event construction/order; sub-converters own provider-surface classification. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Payload parsing, ordered-tool classification, transport, retention, persistence, and selection do not absorb Codex lifecycle policy. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing tracker, parser, converter contexts, normalized lifecycle, web handler, and accumulator are extended/reused. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | One tracker-owned `CodexReasoningLifecycleAction` union and one governing action-to-event mapper are reused. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `content` and `end` variants carry only variant-appropriate data; end payload is closure-owned and minimal. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Final action mapping is centralized; boundary callers explicitly consume returned prefix arrays without reconstructing IDs. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | Normalizer/parser/context layers preserve their existing provider-shape and classification responsibilities. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Changed concerns stay in established Codex event files; web production and persistence owners are unchanged. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Dependencies remain inward within the adapter and outward only through generic `AgentRunEvent` contracts. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Sub-converters receive typed context operations; none reaches tracker internals directly. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Production changes are under the existing Codex events capability; test coverage stays at closest server/web owners. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The established flat adapter layout remains coherent; no new directory or empty wrapper was added. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | Tracker/action interfaces are clear, but reasoning lifecycle mapping reuses an event constructor whose implicit `codexEventName -> statusHint` policy belongs to the boundary event rather than the prefixed reasoning event. | Resolve `CR-001` with explicit lifecycle-neutral event semantics while keeping actual boundary hints unchanged. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `append`, `closeForTurn`, `closeAll`, lifecycle action variants, and context callbacks express their responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Closure/event mapping is centralized; callers compose results rather than copying payload construction. | None. |
-| Patch-on-patch complexity control | Pass | Update-only and void-clear contracts are atomically replaced rather than wrapped or retained. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Searches find no prior `CodexReasoningBlockUpdate`, `clearReasoningBlockForBoundary`, or `clearAllReasoningBlocks` production API. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Grouping, 48-case boundary/preserve behavior, missing-turn/global close, >100 retention, and persistence are well covered, but boundary tests assert event type/payload/order without asserting `statusHint` neutrality or actual-boundary status preservation. | Add regression assertions required by `CR-001`. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Focused emit/boundary helpers keep the large boundary matrix navigable; generic web fixtures reuse existing dispatch/window owners. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Tests replace the previous update/clear contract and add current-target lifecycle coverage only. | None. |
-| API/E2E readiness for the next workflow stage | Fail | `CR-001` is a reachable runtime lifecycle defect and `CR-002` fails committed diff hygiene; API/E2E must not start from this source package. | Implementation-owned local fixes, repeat source review, then API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Missing-invariant classification and bounded provider-adapter refactor remain intact. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | No behavior-defining supplement exists; investigation evidence remains aligned. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | `DS-001`–`DS-004` remain traceable across provider normalization, live presentation, persistence, and preserved selection. | None. |
+| Ownership boundary preservation and clarity | Pass | Tracker owns state/actions; governing converter owns construction/order/status semantics; sub-converters own provider classification. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Parser, ordered-tool tracker, transport, retention, memory, and selection retain their established roles. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing tracker, normalized event contract, handler, recent-window, and accumulator are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | One tracker-owned lifecycle union and one governing action mapper are reused. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Content/end variants and minimal end payload remain semantically tight. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Action mapping and neutral status are centralized; callers only compose returned events. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | Existing parser/normalizer/context boundaries retain shape/classification responsibilities. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Provider-specific lifecycle policy stays in the Codex adapter; generic downstream production source is unchanged. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Dependencies remain within the adapter and outward through generic events. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Typed converter contexts prevent direct tracker-internal access. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Production and regression changes remain at their established owners. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | No new wrapper/directory; the established event-adapter layout remains coherent. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Private `createEvent` now accepts an explicit status override; reasoning mapping owns neutral semantics while ordinary boundary calls preserve default derivation. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Lifecycle actions, closure methods, and `statusHint` override communicate intent. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated identity/payload/status mapping exists. | None. |
+| Patch-on-patch complexity control | Pass | The local fix strengthens the governing construction seam rather than adding a downstream exception. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Old update/void-clear APIs remain absent. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Boundary matrix, explicit neutral/hint assertions, downstream error-message observation, >100 retention, and exactly-once persistence directly prove requirements. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing converter helpers and service fixture are reused; added assertions remain bounded. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Coverage targets current lifecycle contracts only. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Prior findings are resolved; focused suites, guards, build evidence, sizes, and range hygiene pass. | Proceed to API/E2E investigation/execution. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts` | 481 | Pass | Pass (`108`) | Pass — item classification/composition remains coherent | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts` | 277 | Pass | Pass (`14`) | Pass — typed payload facade | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-raw-response-event-converter.ts` | 64 | Pass | Pass (`38`) | Pass — raw-response classification/order | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-block-tracker.ts` | 113 | Pass | Pass (`60`) | Pass — state, identity, dedupe, actions | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-event-normalizer.ts` | 79 | Pass | Pass (`19`) | Pass — snapshot normalization/action propagation | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts` | 499 | Pass | Pass (`70`) | Fail only for `CR-001` event-status semantics; overall governing ownership remains correct | Pass | `Local Fix` | Make lifecycle action event construction explicit/status-neutral; preserve actual boundary status derivation. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-lifecycle-event-converter.ts` | 58 | Pass | Pass (`5`) | Pass — thread/error composition | Pass | Pass | None beyond shared `CR-001` fix. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts` | 68 | Pass | Pass (`16`) | Pass — turn composition | Pass | Pass | None beyond shared `CR-001` fix. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts` | 481 | Pass | Pass (`108`) | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts` | 277 | Pass | Pass (`14`) | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-raw-response-event-converter.ts` | 64 | Pass | Pass (`38`) | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-block-tracker.ts` | 113 | Pass | Pass (`60`) | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-event-normalizer.ts` | 79 | Pass | Pass (`19`) | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts` | 498 | Pass | Pass (`77`) | Pass — governing mapping now owns explicit neutral-versus-boundary status | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-lifecycle-event-converter.ts` | 58 | Pass | Pass (`5`) | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts` | 68 | Pass | Pass (`16`) | Pass | Pass | Pass | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, version branch, or dual runtime path was added. |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, version branch, or dual path exists. |
 | No legacy old-behavior retention in changed scope | Pass | Update-only and silent-clear contracts are removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete reasoning APIs are absent from production source. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `Directly Usable — No Migration`; schema/readers unchanged. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Old reasoning APIs remain absent. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `Directly Usable — No Migration`; no schema/reader change. |
 | No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None added. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Future end events use the current generic accumulator; migration is not required. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Current accumulator consumes the normalized end; migration remains unnecessary. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -113,8 +118,8 @@
 ## Docs-Impact Verdict
 
 - Docs impact: `No`
-- Why: the required runtime and packaging corrections do not change approved product behavior or durable user/developer documentation. The implementation handoff/check evidence must be refreshed to record the corrected commits and checks.
-- Files or areas likely affected: ticket-local implementation handoff and implementation check evidence only.
+- Why: approved product behavior and durable interfaces are unchanged; ticket-local handoff/evidence are already refreshed.
+- Files or areas likely affected: none beyond the cumulative ticket package.
 
 ## Material Premise Validation (Only When Needed)
 
@@ -125,93 +130,99 @@
 | `MP-LIVE-001` | Confirmed | N/A |
 | `MP-SWITCH-001` | Confirmed | N/A |
 | `MP-MISSING-TURN-001` | Confirmed | N/A |
-| `MP-CAP-001` | Confirmed | N/A — its `Not Reachable` decision and unchanged guard remain correct. |
-| `MP-RESTORE-001` | Confirmed | N/A — the unproven repair timing remains irrelevant to this design. |
+| `MP-CAP-001` | Confirmed | N/A — the `Not Reachable` decision and unchanged guard remain correct. |
+| `MP-RESTORE-001` | Confirmed | N/A — unproven repair timing remains irrelevant. |
 
-### `MP-CR-001` — A terminal error closes active reasoning before error observers consume the emitted batch
+### `MP-CR-001` — Terminal error after active reasoning
 
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-003`, `REQ-005`; `AC-004`; normalized event listeners treat `statusHint: "ERROR"` as terminal error evidence.
+- Origin: `New in review round 1`
+- Related approved requirement or established contract: `REQ-003`, `REQ-005`; `AC-004`.
 - Relevant behavior ID(s): `BEH-003`, `BEH-004`.
-- Product-supported initiating trigger or governing contract, with evidence: the approved supported boundary matrix includes a Codex terminal error while reasoning is active. `CodexThreadEventName.ERROR` is a production thread-lifecycle notification handled by `CodexAgentRunBackend` and the converter.
-- Actual production caller/event path from that trigger to the claimed state: `Codex app-server ERROR notification -> CodexAgentRunBackend.handleAppServerMessage -> CodexThreadEventConverter -> dispatchProcessedAgentRunEvents -> sequential runtime-event listeners -> AgentRunService.observeRunLifecycle / command coordinator / compaction collector`.
-- Lifecycle preconditions and material consequence at the claimed point: one reasoning block is active when ERROR arrives. The converter emits its minimal `SEGMENT_END` first but gives that event `statusHint: "ERROR"`. `AgentRunService.observeRunLifecycle` terminalizes on the end, derives no message from its minimal payload, and ignores the later real error after `terminalPhase` is set; other status observers likewise act before the actual error/status event.
+- Product-supported initiating trigger or governing contract, with evidence: terminal error is in the approved Codex boundary matrix.
+- Actual production caller/event path from that trigger to the claimed state: `Codex ERROR -> CodexAgentRunBackend -> converter -> event pipeline -> sequential AgentRunService/status listeners`.
+- Lifecycle preconditions and material consequence at the claimed point: active reasoning closes before error output. In round 2 its end is neutral, so observers ignore it and consume the actual error with its message.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-001` is valid. Reasoning lifecycle events must be status-neutral; the actual error/status outputs must retain error status and message. This is a bounded converter/test correction, not a new recovery mechanism.
+- Review consequence / proportionate response: prior defect is resolved; converter and downstream regression coverage must remain.
 
-### `MP-CR-002` — Supported turn completion/start closes active reasoning before turn observers consume the emitted batch
+### `MP-CR-002` — Turn completion/start after active reasoning
 
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-003`, `REQ-005`; `AC-004`; `statusHint` is consumed per event by `AgentRun` and command coordination.
+- Origin: `New in review round 1`
+- Related approved requirement or established contract: `REQ-003`, `REQ-005`; `AC-004`.
 - Relevant behavior ID(s): `BEH-003`, `BEH-004`.
-- Product-supported initiating trigger or governing contract, with evidence: turn completion and reachable turn start are approved supported boundaries and production Codex notifications.
-- Actual production caller/event path from that trigger to the claimed state: `Codex app-server turn notification -> CodexAgentRunBackend.handleAppServerMessage -> CodexThreadEventConverter -> dispatchProcessedAgentRunEvents -> sequential runtime-event listeners -> AgentRun / command coordinator`.
-- Lifecycle preconditions and material consequence at the claimed point: active reasoning is closed and its end is prepended. The end inherits `IDLE` for turn completion or `ACTIVE` for turn start, so status consumers transition/settle on a segment-completion event before receiving the actual `TURN_COMPLETED` or `TURN_STARTED` event.
+- Product-supported initiating trigger or governing contract, with evidence: turn completion/start are approved Codex boundaries.
+- Actual production caller/event path from that trigger to the claimed state: `Codex turn notification -> CodexAgentRunBackend -> converter -> event pipeline -> sequential status listeners`.
+- Lifecycle preconditions and material consequence at the claimed point: active reasoning closes first. In round 2 the end is neutral and the actual turn outputs retain `IDLE`/`ACTIVE`.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: cover both supported turn boundaries in the same centralized `CR-001` correction and assert the end is neutral while the actual turn events retain their status hints.
+- Review consequence / proportionate response: prior defect is resolved; exact order/status regression assertions must remain.
 
-## Review Scorecard (Mandatory)
+### `MP-LIVE-002` — Configured standalone Codex `send_message_to` exposure before the first turn
 
-- Overall score (`/10`): `8.9`
-- Overall score (`/100`): `89`
-- Score calculation note: simple average of the ten category scores, rounded; the runtime defect and hygiene failure independently determine the failed gate.
+- Origin: `New in failure-origin review round 3`
+- Related approved requirement or established contract: ticket `REQ-001`–`REQ-004`, `REQ-007`; `AC-002`–`AC-004`, `AC-006`; established standalone exact-run tool contract documented in `autobyteus-server-ts/docs/modules/codex_integration.md` and the pre-existing live E2E.
+- Relevant behavior ID(s): `BEH-001`, `BEH-003`.
+- Product-supported initiating surface, action, event, or governing contract that exists independently of the premise or mechanism under review: a user creates a standalone Codex run from an agent definition configured with `toolNames: ["send_message_to"]` and asks it to deliver to an exact active `AgentRun.runId`; the durable module documentation explicitly supports this standalone selector path.
+- Evidence that the relevant user, system, operator, or governing contract can initiate this path in current or approved target behavior: the existing GraphQL run-creation and WebSocket input surfaces, the pre-existing `codex-standalone-send-message-global-routing.e2e.test.ts`, the standalone selector contract, and the prior live pass before the later Agent Tools MCP migration establish the product path independently of this ticket.
+- Forward current or approved target production caller/event path from that trigger to the claimed state: agent definition -> `resolveConfiguredAgentToolExposure` -> `CodexThreadBootstrapper.createAgentToolsMcpAppServerConfig` -> standalone `AgentToolMcpSession` -> `materializeCodexAgentToolsMcpThreadConfig` -> `CodexThreadManager.thread/start` config -> Codex MCP startup/discovery -> model tool call -> normalized `SEGMENT_START`/execution lifecycle -> global active-run delivery.
+- Lifecycle preconditions and material consequence at the claimed point: the same live sender thread must have an authenticated session whose `tools/list` contains `send_message_to`, and the App Server must have completed or failed MCP startup before model behavior can establish whether the configured tool is truly available. The current test sends the first tool instruction after run/socket creation but records neither the redacted live descriptor/session tool list nor `autobyteus_agent_tools` startup status/order. Its model-generated refusal therefore cannot distinguish missing materialization, MCP startup race/failure, or model-level non-invocation.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: retain `LIVE-002` as a valid acceptance scenario, but require API/E2E to add bounded readiness/exposure diagnostics and rerun. A delay alone is not acceptable if it masks a production startup race. Only deterministic same-thread evidence of absent/failed exposure should reopen implementation ownership.
+
+## Review Scorecard (Implementation Review Round 2 — Not Rescored In Failure-Origin Round 3)
+
+The round 2 implementation scorecard is retained below as history and is unchanged. Per the failure-origin workflow, round 3 does not repeat or rescore the full source audit.
+
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95`
+- Score calculation note: simple average of the ten category scores, rounded; every category meets the clean-pass target.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Provider, local action, generic live, persistence, and selection spines remain concrete and traceable. | Event-level status semantics were not followed far enough through listener dispatch in implementation. | Add the status-consumer lifecycle to regression proof. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Tracker state and governing converter construction/order are correctly separated; no boundary bypass exists. | The governing converter applies one boundary-derived status policy too broadly. | Keep ownership, but make reasoning-event status semantics explicit at that owner. |
-| `3` | `API / Interface / Query / Command Clarity` | 8.5 | Action identities and minimal payloads are clear. | `createEvent(codexEventName, ...)` carries implicit lifecycle-status semantics unsuitable for prefixed reasoning events. | Provide an explicit neutral construction/override contract and focused assertions. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | All production changes remain in the Codex event adapter and established files. | Two governing files are near the hard line threshold, and the status-policy coupling is locally easy to miss. | Correct without adding parallel authority; keep source below thresholds. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | One tight discriminated union replaces duplicated update/clear shapes. | No material structural weakness beyond the event-status mapping defect. | Preserve the union and minimal end data. |
-| `6` | `Naming Quality and Local Readability` | 9.3 | Lifecycle and boundary operations are clearly named; tests are navigable. | The general name `createEvent` hides boundary status derivation from callers. | Make neutral-versus-boundary status intent visible in API or call shape. |
-| `7` | `API/E2E Readiness` | 7.8 | Focused suites and guards pass, and broad downstream scenarios are identified. | A supported lifecycle defect remains, and committed diff hygiene fails. | Resolve `CR-001`/`CR-002`, rerun focused checks, and return through source review. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.6 | Identity, exactly-once closure, ordering, retention, and persistence are largely correct. | Reachable error/turn closes emit status-bearing segment ends; error observation can lose the real error message. | Ensure reasoning lifecycle events are neutral and test sequential downstream consequences. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | Old update/void-clear APIs are removed atomically; no migration or compatibility path is added. | No substantive weakness. | Preserve clean-cut replacement. |
-| `10` | `Cleanup Completeness` | 8.8 | Production cleanup is complete and the worktree was clean at handoff. | Committed typecheck evidence contains trailing whitespace, so `git diff --check` fails. | Remove the whitespace and refresh evidence/handoff accurately. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | All four reviewed spines remain concrete and verified through downstream consequences. | Broad live transport remains unexecuted at this gate. | API/E2E should exercise the realistic standalone/team paths. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | State, construction, classification, generic consumption, and persistence owners remain distinct. | No material gap. | Preserve the governing converter seam. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Minimal actions/payloads and explicit private status override clearly separate reasoning from boundary semantics. | The private general constructor still requires careful call-site intent. | Retain focused neutral/boundary assertions. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | Change stays at the first faulty provider boundary and nearest tests. | Governing converter is close to the 500-line limit. | Avoid unrelated growth; split only if a real responsibility separates. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | One tight discriminated union and minimal generic end contract serve all closure paths. | No material gap. | Preserve this model. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | Lifecycle and status intent are readable and localized. | Fourth-argument status override is compact rather than self-describing at every call. | Tests and nearby method naming should continue documenting intent. |
+| `7` | `API/E2E Readiness` | 9.3 | Independent focused suites/guards/hygiene pass and broader scenarios are well identified. | Live transport/selection remains downstream-owned. | Execute coverage plan in API/E2E. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 | Exactly-once closure, order, neutral completion, actual boundary status, retention, and error-message observation are proven. | Physical external-runtime execution remains outstanding. | Validate realistic provider/transport runs downstream. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | Old APIs are removed atomically; no migration or compatibility path exists. | No material gap. | Preserve clean-cut target. |
+| `10` | `Cleanup Completeness` | 9.6 | Obsolete APIs are absent; worktree arrived clean; both reviewed ranges pass diff hygiene. | Ticket artifacts remain intentionally in progress. | Delivery owns final documentation/finalization later. |
 
 ## Findings
 
-### `CR-001` — Prefixed reasoning lifecycle events inherit the closing boundary's run-status hint
+### `CR-003` — `LIVE-002` does not directly establish that the configured tool was absent
 
-- Severity: `High`
-- Classification: `Local Fix`
-- Affected requirements/behavior: `REQ-003`, `REQ-005`; `AC-004`; `BEH-003`, `BEH-004`; `MP-CR-001`, `MP-CR-002`.
-- Source evidence: `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts:290-306` maps lifecycle actions through `createEvent`, and lines `340-358` derive every created event's `statusHint` solely from `codexEventName`. Turn/error sub-converters pass the closing boundary name when requesting prefixed ends.
-- Executable evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-event-monitor-tool-render-flicker/tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/code-review-status-hint-probe-20260722.txt` records `SEGMENT_END/IDLE` before `TURN_COMPLETED`, `SEGMENT_END/ACTIVE` before `TURN_STARTED`, and `SEGMENT_END/ERROR` before the actual error outputs.
-- Downstream consequence: `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts:165-188` treats the first `ERROR` hint as terminal and extracts the error from that event's payload. Because the end payload is intentionally minimal, the observed failure gets `errorMessage: null` and the later actual error is ignored. `AgentRun`, command coordination, and compaction output also consume hints on every sequentially dispatched event.
-- Required action: make emitted reasoning lifecycle actions status-neutral (`statusHint: null`) without altering the actual user/tool/turn/error boundary events' existing hints or event order. Add focused converter assertions for `ERROR`, `TURN_COMPLETED`, and `TURN_STARTED`; prove the end is neutral and the actual boundary outputs retain `ERROR`, `IDLE`, and `ACTIVE`. Add the smallest downstream regression needed to prove terminal error observation retains the actual error message rather than terminalizing on the preceding end.
-- Why proportionate: one governing converter mapping and focused tests own the defect; requirements and reviewed structure remain sufficient.
+- Severity: Medium — blocks an API/E2E result, but does not presently identify a production-source defect.
+- Affected behavior/contract: `MP-LIVE-002`; `REQ-001`–`REQ-004`, `REQ-007`; `AC-002`–`AC-004`, `AC-006`.
+- Evidence: both live runs timed out waiting for `send_message_to` and the model emitted a refusal. Neither log records the same sender thread's redacted Agent Tools MCP descriptor, authenticated `tools/list`, `mcpServer/startupStatus/updated` result for `autobyteus_agent_tools`, or `mcp/startupComplete` ordering. The unchanged production path deterministically materializes `enabled_tools: ["send_message_to"]`; MCP route/catalog coverage passes; the focused-team live path uses the same materializer and succeeds. The ticket source diff does not touch configured-tool exposure, session creation, materialization, thread startup, or routing. The failing streams themselves directly pass the changed reasoning content/end/text ordering.
+- Failure-origin decision: API/E2E execution/report evidence gap. Model refusal is not a deterministic tool-exposure probe and cannot by itself assign the failure to reviewed implementation source.
+- Required action: instrument the bounded live standalone execution so it proves, for the same sender thread and before the first tool-directed turn, (1) the redacted descriptor/config enables `send_message_to`, (2) the authenticated session lists it, and (3) App Server MCP startup reaches `ready`/complete or records a concrete failure with ordering. Then rerun `LIVE-002`. Do not convert an unverified readiness race into an arbitrary sleep. If deterministic evidence shows the product thread lacks or fails the configured tool, return the exact evidence through code review for source-owner classification; otherwise correct the model/prompt/execution validity decision and rerun API/E2E.
 
-### `CR-002` — Committed implementation evidence fails diff hygiene
-
-- Severity: `Low`
-- Classification: `Local Fix`
-- Affected contract: implementation packaging/diff hygiene.
-- Evidence: `git diff --check 965f97685c08569a98186b2a894243c0b3f602d3..be527c762d12a34fea415e64501d845ea45f4300` reports trailing whitespace at `tickets/in-progress/agent-event-monitor-tool-render-flicker/evidence/implementation/web-typecheck-20260722.txt:351`. The independent check output is retained in `code-review-focused-checks-20260722.txt`.
-- Required action: remove the trailing whitespace from the committed evidence, rerun `git diff --check` across the reviewed range, and update the implementation handoff/check evidence with the authoritative replacement commit(s).
+`CR-001` and `CR-002` remain resolved; the round 2 implementation-source pass is not reopened by the present failure evidence.
 
 ## Classification
 
-- Latest classification: `Local Fix`
-- Basis: both findings are bounded implementation/packaging defects. No requirement, behavior map, owner allocation, or reviewed architecture revision is needed.
+`Local Fix — API/E2E execution/report problem`
 
 ## Recommended Recipient
 
-- `implementation_engineer`
-- After correction: return the cumulative package through implementation-source review before API/E2E.
+- `api_e2e_engineer`
+- Add deterministic same-thread MCP exposure/readiness evidence for `LIVE-002`, rerun the scenario and affected API/E2E set, and return only after a defensible `Pass` or a source-attributable failure. The two durable fixture updates remain pending proportional test-code review until execution passes.
 
 ## Residual Risks
 
-- Repository-wide typecheck remains baseline-blocked as already documented; source build plus focused transforms/tests are the usable implementation evidence.
-- Broader standalone/team transport execution and live selection remain API/E2E-owned after source review passes.
-- The unchanged defensive 128-turn capacity guard remains excluded by approved `MP-CAP-001` and should not gain new lifecycle machinery.
+- Real standalone configured-tool invocation remains unapproved until `LIVE-002` distinguishes MCP materialization/startup from model choice.
+- A genuine pre-existing standalone MCP startup/materialization defect remains possible. The present evidence is insufficient to decide that question; a simple delay could hide rather than resolve it.
+- The two API/E2E-owned stale fixture updates are not yet proportionally reviewed because the execution result is `Fail`.
+- Repository-wide typecheck remains baseline-blocked as documented; source build and focused transforms/tests remain the usable implementation evidence.
+- The unchanged defensive 128-turn capacity guard remains outside the supported premise and must not gain speculative machinery.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Fail` — API/E2E cannot advance; the prior implementation-source pass remains intact.
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `8.9/10` (`89/100`); API/interface clarity, API/E2E readiness, runtime correctness, and cleanup are below the clean-pass target.
-- Failure Origin (when applicable): `N/A — implementation review`
-- Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: resolve `CR-001` and `CR-002`; repeat source review; do not advance the current package to API/E2E.
+- Score Summary: implementation review round 2 remains `9.5/10` (`95/100`); not rescored in this focused round.
+- Failure Origin (when applicable): `API/E2E execution/report evidence gap — LIVE-002 infers tool absence from model refusal without proving same-thread MCP exposure/readiness.`
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: keep `LIVE-002` because the standalone configured-tool contract is reachable. Instrument and rerun it; do not route reviewed reasoning-lifecycle source for rework unless deterministic live-thread evidence identifies a source defect.
