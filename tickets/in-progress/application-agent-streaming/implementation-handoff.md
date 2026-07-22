@@ -12,7 +12,8 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/socratic-math-live-journey.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/design-review-report.md`
 - Implementation-source review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-agent-streaming/tickets/in-progress/application-agent-streaming/code-review-report.md`
-- Current expanded-scope implementation source/test commit: `4732df357706a9dfa1798193ed02162cae715b13`
+- Current expanded-scope implementation source/test commit: `6896bd413f62ec887884a579648ed83c71cb59a5`
+- Round-11 initial expanded-scope source/test commit: `4732df357706a9dfa1798193ed02162cae715b13`
 - Round-11 reviewed source base: `69fae2e424a708fe9a0d038077346d5b95b41df6`
 - Prior deterministic-framework implementation source/test commit: `b9fb82e23b7a94131e45627907bb7d5ff45c5bb8`
 - CR-001–CR-003 source-fix commit: `5e824f8de8fea67ae8da820b7f5134b78923907e`
@@ -30,6 +31,14 @@
 - Added the mounted Socratic standard connection journey: listeners register immediately, READY precedes one stored-problem input, only increasing provider-neutral TEXT deltas / publish-tool lifecycle / completion state enter live UI state, and artifact-notification refresh clears the draft in favor of the existing durable transcript.
 - Added deterministic listener/cancellation/input/failure/durable-convergence tests, target/GraphQL tests, DOM-rendering tests, exact launch/config assertions, and no-initial-input assertions. Split the application-specific live session into `socratic-tutor-session.js` so changed production files remain below the source-size and changed-line pressure guardrails.
 - Regenerated only through the Socratic build owner: runtime backend/UI, backend SDK vendor, generated GraphQL client, importable source/runtime mirrors, and agent config. Source/generated comparisons and a second-build hash check passed.
+
+### Implementation-Source Review Round 11 Resolution
+
+- `CR-005` resolved with one Socratic-runtime lifecycle/selection generation. Selection replacement and disposal invalidate every captured operation; all post-await detail/list mutations, connection attempts, errors, session closes, and refreshes first prove that their originating generation and lesson are still current.
+- Rapid selection now closes the prior tutor session immediately and prevents an out-of-order prior lesson response from overwriting or reconnecting after the replacement. Pending start, follow-up, hint, close, notification refresh, manual refresh, and initial refresh work suppress stale/disposed completions instead of mutating the replacement session.
+- Added mounted JSDOM coverage for the exact reviewer reproduction (dispose during a deferred initial lessons request), out-of-order `A -> B` detail resolution, a stale follow-up error, and a stale lesson-close completion. The tests prove no post-dispose connection, latest-selection retention, no stale error presentation, no replacement-session close, and no stale refresh.
+- Regenerated the runnable UI and both importable-package runtime mirrors through the existing Socratic build owner. All four runtime files are byte-identical and a second build preserved the combined SHA-256 input hash.
+- CR-005 source/test commit: `6896bd413f62ec887884a579648ed83c71cb59a5`.
 
 ### Preserved Standard Framework Baseline
 
@@ -79,7 +88,7 @@
 | `DS-014` | Worker observer activation is atomic. | observer registry + activation barrier + handler context factory | Host PENDING-to-ACTIVE ordering and pending cancellation implemented. |
 | `DS-015` | All reachable terminal causes converge before fan-out. | terminal transition service used by host, observer, and recovery services | Keyed serialization; store/journal then one terminal signal. |
 | `DS-016` | Custom socket sessions correlate and clean up independently. | Gateway and worker WebSocket session services + JSON-line protocol | Ordered bounded delivery and scope-local failure cleanup. |
-| `DS-017` | The real Socratic UI starts without input, connects to its selected tutor, sends after READY, renders safe live progress, and converges on the durable artifact transcript. | backend SDK launch helper -> Socratic runtime/read/GraphQL -> `applicationClient.agentCommunication` -> Socratic live session/renderer -> existing artifact notification refresh | Implemented deterministically. The real mounted Codex run required by `AC-018` remains downstream API/E2E work. |
+| `DS-017` | The real Socratic UI starts without input, connects to its selected tutor, sends after READY, renders safe live progress, and converges on the durable artifact transcript. | backend SDK launch helper -> Socratic runtime lifecycle/selection generation -> read/GraphQL -> `applicationClient.agentCommunication` -> Socratic live session/renderer -> existing artifact notification refresh | Implemented deterministically, including stale/disposed async completion suppression. The real mounted Codex run required by `AC-018` remains downstream API/E2E work. |
 
 ## Key Files Or Areas
 
@@ -90,7 +99,7 @@
 - Backend observation/custom sockets: `src/application-engine/**`, `src/application-backend-api-gateway/websockets/**`, `src/api/websocket/application-backends.ts`.
 - Strict compatibility chain: contracts manifests, server bundle parsers/definition loader, devkit config/validators/templates, and both built-in apps.
 - Expanded Socratic source: `autobyteus-application-backend-sdk/src/launch-profile.ts`, `applications/socratic-math-teacher/backend-src/{domain,repositories,services}/**`, `api/graphql/schema.graphql`, `frontend-src/socratic-{runtime,tutor-session,renderer}.js`, `frontend-src/styles.css`, and exact tutor `agent-config.json`.
-- Expanded deterministic coverage: `autobyteus-application-backend-sdk/tests/launch-profile.test.ts` and the three focused Socratic server unit files plus the existing launch-correlation suite.
+- Expanded deterministic coverage: `autobyteus-application-backend-sdk/tests/launch-profile.test.ts`, four focused Socratic server unit files including `socratic-runtime-lifecycle.test.ts`, plus the existing launch-correlation and GraphQL executor suites.
 
 ## Important Assumptions
 
@@ -104,7 +113,7 @@
 
 - `AC-018` is not satisfied by these implementation checks. API/E2E must still preflight the exact Codex model/login, import and mount a fresh generated Socratic package, execute one bounded real turn, verify effective config/live/durable/cleanup evidence, apply the approved one-clean-retry classification, and recalculate confidence.
 - Rendered self-validation used a deterministic hosted-application-state preview rather than the actual imported desktop mount. Real SDK/socket/provider interaction and mounted browser behavior remain independently unverified here.
-- The worktree intentionally remains dirty only in upstream/design/delivery-owned ticket artifacts and logs that predated this implementation. They were neither staged nor committed; source and generated implementation paths are clean at commit `4732df357706a9dfa1798193ed02162cae715b13`.
+- The worktree intentionally remains dirty only in upstream/design/review/delivery-owned ticket artifacts and logs. They were neither staged nor committed; source, tests, and generated implementation paths are clean at commit `6896bd413f62ec887884a579648ed83c71cb59a5`.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -123,7 +132,7 @@
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: expanded-scope changed production sources are at or below `438` effective non-empty lines. The new application-specific tutor session is `198` effective lines, and `socratic-runtime.js` is `219`; the split avoided both the `>500` source limit and `>220` changed-line pressure without introducing a generic framework abstraction. No compatibility alias, replay path, custom/raw/native socket, migration, auth/mobile surface, or fallback was added.
+- Notes: expanded-scope changed production sources remain at or below `438` effective non-empty lines. The application-specific tutor session is `198` effective lines, and CR-005 leaves `socratic-runtime.js` at `311`; its local-fix delta is `160` changed lines, below the `>220` changed-line pressure signal. The existing split continues to avoid the `>500` source limit without introducing a generic framework abstraction. No compatibility alias, replay path, custom/raw/native socket, migration, auth/mobile surface, or fallback was added.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -147,6 +156,15 @@
   - custom WebSocket frame `1 MiB`; Gateway inbound FIFO `64`; early outbound FIFO `64`; worker outbound FIFO `64`; network buffered amount `2 MiB`.
 
 ## Local Implementation Checks Run
+
+### CR-005 Lifecycle Local Fix
+
+- `autobyteus-server-ts`: `pnpm exec vitest run --no-watch` across launch correlation, GraphQL executors, target projection, tutor session, tutor renderer, and the new mounted runtime lifecycle suite — `6 files / 25 tests` passed.
+- Mounted runtime lifecycle suite alone — `1 file / 4 tests` passed for dispose-during-refresh, out-of-order `A -> B` selection, stale follow-up failure, and stale close completion.
+- Socratic Math Teacher: `pnpm build` passed twice through the existing owner. Source/UI/importable runtime files are byte-identical; pre/post second-build combined SHA-256 was `983eede22504aafab23b5a859b072f58511b76d03f414e3ef72994cae254ebe5`.
+- `autobyteus-server-ts`: `pnpm build` passed, including shared-package builds, Prisma generation, TypeScript build, and built-in-agent bootstrap smoke.
+- JavaScript syntax checks for all four regenerated Socratic runtime mirrors passed; `git diff --check` passed.
+- `autobyteus-server-ts`: a fresh `pnpm typecheck` attempt did not reach semantic checking because the repository's current `tsconfig.json` combines `rootDir: src` with `include: tests`, producing existing `TS6059` errors for repository-wide test files outside `src`. This local-fix source is JavaScript, its mounted TypeScript test executes successfully under Vitest, and the server build's production TypeScript compile passed. No unrelated tsconfig change was made.
 
 ### Round-11 Expanded Scope
 
@@ -176,13 +194,13 @@
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: mounted Socratic Math Teacher lesson composer, lesson detail, focused live tutor status/draft/tool/completion region, durable transcript convergence, and selection/unload cleanup.
+- Affected surfaces / journeys: mounted Socratic Math Teacher lesson composer, lesson detail, focused live tutor status/draft/tool/completion region, durable transcript convergence, and selection/unload cleanup. CR-005 changes lifecycle sequencing only; it adds no styling or visual state.
 - Approved UI/UX, interaction, requirement, or design references: `REQ-018`, `AC-018`, `DS-017`, and `socratic-math-live-journey.md` sections 3–5.
 - Existing design system, shared components, and adjacent product surfaces reviewed: current Socratic card, badge, workspace status, lesson list/detail, transcript, action, spacing, color, and responsive patterns; no new framework-wide chat component was introduced.
 - Project development / preview instructions and rendered surface used: the application has a source-first build but no standalone hostless preview. I rendered the actual Socratic shell/detail renderer and stylesheet with deterministic hosted state, then inspected it directly in headless Chrome; Vitest/JSDOM exercised the renderer and application-specific session state machine.
-- States, layouts, viewports, and interactions inspected: streaming state at `1440x1200` and `720x1200`; connecting/ready/streaming/saved/failed/closed transition outputs and one-send/listener cleanup through deterministic tests; saved-state draft clearing and accessible `aria-live="polite"` through DOM tests.
+- States, layouts, viewports, and interactions inspected: streaming state at `1440x1200` and `720x1200`; connecting/ready/streaming/saved/failed/closed transition outputs and one-send/listener cleanup through deterministic tests; saved-state draft clearing and accessible `aria-live="polite"` through DOM tests; mounted dispose-during-load and rapid-selection/stale-operation interactions through the new JSDOM lifecycle suite.
 - Visual or interaction issues found and corrected: added a distinct but design-consistent live tutor panel, concise safe publication/completion cues, disabled duplicate start controls during connection/input acceptance, responsive wrapping/one-column behavior, and root-scoped detail event binding.
-- Supporting evidence and remaining unverified states or limitations: focused renderer/session tests passed (`5` tests across their two files). This was not a real imported desktop mount or live provider run; the exact mounted Codex journey, natural model output variation, and real artifact notification timing remain downstream `AC-018` work.
+- Supporting evidence and remaining unverified states or limitations: focused renderer/session tests passed (`5` tests across their two files), and mounted runtime lifecycle tests passed (`4/4`). This was not a real imported desktop mount or live provider run; the exact mounted Codex journey, natural model output variation, and real artifact notification timing remain downstream `AC-018` work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
