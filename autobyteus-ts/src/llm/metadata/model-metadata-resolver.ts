@@ -8,6 +8,16 @@ export interface ResolvedModelMetadata {
   maxOutputTokens: number | null;
 }
 
+export enum ModelMetadataProvenance {
+  LIVE = 'LIVE',
+  CURATED_FALLBACK = 'CURATED_FALLBACK',
+  CURATED_ONLY = 'CURATED_ONLY',
+}
+
+export interface ModelMetadataResolution extends ResolvedModelMetadata {
+  provenance: ModelMetadataProvenance;
+}
+
 export type PartialResolvedModelMetadata = Partial<ResolvedModelMetadata>;
 
 export interface SupportedModelMetadataLookup {
@@ -20,6 +30,17 @@ export interface SupportedModelMetadataLookup {
 export interface ProviderModelMetadataProvider {
   loadMetadata(): Promise<Map<string, PartialResolvedModelMetadata>>;
 }
+
+export type ProviderModelMetadataStrategy =
+  | {
+      kind: 'LIVE_WITH_CURATED_FALLBACK';
+      provider: ProviderModelMetadataProvider | null;
+    }
+  | { kind: 'CURATED_ONLY' };
+
+export type ProviderModelMetadataStrategies = Partial<
+  Record<LLMProvider, ProviderModelMetadataStrategy>
+>;
 
 interface ModelMetadataResolverOptions {
   providerLoadTimeoutMs?: number;
@@ -90,31 +111,46 @@ const resolveLookupKeys = ({ name, value, canonicalName }: SupportedModelMetadat
 
 export class ModelMetadataResolver {
   private readonly providerCache = new Map<LLMProvider, Promise<Map<string, PartialResolvedModelMetadata>>>();
-  private readonly providerResolvers: Partial<Record<LLMProvider, ProviderModelMetadataProvider>>;
+  private readonly providerStrategies: ProviderModelMetadataStrategies;
   private readonly providerLoadTimeoutMs: number;
 
   constructor(
-    providerResolvers?: Partial<Record<LLMProvider, ProviderModelMetadataProvider>>,
+    providerStrategies?: ProviderModelMetadataStrategies,
     options?: ModelMetadataResolverOptions
   ) {
-    this.providerResolvers = providerResolvers ?? {};
+    this.providerStrategies = providerStrategies ?? {};
     this.providerLoadTimeoutMs = normalizeTimeoutMs(options?.providerLoadTimeoutMs);
   }
 
-  async resolve(lookup: SupportedModelMetadataLookup): Promise<ResolvedModelMetadata> {
+  async resolve(lookup: SupportedModelMetadataLookup): Promise<ModelMetadataResolution> {
     const curatedMetadata = getCuratedModelMetadata(lookup);
-    const liveMetadata = await this.getResolvedProviderMetadata(lookup.provider);
+    const strategy = this.providerStrategies[lookup.provider] ?? { kind: 'CURATED_ONLY' };
+    if (strategy.kind === 'CURATED_ONLY') {
+      return {
+        ...mergeMetadata(null, curatedMetadata ?? UNKNOWN_MODEL_METADATA),
+        provenance: ModelMetadataProvenance.CURATED_ONLY,
+      };
+    }
+
+    const liveMetadata = await this.getResolvedProviderMetadata(lookup.provider, strategy.provider);
     const matchedLiveMetadata = this.findMetadata(liveMetadata, lookup);
 
-    return mergeMetadata(matchedLiveMetadata, curatedMetadata ?? UNKNOWN_MODEL_METADATA);
+    return {
+      ...mergeMetadata(matchedLiveMetadata, curatedMetadata ?? UNKNOWN_MODEL_METADATA),
+      provenance: matchedLiveMetadata
+        ? ModelMetadataProvenance.LIVE
+        : ModelMetadataProvenance.CURATED_FALLBACK,
+    };
   }
 
-  private async getResolvedProviderMetadata(provider: LLMProvider): Promise<Map<string, PartialResolvedModelMetadata>> {
+  private async getResolvedProviderMetadata(
+    provider: LLMProvider,
+    metadataProvider: ProviderModelMetadataProvider | null,
+  ): Promise<Map<string, PartialResolvedModelMetadata>> {
     let pending = this.providerCache.get(provider);
     if (!pending) {
-      const resolver = this.providerResolvers[provider];
-      pending = resolver
-        ? this.loadMetadataWithTimeout(provider, resolver).catch((error: unknown) => {
+      pending = metadataProvider
+        ? this.loadMetadataWithTimeout(provider, metadataProvider).catch((error: unknown) => {
             const message = error instanceof Error ? error.message : String(error);
             console.warn(`Failed to resolve model metadata for provider ${provider}: ${message}`);
             return new Map<string, PartialResolvedModelMetadata>();

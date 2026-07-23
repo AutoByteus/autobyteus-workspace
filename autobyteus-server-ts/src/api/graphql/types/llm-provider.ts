@@ -1,6 +1,17 @@
-import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver, InputType } from 'type-graphql';
+import {
+  Arg,
+  Field,
+  InputType,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  registerEnumType,
+  Resolver,
+} from 'type-graphql';
 import { GraphQLJSON } from 'graphql-scalars';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
+import { ModelMetadataProvenance } from 'autobyteus-ts/llm/metadata/model-metadata-resolver.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
 import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
@@ -25,6 +36,8 @@ const GEMINI_SETUP_MODES = {
 } as const;
 
 type GeminiSetupMode = (typeof GEMINI_SETUP_MODES)[keyof typeof GEMINI_SETUP_MODES];
+
+registerEnumType(ModelMetadataProvenance, { name: 'ModelMetadataProvenance' });
 
 @ObjectType()
 class ModelDetail {
@@ -72,6 +85,9 @@ class ModelDetail {
 
   @Field(() => Int, { nullable: true })
   maxOutputTokens?: number | null;
+
+  @Field(() => ModelMetadataProvenance, { nullable: true })
+  metadataProvenance?: ModelMetadataProvenance | null;
 }
 
 @ObjectType()
@@ -200,6 +216,7 @@ const mapLlmModel = (model: ModelInfo): ModelDetail => ({
   activeContextTokens: model.active_context_tokens ?? null,
   maxInputTokens: model.max_input_tokens ?? null,
   maxOutputTokens: model.max_output_tokens ?? null,
+  metadataProvenance: model.metadata_provenance ?? null,
 });
 
 const mapMultimediaModel = (
@@ -219,6 +236,7 @@ const mapMultimediaModel = (
   activeContextTokens: null,
   maxInputTokens: null,
   maxOutputTokens: null,
+  metadataProvenance: null,
 });
 
 const sortModels = (models: ModelDetail[]): ModelDetail[] =>

@@ -46,6 +46,7 @@ const openAiRow = {
       activeContextTokens: 32768,
       maxInputTokens: null,
       maxOutputTokens: null,
+      metadataProvenance: 'CURATED_ONLY' as const,
     },
   ],
 }
@@ -178,6 +179,7 @@ describe('llmProviderConfig store', () => {
       providerType: 'OPENAI',
       maxContextTokens: 128000,
       activeContextTokens: 32768,
+      metadataProvenance: 'CURATED_ONLY',
     }))
     expect(store.videoModels).toEqual(['gemini-omni-flash-preview'])
   })

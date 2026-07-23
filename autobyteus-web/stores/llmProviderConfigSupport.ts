@@ -1,4 +1,5 @@
 import type { LLMProvider } from '~/types/llm'
+import type { ModelMetadataProvenance } from '~/generated/graphql'
 
 export interface CredentialStatus {
   backendHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE'
@@ -38,6 +39,7 @@ export interface ModelInfo {
   activeContextTokens?: number | null
   maxInputTokens?: number | null
   maxOutputTokens?: number | null
+  metadataProvenance?: ModelMetadataProvenance | null
 }
 
 export interface ProviderWithModels {

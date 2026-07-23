@@ -180,6 +180,7 @@ describe('LlmProviderResolver', () => {
             active_context_tokens: null,
             max_input_tokens: null,
             max_output_tokens: null,
+            metadata_provenance: 'CURATED_ONLY',
           }),
         ],
       },
@@ -201,6 +202,7 @@ describe('LlmProviderResolver', () => {
       providerName: 'Internal Gateway',
       providerType: 'OPENAI_COMPATIBLE',
       description: 'Model A · Efficient for routine tasks',
+      metadataProvenance: 'CURATED_ONLY',
     }));
   });
 

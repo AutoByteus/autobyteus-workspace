@@ -1135,6 +1135,7 @@ export type ModelDetail = {
   maxContextTokens?: Maybe<Scalars['Int']['output']>;
   maxInputTokens?: Maybe<Scalars['Int']['output']>;
   maxOutputTokens?: Maybe<Scalars['Int']['output']>;
+  metadataProvenance?: Maybe<ModelMetadataProvenance>;
   modelIdentifier: Scalars['String']['output'];
   name: Scalars['String']['output'];
   providerId: Scalars['String']['output'];
@@ -1143,6 +1144,12 @@ export type ModelDetail = {
   runtime: Scalars['String']['output'];
   value: Scalars['String']['output'];
 };
+
+export enum ModelMetadataProvenance {
+  CuratedFallback = 'CURATED_FALLBACK',
+  CuratedOnly = 'CURATED_ONLY',
+  Live = 'LIVE'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -3361,7 +3368,7 @@ export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
 }>;
 
 
-export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -7035,6 +7042,7 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       activeContextTokens
       maxInputTokens
       maxOutputTokens
+      metadataProvenance
     }
   }
   availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {

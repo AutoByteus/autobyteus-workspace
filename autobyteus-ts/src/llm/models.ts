@@ -8,6 +8,7 @@ import type {
   LLMAuthenticationRequirement,
   LLMConstructionContext,
 } from './llm-construction-context.js';
+import type { ModelMetadataProvenance } from './metadata/model-metadata-resolver.js';
 
 export interface LLMModelOptions {
   name: string;
@@ -48,6 +49,7 @@ export interface ModelInfo {
   active_context_tokens: number | null;
   max_input_tokens: number | null;
   max_output_tokens: number | null;
+  metadata_provenance?: ModelMetadataProvenance;
 }
 
 export class LLMModel {
