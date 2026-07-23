@@ -50,9 +50,10 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   isLoadingModels: ref(false),
   isReloadingModels: ref(false),
   geminiSetup: ref({
-    mode: 'AI_STUDIO',
-    geminiCredentialStatus: missingCredentialStatus,
-    vertexCredentialStatus: missingCredentialStatus,
+    effectiveMode: 'UNCONFIGURED',
+    aiStudioCredentialStatus: missingCredentialStatus,
+    vertexExpressCredentialStatus: missingCredentialStatus,
+    vertexProjectStatus: 'MISSING',
     vertexProject: null,
     vertexLocation: null,
   }),
@@ -111,7 +112,8 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   selectProvider: vi.fn(),
   reloadAllModels: vi.fn(),
   reloadSelectedProvider: vi.fn(),
-  saveGeminiSetup: vi.fn(),
+  saveGeminiConfigurationOption: vi.fn(),
+  removeGeminiConfigurationOption: vi.fn(),
   saveProviderApiKey: vi.fn(),
   removeProviderApiKey: vi.fn(),
   updateCustomProviderDraft: vi.fn(),
@@ -130,7 +132,18 @@ const mountComponent = async (overrides: Record<string, any> = {}) => {
         $t: (key: string) => translations[key] ?? key,
       },
       stubs: {
-        GeminiSetupForm: { template: '<div data-testid="gemini-form-stub">gemini form</div>' },
+        GeminiSetupForm: {
+          name: 'GeminiSetupForm',
+          props: ['geminiSetup', 'saving', 'removing', 'disabled'],
+          emits: ['save', 'remove'],
+          template: `
+            <div data-testid="gemini-form-stub">
+              gemini form
+              <button data-testid="gemini-save-stub" @click="$emit('save', { option: 'AI_STUDIO', geminiApiKey: 'synthetic-key' })">save</button>
+              <button data-testid="gemini-remove-stub" @click="$emit('remove', 'VERTEX_EXPRESS')">remove</button>
+            </div>
+          `,
+        },
         ProviderApiKeyEditor: {
           name: 'ProviderApiKeyEditor',
           template: '<div data-testid="api-key-editor-stub">api key editor</div>',
@@ -260,5 +273,15 @@ describe('ProviderAPIKeyManager', () => {
 
     expect(wrapper.find('[data-testid="gemini-form-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="api-key-editor-stub"]').exists()).toBe(false)
+
+    await wrapper.get('[data-testid="gemini-save-stub"]').trigger('click')
+    await wrapper.get('[data-testid="gemini-remove-stub"]').trigger('click')
+    expect(runtimeState.value.saveGeminiConfigurationOption).toHaveBeenCalledWith({
+      option: 'AI_STUDIO',
+      geminiApiKey: 'synthetic-key',
+    })
+    expect(runtimeState.value.removeGeminiConfigurationOption).toHaveBeenCalledWith(
+      'VERTEX_EXPRESS',
+    )
   })
 })

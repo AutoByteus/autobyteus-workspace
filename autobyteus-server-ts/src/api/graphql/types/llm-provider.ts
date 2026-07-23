@@ -26,18 +26,44 @@ import {
   getLlmProviderService,
   type LlmProviderService,
 } from '../../../llm-management/llm-providers/services/llm-provider-service.js';
+import type {
+  GeminiConfigurationOption,
+  GeminiConfigurationState,
+  GeminiEffectiveMode,
+} from '../../../llm-management/services/gemini-configuration-service.js';
 import { getModelCatalogService } from '../../../llm-management/services/model-catalog-service.js';
 import type { CredentialStatusProjection } from '../../../llm-management/llm-providers/domain/models.js';
 
-const GEMINI_SETUP_COMMANDS = {
-  AI_STUDIO: 'AI_STUDIO',
-  VERTEX_EXPRESS: 'VERTEX_EXPRESS',
-  VERTEX_PROJECT: 'VERTEX_PROJECT',
-} as const;
+enum GeminiConfigurationOptionGraphql {
+  AI_STUDIO = 'AI_STUDIO',
+  VERTEX_EXPRESS = 'VERTEX_EXPRESS',
+  VERTEX_PROJECT = 'VERTEX_PROJECT',
+}
 
-type GeminiSetupCommand = (typeof GEMINI_SETUP_COMMANDS)[keyof typeof GEMINI_SETUP_COMMANDS];
+enum GeminiEffectiveModeGraphql {
+  VERTEX_EXPRESS = 'VERTEX_EXPRESS',
+  VERTEX_PROJECT = 'VERTEX_PROJECT',
+  AI_STUDIO = 'AI_STUDIO',
+  UNCONFIGURED = 'UNCONFIGURED',
+}
+
+enum GeminiConfigurationOperationGraphql {
+  SAVED = 'SAVED',
+  REMOVED = 'REMOVED',
+}
+
+enum GeminiConfigurationStateGraphql {
+  MISSING = 'MISSING',
+  CONFIGURED = 'CONFIGURED',
+}
 
 registerEnumType(ModelMetadataProvenance, { name: 'ModelMetadataProvenance' });
+registerEnumType(GeminiConfigurationOptionGraphql, { name: 'GeminiConfigurationOption' });
+registerEnumType(GeminiEffectiveModeGraphql, { name: 'GeminiEffectiveMode' });
+registerEnumType(GeminiConfigurationOperationGraphql, {
+  name: 'GeminiConfigurationOperation',
+});
+registerEnumType(GeminiConfigurationStateGraphql, { name: 'GeminiConfigurationState' });
 
 @ObjectType()
 class ModelDetail {
@@ -143,20 +169,35 @@ class ProviderWithModels {
 
 @ObjectType()
 class GeminiSetupConfig {
-  @Field(() => String)
-  mode!: GeminiSetupCommand;
+  @Field(() => GeminiEffectiveModeGraphql)
+  effectiveMode!: GeminiEffectiveMode;
 
   @Field(() => CredentialStatusObject)
-  geminiCredentialStatus!: CredentialStatusObject;
+  aiStudioCredentialStatus!: CredentialStatusObject;
 
   @Field(() => CredentialStatusObject)
-  vertexCredentialStatus!: CredentialStatusObject;
+  vertexExpressCredentialStatus!: CredentialStatusObject;
+
+  @Field(() => GeminiConfigurationStateGraphql)
+  vertexProjectStatus!: GeminiConfigurationState;
 
   @Field(() => String, { nullable: true })
   vertexProject!: string | null;
 
   @Field(() => String, { nullable: true })
   vertexLocation!: string | null;
+}
+
+@ObjectType()
+class GeminiConfigurationOperationResultObject {
+  @Field(() => GeminiConfigurationOperationGraphql)
+  operation!: 'SAVED' | 'REMOVED';
+
+  @Field(() => GeminiConfigurationOptionGraphql)
+  option!: GeminiConfigurationOption;
+
+  @Field(() => GeminiEffectiveModeGraphql)
+  effectiveMode!: GeminiEffectiveMode;
 }
 
 @ObjectType()
@@ -279,7 +320,7 @@ export class LlmProviderResolver {
 
   @Query(() => GeminiSetupConfig)
   async getGeminiSetupConfig(): Promise<GeminiSetupConfig> {
-    return this.llmProviderService.getGeminiCredentialStatus();
+    return this.llmProviderService.getGeminiConfigurationStatus();
   }
 
   @Query(() => [ProviderWithModels])
@@ -388,59 +429,66 @@ export class LlmProviderResolver {
     }
   }
 
-  @Mutation(() => String)
-  async setGeminiSetupConfig(
-    @Arg('mode', () => String) mode: string,
+  @Mutation(() => GeminiConfigurationOperationResultObject)
+  async saveGeminiConfigurationOption(
+    @Arg('option', () => GeminiConfigurationOptionGraphql)
+    option: GeminiConfigurationOptionGraphql,
     @Arg('geminiApiKey', () => String, { nullable: true }) geminiApiKey?: string | null,
     @Arg('vertexApiKey', () => String, { nullable: true }) vertexApiKey?: string | null,
     @Arg('vertexProject', () => String, { nullable: true }) vertexProject?: string | null,
     @Arg('vertexLocation', () => String, { nullable: true }) vertexLocation?: string | null,
-  ): Promise<string> {
+  ): Promise<GeminiConfigurationOperationResultObject> {
     try {
-      const normalizedMode = normalizeText(mode).toUpperCase();
-      if (!Object.values(GEMINI_SETUP_COMMANDS).includes(normalizedMode as GeminiSetupCommand)) {
-        throw new Error(
-          `Invalid Gemini setup mode '${mode}'. Use one of: ${Object.values(GEMINI_SETUP_COMMANDS).join(', ')}`,
-        );
-      }
+      const selectedOption = option as GeminiConfigurationOption;
 
-      const selectedMode = normalizedMode as GeminiSetupCommand;
       const normalizedGeminiApiKey = normalizeText(geminiApiKey);
       const normalizedVertexApiKey = normalizeText(vertexApiKey);
       const normalizedVertexProject = normalizeText(vertexProject);
       const normalizedVertexLocation = normalizeText(vertexLocation);
 
-      if (selectedMode === GEMINI_SETUP_COMMANDS.AI_STUDIO) {
+      if (selectedOption === GeminiConfigurationOptionGraphql.AI_STUDIO) {
         if (!normalizedGeminiApiKey) {
-          throw new Error('GEMINI_API_KEY is required for AI_STUDIO mode.');
+          throw new Error('GEMINI_API_KEY_REQUIRED');
         }
-        await this.llmProviderService.setGeminiSetup({
-          mode: selectedMode,
+        return this.llmProviderService.saveGeminiOptionConfiguration({
+          option: selectedOption,
           apiKey: normalizedGeminiApiKey,
         });
-      } else if (selectedMode === GEMINI_SETUP_COMMANDS.VERTEX_EXPRESS) {
+      }
+      if (selectedOption === GeminiConfigurationOptionGraphql.VERTEX_EXPRESS) {
         if (!normalizedVertexApiKey) {
-          throw new Error('VERTEX_AI_API_KEY is required for VERTEX_EXPRESS mode.');
+          throw new Error('VERTEX_AI_API_KEY_REQUIRED');
         }
-        await this.llmProviderService.setGeminiSetup({
-          mode: selectedMode,
+        return this.llmProviderService.saveGeminiOptionConfiguration({
+          option: selectedOption,
           apiKey: normalizedVertexApiKey,
         });
-      } else {
-        if (!normalizedVertexProject || !normalizedVertexLocation) {
-          throw new Error(
-            'Both VERTEX_AI_PROJECT and VERTEX_AI_LOCATION are required for VERTEX_PROJECT mode.',
-          );
-        }
-        await this.llmProviderService.setGeminiSetup({
-          mode: selectedMode,
-          project: normalizedVertexProject,
-          location: normalizedVertexLocation,
-        });
       }
-      return `Gemini setup for mode ${selectedMode} has been saved successfully.`;
+
+      if (!normalizedVertexProject || !normalizedVertexLocation) {
+        throw new Error('VERTEX_PROJECT_CONFIGURATION_REQUIRED');
+      }
+      return this.llmProviderService.saveGeminiOptionConfiguration({
+        option: selectedOption,
+        project: normalizedVertexProject,
+        location: normalizedVertexLocation,
+      });
     } catch {
-      return 'Error saving Gemini setup: GEMINI_SETUP_REJECTED';
+      throw new Error('GEMINI_CONFIGURATION_SAVE_REJECTED');
+    }
+  }
+
+  @Mutation(() => GeminiConfigurationOperationResultObject)
+  async removeGeminiConfigurationOption(
+    @Arg('option', () => GeminiConfigurationOptionGraphql)
+    option: GeminiConfigurationOptionGraphql,
+  ): Promise<GeminiConfigurationOperationResultObject> {
+    try {
+      return this.llmProviderService.removeGeminiOptionConfiguration(
+        option as GeminiConfigurationOption,
+      );
+    } catch {
+      throw new Error('GEMINI_CONFIGURATION_REMOVE_REJECTED');
     }
   }
 

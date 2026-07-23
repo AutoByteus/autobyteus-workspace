@@ -91,7 +91,8 @@
                   :saving="saving"
                   :removing="removing"
                   :disabled="!canWriteSelectedCredential"
-                  @save="saveGeminiSetup"
+                  @save="saveGeminiConfigurationOption"
+                  @remove="removeGeminiConfigurationOption"
                 />
                 <ProviderApiKeyEditor
                   v-else-if="selectedProviderId"
@@ -173,7 +174,8 @@ const {
   selectProvider,
   reloadAllModels,
   reloadSelectedProvider,
-  saveGeminiSetup,
+  saveGeminiConfigurationOption,
+  removeGeminiConfigurationOption,
   saveProviderApiKey,
   removeProviderApiKey,
   updateCustomProviderDraft,

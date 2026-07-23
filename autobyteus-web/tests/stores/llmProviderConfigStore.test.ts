@@ -132,9 +132,10 @@ describe('llmProviderConfig store', () => {
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         getGeminiSetupConfig: {
-          mode: 'VERTEX_PROJECT',
-          geminiCredentialStatus: missingCredentialStatus,
-          vertexCredentialStatus: missingCredentialStatus,
+          effectiveMode: 'VERTEX_PROJECT',
+          aiStudioCredentialStatus: missingCredentialStatus,
+          vertexExpressCredentialStatus: missingCredentialStatus,
+          vertexProjectStatus: 'CONFIGURED',
           vertexProject: 'project-1',
           vertexLocation: 'us-central1',
         },
@@ -147,7 +148,7 @@ describe('llmProviderConfig store', () => {
     const result = await store.fetchGeminiSetupConfig()
 
     expect(queryMock).toHaveBeenCalledTimes(1)
-    expect(result.mode).toBe('VERTEX_PROJECT')
+    expect(result.effectiveMode).toBe('VERTEX_PROJECT')
     expect(store.geminiSetup.vertexProject).toBe('project-1')
   })
 
@@ -352,21 +353,26 @@ describe('llmProviderConfig store', () => {
     expect(store.providerConfigs.provider_gateway).toBeUndefined()
   })
 
-  it('setGeminiSetupConfig saves and refreshes geminiSetup state', async () => {
+  it('saveGeminiConfigurationOption saves one option and refreshes the independent status', async () => {
     const mutateMock = vi.fn().mockResolvedValue({
       data: {
-        setGeminiSetupConfig: 'Gemini setup for mode AI_STUDIO has been saved successfully.',
+        saveGeminiConfigurationOption: {
+          operation: 'SAVED',
+          option: 'AI_STUDIO',
+          effectiveMode: 'VERTEX_EXPRESS',
+        },
       },
       errors: undefined,
     })
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         getGeminiSetupConfig: {
-          mode: 'AI_STUDIO',
-          geminiCredentialStatus: configuredCredentialStatus,
-          vertexCredentialStatus: missingCredentialStatus,
-          vertexProject: null,
-          vertexLocation: null,
+          effectiveMode: 'VERTEX_EXPRESS',
+          aiStudioCredentialStatus: configuredCredentialStatus,
+          vertexExpressCredentialStatus: configuredCredentialStatus,
+          vertexProjectStatus: 'CONFIGURED',
+          vertexProject: 'project-1',
+          vertexLocation: 'us-central1',
         },
       },
     })
@@ -377,15 +383,19 @@ describe('llmProviderConfig store', () => {
     } as any)
 
     const store = useLLMProviderConfigStore()
-    const success = await store.setGeminiSetupConfig({
-      mode: 'AI_STUDIO',
+    const result = await store.saveGeminiConfigurationOption({
+      option: 'AI_STUDIO',
       geminiApiKey: 'gemini-key',
     })
 
-    expect(success).toBe(true)
+    expect(result).toEqual({
+      operation: 'SAVED',
+      option: 'AI_STUDIO',
+      effectiveMode: 'VERTEX_EXPRESS',
+    })
     expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
       variables: {
-        mode: 'AI_STUDIO',
+        option: 'AI_STUDIO',
         geminiApiKey: 'gemini-key',
         vertexApiKey: null,
         vertexProject: null,
@@ -393,23 +403,29 @@ describe('llmProviderConfig store', () => {
       },
     }))
     expect(queryMock).toHaveBeenCalledTimes(1)
-    expect(store.geminiSetup.mode).toBe('AI_STUDIO')
-    expect(store.geminiSetup.geminiCredentialStatus.storageState).toBe('CONFIGURED')
+    expect(store.geminiSetup.effectiveMode).toBe('VERTEX_EXPRESS')
+    expect(store.geminiSetup.aiStudioCredentialStatus.storageState).toBe('CONFIGURED')
+    expect(store.geminiSetup.vertexExpressCredentialStatus.storageState).toBe('CONFIGURED')
   })
 
-  it('setGeminiSetupConfig replaces immutable Gemini provider rows instead of mutating hydrated query results in place', async () => {
+  it('saveGeminiConfigurationOption replaces immutable Gemini provider rows instead of mutating hydrated query results in place', async () => {
     const mutateMock = vi.fn().mockResolvedValue({
       data: {
-        setGeminiSetupConfig: 'Gemini setup for mode AI_STUDIO has been saved successfully.',
+        saveGeminiConfigurationOption: {
+          operation: 'SAVED',
+          option: 'AI_STUDIO',
+          effectiveMode: 'AI_STUDIO',
+        },
       },
       errors: undefined,
     })
     const queryMock = vi.fn().mockResolvedValue({
       data: {
         getGeminiSetupConfig: {
-          mode: 'AI_STUDIO',
-          geminiCredentialStatus: configuredCredentialStatus,
-          vertexCredentialStatus: missingCredentialStatus,
+          effectiveMode: 'AI_STUDIO',
+          aiStudioCredentialStatus: configuredCredentialStatus,
+          vertexExpressCredentialStatus: missingCredentialStatus,
+          vertexProjectStatus: 'MISSING',
           vertexProject: null,
           vertexLocation: null,
         },
@@ -425,18 +441,61 @@ describe('llmProviderConfig store', () => {
     const frozenRow = deepFreeze(geminiRow) as any
     store.providersWithModels = [frozenRow]
 
-    const success = await store.setGeminiSetupConfig({
-      mode: 'AI_STUDIO',
+    const result = await store.saveGeminiConfigurationOption({
+      option: 'AI_STUDIO',
       geminiApiKey: 'gemini-key',
     })
 
-    expect(success).toBe(true)
-    expect(store.providerConfigs.GEMINI?.credentialStatus.storageState).toBe('CONFIGURED')
-    expect(store.providersWithModels[0]?.provider.credentialStatus.storageState).toBe('CONFIGURED')
+    expect(result.operation).toBe('SAVED')
+    expect(store.providerConfigs.GEMINI?.credentialStatus?.storageState).toBe('CONFIGURED')
+    expect(store.providersWithModels[0]?.provider.credentialStatus?.storageState).toBe('CONFIGURED')
     expect(store.providersWithModels[0]).not.toBe(frozenRow)
     expect(store.providersWithModels[0]?.provider).not.toBe(frozenRow.provider)
     expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
       fetchPolicy: 'network-only',
     }))
+  })
+
+  it('removeGeminiConfigurationOption removes only the addressed option and refreshes effective mode', async () => {
+    const mutateMock = vi.fn().mockResolvedValue({
+      data: {
+        removeGeminiConfigurationOption: {
+          operation: 'REMOVED',
+          option: 'VERTEX_EXPRESS',
+          effectiveMode: 'VERTEX_PROJECT',
+        },
+      },
+      errors: undefined,
+    })
+    const queryMock = vi.fn().mockResolvedValue({
+      data: {
+        getGeminiSetupConfig: {
+          effectiveMode: 'VERTEX_PROJECT',
+          aiStudioCredentialStatus: configuredCredentialStatus,
+          vertexExpressCredentialStatus: missingCredentialStatus,
+          vertexProjectStatus: 'CONFIGURED',
+          vertexProject: 'project-1',
+          vertexLocation: 'us-central1',
+        },
+      },
+    })
+    vi.mocked(getApolloClient).mockReturnValue({
+      mutate: mutateMock,
+      query: queryMock,
+    } as any)
+    const store = useLLMProviderConfigStore()
+
+    const result = await store.removeGeminiConfigurationOption('VERTEX_EXPRESS')
+
+    expect(result).toEqual({
+      operation: 'REMOVED',
+      option: 'VERTEX_EXPRESS',
+      effectiveMode: 'VERTEX_PROJECT',
+    })
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { option: 'VERTEX_EXPRESS' },
+    }))
+    expect(store.geminiSetup.effectiveMode).toBe('VERTEX_PROJECT')
+    expect(store.geminiSetup.aiStudioCredentialStatus.storageState).toBe('CONFIGURED')
   })
 })

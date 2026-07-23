@@ -27,7 +27,8 @@ const { localizationState } = vi.hoisted(() => ({
       'settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models': 'Failed to reload models',
       'settings.components.settings.ProviderAPIKeyManager.models_reloaded_for_provider': 'Models reloaded for {{provider}}',
       'settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models_for_provider': 'Failed to reload models for {{provider}}',
-      'settings.components.settings.ProviderAPIKeyManager.gemini_setup_saved_successfully': 'Gemini setup saved successfully',
+      'settings.components.settings.ProviderAPIKeyManager.gemini_option_saved': '{{option}} saved; effective {{effectiveMode}}',
+      'settings.components.settings.ProviderAPIKeyManager.gemini_option_removed': '{{option}} removed; effective {{effectiveMode}}',
       'settings.components.settings.ProviderAPIKeyManager.api_key_saved_successfully': 'API key for {{provider}} saved successfully',
       'settings.components.settings.ProviderAPIKeyManager.failed_to_save_api_key': 'Failed to save API key for {{provider}}',
       'settings.components.settings.ProviderAPIKeyManager.api_key_removed_successfully': 'API key for {{provider}} removed successfully',
@@ -152,9 +153,10 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
         imageProvidersWithModels: [],
         videoProvidersWithModels: [],
         geminiSetup: {
-          mode: 'AI_STUDIO',
-          geminiCredentialStatus: missingCredentialStatus,
-          vertexCredentialStatus: missingCredentialStatus,
+          effectiveMode: 'UNCONFIGURED',
+          aiStudioCredentialStatus: missingCredentialStatus,
+          vertexExpressCredentialStatus: missingCredentialStatus,
+          vertexProjectStatus: 'MISSING',
           vertexProject: null,
           vertexLocation: null,
         },
@@ -180,7 +182,16 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
       : row)
     return true
   })
-  store.setGeminiSetupConfig = vi.fn().mockResolvedValue(true)
+  store.saveGeminiConfigurationOption = vi.fn().mockResolvedValue({
+    operation: 'SAVED',
+    option: 'AI_STUDIO',
+    effectiveMode: 'AI_STUDIO',
+  })
+  store.removeGeminiConfigurationOption = vi.fn().mockResolvedValue({
+    operation: 'REMOVED',
+    option: 'AI_STUDIO',
+    effectiveMode: 'UNCONFIGURED',
+  })
   store.reloadModels = vi.fn().mockResolvedValue(true)
   store.reloadModelsForProvider = vi.fn().mockResolvedValue(true)
   store.probeCustomProvider = vi.fn().mockResolvedValue({
@@ -276,48 +287,143 @@ describe('useProviderApiKeySectionRuntime', () => {
     expect((wrapper.vm as any).removing).toBe(false)
   })
 
-  it('saves Gemini setup without mutating immutable provider query results in place', async () => {
+  it('reports an option save separately from fixed-priority effective mode', async () => {
     const { wrapper, store } = mountRuntime({
       providersWithModels: [deepFreeze(geminiRow)],
       geminiSetup: {
-        mode: 'AI_STUDIO',
-        geminiCredentialStatus: missingCredentialStatus,
-        vertexCredentialStatus: missingCredentialStatus,
+        effectiveMode: 'VERTEX_EXPRESS',
+        aiStudioCredentialStatus: missingCredentialStatus,
+        vertexExpressCredentialStatus: configuredCredentialStatus,
+        vertexProjectStatus: 'MISSING',
         vertexProject: null,
         vertexLocation: null,
       },
     })
-    store.setGeminiSetupConfig = vi.fn().mockImplementation(async () => {
+    store.saveGeminiConfigurationOption = vi.fn().mockImplementation(async () => {
       store.geminiSetup = {
-        mode: 'AI_STUDIO',
-        geminiCredentialStatus: configuredCredentialStatus,
-        vertexCredentialStatus: missingCredentialStatus,
+        effectiveMode: 'VERTEX_EXPRESS',
+        aiStudioCredentialStatus: configuredCredentialStatus,
+        vertexExpressCredentialStatus: configuredCredentialStatus,
+        vertexProjectStatus: 'MISSING',
         vertexProject: null,
         vertexLocation: null,
       }
-      return true
+      return {
+        operation: 'SAVED',
+        option: 'AI_STUDIO',
+        effectiveMode: 'VERTEX_EXPRESS',
+      }
     })
 
     await (wrapper.vm as any).initialize()
     await (wrapper.vm as any).selectProvider('GEMINI')
-    const saved = await (wrapper.vm as any).saveGeminiSetup({
-      mode: 'AI_STUDIO',
+    const saved = await (wrapper.vm as any).saveGeminiConfigurationOption({
+      option: 'AI_STUDIO',
       geminiApiKey: 'gemini-key',
-      vertexApiKey: null,
-      vertexProject: null,
-      vertexLocation: null,
     })
     await flushPromises()
 
     expect(saved).toBe(true)
-    expect(store.setGeminiSetupConfig).toHaveBeenCalledWith({
-      mode: 'AI_STUDIO',
+    expect(store.saveGeminiConfigurationOption).toHaveBeenCalledWith({
+      option: 'AI_STUDIO',
       geminiApiKey: 'gemini-key',
-      vertexApiKey: null,
-      vertexProject: null,
-      vertexLocation: null,
     })
-    expect((wrapper.vm as any).notification.message).toBe('Gemini setup saved successfully')
+    expect((wrapper.vm as any).notification.message).toBe(
+      'AI_STUDIO saved; effective VERTEX_EXPRESS',
+    )
+    expect((wrapper.vm as any).selectedProviderConfigured).toBe(true)
+  })
+
+  it('removes only one Gemini option and advances to the refreshed effective mode', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [geminiRow],
+      geminiSetup: {
+        effectiveMode: 'VERTEX_EXPRESS',
+        aiStudioCredentialStatus: configuredCredentialStatus,
+        vertexExpressCredentialStatus: configuredCredentialStatus,
+        vertexProjectStatus: 'MISSING',
+        vertexProject: null,
+        vertexLocation: null,
+      },
+    })
+    store.removeGeminiConfigurationOption = vi.fn().mockImplementation(async () => {
+      store.geminiSetup = {
+        ...store.geminiSetup,
+        effectiveMode: 'AI_STUDIO',
+        vertexExpressCredentialStatus: missingCredentialStatus,
+      }
+      return {
+        operation: 'REMOVED',
+        option: 'VERTEX_EXPRESS',
+        effectiveMode: 'AI_STUDIO',
+      }
+    })
+    await (wrapper.vm as any).initialize()
+
+    const removed = await (wrapper.vm as any).removeGeminiConfigurationOption('VERTEX_EXPRESS')
+
+    expect(removed).toBe(true)
+    expect(store.removeGeminiConfigurationOption).toHaveBeenCalledWith('VERTEX_EXPRESS')
+    expect((wrapper.vm as any).notification.message).toBe(
+      'VERTEX_EXPRESS removed; effective AI_STUDIO',
+    )
+  })
+
+  it('serializes Gemini option operations and resets pending state after a value-free failure', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [geminiRow],
+      geminiSetup: {
+        effectiveMode: 'UNCONFIGURED',
+        aiStudioCredentialStatus: missingCredentialStatus,
+        vertexExpressCredentialStatus: missingCredentialStatus,
+        vertexProjectStatus: 'MISSING',
+        vertexProject: null,
+        vertexLocation: null,
+      },
+    })
+    let completeSave!: (result: {
+      operation: 'SAVED'
+      option: 'AI_STUDIO'
+      effectiveMode: 'AI_STUDIO'
+    }) => void
+    store.saveGeminiConfigurationOption = vi.fn().mockReturnValue(new Promise((resolve) => {
+      completeSave = resolve
+    }))
+    await (wrapper.vm as any).initialize()
+
+    const pendingSave = (wrapper.vm as any).saveGeminiConfigurationOption({
+      option: 'AI_STUDIO',
+      geminiApiKey: 'gemini-key',
+    })
+    expect((wrapper.vm as any).saving).toBe(true)
+    await expect((wrapper.vm as any).removeGeminiConfigurationOption('AI_STUDIO')).resolves.toBe(false)
+    expect(store.removeGeminiConfigurationOption).not.toHaveBeenCalled()
+
+    store.geminiSetup = {
+      ...store.geminiSetup,
+      effectiveMode: 'AI_STUDIO',
+      aiStudioCredentialStatus: configuredCredentialStatus,
+    }
+    completeSave({ operation: 'SAVED', option: 'AI_STUDIO', effectiveMode: 'AI_STUDIO' })
+    await expect(pendingSave).resolves.toBe(true)
+    expect((wrapper.vm as any).saving).toBe(false)
+
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    store.removeGeminiConfigurationOption = vi.fn().mockRejectedValue(
+      new Error('GEMINI_CONFIGURATION_REMOVE_REJECTED'),
+    )
+    await expect(
+      (wrapper.vm as any).removeGeminiConfigurationOption('AI_STUDIO'),
+    ).resolves.toBe(false)
+    expect((wrapper.vm as any).removing).toBe(false)
+    expect((wrapper.vm as any).notification.message).toBe(
+      'Failed to remove API key for GEMINI',
+    )
+    expect(consoleError).toHaveBeenCalledWith(
+      'Failed to remove Gemini configuration option:',
+      expect.any(Error),
+    )
+    consoleError.mockRestore()
   })
 
   it('includes video models in provider totals and selected-provider model details', async () => {

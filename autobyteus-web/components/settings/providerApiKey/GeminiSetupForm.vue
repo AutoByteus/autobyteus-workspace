@@ -1,154 +1,79 @@
 <template>
-  <div class="space-y-3">
-    <p class="text-xs text-gray-500">
-      {{ $t('settings.components.settings.ProviderAPIKeyManager.gemini_setup_choose_a_mode_and') }}
-    </p>
-    <div class="flex flex-wrap gap-2">
-      <button
-        v-for="modeOption in geminiModeOptions"
-        :key="modeOption.value"
-        type="button"
-        :disabled="disabled"
-        class="px-3 py-1.5 text-xs rounded-full border transition-colors"
-        :class="mode === modeOption.value
-          ? 'bg-blue-50 text-blue-700 border-blue-200'
-          : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'"
-        @click="mode = modeOption.value"
-      >
-        {{ modeOption.label }}
-      </button>
+  <div class="space-y-4">
+    <div class="rounded-lg border border-blue-100 bg-blue-50/70 px-3 py-2.5">
+      <p class="text-xs leading-5 text-blue-800">
+        {{ $t('settings.components.settings.ProviderAPIKeyManager.gemini_independent_options_help') }}
+      </p>
+      <p class="mt-1 text-xs font-medium text-blue-900" data-testid="gemini-effective-mode">
+        {{ $t('settings.components.settings.ProviderAPIKeyManager.gemini_effective_mode') }}:
+        {{ optionLabel(geminiSetup.effectiveMode) }}
+      </p>
     </div>
 
-    <div v-if="mode === 'AI_STUDIO'" class="relative">
-      <input
-        v-model="geminiApiKey"
-        :disabled="disabled"
-        :type="showApiKey ? 'text' : 'password'"
-        class="w-full p-2.5 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-        :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.enter_gemini_api_key')"
-      />
-      <button
-        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        type="button"
-        :disabled="disabled"
-        @click="showApiKey = !showApiKey"
-      >
-        <span v-if="showApiKey" class="i-heroicons-eye-slash-20-solid w-4 h-4"></span>
-        <span v-else class="i-heroicons-eye-20-solid w-4 h-4"></span>
-      </button>
-    </div>
-
-    <div v-if="mode === 'VERTEX_EXPRESS'" class="relative">
-      <input
-        v-model="vertexApiKey"
-        :disabled="disabled"
-        :type="showApiKey ? 'text' : 'password'"
-        class="w-full p-2.5 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-        :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.enter_vertex_api_key')"
-      />
-      <button
-        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        type="button"
-        :disabled="disabled"
-        @click="showApiKey = !showApiKey"
-      >
-        <span v-if="showApiKey" class="i-heroicons-eye-slash-20-solid w-4 h-4"></span>
-        <span v-else class="i-heroicons-eye-20-solid w-4 h-4"></span>
-      </button>
-    </div>
-
-    <div v-if="mode === 'VERTEX_PROJECT'" class="grid grid-cols-1 md:grid-cols-2 gap-2">
-      <input
-        v-model="vertexProject"
-        :disabled="disabled"
-        type="text"
-        class="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-        :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.vertex_project_id')"
-      />
-      <input
-        v-model="vertexLocation"
-        :disabled="disabled"
-        type="text"
-        class="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-        :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.vertex_location_e_g_us_central1')"
-      />
-    </div>
-
-    <button
-      class="px-4 py-2.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center whitespace-nowrap"
-      :disabled="disabled || !canSave || saving"
-      @click="submit"
-    >
-      <span
-        v-if="saving"
-        class="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1.5"
-      ></span>
-      {{ saving
-        ? $t('settings.components.settings.ProviderAPIKeyManager.saving')
-        : $t('settings.components.settings.ProviderAPIKeyManager.save_gemini_setup') }}
-    </button>
+    <GeminiConfigurationOptionCard
+      v-for="option in options"
+      :key="option"
+      :option="option"
+      :configured="isConfigured(option)"
+      :effective="geminiSetup.effectiveMode === option"
+      :refresh-snapshot="geminiSetup"
+      :vertex-project="geminiSetup.vertexProject"
+      :vertex-location="geminiSetup.vertexLocation"
+      :saving="saving"
+      :removing="removing"
+      :disabled="Boolean(disabled)"
+      @save="emit('save', $event)"
+      @remove="emit('remove', $event)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import GeminiConfigurationOptionCard from './GeminiConfigurationOptionCard.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import type { GeminiSetupConfigInput, GeminiSetupMode, GeminiSetupConfigState } from '~/stores/llmProviderConfig'
+import type {
+  GeminiConfigurationOption,
+  GeminiEffectiveMode,
+  GeminiOptionSaveInput,
+  GeminiSetupConfigState,
+} from '~/stores/llmProviderConfig'
 
 const props = defineProps<{
   geminiSetup: GeminiSetupConfigState
   saving: boolean
+  removing: boolean
   disabled?: boolean
 }>()
 
 const emit = defineEmits<{
-  (event: 'save', input: GeminiSetupConfigInput): void
+  (event: 'save', input: GeminiOptionSaveInput): void
+  (event: 'remove', option: GeminiConfigurationOption): void
 }>()
 
 const { t } = useLocalization()
-const mode = ref<GeminiSetupMode>('AI_STUDIO')
-const geminiApiKey = ref('')
-const vertexApiKey = ref('')
-const vertexProject = ref('')
-const vertexLocation = ref('')
-const showApiKey = ref(false)
+const options: GeminiConfigurationOption[] = ['AI_STUDIO', 'VERTEX_EXPRESS', 'VERTEX_PROJECT']
 
-const geminiModeOptions = computed<Array<{ value: GeminiSetupMode; label: string }>>(() => [
-  { value: 'AI_STUDIO', label: t('settings.components.settings.ProviderAPIKeyManager.ai_studio') },
-  { value: 'VERTEX_EXPRESS', label: t('settings.components.settings.ProviderAPIKeyManager.vertex_express') },
-  { value: 'VERTEX_PROJECT', label: t('settings.components.settings.ProviderAPIKeyManager.vertex_project') },
-])
-
-watch(
-  () => props.geminiSetup,
-  (setup) => {
-    mode.value = setup?.mode ?? 'AI_STUDIO'
-    vertexProject.value = setup?.vertexProject ?? ''
-    vertexLocation.value = setup?.vertexLocation ?? ''
-    geminiApiKey.value = ''
-    vertexApiKey.value = ''
-    showApiKey.value = false
-  },
-  { immediate: true, deep: true },
-)
-
-const canSave = computed(() => {
-  if (mode.value === 'VERTEX_PROJECT') {
-    return Boolean(vertexProject.value.trim() && vertexLocation.value.trim())
+const optionLabel = (option: GeminiEffectiveMode): string => {
+  if (option === 'AI_STUDIO') {
+    return t('settings.components.settings.ProviderAPIKeyManager.ai_studio')
   }
-  if (mode.value === 'VERTEX_EXPRESS') {
-    return Boolean(vertexApiKey.value.trim())
+  if (option === 'VERTEX_EXPRESS') {
+    return t('settings.components.settings.ProviderAPIKeyManager.vertex_express')
   }
-  return Boolean(geminiApiKey.value.trim())
-})
-
-const submit = () => {
-  emit('save', {
-    mode: mode.value,
-    geminiApiKey: mode.value === 'AI_STUDIO' ? geminiApiKey.value : null,
-    vertexApiKey: mode.value === 'VERTEX_EXPRESS' ? vertexApiKey.value : null,
-    vertexProject: mode.value === 'VERTEX_PROJECT' ? vertexProject.value : null,
-    vertexLocation: mode.value === 'VERTEX_PROJECT' ? vertexLocation.value : null,
-  })
+  if (option === 'VERTEX_PROJECT') {
+    return t('settings.components.settings.ProviderAPIKeyManager.vertex_project')
+  }
+  return t('settings.components.settings.ProviderAPIKeyManager.unconfigured')
 }
+
+const isConfigured = (option: GeminiConfigurationOption): boolean => {
+  if (option === 'AI_STUDIO') {
+    return props.geminiSetup.aiStudioCredentialStatus.storageState === 'CONFIGURED'
+  }
+  if (option === 'VERTEX_EXPRESS') {
+    return props.geminiSetup.vertexExpressCredentialStatus.storageState === 'CONFIGURED'
+  }
+  return props.geminiSetup.vertexProjectStatus === 'CONFIGURED'
+}
+
 </script>

@@ -13,19 +13,23 @@ import {
   SET_LLM_PROVIDER_API_KEY,
   RELOAD_LLM_MODELS,
   RELOAD_LLM_PROVIDER_MODELS,
-  SET_GEMINI_SETUP_CONFIG,
+  REMOVE_GEMINI_CONFIGURATION_OPTION,
+  SAVE_GEMINI_CONFIGURATION_OPTION,
 } from '~/graphql/mutations/llm_provider_mutations'
 import type { LLMProvider } from '~/types/llm'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import {
   defaultGeminiSetup,
   replaceProviderConfiguredState,
+  resolveGeminiEffectiveCredentialStatus,
   resolveGeminiProviderConfiguredState,
   syncProviderConfiguredState,
   type CredentialStatus,
   type CustomLlmProviderDraftInput,
   type CustomLlmProviderProbeResult,
-  type GeminiSetupConfigInput,
+  type GeminiConfigurationOperationResult,
+  type GeminiConfigurationOption,
+  type GeminiOptionSaveInput,
   type LLMProviderConfig,
   type ModelInfo,
   type ProviderWithModels,
@@ -433,14 +437,16 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       }
     },
 
-    async setGeminiSetupConfig(input: GeminiSetupConfigInput) {
+    async saveGeminiConfigurationOption(
+      input: GeminiOptionSaveInput,
+    ): Promise<GeminiConfigurationOperationResult> {
       const client = getApolloClient()
 
       try {
         const { data, errors } = await client.mutate({
-          mutation: SET_GEMINI_SETUP_CONFIG,
+          mutation: SAVE_GEMINI_CONFIGURATION_OPTION,
           variables: {
-            mode: input.mode,
+            option: input.option,
             geminiApiKey: input.geminiApiKey ?? null,
             vertexApiKey: input.vertexApiKey ?? null,
             vertexProject: input.vertexProject ?? null,
@@ -452,24 +458,58 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
           throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
         }
 
-        const responseMessage = data?.setGeminiSetupConfig
-        if (!responseMessage || !responseMessage.includes('successfully')) {
-          throw new Error(responseMessage || 'Failed to save Gemini setup')
+        const result = data?.saveGeminiConfigurationOption as
+          | GeminiConfigurationOperationResult
+          | undefined
+        if (!result || result.operation !== 'SAVED' || result.option !== input.option) {
+          throw new Error('Failed to save Gemini configuration option')
         }
 
         await this.fetchGeminiSetupConfig()
-        const credentialStatus = this.geminiSetup.mode === 'VERTEX_EXPRESS'
-          ? this.geminiSetup.vertexCredentialStatus
-          : this.geminiSetup.geminiCredentialStatus
-        this.providerConfigs.GEMINI = { credentialStatus }
-        this.providersWithModels = replaceProviderConfiguredState(
-          this.providersWithModels, 'GEMINI', credentialStatus,
-        )
-        return true
+        this.syncGeminiProviderConfiguredState()
+        return result
       } catch (error) {
-        console.error('Failed to set Gemini setup config:', error)
+        console.error('Failed to save Gemini configuration option:', error)
         throw error
       }
+    },
+
+    async removeGeminiConfigurationOption(
+      option: GeminiConfigurationOption,
+    ): Promise<GeminiConfigurationOperationResult> {
+      const client = getApolloClient()
+      try {
+        const { data, errors } = await client.mutate({
+          mutation: REMOVE_GEMINI_CONFIGURATION_OPTION,
+          variables: { option },
+        })
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+        }
+
+        const result = data?.removeGeminiConfigurationOption as
+          | GeminiConfigurationOperationResult
+          | undefined
+        if (!result || result.operation !== 'REMOVED' || result.option !== option) {
+          throw new Error('Failed to remove Gemini configuration option')
+        }
+
+        await this.fetchGeminiSetupConfig()
+        this.syncGeminiProviderConfiguredState()
+        return result
+      } catch (error) {
+        console.error('Failed to remove Gemini configuration option:', error)
+        throw error
+      }
+    },
+
+    syncGeminiProviderConfiguredState() {
+      const credentialStatus = resolveGeminiEffectiveCredentialStatus(this.geminiSetup)
+      this.providerConfigs.GEMINI = { credentialStatus }
+      this.providersWithModels = replaceProviderConfiguredState(
+        this.providersWithModels, 'GEMINI', credentialStatus,
+      )
+      return resolveGeminiProviderConfiguredState(this.geminiSetup)
     },
   },
 })

@@ -20,8 +20,9 @@ const mockModelCatalogService = vi.hoisted(() => ({
 
 const mockLlmProviderService = vi.hoisted(() => ({
   getProviderCredentialStatus: vi.fn(),
-  getGeminiCredentialStatus: vi.fn(),
-  setGeminiSetup: vi.fn(),
+  getGeminiConfigurationStatus: vi.fn(),
+  saveGeminiOptionConfiguration: vi.fn(),
+  removeGeminiOptionConfiguration: vi.fn(),
   listProvidersWithModels: vi.fn(),
   setProviderApiKey: vi.fn(),
   removeProviderApiKey: vi.fn(),
@@ -88,8 +89,9 @@ describe('LlmProviderResolver', () => {
     mockModelCatalogService.listVideoModels.mockResolvedValue([]);
 
     mockLlmProviderService.getProviderCredentialStatus.mockReset();
-    mockLlmProviderService.getGeminiCredentialStatus.mockReset();
-    mockLlmProviderService.setGeminiSetup.mockReset();
+    mockLlmProviderService.getGeminiConfigurationStatus.mockReset();
+    mockLlmProviderService.saveGeminiOptionConfiguration.mockReset();
+    mockLlmProviderService.removeGeminiOptionConfiguration.mockReset();
     mockLlmProviderService.listProvidersWithModels.mockReset();
     mockLlmProviderService.setProviderApiKey.mockReset();
     mockLlmProviderService.removeProviderApiKey.mockReset();
@@ -104,25 +106,30 @@ describe('LlmProviderResolver', () => {
 
   it('returns the rich Gemini setup status through the provider service', async () => {
     const status = {
-      mode: 'AI_STUDIO',
-      geminiCredentialStatus: {
+      effectiveMode: 'VERTEX_EXPRESS',
+      aiStudioCredentialStatus: {
         backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
       },
-      vertexCredentialStatus: {
-        backendHealth: 'READY', storageState: 'MISSING', lifecycle: 'WRITABLE', instructionCode: null,
+      vertexExpressCredentialStatus: {
+        backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
       },
-      vertexProject: null,
-      vertexLocation: null,
+      vertexProjectStatus: 'CONFIGURED',
+      vertexProject: 'project-id',
+      vertexLocation: 'europe-west4',
     };
-    mockLlmProviderService.getGeminiCredentialStatus.mockResolvedValue(status);
+    mockLlmProviderService.getGeminiConfigurationStatus.mockResolvedValue(status);
     const resolver = new LlmProviderResolver();
     await expect(resolver.getGeminiSetupConfig()).resolves.toEqual(status);
   });
 
-  it('saves VERTEX_PROJECT mode through the provider service without raw-key aliases', async () => {
-    mockLlmProviderService.setGeminiSetup.mockResolvedValue(undefined);
+  it('saves one Gemini option and returns operation separately from effective mode', async () => {
+    mockLlmProviderService.saveGeminiOptionConfiguration.mockResolvedValue({
+      operation: 'SAVED',
+      option: 'VERTEX_PROJECT',
+      effectiveMode: 'VERTEX_EXPRESS',
+    });
     const resolver = new LlmProviderResolver();
-    const result = await resolver.setGeminiSetupConfig(
+    const result = await resolver.saveGeminiConfigurationOption(
       'VERTEX_PROJECT',
       null,
       null,
@@ -130,10 +137,45 @@ describe('LlmProviderResolver', () => {
       'europe-west4',
     );
 
-    expect(result).toContain('saved successfully');
-    expect(mockLlmProviderService.setGeminiSetup).toHaveBeenCalledWith({
-      mode: 'VERTEX_PROJECT', project: 'project-id', location: 'europe-west4',
+    expect(result).toEqual({
+      operation: 'SAVED',
+      option: 'VERTEX_PROJECT',
+      effectiveMode: 'VERTEX_EXPRESS',
     });
+    expect(mockLlmProviderService.saveGeminiOptionConfiguration).toHaveBeenCalledWith({
+      option: 'VERTEX_PROJECT', project: 'project-id', location: 'europe-west4',
+    });
+  });
+
+  it('removes only the addressed Gemini option', async () => {
+    mockLlmProviderService.removeGeminiOptionConfiguration.mockResolvedValue({
+      operation: 'REMOVED',
+      option: 'VERTEX_EXPRESS',
+      effectiveMode: 'AI_STUDIO',
+    });
+    const resolver = new LlmProviderResolver();
+
+    await expect(resolver.removeGeminiConfigurationOption('VERTEX_EXPRESS' as any)).resolves.toEqual({
+      operation: 'REMOVED',
+      option: 'VERTEX_EXPRESS',
+      effectiveMode: 'AI_STUDIO',
+    });
+    expect(mockLlmProviderService.removeGeminiOptionConfiguration).toHaveBeenCalledWith(
+      'VERTEX_EXPRESS',
+    );
+  });
+
+  it('rejects invalid Gemini option mutations with a value-free stable error', async () => {
+    const resolver = new LlmProviderResolver();
+
+    await expect(resolver.saveGeminiConfigurationOption(
+      'UNKNOWN',
+      'must-not-be-returned',
+      null,
+      null,
+      null,
+    )).rejects.toThrow('GEMINI_CONFIGURATION_SAVE_REJECTED');
+    expect(mockLlmProviderService.saveGeminiOptionConfiguration).not.toHaveBeenCalled();
   });
 
   it('returns rich credential status through the provider service', async () => {

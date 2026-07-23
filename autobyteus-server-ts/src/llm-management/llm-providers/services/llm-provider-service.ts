@@ -38,7 +38,11 @@ import {
 import {
   getGeminiConfigurationService,
   type GeminiConfigurationService,
-  type GeminiSetupCommand,
+  type GeminiConfigurationOperationResult,
+  type GeminiConfigurationOption,
+  type GeminiConfigurationState,
+  type GeminiEffectiveMode,
+  type GeminiOptionSaveCommand,
 } from '../../services/gemini-configuration-service.js';
 
 const DEFAULT_RUNTIME_KIND = RuntimeKind.AUTOBYTEUS;
@@ -252,35 +256,43 @@ export class LlmProviderService {
     return this.modelCatalogService.reloadLlmModelsForProvider(normalizedProviderId, runtimeKind);
   }
 
-  async getGeminiCredentialStatus(): Promise<{
-    mode: 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT';
-    geminiCredentialStatus: CredentialStatusProjection;
-    vertexCredentialStatus: CredentialStatusProjection;
+  async getGeminiConfigurationStatus(): Promise<{
+    effectiveMode: GeminiEffectiveMode;
+    aiStudioCredentialStatus: CredentialStatusProjection;
+    vertexExpressCredentialStatus: CredentialStatusProjection;
+    vertexProjectStatus: GeminiConfigurationState;
     vertexProject: string | null;
     vertexLocation: string | null;
   }> {
     const setup = await this.geminiConfigurationService.getSetupStatus();
-    const mode = setup.selection.kind === 'vertexExpress'
-      ? 'VERTEX_EXPRESS'
-      : setup.selection.kind === 'vertexProject'
-        ? 'VERTEX_PROJECT'
-        : 'AI_STUDIO';
     return {
-      mode,
-      geminiCredentialStatus: await this.getCredentialStatus({
+      effectiveMode: setup.effectiveMode,
+      aiStudioCredentialStatus: await this.getCredentialStatus({
         kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot: 'geminiAiStudioApiKey',
       }),
-      vertexCredentialStatus: await this.getCredentialStatus({
+      vertexExpressCredentialStatus: await this.getCredentialStatus({
         kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot: 'geminiVertexExpressApiKey',
       }),
+      vertexProjectStatus: setup.vertexProjectStatus,
       vertexProject: setup.project,
       vertexLocation: setup.location,
     };
   }
 
-  async setGeminiSetup(input: GeminiSetupCommand): Promise<void> {
-    await this.geminiConfigurationService.setSetup(input);
+  async saveGeminiOptionConfiguration(
+    input: GeminiOptionSaveCommand,
+  ): Promise<GeminiConfigurationOperationResult> {
+    const result = await this.geminiConfigurationService.saveOptionConfiguration(input);
     this.modelCatalogService.invalidateGeminiMetadata();
+    return result;
+  }
+
+  async removeGeminiOptionConfiguration(
+    option: GeminiConfigurationOption,
+  ): Promise<GeminiConfigurationOperationResult> {
+    const result = await this.geminiConfigurationService.removeOptionConfiguration(option);
+    this.modelCatalogService.invalidateGeminiMetadata();
+    return result;
   }
 
   private async listCustomProviders(runtimeKind?: string | null): Promise<LlmProviderRecord[]> {

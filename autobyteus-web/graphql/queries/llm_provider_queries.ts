@@ -150,19 +150,20 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
 export const GET_GEMINI_SETUP_CONFIG = gql`
   query GetGeminiSetupConfig {
     getGeminiSetupConfig {
-      mode
-      geminiCredentialStatus {
+      effectiveMode
+      aiStudioCredentialStatus {
         backendHealth
         storageState
         lifecycle
         instructionCode
       }
-      vertexCredentialStatus {
+      vertexExpressCredentialStatus {
         backendHealth
         storageState
         lifecycle
         instructionCode
       }
+      vertexProjectStatus
       vertexProject
       vertexLocation
     }

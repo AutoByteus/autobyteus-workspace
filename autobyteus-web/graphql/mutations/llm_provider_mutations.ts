@@ -64,20 +64,34 @@ export const DELETE_CUSTOM_LLM_PROVIDER = gql`
   }
 `;
 
-export const SET_GEMINI_SETUP_CONFIG = gql`
-  mutation SetGeminiSetupConfig(
-    $mode: String!
+export const SAVE_GEMINI_CONFIGURATION_OPTION = gql`
+  mutation SaveGeminiConfigurationOption(
+    $option: GeminiConfigurationOption!
     $geminiApiKey: String
     $vertexApiKey: String
     $vertexProject: String
     $vertexLocation: String
   ) {
-    setGeminiSetupConfig(
-      mode: $mode
+    saveGeminiConfigurationOption(
+      option: $option
       geminiApiKey: $geminiApiKey
       vertexApiKey: $vertexApiKey
       vertexProject: $vertexProject
       vertexLocation: $vertexLocation
-    )
+    ) {
+      operation
+      option
+      effectiveMode
+    }
+  }
+`;
+
+export const REMOVE_GEMINI_CONFIGURATION_OPTION = gql`
+  mutation RemoveGeminiConfigurationOption($option: GeminiConfigurationOption!) {
+    removeGeminiConfigurationOption(option: $option) {
+      operation
+      option
+      effectiveMode
+    }
   }
 `;

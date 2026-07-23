@@ -34,7 +34,6 @@ const messages = {
   'settings.components.settings.ProviderAPIKeyManager.audio_models': '音频模型',
   'settings.components.settings.ProviderAPIKeyManager.enter_gemini_api_key': '输入 Gemini API 密钥...',
   'settings.components.settings.ProviderAPIKeyManager.enter_vertex_api_key': '输入 Vertex API 密钥...',
-  'settings.components.settings.ProviderAPIKeyManager.gemini_setup_choose_a_mode_and': 'Gemini 设置：选择一种模式并仅填写必填字段。',
   'settings.components.settings.ProviderAPIKeyManager.image_models': '图像模型',
   'settings.components.settings.ProviderAPIKeyManager.video_models': '视频模型',
   'settings.components.settings.ProviderAPIKeyManager.llm_models': '法学硕士模型',

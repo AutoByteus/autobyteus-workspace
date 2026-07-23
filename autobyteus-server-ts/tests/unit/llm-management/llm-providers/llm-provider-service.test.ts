@@ -26,6 +26,7 @@ describe('LlmProviderService', () => {
     reloadLlmModelsForProvider: vi.fn(),
     clearAutobyteusRemoteModels: vi.fn(),
     invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement: vi.fn(),
+    invalidateGeminiMetadata: vi.fn(),
   };
 
   const discovery = {
@@ -43,6 +44,12 @@ describe('LlmProviderService', () => {
     snapshot: vi.fn(),
   };
 
+  const geminiConfigurationService = {
+    getSetupStatus: vi.fn(),
+    saveOptionConfiguration: vi.fn(),
+    removeOptionConfiguration: vi.fn(),
+  };
+
   const createService = () => new LlmProviderService(
     builtInCatalog as any,
     customProviderStore as any,
@@ -50,6 +57,7 @@ describe('LlmProviderService', () => {
     modelCatalogService as any,
     discovery as any,
     secretStorageConfiguration as any,
+    geminiConfigurationService as any,
   );
 
   beforeEach(() => {
@@ -104,6 +112,7 @@ describe('LlmProviderService', () => {
     modelCatalogService.reloadLlmModelsForProvider.mockReset();
     modelCatalogService.clearAutobyteusRemoteModels.mockReset();
     modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement.mockReset();
+    modelCatalogService.invalidateGeminiMetadata.mockReset();
     modelCatalogService.listLlmModels.mockResolvedValue([]);
     modelCatalogService.reloadLlmModels.mockResolvedValue(undefined);
     modelCatalogService.reloadLlmModelsForProvider.mockResolvedValue(2);
@@ -125,6 +134,18 @@ describe('LlmProviderService', () => {
       health: { state: 'READY' },
       lifecycle: { kind: 'WRITABLE' },
     });
+    geminiConfigurationService.getSetupStatus.mockReset();
+    geminiConfigurationService.saveOptionConfiguration.mockReset();
+    geminiConfigurationService.removeOptionConfiguration.mockReset();
+    geminiConfigurationService.getSetupStatus.mockResolvedValue({
+      selection: { kind: 'unconfigured' },
+      effectiveMode: 'UNCONFIGURED',
+      aiStudioStatus: 'MISSING',
+      vertexExpressStatus: 'MISSING',
+      vertexProjectStatus: 'MISSING',
+      project: null,
+      location: null,
+    });
   });
 
   it('rejects built-in provider name collisions after normalization', async () => {
@@ -138,6 +159,74 @@ describe('LlmProviderService', () => {
     })).rejects.toThrow("Provider name 'OpenAI' conflicts with existing provider 'OpenAI'.");
 
     expect(discovery.probeEndpoint).not.toHaveBeenCalled();
+  });
+
+  it('projects all Gemini option states and their independent effective mode', async () => {
+    geminiConfigurationService.getSetupStatus.mockResolvedValue({
+      selection: { kind: 'vertexExpress' },
+      effectiveMode: 'VERTEX_EXPRESS',
+      aiStudioStatus: 'CONFIGURED',
+      vertexExpressStatus: 'CONFIGURED',
+      vertexProjectStatus: 'CONFIGURED',
+      project: 'synthetic-project',
+      location: 'global',
+    });
+
+    await expect(createService().getGeminiConfigurationStatus()).resolves.toEqual({
+      effectiveMode: 'VERTEX_EXPRESS',
+      aiStudioCredentialStatus: {
+        backendHealth: 'READY',
+        storageState: 'CONFIGURED',
+        lifecycle: 'WRITABLE',
+        instructionCode: null,
+      },
+      vertexExpressCredentialStatus: {
+        backendHealth: 'READY',
+        storageState: 'CONFIGURED',
+        lifecycle: 'WRITABLE',
+        instructionCode: null,
+      },
+      vertexProjectStatus: 'CONFIGURED',
+      vertexProject: 'synthetic-project',
+      vertexLocation: 'global',
+    });
+  });
+
+  it('invalidates optional Gemini metadata after an option-scoped save or remove', async () => {
+    geminiConfigurationService.saveOptionConfiguration.mockResolvedValue({
+      operation: 'SAVED',
+      option: 'AI_STUDIO',
+      effectiveMode: 'VERTEX_EXPRESS',
+    });
+    geminiConfigurationService.removeOptionConfiguration.mockResolvedValue({
+      operation: 'REMOVED',
+      option: 'VERTEX_EXPRESS',
+      effectiveMode: 'AI_STUDIO',
+    });
+    const service = createService();
+
+    await expect(service.saveGeminiOptionConfiguration({
+      option: 'AI_STUDIO',
+      apiKey: 'synthetic-key',
+    })).resolves.toEqual({
+      operation: 'SAVED',
+      option: 'AI_STUDIO',
+      effectiveMode: 'VERTEX_EXPRESS',
+    });
+    await expect(service.removeGeminiOptionConfiguration('VERTEX_EXPRESS')).resolves.toEqual({
+      operation: 'REMOVED',
+      option: 'VERTEX_EXPRESS',
+      effectiveMode: 'AI_STUDIO',
+    });
+
+    expect(geminiConfigurationService.saveOptionConfiguration).toHaveBeenCalledWith({
+      option: 'AI_STUDIO',
+      apiKey: 'synthetic-key',
+    });
+    expect(geminiConfigurationService.removeOptionConfiguration).toHaveBeenCalledWith(
+      'VERTEX_EXPRESS',
+    );
+    expect(modelCatalogService.invalidateGeminiMetadata).toHaveBeenCalledTimes(2);
   });
 
   it('preserves built-in provider rows when custody and optional model sources fail', async () => {

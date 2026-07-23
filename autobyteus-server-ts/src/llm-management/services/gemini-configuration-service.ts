@@ -9,25 +9,48 @@ import { appConfigProvider } from '../../config/app-config-provider.js';
 import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-binding.js';
 import { getSecretStorageConfigurationService } from '../../secret-management/configuration/secret-storage-configuration-service.js';
 
-export type GeminiSetupCommand = {
-  mode: 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT';
-  apiKey?: string | null;
-  project?: string | null;
-  location?: string | null;
+export type GeminiConfigurationOption =
+  | 'AI_STUDIO'
+  | 'VERTEX_EXPRESS'
+  | 'VERTEX_PROJECT';
+
+export type GeminiEffectiveMode = GeminiConfigurationOption | 'UNCONFIGURED';
+export type GeminiConfigurationState = 'MISSING' | 'CONFIGURED';
+
+export type GeminiOptionSaveCommand =
+  | { option: 'AI_STUDIO'; apiKey: string }
+  | { option: 'VERTEX_EXPRESS'; apiKey: string }
+  | { option: 'VERTEX_PROJECT'; project: string; location: string };
+
+export type GeminiConfigurationOperationResult = {
+  operation: 'SAVED' | 'REMOVED';
+  option: GeminiConfigurationOption;
+  effectiveMode: GeminiEffectiveMode;
 };
 
 export type GeminiSetupStatus = {
   selection: GeminiRuntimeSelection;
+  effectiveMode: GeminiEffectiveMode;
   aiStudioStatus: ProviderApiKeyStatus;
   vertexExpressStatus: ProviderApiKeyStatus;
+  vertexProjectStatus: GeminiConfigurationState;
   project: string | null;
   location: string | null;
 };
 
-const normalizeRequired = (value: string | null | undefined, name: string): string => {
-  const normalized = value?.trim();
+const normalizeRequired = (value: string, name: string): string => {
+  const normalized = value.trim();
   if (!normalized) throw new Error(`GEMINI_${name.toUpperCase()}_REQUIRED`);
   return normalized;
+};
+
+const effectiveMode = (selection: GeminiRuntimeSelection): GeminiEffectiveMode => {
+  switch (selection.kind) {
+    case 'vertexExpress': return 'VERTEX_EXPRESS';
+    case 'vertexProject': return 'VERTEX_PROJECT';
+    case 'aiStudio': return 'AI_STUDIO';
+    case 'unconfigured': return 'UNCONFIGURED';
+  }
 };
 
 export class GeminiConfigurationService {
@@ -38,38 +61,37 @@ export class GeminiConfigurationService {
     ]);
     const project = appConfigProvider.config.get('VERTEX_AI_PROJECT')?.trim() || null;
     const location = appConfigProvider.config.get('VERTEX_AI_LOCATION')?.trim() || null;
+    const vertexProjectStatus = project && location ? 'CONFIGURED' : 'MISSING';
+    const selection = selectGeminiRuntime({
+      vertexExpressStatus,
+      aiStudioStatus,
+      project,
+      location,
+    });
     return {
-      selection: selectGeminiRuntime({
-        vertexExpressStatus,
-        aiStudioStatus,
-        project,
-        location,
-      }),
+      selection,
+      effectiveMode: effectiveMode(selection),
       aiStudioStatus,
       vertexExpressStatus,
+      vertexProjectStatus,
       project,
       location,
     };
   }
 
-  async setSetup(input: GeminiSetupCommand): Promise<GeminiSetupStatus> {
-    const management = getSecretStorageConfigurationService().requireManagementService();
-    if (input.mode === 'AI_STUDIO') {
-      await management.saveForConsumer({
+  async saveOptionConfiguration(
+    input: GeminiOptionSaveCommand,
+  ): Promise<GeminiConfigurationOperationResult> {
+    if (input.option === 'AI_STUDIO') {
+      await this.management().saveForConsumer({
         consumer: this.consumer('geminiAiStudioApiKey'),
         value: SecretValue.fromString(normalizeRequired(input.apiKey, 'api_key')),
       });
-      await management.removeForConsumer(this.consumer('geminiVertexExpressApiKey'));
-      appConfigProvider.config.delete('VERTEX_AI_PROJECT');
-      appConfigProvider.config.delete('VERTEX_AI_LOCATION');
-    } else if (input.mode === 'VERTEX_EXPRESS') {
-      await management.saveForConsumer({
+    } else if (input.option === 'VERTEX_EXPRESS') {
+      await this.management().saveForConsumer({
         consumer: this.consumer('geminiVertexExpressApiKey'),
         value: SecretValue.fromString(normalizeRequired(input.apiKey, 'api_key')),
       });
-      await management.removeForConsumer(this.consumer('geminiAiStudioApiKey'));
-      appConfigProvider.config.delete('VERTEX_AI_PROJECT');
-      appConfigProvider.config.delete('VERTEX_AI_LOCATION');
     } else {
       appConfigProvider.config.set(
         'VERTEX_AI_PROJECT',
@@ -79,10 +101,33 @@ export class GeminiConfigurationService {
         'VERTEX_AI_LOCATION',
         normalizeRequired(input.location, 'location'),
       );
-      await management.removeForConsumer(this.consumer('geminiVertexExpressApiKey'));
-      await management.removeForConsumer(this.consumer('geminiAiStudioApiKey'));
     }
-    return this.getSetupStatus();
+    return this.operationResult('SAVED', input.option);
+  }
+
+  async removeOptionConfiguration(
+    option: GeminiConfigurationOption,
+  ): Promise<GeminiConfigurationOperationResult> {
+    if (option === 'AI_STUDIO') {
+      await this.management().removeForConsumer(this.consumer('geminiAiStudioApiKey'));
+    } else if (option === 'VERTEX_EXPRESS') {
+      await this.management().removeForConsumer(this.consumer('geminiVertexExpressApiKey'));
+    } else {
+      appConfigProvider.config.delete('VERTEX_AI_PROJECT');
+      appConfigProvider.config.delete('VERTEX_AI_LOCATION');
+    }
+    return this.operationResult('REMOVED', option);
+  }
+
+  private async operationResult(
+    operation: 'SAVED' | 'REMOVED',
+    option: GeminiConfigurationOption,
+  ): Promise<GeminiConfigurationOperationResult> {
+    return { operation, option, effectiveMode: (await this.getSetupStatus()).effectiveMode };
+  }
+
+  private management() {
+    return getSecretStorageConfigurationService().requireManagementService();
   }
 
   private async status(

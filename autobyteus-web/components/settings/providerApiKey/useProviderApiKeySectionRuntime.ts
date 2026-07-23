@@ -2,11 +2,15 @@ import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useLocalization } from '~/composables/useLocalization'
 import { createProviderApiKeyRemoval } from './providerApiKeyRemoval'
+import { createGeminiConfigurationActions } from './providerApiKeyGeminiActions'
+import {
+  resolveGeminiEffectiveCredentialStatus,
+  resolveGeminiProviderConfiguredState,
+} from '~/stores/llmProviderConfigSupport'
 import {
   useLLMProviderConfigStore,
   type CustomLlmProviderDraftInput,
   type CustomLlmProviderProbeResult,
-  type GeminiSetupConfigInput,
   type LlmProviderStatus,
   type CredentialStatus,
 } from '~/stores/llmProviderConfig'
@@ -170,14 +174,7 @@ export function useProviderApiKeySectionRuntime() {
 
   const isGeminiConfigured = computed(() => {
     const setup = geminiSetup.value
-    if (!setup) return false
-    if (setup.mode === 'VERTEX_EXPRESS') {
-      return setup.vertexCredentialStatus.storageState === 'CONFIGURED'
-    }
-    if (setup.mode === 'VERTEX_PROJECT') {
-      return Boolean((setup.vertexProject ?? '').trim() && (setup.vertexLocation ?? '').trim())
-    }
-    return setup.geminiCredentialStatus.storageState === 'CONFIGURED'
+    return setup ? resolveGeminiProviderConfiguredState(setup) : false
   })
 
   const isProviderConfigured = (providerId: string): boolean => {
@@ -194,9 +191,7 @@ export function useProviderApiKeySectionRuntime() {
   )
   const selectedProviderCredentialStatus = computed<CredentialStatus | null>(() => {
     if (selectedProviderId.value === 'GEMINI') {
-      return geminiSetup.value.mode === 'VERTEX_EXPRESS'
-        ? geminiSetup.value.vertexCredentialStatus
-        : geminiSetup.value.geminiCredentialStatus
+      return resolveGeminiEffectiveCredentialStatus(geminiSetup.value)
     }
     return selectedProviderSummary.value?.credentialStatus
       ?? Object.values(providerConfigs.value).find((entry) => entry.credentialStatus)?.credentialStatus
@@ -345,28 +340,19 @@ export function useProviderApiKeySectionRuntime() {
     }
   }
 
-  const saveGeminiSetup = async (input: GeminiSetupConfigInput) => {
-    saving.value = true
-    try {
-      await store.setGeminiSetupConfig(input)
-      providerConfigs.value.GEMINI = {
-        credentialStatus: input.mode === 'VERTEX_EXPRESS'
-          ? geminiSetup.value.vertexCredentialStatus
-          : geminiSetup.value.geminiCredentialStatus,
-      }
-      showNotification(t('settings.components.settings.ProviderAPIKeyManager.gemini_setup_saved_successfully'), 'success')
-      return true
-    } catch (error) {
-      console.error('Failed to save Gemini setup:', error)
-      showNotification(
-        t('settings.components.settings.ProviderAPIKeyManager.failed_to_save_api_key', { provider: 'GEMINI' }),
-        'error',
-      )
-      return false
-    } finally {
-      saving.value = false
-    }
-  }
+  const { saveGeminiConfigurationOption, removeGeminiConfigurationOption } =
+    createGeminiConfigurationActions({
+      saving,
+      removing,
+      saveOption: (input) => store.saveGeminiConfigurationOption(input),
+      removeOption: (option) => store.removeGeminiConfigurationOption(option),
+      getEffectiveCredentialStatus: () => resolveGeminiEffectiveCredentialStatus(geminiSetup.value),
+      setProviderCredentialStatus: (credentialStatus) => {
+        providerConfigs.value.GEMINI = { credentialStatus }
+      },
+      translate: t,
+      notify: showNotification,
+    })
 
   const saveProviderApiKey = async (providerId: string, apiKey: string) => {
     if (saving.value || removing.value || !providerId || !apiKey.trim()) {
@@ -533,7 +519,8 @@ export function useProviderApiKeySectionRuntime() {
     selectProvider,
     reloadAllModels,
     reloadSelectedProvider,
-    saveGeminiSetup,
+    saveGeminiConfigurationOption,
+    removeGeminiConfigurationOption,
     saveProviderApiKey,
     removeProviderApiKey,
     updateCustomProviderDraft,
