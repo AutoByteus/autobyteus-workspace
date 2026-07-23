@@ -5,10 +5,7 @@ import { VideoModel } from './video-model.js';
 import { BaseVideoClient } from './base-video-client.js';
 import { GeminiVideoClient } from './api/gemini-video-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import type {
-  MultimediaConstructionTarget,
-  ResolvedMultimediaAuthentication,
-} from '../multimedia-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 export const GEMINI_OMNI_FLASH_VIDEO_MODEL_ID = 'gemini-omni-flash-preview';
 
@@ -84,8 +81,6 @@ export class VideoClientFactory extends Singleton {
       name: GEMINI_OMNI_FLASH_VIDEO_MODEL_ID,
       value: GEMINI_OMNI_FLASH_VIDEO_MODEL_ID,
       provider: MultimediaProvider.GEMINI,
-      credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiVideoClient,
       parameterSchema: geminiOmniVideoSchema,
       description:
@@ -113,19 +108,13 @@ export class VideoClientFactory extends Singleton {
     return model;
   }
 
-  static describeConstructionTarget(modelIdentifier: string): MultimediaConstructionTarget {
-    const model = VideoClientFactory.requireModel(modelIdentifier);
-    return {
-      credentialProviderId: model.credentialProviderId,
-      authenticationRequirement: model.authenticationRequirement,
-    };
-  }
 
   static createVideoClient(
     modelIdentifier: string,
-    input: { configOverride?: MultimediaConfig | null; authentication: ResolvedMultimediaAuthentication },
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
   ): BaseVideoClient {
-    return VideoClientFactory.requireModel(modelIdentifier).createClient(input);
+    return VideoClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver);
   }
 
   static listModels(): VideoModel[] {

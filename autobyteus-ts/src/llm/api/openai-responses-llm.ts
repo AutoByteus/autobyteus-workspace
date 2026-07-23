@@ -10,10 +10,7 @@ import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js'
 import { createOpenAIResponsesRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
-import {
-  requireApiKeyAuthentication,
-  type LLMConstructionContext,
-} from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 type ResponseInputItem = Record<string, unknown>;
 type ResponseOutputItem = Record<string, unknown>;
@@ -28,21 +25,39 @@ const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : [
 
 
 export class OpenAIResponsesLLM extends BaseLLM {
-  protected client: OpenAIClient;
+  private clientPromise: Promise<OpenAIClient> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly apiKeyProviderId: string;
+  private readonly baseUrl: string;
   protected maxTokens: number | null;
   protected _renderer: BasePromptRenderer;
 
   constructor(
     model: LLMModel,
     baseUrl: string,
-    context: LLMConstructionContext,
+    config: LLMConfig,
+    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyProviderId: string,
   ) {
-    const apiKey = requireApiKeyAuthentication(context.authentication, model.providerName);
-    super(model, context.config);
-
-    this.client = new OpenAIClient({ apiKey, baseURL: baseUrl });
-    this.maxTokens = context.config.maxTokens ?? null;
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyProviderId = apiKeyProviderId;
+    this.baseUrl = baseUrl;
+    this.maxTokens = config.maxTokens ?? null;
     this._renderer = createOpenAIResponsesRendererForToolFormat();
+  }
+
+  private getClient(): Promise<OpenAIClient> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<OpenAIClient> {
+    const secret = await this.apiKeyResolver.resolve(this.apiKeyProviderId);
+    return new OpenAIClient({
+      apiKey: secret.revealToTrustedConsumer(),
+      baseURL: this.baseUrl,
+    });
   }
 
   private createTokenUsage(usageData?: ResponseUsage | null): LlmTokenUsageObservation | null {
@@ -181,7 +196,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
     try {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
-      const response: any = await this.client.responses.create(params as any, requestOptions as any);
+      const client = await this.getClient();
+      const response: any = await client.responses.create(params as any, requestOptions as any);
       const { content, reasoning } = this.extractOutputContent(response.output ?? []);
 
       return new CompleteResponse({
@@ -248,7 +264,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
     try {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
-      const stream = await this.client.responses.create(params as any, requestOptions as any) as unknown as AsyncIterable<ResponseStreamEvent>;
+      const client = await this.getClient();
+      const stream = await client.responses.create(params as any, requestOptions as any) as unknown as AsyncIterable<ResponseStreamEvent>;
 
       for await (const event of stream) {
         const eventType = (event as any)?.type;

@@ -140,6 +140,36 @@ describe('LlmProviderService', () => {
     expect(discovery.probeEndpoint).not.toHaveBeenCalled();
   });
 
+  it('preserves built-in provider rows when custody and optional model sources fail', async () => {
+    secretManagement.getStatusForConsumer.mockRejectedValue(
+      new Error('synthetic status failure'),
+    );
+    secretStorageConfiguration.snapshot.mockRejectedValue(
+      new Error('synthetic custody failure'),
+    );
+    modelCatalogService.listLlmModels.mockRejectedValue(
+      new Error('synthetic model-catalog failure'),
+    );
+    customProviderStore.listProviders.mockRejectedValue(
+      new Error('synthetic custom-provider failure'),
+    );
+
+    const result = await createService().listProvidersWithModels('autobyteus');
+
+    expect(result).toEqual([{
+      provider: expect.objectContaining({
+        id: 'OPENAI',
+        credentialStatus: {
+          backendHealth: 'UNAVAILABLE',
+          storageState: null,
+          lifecycle: null,
+          instructionCode: 'SECRET_BACKEND_STATUS_UNAVAILABLE',
+        },
+      }),
+      models: [],
+    }]);
+  });
+
   it('rejects existing custom provider name collisions after normalization', async () => {
     customProviderStore.listProviders.mockResolvedValue([
       {

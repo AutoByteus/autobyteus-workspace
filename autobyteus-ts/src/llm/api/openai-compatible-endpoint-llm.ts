@@ -1,10 +1,11 @@
 import { OpenAICompatibleLLM } from './openai-compatible-llm.js';
-import type { LLMConstructionContext } from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import { LLMModel } from '../models.js';
+import { LLMConfig } from '../utils/llm-config.js';
 import { OpenAICompatibleEndpointModel } from '../openai-compatible-endpoint-model.js';
 
 export class OpenAICompatibleEndpointLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, context: LLMConstructionContext) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     if (!(model instanceof OpenAICompatibleEndpointModel)) {
       throw new Error('OpenAICompatibleEndpointLLM requires an OpenAICompatibleEndpointModel.');
     }
@@ -12,7 +13,9 @@ export class OpenAICompatibleEndpointLLM extends OpenAICompatibleLLM {
     super(
       model,
       model.endpointBaseUrl,
-      context,
+      config,
+      apiKeyResolver,
+      model.providerId,
     );
   }
 }

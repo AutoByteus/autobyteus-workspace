@@ -8,10 +8,11 @@ import {
   LOCAL_PROVIDER_SDK_TIMEOUT_MS,
 } from '../transport/local-long-running-fetch.js';
 import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
-import type { LLMConstructionContext } from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import { LLMProvider } from '../providers.js';
 
 export class LMStudioLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, context: LLMConstructionContext) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     if (!model.hostUrl) {
       throw new Error('LMStudioLLM requires a hostUrl to be set on the LLMModel.');
     }
@@ -22,7 +23,9 @@ export class LMStudioLLM extends OpenAICompatibleLLM {
     super(
       model,
       baseUrl,
-      context,
+      config,
+      apiKeyResolver,
+      LLMProvider.LMSTUDIO,
       {
         fetch: createLocalLongRunningFetch(),
         timeout: LOCAL_PROVIDER_SDK_TIMEOUT_MS,

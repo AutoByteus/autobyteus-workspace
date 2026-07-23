@@ -5,7 +5,7 @@ import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
 import { MultimediaRuntime } from '../../../../../src/multimedia/runtimes.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
 import { SpeechGenerationResponse } from '../../../../../src/multimedia/utils/response-types.js';
-import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const { generateSpeechMock, cleanupAudioSessionMock, closeMock, MockAutobyteusClient } = vi.hoisted(() => {
   const generateSpeechMock = vi.fn();
@@ -32,7 +32,7 @@ vi.mock('../../../../../src/clients/autobyteus-client.js', () => ({
 
 class AutobyteusAudioClient extends ProductionAutobyteusAudioClient {
   constructor(model: AudioModel, config = new MultimediaConfig()) {
-    super(model, multimediaApiKeyContext(config, 'synthetic-autobyteus-key'));
+    super(model, config, providerApiKeyResolver('synthetic-autobyteus-key'));
   }
 }
 
@@ -48,8 +48,6 @@ describe('AutobyteusAudioClient', () => {
       name: 'remote-tts',
       value: 'remote-tts',
       provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusAudioClient,
       runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl
@@ -93,6 +91,8 @@ describe('AutobyteusAudioClient', () => {
     const model = buildModel();
     const config = new MultimediaConfig({});
     const client = new AutobyteusAudioClient(model, config);
+    generateSpeechMock.mockResolvedValue({ audio_urls: ['file.wav'] });
+    await client.generateSpeech('initialize');
 
     await client.cleanup();
 

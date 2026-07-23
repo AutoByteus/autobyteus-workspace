@@ -29,13 +29,13 @@ import {
 import { getModelCatalogService } from '../../../llm-management/services/model-catalog-service.js';
 import type { CredentialStatusProjection } from '../../../llm-management/llm-providers/domain/models.js';
 
-const GEMINI_SETUP_MODES = {
+const GEMINI_SETUP_COMMANDS = {
   AI_STUDIO: 'AI_STUDIO',
   VERTEX_EXPRESS: 'VERTEX_EXPRESS',
   VERTEX_PROJECT: 'VERTEX_PROJECT',
 } as const;
 
-type GeminiSetupMode = (typeof GEMINI_SETUP_MODES)[keyof typeof GEMINI_SETUP_MODES];
+type GeminiSetupCommand = (typeof GEMINI_SETUP_COMMANDS)[keyof typeof GEMINI_SETUP_COMMANDS];
 
 registerEnumType(ModelMetadataProvenance, { name: 'ModelMetadataProvenance' });
 
@@ -144,7 +144,7 @@ class ProviderWithModels {
 @ObjectType()
 class GeminiSetupConfig {
   @Field(() => String)
-  mode!: GeminiSetupMode;
+  mode!: GeminiSetupCommand;
 
   @Field(() => CredentialStatusObject)
   geminiCredentialStatus!: CredentialStatusObject;
@@ -398,19 +398,19 @@ export class LlmProviderResolver {
   ): Promise<string> {
     try {
       const normalizedMode = normalizeText(mode).toUpperCase();
-      if (!Object.values(GEMINI_SETUP_MODES).includes(normalizedMode as GeminiSetupMode)) {
+      if (!Object.values(GEMINI_SETUP_COMMANDS).includes(normalizedMode as GeminiSetupCommand)) {
         throw new Error(
-          `Invalid Gemini setup mode '${mode}'. Use one of: ${Object.values(GEMINI_SETUP_MODES).join(', ')}`,
+          `Invalid Gemini setup mode '${mode}'. Use one of: ${Object.values(GEMINI_SETUP_COMMANDS).join(', ')}`,
         );
       }
 
-      const selectedMode = normalizedMode as GeminiSetupMode;
+      const selectedMode = normalizedMode as GeminiSetupCommand;
       const normalizedGeminiApiKey = normalizeText(geminiApiKey);
       const normalizedVertexApiKey = normalizeText(vertexApiKey);
       const normalizedVertexProject = normalizeText(vertexProject);
       const normalizedVertexLocation = normalizeText(vertexLocation);
 
-      if (selectedMode === GEMINI_SETUP_MODES.AI_STUDIO) {
+      if (selectedMode === GEMINI_SETUP_COMMANDS.AI_STUDIO) {
         if (!normalizedGeminiApiKey) {
           throw new Error('GEMINI_API_KEY is required for AI_STUDIO mode.');
         }
@@ -418,7 +418,7 @@ export class LlmProviderResolver {
           mode: selectedMode,
           apiKey: normalizedGeminiApiKey,
         });
-      } else if (selectedMode === GEMINI_SETUP_MODES.VERTEX_EXPRESS) {
+      } else if (selectedMode === GEMINI_SETUP_COMMANDS.VERTEX_EXPRESS) {
         if (!normalizedVertexApiKey) {
           throw new Error('VERTEX_AI_API_KEY is required for VERTEX_EXPRESS mode.');
         }

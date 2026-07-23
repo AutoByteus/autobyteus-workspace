@@ -13,7 +13,7 @@ const logger = rootLogger.child('server.app-data')
 export class AppDataService {
   private appDataDir: string
   private firstRun: boolean
-  private requiredDataDirs = ['db', 'logs', 'download']
+  private readonly requiredDataDirs = ['db', 'logs', 'download', 'tmp'] as const
 
   constructor(baseDataPath: string) {
     this.appDataDir = path.join(baseDataPath, 'server-data')
@@ -163,8 +163,7 @@ export class AppDataService {
       errors.push(`Required Prisma schema not found: ${prismaSchema}`)
     }
 
-    const requiredDataDirs = ['logs', 'db', 'download']
-    for (const dir of requiredDataDirs) {
+    for (const dir of this.requiredDataDirs) {
       const dirPath = path.join(this.appDataDir, dir)
       if (!fs.existsSync(dirPath)) {
         errors.push(`Required data directory not found: ${dirPath}`)

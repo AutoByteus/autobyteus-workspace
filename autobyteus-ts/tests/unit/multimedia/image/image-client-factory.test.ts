@@ -3,11 +3,12 @@ import { ImageClientFactory } from '../../../../src/multimedia/image/image-clien
 import { BaseImageClient } from '../../../../src/multimedia/image/base-image-client.js';
 import { GeminiImageClient } from '../../../../src/multimedia/image/api/gemini-image-client.js';
 import {
-  apiKeyAuthentication,
-  geminiAiStudioAuthentication,
-} from '../../explicit-auth-test-helpers.js';
+  geminiProviderApiKeyResolver,
+  providerApiKeyResolver,
+} from '../../provider-api-key-resolver-test-helpers.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
+  selectGeminiRuntimeForResolver: async () => ({ kind: 'aiStudio' }),
   initializeGeminiClientWithRuntime: () => ({
     client: { models: { generateContent: vi.fn() } },
     runtimeInfo: { runtime: 'api_key' }
@@ -37,17 +38,21 @@ describe('ImageClientFactory', () => {
   });
 
   it('creates image client for valid identifier', () => {
-    const client = ImageClientFactory.createImageClient('gpt-image-1.5', {
-      authentication: apiKeyAuthentication('synthetic-openai-key'),
-    });
+    const client = ImageClientFactory.createImageClient(
+      'gpt-image-1.5',
+      undefined,
+      providerApiKeyResolver('synthetic-openai-key'),
+    );
     expect(client).toBeInstanceOf(BaseImageClient);
     expect(client.model.modelIdentifier).toBe('gpt-image-1.5');
   });
 
   it('creates OpenAI gpt-image-2 client with flexible image defaults', () => {
-    const client = ImageClientFactory.createImageClient('gpt-image-2', {
-      authentication: apiKeyAuthentication('synthetic-openai-key'),
-    });
+    const client = ImageClientFactory.createImageClient(
+      'gpt-image-2',
+      undefined,
+      providerApiKeyResolver('synthetic-openai-key'),
+    );
 
     expect(client).toBeInstanceOf(BaseImageClient);
     expect(client.model.modelIdentifier).toBe('gpt-image-2');
@@ -72,24 +77,29 @@ describe('ImageClientFactory', () => {
     expect(model?.name).toBe(modelId);
     expect(model?.value).toBe(modelId);
 
-    const client = ImageClientFactory.createImageClient(modelId, {
-      authentication: geminiAiStudioAuthentication('synthetic-gemini-key'),
-    });
+    const client = ImageClientFactory.createImageClient(
+      modelId,
+      undefined,
+      geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+    );
     expect(client).toBeInstanceOf(GeminiImageClient);
     expect(client.model.modelIdentifier).toBe(modelId);
   });
 
-  it('describes Gemini construction with only credential ownership and exact mode requirement', () => {
-    const target = ImageClientFactory.describeConstructionTarget('gemini-2.5-flash-image');
-    expect(target).toEqual({
-      credentialProviderId: 'GEMINI',
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
-    });
-    expect(Object.keys(target).sort()).toEqual(['authenticationRequirement', 'credentialProviderId']);
+  it('keeps model definitions credential-independent', () => {
+    const model = ImageClientFactory.listModels()
+      .find((entry) => entry.modelIdentifier === 'gemini-2.5-flash-image');
+    expect(model).toBeDefined();
+    expect(model).not.toHaveProperty('credentialProviderId');
+    expect(model).not.toHaveProperty('authenticationRequirement');
   });
 
   it('throws for invalid identifier', () => {
-    expect(() => ImageClientFactory.createImageClient('unsupported-image-model-xyz'))
+    expect(() => ImageClientFactory.createImageClient(
+      'unsupported-image-model-xyz',
+      undefined,
+      providerApiKeyResolver(),
+    ))
       .toThrow('No image model registered');
   });
 });

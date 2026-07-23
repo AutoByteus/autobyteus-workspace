@@ -8,7 +8,7 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const tools = [
   {
@@ -69,7 +69,7 @@ describe('GrokLLM request policy', () => {
     const syncPayloads: Record<string, unknown>[] = [];
     const streamPayloads: Record<string, unknown>[] = [];
 
-    const llm = new GrokLLM(buildModel(), llmApiKeyContext(config, 'synthetic-grok-key'));
+    const llm = new GrokLLM(buildModel(), config, providerApiKeyResolver('synthetic-grok-key'));
     const create = vi
       .fn()
       .mockImplementationOnce(async (payload: Record<string, unknown>) => {
@@ -82,7 +82,7 @@ describe('GrokLLM request policy', () => {
           yield { choices: [{ delta: { content: 'streamed' } }] };
         })();
       });
-    (llm as any).client = { chat: { completions: { create } } };
+    (llm as any).clientPromise = Promise.resolve({ chat: { completions: { create } } });
 
     await llm.sendUserMessage(new LLMUserMessage({ content: 'Hello' }), kwargs);
     for await (const _chunk of llm.streamUserMessage(

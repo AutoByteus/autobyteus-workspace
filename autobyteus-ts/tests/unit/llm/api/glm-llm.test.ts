@@ -4,7 +4,7 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
-import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 
@@ -27,7 +27,7 @@ const buildModel = () => new LLMModel({
 
 class GlmLLM extends ProductionGlmLLM {
   constructor(model = buildModel(), config = new LLMConfig()) {
-    super(model, llmApiKeyContext(config, 'synthetic-glm-key'));
+    super(model, config, providerApiKeyResolver('synthetic-glm-key'));
   }
 }
 

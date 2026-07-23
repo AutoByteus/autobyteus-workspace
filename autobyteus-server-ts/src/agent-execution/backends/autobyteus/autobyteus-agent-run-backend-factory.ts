@@ -14,8 +14,10 @@ import {
   defaultSystemPromptProcessorRegistry,
   defaultToolExecutionResultProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
+  LLMFactory,
   waitForAgentToBeIdle,
 } from "autobyteus-ts";
+import type { BaseLLM, LLMFactoryConfigInput } from "autobyteus-ts";
 import type { Agent } from "autobyteus-ts/agent/agent.js";
 import type { CompactionAgentRunner } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
 import { AgentDefinition } from "../../../agent-definition/domain/models.js";
@@ -41,10 +43,7 @@ import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-context-builder.js";
 import { composeAutoByteusMemberSystemPrompt } from "./autobyteus-member-system-prompt-composer.js";
 import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
-import {
-  getLLMProvisioningService,
-  type LLMProvisioningService,
-} from "../../../llm-management/services/llm-provisioning-service.js";
+import { createLlmProviderApiKeyResolver } from "../../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -113,7 +112,7 @@ const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async (
 export type AutoByteusAgentRunBackendFactoryOptions = {
   agentFactory?: AgentFactoryLike;
   agentDefinitionService?: AgentDefinitionService;
-  llmProvisioningService?: Pick<LLMProvisioningService, "createLLM">;
+  createLLM?: (modelIdentifier: string, configInput?: LLMFactoryConfigInput) => Promise<BaseLLM>;
   workspaceManager?: WorkspaceManager;
   skillService?: SkillService;
   registries?: Partial<ProcessorRegistries>;
@@ -127,7 +126,10 @@ const asTrimmedString = (value: unknown): string | null =>
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly agentFactory: AgentFactoryLike;
   private readonly agentDefinitionService: AgentDefinitionService;
-  private readonly llmProvisioningService: Pick<LLMProvisioningService, "createLLM">;
+  private readonly createLLM: (
+    modelIdentifier: string,
+    configInput?: LLMFactoryConfigInput,
+  ) => Promise<BaseLLM>;
   private readonly workspaceManager: WorkspaceManager;
   private readonly skillService: SkillService;
   private readonly registries: ProcessorRegistries;
@@ -138,7 +140,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     this.agentFactory = options.agentFactory ?? defaultAgentFactory;
     this.agentDefinitionService =
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
-    this.llmProvisioningService = options.llmProvisioningService ?? getLLMProvisioningService();
+    this.createLLM = options.createLLM ??
+      ((modelIdentifier, configInput) =>
+        LLMFactory.createLLM(modelIdentifier, configInput, createLlmProviderApiKeyResolver()));
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.skillService = options.skillService ?? SkillService.getInstance();
     this.registries = {
@@ -413,7 +417,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       }
     }
 
-    const llmInstance = await this.llmProvisioningService.createLLM(
+    const llmInstance = await this.createLLM(
       llmModelIdentifier,
       llmConfig ?? undefined,
     );

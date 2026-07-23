@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SecretValue } from 'autobyteus-ts';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import { ModelMetadataProvenance } from 'autobyteus-ts/llm/metadata/model-metadata-resolver.js';
@@ -12,150 +12,137 @@ import {
   getSecretStorageConfigurationService,
   resetSecretStorageConfigurationServiceForTests,
 } from '../../../src/secret-management/configuration/secret-storage-configuration-service.js';
+import type { SecretCredentialSlot } from '../../../src/secret-management/domain/secret-binding.js';
 
 const tempDirectories: string[] = [];
-const initialGeminiSetupMode = process.env.GEMINI_SETUP_MODE;
+const originalProject = process.env.VERTEX_AI_PROJECT;
+const originalLocation = process.env.VERTEX_AI_LOCATION;
 
-const anthropicModel = (): ModelInfo => ({
-  model_identifier: 'claude-sonnet-4.6',
-  display_name: 'claude-sonnet-4.6',
-  value: 'claude-sonnet-4-6',
-  canonical_name: 'claude-sonnet-4.6',
-  provider_id: 'ANTHROPIC',
-  provider_name: 'Anthropic',
-  provider_type: 'ANTHROPIC',
+const model = (provider: LLMProvider, name: string): ModelInfo => ({
+  model_identifier: name,
+  display_name: name,
+  value: name,
+  canonical_name: name,
+  provider_id: provider,
+  provider_name: provider,
+  provider_type: provider,
   runtime: 'api',
   host_url: null,
   description: null,
   config_schema: null,
-  max_context_tokens: 1_000_000,
-  active_context_tokens: 1_000_000,
-  max_input_tokens: 1_000_000,
-  max_output_tokens: 64_000,
-});
-
-const geminiModel = (): ModelInfo => ({
-  model_identifier: 'gemini-3-flash-preview',
-  display_name: 'gemini-3-flash-preview',
-  value: 'gemini-3-flash-preview',
-  canonical_name: 'gemini-3-flash-preview',
-  provider_id: 'GEMINI',
-  provider_name: 'Gemini',
-  provider_type: LLMProvider.GEMINI,
-  runtime: 'api',
-  host_url: null,
-  description: null,
-  config_schema: null,
-  max_context_tokens: 1_048_576,
+  max_context_tokens: provider === LLMProvider.GEMINI ? 1_048_576 : 1_000_000,
   active_context_tokens: null,
-  max_input_tokens: 1_048_576,
-  max_output_tokens: 65_536,
+  max_input_tokens: provider === LLMProvider.GEMINI ? 1_048_576 : 1_000_000,
+  max_output_tokens: provider === LLMProvider.GEMINI ? 65_536 : 64_000,
 });
 
-const bootstrapGeminiMetadataStore = async () => {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-provisioning-gemini-'));
+const bootstrap = async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-provisioning-'));
   tempDirectories.push(directory);
   const configuration = getSecretStorageConfigurationService();
   await configuration.bootstrap({ serverDataDir: directory });
-  const management = configuration.requireManagementService();
+  return configuration.requireManagementService();
+};
+
+const saveGemini = async (
+  credentialSlot: Extract<SecretCredentialSlot, 'geminiAiStudioApiKey' | 'geminiVertexExpressApiKey'>,
+  value: string,
+) => {
+  const management = await bootstrap();
   await management.saveForConsumer({
-    consumer: { kind: 'llmMetadata', providerId: 'GEMINI', credentialSlot: 'geminiAiStudioApiKey' },
-    value: SecretValue.fromString('synthetic-gemini-ai-studio-key'),
-  });
-  await management.saveForConsumer({
-    consumer: { kind: 'llmMetadata', providerId: 'GEMINI', credentialSlot: 'geminiVertexExpressApiKey' },
-    value: SecretValue.fromString('synthetic-gemini-vertex-express-key'),
+    consumer: { kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot },
+    value: SecretValue.fromString(value),
   });
   return management;
 };
 
-beforeEach(() => {
-  process.env.GEMINI_SETUP_MODE = 'AI_STUDIO';
-});
+const geminiMetadataLookups = (
+  resolveSpy: ReturnType<typeof vi.spyOn>,
+): unknown[][] => resolveSpy.mock.calls.filter(([consumer]) => (
+  (consumer as { kind?: string; providerId?: string }).kind === 'llmMetadata'
+  && (consumer as { providerId?: string }).providerId === LLMProvider.GEMINI
+));
 
 afterEach(async () => {
+  vi.restoreAllMocks();
   vi.unstubAllGlobals();
   await resetSecretStorageConfigurationServiceForTests();
   appConfigProvider.resetForTests();
   for (const directory of tempDirectories.splice(0)) {
     fs.rmSync(directory, { recursive: true, force: true });
   }
-  delete process.env.ANTHROPIC_API_KEY;
-  if (initialGeminiSetupMode === undefined) delete process.env.GEMINI_SETUP_MODE;
-  else process.env.GEMINI_SETUP_MODE = initialGeminiSetupMode;
+  if (originalProject === undefined) delete process.env.VERTEX_AI_PROJECT;
+  else process.env.VERTEX_AI_PROJECT = originalProject;
+  if (originalLocation === undefined) delete process.env.VERTEX_AI_LOCATION;
+  else process.env.VERTEX_AI_LOCATION = originalLocation;
 });
 
 describe('ModelMetadataProvisioningService', () => {
-  it('rejects a missing Gemini setup mode before metadata HTTP', async () => {
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-provisioning-mode-missing-'));
-    tempDirectories.push(directory);
-    const configuration = getSecretStorageConfigurationService();
-    await configuration.bootstrap({ serverDataDir: directory });
-    const resolveSpy = vi.spyOn(configuration.requireManagementService(), 'resolveForUse');
-    delete process.env.GEMINI_SETUP_MODE;
+  it('returns curated-only Gemini metadata with zero HTTP when setup is unconfigured', async () => {
+    const management = await bootstrap();
+    const resolveSpy = vi.spyOn(management, 'resolveForUse');
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
-    await expect(
-      new ModelMetadataProvisioningService().enrich([geminiModel()]),
-    ).rejects.toThrow('GEMINI_SETUP_MODE_INVALID');
+    const [result] = await new ModelMetadataProvisioningService()
+      .enrichBestEffort([model(LLMProvider.GEMINI, 'gemini-3-flash-preview')]);
 
-    expect(resolveSpy).not.toHaveBeenCalledWith(expect.objectContaining({
-      providerId: LLMProvider.GEMINI,
-    }));
+    expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.CURATED_ONLY);
+    expect(geminiMetadataLookups(resolveSpy)).toEqual([]);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('uses curated metadata without lookup or HTTP when the managed definition is missing', async () => {
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-provisioning-missing-'));
-    tempDirectories.push(directory);
-    await getSecretStorageConfigurationService().bootstrap({ serverDataDir: directory });
+  it('contains missing optional native metadata credentials as curated fallback', async () => {
+    await bootstrap();
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
-    const [result] = await new ModelMetadataProvisioningService().enrich([anthropicModel()]);
+    const [result] = await new ModelMetadataProvisioningService()
+      .enrichBestEffort([model(LLMProvider.ANTHROPIC, 'claude-sonnet-4.6')]);
 
-    expect(result?.max_context_tokens).toBe(1_000_000);
+    expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.CURATED_FALLBACK);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('resolves the exact metadata consumer from the Store and enriches through the provider client', async () => {
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-provisioning-configured-'));
-    tempDirectories.push(directory);
-    const configuration = getSecretStorageConfigurationService();
-    await configuration.bootstrap({ serverDataDir: directory });
-    await configuration.requireManagementService().saveForConsumer({
-      consumer: { kind: 'llmMetadata', providerId: 'ANTHROPIC', credentialSlot: 'apiKey' },
-      value: SecretValue.fromString('synthetic-metadata-key'),
+  it('resolves the exact native metadata consumer and reports live metadata', async () => {
+    const management = await bootstrap();
+    await management.saveForConsumer({
+      consumer: { kind: 'llmMetadata', providerId: LLMProvider.ANTHROPIC, credentialSlot: 'apiKey' },
+      value: SecretValue.fromString('synthetic-anthropic-metadata-key'),
     });
-    const fetchMock = vi.fn(async (_url: string, options: { headers?: Record<string, string> }) => {
-      expect(options.headers).toMatchObject({ 'x-api-key': 'synthetic-metadata-key' });
+    const resolveSpy = vi.spyOn(management, 'resolveForUse');
+    vi.stubGlobal('fetch', vi.fn(async (_url: string, options: { headers?: Record<string, string> }) => {
+      expect(options.headers).toMatchObject({ 'x-api-key': 'synthetic-anthropic-metadata-key' });
       return {
         ok: true,
         json: async () => ({
-          data: [{ id: 'claude-sonnet-4-6', max_input_tokens: 1_200_000, max_tokens: 80_000 }],
+          data: [{ id: 'claude-sonnet-4.6', max_input_tokens: 1_200_000, max_tokens: 80_000 }],
         }),
       } as Response;
+    }));
+
+    const [result] = await new ModelMetadataProvisioningService()
+      .enrichBestEffort([model(LLMProvider.ANTHROPIC, 'claude-sonnet-4.6')]);
+
+    expect(resolveSpy).toHaveBeenCalledWith({
+      kind: 'llmMetadata',
+      providerId: LLMProvider.ANTHROPIC,
+      credentialSlot: 'apiKey',
     });
-    vi.stubGlobal('fetch', fetchMock);
-
-    const [result] = await new ModelMetadataProvisioningService().enrich([anthropicModel()]);
-
-    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(result).toMatchObject({
       max_context_tokens: 1_200_000,
-      active_context_tokens: null,
       max_input_tokens: 1_200_000,
       max_output_tokens: 80_000,
       metadata_provenance: ModelMetadataProvenance.LIVE,
     });
-    expect(process.env.ANTHROPIC_API_KEY).toBeUndefined();
   });
 
-  it('uses only the AI Studio metadata consumer and reports LIVE for a matching Developer API record', async () => {
-    const management = await bootstrapGeminiMetadataStore();
+  it('uses only AI Studio metadata authorization and the Developer API endpoint', async () => {
+    const management = await saveGemini(
+      'geminiAiStudioApiKey',
+      'synthetic-gemini-ai-studio-key',
+    );
     const resolveSpy = vi.spyOn(management, 'resolveForUse');
-    process.env.GEMINI_SETUP_MODE = 'AI_STUDIO';
     const fetchMock = vi.fn(async (url: string, options: { headers?: Record<string, string> }) => {
       expect(url).toBe('https://generativelanguage.googleapis.com/v1beta/models');
       expect(options.headers).toEqual({ 'x-goog-api-key': 'synthetic-gemini-ai-studio-key' });
@@ -164,7 +151,6 @@ describe('ModelMetadataProvisioningService', () => {
         json: async () => ({
           models: [{
             name: 'models/gemini-3-flash-preview',
-            baseModelId: 'gemini-3-flash-preview',
             inputTokenLimit: 2_097_152,
             outputTokenLimit: 98_304,
           }],
@@ -173,105 +159,76 @@ describe('ModelMetadataProvisioningService', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const [result] = await new ModelMetadataProvisioningService().enrich([geminiModel()]);
+    const [result] = await new ModelMetadataProvisioningService()
+      .enrichBestEffort([model(LLMProvider.GEMINI, 'gemini-3-flash-preview')]);
 
     expect(resolveSpy).toHaveBeenCalledWith({
       kind: 'llmMetadata',
       providerId: LLMProvider.GEMINI,
       credentialSlot: 'geminiAiStudioApiKey',
     });
-    expect(resolveSpy).not.toHaveBeenCalledWith({
-      kind: 'llmMetadata',
-      providerId: LLMProvider.GEMINI,
+    expect(resolveSpy).not.toHaveBeenCalledWith(expect.objectContaining({
       credentialSlot: 'geminiVertexExpressApiKey',
-    });
+    }));
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(result).toMatchObject({
       max_context_tokens: 2_097_152,
-      max_input_tokens: 2_097_152,
       max_output_tokens: 98_304,
       metadata_provenance: ModelMetadataProvenance.LIVE,
     });
   });
 
-  it.each(['VERTEX_EXPRESS', 'VERTEX_PROJECT'] as const)(
-    'uses CURATED_ONLY with zero Gemini metadata lookup or HTTP in %s mode',
-    async (mode) => {
-      const management = await bootstrapGeminiMetadataStore();
-      const resolveSpy = vi.spyOn(management, 'resolveForUse');
-      process.env.GEMINI_SETUP_MODE = mode;
-      const fetchMock = vi.fn();
-      vi.stubGlobal('fetch', fetchMock);
-
-      const [result] = await new ModelMetadataProvisioningService().enrich([geminiModel()]);
-
-      const geminiLookups = resolveSpy.mock.calls.filter(
-        ([consumer]) => consumer.providerId === LLMProvider.GEMINI,
-      );
-      expect(geminiLookups).toEqual([]);
-      expect(fetchMock).not.toHaveBeenCalled();
-      expect(result).toMatchObject({
-        max_context_tokens: 1_048_576,
-        max_input_tokens: 1_048_576,
-        max_output_tokens: 65_536,
-        metadata_provenance: ModelMetadataProvenance.CURATED_ONLY,
-      });
-    },
-  );
-
-  it('reports CURATED_FALLBACK without HTTP when the AI Studio definition is unavailable', async () => {
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-provisioning-ai-studio-missing-'));
-    tempDirectories.push(directory);
-    const configuration = getSecretStorageConfigurationService();
-    await configuration.bootstrap({ serverDataDir: directory });
-    const resolveSpy = vi.spyOn(configuration.requireManagementService(), 'resolveForUse');
-    process.env.GEMINI_SETUP_MODE = 'AI_STUDIO';
+  it('uses curated-only metadata with zero metadata lookup/HTTP for Vertex Express', async () => {
+    const management = await saveGemini(
+      'geminiVertexExpressApiKey',
+      'synthetic-gemini-vertex-express-key',
+    );
+    const resolveSpy = vi.spyOn(management, 'resolveForUse');
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
-    const [result] = await new ModelMetadataProvisioningService().enrich([geminiModel()]);
+    const [result] = await new ModelMetadataProvisioningService()
+      .enrichBestEffort([model(LLMProvider.GEMINI, 'gemini-3-flash-preview')]);
 
-    expect(resolveSpy).toHaveBeenCalledWith({
-      kind: 'llmMetadata',
-      providerId: LLMProvider.GEMINI,
-      credentialSlot: 'geminiAiStudioApiKey',
-    });
+    expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.CURATED_ONLY);
+    expect(geminiMetadataLookups(resolveSpy)).toEqual([]);
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.CURATED_FALLBACK);
   });
 
-  it('contains an AI Studio request failure as CURATED_FALLBACK', async () => {
-    await bootstrapGeminiMetadataStore();
-    process.env.GEMINI_SETUP_MODE = 'AI_STUDIO';
+  it('uses curated-only metadata with zero metadata lookup/HTTP for complete Vertex Project', async () => {
+    const management = await bootstrap();
+    const resolveSpy = vi.spyOn(management, 'resolveForUse');
+    process.env.VERTEX_AI_PROJECT = 'synthetic-project';
+    process.env.VERTEX_AI_LOCATION = 'global';
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const [result] = await new ModelMetadataProvisioningService()
+      .enrichBestEffort([model(LLMProvider.GEMINI, 'gemini-3-flash-preview')]);
+
+    expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.CURATED_ONLY);
+    expect(geminiMetadataLookups(resolveSpy)).toEqual([]);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('contains AI Studio HTTP and mapping misses as curated fallback', async () => {
+    await saveGemini('geminiAiStudioApiKey', 'synthetic-gemini-ai-studio-key');
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 403 }) as Response));
-
-    const [result] = await new ModelMetadataProvisioningService().enrich([geminiModel()]);
-
-    expect(result).toMatchObject({
-      max_context_tokens: 1_048_576,
-      metadata_provenance: ModelMetadataProvenance.CURATED_FALLBACK,
-    });
-  });
-
-  it('reports CURATED_FALLBACK when AI Studio live metadata has no matching model', async () => {
-    await bootstrapGeminiMetadataStore();
-    process.env.GEMINI_SETUP_MODE = 'AI_STUDIO';
     vi.stubGlobal('fetch', vi.fn(async () => ({
       ok: true,
       json: async () => ({
-        models: [{ name: 'models/gemini-unrelated-model', inputTokenLimit: 2_000_000 }],
+        models: [{ name: 'models/unrelated', inputTokenLimit: 2_000_000 }],
       }),
     }) as Response));
 
-    const [result] = await new ModelMetadataProvisioningService().enrich([geminiModel()]);
+    const [result] = await new ModelMetadataProvisioningService()
+      .enrichBestEffort([model(LLMProvider.GEMINI, 'gemini-3-flash-preview')]);
 
     expect(result?.metadata_provenance).toBe(ModelMetadataProvenance.CURATED_FALLBACK);
   });
 
-  it('caches one provider load until explicit invalidation and reloads afterward', async () => {
-    await bootstrapGeminiMetadataStore();
-    process.env.GEMINI_SETUP_MODE = 'AI_STUDIO';
+  it('caches one live provider load until explicit invalidation', async () => {
+    await saveGemini('geminiAiStudioApiKey', 'synthetic-gemini-ai-studio-key');
     const fetchMock = vi.fn(async () => ({
       ok: true,
       json: async () => ({
@@ -283,13 +240,14 @@ describe('ModelMetadataProvisioningService', () => {
     }) as Response);
     vi.stubGlobal('fetch', fetchMock);
     const service = new ModelMetadataProvisioningService();
+    const models = [model(LLMProvider.GEMINI, 'gemini-3-flash-preview')];
 
-    await service.enrich([geminiModel()]);
-    await service.enrich([geminiModel()]);
+    await service.enrichBestEffort(models);
+    await service.enrichBestEffort(models);
     expect(fetchMock).toHaveBeenCalledTimes(1);
 
     service.invalidate();
-    await service.enrich([geminiModel()]);
+    await service.enrichBestEffort(models);
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

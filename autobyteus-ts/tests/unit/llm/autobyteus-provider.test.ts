@@ -53,7 +53,8 @@ describe('AutobyteusModelProvider', () => {
     expect(models).toHaveLength(1);
     expect(models[0]?.maxContextTokens).toBeNull();
     expect(models[0]?.activeContextTokens).toBeNull();
-    expect(models[0]?.credentialProviderId).toBe('AUTOBYTEUS');
+    expect(models[0]).not.toHaveProperty('credentialProviderId');
+    expect(models[0]).not.toHaveProperty('authenticationRequirement');
     expect(mockClientConstruction).toHaveBeenCalledWith(
       'https://autobyteus.example',
       'synthetic-gateway-key',

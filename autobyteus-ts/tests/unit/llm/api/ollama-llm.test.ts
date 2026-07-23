@@ -5,7 +5,7 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { OllamaLLM as ProductionOllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
 import { createLocalLongRunningFetch } from '../../../../src/llm/transport/local-long-running-fetch.js';
-import { llmNoAuthContext } from '../../explicit-auth-test-helpers.js';
+import { missingProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockChat = vi.hoisted(() => vi.fn());
 const mockAbort = vi.hoisted(() => vi.fn());
@@ -23,7 +23,7 @@ vi.mock('ollama', () => ({
 
 class OllamaLLM extends ProductionOllamaLLM {
   constructor(model: LLMModel, config = new LLMConfig()) {
-    super(model, llmNoAuthContext(config));
+    super(model, config, missingProviderApiKeyResolver());
   }
 }
 

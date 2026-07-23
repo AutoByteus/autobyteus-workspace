@@ -7,12 +7,15 @@ import { GoogleGenAI } from '@google/genai';
 import { BaseVideoClient } from '../base-video-client.js';
 import { VideoGenerationResponse } from '../../utils/response-types.js';
 import { loadMediaReference } from '../../utils/media-reference-loader.js';
-import { initializeGeminiClientWithRuntime } from '../../../utils/gemini-helper.js';
+import {
+  initializeGeminiClientWithRuntime,
+  selectGeminiRuntimeForResolver,
+} from '../../../utils/gemini-helper.js';
 import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { VideoModel } from '../video-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
-import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
 
 const VIDEO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_video');
 const SUPPORTED_ASPECT_RATIOS = new Set(['16:9', '9:16']);
@@ -239,15 +242,23 @@ const getFileNameForPolling = (candidate: VideoContentLike): string | null => {
 };
 
 export class GeminiVideoClient extends BaseVideoClient {
-  private client: GoogleGenAI;
-  private runtimeInfo: GeminiRuntimeInfo | null;
+  private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
   private tempFiles: string[] = [];
 
-  constructor(model: VideoModel, context: MultimediaConstructionContext) {
-    super(model, context.config);
-    const { client, runtimeInfo } = initializeGeminiClientWithRuntime(context.authentication);
-    this.client = client;
-    this.runtimeInfo = runtimeInfo;
+  constructor(model: VideoModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+  }
+
+  private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    const selection = await selectGeminiRuntimeForResolver(this.apiKeyResolver);
+    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 
   async generateVideo(
@@ -256,12 +267,13 @@ export class GeminiVideoClient extends BaseVideoClient {
     generationConfig?: Record<string, unknown>,
   ): Promise<VideoGenerationResponse> {
     try {
+      const { client, runtimeInfo } = await this.getClient();
       const normalizedConfig = normalizeConfig(this.config.toDict?.() ?? {}, generationConfig);
       assertTaskInputCompatibility(normalizedConfig.task, inputImageUrls);
       const runtimeAdjustedModel = resolveModelForRuntime(
         this.model.value,
         'video',
-        this.runtimeInfo?.runtime,
+        runtimeInfo.runtime,
       );
       const providerGenerationConfig = buildProviderGenerationConfig(normalizedConfig.task);
       const request = {
@@ -279,7 +291,7 @@ export class GeminiVideoClient extends BaseVideoClient {
         ...(providerGenerationConfig ? { generation_config: providerGenerationConfig } : {}),
       };
 
-      const interaction = await this.client.interactions.create(request as never);
+      const interaction = await client.interactions.create(request as never);
       const videoUrl = await this.extractGeneratedVideoUrl(interaction, normalizedConfig);
       return new VideoGenerationResponse([videoUrl]);
     } catch (error) {
@@ -343,7 +355,8 @@ export class GeminiVideoClient extends BaseVideoClient {
 
     await fs.mkdir(VIDEO_TEMP_DIR, { recursive: true });
     const downloadPath = path.join(VIDEO_TEMP_DIR, `${crypto.randomUUID()}.mp4`);
-    await this.client.files.download({ file: downloadable as never, downloadPath });
+    const { client } = await this.getClient();
+    await client.files.download({ file: downloadable as never, downloadPath });
     this.tempFiles.push(downloadPath);
     return downloadPath;
   }
@@ -351,9 +364,10 @@ export class GeminiVideoClient extends BaseVideoClient {
   private async pollFileUntilActive(fileName: string, config: NormalizedVideoConfig): Promise<unknown> {
     const startedAt = Date.now();
     let lastFile: unknown = { name: fileName };
+    const { client } = await this.getClient();
 
     while (Date.now() - startedAt <= config.maxPollMs) {
-      lastFile = await this.client.files.get({ name: fileName });
+      lastFile = await client.files.get({ name: fileName });
       const state = getFileState(lastFile);
       if (state === 'ACTIVE' || !state) {
         return lastFile;

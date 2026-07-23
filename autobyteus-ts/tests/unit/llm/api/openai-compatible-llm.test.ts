@@ -5,7 +5,7 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages.js';
-import { llmApiKeyContext, llmNoAuthContext } from '../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver, missingProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 const mockOpenAIConstructor = vi.hoisted(
@@ -35,7 +35,13 @@ async function* createStream(parts: any[]) {
 
 class OpenAICompatibleLLM extends ProductionOpenAICompatibleLLM {
   constructor(model: LLMModel, _legacyAlias: string, baseUrl: string, config = new LLMConfig()) {
-    super(model, baseUrl, llmApiKeyContext(config, 'synthetic-openai-compatible-key'));
+    super(
+      model,
+      baseUrl,
+      config,
+      providerApiKeyResolver('synthetic-openai-compatible-key'),
+      model.provider,
+    );
   }
 }
 
@@ -48,7 +54,11 @@ const buildDeepSeekModel = () => new LLMModel({
 
 class DeepSeekLLM extends ProductionDeepSeekLLM {
   constructor() {
-    super(buildDeepSeekModel(), llmApiKeyContext(undefined, 'synthetic-deepseek-key'));
+    super(
+      buildDeepSeekModel(),
+      new LLMConfig(),
+      providerApiKeyResolver('synthetic-deepseek-key'),
+    );
   }
 }
 
@@ -72,16 +82,20 @@ describe('OpenAICompatibleLLM', () => {
     );
   });
 
-  it('should initialize with API key', () => {
-    // Construction successful if no error thrown
+  it('constructs without resolving and initializes with the provider key on first use', async () => {
     expect(llm).toBeDefined();
+    expect(mockOpenAIConstructor).not.toHaveBeenCalled();
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'hello' } }],
+    });
+    await llm.sendMessages([]);
     expect(mockOpenAIConstructor).toHaveBeenCalledWith({
       apiKey: 'synthetic-openai-compatible-key',
       baseURL: 'https://api.openai.com/v1',
     });
   });
 
-  it('should throw if explicit API-key authentication is missing', () => {
+  it('fails at first use if the required provider key is missing', async () => {
     const model = new LLMModel({
       name: 'gpt-4o',
       value: 'gpt-4o',
@@ -89,13 +103,14 @@ describe('OpenAICompatibleLLM', () => {
       provider: LLMProvider.OPENAI
     });
     
-    expect(() => {
-      new ProductionOpenAICompatibleLLM(
-        model,
-        'url',
-        llmNoAuthContext(),
-      );
-    }).toThrow(/requires explicitly resolved API-key authentication/);
+    const missing = new ProductionOpenAICompatibleLLM(
+      model,
+      'https://example.test/v1',
+      new LLMConfig(),
+      missingProviderApiKeyResolver(),
+      LLMProvider.OPENAI,
+    );
+    await expect(missing.sendMessages([])).rejects.toThrow('SYNTHETIC_API_KEY_MISSING');
   });
 
   it('maps reasoning_content on sync responses into CompleteResponse.reasoning', async () => {
@@ -342,7 +357,11 @@ describe('OpenAICompatibleLLM', () => {
     expect(chunks.at(-1)?.is_complete).toBe(true);
   });
 
-  it('keeps default client timeout/fetch behavior for non-LM-Studio providers', () => {
+  it('keeps default client timeout/fetch behavior for non-LM-Studio providers', async () => {
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'ok' } }],
+    });
+    await llm.sendMessages([]);
     expect(mockOpenAIConstructor).toHaveBeenCalledTimes(1);
     const [clientOptions] = mockOpenAIConstructor.mock.calls.at(0) ?? [];
 

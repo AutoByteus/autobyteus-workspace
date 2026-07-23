@@ -15,7 +15,7 @@ import {
   createLocalLongRunningFetch,
   LOCAL_PROVIDER_SDK_TIMEOUT_MS,
 } from '../../../../src/llm/transport/local-long-running-fetch.js';
-import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 const mockOpenAIConstructor = vi.hoisted(
@@ -38,7 +38,7 @@ vi.mock('openai', () => ({
 
 class LMStudioLLM extends ProductionLMStudioLLM {
   constructor(model: LLMModel, config = new LLMConfig()) {
-    super(model, llmApiKeyContext(config, 'synthetic-lmstudio-key'));
+    super(model, config, providerApiKeyResolver('synthetic-lmstudio-key'));
   }
 }
 
@@ -59,7 +59,7 @@ describe('LMStudioLLM', () => {
     }
   });
 
-  it('injects the long-running local fetch and 24h SDK timeout into the OpenAI client', () => {
+  it('injects the long-running local fetch and 24h SDK timeout into the OpenAI client', async () => {
     const model = new LLMModel({
       name: 'gemma-4-31b-it',
       value: 'gemma-4-31b-it',
@@ -71,6 +71,10 @@ describe('LMStudioLLM', () => {
     const llm = new LMStudioLLM(model, new LLMConfig());
 
     expect(llm).toBeDefined();
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'ok' } }],
+    });
+    await llm.sendMessages([]);
     expect(mockOpenAIConstructor).toHaveBeenCalledWith({
       apiKey: 'synthetic-lmstudio-key',
       baseURL: 'http://127.0.0.1:1234/v1',

@@ -11,24 +11,31 @@ import { LLMProvider } from '../providers.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createMistralPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import { applySafeProviderRequestKwargs } from './provider-request-kwargs.js';
-import {
-  requireApiKeyAuthentication,
-  type LLMConstructionContext,
-} from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 const MISTRAL_CONTROLLED_KWARG_KEYS = new Set(['stream']);
 
 export class MistralLLM extends BaseLLM {
-  protected client: Mistral;
+  private clientPromise: Promise<Mistral> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
   protected maxTokens: number | null;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, context: LLMConstructionContext) {
-    super(model, context.config);
-    const apiKey = requireApiKeyAuthentication(context.authentication, 'Mistral');
-    this.client = new Mistral({ apiKey });
-    this.maxTokens = context.config.maxTokens ?? null;
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+    this.maxTokens = config.maxTokens ?? null;
     this._renderer = createMistralPromptRendererForToolFormat();
+  }
+
+  private getClient(): Promise<Mistral> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<Mistral> {
+    const secret = await this.apiKeyResolver.resolve(LLMProvider.MISTRAL);
+    return new Mistral({ apiKey: secret.revealToTrustedConsumer() });
   }
 
   private toTokenUsage(usage: unknown): LlmTokenUsageObservation | null {
@@ -52,7 +59,8 @@ export class MistralLLM extends BaseLLM {
     }
 
     try {
-      const response = await this.client.chat.complete(params, options.signal ? { signal: options.signal } as any : undefined);
+      const client = await this.getClient();
+      const response = await client.chat.complete(params, options.signal ? { signal: options.signal } as any : undefined);
       const message = response.choices?.[0]?.message;
       let content = '';
       if (typeof message?.content === 'string') {
@@ -90,7 +98,8 @@ export class MistralLLM extends BaseLLM {
     }
 
     try {
-      const stream = await this.client.chat.stream(params, options.signal ? { signal: options.signal } as any : undefined);
+      const client = await this.getClient();
+      const stream = await client.chat.stream(params, options.signal ? { signal: options.signal } as any : undefined);
       for await (const event of stream) {
         const chunk = event.data;
         const choice = chunk?.choices?.[0];

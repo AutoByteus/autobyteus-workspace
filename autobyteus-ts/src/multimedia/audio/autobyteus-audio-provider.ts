@@ -66,8 +66,6 @@ export class AutobyteusAudioModelProvider {
             name,
             value,
             provider,
-            credentialProviderId: MultimediaProvider.AUTOBYTEUS,
-            authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
             clientClass: AutobyteusAudioClient,
             runtime: MultimediaRuntime.AUTOBYTEUS,
             hostUrl,

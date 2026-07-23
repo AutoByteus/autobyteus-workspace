@@ -156,8 +156,6 @@ export class AutobyteusModelProvider {
               name: String(modelInfo.name),
               value: String(modelInfo.value),
               provider,
-              credentialProviderId: LLMProvider.AUTOBYTEUS,
-              authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
               llmClass: AutobyteusLLM,
               canonicalName: (modelInfo.canonical_name as string | undefined) ?? String(modelInfo.name),
               runtime: LLMRuntime.AUTOBYTEUS,

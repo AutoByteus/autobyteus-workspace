@@ -17,12 +17,9 @@ import {
   type OpenAICompatibleEndpointDiscoveryResult,
   type OpenAICompatibleEndpointReloadReport,
 } from './openai-compatible-endpoint-provider.js';
-import type {
-  LLMConstructionTarget,
-  LLMFactoryConfigInput,
-  LLMFactoryCreationInput,
-} from './llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 
+export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
 
 export type PricingStatus = 'trusted' | 'missing' | 'placeholder';
 
@@ -99,7 +96,6 @@ const buildSupportedModels = async (): Promise<LLMModel[]> => {
       return new LLMModel({
         ...definition,
         ...metadata,
-        credentialProviderId: String(definition.provider),
       });
     }),
   );
@@ -233,18 +229,6 @@ export class LLMFactory {
     return config;
   }
 
-  static async describeConstructionTarget(modelIdentifier: string): Promise<LLMConstructionTarget> {
-    await LLMFactory.ensureInitialized();
-    const model = LLMFactory.modelsByIdentifier.get(modelIdentifier);
-    if (!model) {
-      throw new Error(`Model with identifier '${modelIdentifier}' not found.`);
-    }
-    return {
-      credentialProviderId: model.credentialProviderId,
-      authenticationRequirement: model.authenticationRequirement,
-    };
-  }
-
   static async syncRuntimeModels(runtime: LLMRuntime, models: LLMModel[]): Promise<number> {
     await LLMFactory.ensureInitialized();
     if (models.some((model) => model.runtime !== runtime)) {
@@ -266,7 +250,8 @@ export class LLMFactory {
 
   static async createLLM(
     modelIdentifier: string,
-    input: LLMFactoryCreationInput,
+    configInput: LLMFactoryConfigInput | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
   ): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();
 
@@ -276,8 +261,8 @@ export class LLMFactory {
       if (!LLMClass) {
         throw new Error(`Model '${model.modelIdentifier}' does not have an LLM class registered yet.`);
       }
-      const config = LLMFactory.composeEffectiveConfig(model, input.configInput);
-      return new LLMClass(model, { config, authentication: input.authentication });
+      const config = LLMFactory.composeEffectiveConfig(model, configInput);
+      return new LLMClass(model, config, apiKeyResolver);
     }
 
     const foundByName = Array.from(LLMFactory.modelsByIdentifier.values()).filter(

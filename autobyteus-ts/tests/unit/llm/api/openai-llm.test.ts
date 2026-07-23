@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { OpenAILLM } from '../../../../src/llm/api/openai-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
-import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 // Mock OpenAI Client again
 vi.mock('openai', () => {
@@ -22,7 +23,11 @@ describe('OpenAILLM', () => {
       provider: LLMProvider.OPENAI
     });
 
-    llm = new OpenAILLM(model, llmApiKeyContext(undefined, 'synthetic-openai-key'));
+    llm = new OpenAILLM(
+      model,
+      new LLMConfig(),
+      providerApiKeyResolver('synthetic-openai-key'),
+    );
   });
 
   it('should initialize with specific OpenAI constants', () => {

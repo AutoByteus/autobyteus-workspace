@@ -1,6 +1,6 @@
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { AgentConfig } from "autobyteus-ts";
+import { AgentConfig, LLMFactory } from "autobyteus-ts";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
@@ -147,6 +147,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     defaultToolRegistry.restore(toolRegistrySnapshot);
   });
 
@@ -172,7 +173,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: { createLLM } as any,
+      createLLM,
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -207,6 +208,32 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(createLLM.mock.calls[0]?.[1]).not.toBeInstanceOf(LLMConfig);
   });
 
+  it("wires one subject-scoped API-key resolver into the core factory", async () => {
+    const llm = new DummyLLM(
+      new LLMModel({
+        name: "dummy-model",
+        value: "dummy-model",
+        canonicalName: "dummy-model",
+        provider: LLMProvider.OPENAI,
+      }),
+      new LLMConfig(),
+    );
+    const createLLM = vi.spyOn(LLMFactory, "createLLM").mockResolvedValue(llm);
+    const factory = new AutoByteusAgentRunBackendFactory();
+
+    await expect(
+      (factory as any).createLLM("dummy-model", { temperature: 0.2 }),
+    ).resolves.toBe(llm);
+    expect(createLLM).toHaveBeenCalledWith(
+      "dummy-model",
+      { temperature: 0.2 },
+      expect.objectContaining({
+        getStatus: expect.any(Function),
+        resolve: expect.any(Function),
+      }),
+    );
+  });
+
   it("filters mixed task-management tools, composes server team prompts, and injects primitive team context", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
@@ -219,8 +246,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: {
-        createLLM: vi.fn(async () =>
+      createLLM: vi.fn(async () =>
           new DummyLLM(
             new LLMModel({
               name: "dummy-model",
@@ -230,8 +256,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             }),
             new LLMConfig(),
           ),
-        ),
-      } as any,
+      ),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -289,8 +314,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: {
-        createLLM: vi.fn(async () =>
+      createLLM: vi.fn(async () =>
           new DummyLLM(
             new LLMModel({
               name: "dummy-model",
@@ -300,8 +324,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             }),
             new LLMConfig(),
           ),
-        ),
-      } as any,
+      ),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -354,8 +377,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: {
-        createLLM: vi.fn(async () =>
+      createLLM: vi.fn(async () =>
           new DummyLLM(
             new LLMModel({
               name: "dummy-model",
@@ -365,8 +387,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             }),
             new LLMConfig(),
           ),
-        ),
-      } as any,
+      ),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -414,8 +435,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: {
-        createLLM: vi.fn(async () =>
+      createLLM: vi.fn(async () =>
           new DummyLLM(
             new LLMModel({
               name: "dummy-model",
@@ -425,8 +445,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             }),
             new LLMConfig(),
           ),
-        ),
-      } as any,
+      ),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -496,8 +515,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: {
-        createLLM: vi.fn(async () =>
+      createLLM: vi.fn(async () =>
           new DummyLLM(
             new LLMModel({
               name: "dummy-model",
@@ -507,8 +525,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             }),
             new LLMConfig(),
           ),
-        ),
-      } as any,
+      ),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -579,8 +596,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: {
-        createLLM: vi.fn(async () =>
+      createLLM: vi.fn(async () =>
           new DummyLLM(
             new LLMModel({
               name: "dummy-model",
@@ -590,8 +606,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             }),
             new LLMConfig(),
           ),
-        ),
-      } as any,
+      ),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -658,8 +673,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           }),
         ),
       } as any,
-      llmFactory: {
-        createLLM: vi.fn(async () =>
+      createLLM: vi.fn(async () =>
           new DummyLLM(
             new LLMModel({
               name: "dummy-model",
@@ -669,8 +683,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             }),
             new LLMConfig(),
           ),
-        ),
-      } as any,
+      ),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({

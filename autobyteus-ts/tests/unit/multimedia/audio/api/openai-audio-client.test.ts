@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { OpenAIAudioClient } from '../../../../../src/multimedia/audio/api/openai-audio-client.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
-import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const createMock = vi.fn();
 
@@ -36,7 +36,8 @@ describe('OpenAIAudioClient', () => {
     const model = { name: 'test-model', value: 'gpt-4o-mini-tts' } as any;
     const client = new OpenAIAudioClient(
       model,
-      multimediaApiKeyContext(new MultimediaConfig(), 'synthetic-openai-key'),
+      new MultimediaConfig(),
+      providerApiKeyResolver('synthetic-openai-key'),
     );
 
     const response = await client.generateSpeech('hello world');

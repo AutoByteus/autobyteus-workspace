@@ -3,20 +3,17 @@ import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseAudioClient } from './base-audio-client.js';
-import type { MultimediaConstructionContext } from '../multimedia-construction-context.js';
-import type { LLMAuthenticationRequirement } from '../../llm/llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type AudioClientConstructor = new (model: AudioModel, context: MultimediaConstructionContext) => BaseAudioClient;
+type AudioClientConstructor = new (model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) => BaseAudioClient;
 
 export interface AudioModelOptions {
   name: string;
   value: string;
   provider: MultimediaProvider;
-  credentialProviderId?: string;
   clientClass: AudioClientConstructor;
-  authenticationRequirement: LLMAuthenticationRequirement;
   parameterSchema?: ParameterSchemaInput;
   runtime?: MultimediaRuntime;
   hostUrl?: string | null;
@@ -26,9 +23,7 @@ export class AudioModel {
   name: string;
   value: string;
   provider: MultimediaProvider;
-  credentialProviderId: string;
   clientClass: AudioClientConstructor;
-  authenticationRequirement: LLMAuthenticationRequirement;
   runtime: MultimediaRuntime;
   hostUrl?: string | null;
   parameterSchema: ParameterSchema;
@@ -38,13 +33,8 @@ export class AudioModel {
     this.name = options.name;
     this.value = options.value;
     this.provider = options.provider;
-    const runtime = options.runtime ?? MultimediaRuntime.API;
-    this.credentialProviderId = options.credentialProviderId?.trim()
-      || (runtime === MultimediaRuntime.AUTOBYTEUS ? '' : String(this.provider));
-    if (!this.credentialProviderId) throw new Error('credentialProviderId is required for every audio model.');
     this.clientClass = options.clientClass;
-    this.authenticationRequirement = options.authenticationRequirement;
-    this.runtime = runtime;
+    this.runtime = options.runtime ?? MultimediaRuntime.API;
     this.hostUrl = options.hostUrl;
 
     if (options.parameterSchema && !(options.parameterSchema instanceof ParameterSchema)) {
@@ -79,18 +69,18 @@ export class AudioModel {
     return this.name;
   }
 
-  createClient(context: {
-    configOverride?: MultimediaConfig | null;
-    authentication: MultimediaConstructionContext['authentication'];
-  }): BaseAudioClient {
+  createClient(
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
+  ): BaseAudioClient {
     let configToUse = this.defaultConfig;
-    if (context.configOverride) {
+    if (configOverride) {
       const cloned = new MultimediaConfig({ ...this.defaultConfig.params });
-      cloned.mergeWith(context.configOverride);
+      cloned.mergeWith(configOverride);
       configToUse = cloned;
     }
 
-    return new this.clientClass(this, { config: configToUse, authentication: context.authentication });
+    return new this.clientClass(this, configToUse, apiKeyResolver);
   }
 
   toString(): string {

@@ -82,10 +82,11 @@ describe('AppDataService', () => {
       expect(mockedFs.mkdirSync).toHaveBeenCalledWith(path.join(expectedAppDataDir, 'db'), { recursive: true })
       expect(mockedFs.mkdirSync).toHaveBeenCalledWith(path.join(expectedAppDataDir, 'logs'), { recursive: true })
       expect(mockedFs.mkdirSync).toHaveBeenCalledWith(path.join(expectedAppDataDir, 'download'), { recursive: true })
+      expect(mockedFs.mkdirSync).toHaveBeenCalledWith(path.join(expectedAppDataDir, 'tmp'), { recursive: true })
     })
 
     it('should not create directory when it already exists', () => {
-      const dataDirPaths = ['db', 'logs', 'download'].map((dir) => path.join(expectedAppDataDir, dir))
+      const dataDirPaths = ['db', 'logs', 'download', 'tmp'].map((dir) => path.join(expectedAppDataDir, dir))
       mockedFs.existsSync.mockImplementation((filePath) => {
         if (filePath === expectedAppDataDir) {
           return true
@@ -146,6 +147,19 @@ describe('AppDataService', () => {
       expect(errors.length).toBeGreaterThan(1)
       expect(errors.some(e => e.includes('server entrypoint'))).toBe(true)
       expect(errors.some(e => e.includes('package.json'))).toBe(true)
+    })
+
+    it('should report the launcher tmp directory when it is missing', () => {
+      mockedFs.existsSync.mockImplementation((filePath) => {
+        return filePath !== path.join(expectedAppDataDir, 'tmp')
+      })
+
+      const service = new AppDataService(testUserDataPath)
+      const errors = service.validateEnvironment(testServerDir)
+
+      expect(errors).toContain(
+        `Required data directory not found: ${path.join(expectedAppDataDir, 'tmp')}`
+      )
     })
   })
 

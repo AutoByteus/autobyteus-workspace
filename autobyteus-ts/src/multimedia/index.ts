@@ -1,6 +1,5 @@
 export { MultimediaProvider } from './providers.js';
 export { MultimediaRuntime } from './runtimes.js';
-export * from './multimedia-construction-context.js';
 export * from './utils/index.js';
 export { AudioModel } from './audio/audio-model.js';
 export { BaseAudioClient } from './audio/base-audio-client.js';

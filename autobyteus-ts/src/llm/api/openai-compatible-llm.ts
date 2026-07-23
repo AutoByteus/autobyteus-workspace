@@ -2,10 +2,7 @@ import type { ClientOptions as OpenAIClientOptions, OpenAI } from 'openai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
-import {
-  requireApiKeyAuthentication,
-  type LLMConstructionContext,
-} from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { Message } from '../utils/messages.js';
 import { convertOpenAIToolCalls } from '../converters/openai-tool-call-converter.js';
@@ -22,27 +19,51 @@ import type { ChatCompletionMessageParam } from 'openai/resources/chat/completio
 import { ChatCompletionChunk } from 'openai/resources/chat/completions.mjs';
 
 export class OpenAICompatibleLLM extends BaseLLM {
-  protected client: OpenAIClient;
+  private clientPromise: Promise<OpenAIClient> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly apiKeyProviderId: string;
+  private readonly baseUrl: string;
+  private readonly clientOptions?: Pick<OpenAIClientOptions, 'fetch' | 'fetchOptions' | 'timeout'>;
+  private readonly allowUnauthenticated: boolean;
   protected _renderer: OpenAIChatRenderer;
 
   constructor(
     model: LLMModel,
     baseUrl: string,
-    context: LLMConstructionContext,
+    config: LLMConfig,
+    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyProviderId: string,
     clientOptions?: Pick<OpenAIClientOptions, 'fetch' | 'fetchOptions' | 'timeout'>,
     allowUnauthenticated = false,
   ) {
-    super(model, context.config);
-    const apiKey = context.authentication.kind === 'none' && allowUnauthenticated
-      ? 'not-required'
-      : requireApiKeyAuthentication(context.authentication, model.providerName);
-
-    this.client = new OpenAIClient({
-      apiKey,
-      baseURL: baseUrl,
-      ...(clientOptions ?? {})
-    });
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyProviderId = apiKeyProviderId;
+    this.baseUrl = baseUrl;
+    this.clientOptions = clientOptions;
+    this.allowUnauthenticated = allowUnauthenticated;
     this._renderer = new OpenAIChatRenderer();
+  }
+
+  private async initializeClient(
+  ): Promise<OpenAIClient> {
+    let apiKey = 'not-required';
+    if (this.allowUnauthenticated) {
+      const status = await this.apiKeyResolver.getStatus(this.apiKeyProviderId);
+      if (status === 'CONFIGURED') {
+        const secret = await this.apiKeyResolver.resolve(this.apiKeyProviderId);
+        apiKey = secret.revealToTrustedConsumer();
+      }
+    } else {
+      const secret = await this.apiKeyResolver.resolve(this.apiKeyProviderId);
+      apiKey = secret.revealToTrustedConsumer();
+    }
+    return new OpenAIClient({ apiKey, baseURL: this.baseUrl, ...(this.clientOptions ?? {}) });
+  }
+
+  protected getClient(): Promise<OpenAIClient> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
   }
 
   private createTokenUsage(usageData?: OpenAIClient.CompletionUsage): LlmTokenUsageObservation | null {
@@ -109,7 +130,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
 
     try {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
-      const response = await this.client.chat.completions.create(params as any, requestOptions as any); // Cast for extra params flexibility
+      const client = await this.getClient();
+      const response = await client.chat.completions.create(params as any, requestOptions as any); // Cast for extra params flexibility
       const choice = response.choices[0];
       const message = choice.message;
       
@@ -137,7 +159,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
 
     try {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
-      const stream = await this.client.chat.completions.create(params, requestOptions as any) as unknown as AsyncIterable<ChatCompletionChunk>;
+      const client = await this.getClient();
+      const stream = await client.chat.completions.create(params, requestOptions as any) as unknown as AsyncIterable<ChatCompletionChunk>;
       
       for await (const chunk of stream) {
         if (chunk.choices && chunk.choices.length > 0) {

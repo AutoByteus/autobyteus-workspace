@@ -2,11 +2,12 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import fs from 'node:fs/promises';
 import { GeminiAudioClient } from '../../../../../src/multimedia/audio/api/gemini-audio-client.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
-import { multimediaGeminiAiStudioContext } from '../../../explicit-auth-test-helpers.js';
+import { geminiProviderApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const generateContentMock = vi.fn();
 
 vi.mock('../../../../../src/utils/gemini-helper.js', () => ({
+  selectGeminiRuntimeForResolver: async () => ({ kind: 'aiStudio' }),
   initializeGeminiClientWithRuntime: () => ({
     client: { models: { generateContent: generateContentMock } },
     runtimeInfo: { runtime: 'api_key' }
@@ -44,7 +45,8 @@ describe('GeminiAudioClient', () => {
     const model = { name: 'gemini-tts', value: 'gemini-2.5-flash-preview-tts' } as any;
     const client = new GeminiAudioClient(
       model,
-      multimediaGeminiAiStudioContext(new MultimediaConfig(), 'synthetic-gemini-key'),
+      new MultimediaConfig(),
+      geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
     );
 
     const response = await client.generateSpeech('hello');

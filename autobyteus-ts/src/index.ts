@@ -39,3 +39,4 @@ export * from './agent/tool-approval-result.js';
 export * from './agent/tool-result-posting.js';
 export * from './agent/utils/index.js';
 export * from './utils/tool-call-format.js';
+export * from './utils/gemini-helper.js';

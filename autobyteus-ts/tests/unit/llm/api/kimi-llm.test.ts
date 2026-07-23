@@ -9,7 +9,7 @@ import {
   ToolCallPayload,
   ToolResultPayload,
 } from '../../../../src/llm/utils/messages.js';
-import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 
@@ -33,7 +33,7 @@ const buildModel = (value = 'kimi-k2.6') =>
 
 class KimiLLM extends ProductionKimiLLM {
   constructor(model = buildModel(), config = new LLMConfig()) {
-    super(model, llmApiKeyContext(config, 'synthetic-kimi-key'));
+    super(model, config, providerApiKeyResolver('synthetic-kimi-key'));
   }
 }
 

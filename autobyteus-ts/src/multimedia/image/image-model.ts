@@ -3,20 +3,17 @@ import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseImageClient } from './base-image-client.js';
-import type { MultimediaConstructionContext } from '../multimedia-construction-context.js';
-import type { LLMAuthenticationRequirement } from '../../llm/llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type ImageClientConstructor = new (model: ImageModel, context: MultimediaConstructionContext) => BaseImageClient;
+type ImageClientConstructor = new (model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) => BaseImageClient;
 
 export interface ImageModelOptions {
   name: string;
   value: string;
   provider: MultimediaProvider;
-  credentialProviderId?: string;
   clientClass: ImageClientConstructor;
-  authenticationRequirement: LLMAuthenticationRequirement;
   parameterSchema?: ParameterSchemaInput;
   runtime?: MultimediaRuntime;
   hostUrl?: string | null;
@@ -27,9 +24,7 @@ export class ImageModel {
   name: string;
   value: string;
   provider: MultimediaProvider;
-  credentialProviderId: string;
   clientClass: ImageClientConstructor;
-  authenticationRequirement: LLMAuthenticationRequirement;
   runtime: MultimediaRuntime;
   hostUrl?: string | null;
   description?: string | null;
@@ -40,13 +35,8 @@ export class ImageModel {
     this.name = options.name;
     this.value = options.value;
     this.provider = options.provider;
-    const runtime = options.runtime ?? MultimediaRuntime.API;
-    this.credentialProviderId = options.credentialProviderId?.trim()
-      || (runtime === MultimediaRuntime.AUTOBYTEUS ? '' : String(this.provider));
-    if (!this.credentialProviderId) throw new Error('credentialProviderId is required for every image model.');
     this.clientClass = options.clientClass;
-    this.authenticationRequirement = options.authenticationRequirement;
-    this.runtime = runtime;
+    this.runtime = options.runtime ?? MultimediaRuntime.API;
     this.hostUrl = options.hostUrl;
     this.description = options.description ?? null;
 
@@ -82,18 +72,18 @@ export class ImageModel {
     return this.name;
   }
 
-  createClient(context: {
-    configOverride?: MultimediaConfig | null;
-    authentication: MultimediaConstructionContext['authentication'];
-  }): BaseImageClient {
+  createClient(
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
+  ): BaseImageClient {
     let configToUse = this.defaultConfig;
-    if (context.configOverride) {
+    if (configOverride) {
       const cloned = new MultimediaConfig({ ...this.defaultConfig.params });
-      cloned.mergeWith(context.configOverride);
+      cloned.mergeWith(configOverride);
       configToUse = cloned;
     }
 
-    return new this.clientClass(this, { config: configToUse, authentication: context.authentication });
+    return new this.clientClass(this, configToUse, apiKeyResolver);
   }
 
   toString(): string {

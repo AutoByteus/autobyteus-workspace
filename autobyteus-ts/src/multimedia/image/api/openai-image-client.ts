@@ -10,8 +10,8 @@ import { ImageGenerationResponse } from '../../utils/response-types.js';
 import { downloadFileFromUrl } from '../../../utils/download-utils.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
-import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
-import { requireApiKeyAuthentication } from '../../../llm/llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import { MultimediaProvider } from '../../providers.js';
 
 function mimeTypeFromFormat(outputFormat: string | null | undefined): string {
   const fmt = (outputFormat ?? 'png').toLowerCase();
@@ -57,13 +57,25 @@ async function makeTempFile(extension = 'png'): Promise<string> {
 }
 
 export class OpenAIImageClient extends BaseImageClient {
-  private client: OpenAI;
+  private clientPromise: Promise<OpenAI> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
 
-  constructor(model: ImageModel, context: MultimediaConstructionContext) {
-    super(model, context.config);
-    const apiKey = requireApiKeyAuthentication(context.authentication, 'OpenAI image');
+  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+  }
 
-    this.client = new OpenAI({ apiKey, baseURL: 'https://api.openai.com/v1' });
+  private async initializeClient(): Promise<OpenAI> {
+    const secret = await this.apiKeyResolver.resolve(MultimediaProvider.OPENAI);
+    return new OpenAI({
+      apiKey: secret.revealToTrustedConsumer(),
+      baseURL: 'https://api.openai.com/v1',
+    });
+  }
+
+  private getClient(): Promise<OpenAI> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
   }
 
   async generateImage(
@@ -102,7 +114,8 @@ export class OpenAIImageClient extends BaseImageClient {
         request.output_compression = finalConfig.output_compression;
       }
 
-      const response = await this.client.images.generate(
+      const client = await this.getClient();
+      const response = await client.images.generate(
         request as unknown as OpenAI.Images.ImageGenerateParams
       ) as OpenAI.Images.ImagesResponse;
       const outputFormat = typeof finalConfig.output_format === 'string' ? finalConfig.output_format : 'png';
@@ -198,7 +211,8 @@ export class OpenAIImageClient extends BaseImageClient {
         }
       }
 
-      const response = await this.client.images.edit(
+      const client = await this.getClient();
+      const response = await client.images.edit(
         request as unknown as OpenAI.Images.ImageEditParams
       ) as OpenAI.Images.ImagesResponse;
       const outputFormat = typeof finalConfig.output_format === 'string' ? finalConfig.output_format : 'png';

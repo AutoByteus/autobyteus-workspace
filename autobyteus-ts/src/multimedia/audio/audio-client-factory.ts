@@ -7,10 +7,7 @@ import { GeminiAudioClient } from './api/gemini-audio-client.js';
 import { OpenAIAudioClient } from './api/openai-audio-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { MultimediaRuntime } from '../runtimes.js';
-import type {
-  MultimediaConstructionTarget,
-  ResolvedMultimediaAuthentication,
-} from '../multimedia-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 const GEMINI_VOICE_DETAILS: Record<string, { gender: string; description: string }> = {
   Zephyr: { gender: 'female', description: 'Bright, Higher pitch' },
@@ -147,8 +144,6 @@ export class AudioClientFactory extends Singleton {
         name,
         value,
         provider: MultimediaProvider.GEMINI,
-        credentialProviderId: MultimediaProvider.GEMINI,
-        authenticationRequirement: { kind: 'geminiAuthenticationMode' },
         clientClass: GeminiAudioClient,
         parameterSchema: geminiTtsSchema
       });
@@ -185,8 +180,6 @@ export class AudioClientFactory extends Singleton {
       name: 'gpt-4o-mini-tts',
       value: 'gpt-4o-mini-tts',
       provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.OPENAI,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIAudioClient,
       parameterSchema: openaiTtsSchema
     });
@@ -216,19 +209,13 @@ export class AudioClientFactory extends Singleton {
     return model;
   }
 
-  static describeConstructionTarget(modelIdentifier: string): MultimediaConstructionTarget {
-    const model = AudioClientFactory.requireModel(modelIdentifier);
-    return {
-      credentialProviderId: model.credentialProviderId,
-      authenticationRequirement: model.authenticationRequirement,
-    };
-  }
 
   static createAudioClient(
     modelIdentifier: string,
-    input: { configOverride?: MultimediaConfig | null; authentication: ResolvedMultimediaAuthentication },
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
   ): BaseAudioClient {
-    return AudioClientFactory.requireModel(modelIdentifier).createClient(input);
+    return AudioClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver);
   }
 
   static syncRuntimeModels(runtime: MultimediaRuntime, models: AudioModel[]): number {

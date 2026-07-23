@@ -5,7 +5,7 @@ import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
 import { MultimediaRuntime } from '../../../../../src/multimedia/runtimes.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
 import { ImageGenerationResponse } from '../../../../../src/multimedia/utils/response-types.js';
-import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const { generateImageMock, cleanupImageSessionMock, closeMock, MockAutobyteusClient } = vi.hoisted(() => {
   const generateImageMock = vi.fn();
@@ -32,7 +32,7 @@ vi.mock('../../../../../src/clients/autobyteus-client.js', () => ({
 
 class AutobyteusImageClient extends ProductionAutobyteusImageClient {
   constructor(model: ImageModel, config = new MultimediaConfig()) {
-    super(model, multimediaApiKeyContext(config, 'synthetic-autobyteus-key'));
+    super(model, config, providerApiKeyResolver('synthetic-autobyteus-key'));
   }
 }
 
@@ -48,8 +48,6 @@ describe('AutobyteusImageClient', () => {
       name: 'remote-image',
       value: 'remote-image',
       provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusImageClient,
       runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl
@@ -114,6 +112,8 @@ describe('AutobyteusImageClient', () => {
     const model = buildModel();
     const config = new MultimediaConfig({});
     const client = new AutobyteusImageClient(model, config);
+    generateImageMock.mockResolvedValue({ image_urls: ['img.png'] });
+    await client.generateImage('initialize');
 
     await client.cleanup();
 

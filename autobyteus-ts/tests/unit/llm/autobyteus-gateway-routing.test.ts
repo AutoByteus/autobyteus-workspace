@@ -1,14 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BaseLLM } from '../../../src/llm/base.js';
 import { LLMFactory } from '../../../src/llm/llm-factory.js';
-import type { LLMConstructionContext } from '../../../src/llm/llm-construction-context.js';
 import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMRuntime } from '../../../src/llm/runtimes.js';
+import type { ProviderApiKeyResolver } from '../../../src/secrets/provider-api-key-resolver.js';
+import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
+import { providerApiKeyResolver } from '../provider-api-key-resolver-test-helpers.js';
 
 class StubLLM extends BaseLLM {
-  constructor(model: LLMModel, context: LLMConstructionContext) {
-    super(model, context.config);
+  readonly resolver: ProviderApiKeyResolver;
+  constructor(model: LLMModel, config: LLMConfig, resolver: ProviderApiKeyResolver) {
+    super(model, config);
+    this.resolver = resolver;
   }
   protected async _sendMessagesToLLM(): Promise<never> { throw new Error('not used'); }
   protected async *_streamMessagesToLLM(): AsyncGenerator<never> { return; }
@@ -40,36 +44,30 @@ describe('AutoByteus gateway construction routing', () => {
     factoryState.modelsByProvider = originalByProvider;
   });
 
-  const model = (name: string, runtime: LLMRuntime, credentialProviderId: string) => new LLMModel({
+  const model = (name: string, runtime: LLMRuntime) => new LLMModel({
     name,
     value: name,
     canonicalName: name,
     provider: LLMProvider.OPENAI,
-    credentialProviderId,
-    authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
     llmClass: StubLLM,
     runtime,
     ...(runtime === LLMRuntime.AUTOBYTEUS ? { hostUrl: 'https://gateway.example.invalid' } : {}),
   });
 
-  it('returns exactly credential owner plus tagged authentication requirement', async () => {
-    const remote = model('remote-openai', LLMRuntime.AUTOBYTEUS, LLMProvider.AUTOBYTEUS);
+  it('passes only the injected resolver while keeping the model credential-independent', async () => {
+    const remote = model('remote-openai', LLMRuntime.AUTOBYTEUS);
     LLMFactory.registerModel(remote);
-
-    const target = await LLMFactory.describeConstructionTarget(remote.modelIdentifier);
-    expect(target).toEqual({
-      credentialProviderId: 'AUTOBYTEUS',
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
-    });
-    expect(target).not.toHaveProperty('providerId');
-    expect(target).not.toHaveProperty('runtime');
-    expect(target).not.toHaveProperty('credentialSlot');
+    const resolver = providerApiKeyResolver();
+    const llm = await LLMFactory.createLLM(remote.modelIdentifier, undefined, resolver);
+    expect((llm as StubLLM).resolver).toBe(resolver);
+    expect(remote).not.toHaveProperty('credentialProviderId');
+    expect(remote).not.toHaveProperty('authenticationRequirement');
   });
 
   it('replaces only AutoByteus-runtime models and preserves native same-provider models', async () => {
-    const native = model('native-openai', LLMRuntime.API, LLMProvider.OPENAI);
-    const oldRemote = model('old-remote', LLMRuntime.AUTOBYTEUS, LLMProvider.AUTOBYTEUS);
-    const newRemote = model('new-remote', LLMRuntime.AUTOBYTEUS, LLMProvider.AUTOBYTEUS);
+    const native = model('native-openai', LLMRuntime.API);
+    const oldRemote = model('old-remote', LLMRuntime.AUTOBYTEUS);
+    const newRemote = model('new-remote', LLMRuntime.AUTOBYTEUS);
     LLMFactory.registerModel(native);
     LLMFactory.registerModel(oldRemote);
 

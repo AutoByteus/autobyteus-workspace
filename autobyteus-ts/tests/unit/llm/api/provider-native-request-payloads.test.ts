@@ -18,10 +18,10 @@ import {
   type ToolCallSpec
 } from '../../../../src/llm/utils/messages.js';
 import {
-  llmApiKeyContext,
-  llmGeminiAiStudioContext,
-  llmNoAuthContext,
-} from '../../explicit-auth-test-helpers.js';
+  providerApiKeyResolver,
+  geminiProviderApiKeyResolver,
+  missingProviderApiKeyResolver,
+} from '../../provider-api-key-resolver-test-helpers.js';
 
 const originalEnv = { ...process.env };
 
@@ -48,25 +48,29 @@ const model = (
 
 class GeminiLLM extends ProductionGeminiLLM {
   constructor(inputModel = model(LLMProvider.GEMINI, 'gemini-2.5-pro'), config = new LLMConfig()) {
-    super(inputModel, llmGeminiAiStudioContext(config, 'synthetic-gemini-key'));
+    super(
+      inputModel,
+      config,
+      geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+    );
   }
 }
 
 class OllamaLLM extends ProductionOllamaLLM {
   constructor(inputModel: LLMModel, config = new LLMConfig()) {
-    super(inputModel, llmNoAuthContext(config));
+    super(inputModel, config, missingProviderApiKeyResolver());
   }
 }
 
 class AnthropicLLM extends ProductionAnthropicLLM {
   constructor(inputModel: LLMModel, config = new LLMConfig()) {
-    super(inputModel, llmApiKeyContext(config, 'synthetic-anthropic-key'));
+    super(inputModel, config, providerApiKeyResolver('synthetic-anthropic-key'));
   }
 }
 
 class MistralLLM extends ProductionMistralLLM {
   constructor(inputModel: LLMModel, config = new LLMConfig()) {
-    super(inputModel, llmApiKeyContext(config, 'synthetic-mistral-key'));
+    super(inputModel, config, providerApiKeyResolver('synthetic-mistral-key'));
   }
 }
 
@@ -78,7 +82,13 @@ class OpenAIResponsesLLM extends ProductionOpenAIResponsesLLM {
     config = new LLMConfig(),
     _legacyApiKeyDefault?: string,
   ) {
-    super(inputModel, baseUrl, llmApiKeyContext(config, 'synthetic-openai-key'));
+    super(
+      inputModel,
+      baseUrl,
+      config,
+      providerApiKeyResolver('synthetic-openai-key'),
+      inputModel.provider,
+    );
   }
 }
 
@@ -332,8 +342,8 @@ describe('provider-native API request payloads', () => {
   it('captures Gemini generateContent payload with native calls, ordered function responses, preserved thinking metadata, and no synthetic aggregate user text', async () => {
     let captured: any;
     const llm = new GeminiLLM(undefined, commonConfig());
-    (llm as any).client = {
-      models: {
+    (llm as any).clientPromise = Promise.resolve({
+      client: { models: {
         generateContent: async (params: any) => {
           captured = params;
           return {
@@ -346,8 +356,9 @@ describe('provider-native API request payloads', () => {
             }
           };
         }
-      }
-    };
+      }},
+      runtimeInfo: { runtime: 'api_key', project: null, location: null },
+    });
 
     await llm.sendMessages(messagesFor('gemini'), null, { tools: geminiTools });
 
@@ -389,8 +400,8 @@ describe('provider-native API request payloads', () => {
 
     let captured: any;
     const llm = new GeminiLLM(undefined, commonConfig());
-    (llm as any).client = {
-      models: {
+    (llm as any).clientPromise = Promise.resolve({
+      client: { models: {
         generateContent: async (params: any) => {
           captured = params;
           return {
@@ -403,8 +414,9 @@ describe('provider-native API request payloads', () => {
             }
           };
         }
-      }
-    };
+      }},
+      runtimeInfo: { runtime: 'api_key', project: null, location: null },
+    });
 
     try {
       await llm.sendMessages([
@@ -467,7 +479,7 @@ describe('provider-native API request payloads', () => {
   it('captures Anthropic messages payload with strict assistant tool_use followed by result-block-first user tool_result blocks and no synthetic aggregate user text', async () => {
     let captured: any;
     const llm = new AnthropicLLM(model(LLMProvider.ANTHROPIC, 'claude-sonnet-4-5'), commonConfig());
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       messages: {
         create: async (params: any) => {
           captured = params;
@@ -477,7 +489,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages(messagesFor('anthropic'), null, { tools: commonTools });
 
@@ -504,7 +516,7 @@ describe('provider-native API request payloads', () => {
   it('captures Mistral chat payload with native tool_calls, ordered role=tool results, and no synthetic aggregate user text', async () => {
     let captured: any;
     const llm = new MistralLLM(model(LLMProvider.MISTRAL, 'mistral-large-2512'), commonConfig());
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       chat: {
         complete: async (params: any) => {
           captured = params;
@@ -514,7 +526,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages(messagesFor('mistral'), null, {
       logicalConversationId: 'agent-1',
@@ -557,7 +569,7 @@ describe('provider-native API request payloads', () => {
       openAIConfig,
       'test-openai-key'
     );
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       responses: {
         create: async (params: any) => {
           captured = params;
@@ -567,7 +579,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages(messagesFor('openai_responses'), null, {
       tools: commonTools,
@@ -620,7 +632,7 @@ describe('provider-native API request payloads', () => {
       openAIConfig,
       'test-openai-key'
     );
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       responses: {
         create: async (params: any) => {
           captured = params;
@@ -630,7 +642,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages([new Message(MessageRole.USER, 'Hello')]);
 
@@ -653,7 +665,7 @@ describe('provider-native API request payloads', () => {
       openAIConfig,
       'test-openai-key'
     );
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       responses: {
         create: async (params: any) => {
           captured = params;
@@ -669,7 +681,7 @@ describe('provider-native API request payloads', () => {
           return stream();
         }
       }
-    };
+    });
 
     for await (const _chunk of llm.streamMessages(messagesFor('openai_responses'), null, {
       tools: commonTools,

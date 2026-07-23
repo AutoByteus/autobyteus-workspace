@@ -4,7 +4,7 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
-import { llmApiKeyContext, llmNoAuthContext } from '../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver, missingProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 // Mock Anthropic Client
 const mockCreate = vi.hoisted(() => vi.fn());
@@ -27,7 +27,7 @@ const buildModel = (name: string, value = name): LLMModel =>
 
 class AnthropicLLM extends ProductionAnthropicLLM {
   constructor(model: LLMModel, config = new LLMConfig()) {
-    super(model, llmApiKeyContext(config, 'synthetic-anthropic-key'));
+    super(model, config, providerApiKeyResolver('synthetic-anthropic-key'));
   }
 }
 
@@ -76,10 +76,15 @@ describe('AnthropicLLM', () => {
     expect(llm).toBeDefined();
   });
   
-  it('should throw if explicit API-key authentication is missing', () => {
+  it('fails at first use if the required provider key is missing', async () => {
     const model = buildModel('claude');
-    expect(() => new ProductionAnthropicLLM(model, llmNoAuthContext())).toThrow(
-      /requires explicitly resolved API-key authentication/,
+    const missing = new ProductionAnthropicLLM(
+      model,
+      new LLMConfig(),
+      missingProviderApiKeyResolver(),
+    );
+    await expect(missing.sendMessages(userMessages)).rejects.toThrow(
+      'SYNTHETIC_API_KEY_MISSING',
     );
   });
 

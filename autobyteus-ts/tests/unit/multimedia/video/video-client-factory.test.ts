@@ -2,9 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { VideoClientFactory } from '../../../../src/multimedia/video/video-client-factory.js';
 import { BaseVideoClient } from '../../../../src/multimedia/video/base-video-client.js';
 import { GeminiVideoClient } from '../../../../src/multimedia/video/api/gemini-video-client.js';
-import { geminiAiStudioAuthentication } from '../../explicit-auth-test-helpers.js';
+import { geminiProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
+  selectGeminiRuntimeForResolver: async () => ({ kind: 'aiStudio' }),
   initializeGeminiClientWithRuntime: () => ({
     client: { interactions: { create: vi.fn() }, files: { get: vi.fn(), download: vi.fn() } },
     runtimeInfo: { runtime: 'api_key' }
@@ -40,26 +41,31 @@ describe('VideoClientFactory', () => {
   });
 
   it('creates GeminiVideoClient for Gemini Omni Flash Preview', () => {
-    const client = VideoClientFactory.createVideoClient('gemini-omni-flash-preview', {
-      authentication: geminiAiStudioAuthentication('synthetic-gemini-key'),
-    });
+    const client = VideoClientFactory.createVideoClient(
+      'gemini-omni-flash-preview',
+      undefined,
+      geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+    );
 
     expect(client).toBeInstanceOf(BaseVideoClient);
     expect(client).toBeInstanceOf(GeminiVideoClient);
     expect(client.model.modelIdentifier).toBe('gemini-omni-flash-preview');
   });
 
-  it('describes Gemini construction with only credential ownership and exact mode requirement', () => {
-    const target = VideoClientFactory.describeConstructionTarget('gemini-omni-flash-preview');
-    expect(target).toEqual({
-      credentialProviderId: 'GEMINI',
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
-    });
-    expect(Object.keys(target).sort()).toEqual(['authenticationRequirement', 'credentialProviderId']);
+  it('keeps model definitions credential-independent', () => {
+    const model = VideoClientFactory.listModels()
+      .find((entry) => entry.modelIdentifier === 'gemini-omni-flash-preview');
+    expect(model).toBeDefined();
+    expect(model).not.toHaveProperty('credentialProviderId');
+    expect(model).not.toHaveProperty('authenticationRequirement');
   });
 
   it('throws for invalid identifier', () => {
-    expect(() => VideoClientFactory.createVideoClient('unsupported-video-model-xyz'))
+    expect(() => VideoClientFactory.createVideoClient(
+      'unsupported-video-model-xyz',
+      undefined,
+      geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+    ))
       .toThrow('No video model registered');
   });
 });

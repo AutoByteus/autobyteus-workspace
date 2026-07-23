@@ -4,7 +4,7 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
-import { llmApiKeyContext } from '../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 
@@ -28,7 +28,7 @@ const buildModel = () =>
 
 class DeepSeekLLM extends ProductionDeepSeekLLM {
   constructor(model: LLMModel, config = new LLMConfig()) {
-    super(model, llmApiKeyContext(config, 'synthetic-deepseek-key'));
+    super(model, config, providerApiKeyResolver('synthetic-deepseek-key'));
   }
 }
 

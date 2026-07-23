@@ -63,7 +63,7 @@ export class ModelCatalogService {
         return this.codexModelCatalog.listModels();
       case RuntimeKind.AUTOBYTEUS:
       default:
-        return this.metadataProvisioningService.enrich(
+        return this.metadataProvisioningService.enrichBestEffort(
           await this.autobyteusModelCatalog.listModels(),
         );
     }
@@ -159,6 +159,10 @@ export class ModelCatalogService {
   invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement(): void {
     this.remoteDiscoveryService.invalidateAfterCredentialReplacement();
     this.invalidateAutobyteusRemoteModelCaches();
+  }
+
+  invalidateGeminiMetadata(): void {
+    this.metadataProvisioningService.invalidate();
   }
 
   private invalidateAutobyteusRemoteModelCaches(): void {

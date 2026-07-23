@@ -8,10 +8,8 @@ import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observat
 import { AutobyteusClient } from '../../clients/autobyteus-client.js';
 import { AutobyteusPromptRenderer } from '../prompt-renderers/autobyteus-prompt-renderer.js';
 import { AutobyteusConversationPayload } from './autobyteus-conversation-payload.js';
-import {
-  requireApiKeyAuthentication,
-  type LLMConstructionContext,
-} from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import { LLMProvider } from '../providers.js';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -25,23 +23,33 @@ const toTokenUsage = (value: unknown, model: LLMModel): LlmTokenUsageObservation
   createAutoByteusTokenUsageObservation(value, model);
 
 export class AutobyteusLLM extends BaseLLM {
-  private client: AutobyteusClient;
+  private clientPromise: Promise<AutobyteusClient> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
   private usedConversationIds: Set<string>;
   private _renderer: AutobyteusPromptRenderer;
 
-  constructor(model: LLMModel, context: LLMConstructionContext) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
     if (!model.hostUrl) {
       throw new Error('AutobyteusLLM requires a hostUrl to be set on the LLMModel.');
     }
 
-    super(model, context.config);
-
-    this.client = new AutobyteusClient(
-      model.hostUrl,
-      requireApiKeyAuthentication(context.authentication, 'AutoByteus'),
-    );
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
     this.usedConversationIds = new Set();
     this._renderer = new AutobyteusPromptRenderer();
+  }
+
+  private getClient(): Promise<AutobyteusClient> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<AutobyteusClient> {
+    const secret = await this.apiKeyResolver.resolve(LLMProvider.AUTOBYTEUS);
+    return new AutobyteusClient(
+      this.model.hostUrl!,
+      secret.revealToTrustedConsumer(),
+    );
   }
 
   resolveConversationId(kwargs: Record<string, unknown>): string {
@@ -61,7 +69,8 @@ export class AutobyteusLLM extends BaseLLM {
     const payload = await this.renderPayload(messages);
     this.usedConversationIds.add(conversationId);
 
-    const response = await this.client.sendMessage({
+    const client = await this.getClient();
+    const response = await client.sendMessage({
       conversationId,
       modelName: this.model.name,
       payload,
@@ -93,7 +102,8 @@ export class AutobyteusLLM extends BaseLLM {
     const payload = await this.renderPayload(messages);
     this.usedConversationIds.add(conversationId);
 
-    for await (const chunk of this.client.streamMessage({
+    const client = await this.getClient();
+    for await (const chunk of client.streamMessage({
       conversationId,
       modelName: this.model.name,
       payload,
@@ -139,7 +149,8 @@ export class AutobyteusLLM extends BaseLLM {
     let cleanupError: unknown = null;
     for (const conversationId of this.usedConversationIds) {
       try {
-        await this.client.cleanup(conversationId);
+        const client = await this.getClient();
+        await client.cleanup(conversationId);
       } catch (error) {
         cleanupError ??= error;
       }

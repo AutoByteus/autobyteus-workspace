@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { GeminiImageClient } from '../../../../../src/multimedia/image/api/gemini-image-client.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
-import { multimediaGeminiAiStudioContext } from '../../../explicit-auth-test-helpers.js';
+import { geminiProviderApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const generateContentMock = vi.fn();
 
 vi.mock('../../../../../src/utils/gemini-helper.js', () => ({
+  selectGeminiRuntimeForResolver: async () => ({ kind: 'aiStudio' }),
   initializeGeminiClientWithRuntime: () => ({
     client: { models: { generateContent: generateContentMock } },
     runtimeInfo: { runtime: 'api_key' }
@@ -44,7 +45,11 @@ describe('GeminiImageClient', () => {
     });
 
     const model = { name: 'gemini-image', value: 'gemini-2.5-flash-image' } as any;
-    const client = new GeminiImageClient(model, multimediaGeminiAiStudioContext(new MultimediaConfig()));
+    const client = new GeminiImageClient(
+      model,
+      new MultimediaConfig(),
+      geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+    );
 
     const response = await client.generateImage('draw a cat');
     expect(response.image_urls[0]).toBe('data:image/png;base64,abcd');

@@ -27,12 +27,16 @@ export class AutobyteusLlmModelProvider {
   async listModels(): Promise<ModelInfo[]> {
     logger.info('Fetching list of available LLM models from LLMFactory...');
     try {
-      try {
-        await this.remoteDiscoveryService.ensureDiscovered('llm');
-      } catch {
-        logger.warn('AUTOBYTEUS_LLM_DISCOVERY_FAILED');
-      }
+      await this.remoteDiscoveryService.ensureDiscovered('llm');
+    } catch {
+      logger.warn('AUTOBYTEUS_LLM_DISCOVERY_FAILED');
+    }
+    try {
       await this.customLlmProviderRuntimeSyncService.ensureSyncedForCatalogRead();
+    } catch {
+      logger.warn('CUSTOM_LLM_PROVIDER_SYNC_FAILED');
+    }
+    try {
       const models = await LLMFactory.listAvailableModels();
       logger.info(`Successfully fetched ${models.length} models from LLMFactory.`);
       return models;

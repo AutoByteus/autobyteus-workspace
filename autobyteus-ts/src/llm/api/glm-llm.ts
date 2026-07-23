@@ -5,7 +5,7 @@ import { LLMProvider } from '../providers.js';
 import { Message } from '../utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../utils/response-types.js';
 import type { LLMInvocationOptions } from '../base.js';
-import type { LLMConstructionContext } from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 function normalizeGlmExtraParams(extraParams?: Record<string, unknown>): Record<string, unknown> {
   if (!extraParams) return {};
@@ -31,8 +31,8 @@ function normalizeGlmExtraParams(extraParams?: Record<string, unknown>): Record<
 }
 
 export class GlmLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, context: LLMConstructionContext) {
-    super(model, 'https://open.bigmodel.cn/api/coding/paas/v4/', context);
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+    super(model, 'https://open.bigmodel.cn/api/coding/paas/v4/', config, apiKeyResolver, LLMProvider.GLM);
 
     if (this.config?.extraParams && typeof this.config.extraParams === 'object') {
       this.config.extraParams = normalizeGlmExtraParams(this.config.extraParams);

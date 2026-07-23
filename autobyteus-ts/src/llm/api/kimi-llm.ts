@@ -11,7 +11,7 @@ import {
   isKimiK27CodeModel,
   isKimiK27FixedSamplingKey,
 } from './kimi-k2-7-code-policy.js';
-import type { LLMConstructionContext } from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 const KIMI_K2_6_MODEL = 'kimi-k2.6';
 const KIMI_DEFAULT_TEMPERATURE = 1;
@@ -26,8 +26,8 @@ function requestUsesToolWorkflow(messages: Message[], kwargs: Record<string, unk
 }
 
 export class KimiLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, context: LLMConstructionContext) {
-    super(model, 'https://api.moonshot.ai/v1', context);
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+    super(model, 'https://api.moonshot.ai/v1', config, apiKeyResolver, LLMProvider.KIMI);
   }
 
   private normalizeKimiKwargs(messages: Message[], kwargs: Record<string, unknown>): Record<string, unknown> {

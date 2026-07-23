@@ -6,7 +6,7 @@ import { OpenAIImageClient } from '../../../../../src/multimedia/image/api/opena
 import { ImageModel } from '../../../../../src/multimedia/image/image-model.js';
 import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
-import { multimediaApiKeyContext } from '../../../explicit-auth-test-helpers.js';
+import { providerApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const mockGenerate = vi.hoisted(() => vi.fn());
 const mockEdit = vi.hoisted(() => vi.fn());
@@ -42,7 +42,11 @@ const buildClient = (
     provider: MultimediaProvider.OPENAI,
     clientClass: OpenAIImageClient
   });
-  return new OpenAIImageClient(model, multimediaApiKeyContext(config, 'synthetic-openai-key'));
+  return new OpenAIImageClient(
+    model,
+    config,
+    providerApiKeyResolver('synthetic-openai-key'),
+  );
 };
 
 describe('OpenAIImageClient', () => {

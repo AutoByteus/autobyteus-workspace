@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
+import { LLMProvider } from '../providers.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import {
@@ -13,10 +14,7 @@ import { Message, MessageRole } from '../utils/messages.js';
 import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createAnthropicPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
-import {
-  requireApiKeyAuthentication,
-  type LLMConstructionContext,
-} from '../llm-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import {
   applySafeProviderRequestKwargs,
   cloneSafeProviderRequestKwargs,
@@ -188,16 +186,26 @@ const splitClaudeContentBlocks = (blocks: ContentBlock[] | null | undefined): { 
 };
 
 export class AnthropicLLM extends BaseLLM {
-  protected client: Anthropic;
+  private clientPromise: Promise<Anthropic> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
   protected maxTokens: number;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, context: LLMConstructionContext) {
-    super(model, context.config);
-    const apiKey = requireApiKeyAuthentication(context.authentication, 'Anthropic');
-    this.client = new Anthropic({ apiKey });
-    this.maxTokens = context.config.maxTokens ?? 8192;
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+    this.maxTokens = config.maxTokens ?? 8192;
     this._renderer = createAnthropicPromptRendererForToolFormat();
+  }
+
+  private getClient(): Promise<Anthropic> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<Anthropic> {
+    const secret = await this.apiKeyResolver.resolve(LLMProvider.ANTHROPIC);
+    return new Anthropic({ apiKey: secret.revealToTrustedConsumer() });
   }
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
@@ -218,7 +226,8 @@ export class AnthropicLLM extends BaseLLM {
 
     try {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
-      const response = await this.client.messages.create(params, requestOptions as any);
+      const client = await this.getClient();
+      const response = await client.messages.create(params, requestOptions as any);
       
       let content = '';
       let reasoning: string | null = null;
@@ -257,7 +266,8 @@ usage: createAnthropicTokenUsageObservation(response.usage, this.model)      });
 
     try {
       const requestOptions = options.signal ? { signal: options.signal } : undefined;
-      const stream = await this.client.messages.create(params, requestOptions as any);
+      const client = await this.getClient();
+      const stream = await client.messages.create(params, requestOptions as any);
       
       const usageAccumulator = createAnthropicUsageAccumulator();
 

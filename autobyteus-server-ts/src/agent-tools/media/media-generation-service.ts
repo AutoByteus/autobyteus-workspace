@@ -1,6 +1,11 @@
 import type { SpeechGenerationResponse } from "autobyteus-ts/multimedia/utils/response-types.js";
 import type { ImageGenerationResponse } from "autobyteus-ts/multimedia/utils/response-types.js";
 import type { VideoGenerationResponse } from "autobyteus-ts/multimedia/utils/response-types.js";
+import {
+  AudioClientFactory,
+  ImageClientFactory,
+  VideoClientFactory,
+} from "autobyteus-ts";
 import type {
   EditImageInput,
   GenerateImageInput,
@@ -11,7 +16,7 @@ import type {
 } from "./media-tool-contract.js";
 import { getMediaModelResolver, type MediaModelResolver } from "./media-tool-model-resolver.js";
 import { getMediaPathResolver, type MediaPathResolver } from "./media-tool-path-resolver.js";
-import { getMediaClientProvisioningService } from "./media-client-provisioning-service.js";
+import { createMediaProviderApiKeyResolver } from "../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 
 type ImageClientLike = {
   generateImage(
@@ -72,11 +77,23 @@ export class MediaGenerationService {
     this.modelResolver = dependencies.modelResolver ?? getMediaModelResolver();
     this.pathResolver = dependencies.pathResolver ?? getMediaPathResolver();
     this.createImageClient = dependencies.createImageClient ??
-      ((modelIdentifier) => getMediaClientProvisioningService().createImageClient(modelIdentifier));
+      ((modelIdentifier) => Promise.resolve(ImageClientFactory.createImageClient(
+        modelIdentifier,
+        undefined,
+        createMediaProviderApiKeyResolver("image"),
+      )));
     this.createAudioClient = dependencies.createAudioClient ??
-      ((modelIdentifier) => getMediaClientProvisioningService().createAudioClient(modelIdentifier));
+      ((modelIdentifier) => Promise.resolve(AudioClientFactory.createAudioClient(
+        modelIdentifier,
+        undefined,
+        createMediaProviderApiKeyResolver("audio"),
+      )));
     this.createVideoClient = dependencies.createVideoClient ??
-      ((modelIdentifier) => getMediaClientProvisioningService().createVideoClient(modelIdentifier));
+      ((modelIdentifier) => Promise.resolve(VideoClientFactory.createVideoClient(
+        modelIdentifier,
+        undefined,
+        createMediaProviderApiKeyResolver("video"),
+      )));
   }
 
   async generateImage(

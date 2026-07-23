@@ -9,6 +9,7 @@ import { OpenAIImageClient } from '../../../src/multimedia/image/api/openai-imag
 import { ImageModel } from '../../../src/multimedia/image/image-model.js';
 import { MultimediaProvider } from '../../../src/multimedia/providers.js';
 import { MultimediaRuntime } from '../../../src/multimedia/runtimes.js';
+import { providerApiKeyResolver } from '../provider-api-key-resolver-test-helpers.js';
 
 const audioState = AudioClientFactory as unknown as {
   initialized: boolean;
@@ -43,33 +44,28 @@ describe('AutoByteus multimedia gateway routing', () => {
     imageState.modelsByIdentifier = originalImageModels;
   });
 
-  it('routes remote audio construction only through AUTOBYTEUS credential ownership', () => {
+  it('passes a resolver to remote audio without credential fields on the model', () => {
     const model = new AudioModel({
       name: 'remote-audio', value: 'remote-audio', provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusAudioClient, runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl: 'https://gateway.example.invalid',
     });
     AudioClientFactory.registerModel(model);
 
-    expect(AudioClientFactory.describeConstructionTarget(model.modelIdentifier)).toEqual({
-      credentialProviderId: 'AUTOBYTEUS',
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
-    });
+    const resolver = providerApiKeyResolver();
+    const client = AudioClientFactory.createAudioClient(model.modelIdentifier, undefined, resolver);
+    expect((client as unknown as { apiKeyResolver: unknown }).apiKeyResolver).toBe(resolver);
+    expect(model).not.toHaveProperty('credentialProviderId');
+    expect(model).not.toHaveProperty('authenticationRequirement');
   });
 
   it('scopes audio replacement to the gateway runtime', () => {
     const native = new AudioModel({
       name: 'native-audio', value: 'native-audio', provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.OPENAI,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIAudioClient,
     });
     const remote = new AudioModel({
       name: 'remote-audio', value: 'remote-audio', provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusAudioClient, runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl: 'https://gateway.example.invalid',
     });
@@ -78,33 +74,28 @@ describe('AutoByteus multimedia gateway routing', () => {
     expect(AudioClientFactory.listModels()).toEqual(expect.arrayContaining([native, remote]));
   });
 
-  it('routes remote image construction only through AUTOBYTEUS credential ownership', () => {
+  it('passes a resolver to remote image without credential fields on the model', () => {
     const model = new ImageModel({
       name: 'remote-image', value: 'remote-image', provider: MultimediaProvider.GEMINI,
-      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusImageClient, runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl: 'https://gateway.example.invalid',
     });
     ImageClientFactory.registerModel(model);
 
-    expect(ImageClientFactory.describeConstructionTarget(model.modelIdentifier)).toEqual({
-      credentialProviderId: 'AUTOBYTEUS',
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
-    });
+    const resolver = providerApiKeyResolver();
+    const client = ImageClientFactory.createImageClient(model.modelIdentifier, undefined, resolver);
+    expect((client as unknown as { apiKeyResolver: unknown }).apiKeyResolver).toBe(resolver);
+    expect(model).not.toHaveProperty('credentialProviderId');
+    expect(model).not.toHaveProperty('authenticationRequirement');
   });
 
   it('scopes image replacement to the gateway runtime', () => {
     const native = new ImageModel({
       name: 'native-image', value: 'native-image', provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.OPENAI,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIImageClient,
     });
     const remote = new ImageModel({
       name: 'remote-image', value: 'remote-image', provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.AUTOBYTEUS,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: AutobyteusImageClient, runtime: MultimediaRuntime.AUTOBYTEUS,
       hostUrl: 'https://gateway.example.invalid',
     });

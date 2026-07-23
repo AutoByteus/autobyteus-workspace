@@ -7,10 +7,7 @@ import { OpenAIImageClient } from './api/openai-image-client.js';
 import { GeminiImageClient } from './api/gemini-image-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { MultimediaRuntime } from '../runtimes.js';
-import type {
-  MultimediaConstructionTarget,
-  ResolvedMultimediaAuthentication,
-} from '../multimedia-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 export class ImageClientFactory extends Singleton {
   protected static instance?: ImageClientFactory;
@@ -107,8 +104,6 @@ export class ImageClientFactory extends Singleton {
       name: 'gpt-image-1.5',
       value: 'gpt-image-1.5',
       provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.OPENAI,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIImageClient,
       parameterSchema: gptImageSchema,
       description:
@@ -119,8 +114,6 @@ export class ImageClientFactory extends Singleton {
       name: 'gpt-image-2',
       value: 'gpt-image-2',
       provider: MultimediaProvider.OPENAI,
-      credentialProviderId: MultimediaProvider.OPENAI,
-      authenticationRequirement: { kind: 'apiKey', credentialSlot: 'apiKey', required: true },
       clientClass: OpenAIImageClient,
       parameterSchema: gptImage2Schema,
       description:
@@ -131,8 +124,6 @@ export class ImageClientFactory extends Singleton {
       name: 'imagen-4',
       value: 'imagen-4.0-generate-001',
       provider: MultimediaProvider.GEMINI,
-      credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'High-fidelity stateless model; text-to-image only.'
@@ -142,8 +133,6 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-2.5-flash-image',
       value: 'gemini-2.5-flash-image',
       provider: MultimediaProvider.GEMINI,
-      credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'Fast conversational multimodal image model.'
@@ -153,8 +142,6 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3.1-flash-lite-image',
       value: 'gemini-3.1-flash-lite-image',
       provider: MultimediaProvider.GEMINI,
-      credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description:
@@ -165,8 +152,6 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3.1-flash-image',
       value: 'gemini-3.1-flash-image',
       provider: MultimediaProvider.GEMINI,
-      credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'GA Nano Banana 2 / Gemini 3.1 Flash Image model for versatile image generation and editing.'
@@ -176,8 +161,6 @@ export class ImageClientFactory extends Singleton {
       name: 'gemini-3-pro-image',
       value: 'gemini-3-pro-image',
       provider: MultimediaProvider.GEMINI,
-      credentialProviderId: MultimediaProvider.GEMINI,
-      authenticationRequirement: { kind: 'geminiAuthenticationMode' },
       clientClass: GeminiImageClient,
       parameterSchema: null,
       description: 'GA Nano Banana Pro / Gemini 3 Pro Image model for high-quality complex image tasks.'
@@ -216,19 +199,13 @@ export class ImageClientFactory extends Singleton {
     return model;
   }
 
-  static describeConstructionTarget(modelIdentifier: string): MultimediaConstructionTarget {
-    const model = ImageClientFactory.requireModel(modelIdentifier);
-    return {
-      credentialProviderId: model.credentialProviderId,
-      authenticationRequirement: model.authenticationRequirement,
-    };
-  }
 
   static createImageClient(
     modelIdentifier: string,
-    input: { configOverride?: MultimediaConfig | null; authentication: ResolvedMultimediaAuthentication },
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
   ): BaseImageClient {
-    return ImageClientFactory.requireModel(modelIdentifier).createClient(input);
+    return ImageClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver);
   }
 
   static syncRuntimeModels(runtime: MultimediaRuntime, models: ImageModel[]): number {

@@ -3,12 +3,15 @@ import { GoogleGenAI } from '@google/genai';
 import { BaseImageClient } from '../base-image-client.js';
 import { ImageGenerationResponse } from '../../utils/response-types.js';
 import { loadImageFromUrl } from '../../utils/api-utils.js';
-import { initializeGeminiClientWithRuntime } from '../../../utils/gemini-helper.js';
+import {
+  initializeGeminiClientWithRuntime,
+  selectGeminiRuntimeForResolver,
+} from '../../../utils/gemini-helper.js';
 import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
-import type { MultimediaConstructionContext } from '../../multimedia-construction-context.js';
+import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
 
 function guessMimeType(source: string): string {
   const mimeType = mime.lookup(source);
@@ -16,14 +19,22 @@ function guessMimeType(source: string): string {
 }
 
 export class GeminiImageClient extends BaseImageClient {
-  private client: GoogleGenAI;
-  private runtimeInfo: GeminiRuntimeInfo | null;
+  private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
 
-  constructor(model: ImageModel, context: MultimediaConstructionContext) {
-    super(model, context.config);
-    const { client, runtimeInfo } = initializeGeminiClientWithRuntime(context.authentication);
-    this.client = client;
-    this.runtimeInfo = runtimeInfo;
+  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+  }
+
+  private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    const selection = await selectGeminiRuntimeForResolver(this.apiKeyResolver);
+    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 
   async generateImage(
@@ -32,6 +43,7 @@ export class GeminiImageClient extends BaseImageClient {
     generationConfig?: Record<string, unknown>
   ): Promise<ImageGenerationResponse> {
     try {
+      const { client, runtimeInfo } = await this.getClient();
       const contentParts: Array<Record<string, unknown> | string> = [prompt];
       if (inputImageUrls && inputImageUrls.length > 0) {
         for (const url of inputImageUrls) {
@@ -56,7 +68,7 @@ export class GeminiImageClient extends BaseImageClient {
       }
 
       if (!configDict.responseModalities) {
-        if (this.runtimeInfo?.runtime === 'vertex') {
+        if (runtimeInfo.runtime === 'vertex') {
           configDict.responseModalities = ['TEXT', 'IMAGE'];
         } else {
           configDict.responseModalities = ['IMAGE'];
@@ -66,10 +78,10 @@ export class GeminiImageClient extends BaseImageClient {
       const runtimeAdjustedModel = resolveModelForRuntime(
         this.model.value,
         'image',
-        this.runtimeInfo?.runtime
+        runtimeInfo.runtime
       );
 
-      const response = await this.client.models.generateContent({
+      const response = await client.models.generateContent({
         model: runtimeAdjustedModel,
         contents: contentParts,
         config: configDict
