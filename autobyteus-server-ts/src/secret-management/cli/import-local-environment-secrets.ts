@@ -2,28 +2,44 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stderr } from 'node:process';
-import { appConfigProvider } from '../../config/app-config-provider.js';
+import {
+  ApplicationDatabaseLocation,
+  ApplicationDatabaseLocationError,
+} from '../../config/application-database-location.js';
 import { LocalEnvironmentSecretImportService } from '../provisioning/local-environment-secret-import-service.js';
 import {
   LocalEnvironmentSecretImportError,
+  type ImportRequest,
   type LocalEnvironmentSecretImportPlan,
-  type LocalEnvironmentSecretImportRequest,
   type LocalEnvironmentSecretImportResult,
 } from '../provisioning/local-environment-secret-import.js';
+
+export type RawImportCliRequest = Readonly<{
+  sourcePath: string;
+  databaseUrl: string;
+  dryRun: boolean;
+  overwrite: boolean;
+}>;
 
 const invalidOptions = (): never => {
   throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
 };
 
-export const parseLocalImportArguments = (args: readonly string[]): LocalEnvironmentSecretImportRequest => {
+export const parseLocalImportArguments = (args: readonly string[]): RawImportCliRequest => {
   const normalizedArgs = args[0] === '--' ? args.slice(1) : args;
-  let sourceAbsolutePath: string | null = null;
+  let sourcePath: string | null = null;
+  let databaseUrl: string | null = null;
   let dryRun = false;
   let overwrite = false;
   const seen = new Set<string>();
   for (let index = 0; index < normalizedArgs.length; index += 1) {
     const option = normalizedArgs[index];
-    if (!['--source', '--dry-run', '--overwrite'].includes(option) || seen.has(option)) invalidOptions();
+    if (
+      !['--source', '--database-url', '--dry-run', '--overwrite'].includes(option)
+      || seen.has(option)
+    ) {
+      invalidOptions();
+    }
     seen.add(option);
     if (option === '--dry-run') {
       dryRun = true;
@@ -35,11 +51,28 @@ export const parseLocalImportArguments = (args: readonly string[]): LocalEnviron
     }
     const value = normalizedArgs[index + 1];
     if (!value || value.startsWith('--')) invalidOptions();
-    sourceAbsolutePath = value;
+    if (option === '--source') sourcePath = value;
+    if (option === '--database-url') databaseUrl = value;
     index += 1;
   }
-  if (!sourceAbsolutePath || !path.isAbsolute(sourceAbsolutePath)) return invalidOptions();
-  return { sourceAbsolutePath, dryRun, overwrite };
+  if (!sourcePath || !path.isAbsolute(sourcePath) || !databaseUrl) return invalidOptions();
+  return { sourcePath, databaseUrl, dryRun, overwrite };
+};
+
+export const createImportRequest = (raw: RawImportCliRequest): ImportRequest => {
+  let targetLocation: ApplicationDatabaseLocation;
+  try {
+    targetLocation = ApplicationDatabaseLocation.fromAbsoluteFileUrl(raw.databaseUrl);
+  } catch (error) {
+    if (error instanceof ApplicationDatabaseLocationError) invalidOptions();
+    throw error;
+  }
+  return Object.freeze({
+    sourcePath: raw.sourcePath,
+    targetLocation,
+    dryRun: raw.dryRun,
+    overwrite: raw.overwrite,
+  });
 };
 
 export const formatLocalImportPlan = (plan: LocalEnvironmentSecretImportPlan): string => [
@@ -66,10 +99,18 @@ export const formatLocalImportResult = (result: LocalEnvironmentSecretImportResu
 
 const createConfirmationPort = () => ({
   isDirectTty: (): boolean => Boolean(stdin.isTTY && stderr.isTTY),
-  readChallenge: async (expectedPhrase: string, targetIdentity: string): Promise<string | null> => {
+  readChallenge: async (
+    expectedPhrase: string,
+    targetLocation: ApplicationDatabaseLocation,
+    plan: LocalEnvironmentSecretImportPlan,
+  ): Promise<string | null> => {
     const prompt = createInterface({ input: stdin, output: stderr, terminal: true });
     try {
-      return await prompt.question(`Target ${targetIdentity}. Type ${expectedPhrase} to continue: `);
+      stderr.write(formatLocalImportPlan(plan));
+      return await prompt.question(
+        `Target ${targetLocation.databasePath} (${plan.targetState}). ` +
+          `Type ${expectedPhrase} to continue: `,
+      );
     } finally {
       prompt.close();
     }
@@ -79,10 +120,8 @@ const createConfirmationPort = () => ({
 type CliExecution = { output: string; blocked: boolean };
 
 const executeCli = async (args: readonly string[]): Promise<CliExecution> => {
-  const request = parseLocalImportArguments(args);
-  const config = appConfigProvider.config;
-  if (!config.isInitialized()) config.initialize();
-  const service = new LocalEnvironmentSecretImportService(config.getOperationalDatabaseLocation());
+  const request = createImportRequest(parseLocalImportArguments(args));
+  const service = new LocalEnvironmentSecretImportService();
   if (request.dryRun) {
     const plan = await service.preview(request);
     return { output: formatLocalImportPlan(plan), blocked: plan.counts.blocked > 0 };

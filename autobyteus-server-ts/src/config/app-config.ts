@@ -11,10 +11,7 @@ import {
 } from "./config-value-parsers.js";
 import { parseNonSecretEnvironment } from "./non-secret-environment-projection.js";
 import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
-import {
-  resolveApplicationDatabaseLocation,
-  type ApplicationDatabaseLocation,
-} from "./application-database-location.js";
+import { ApplicationDatabaseLocation } from "./application-database-location.js";
 import {
   assignmentName,
   linesWithEndings,
@@ -210,7 +207,7 @@ export class AppConfig {
 
   private setOperationalDatabaseLocation(databaseUrl: string): void {
     try {
-      this.operationalDatabaseLocation = resolveApplicationDatabaseLocation(
+      this.operationalDatabaseLocation = ApplicationDatabaseLocation.fromConfiguredFileUrl(
         databaseUrl,
         this.getAppRootDir(),
       );

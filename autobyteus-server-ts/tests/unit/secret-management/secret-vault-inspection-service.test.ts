@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { resolveApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
+import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import {
   createVaultVerifier,
   SECRET_VAULT_ENCRYPTION_FORMAT_VERSION,
@@ -39,13 +39,13 @@ type Snapshot = {
 
 describe('SecretVaultInspectionService', () => {
   let directory: string;
-  let location: ReturnType<typeof resolveApplicationDatabaseLocation>;
+  let location: ApplicationDatabaseLocation;
   const ids = [secretId('provider.openai.api-key'), secretId('search.serper.api-key')];
 
   beforeEach(async () => {
     directory = await fs.mkdtemp(path.join(os.tmpdir(), 'secret-vault-inspection-'));
     if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
-    location = resolveApplicationDatabaseLocation('file:application.db', directory);
+    location = ApplicationDatabaseLocation.fromConfiguredFileUrl('file:application.db', directory);
   });
 
   afterEach(async () => {

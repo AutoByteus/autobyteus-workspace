@@ -2,7 +2,7 @@
   "name": "autobyteus-workspace",
   "private": true,
   "scripts": {
-    "secrets:local:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
+    "secrets:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
     "test:e2e:real:preflight": "node test-support/live-e2e/run-live-e2e.mjs --preflight",
     "test:e2e:real": "node test-support/live-e2e/run-live-e2e.mjs",
     "verify:android-profile": "bash scripts/verify-android-profile.sh",

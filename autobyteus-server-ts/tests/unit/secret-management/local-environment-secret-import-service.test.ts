@@ -1,8 +1,9 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resolveApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
+import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import {
   LocalEnvironmentSecretImportService,
   type LocalImportConfirmationPort,
@@ -34,14 +35,18 @@ describe('LocalEnvironmentSecretImportService', () => {
     return fs.readFile(sourcePath);
   };
 
-  const location = () => resolveApplicationDatabaseLocation('file:application.db', directory);
+  const location = (): ApplicationDatabaseLocation =>
+    ApplicationDatabaseLocation.fromAbsoluteFileUrl(
+      pathToFileURL(path.join(directory, 'application.db')).href,
+    );
 
-  it('previews only through the injected narrow inspector and preserves source bytes', async () => {
+  it('previews through the inspector selected by the immutable request target', async () => {
     const sourceBefore = await writeSource(
       'OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\n',
     );
+    const targetLocation = location();
     const inspectImportTarget = vi.fn().mockResolvedValue({
-      targetIdentity: location().databasePath,
+      targetIdentity: targetLocation.databasePath,
       targetState: 'INITIALIZATION_REQUIRED',
       entries: [
         { secretId: 'provider.openai.api-key', observedStatus: 'MISSING', plannedAction: 'CREATE' },
@@ -50,20 +55,22 @@ describe('LocalEnvironmentSecretImportService', () => {
       counts: { create: 2, skipConfigured: 0, replace: 0, blocked: 0 },
       instructionCode: 'SECRET_VAULT_INITIALIZATION_REQUIRED',
     });
+    const inspectorFactory = vi.fn().mockReturnValue({ inspectImportTarget });
     const runtimeFactory = vi.fn();
     const service = new LocalEnvironmentSecretImportService(
-      location(),
       undefined,
-      { inspectImportTarget } as never,
+      inspectorFactory,
       runtimeFactory,
     );
 
     const plan = await service.preview({
-      sourceAbsolutePath: sourcePath,
+      sourcePath,
+      targetLocation,
       dryRun: true,
       overwrite: false,
     });
 
+    expect(inspectorFactory).toHaveBeenCalledExactlyOnceWith(targetLocation);
     expect(inspectImportTarget).toHaveBeenCalledWith([
       'provider.openai.api-key',
       'search.serper.api-key',
@@ -78,30 +85,27 @@ describe('LocalEnvironmentSecretImportService', () => {
     const sourceBefore = await writeSource(
       'OPENAI_API_KEY=\nOPENAI_API_KEY=""\nGEMINI_API_KEY=   \n',
     );
-    const inspectImportTarget = vi.fn();
-    const service = new LocalEnvironmentSecretImportService(
-      location(),
-      undefined,
-      { inspectImportTarget } as never,
-    );
+    const inspectorFactory = vi.fn();
+    const service = new LocalEnvironmentSecretImportService(undefined, inspectorFactory);
 
     await expect(service.preview({
-      sourceAbsolutePath: sourcePath,
+      sourcePath,
+      targetLocation: location(),
       dryRun: true,
       overwrite: false,
     })).rejects.toMatchObject({ code: 'IMPORT_NO_MAPPED_CREDENTIALS' });
-    expect(inspectImportTarget).not.toHaveBeenCalled();
+    expect(inspectorFactory).not.toHaveBeenCalled();
     expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
   });
 
   it('never confirms or initializes a closed target', async () => {
     await writeSource('OPENAI_API_KEY=synthetic-openai\n');
+    const targetLocation = location();
     const service = new LocalEnvironmentSecretImportService(
-      location(),
       undefined,
-      {
+      vi.fn().mockReturnValue({
         inspectImportTarget: vi.fn().mockResolvedValue({
-          targetIdentity: location().databasePath,
+          targetIdentity: targetLocation.databasePath,
           targetState: 'LOCKED',
           entries: [{
             secretId: 'provider.openai.api-key',
@@ -111,13 +115,14 @@ describe('LocalEnvironmentSecretImportService', () => {
           counts: { create: 0, skipConfigured: 0, replace: 0, blocked: 1 },
           instructionCode: 'SECRET_VAULT_LOCKED',
         }),
-      } as never,
+      }),
       vi.fn(),
     );
     const port = confirmation('IMPORT');
 
     await expect(service.execute({
-      sourceAbsolutePath: sourcePath,
+      sourcePath,
+      targetLocation,
       dryRun: false,
       overwrite: false,
     }, port)).rejects.toMatchObject({ code: 'IMPORT_TARGET_NOT_READY' });
@@ -126,13 +131,13 @@ describe('LocalEnvironmentSecretImportService', () => {
 
   it('requires the exact direct-TTY challenge before execution bootstrap', async () => {
     await writeSource('OPENAI_API_KEY=synthetic-openai\n');
+    const targetLocation = location();
     const runtimeFactory = vi.fn();
     const service = new LocalEnvironmentSecretImportService(
-      location(),
       undefined,
-      {
+      vi.fn().mockReturnValue({
         inspectImportTarget: vi.fn().mockResolvedValue({
-          targetIdentity: location().databasePath,
+          targetIdentity: targetLocation.databasePath,
           targetState: 'INITIALIZATION_REQUIRED',
           entries: [{
             secretId: 'provider.openai.api-key',
@@ -142,12 +147,13 @@ describe('LocalEnvironmentSecretImportService', () => {
           counts: { create: 1, skipConfigured: 0, replace: 0, blocked: 0 },
           instructionCode: 'SECRET_VAULT_INITIALIZATION_REQUIRED',
         }),
-      } as never,
+      }),
       runtimeFactory,
     );
     for (const port of [confirmation('WRONG'), confirmation(null), confirmation('IMPORT', false)]) {
       await expect(service.execute({
-        sourceAbsolutePath: sourcePath,
+        sourcePath,
+        targetLocation,
         dryRun: false,
         overwrite: false,
       }, port)).rejects.toMatchObject({
@@ -157,41 +163,54 @@ describe('LocalEnvironmentSecretImportService', () => {
     expect(runtimeFactory).not.toHaveBeenCalled();
   });
 
-  it('bootstraps only after confirmation and reports authoritative batch counts', async () => {
+  it('carries the same target through inspection, confirmation, and execution', async () => {
     const sourceBefore = await writeSource(
       'OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\n',
     );
+    const targetLocation = location();
+    const inspectImportTarget = vi.fn().mockResolvedValue({
+      targetIdentity: targetLocation.databasePath,
+      targetState: 'READY',
+      entries: [],
+      counts: { create: 1, skipConfigured: 1, replace: 0, blocked: 0 },
+    });
+    const inspectorFactory = vi.fn().mockReturnValue({ inspectImportTarget });
     const saveBatch = vi.fn().mockResolvedValue({
       configuredCount: 1,
       skippedCount: 1,
       replacedCount: 0,
     });
     const close = vi.fn();
+    const runtimeFactory = vi.fn().mockResolvedValue({
+      runtime: {
+        requireService: () => ({ getHealth: vi.fn().mockResolvedValue(readyHealth), saveBatch }),
+      },
+      close,
+    });
     const service = new LocalEnvironmentSecretImportService(
-      location(),
       undefined,
-      {
-        inspectImportTarget: vi.fn().mockResolvedValue({
-          targetIdentity: location().databasePath,
-          targetState: 'READY',
-          entries: [],
-          counts: { create: 1, skipConfigured: 1, replace: 0, blocked: 0 },
-        }),
-      } as never,
-      vi.fn().mockResolvedValue({
-        runtime: {
-          requireService: () => ({ getHealth: vi.fn().mockResolvedValue(readyHealth), saveBatch }),
-        },
-        close,
-      }),
+      inspectorFactory,
+      runtimeFactory,
     );
+    const port = confirmation('IMPORT');
 
     const result = await service.execute({
-      sourceAbsolutePath: sourcePath,
+      sourcePath,
+      targetLocation,
       dryRun: false,
       overwrite: false,
-    }, confirmation('IMPORT'));
+    }, port);
 
+    expect(inspectorFactory).toHaveBeenCalledExactlyOnceWith(targetLocation);
+    expect(port.readChallenge).toHaveBeenCalledExactlyOnceWith(
+      'IMPORT',
+      targetLocation,
+      expect.objectContaining({
+        targetIdentity: targetLocation.databasePath,
+        targetState: 'READY',
+      }),
+    );
+    expect(runtimeFactory).toHaveBeenCalledExactlyOnceWith(targetLocation);
     expect(saveBatch).toHaveBeenCalledOnce();
     expect(saveBatch.mock.calls[0]?.[0].map((entry: { secretId: string }) => entry.secretId)).toEqual([
       'provider.openai.api-key',
@@ -199,7 +218,7 @@ describe('LocalEnvironmentSecretImportService', () => {
     ]);
     expect(saveBatch).toHaveBeenCalledWith(expect.any(Array), false);
     expect(result).toMatchObject({
-      targetIdentity: location().databasePath,
+      targetIdentity: targetLocation.databasePath,
       targetState: 'READY',
       configuredCount: 1,
       skippedCount: 1,
@@ -209,5 +228,18 @@ describe('LocalEnvironmentSecretImportService', () => {
     expect(JSON.stringify(result)).not.toContain('synthetic');
     expect(close).toHaveBeenCalledOnce();
     expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
+  });
+
+  it('rejects a raw URL or duplicate target authority below the CLI boundary', async () => {
+    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
+    const service = new LocalEnvironmentSecretImportService(undefined, vi.fn());
+
+    await expect(service.preview({
+      sourcePath,
+      targetLocation: location(),
+      dryRun: true,
+      overwrite: false,
+      databaseUrl: pathToFileURL(path.join(directory, 'other.db')).href,
+    } as never)).rejects.toMatchObject({ code: 'IMPORT_OPTIONS_INVALID' });
   });
 });

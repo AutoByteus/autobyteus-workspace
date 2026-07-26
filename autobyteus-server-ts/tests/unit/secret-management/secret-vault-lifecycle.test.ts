@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { PrismaClient } from '@prisma/client';
 import { SecretValue } from 'autobyteus-ts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resolveApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
+import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { SecretVaultBootstrap } from '../../../src/secret-management/bootstrap/secret-vault-bootstrap.js';
 import { secretId } from '../../../src/secret-management/domain/secret-id.js';
 import { SecretVaultPrismaRepository } from '../../../src/secret-management/persistence/secret-vault-prisma-repository.js';
@@ -73,7 +73,7 @@ describe('one-database secret vault lifecycle', () => {
   beforeEach(async () => {
     directory = await fs.mkdtemp(path.join(os.tmpdir(), 'secret-vault-lifecycle-'));
     if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
-    const location = resolveApplicationDatabaseLocation('file:application.db', directory);
+    const location = ApplicationDatabaseLocation.fromConfiguredFileUrl('file:application.db', directory);
     databasePath = location.databasePath;
     const database = new DatabaseSync(databasePath);
     database.exec(TABLES);
@@ -197,7 +197,7 @@ describe('one-database secret vault lifecycle', () => {
       const repository = new SecretVaultPrismaRepository(prisma);
       await expect(
         new SecretVaultBootstrap(
-          resolveApplicationDatabaseLocation('file:application.db', directory),
+          ApplicationDatabaseLocation.fromConfiguredFileUrl('file:application.db', directory),
           repository,
         ).initializeOrVerify(),
       ).resolves.toMatchObject({
@@ -217,7 +217,7 @@ describe('secret vault initialization interruption safety', () => {
   const createFixture = async () => {
     const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'secret-vault-initialization-'));
     if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
-    const location = resolveApplicationDatabaseLocation('file:application.db', directory);
+    const location = ApplicationDatabaseLocation.fromConfiguredFileUrl('file:application.db', directory);
     const database = new DatabaseSync(location.databasePath);
     database.exec(TABLES);
     database.close();

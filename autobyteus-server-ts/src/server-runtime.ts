@@ -137,7 +137,11 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    runMigrations();
+    const config = appConfigProvider.config;
+    runMigrations({
+      appRoot: config.getAppRootDir(),
+      databaseUrl: config.getOperationalDatabaseUrl(),
+    });
   } catch (error) {
     logger.error(`Failed to run database migrations: ${String(error)}`);
     process.exit(1);

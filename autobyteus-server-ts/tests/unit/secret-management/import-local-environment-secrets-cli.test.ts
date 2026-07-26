@@ -1,7 +1,11 @@
+import fs from 'node:fs';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { secretId } from '../../../src/secret-management/domain/secret-id.js';
 import {
+  createImportRequest,
   formatLocalImportPlan,
   formatLocalImportResult,
   parseLocalImportArguments,
@@ -9,35 +13,119 @@ import {
 
 describe('local environment import CLI adapter', () => {
   const absoluteSource = path.resolve('/synthetic/operator/source-with-any-name');
+  const absoluteDatabasePath = path.resolve('/synthetic/operator/application.db');
+  const absoluteDatabaseUrl = pathToFileURL(absoluteDatabasePath).href;
+  const originalDatabaseUrl = process.env.DATABASE_URL;
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
+    else process.env.DATABASE_URL = originalDatabaseUrl;
+  });
 
   it.each([
     { label: 'direct options', prefix: [] },
     { label: 'one PNPM separator', prefix: ['--'] },
-  ])('maps $label into the exact current-database request', ({ prefix }) => {
+  ])('maps $label into the exact raw CLI request', ({ prefix }) => {
     expect(parseLocalImportArguments([
       ...prefix,
       '--source', absoluteSource,
+      '--database-url', absoluteDatabaseUrl,
       '--dry-run',
       '--overwrite',
     ])).toEqual({
-      sourceAbsolutePath: absoluteSource,
+      sourcePath: absoluteSource,
+      databaseUrl: absoluteDatabaseUrl,
       dryRun: true,
       overwrite: true,
     });
   });
 
+  it('converts the raw URL exactly once and discards it from downstream authority', () => {
+    process.env.DATABASE_URL = pathToFileURL(path.resolve('/ambient/ignored.db')).href;
+    const resolver = vi.spyOn(ApplicationDatabaseLocation, 'fromAbsoluteFileUrl');
+    const raw = parseLocalImportArguments([
+      '--source', absoluteSource,
+      '--database-url', absoluteDatabaseUrl,
+    ]);
+
+    const request = createImportRequest(raw);
+
+    expect(resolver).toHaveBeenCalledExactlyOnceWith(absoluteDatabaseUrl);
+    expect(request).toEqual({
+      sourcePath: absoluteSource,
+      targetLocation: expect.objectContaining({
+        databaseUrl: absoluteDatabaseUrl,
+        databasePath: absoluteDatabasePath,
+        rootKeyPath: `${absoluteDatabasePath}.secret.key`,
+      }),
+      dryRun: false,
+      overwrite: false,
+    });
+    expect(Object.keys(request).sort()).toEqual([
+      'dryRun',
+      'overwrite',
+      'sourcePath',
+      'targetLocation',
+    ]);
+    expect('databaseUrl' in request).toBe(false);
+    expect(Object.isFrozen(request)).toBe(true);
+    expect(Object.isFrozen(request.targetLocation)).toBe(true);
+  });
+
   it.each([
     { args: [] },
-    { args: ['--source', 'relative'] },
-    { args: ['--source', absoluteSource, '--source', absoluteSource] },
-    { args: ['--source', absoluteSource, '--target', 'default'] },
-    { args: ['--source', absoluteSource, '--store-db', '/tmp/store.db'] },
-    { args: ['--source', absoluteSource, '--secret-id', 'provider.openai.api-key'] },
-    { args: ['--source', absoluteSource, '--value', 'synthetic-value'] },
-    { args: ['--', '--', '--source', absoluteSource] },
-    { args: ['--source', absoluteSource, '--'] },
+    { args: ['--source', 'relative', '--database-url', absoluteDatabaseUrl] },
+    { args: ['--source', absoluteSource] },
+    { args: ['--database-url', absoluteDatabaseUrl] },
+    {
+      args: [
+        '--source', absoluteSource,
+        '--source', absoluteSource,
+        '--database-url', absoluteDatabaseUrl,
+      ],
+    },
+    {
+      args: [
+        '--source', absoluteSource,
+        '--database-url', absoluteDatabaseUrl,
+        '--database-url', absoluteDatabaseUrl,
+      ],
+    },
+    { args: ['--source', absoluteSource, '--database-url', absoluteDatabaseUrl, '--target', 'default'] },
+    { args: ['--source', absoluteSource, '--database-url', absoluteDatabaseUrl, '--key-path', '/tmp/key'] },
+    { args: ['--source', absoluteSource, '--database-url', absoluteDatabaseUrl, '--profile', 'e2e'] },
+    { args: ['--', '--', '--source', absoluteSource, '--database-url', absoluteDatabaseUrl] },
+    { args: ['--source', absoluteSource, '--database-url', absoluteDatabaseUrl, '--'] },
   ])('rejects missing, duplicate, relative, or widened options', ({ args }) => {
     expect(() => parseLocalImportArguments(args)).toThrowError('IMPORT_OPTIONS_INVALID');
+  });
+
+  it.each([
+    '',
+    'file:relative.db',
+    'file:./relative.db',
+    'https://example.invalid/application.db',
+    'postgresql://example.invalid/application',
+    'file:/absolute/application.db?mode=ro',
+    'file:/absolute/application.db#fragment',
+  ])('rejects invalid explicit database URL %s before service construction', (databaseUrl) => {
+    const raw = {
+      sourcePath: absoluteSource,
+      databaseUrl,
+      dryRun: true,
+      overwrite: false,
+    };
+    expect(() => createImportRequest(raw)).toThrowError('IMPORT_OPTIONS_INVALID');
+  });
+
+  it('keeps secrets:import as the sole repository importer command', () => {
+    const packagePath = fileURLToPath(new URL('../../../../package.json', import.meta.url));
+    const scripts = JSON.parse(fs.readFileSync(packagePath, 'utf8')).scripts as Record<string, string>;
+
+    expect(scripts['secrets:import']).toContain('import-local-environment-secrets.js');
+    expect(Object.keys(scripts).filter((name) => name.includes('secrets') && name.includes('import')))
+      .toEqual(['secrets:import']);
   });
 
   it('formats only value-free target, SecretId, state, action, and counts', () => {

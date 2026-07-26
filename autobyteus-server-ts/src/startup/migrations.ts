@@ -2,7 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { appConfigProvider } from "../config/app-config-provider.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -281,9 +280,11 @@ function runPrismaCommand(appRoot: string, databaseUrl: string, args: string[]):
   });
 }
 
-export function runMigrations(): void {
-  const config = appConfigProvider.config;
-  const appRoot = config.getAppRootDir();
+export function runMigrations(input: {
+  appRoot: string;
+  databaseUrl: string;
+}): void {
+  const appRoot = input.appRoot;
   const schemaPath = path.join(appRoot, "prisma", "schema.prisma");
 
   if (!fs.existsSync(schemaPath)) {
@@ -291,11 +292,9 @@ export function runMigrations(): void {
     return;
   }
 
-  const databaseUrl = config.getOperationalDatabaseUrl();
-
   try {
     logger.info("Running Prisma migrations...");
-    runPrismaCommand(appRoot, databaseUrl, ["migrate", "deploy", "--schema", schemaPath]);
+    runPrismaCommand(appRoot, input.databaseUrl, ["migrate", "deploy", "--schema", schemaPath]);
     logger.info("Database migrations completed successfully.");
   } catch (error) {
     const message = String(error);
@@ -304,7 +303,7 @@ export function runMigrations(): void {
         "Prisma reported a non-empty schema without migration history. " +
           `Marking baseline migration ${BASELINE_MIGRATION} as applied.`,
       );
-      runPrismaCommand(appRoot, databaseUrl, [
+      runPrismaCommand(appRoot, input.databaseUrl, [
         "migrate",
         "resolve",
         "--applied",
@@ -312,7 +311,7 @@ export function runMigrations(): void {
         "--schema",
         schemaPath,
       ]);
-      runPrismaCommand(appRoot, databaseUrl, ["migrate", "deploy", "--schema", schemaPath]);
+      runPrismaCommand(appRoot, input.databaseUrl, ["migrate", "deploy", "--schema", schemaPath]);
       logger.info("Baseline migration resolved; database migrations completed.");
       return;
     }

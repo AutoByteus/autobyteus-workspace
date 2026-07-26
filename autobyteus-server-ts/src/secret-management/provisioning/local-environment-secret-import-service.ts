@@ -1,6 +1,9 @@
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SecretValue } from 'autobyteus-ts/secrets/secret-value.js';
-import type { ApplicationDatabaseLocation } from '../../config/application-database-location.js';
+import {
+  ApplicationDatabaseLocation,
+} from '../../config/application-database-location.js';
 import { runMigrations } from '../../startup/migrations.js';
 import { providerCredentialCatalog } from '../catalog/provider-credential-catalog.js';
 import { SecretVaultRuntime } from '../secret-vault-runtime.js';
@@ -11,14 +14,18 @@ import {
 } from './local-environment-source-reader.js';
 import {
   LocalEnvironmentSecretImportError,
+  type ImportRequest,
   type LocalEnvironmentSecretImportPlan,
-  type LocalEnvironmentSecretImportRequest,
   type LocalEnvironmentSecretImportResult,
 } from './local-environment-secret-import.js';
 
 export interface LocalImportConfirmationPort {
   isDirectTty(): boolean;
-  readChallenge(expectedPhrase: string, targetIdentity: string): Promise<string | null>;
+  readChallenge(
+    expectedPhrase: string,
+    targetLocation: ApplicationDatabaseLocation,
+    plan: LocalEnvironmentSecretImportPlan,
+  ): Promise<string | null>;
 }
 
 type ExecutionRuntime = {
@@ -26,50 +33,71 @@ type ExecutionRuntime = {
   close(): Promise<void>;
 };
 
-export type LocalImportExecutionRuntimeFactory = () => Promise<ExecutionRuntime>;
+export type LocalImportInspectorFactory = (
+  targetLocation: ApplicationDatabaseLocation,
+) => Pick<SecretVaultInspectionService, 'inspectImportTarget'>;
+
+export type LocalImportExecutionRuntimeFactory = (
+  targetLocation: ApplicationDatabaseLocation,
+) => Promise<ExecutionRuntime>;
+
+const importerAppRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+);
 
 export class LocalEnvironmentSecretImportService {
-  private readonly inspector: SecretVaultInspectionService;
-
   constructor(
-    private readonly location: ApplicationDatabaseLocation,
     private readonly sourceReader = new LocalEnvironmentSourceReader(),
-    inspector = new SecretVaultInspectionService(location),
-    private readonly executionRuntimeFactory: LocalImportExecutionRuntimeFactory = async () => {
-      runMigrations();
+    private readonly inspectorFactory: LocalImportInspectorFactory = (targetLocation) =>
+      new SecretVaultInspectionService(targetLocation),
+    private readonly executionRuntimeFactory: LocalImportExecutionRuntimeFactory = async (
+      targetLocation,
+    ) => {
+      runMigrations({
+        appRoot: importerAppRoot,
+        databaseUrl: targetLocation.databaseUrl,
+      });
       const runtime = new SecretVaultRuntime();
-      await runtime.initialize(location);
+      await runtime.initialize(targetLocation);
       return { runtime, close: () => runtime.close() };
     },
-  ) {
-    this.inspector = inspector;
-  }
+  ) {}
 
-  async preview(request: LocalEnvironmentSecretImportRequest): Promise<LocalEnvironmentSecretImportPlan> {
+  async preview(request: ImportRequest): Promise<LocalEnvironmentSecretImportPlan> {
     this.validateRequest(request);
     if (!request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
-    const source = await this.sourceReader.read(request.sourceAbsolutePath);
+    const source = await this.sourceReader.read(request.sourcePath);
     try {
-      return await this.inspectSource(source, request.overwrite);
+      return await this.inspectSource(source, request.targetLocation, request.overwrite);
     } finally {
       source.release();
     }
   }
 
   async execute(
-    request: LocalEnvironmentSecretImportRequest,
+    request: ImportRequest,
     confirmation: LocalImportConfirmationPort,
   ): Promise<LocalEnvironmentSecretImportResult> {
     this.validateRequest(request);
     if (request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
-    const source = await this.sourceReader.read(request.sourceAbsolutePath);
+    const source = await this.sourceReader.read(request.sourcePath);
     try {
-      const plan = await this.inspectSource(source, request.overwrite);
-      if (plan.counts.blocked > 0) {
+      const plan = await this.inspectSource(
+        source,
+        request.targetLocation,
+        request.overwrite,
+      );
+      if (
+        plan.targetIdentity !== request.targetLocation.databasePath
+        || plan.counts.blocked > 0
+      ) {
         throw new LocalEnvironmentSecretImportError('IMPORT_TARGET_NOT_READY');
       }
-      await this.confirm(plan.targetIdentity, confirmation);
-      const execution = await this.executionRuntimeFactory();
+      await this.confirm(request.targetLocation, plan, confirmation);
+      const execution = await this.executionRuntimeFactory(request.targetLocation);
       try {
         const service = execution.runtime.requireService();
         const health = await service.getHealth();
@@ -102,6 +130,7 @@ export class LocalEnvironmentSecretImportService {
 
   private async inspectSource(
     source: LocalEnvironmentSourceReadResult,
+    targetLocation: ApplicationDatabaseLocation,
     overwrite: boolean,
   ): Promise<LocalEnvironmentSecretImportPlan> {
     const secretIds = source.credentials.map((credential) => credential.secretId);
@@ -111,11 +140,12 @@ export class LocalEnvironmentSecretImportService {
     ) {
       throw new LocalEnvironmentSecretImportError('IMPORT_MAPPING_INVALID');
     }
-    return this.inspector.inspectImportTarget(secretIds, overwrite);
+    return this.inspectorFactory(targetLocation).inspectImportTarget(secretIds, overwrite);
   }
 
   private async confirm(
-    targetIdentity: string,
+    targetLocation: ApplicationDatabaseLocation,
+    plan: LocalEnvironmentSecretImportPlan,
     confirmation: LocalImportConfirmationPort,
   ): Promise<void> {
     if (!confirmation.isDirectTty()) {
@@ -123,21 +153,23 @@ export class LocalEnvironmentSecretImportService {
     }
     let response: string | null;
     try {
-      response = await confirmation.readChallenge('IMPORT', targetIdentity);
+      response = await confirmation.readChallenge('IMPORT', targetLocation, plan);
     } catch {
       throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
     }
     if (response !== 'IMPORT') throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
   }
 
-  private validateRequest(request: LocalEnvironmentSecretImportRequest): void {
+  private validateRequest(request: ImportRequest): void {
     const keys = request && typeof request === 'object' ? Object.keys(request).sort() : [];
-    const exactKeys = ['dryRun', 'overwrite', 'sourceAbsolutePath'];
+    const exactKeys = ['dryRun', 'overwrite', 'sourcePath', 'targetLocation'];
     if (
       keys.length !== exactKeys.length
       || keys.some((key, index) => key !== exactKeys[index])
-      || typeof request.sourceAbsolutePath !== 'string'
-      || !path.isAbsolute(request.sourceAbsolutePath)
+      || typeof request.sourcePath !== 'string'
+      || !path.isAbsolute(request.sourcePath)
+      || !(request.targetLocation instanceof ApplicationDatabaseLocation)
+      || !Object.isFrozen(request.targetLocation)
       || typeof request.dryRun !== 'boolean'
       || typeof request.overwrite !== 'boolean'
     ) {

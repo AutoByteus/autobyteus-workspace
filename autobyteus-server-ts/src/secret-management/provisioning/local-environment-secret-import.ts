@@ -1,11 +1,13 @@
+import type { ApplicationDatabaseLocation } from '../../config/application-database-location.js';
 import type { SecretId } from '../domain/secret-id.js';
 import type { ImportTargetInspection } from '../services/secret-vault-inspection-service.js';
 
-export type LocalEnvironmentSecretImportRequest = {
-  sourceAbsolutePath: string;
+export type ImportRequest = Readonly<{
+  sourcePath: string;
+  targetLocation: ApplicationDatabaseLocation;
   dryRun: boolean;
   overwrite: boolean;
-};
+}>;
 
 export type LocalEnvironmentSecretImportPlan = ImportTargetInspection;
 
