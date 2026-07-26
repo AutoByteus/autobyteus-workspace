@@ -10,6 +10,8 @@
 - CR-024 source/test commit: `14b0f7a96f82d1aa0d27a0858877207ad9953c94`
 - Round-30 importer rework starting HEAD: `eac929a1f1e411a72d232d961578a700bed12829`
 - Round-30 importer source/test commit: `ccc373f3755a30eca38ab50f8639539e6095385f`
+- CR-025 rework starting HEAD: `e8ef13c3b0c86400ea79f2de0d15a5f1dc50003e`
+- CR-025 source/test commit: `1ccb12a9aea8c872d7032eb9ac9e1bcf9cf49d8c`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -44,6 +46,7 @@
 - Retained curated Gemini metadata independently from runtime selection; AI Studio alone may perform live Developer API enrichment and Vertex/no-selection paths remain curated-only.
 - Reconciled built-in provider Settings, search, managed Claude, AutoByteus remote discovery/invocation, and custom-provider create/probe/list/use/idempotent-delete against the one vault.
 - Reworked the explicit assignment-file importer so `pnpm secrets:import` requires one absolute source and one explicit absolute SQLite `--database-url`. The CLI converts that raw URL exactly once through `ApplicationDatabaseLocation.fromAbsoluteFileUrl()`, discards it as raw authority, and carries one immutable `targetLocation` through preview, value-free display, confirmation, migration/bootstrap, and execution.
+- Tightened the strict importer target entrypoint to reject a decoded U+0000 before constructing `ApplicationDatabaseLocation`, before service/source/target access, and before any target text can reach output. The value-free CLI failure remains `IMPORT_OPTIONS_INVALID`.
 - Removed importer AppConfig/ambient/profile/test-wrapper target authority. Preview remains owned solely by `SecretVaultInspectionService`, opens an existing DB read-only/query-only, and never migrates, initializes, writes, repairs, or changes permissions.
 - Removed the old default/e2e target resolver, separate Store CLI/setup command, second-backend interfaces, reset/provisioning machinery, and related obsolete unit coverage without compatibility adapters.
 - Updated GraphQL/value-free status projections, the concise Gemini Settings UI, generated web types, localized strings, Electron reset behavior, and focused tests.
@@ -61,7 +64,7 @@
 | `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, GraphQL/web Gemini files. | Implemented with truthful staged outcomes and no priority/fallback. |
 | `BEH-007` | Curated catalog continuity and bounded live metadata. | Existing metadata provisioning/resolver/provider owners plus updated status tests. | Preserved: AI Studio live/fallback; Vertex/no-selection curated-only and zero metadata secret/HTTP. |
 | `BEH-008` | Custom provider create/probe/list/use/delete with split metadata/credential custody. | `llm-provider-service.ts`, custom store/runtime sync, deterministic custom consumer mapping. | Implemented; create compensates metadata on secret-save failure, delete is retryable/idempotent, no persisted update surface added. |
-| `BEH-009` | Explicit importer targets one URL-selected application DB; read-only advisory preview; authoritative atomic execute. | `RawImportCliRequest` -> `ApplicationDatabaseLocation.fromAbsoluteFileUrl()` -> exact `ImportRequest`; source reader/import service, positive alias registry, `SecretVaultInspectionService`, vault batch save. | Implemented; the raw URL exists only at the CLI boundary, the same immutable target is used throughout, and AppConfig/ambient/profile/test-wrapper authority is absent. Recognize-first, empty-as-absent, DASHSCOPE-only Qwen, no-overwrite/TTY/source immutability remain. |
+| `BEH-009` | Explicit importer targets one URL-selected application DB; read-only advisory preview; authoritative atomic execute. | `RawImportCliRequest` -> `ApplicationDatabaseLocation.fromAbsoluteFileUrl()` -> exact `ImportRequest`; source reader/import service, positive alias registry, `SecretVaultInspectionService`, vault batch save. | Implemented; the raw URL exists only at the CLI boundary, the same immutable target is used throughout, and AppConfig/ambient/profile/test-wrapper authority is absent. Malformed URLs, including decoded-NUL paths, fail value-free before service/source/target access. Recognize-first, empty-as-absent, DASHSCOPE-only Qwen, no-overwrite/TTY/source immutability remain. |
 | `BEH-010` | No automatic legacy migration or runtime authority. | AppConfig non-secret projection, current custom-provider v2 parser, removal of migration/compatibility paths. | Implemented; legacy credential values remain untouched and excluded from authority. |
 | `BEH-011` | Normal server reads only ordinary `<data-dir>/.env`; test selection is application DB selection. | AppConfig/runtime contract and removal of separate E2E Store setup command. | Production boundary implemented. Test-runtime `.env.test` bootstrap/scenario reconciliation remains API/E2E-owned downstream work. |
 | `BEH-012` | Exactly Claude `cli` and `managed-secret` modes. | `claude-runtime-authentication-service.ts` and existing governed launch path. | Preserved; CLI is zero lookup, managed mode is exact-child delivery with no fallback. |
@@ -116,7 +119,7 @@
 - Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup and old construction/authentication paths.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. Round-30 importer/config source files remain below 500 effective non-empty lines; the importer service is 168 effective non-empty lines and the CLI is 140.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. Round-30/CR-025 importer/config source files remain below 500 effective non-empty lines; the importer service is 168 effective non-empty lines and the CLI is 143.
 - Notes: production scans found no old Store selector/config/access mode, model construction target/context, provider-secret environment lookup, generic secret API, or custom-provider update command.
 
 ## Persisted Data Transition Check (When Applicable)
@@ -142,6 +145,8 @@
 - CR-024 focused rerun: 3 files / 18 tests passed. It additionally proves established restart preserves metadata values, root-key bytes/stat, main DB and WAL/SHM/journal bytes/stat/absence, and an independent observer's `PRAGMA data_version`.
 - Round-30 focused importer/config/migration/vault suite: 6 files / 69 tests passed. It proves the exact raw/domain request shapes, one absolute-URL conversion, absence of downstream raw/duplicate authority, same-object inspection/confirmation/execution, invalid URL/option rejection, source immutability, read-only inspection, and existing vault lifecycle behavior.
 - Sanitized built-CLI explicit-target dry-run: passed. With an empty-base environment and a synthetic private assignment source, it reported `INITIALIZATION_REQUIRED` for the explicit target while leaving the DB, key, and sidecars absent.
+- CR-025 focused importer/config/migration/vault suite: 6 files / 71 tests passed. It adds deterministic decoded-NUL target rejection before importer service construction or source/target access.
+- CR-025 sanitized built-CLI malformed-target probe: passed. With an empty-base environment and a deliberately nonexistent source, `file:///tmp/review%00target.db` exited 1 with exactly `LOCAL_SECRET_IMPORT_FAILED IMPORT_OPTIONS_INVALID`, emitted no control byte, and did not access the source or target.
 - Core LLM/media/provider suite: 76 files / 364 tests passed.
 - Web/Electron focused suite: 9 files / 70 tests passed.
 - `pnpm -C autobyteus-ts build`: passed, including runtime dependency verification.
@@ -179,4 +184,4 @@
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Round-30 implementation source and implementation-scoped checks are complete, but the cumulative package must pass full implementation-source review first. Only then may `api_e2e_engineer` reconcile durable test/environment changes and execute the broader matrix before proportional test-code review.
+Yes. CR-025 implementation source and implementation-scoped checks are complete, but the cumulative package must pass full implementation-source review first. Only then may `api_e2e_engineer` reconcile durable test/environment changes and execute the broader matrix before proportional test-code review.
