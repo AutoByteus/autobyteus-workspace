@@ -6,6 +6,8 @@
 - Round-28 implementation source/test commit: `0564559298ccf21267581cb4feec88770c72e7ce`
 - CR-023 rework starting HEAD: `4d0ee81754b6b8329fe3b5ead2ef7c20ead5ed33`
 - CR-023 source/test commit: `e3d9a06d3c0334f87a7a5864351034249b49071d`
+- CR-024 rework starting HEAD: `7c0b752663cec85a671ea9c530af753f537544e5`
+- CR-024 source/test commit: `14b0f7a96f82d1aa0d27a0858877207ad9953c94`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -33,6 +35,7 @@
 - Replaced the separate Local Store database/configuration/access-mode subsystem with two Prisma-managed secret tables in the one application SQLite database selected by canonical `DATABASE_URL`.
 - Added a database-adjacent 32-byte owner-only root-key sidecar, staged first initialization, metadata verifier, HKDF-SHA-256 per-entry derivation, and AES-256-GCM encryption with ID/domain/version-bound AAD.
 - Replaced the crash-persistent initialization sentinel with application-SQLite transaction-scoped exclusion. SQLite now releases initialization ownership automatically when a process terminates; key-only interrupted initialization resumes, while live initializers serialize before key inspection and publish one key/domain pair.
+- Removed the artificial singleton-row update previously used to force ownership. Prisma's SQLite interactive transaction already serializes separate clients before the callback, so established verification now commits no row change and leaves the DB/key/file family unchanged.
 - Added fail-closed vault bootstrap/runtime/health and one authorization-owning `SecretManagementService` for write-only save/replace, idempotent removal, status, point-of-use resolve, and atomic importer batches.
 - Kept the storage-neutral `ProviderApiKeyResolver`; concrete LLM/media clients resolve their intrinsic provider/slot lazily at SDK construction. Catalog and model structures remain credential-independent.
 - Implemented explicit Gemini independent-option configuration plus one explicit `GEMINI_SETUP_MODE`; there is no implicit priority or alternate-mode fallback. Exact AI Studio, Vertex Express, and Vertex Project SDK construction remains provider-owned.
@@ -49,7 +52,7 @@
 | --- | --- | --- | --- |
 | `BEH-001` | Credential-independent provider/model/catalog availability. | Built-in catalogs, `model-catalog-service`, `llm-provider-service`, core models/factories. | Implemented; unavailable custody affects status/invocation, not catalog rows. |
 | `BEH-002` | One application DB selected only by canonical `DATABASE_URL`. | `application-database-location.ts`, `app-config.ts`, Prisma schema/migration, `server-runtime.ts`. | Implemented; no second Store URL/config/access mode remains. |
-| `BEH-003` | DB-paired root key, interruption-safe initialization, and authenticated per-entry encryption. | `secret-vault-bootstrap.ts`, `secret-root-key-file.ts`, `secret-vault-crypto.ts`, Prisma repository. | Implemented with transaction-lifetime exclusion, key-only recovery, live-initializer serialization, owner/identity checks, verifier, fresh nonces, and value-free closed states. |
+| `BEH-003` | DB-paired root key, interruption-safe initialization, non-mutating restart verification, and authenticated per-entry encryption. | `secret-vault-bootstrap.ts`, `secret-root-key-file.ts`, `secret-vault-crypto.ts`, Prisma repository. | Implemented with transaction-lifetime exclusion, key-only recovery, live-initializer serialization, byte-stable established verification, owner/identity checks, verifier, fresh nonces, and value-free closed states. |
 | `BEH-004` | Write-only provider Settings lifecycle and value-free health/status. | `SecretManagementService`, GraphQL secret/provider types, provider/web Settings stores. | Implemented; no value-read GraphQL/API surface exists. |
 | `BEH-005` | Provider-owned lazy point-of-use resolution. | Core `ProviderApiKeyResolver`, LLM/media factories and concrete clients, server resolver adapters. | Implemented; no model auth descriptor, construction target/context, environment fallback, or server service locator in core. |
 | `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, GraphQL/web Gemini files. | Implemented with truthful staged outcomes and no priority/fallback. |
@@ -133,6 +136,7 @@
 
 - Server focused unit suite: 16 files / 188 tests passed, including vault lifecycle/inspection/importer/AppConfig/Gemini/provider/custom compensation/Claude/Prisma policy.
 - CR-023 focused rerun: 3 files / 17 tests passed. It proves stale/terminated key-only recovery, live-initializer serialization before key inspection, one key/domain pair, and established-domain missing-key fail-closed behavior.
+- CR-024 focused rerun: 3 files / 18 tests passed. It additionally proves established restart preserves metadata values, root-key bytes/stat, main DB and WAL/SHM/journal bytes/stat/absence, and an independent observer's `PRAGMA data_version`.
 - Core LLM/media/provider suite: 76 files / 364 tests passed.
 - Web/Electron focused suite: 9 files / 70 tests passed.
 - `pnpm -C autobyteus-ts build`: passed, including runtime dependency verification.
