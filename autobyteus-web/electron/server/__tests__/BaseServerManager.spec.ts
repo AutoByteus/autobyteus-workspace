@@ -83,13 +83,13 @@ describe('BaseServerManager', () => {
     appDataExists = true
     envExists = true
     dataDirPaths.forEach((p) => existingDataDirs.add(p))
-    mockedFs.promises.readdir.mockResolvedValue(['db', 'logs', 'download', '.env', 'secret-store'] as never)
+    mockedFs.promises.readdir.mockResolvedValue(['db', 'logs', 'download', '.env'] as never)
     mockedFs.promises.rm.mockResolvedValue(undefined)
     await manager.resetAppDataDir()
 
     expect(mockedFs.promises.rm).toHaveBeenCalledTimes(4)
-    expect(mockedFs.promises.rm).not.toHaveBeenCalledWith(
-      path.join(manager.getAppDataDir(), 'secret-store'),
+    expect(mockedFs.promises.rm).toHaveBeenCalledWith(
+      path.join(manager.getAppDataDir(), 'db'),
       expect.anything(),
     )
     expect(manager.getFirstRun()).toBe(true)

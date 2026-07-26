@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { VideoClientFactory } from '../../../../src/multimedia/video/video-client-factory.js';
 import { BaseVideoClient } from '../../../../src/multimedia/video/base-video-client.js';
 import { GeminiVideoClient } from '../../../../src/multimedia/video/api/gemini-video-client.js';
-import { geminiProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
+import {
+  geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
+} from '../../provider-api-key-resolver-test-helpers.js';
 
 vi.mock('../../../../src/utils/gemini-helper.js', () => ({
   selectGeminiRuntimeForResolver: async () => ({ kind: 'aiStudio' }),
@@ -45,6 +48,7 @@ describe('VideoClientFactory', () => {
       'gemini-omni-flash-preview',
       undefined,
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
     );
 
     expect(client).toBeInstanceOf(BaseVideoClient);

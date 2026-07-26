@@ -26,10 +26,7 @@ export class SearchConfig {
   provider!: string;
 
   @Field(() => String)
-  backendHealth!: string;
-
-  @Field(() => String, { nullable: true })
-  lifecycle!: string | null;
+  vaultHealth!: string;
 
   @Field(() => String, { nullable: true })
   instructionCode!: string | null;

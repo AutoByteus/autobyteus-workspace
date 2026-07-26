@@ -8,6 +8,7 @@ import { OpenAIAudioClient } from './api/openai-audio-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 const GEMINI_VOICE_DETAILS: Record<string, { gender: string; description: string }> = {
   Zephyr: { gender: 'female', description: 'Bright, Higher pitch' },
@@ -210,12 +211,19 @@ export class AudioClientFactory extends Singleton {
   }
 
 
+  static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
+    const model = AudioClientFactory.requireModel(modelIdentifier);
+    return model.runtime === MultimediaRuntime.API
+      && model.provider === MultimediaProvider.GEMINI;
+  }
+
   static createAudioClient(
     modelIdentifier: string,
     configOverride: MultimediaConfig | null | undefined,
     apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseAudioClient {
-    return AudioClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver);
+    return AudioClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);
   }
 
   static syncRuntimeModels(runtime: MultimediaRuntime, models: AudioModel[]): number {

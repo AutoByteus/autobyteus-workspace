@@ -1,13 +1,11 @@
 import type {
   ProviderApiKeyResolver,
   ProviderApiKeySlot,
-  ProviderApiKeyStatus,
   SecretValue,
 } from 'autobyteus-ts';
-import type { SecretConsumerIdentity } from '../domain/secret-binding.js';
+import type { SecretConsumerIdentity } from '../domain/secret-id.js';
 import type { SecretManagementService } from '../services/secret-management-service.js';
-import { getSecretStorageConfigurationService } from '../configuration/secret-storage-configuration-service.js';
-import { SecretStorageError } from '../domain/secret-storage-types.js';
+import { getSecretVaultRuntime } from '../secret-vault-runtime.js';
 
 export type ProviderApiKeyResolverSubject =
   | { kind: 'llm' }
@@ -18,43 +16,8 @@ export class SecretManagementProviderApiKeyResolver implements ProviderApiKeyRes
   constructor(
     private readonly subject: ProviderApiKeyResolverSubject,
     private readonly managementProvider: () => SecretManagementService = () =>
-      getSecretStorageConfigurationService().requireManagementService(),
+      getSecretVaultRuntime().requireService(),
   ) {}
-
-  async getStatus(
-    providerId: string,
-    slot: ProviderApiKeySlot = 'apiKey',
-  ): Promise<ProviderApiKeyStatus> {
-    const result = await this.managementProvider().getStatusForConsumer(
-      this.consumer(providerId, slot),
-    );
-    if (result.health.state !== 'READY') {
-      const code = {
-        LOCKED: 'BACKEND_LOCKED',
-        UNAVAILABLE: 'BACKEND_UNAVAILABLE',
-        CORRUPT: 'CORRUPT_STORE',
-        INCOMPATIBLE: 'INCOMPATIBLE_STORE_FORMAT',
-      }[result.health.state] as
-        | 'BACKEND_LOCKED'
-        | 'BACKEND_UNAVAILABLE'
-        | 'CORRUPT_STORE'
-        | 'INCOMPATIBLE_STORE_FORMAT';
-      throw new SecretStorageError(
-        code,
-        result.health.state === 'UNAVAILABLE',
-        result.health.instructionCode,
-      );
-    }
-    const status = result.secret;
-    if (!status) {
-      throw new SecretStorageError(
-        'BACKEND_UNAVAILABLE',
-        false,
-        'SECRET_BACKEND_STATUS_UNAVAILABLE',
-      );
-    }
-    return status.storageState;
-  }
 
   resolve(providerId: string, slot: ProviderApiKeySlot = 'apiKey'): Promise<SecretValue> {
     return this.managementProvider().resolveForUse(this.consumer(providerId, slot));

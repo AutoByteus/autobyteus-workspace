@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import fs from 'node:fs/promises';
 import { GeminiAudioClient } from '../../../../../src/multimedia/audio/api/gemini-audio-client.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
-import { geminiProviderApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
+import {
+  geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
+} from '../../../provider-api-key-resolver-test-helpers.js';
 
 const generateContentMock = vi.fn();
 
@@ -47,6 +50,7 @@ describe('GeminiAudioClient', () => {
       model,
       new MultimediaConfig(),
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
     );
 
     const response = await client.generateSpeech('hello');

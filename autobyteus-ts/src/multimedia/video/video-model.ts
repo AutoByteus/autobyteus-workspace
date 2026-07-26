@@ -4,10 +4,11 @@ import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseVideoClient } from './base-video-client.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type VideoClientConstructor = new (model: VideoModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) => BaseVideoClient;
+type VideoClientConstructor = new (model: VideoModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseVideoClient;
 
 export interface VideoModelOptions {
   name: string;
@@ -75,6 +76,7 @@ export class VideoModel {
   createClient(
     configOverride: MultimediaConfig | null | undefined,
     apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseVideoClient {
     let configToUse = this.defaultConfig;
     if (configOverride) {
@@ -83,6 +85,14 @@ export class VideoModel {
       configToUse = cloned;
     }
 
+    if (
+      this.runtime === MultimediaRuntime.API
+      && this.provider === MultimediaProvider.GEMINI
+    ) {
+      if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+      return new this.clientClass(this, configToUse, apiKeyResolver, geminiRuntimeResolver);
+    }
+    if (geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_NOT_ALLOWED');
     return new this.clientClass(this, configToUse, apiKeyResolver);
   }
 

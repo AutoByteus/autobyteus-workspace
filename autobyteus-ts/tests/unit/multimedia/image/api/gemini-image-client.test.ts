@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { GeminiImageClient } from '../../../../../src/multimedia/image/api/gemini-image-client.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
-import { geminiProviderApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
+import {
+  geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
+} from '../../../provider-api-key-resolver-test-helpers.js';
 
 const generateContentMock = vi.fn();
 
@@ -49,6 +52,7 @@ describe('GeminiImageClient', () => {
       model,
       new MultimediaConfig(),
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
     );
 
     const response = await client.generateImage('draw a cat');

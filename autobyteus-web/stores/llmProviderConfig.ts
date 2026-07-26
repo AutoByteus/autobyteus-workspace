@@ -15,13 +15,16 @@ import {
   RELOAD_LLM_PROVIDER_MODELS,
   REMOVE_GEMINI_CONFIGURATION_OPTION,
   SAVE_GEMINI_CONFIGURATION_OPTION,
+  ACTIVATE_GEMINI_CONFIGURATION_OPTION,
+  SAVE_AND_ACTIVATE_GEMINI_CONFIGURATION_OPTION,
 } from '~/graphql/mutations/llm_provider_mutations'
 import type { LLMProvider } from '~/types/llm'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import {
   defaultGeminiSetup,
+  geminiOptionMutationVariables,
   replaceProviderConfiguredState,
-  resolveGeminiEffectiveCredentialStatus,
+  resolveGeminiActiveCredentialStatus,
   resolveGeminiProviderConfiguredState,
   syncProviderConfiguredState,
   type CredentialStatus,
@@ -35,6 +38,10 @@ import {
   type ProviderWithModels,
 } from './llmProviderConfigSupport'
 export type * from './llmProviderConfigSupport'
+
+type GeminiMutationDocument =
+  | typeof ACTIVATE_GEMINI_CONFIGURATION_OPTION
+  | typeof SAVE_AND_ACTIVATE_GEMINI_CONFIGURATION_OPTION
 
 export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
   state: () => ({
@@ -295,12 +302,9 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         const responseMessage = data?.setLlmProviderApiKey
 
         if (responseMessage && responseMessage.includes('successfully')) {
-          const existing = this.providersWithModels
-            .find((row) => row.provider.id === providerId)?.provider.credentialStatus
           const credentialStatus: CredentialStatus = {
-            backendHealth: 'READY',
+            vaultHealth: 'READY',
             storageState: 'CONFIGURED',
-            lifecycle: existing?.lifecycle ?? 'WRITABLE',
             instructionCode: null,
           }
           this.providerConfigs[providerId] = { credentialStatus }
@@ -445,13 +449,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       try {
         const { data, errors } = await client.mutate({
           mutation: SAVE_GEMINI_CONFIGURATION_OPTION,
-          variables: {
-            option: input.option,
-            geminiApiKey: input.geminiApiKey ?? null,
-            vertexApiKey: input.vertexApiKey ?? null,
-            vertexProject: input.vertexProject ?? null,
-            vertexLocation: input.vertexLocation ?? null,
-          },
+          variables: geminiOptionMutationVariables(input),
         })
 
         if (errors && errors.length > 0) {
@@ -503,8 +501,53 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       }
     },
 
+    async activateGeminiConfigurationOption(
+      option: GeminiConfigurationOption,
+    ): Promise<GeminiConfigurationOperationResult> {
+      return this.runGeminiMutation(
+        ACTIVATE_GEMINI_CONFIGURATION_OPTION,
+        { option },
+        'activateGeminiConfigurationOption',
+        'ACTIVATED',
+        option,
+      )
+    },
+
+    async saveAndActivateGeminiConfigurationOption(
+      input: GeminiOptionSaveInput,
+    ): Promise<GeminiConfigurationOperationResult> {
+      return this.runGeminiMutation(
+        SAVE_AND_ACTIVATE_GEMINI_CONFIGURATION_OPTION,
+        geminiOptionMutationVariables(input),
+        'saveAndActivateGeminiConfigurationOption',
+        'SAVED_AND_ACTIVATED',
+        input.option,
+      )
+    },
+
+    async runGeminiMutation(
+      mutation: GeminiMutationDocument,
+      variables: Record<string, unknown>,
+      resultKey: string,
+      expectedOperation: GeminiConfigurationOperationResult['operation'],
+      option: GeminiConfigurationOption,
+    ): Promise<GeminiConfigurationOperationResult> {
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({ mutation, variables })
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+      const result = data?.[resultKey] as GeminiConfigurationOperationResult | undefined
+      if (!result || result.operation !== expectedOperation || result.option !== option) {
+        throw new Error('Gemini configuration operation did not complete')
+      }
+      await this.fetchGeminiSetupConfig()
+      this.syncGeminiProviderConfiguredState()
+      return result
+    },
+
     syncGeminiProviderConfiguredState() {
-      const credentialStatus = resolveGeminiEffectiveCredentialStatus(this.geminiSetup)
+      const credentialStatus = resolveGeminiActiveCredentialStatus(this.geminiSetup)
       this.providerConfigs.GEMINI = { credentialStatus }
       this.providersWithModels = replaceProviderConfiguredState(
         this.providersWithModels, 'GEMINI', credentialStatus,

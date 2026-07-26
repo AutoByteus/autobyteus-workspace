@@ -8,13 +8,13 @@ import { BaseAudioClient } from '../base-audio-client.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
 import {
   initializeGeminiClientWithRuntime,
-  selectGeminiRuntimeForResolver,
 } from '../../../utils/gemini-helper.js';
 import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { AudioModel } from '../audio-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../../utils/gemini-runtime.js';
 
 const AUDIO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_audio');
 
@@ -110,10 +110,13 @@ async function saveAudioBytes(audioBytes: Uint8Array, extension?: string | null)
 export class GeminiAudioClient extends BaseAudioClient {
   private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly runtimeResolver: GeminiRuntimeResolver;
 
-  constructor(model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
+    if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+    this.runtimeResolver = runtimeResolver;
   }
 
   private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
@@ -122,7 +125,7 @@ export class GeminiAudioClient extends BaseAudioClient {
   }
 
   private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
-    const selection = await selectGeminiRuntimeForResolver(this.apiKeyResolver);
+    const selection = await this.runtimeResolver();
     return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 

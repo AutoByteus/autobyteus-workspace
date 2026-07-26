@@ -5,7 +5,9 @@ import { VideoModel } from './video-model.js';
 import { BaseVideoClient } from './base-video-client.js';
 import { GeminiVideoClient } from './api/gemini-video-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
+import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 export const GEMINI_OMNI_FLASH_VIDEO_MODEL_ID = 'gemini-omni-flash-preview';
 
@@ -109,12 +111,19 @@ export class VideoClientFactory extends Singleton {
   }
 
 
+  static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
+    const model = VideoClientFactory.requireModel(modelIdentifier);
+    return model.runtime === MultimediaRuntime.API
+      && model.provider === MultimediaProvider.GEMINI;
+  }
+
   static createVideoClient(
     modelIdentifier: string,
     configOverride: MultimediaConfig | null | undefined,
     apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseVideoClient {
-    return VideoClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver);
+    return VideoClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);
   }
 
   static listModels(): VideoModel[] {

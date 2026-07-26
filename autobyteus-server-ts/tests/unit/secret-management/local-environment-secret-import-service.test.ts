@@ -1,54 +1,27 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { SecretValue } from 'autobyteus-ts/secrets/secret-value.js';
-import { secretDefinitionId } from '../../../src/secret-management/domain/secret-binding.js';
-import { LocalWritableSecretStorageBackend } from '../../../src/secret-management/backends/local/local-secret-storage-backend.js';
-import { LocalSecretStoreProvisioningService } from '../../../src/secret-management/backends/local/local-secret-store-provisioning-service.js';
-import type { LocalStoreConfiguration } from '../../../src/secret-management/backends/local/local-secret-store-initializer.js';
-import type { LocalImportTargetResolver } from '../../../src/secret-management/provisioning/local-import-target-resolver.js';
+import { resolveApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import {
   LocalEnvironmentSecretImportService,
   type LocalImportConfirmationPort,
 } from '../../../src/secret-management/provisioning/local-environment-secret-import-service.js';
 
-class TemporaryTargetResolver implements LocalImportTargetResolver {
-  constructor(private readonly root: string) {}
-
-  resolve(target: 'default' | 'e2e'): LocalStoreConfiguration {
-    const baseName = target === 'default' ? 'secret-store' : 'real-e2e-secret-store';
-    return {
-      kind: 'local-store',
-      databasePath: path.join(this.root, `${baseName}.db`),
-      keyPath: path.join(this.root, `${baseName}.key`),
-      accessMode: 'READ_WRITE',
-    };
-  }
-}
-
-const confirmation = (
-  response: string | null,
-  beforeResponse?: () => Promise<void>,
-): LocalImportConfirmationPort => ({
-  isDirectTty: () => true,
-  readChallenge: vi.fn(async () => {
-    await beforeResponse?.();
-    return response;
-  }),
+const readyHealth = { state: 'READY' as const };
+const confirmation = (response: string | null, direct = true): LocalImportConfirmationPort => ({
+  isDirectTty: () => direct,
+  readChallenge: vi.fn().mockResolvedValue(response),
 });
 
 describe('LocalEnvironmentSecretImportService', () => {
   let directory: string;
   let sourcePath: string;
-  let resolver: TemporaryTargetResolver;
 
   beforeEach(async () => {
     directory = await fs.mkdtemp(path.join(os.tmpdir(), 'local-environment-import-'));
     if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
-    sourcePath = path.join(directory, 'copied-and-renamed-keys');
-    resolver = new TemporaryTargetResolver(path.join(directory, 'stores'));
+    sourcePath = path.join(directory, 'operator-selected.assignments');
   });
 
   afterEach(async () => {
@@ -61,429 +34,180 @@ describe('LocalEnvironmentSecretImportService', () => {
     return fs.readFile(sourcePath);
   };
 
-  const targetConfig = (target: 'default' | 'e2e'): LocalStoreConfiguration => resolver.resolve(target);
+  const location = () => resolveApplicationDatabaseLocation('file:application.db', directory);
 
-  const storeSnapshot = async (target: 'default' | 'e2e') => {
-    const configuration = targetConfig(target);
-    const database = new DatabaseSync(configuration.databasePath, { readOnly: true });
-    let journalMode: unknown;
-    let metadata: unknown;
-    let recordIds: unknown;
-    try {
-      journalMode = database.prepare('PRAGMA journal_mode').get();
-      metadata = database.prepare(`
-        SELECT schema_version, encryption_format_version, pair_verifier_format_version
-          FROM store_metadata WHERE singleton_id = 1
-      `).get();
-      recordIds = database.prepare(
-        'SELECT definition_id FROM secret_records ORDER BY definition_id',
-      ).all();
-    } finally {
-      database.close();
-    }
-    const sidecars = await Promise.all(
-      ['-wal', '-shm', '-journal'].map(async (suffix) => {
-        const sidecarPath = `${configuration.databasePath}${suffix}`;
-        const bytes = await fs.readFile(sidecarPath).catch((error: NodeJS.ErrnoException) => {
-          if (error.code === 'ENOENT') return null;
-          throw error;
-        });
-        return [suffix, bytes] as const;
-      }),
+  it('previews only through the injected narrow inspector and preserves source bytes', async () => {
+    const sourceBefore = await writeSource(
+      'OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\n',
     );
-    return {
-      journalMode,
-      metadata,
-      recordIds,
-      databaseBytes: await fs.readFile(configuration.databasePath),
-      keyBytes: await fs.readFile(configuration.keyPath),
-      sidecars,
-    };
-  };
-
-  const status = async (
-    target: 'default' | 'e2e',
-    definition: string,
-  ): Promise<'MISSING' | 'CONFIGURED'> => {
-    const backend = await LocalWritableSecretStorageBackend.open(targetConfig(target), {
-      initializeIfAbsent: false,
+    const inspectImportTarget = vi.fn().mockResolvedValue({
+      targetIdentity: location().databasePath,
+      targetState: 'INITIALIZATION_REQUIRED',
+      entries: [
+        { secretId: 'provider.openai.api-key', observedStatus: 'MISSING', plannedAction: 'CREATE' },
+        { secretId: 'search.serper.api-key', observedStatus: 'MISSING', plannedAction: 'CREATE' },
+      ],
+      counts: { create: 2, skipConfigured: 0, replace: 0, blocked: 0 },
+      instructionCode: 'SECRET_VAULT_INITIALIZATION_REQUIRED',
     });
-    try {
-      expect(await backend.health()).toEqual({ state: 'READY' });
-      return (await backend.getStatus(secretDefinitionId(definition))).storageState;
-    } finally {
-      await backend.close();
-    }
-  };
+    const runtimeFactory = vi.fn();
+    const service = new LocalEnvironmentSecretImportService(
+      location(),
+      undefined,
+      { inspectImportTarget } as never,
+      runtimeFactory,
+    );
 
-  const resolveSynthetic = async (target: 'default' | 'e2e', definition: string): Promise<string> => {
-    const backend = await LocalWritableSecretStorageBackend.open(targetConfig(target), {
-      initializeIfAbsent: false,
-    });
-    try {
-      return (await backend.resolve(secretDefinitionId(definition))).revealToTrustedConsumer();
-    } finally {
-      await backend.close();
-    }
-  };
-
-  it('previews an absent target value-free without initializing either Store', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\n');
-    const service = new LocalEnvironmentSecretImportService(resolver);
     const plan = await service.preview({
       sourceAbsolutePath: sourcePath,
-      target: 'e2e',
       dryRun: true,
       overwrite: false,
     });
 
-    expect(plan).toEqual({
-      targetStatus: {
-        state: 'INITIALIZATION_REQUIRED',
-        instructionCode: 'LOCAL_IMPORT_TARGET_INITIALIZATION_REQUIRED',
-      },
-      entries: [
-        { definitionId: 'provider.openai.api-key', action: 'CREATE' },
-        { definitionId: 'search.serper.api-key', action: 'CREATE' },
-      ],
-    });
+    expect(inspectImportTarget).toHaveBeenCalledWith([
+      'provider.openai.api-key',
+      'search.serper.api-key',
+    ], false);
+    expect(runtimeFactory).not.toHaveBeenCalled();
+    expect(plan.counts.create).toBe(2);
     expect(JSON.stringify(plan)).not.toContain('synthetic');
-    await expect(fs.stat(targetConfig('e2e').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
-    await expect(fs.stat(targetConfig('default').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
-  });
-
-  it('omits an empty current-application placeholder from the value-free plan and preserves the source', async () => {
-    const sourceBefore = await writeSource([
-      'AUTOBYTEUS_SERVER_HOST=http://localhost:8000',
-      'GEMINI_API_KEY=""',
-      'VERTEX_AI_API_KEY=synthetic-vertex',
-      'OPENAI_API_KEY=synthetic-openai',
-      'QWEN_API_KEY=synthetic-unmapped-qwen',
-      '',
-    ].join('\n'));
-
-    const plan = await new LocalEnvironmentSecretImportService(resolver).preview({
-      sourceAbsolutePath: sourcePath,
-      target: 'e2e',
-      dryRun: true,
-      overwrite: false,
-    });
-
-    expect(plan).toEqual({
-      targetStatus: {
-        state: 'INITIALIZATION_REQUIRED',
-        instructionCode: 'LOCAL_IMPORT_TARGET_INITIALIZATION_REQUIRED',
-      },
-      entries: [
-        { definitionId: 'provider.google.vertex-express-api-key', action: 'CREATE' },
-        { definitionId: 'provider.openai.api-key', action: 'CREATE' },
-      ],
-    });
-    expect(JSON.stringify(plan)).not.toMatch(/gemini|empty|placeholder|ignored|synthetic/i);
     expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
-    await expect(fs.stat(targetConfig('e2e').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
-    await expect(fs.stat(targetConfig('default').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
-  it('rejects an all-empty recognized source before resolving or accessing a target', async () => {
+  it('rejects all-empty recognized input before target inspection', async () => {
     const sourceBefore = await writeSource(
       'OPENAI_API_KEY=\nOPENAI_API_KEY=""\nGEMINI_API_KEY=   \n',
     );
-    const targetResolver: LocalImportTargetResolver = {
-      resolve: vi.fn(() => {
-        throw new Error('target resolution must not run');
-      }),
-    };
-    const error = await new LocalEnvironmentSecretImportService(targetResolver).preview({
+    const inspectImportTarget = vi.fn();
+    const service = new LocalEnvironmentSecretImportService(
+      location(),
+      undefined,
+      { inspectImportTarget } as never,
+    );
+
+    await expect(service.preview({
       sourceAbsolutePath: sourcePath,
-      target: 'e2e',
       dryRun: true,
       overwrite: false,
-    }).catch((caught) => caught);
-
-    expect(error).toMatchObject({ code: 'IMPORT_NO_MAPPED_CREDENTIALS' });
-    expect(error.toJSON()).toEqual({ code: 'IMPORT_NO_MAPPED_CREDENTIALS' });
-    expect(targetResolver.resolve).not.toHaveBeenCalled();
+    })).rejects.toMatchObject({ code: 'IMPORT_NO_MAPPED_CREDENTIALS' });
+    expect(inspectImportTarget).not.toHaveBeenCalled();
     expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
   });
 
-  it('initializes only the confirmed target and atomically creates mapped records without changing the source', async () => {
-    const sourceBefore = await writeSource(
-      'OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\nAPP_MODE=test\n',
+  it('never confirms or initializes a closed target', async () => {
+    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
+    const service = new LocalEnvironmentSecretImportService(
+      location(),
+      undefined,
+      {
+        inspectImportTarget: vi.fn().mockResolvedValue({
+          targetIdentity: location().databasePath,
+          targetState: 'LOCKED',
+          entries: [{
+            secretId: 'provider.openai.api-key',
+            observedStatus: 'UNAVAILABLE',
+            plannedAction: 'BLOCKED',
+          }],
+          counts: { create: 0, skipConfigured: 0, replace: 0, blocked: 1 },
+          instructionCode: 'SECRET_VAULT_LOCKED',
+        }),
+      } as never,
+      vi.fn(),
     );
-    const result = await new LocalEnvironmentSecretImportService(resolver).execute({
+    const port = confirmation('IMPORT');
+
+    await expect(service.execute({
       sourceAbsolutePath: sourcePath,
-      target: 'default',
       dryRun: false,
       overwrite: false,
-    }, confirmation('IMPORT DEFAULT STORE'));
-
-    expect(result).toEqual({
-      targetStatus: { state: 'READY' },
-      definitionIds: ['provider.openai.api-key', 'search.serper.api-key'],
-      configuredCount: 2,
-      skippedCount: 0,
-      replacedCount: 0,
-      instructionCode: 'RESTART_REQUIRED',
-    });
-    expect(JSON.stringify(result)).not.toContain('synthetic');
-    expect(await resolveSynthetic('default', 'provider.openai.api-key')).toBe('synthetic-openai');
-    expect(await resolveSynthetic('default', 'search.serper.api-key')).toBe('synthetic-serper');
-    expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
-    await expect(fs.stat(targetConfig('e2e').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
+    }, port)).rejects.toMatchObject({ code: 'IMPORT_TARGET_NOT_READY' });
+    expect(port.readChallenge).not.toHaveBeenCalled();
   });
 
-  it('skips by default without prompting and replaces only with explicit overwrite and E2E challenge', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-first\n');
-    const service = new LocalEnvironmentSecretImportService(resolver);
-    await service.execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'e2e',
-      dryRun: false,
-      overwrite: false,
-    }, confirmation('IMPORT REAL-E2E STORE'));
-    await writeSource('OPENAI_API_KEY=synthetic-second\n');
+  it('requires the exact direct-TTY challenge before execution bootstrap', async () => {
+    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
+    const runtimeFactory = vi.fn();
+    const service = new LocalEnvironmentSecretImportService(
+      location(),
+      undefined,
+      {
+        inspectImportTarget: vi.fn().mockResolvedValue({
+          targetIdentity: location().databasePath,
+          targetState: 'INITIALIZATION_REQUIRED',
+          entries: [{
+            secretId: 'provider.openai.api-key',
+            observedStatus: 'MISSING',
+            plannedAction: 'CREATE',
+          }],
+          counts: { create: 1, skipConfigured: 0, replace: 0, blocked: 0 },
+          instructionCode: 'SECRET_VAULT_INITIALIZATION_REQUIRED',
+        }),
+      } as never,
+      runtimeFactory,
+    );
+    for (const port of [confirmation('WRONG'), confirmation(null), confirmation('IMPORT', false)]) {
+      await expect(service.execute({
+        sourceAbsolutePath: sourcePath,
+        dryRun: false,
+        overwrite: false,
+      }, port)).rejects.toMatchObject({
+        code: port.isDirectTty() ? 'IMPORT_CANCELLED' : 'IMPORT_CONFIRMATION_REQUIRED',
+      });
+    }
+    expect(runtimeFactory).not.toHaveBeenCalled();
+  });
 
-    const skippedConfirmation = {
-      isDirectTty: vi.fn(() => {
-        throw new Error('confirmation must not be consulted');
+  it('bootstraps only after confirmation and reports authoritative batch counts', async () => {
+    const sourceBefore = await writeSource(
+      'OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\n',
+    );
+    const saveBatch = vi.fn().mockResolvedValue({
+      configuredCount: 1,
+      skippedCount: 1,
+      replacedCount: 0,
+    });
+    const close = vi.fn();
+    const service = new LocalEnvironmentSecretImportService(
+      location(),
+      undefined,
+      {
+        inspectImportTarget: vi.fn().mockResolvedValue({
+          targetIdentity: location().databasePath,
+          targetState: 'READY',
+          entries: [],
+          counts: { create: 1, skipConfigured: 1, replace: 0, blocked: 0 },
+        }),
+      } as never,
+      vi.fn().mockResolvedValue({
+        runtime: {
+          requireService: () => ({ getHealth: vi.fn().mockResolvedValue(readyHealth), saveBatch }),
+        },
+        close,
       }),
-      readChallenge: vi.fn(),
-    };
-    const skipped = await service.execute({
+    );
+
+    const result = await service.execute({
       sourceAbsolutePath: sourcePath,
-      target: 'e2e',
       dryRun: false,
       overwrite: false,
-    }, skippedConfirmation);
-    expect(skipped).toMatchObject({
-      configuredCount: 0,
+    }, confirmation('IMPORT'));
+
+    expect(saveBatch).toHaveBeenCalledOnce();
+    expect(saveBatch.mock.calls[0]?.[0].map((entry: { secretId: string }) => entry.secretId)).toEqual([
+      'provider.openai.api-key',
+      'search.serper.api-key',
+    ]);
+    expect(saveBatch).toHaveBeenCalledWith(expect.any(Array), false);
+    expect(result).toMatchObject({
+      targetIdentity: location().databasePath,
+      targetState: 'READY',
+      configuredCount: 1,
       skippedCount: 1,
       replacedCount: 0,
       instructionCode: 'NONE',
     });
-    expect(await resolveSynthetic('e2e', 'provider.openai.api-key')).toBe('synthetic-first');
-
-    const replaced = await service.execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'e2e',
-      dryRun: false,
-      overwrite: true,
-    }, confirmation('IMPORT REAL-E2E STORE'));
-    expect(replaced).toMatchObject({
-      configuredCount: 0,
-      skippedCount: 0,
-      replacedCount: 1,
-      instructionCode: 'RUN_REAL_E2E_PREFLIGHT',
-    });
-    expect(await resolveSynthetic('e2e', 'provider.openai.api-key')).toBe('synthetic-second');
-  });
-
-  it('cancels without initialization on a non-matching target challenge', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
-    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: false,
-      overwrite: false,
-    }, confirmation('IMPORT REAL-E2E STORE')).catch((caught) => caught);
-
-    expect(error.toJSON()).toEqual({ code: 'IMPORT_CANCELLED', target: 'default' });
-    await expect(fs.stat(targetConfig('default').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
-  });
-
-  it('requires a direct TTY before initializing the selected target', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
-    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: false,
-      overwrite: false,
-    }, {
-      isDirectTty: () => false,
-      readChallenge: vi.fn(),
-    }).catch((caught) => caught);
-
-    expect(error.toJSON()).toEqual({ code: 'IMPORT_CONFIRMATION_REQUIRED', target: 'default' });
-    await expect(fs.stat(targetConfig('default').databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
-  });
-
-  it('keeps an existing selected Store byte-identical through preview and cancelled overwrite attempts', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-replacement\n');
-    const configuration = targetConfig('default');
-    await new LocalSecretStoreProvisioningService(configuration).provisionExact(
-      secretDefinitionId('provider.openai.api-key'),
-      SecretValue.fromString('synthetic-original'),
-    );
-    const database = new DatabaseSync(configuration.databasePath);
-    try {
-      database.exec('PRAGMA wal_checkpoint(TRUNCATE); PRAGMA journal_mode=DELETE;');
-    } finally {
-      database.close();
-    }
-    const before = await storeSnapshot('default');
-    expect(before.journalMode).toEqual({ journal_mode: 'delete' });
-
-    const service = new LocalEnvironmentSecretImportService(resolver);
-    const plan = await service.preview({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: true,
-      overwrite: true,
-    });
-    expect(plan).toEqual({
-      targetStatus: { state: 'READY' },
-      entries: [{ definitionId: 'provider.openai.api-key', action: 'REPLACE' }],
-    });
-    expect(await storeSnapshot('default')).toEqual(before);
-
-    for (const response of ['IMPORT REAL-E2E STORE', null] as const) {
-      const error = await service.execute({
-        sourceAbsolutePath: sourcePath,
-        target: 'default',
-        dryRun: false,
-        overwrite: true,
-      }, confirmation(response)).catch((caught) => caught);
-      expect(error.toJSON()).toEqual({ code: 'IMPORT_CANCELLED', target: 'default' });
-      expect(await storeSnapshot('default')).toEqual(before);
-    }
-
-    const nonTtyError = await service.execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: false,
-      overwrite: true,
-    }, {
-      isDirectTty: () => false,
-      readChallenge: vi.fn(),
-    }).catch((caught) => caught);
-    expect(nonTtyError.toJSON()).toEqual({
-      code: 'IMPORT_CONFIRMATION_REQUIRED',
-      target: 'default',
-    });
-    expect(await storeSnapshot('default')).toEqual(before);
-  });
-
-  it('reports a partial selected Store pair as exactly corrupt without definition projection or mutation', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
-    const configuration = targetConfig('default');
-    await fs.mkdir(path.dirname(configuration.keyPath), { recursive: true, mode: 0o700 });
-    await fs.writeFile(configuration.keyPath, Buffer.alloc(32), { mode: 0o600 });
-
-    const service = new LocalEnvironmentSecretImportService(resolver);
-    const plan = await service.preview({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: true,
-      overwrite: false,
-    });
-
-    expect(plan).toEqual({
-      targetStatus: { state: 'CORRUPT', instructionCode: 'SECRET_BACKEND_CORRUPT' },
-      entries: [],
-    });
-    const result = await service.execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: false,
-      overwrite: false,
-    }, {
-      isDirectTty: vi.fn(() => {
-        throw new Error('confirmation must not be consulted');
-      }),
-      readChallenge: vi.fn(),
-    });
-    expect(result).toEqual({
-      targetStatus: { state: 'CORRUPT', instructionCode: 'SECRET_BACKEND_CORRUPT' },
-      definitionIds: [],
-      configuredCount: 0,
-      skippedCount: 0,
-      replacedCount: 0,
-      instructionCode: 'NONE',
-    });
-    await expect(fs.stat(configuration.databasePath)).rejects.toMatchObject({ code: 'ENOENT' });
-    expect((await fs.stat(configuration.keyPath)).isFile()).toBe(true);
-  });
-
-  it.each([
-    { state: 'LOCKED', instructionCode: 'SECRET_BACKEND_LOCKED' },
-    { state: 'UNAVAILABLE', instructionCode: 'SECRET_BACKEND_UNAVAILABLE' },
-    { state: 'INCOMPATIBLE', instructionCode: 'SECRET_BACKEND_INCOMPATIBLE' },
-  ] as const)('preserves $state target health without definition projection', async (targetStatus) => {
-    await writeSource('OPENAI_API_KEY=synthetic-openai\n');
-    const inspectExact = vi.fn().mockResolvedValue({ targetStatus, definitionStatus: null });
-    const service = new LocalEnvironmentSecretImportService(
-      resolver,
-      undefined,
-      () => ({ inspectExact }) as unknown as LocalSecretStoreProvisioningService,
-    );
-
-    const plan = await service.preview({
-      sourceAbsolutePath: sourcePath,
-      target: 'e2e',
-      dryRun: true,
-      overwrite: false,
-    });
-
-    expect(plan).toEqual({ targetStatus, entries: [] });
-    expect(inspectExact).toHaveBeenCalledWith([secretDefinitionId('provider.openai.api-key')]);
-  });
-
-  it('rolls back the entire batch when a create precondition changes after confirmation planning', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-planned\nSERPER_API_KEY=synthetic-serper\n');
-    await new LocalSecretStoreProvisioningService(targetConfig('default')).provisionExact(
-      secretDefinitionId('provider.mistral.api-key'),
-      SecretValue.fromString('synthetic-seed'),
-    );
-    const concurrentWrite = async () => {
-      await new LocalSecretStoreProvisioningService(targetConfig('default')).provisionExact(
-        secretDefinitionId('provider.openai.api-key'),
-        SecretValue.fromString('synthetic-concurrent'),
-      );
-    };
-
-    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: false,
-      overwrite: false,
-    }, confirmation('IMPORT DEFAULT STORE', concurrentWrite)).catch((caught) => caught);
-
-    expect(error.toJSON()).toEqual({ code: 'IMPORT_TARGET_CHANGED', target: 'default' });
-    expect(await resolveSynthetic('default', 'provider.openai.api-key')).toBe('synthetic-concurrent');
-    expect(await status('default', 'search.serper.api-key')).toBe('MISSING');
-  });
-
-  it('rolls back earlier writes when a later atomic-batch write fails', async () => {
-    await writeSource('OPENAI_API_KEY=synthetic-openai\nSERPER_API_KEY=synthetic-serper\n');
-    await new LocalSecretStoreProvisioningService(targetConfig('default')).provisionExact(
-      secretDefinitionId('provider.mistral.api-key'),
-      SecretValue.fromString('synthetic-seed'),
-    );
-    const database = new DatabaseSync(targetConfig('default').databasePath);
-    try {
-      database.exec(`
-        CREATE TRIGGER fail_second_import_write
-        BEFORE INSERT ON secret_records
-        WHEN NEW.definition_id = 'search.serper.api-key'
-        BEGIN
-          SELECT RAISE(ABORT, 'synthetic injected batch failure');
-        END;
-      `);
-    } finally {
-      database.close();
-    }
-
-    const error = await new LocalEnvironmentSecretImportService(resolver).execute({
-      sourceAbsolutePath: sourcePath,
-      target: 'default',
-      dryRun: false,
-      overwrite: false,
-    }, confirmation('IMPORT DEFAULT STORE')).catch((caught) => caught);
-
-    expect(error.toJSON()).toEqual({ code: 'IMPORT_BATCH_FAILED', target: 'default' });
-    expect(JSON.stringify(error)).not.toContain('synthetic');
-    expect(await status('default', 'provider.openai.api-key')).toBe('MISSING');
-    expect(await status('default', 'search.serper.api-key')).toBe('MISSING');
+    expect(JSON.stringify(result)).not.toContain('synthetic');
+    expect(close).toHaveBeenCalledOnce();
+    expect(await fs.readFile(sourcePath)).toEqual(sourceBefore);
   });
 });

@@ -5,9 +5,8 @@ import ProviderAPIKeyManager from '../ProviderAPIKeyManager.vue'
 
 
 const configuredCredentialStatus = {
-  backendHealth: 'READY' as const,
+  vaultHealth: 'READY' as const,
   storageState: 'CONFIGURED' as const,
-  lifecycle: 'WRITABLE' as const,
   instructionCode: null,
 }
 const missingCredentialStatus = {
@@ -50,7 +49,7 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   isLoadingModels: ref(false),
   isReloadingModels: ref(false),
   geminiSetup: ref({
-    effectiveMode: 'UNCONFIGURED',
+    activeMode: null,
     aiStudioCredentialStatus: missingCredentialStatus,
     vertexExpressCredentialStatus: missingCredentialStatus,
     vertexProjectStatus: 'MISSING',

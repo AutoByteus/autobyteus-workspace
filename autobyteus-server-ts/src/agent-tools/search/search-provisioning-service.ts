@@ -5,8 +5,8 @@ import {
 } from 'autobyteus-ts';
 import { SecretValue } from 'autobyteus-ts';
 import { appConfigProvider } from '../../config/app-config-provider.js';
-import { getSecretStorageConfigurationService } from '../../secret-management/configuration/secret-storage-configuration-service.js';
-import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-binding.js';
+import { getSecretVaultRuntime } from '../../secret-management/secret-vault-runtime.js';
+import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-id.js';
 
 type SupportedSearchProvider = 'serper' | 'serpapi' | 'vertex_ai_search';
 
@@ -23,8 +23,8 @@ const normalizeProvider = (provider: string): SupportedSearchProvider => {
 export class SearchProvisioningService implements SearchExecutor {
   async search(query: string, numResults: number): Promise<string> {
     const provider = normalizeProvider(appConfigProvider.config.get('DEFAULT_SEARCH_PROVIDER') ?? '');
-    const apiKey = await getSecretStorageConfigurationService()
-      .requireManagementService()
+    const apiKey = await getSecretVaultRuntime()
+      .requireService()
       .resolveForUse(this.consumer(provider));
     const factory = SearchClientFactory.getInstance();
     const client = provider === 'vertex_ai_search'
@@ -42,35 +42,27 @@ export class SearchProvisioningService implements SearchExecutor {
 
   async getConfigurationStatus(): Promise<{
     provider: string;
-    backendHealth: string;
-    lifecycle: string | null;
+    vaultHealth: string;
     instructionCode: string | null;
     serperStorageState: string | null;
     serpapiStorageState: string | null;
     vertexAiSearchStorageState: string | null;
     vertexAiSearchServingConfig: string | null;
   }> {
-    const configuration = getSecretStorageConfigurationService();
-    const snapshot = await configuration.snapshot();
+    const runtime = getSecretVaultRuntime();
+    const health = await runtime.getHealth();
     const status = async (provider: SupportedSearchProvider): Promise<string | null> => {
+      if (health.state !== 'READY') return null;
       try {
-        const result = await configuration
-          .requireManagementService()
-          .getStatusForConsumer(this.consumer(provider));
-        return result.health.state === 'READY' ? result.secret?.storageState ?? null : null;
+        return await runtime.requireService().getStatusForConsumer(this.consumer(provider));
       } catch {
         return null;
       }
     };
     return {
       provider: appConfigProvider.config.get('DEFAULT_SEARCH_PROVIDER')?.trim().toLowerCase() ?? '',
-      backendHealth: snapshot.health.state,
-      lifecycle: snapshot.lifecycle?.kind ?? null,
-      instructionCode: 'instructionCode' in snapshot.health
-        ? snapshot.health.instructionCode
-        : snapshot.lifecycle?.kind === 'EXTERNALLY_MANAGED'
-          ? snapshot.lifecycle.instructionCode
-          : null,
+      vaultHealth: health.state,
+      instructionCode: 'instructionCode' in health ? health.instructionCode : null,
       serperStorageState: await status('serper'),
       serpapiStorageState: await status('serpapi'),
       vertexAiSearchStorageState: await status('vertex_ai_search'),
@@ -93,7 +85,7 @@ export class SearchProvisioningService implements SearchExecutor {
         : existing.vertexAiSearchStorageState === 'CONFIGURED';
     const apiKey = input.apiKey?.trim();
     if (apiKey) {
-      await getSecretStorageConfigurationService().requireManagementService().saveForConsumer({
+      await getSecretVaultRuntime().requireService().saveForConsumer({
         consumer: this.consumer(provider),
         value: SecretValue.fromString(apiKey),
       });

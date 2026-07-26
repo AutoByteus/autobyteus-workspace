@@ -2,7 +2,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stderr } from 'node:process';
-import { CanonicalHostLocalImportTargetResolver } from '../provisioning/local-import-target-resolver.js';
+import { appConfigProvider } from '../../config/app-config-provider.js';
 import { LocalEnvironmentSecretImportService } from '../provisioning/local-environment-secret-import-service.js';
 import {
   LocalEnvironmentSecretImportError,
@@ -18,16 +18,12 @@ const invalidOptions = (): never => {
 export const parseLocalImportArguments = (args: readonly string[]): LocalEnvironmentSecretImportRequest => {
   const normalizedArgs = args[0] === '--' ? args.slice(1) : args;
   let sourceAbsolutePath: string | null = null;
-  let target: 'default' | 'e2e' | null = null;
   let dryRun = false;
   let overwrite = false;
   const seen = new Set<string>();
-
   for (let index = 0; index < normalizedArgs.length; index += 1) {
     const option = normalizedArgs[index];
-    if (!['--source', '--target', '--dry-run', '--overwrite'].includes(option) || seen.has(option)) {
-      invalidOptions();
-    }
+    if (!['--source', '--dry-run', '--overwrite'].includes(option) || seen.has(option)) invalidOptions();
     seen.add(option);
     if (option === '--dry-run') {
       dryRun = true;
@@ -39,41 +35,29 @@ export const parseLocalImportArguments = (args: readonly string[]): LocalEnviron
     }
     const value = normalizedArgs[index + 1];
     if (!value || value.startsWith('--')) invalidOptions();
+    sourceAbsolutePath = value;
     index += 1;
-    if (option === '--source') sourceAbsolutePath = value;
-    else if (value === 'default' || value === 'e2e') target = value;
-    else invalidOptions();
   }
-
-  if (!sourceAbsolutePath || !path.isAbsolute(sourceAbsolutePath) || !target) return invalidOptions();
-  return { sourceAbsolutePath, target, dryRun, overwrite };
+  if (!sourceAbsolutePath || !path.isAbsolute(sourceAbsolutePath)) return invalidOptions();
+  return { sourceAbsolutePath, dryRun, overwrite };
 };
 
-export const formatLocalImportPlan = (
-  target: 'default' | 'e2e',
-  plan: LocalEnvironmentSecretImportPlan,
-): string => {
-  const instruction = 'instructionCode' in plan.targetStatus
-    ? plan.targetStatus.instructionCode
-    : 'NONE';
-  return [
-    `TARGET ${target}`,
-    `TARGET_STATUS ${plan.targetStatus.state}`,
-    ...plan.entries.map((entry) => `${String(entry.definitionId)} ${entry.action}`),
-    `CONFIGURED 0`,
-    `SKIPPED ${plan.entries.filter((entry) => entry.action === 'SKIPPED_CONFIGURED').length}`,
-    `REPLACED 0`,
-    `INSTRUCTION ${instruction}`,
-  ].join('\n') + '\n';
-};
+export const formatLocalImportPlan = (plan: LocalEnvironmentSecretImportPlan): string => [
+  `TARGET ${plan.targetIdentity}`,
+  `TARGET_STATUS ${plan.targetState}`,
+  ...plan.entries.map((entry) =>
+    `${String(entry.secretId)} ${entry.observedStatus} ${entry.plannedAction}`),
+  `CREATE ${plan.counts.create}`,
+  `SKIP_CONFIGURED ${plan.counts.skipConfigured}`,
+  `REPLACE ${plan.counts.replace}`,
+  `BLOCKED ${plan.counts.blocked}`,
+  `INSTRUCTION ${plan.instructionCode ?? 'NONE'}`,
+].join('\n') + '\n';
 
-export const formatLocalImportResult = (
-  target: 'default' | 'e2e',
-  result: LocalEnvironmentSecretImportResult,
-): string => [
-  `TARGET ${target}`,
-  `TARGET_STATUS ${result.targetStatus.state}`,
-  ...result.definitionIds.map((definitionId) => `DEFINITION ${String(definitionId)}`),
+export const formatLocalImportResult = (result: LocalEnvironmentSecretImportResult): string => [
+  `TARGET ${result.targetIdentity}`,
+  `TARGET_STATUS ${result.targetState}`,
+  ...result.secretIds.map((id) => `SECRET ${String(id)}`),
   `CONFIGURED ${result.configuredCount}`,
   `SKIPPED ${result.skippedCount}`,
   `REPLACED ${result.replacedCount}`,
@@ -82,44 +66,48 @@ export const formatLocalImportResult = (
 
 const createConfirmationPort = () => ({
   isDirectTty: (): boolean => Boolean(stdin.isTTY && stderr.isTTY),
-  readChallenge: async (expectedPhrase: string): Promise<string | null> => {
+  readChallenge: async (expectedPhrase: string, targetIdentity: string): Promise<string | null> => {
     const prompt = createInterface({ input: stdin, output: stderr, terminal: true });
     try {
-      return await prompt.question(`Type ${expectedPhrase} to continue: `);
+      return await prompt.question(`Target ${targetIdentity}. Type ${expectedPhrase} to continue: `);
     } finally {
       prompt.close();
     }
   },
 });
 
-export const runLocalEnvironmentImportCli = async (args: readonly string[]): Promise<string> => {
+type CliExecution = { output: string; blocked: boolean };
+
+const executeCli = async (args: readonly string[]): Promise<CliExecution> => {
   const request = parseLocalImportArguments(args);
-  const service = new LocalEnvironmentSecretImportService(
-    new CanonicalHostLocalImportTargetResolver(),
-  );
+  const config = appConfigProvider.config;
+  if (!config.isInitialized()) config.initialize();
+  const service = new LocalEnvironmentSecretImportService(config.getOperationalDatabaseLocation());
   if (request.dryRun) {
-    return formatLocalImportPlan(request.target, await service.preview(request));
+    const plan = await service.preview(request);
+    return { output: formatLocalImportPlan(plan), blocked: plan.counts.blocked > 0 };
   }
-  return formatLocalImportResult(
-    request.target,
-    await service.execute(request, createConfirmationPort()),
-  );
+  return {
+    output: formatLocalImportResult(await service.execute(request, createConfirmationPort())),
+    blocked: false,
+  };
 };
+
+export const runLocalEnvironmentImportCli = async (args: readonly string[]): Promise<string> =>
+  (await executeCli(args)).output;
 
 const main = async (): Promise<void> => {
   try {
-    process.stdout.write(await runLocalEnvironmentImportCli(process.argv.slice(2)));
+    const result = await executeCli(process.argv.slice(2));
+    process.stdout.write(result.output);
+    if (result.blocked) process.exitCode = 1;
   } catch (error) {
     const projected = error instanceof LocalEnvironmentSecretImportError
       ? error.toJSON()
       : { code: 'IMPORT_BATCH_FAILED' as const };
-    process.stderr.write(
-      `LOCAL_SECRET_IMPORT_FAILED ${projected.code}${projected.target ? ` TARGET ${projected.target}` : ''}\n`,
-    );
+    process.stderr.write(`LOCAL_SECRET_IMPORT_FAILED ${projected.code}\n`);
     process.exitCode = 1;
   }
 };
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  void main();
-}
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) void main();

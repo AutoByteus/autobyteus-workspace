@@ -89,9 +89,12 @@
                   v-else-if="selectedProviderId === 'GEMINI'"
                   :gemini-setup="geminiSetup"
                   :saving="saving"
+                  :activating="activating"
                   :removing="removing"
                   :disabled="!canWriteSelectedCredential"
                   @save="saveGeminiConfigurationOption"
+                  @save-and-activate="saveAndActivateGeminiConfigurationOption"
+                  @activate="activateGeminiConfigurationOption"
                   @remove="removeGeminiConfigurationOption"
                 />
                 <ProviderApiKeyEditor
@@ -141,6 +144,7 @@ import { useProviderApiKeySectionRuntime } from '~/components/settings/providerA
 const {
   loading,
   saving,
+  activating,
   removing,
   notification,
   providerEditorResetVersion,
@@ -175,6 +179,8 @@ const {
   reloadAllModels,
   reloadSelectedProvider,
   saveGeminiConfigurationOption,
+  saveAndActivateGeminiConfigurationOption,
+  activateGeminiConfigurationOption,
   removeGeminiConfigurationOption,
   saveProviderApiKey,
   removeProviderApiKey,

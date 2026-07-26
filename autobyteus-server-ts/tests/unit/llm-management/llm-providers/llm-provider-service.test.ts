@@ -39,9 +39,9 @@ describe('LlmProviderService', () => {
     getStatusForConsumer: vi.fn(),
   };
 
-  const secretStorageConfiguration = {
-    requireManagementService: vi.fn(() => secretManagement),
-    snapshot: vi.fn(),
+  const secretVaultRuntime = {
+    requireService: vi.fn(() => secretManagement),
+    getHealth: vi.fn(),
   };
 
   const geminiConfigurationService = {
@@ -56,7 +56,7 @@ describe('LlmProviderService', () => {
     customProviderRuntimeSyncService as any,
     modelCatalogService as any,
     discovery as any,
-    secretStorageConfiguration as any,
+    secretVaultRuntime as any,
     geminiConfigurationService as any,
   );
 
@@ -124,22 +124,16 @@ describe('LlmProviderService', () => {
     secretManagement.saveForConsumer.mockReset();
     secretManagement.removeForConsumer.mockReset();
     secretManagement.getStatusForConsumer.mockReset();
-    secretManagement.getStatusForConsumer.mockResolvedValue({
-      health: { state: 'READY' },
-      secret: { storageState: 'CONFIGURED', lifecycle: { kind: 'WRITABLE' } },
-    });
-    secretStorageConfiguration.requireManagementService.mockClear();
-    secretStorageConfiguration.snapshot.mockReset();
-    secretStorageConfiguration.snapshot.mockResolvedValue({
-      health: { state: 'READY' },
-      lifecycle: { kind: 'WRITABLE' },
-    });
+    secretManagement.getStatusForConsumer.mockResolvedValue('CONFIGURED');
+    secretVaultRuntime.requireService.mockClear();
+    secretVaultRuntime.getHealth.mockReset();
+    secretVaultRuntime.getHealth.mockResolvedValue({ state: 'READY', instructionCode: null });
     geminiConfigurationService.getSetupStatus.mockReset();
     geminiConfigurationService.saveOptionConfiguration.mockReset();
     geminiConfigurationService.removeOptionConfiguration.mockReset();
     geminiConfigurationService.getSetupStatus.mockResolvedValue({
+      activeMode: null,
       selection: { kind: 'unconfigured' },
-      effectiveMode: 'UNCONFIGURED',
       aiStudioStatus: 'MISSING',
       vertexExpressStatus: 'MISSING',
       vertexProjectStatus: 'MISSING',
@@ -163,8 +157,8 @@ describe('LlmProviderService', () => {
 
   it('projects all Gemini option states and their independent effective mode', async () => {
     geminiConfigurationService.getSetupStatus.mockResolvedValue({
+      activeMode: 'VERTEX_EXPRESS',
       selection: { kind: 'vertexExpress' },
-      effectiveMode: 'VERTEX_EXPRESS',
       aiStudioStatus: 'CONFIGURED',
       vertexExpressStatus: 'CONFIGURED',
       vertexProjectStatus: 'CONFIGURED',
@@ -173,17 +167,15 @@ describe('LlmProviderService', () => {
     });
 
     await expect(createService().getGeminiConfigurationStatus()).resolves.toEqual({
-      effectiveMode: 'VERTEX_EXPRESS',
+      activeMode: 'VERTEX_EXPRESS',
       aiStudioCredentialStatus: {
-        backendHealth: 'READY',
+        vaultHealth: 'READY',
         storageState: 'CONFIGURED',
-        lifecycle: 'WRITABLE',
         instructionCode: null,
       },
       vertexExpressCredentialStatus: {
-        backendHealth: 'READY',
+        vaultHealth: 'READY',
         storageState: 'CONFIGURED',
-        lifecycle: 'WRITABLE',
         instructionCode: null,
       },
       vertexProjectStatus: 'CONFIGURED',
@@ -196,12 +188,22 @@ describe('LlmProviderService', () => {
     geminiConfigurationService.saveOptionConfiguration.mockResolvedValue({
       operation: 'SAVED',
       option: 'AI_STUDIO',
-      effectiveMode: 'VERTEX_EXPRESS',
+      outcome: 'SUCCEEDED',
+      optionStatus: 'CONFIGURED',
+      activeMode: 'VERTEX_EXPRESS',
+      configurationOutcome: 'SUCCEEDED',
+      modeOutcome: 'NOT_REQUESTED',
+      instructionCode: null,
     });
     geminiConfigurationService.removeOptionConfiguration.mockResolvedValue({
       operation: 'REMOVED',
       option: 'VERTEX_EXPRESS',
-      effectiveMode: 'AI_STUDIO',
+      outcome: 'SUCCEEDED',
+      optionStatus: 'MISSING',
+      activeMode: 'AI_STUDIO',
+      configurationOutcome: 'SUCCEEDED',
+      modeOutcome: 'NOT_REQUESTED',
+      instructionCode: null,
     });
     const service = createService();
 
@@ -211,12 +213,22 @@ describe('LlmProviderService', () => {
     })).resolves.toEqual({
       operation: 'SAVED',
       option: 'AI_STUDIO',
-      effectiveMode: 'VERTEX_EXPRESS',
+      outcome: 'SUCCEEDED',
+      optionStatus: 'CONFIGURED',
+      activeMode: 'VERTEX_EXPRESS',
+      configurationOutcome: 'SUCCEEDED',
+      modeOutcome: 'NOT_REQUESTED',
+      instructionCode: null,
     });
     await expect(service.removeGeminiOptionConfiguration('VERTEX_EXPRESS')).resolves.toEqual({
       operation: 'REMOVED',
       option: 'VERTEX_EXPRESS',
-      effectiveMode: 'AI_STUDIO',
+      outcome: 'SUCCEEDED',
+      optionStatus: 'MISSING',
+      activeMode: 'AI_STUDIO',
+      configurationOutcome: 'SUCCEEDED',
+      modeOutcome: 'NOT_REQUESTED',
+      instructionCode: null,
     });
 
     expect(geminiConfigurationService.saveOptionConfiguration).toHaveBeenCalledWith({
@@ -233,9 +245,7 @@ describe('LlmProviderService', () => {
     secretManagement.getStatusForConsumer.mockRejectedValue(
       new Error('synthetic status failure'),
     );
-    secretStorageConfiguration.snapshot.mockRejectedValue(
-      new Error('synthetic custody failure'),
-    );
+    secretVaultRuntime.getHealth.mockRejectedValue(new Error('synthetic custody failure'));
     modelCatalogService.listLlmModels.mockRejectedValue(
       new Error('synthetic model-catalog failure'),
     );
@@ -249,10 +259,9 @@ describe('LlmProviderService', () => {
       provider: expect.objectContaining({
         id: 'OPENAI',
         credentialStatus: {
-          backendHealth: 'UNAVAILABLE',
+          vaultHealth: 'UNAVAILABLE',
           storageState: null,
-          lifecycle: null,
-          instructionCode: 'SECRET_BACKEND_STATUS_UNAVAILABLE',
+          instructionCode: 'SECRET_VAULT_STATUS_UNAVAILABLE',
         },
       }),
       models: [],
@@ -320,11 +329,31 @@ describe('LlmProviderService', () => {
       isCustom: true,
       baseUrl: 'https://gateway.example.com/v1',
       credentialStatus: {
-        backendHealth: 'READY', storageState: 'CONFIGURED', lifecycle: 'WRITABLE', instructionCode: null,
+        vaultHealth: 'READY', storageState: 'CONFIGURED', instructionCode: null,
       },
       status: 'READY',
       statusMessage: null,
     }));
+  });
+
+  it('compensates custom metadata when credential persistence fails', async () => {
+    customProviderStore.createProvider.mockResolvedValue({
+      id: 'provider_gateway',
+      name: 'Internal Gateway',
+      providerType: LLMProvider.OPENAI_COMPATIBLE,
+      baseUrl: 'https://gateway.example.com/v1',
+    });
+    secretManagement.saveForConsumer.mockRejectedValue(new Error('synthetic vault failure'));
+
+    await expect(createService().createCustomProvider({
+      name: 'Internal Gateway',
+      providerType: 'OPENAI_COMPATIBLE',
+      baseUrl: 'https://gateway.example.com/v1',
+      apiKey: 'synthetic-test-key',
+    }, 'autobyteus')).rejects.toThrow('synthetic vault failure');
+
+    expect(customProviderStore.deleteProvider).toHaveBeenCalledWith('provider_gateway');
+    expect(modelCatalogService.reloadLlmModelsForProvider).not.toHaveBeenCalled();
   });
 
   it('deletes saved custom providers and triggers a full authoritative refresh', async () => {
@@ -345,6 +374,25 @@ describe('LlmProviderService', () => {
     expect(modelCatalogService.reloadLlmModels).toHaveBeenCalledWith('autobyteus');
     expect(modelCatalogService.reloadLlmModelsForProvider).not.toHaveBeenCalled();
     expect(deletedName).toBe('Internal Gateway');
+  });
+
+  it('keeps custom metadata retryable when credential removal fails', async () => {
+    customProviderStore.getProviderById.mockResolvedValue({
+      id: 'provider_gateway',
+      name: 'Internal Gateway',
+      providerType: LLMProvider.OPENAI_COMPATIBLE,
+      baseUrl: 'https://gateway.example.com/v1',
+    });
+    secretManagement.removeForConsumer.mockRejectedValueOnce(new Error('synthetic vault failure'));
+    const service = createService();
+
+    await expect(service.deleteCustomProvider('provider_gateway', 'autobyteus'))
+      .rejects.toThrow('synthetic vault failure');
+    expect(customProviderStore.deleteProvider).not.toHaveBeenCalled();
+
+    await expect(service.deleteCustomProvider('provider_gateway', 'autobyteus'))
+      .resolves.toBe('Internal Gateway');
+    expect(customProviderStore.deleteProvider).toHaveBeenCalledWith('provider_gateway');
   });
 
   it('rejects deleting built-in providers through the custom delete lifecycle', async () => {

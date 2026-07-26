@@ -4,7 +4,7 @@ import type {
   OpenAICompatibleEndpointReloadStatus,
 } from 'autobyteus-ts';
 import type { CustomProviderReloadStatus } from '../domain/models.js';
-import { getSecretStorageConfigurationService } from '../../../secret-management/configuration/secret-storage-configuration-service.js';
+import { getSecretVaultRuntime } from '../../../secret-management/secret-vault-runtime.js';
 import {
   getCustomLlmProviderStore,
   type CustomLlmProviderStore,
@@ -59,8 +59,8 @@ export class CustomLlmProviderRuntimeSyncService {
     const savedProviders = await this.customProviderStore.listProviders();
     const discoveryResults = await Promise.all(savedProviders.map(async (endpoint) => {
       try {
-        const apiKey = await getSecretStorageConfigurationService()
-          .requireManagementService()
+        const apiKey = await getSecretVaultRuntime()
+          .requireService()
           .resolveForUse({ kind: 'llmMetadata', providerId: endpoint.id, credentialSlot: 'apiKey' });
         const discoveredModels = await OpenAICompatibleEndpointDiscovery.probeEndpoint({
           baseUrl: endpoint.baseUrl,

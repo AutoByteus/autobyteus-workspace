@@ -3,9 +3,8 @@ import gql from 'graphql-tag';
 export const GET_LLM_PROVIDER_CREDENTIAL_STATUS = gql`
   query GetLLMProviderCredentialStatus($providerId: String!) {
     getLlmProviderCredentialStatus(providerId: $providerId) {
-      backendHealth
+      vaultHealth
       storageState
-      lifecycle
       instructionCode
     }
   }
@@ -23,9 +22,8 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         isCustom
         baseUrl
         credentialStatus {
-          backendHealth
+          vaultHealth
           storageState
-          lifecycle
           instructionCode
         }
         status
@@ -61,9 +59,8 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         isCustom
         baseUrl
         credentialStatus {
-          backendHealth
+          vaultHealth
           storageState
-          lifecycle
           instructionCode
         }
         status
@@ -92,9 +89,8 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         isCustom
         baseUrl
         credentialStatus {
-          backendHealth
+          vaultHealth
           storageState
-          lifecycle
           instructionCode
         }
         status
@@ -123,9 +119,8 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
         isCustom
         baseUrl
         credentialStatus {
-          backendHealth
+          vaultHealth
           storageState
-          lifecycle
           instructionCode
         }
         status
@@ -150,17 +145,15 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
 export const GET_GEMINI_SETUP_CONFIG = gql`
   query GetGeminiSetupConfig {
     getGeminiSetupConfig {
-      effectiveMode
+      activeMode
       aiStudioCredentialStatus {
-        backendHealth
+        vaultHealth
         storageState
-        lifecycle
         instructionCode
       }
       vertexExpressCredentialStatus {
-        backendHealth
+        vaultHealth
         storageState
-        lifecycle
         instructionCode
       }
       vertexProjectStatus

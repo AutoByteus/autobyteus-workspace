@@ -4,7 +4,7 @@ import {
   ClaudeRuntimeAuthenticationError,
   ClaudeRuntimeAuthenticationService,
 } from '../../../../src/runtime-management/claude/client/claude-runtime-authentication-service.js';
-import { SecretStorageError } from '../../../../src/secret-management/domain/secret-storage-types.js';
+import { SecretVaultError } from '../../../../src/secret-management/domain/secret-vault-types.js';
 
 describe('ClaudeRuntimeAuthenticationService', () => {
   it('defaults to CLI without touching secret management', async () => {
@@ -40,7 +40,7 @@ describe('ClaudeRuntimeAuthenticationService', () => {
 
   it('maps custody failures to value-free Claude codes', async () => {
     const resolveForUse = vi.fn().mockRejectedValue(
-      new SecretStorageError('BACKEND_LOCKED', true, 'SECRET_BACKEND_LOCKED'),
+      new SecretVaultError('VAULT_LOCKED', true, 'SECRET_VAULT_LOCKED'),
     );
     const service = new ClaudeRuntimeAuthenticationService(
       () => 'managed-secret',

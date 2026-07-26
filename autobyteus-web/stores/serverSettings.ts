@@ -22,8 +22,7 @@ export type SearchProvider = 'serper' | 'serpapi' | 'vertex_ai_search'
 
 export interface SearchConfigState {
   provider: SearchProvider | ''
-  backendHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE'
-  lifecycle: 'WRITABLE' | 'EXTERNALLY_MANAGED' | null
+  vaultHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE'
   instructionCode: string | null
   serperStorageState: 'MISSING' | 'CONFIGURED' | null
   serpapiStorageState: 'MISSING' | 'CONFIGURED' | null
@@ -41,9 +40,8 @@ export interface SetSearchConfigInput {
 
 const defaultSearchConfig = (): SearchConfigState => ({
   provider: '',
-  backendHealth: 'UNAVAILABLE',
-  lifecycle: null,
-  instructionCode: 'SECRET_BACKEND_UNAVAILABLE',
+  vaultHealth: 'UNAVAILABLE',
+  instructionCode: 'SECRET_VAULT_UNAVAILABLE',
   serperStorageState: null,
   serpapiStorageState: null,
   vertexAiSearchStorageState: null,

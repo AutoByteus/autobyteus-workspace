@@ -4,6 +4,7 @@ import { BaseImageClient } from '../../../../src/multimedia/image/base-image-cli
 import { GeminiImageClient } from '../../../../src/multimedia/image/api/gemini-image-client.js';
 import {
   geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
   providerApiKeyResolver,
 } from '../../provider-api-key-resolver-test-helpers.js';
 
@@ -81,6 +82,7 @@ describe('ImageClientFactory', () => {
       modelId,
       undefined,
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
     );
     expect(client).toBeInstanceOf(GeminiImageClient);
     expect(client.model.modelIdentifier).toBe(modelId);

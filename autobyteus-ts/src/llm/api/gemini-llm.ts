@@ -9,7 +9,6 @@ import { createGeminiTokenUsageObservation } from './gemini-token-usage-normaliz
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import {
   initializeGeminiClientWithRuntime,
-  selectGeminiRuntimeForResolver,
   type GeminiRuntimeInfo,
 } from '../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../utils/gemini-model-mapping.js';
@@ -17,6 +16,7 @@ import { convertGeminiToolCalls } from '../converters/gemini-tool-call-converter
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createGeminiPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 const THINKING_LEVEL_BUDGETS: Record<string, number> = {
   minimal: 0,
@@ -48,11 +48,14 @@ const splitGeminiParts = (parts: Array<Record<string, unknown>> = []): { content
 export class GeminiLLM extends BaseLLM {
   private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly runtimeResolver: GeminiRuntimeResolver;
   private _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
+    if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+    this.runtimeResolver = runtimeResolver;
     this._renderer = createGeminiPromptRendererForToolFormat();
   }
 
@@ -62,7 +65,7 @@ export class GeminiLLM extends BaseLLM {
   }
 
   private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
-    const selection = await selectGeminiRuntimeForResolver(this.apiKeyResolver);
+    const selection = await this.runtimeResolver();
     return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 

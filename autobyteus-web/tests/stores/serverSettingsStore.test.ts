@@ -48,8 +48,7 @@ describe('serverSettings store', () => {
       data: {
         getSearchConfig: {
           provider: 'serper',
-          backendHealth: 'READY',
-          lifecycle: 'WRITABLE',
+          vaultHealth: 'READY',
           instructionCode: null,
           serperStorageState: 'CONFIGURED',
           serpapiStorageState: 'MISSING',
@@ -267,9 +266,8 @@ describe('serverSettings store', () => {
         data: {
           getSearchConfig: {
             provider: 'serper',
-            backendHealth: 'READY',
-            lifecycle: 'WRITABLE',
-            instructionCode: null,
+            vaultHealth: 'READY',
+              instructionCode: null,
             serperStorageState: 'CONFIGURED',
             serpapiStorageState: 'MISSING',
             vertexAiSearchStorageState: 'MISSING',
@@ -281,9 +279,8 @@ describe('serverSettings store', () => {
         data: {
           getSearchConfig: {
             provider: 'serpapi',
-            backendHealth: 'READY',
-            lifecycle: 'WRITABLE',
-            instructionCode: null,
+            vaultHealth: 'READY',
+              instructionCode: null,
             serperStorageState: 'MISSING',
             serpapiStorageState: 'CONFIGURED',
             vertexAiSearchStorageState: 'MISSING',
@@ -327,9 +324,8 @@ describe('serverSettings store', () => {
         data: {
           getSearchConfig: {
             provider: 'serper',
-            backendHealth: 'READY',
-            lifecycle: 'WRITABLE',
-            instructionCode: null,
+            vaultHealth: 'READY',
+              instructionCode: null,
             serperStorageState: 'CONFIGURED',
             serpapiStorageState: 'MISSING',
             vertexAiSearchStorageState: 'MISSING',

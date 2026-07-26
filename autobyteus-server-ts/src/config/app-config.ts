@@ -11,6 +11,15 @@ import {
 } from "./config-value-parsers.js";
 import { parseNonSecretEnvironment } from "./non-secret-environment-projection.js";
 import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
+import {
+  resolveApplicationDatabaseLocation,
+  type ApplicationDatabaseLocation,
+} from "./application-database-location.js";
+import {
+  assignmentName,
+  linesWithEndings,
+  splitLineEnding,
+} from "./environment-assignment-lines.js";
 
 const forbiddenGenericSettingNames = new Set<string>([
   ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
@@ -21,18 +30,6 @@ const forbiddenGenericSettingNames = new Set<string>([
   "CLAUDE_CODE_API_KEY",
   "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
 ]);
-const sensitiveSettingNamePattern = /(?:API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;
-const assignmentName = (line: string): string | null =>
-  /^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)[ \t]*=/.exec(line)?.[1] ?? null;
-
-const linesWithEndings = (content: string): string[] =>
-  content.match(/[^\r\n]*(?:\r\n|\r|\n|$)/g)?.filter((line) => line.length > 0) ?? [];
-
-const splitLineEnding = (line: string): { body: string; ending: string } => {
-  const ending = line.endsWith("\r\n") ? "\r\n" : line.endsWith("\r") ? "\r" : line.endsWith("\n") ? "\n" : "";
-  return { body: ending ? line.slice(0, -ending.length) : line, ending };
-};
-
 export class AppConfigError extends Error {
   constructor(message: string) {
     super(message);
@@ -50,9 +47,7 @@ const logger = {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export type AppConfigOptions = {
-  appDataDir?: string | null;
-};
+export type AppConfigOptions = { appDataDir?: string | null };
 
 export class AppConfig {
   private isWindows: boolean;
@@ -60,6 +55,7 @@ export class AppConfig {
   private dataDir: string;
   private configFile: string | null = null;
   private configData: Record<string, string> = {};
+  private operationalDatabaseLocation: ApplicationDatabaseLocation | null = null;
   private initialized = false;
   private baseUrl: string | null = null;
 
@@ -200,24 +196,28 @@ export class AppConfig {
   private initSqlitePath(): void {
     const configuredDatabaseUrl = this.get("DATABASE_URL");
     if (typeof configuredDatabaseUrl === "string" && configuredDatabaseUrl.trim().length > 0) {
-      this.validateSqliteDatabaseUrl(configuredDatabaseUrl);
+      this.setOperationalDatabaseLocation(configuredDatabaseUrl);
       return;
     }
     const dbPath = this.getSqlitePath();
     const expectedUrl = this.toPrismaSqliteUrl(dbPath);
-    this.setRuntimeValue("DATABASE_URL", expectedUrl);
+    this.setOperationalDatabaseLocation(expectedUrl);
   }
 
   private toPrismaSqliteUrl(filePath: string): string {
     return `file:${filePath.replace(/\\/g, "/")}`;
   }
 
-  private validateSqliteDatabaseUrl(databaseUrl: string): string {
-    const normalized = databaseUrl.trim();
-    if (!normalized.startsWith("file:") || normalized.length === "file:".length) {
+  private setOperationalDatabaseLocation(databaseUrl: string): void {
+    try {
+      this.operationalDatabaseLocation = resolveApplicationDatabaseLocation(
+        databaseUrl,
+        this.getAppRootDir(),
+      );
+      this.configData.DATABASE_URL = this.operationalDatabaseLocation.databaseUrl;
+    } catch {
       throw new AppConfigError("DATABASE_URL must be a non-empty SQLite file URL.");
     }
-    return normalized;
   }
 
   private getSqlitePath(): string {
@@ -296,14 +296,17 @@ export class AppConfig {
   }
 
   getOperationalDatabaseUrl(): string {
+    return this.getOperationalDatabaseLocation().databaseUrl;
+  }
+
+  getOperationalDatabaseLocation(): ApplicationDatabaseLocation {
     if (this.get("DB_TYPE", "sqlite") !== "sqlite") {
       throw new AppConfigError("Only the SQLite DATABASE_URL operational configuration is supported.");
     }
-    const databaseUrl = this.get("DATABASE_URL");
-    if (typeof databaseUrl !== "string") {
+    if (!this.operationalDatabaseLocation) {
       throw new AppConfigError("DATABASE_URL is not configured.");
     }
-    return this.validateSqliteDatabaseUrl(databaseUrl);
+    return this.operationalDatabaseLocation;
   }
 
   getConfigFilePath(): string {
@@ -472,7 +475,6 @@ export class AppConfig {
     }
 
     this.dataDir = customPath;
-    // Rebind the runtime memory root immediately so lower layers do not fall back to process.cwd()/memory.
     const memoryDir = this.getMemoryDir();
     this.configData.AUTOBYTEUS_MEMORY_DIR = memoryDir;
     process.env.AUTOBYTEUS_MEMORY_DIR = memoryDir;
@@ -489,6 +491,9 @@ export class AppConfig {
 
   get(key: string, defaultValue?: string): string | undefined {
     if (forbiddenGenericSettingNames.has(key)) return undefined;
+    if (key === "DATABASE_URL" && this.operationalDatabaseLocation) {
+      return this.operationalDatabaseLocation.databaseUrl;
+    }
     return process.env[key] ?? this.configData[key] ?? defaultValue;
   }
 
@@ -497,7 +502,7 @@ export class AppConfig {
   }
 
   set(key: string, value: string): void {
-    if (forbiddenGenericSettingNames.has(key) || sensitiveSettingNamePattern.test(key)) {
+    if (forbiddenGenericSettingNames.has(key)) {
       throw new AppConfigError("Sensitive values must be written through a subject-specific secret service.");
     }
     this.configData[key] = value;
@@ -516,7 +521,7 @@ export class AppConfig {
   }
 
   delete(key: string): void {
-    if (forbiddenGenericSettingNames.has(key) || sensitiveSettingNamePattern.test(key)) {
+    if (forbiddenGenericSettingNames.has(key)) {
       throw new AppConfigError("Sensitive values must be removed through a subject-specific secret service.");
     }
     delete this.configData[key];

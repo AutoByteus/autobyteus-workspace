@@ -4,6 +4,7 @@ import { BaseAudioClient } from '../../../../src/multimedia/audio/base-audio-cli
 import { MultimediaConfig } from '../../../../src/multimedia/utils/multimedia-config.js';
 import {
   geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
   providerApiKeyResolver,
 } from '../../provider-api-key-resolver-test-helpers.js';
 
@@ -55,11 +56,13 @@ describe('AudioClientFactory', () => {
       'gemini-3.1-flash-tts-preview',
       new MultimediaConfig(),
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
     );
     const proClient = AudioClientFactory.createAudioClient(
       'gemini-2.5-pro-tts',
       new MultimediaConfig(),
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
     );
 
     expect(latestClient).toBeInstanceOf(BaseAudioClient);

@@ -18,6 +18,7 @@ import {
   type OpenAICompatibleEndpointReloadReport,
 } from './openai-compatible-endpoint-provider.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 
 export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
 
@@ -248,10 +249,16 @@ export class LLMFactory {
     return models.length;
   }
 
+  static async requiresGeminiRuntimeResolver(modelIdentifier: string): Promise<boolean> {
+    await LLMFactory.ensureInitialized();
+    return LLMFactory.modelsByIdentifier.get(modelIdentifier)?.provider === LLMProvider.GEMINI;
+  }
+
   static async createLLM(
     modelIdentifier: string,
     configInput: LLMFactoryConfigInput | undefined,
     apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();
 
@@ -262,6 +269,11 @@ export class LLMFactory {
         throw new Error(`Model '${model.modelIdentifier}' does not have an LLM class registered yet.`);
       }
       const config = LLMFactory.composeEffectiveConfig(model, configInput);
+      if (model.provider === LLMProvider.GEMINI) {
+        if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+        return new LLMClass(model, config, apiKeyResolver, geminiRuntimeResolver);
+      }
+      if (geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_NOT_ALLOWED');
       return new LLMClass(model, config, apiKeyResolver);
     }
 

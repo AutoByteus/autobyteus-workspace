@@ -6,10 +6,10 @@ import {
 } from 'autobyteus-ts';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import {
-  getSecretStorageConfigurationService,
-  type SecretStorageConfigurationService,
-} from '../../../secret-management/configuration/secret-storage-configuration-service.js';
-import type { SecretConsumerIdentity } from '../../../secret-management/domain/secret-binding.js';
+  getSecretVaultRuntime,
+  type SecretVaultRuntime,
+} from '../../../secret-management/secret-vault-runtime.js';
+import type { SecretConsumerIdentity } from '../../../secret-management/domain/secret-id.js';
 import {
   RuntimeKind,
   runtimeKindFromString,
@@ -41,7 +41,6 @@ import {
   type GeminiConfigurationOperationResult,
   type GeminiConfigurationOption,
   type GeminiConfigurationState,
-  type GeminiEffectiveMode,
   type GeminiOptionSaveCommand,
 } from '../../services/gemini-configuration-service.js';
 
@@ -77,8 +76,8 @@ export class LlmProviderService {
     private readonly modelCatalogService: ModelCatalogService = getModelCatalogService(),
     private readonly discovery: Pick<typeof OpenAICompatibleEndpointDiscovery, 'probeEndpoint'> =
       OpenAICompatibleEndpointDiscovery,
-    private readonly secretStorageConfiguration: SecretStorageConfigurationService =
-      getSecretStorageConfigurationService(),
+    private readonly secretVaultRuntime: SecretVaultRuntime =
+      getSecretVaultRuntime(),
     private readonly geminiConfigurationService: GeminiConfigurationService =
       getGeminiConfigurationService(),
   ) {}
@@ -164,7 +163,7 @@ export class LlmProviderService {
       baseUrl: draft.baseUrl,
     });
     try {
-      await this.secretStorageConfiguration.requireManagementService().saveForConsumer({
+      await this.secretVaultRuntime.requireService().saveForConsumer({
         consumer: this.customConsumer(createdProvider.id),
         value: SecretValue.fromString(draft.apiKey),
       });
@@ -192,13 +191,13 @@ export class LlmProviderService {
     }
     const provider = await this.customProviderStore.getProviderById(normalizedProviderId);
     if (!provider) {
-      await this.secretStorageConfiguration
-        .requireManagementService()
+      await this.secretVaultRuntime
+        .requireService()
         .removeForConsumer(this.customConsumer(normalizedProviderId));
       return normalizedProviderId;
     }
-    await this.secretStorageConfiguration
-      .requireManagementService()
+    await this.secretVaultRuntime
+      .requireService()
       .removeForConsumer(this.customConsumer(provider.id));
     await this.customProviderStore.deleteProvider(provider.id);
     await this.modelCatalogService.reloadLlmModels(runtimeKind);
@@ -210,8 +209,8 @@ export class LlmProviderService {
     if (!this.builtInCatalog.isBuiltInProviderId(normalizedProviderId)) {
       throw new Error(`Removing API keys is only supported for built-in providers. Received '${providerId}'.`);
     }
-    await this.secretStorageConfiguration
-      .requireManagementService()
+    await this.secretVaultRuntime
+      .requireService()
       .removeForConsumer(this.builtInConsumer(normalizedProviderId));
     if (normalizedProviderId === LLMProvider.AUTOBYTEUS) {
       await this.modelCatalogService.clearAutobyteusRemoteModels();
@@ -227,7 +226,7 @@ export class LlmProviderService {
       throw new Error(`Setting API keys is only supported for built-in providers in this ticket. Received '${providerId}'.`);
     }
 
-    await this.secretStorageConfiguration.requireManagementService().saveForConsumer({
+    await this.secretVaultRuntime.requireService().saveForConsumer({
       consumer: this.builtInConsumer(normalizedProviderId),
       value: SecretValue.fromString(normalizedApiKey),
     });
@@ -257,7 +256,7 @@ export class LlmProviderService {
   }
 
   async getGeminiConfigurationStatus(): Promise<{
-    effectiveMode: GeminiEffectiveMode;
+    activeMode: GeminiConfigurationOption | null;
     aiStudioCredentialStatus: CredentialStatusProjection;
     vertexExpressCredentialStatus: CredentialStatusProjection;
     vertexProjectStatus: GeminiConfigurationState;
@@ -266,7 +265,7 @@ export class LlmProviderService {
   }> {
     const setup = await this.geminiConfigurationService.getSetupStatus();
     return {
-      effectiveMode: setup.effectiveMode,
+      activeMode: setup.activeMode,
       aiStudioCredentialStatus: await this.getCredentialStatus({
         kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot: 'geminiAiStudioApiKey',
       }),
@@ -283,6 +282,22 @@ export class LlmProviderService {
     input: GeminiOptionSaveCommand,
   ): Promise<GeminiConfigurationOperationResult> {
     const result = await this.geminiConfigurationService.saveOptionConfiguration(input);
+    this.modelCatalogService.invalidateGeminiMetadata();
+    return result;
+  }
+
+  async activateGeminiOption(
+    option: GeminiConfigurationOption,
+  ): Promise<GeminiConfigurationOperationResult> {
+    const result = await this.geminiConfigurationService.activateOption(option);
+    this.modelCatalogService.invalidateGeminiMetadata();
+    return result;
+  }
+
+  async saveAndActivateGeminiOption(
+    input: GeminiOptionSaveCommand,
+  ): Promise<GeminiConfigurationOperationResult> {
+    const result = await this.geminiConfigurationService.saveAndActivateOption(input);
     this.modelCatalogService.invalidateGeminiMetadata();
     return result;
   }
@@ -407,96 +422,79 @@ export class LlmProviderService {
   }
 
   private async getCredentialStatus(consumer: SecretConsumerIdentity): Promise<CredentialStatusProjection> {
-    const configuration = this.secretStorageConfiguration;
-    const snapshot = await configuration.snapshot();
-    if (snapshot.health.state !== 'READY') {
+    const health = await this.secretVaultRuntime.getHealth();
+    if (health.state !== 'READY') {
       return {
-        backendHealth: snapshot.health.state,
+        vaultHealth: health.state,
         storageState: null,
-        lifecycle: snapshot.lifecycle?.kind ?? null,
-        instructionCode: snapshot.health.instructionCode,
+        instructionCode: health.instructionCode,
       };
     }
-    const status = await this.secretStorageConfiguration
-      .requireManagementService()
-      .getStatusForConsumer(consumer);
-    return {
-      backendHealth: 'READY',
-      storageState: status.secret?.storageState ?? null,
-      lifecycle: status.secret?.lifecycle.kind ?? snapshot.lifecycle?.kind ?? null,
-      instructionCode: status.secret?.lifecycle.kind === 'EXTERNALLY_MANAGED'
-        ? status.secret.lifecycle.instructionCode
-        : null,
-    };
+    try {
+      return {
+        vaultHealth: 'READY',
+        storageState: await this.secretVaultRuntime.requireService().getStatusForConsumer(consumer),
+        instructionCode: null,
+      };
+    } catch {
+      return {
+        vaultHealth: 'UNAVAILABLE',
+        storageState: null,
+        instructionCode: 'SECRET_CONSUMER_BINDING_INVALID',
+      };
+    }
   }
 
   private async withCredentialStatus(provider: LlmProviderRecord): Promise<LlmProviderRecord> {
     if (provider.id === LLMProvider.OLLAMA) return provider;
     if (provider.id === LLMProvider.GEMINI) {
       const setup = await this.geminiConfigurationService.getSetupStatus();
-      if (setup.selection.kind === 'vertexProject') {
-        return {
-          ...provider,
-          credentialStatus: await this.workloadCredentialStatus(true),
-        };
+      if (setup.activeMode === 'VERTEX_PROJECT') {
+        return { ...provider, credentialStatus: await this.workloadCredentialStatus(
+          setup.vertexProjectStatus === 'CONFIGURED',
+        ) };
       }
-      const credentialSlot = setup.selection.kind === 'vertexExpress'
-        ? 'geminiVertexExpressApiKey'
-        : 'geminiAiStudioApiKey';
-      return {
-        ...provider,
-        credentialStatus: await this.getCredentialStatus({
-          kind: 'llm',
-          providerId: LLMProvider.GEMINI,
-          credentialSlot,
-        }),
-      };
+      if (setup.activeMode === 'VERTEX_EXPRESS') {
+        return { ...provider, credentialStatus: await this.getCredentialStatus({
+          kind: 'llm', providerId: LLMProvider.GEMINI,
+          credentialSlot: 'geminiVertexExpressApiKey',
+        }) };
+      }
+      if (setup.activeMode === 'AI_STUDIO') {
+        return { ...provider, credentialStatus: await this.getCredentialStatus({
+          kind: 'llm', providerId: LLMProvider.GEMINI,
+          credentialSlot: 'geminiAiStudioApiKey',
+        }) };
+      }
+      return { ...provider, credentialStatus: await this.workloadCredentialStatus(false) };
     }
-    try {
-      return { ...provider, credentialStatus: await this.getCredentialStatus(this.builtInConsumer(provider.id)) };
-    } catch {
-      const snapshot = await this.secretStorageConfiguration.snapshot();
-      return {
-        ...provider,
-        credentialStatus: {
-          backendHealth: snapshot.health.state,
-          storageState: null,
-          lifecycle: snapshot.lifecycle?.kind ?? null,
-          instructionCode: 'instructionCode' in snapshot.health
-            ? snapshot.health.instructionCode
-            : 'SECRET_CONSUMER_BINDING_INVALID',
-        },
-      };
-    }
+    return { ...provider, credentialStatus: await this.getCredentialStatus(this.builtInConsumer(provider.id)) };
   }
 
-  private async withCredentialStatusOrUnavailable(
-    provider: LlmProviderRecord,
-  ): Promise<LlmProviderRecord> {
+  private async withCredentialStatusOrUnavailable(provider: LlmProviderRecord): Promise<LlmProviderRecord> {
     try {
       return await this.withCredentialStatus(provider);
     } catch {
       return {
         ...provider,
         credentialStatus: {
-          backendHealth: 'UNAVAILABLE',
+          vaultHealth: 'UNAVAILABLE',
           storageState: null,
-          lifecycle: null,
-          instructionCode: 'SECRET_BACKEND_STATUS_UNAVAILABLE',
+          instructionCode: 'SECRET_VAULT_STATUS_UNAVAILABLE',
         },
       };
     }
   }
 
   private async workloadCredentialStatus(configured: boolean): Promise<CredentialStatusProjection> {
-    const snapshot = await this.secretStorageConfiguration.snapshot();
+    const health = await this.secretVaultRuntime.getHealth();
     return {
-      backendHealth: snapshot.health.state,
+      vaultHealth: health.state,
       storageState: configured ? 'CONFIGURED' : 'MISSING',
-      lifecycle: snapshot.lifecycle?.kind ?? null,
-      instructionCode: 'instructionCode' in snapshot.health ? snapshot.health.instructionCode : null,
+      instructionCode: 'instructionCode' in health ? health.instructionCode : null,
     };
   }
+
 }
 
 let cachedLlmProviderService: LlmProviderService | null = null;

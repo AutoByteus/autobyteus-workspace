@@ -1,62 +1,58 @@
 import path from 'node:path';
 import { SecretValue } from 'autobyteus-ts/secrets/secret-value.js';
-import { defaultSecretCatalog, type SecretCatalog } from '../catalog/secret-catalog.js';
-import type { SecretDefinitionId } from '../domain/secret-binding.js';
-import {
-  LocalProvisioningBatchError,
-  LocalSecretStoreProvisioningService,
-  type LocalProvisioningBatchEntry,
-  type LocalProvisioningTargetSnapshot,
-} from '../backends/local/local-secret-store-provisioning-service.js';
+import type { ApplicationDatabaseLocation } from '../../config/application-database-location.js';
+import { runMigrations } from '../../startup/migrations.js';
+import { providerCredentialCatalog } from '../catalog/provider-credential-catalog.js';
+import { SecretVaultRuntime } from '../secret-vault-runtime.js';
+import { SecretVaultInspectionService } from '../services/secret-vault-inspection-service.js';
 import {
   LocalEnvironmentSourceReader,
   type LocalEnvironmentSourceReadResult,
 } from './local-environment-source-reader.js';
-import type { LocalImportTargetResolver } from './local-import-target-resolver.js';
 import {
   LocalEnvironmentSecretImportError,
   type LocalEnvironmentSecretImportPlan,
-  type LocalEnvironmentSecretImportPlanEntry,
   type LocalEnvironmentSecretImportRequest,
   type LocalEnvironmentSecretImportResult,
-  type LocalEnvironmentSecretImportTarget,
 } from './local-environment-secret-import.js';
 
 export interface LocalImportConfirmationPort {
   isDirectTty(): boolean;
-  readChallenge(expectedPhrase: string): Promise<string | null>;
+  readChallenge(expectedPhrase: string, targetIdentity: string): Promise<string | null>;
 }
 
-export type LocalProvisioningServiceFactory = (
-  configuration: ReturnType<LocalImportTargetResolver['resolve']>,
-) => LocalSecretStoreProvisioningService;
-
-type PreparedImport = {
-  source: LocalEnvironmentSourceReadResult;
-  provisioning: LocalSecretStoreProvisioningService;
-  plan: LocalEnvironmentSecretImportPlan;
+type ExecutionRuntime = {
+  runtime: SecretVaultRuntime;
+  close(): Promise<void>;
 };
 
-const expectedConfirmation = (target: LocalEnvironmentSecretImportTarget): string =>
-  target === 'default' ? 'IMPORT DEFAULT STORE' : 'IMPORT REAL-E2E STORE';
+export type LocalImportExecutionRuntimeFactory = () => Promise<ExecutionRuntime>;
 
 export class LocalEnvironmentSecretImportService {
+  private readonly inspector: SecretVaultInspectionService;
+
   constructor(
-    private readonly targetResolver: LocalImportTargetResolver,
-    private readonly sourceReader: LocalEnvironmentSourceReader = new LocalEnvironmentSourceReader(),
-    private readonly provisioningFactory: LocalProvisioningServiceFactory =
-      (configuration) => new LocalSecretStoreProvisioningService(configuration),
-    private readonly catalog: SecretCatalog = defaultSecretCatalog,
-  ) {}
+    private readonly location: ApplicationDatabaseLocation,
+    private readonly sourceReader = new LocalEnvironmentSourceReader(),
+    inspector = new SecretVaultInspectionService(location),
+    private readonly executionRuntimeFactory: LocalImportExecutionRuntimeFactory = async () => {
+      runMigrations();
+      const runtime = new SecretVaultRuntime();
+      await runtime.initialize(location);
+      return { runtime, close: () => runtime.close() };
+    },
+  ) {
+    this.inspector = inspector;
+  }
 
   async preview(request: LocalEnvironmentSecretImportRequest): Promise<LocalEnvironmentSecretImportPlan> {
     this.validateRequest(request);
-    if (!request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID', request.target);
-    const prepared = await this.prepare(request);
+    if (!request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
+    const source = await this.sourceReader.read(request.sourceAbsolutePath);
     try {
-      return prepared.plan;
+      return await this.inspectSource(source, request.overwrite);
     } finally {
-      prepared.source.release();
+      source.release();
     }
   }
 
@@ -65,161 +61,83 @@ export class LocalEnvironmentSecretImportService {
     confirmation: LocalImportConfirmationPort,
   ): Promise<LocalEnvironmentSecretImportResult> {
     this.validateRequest(request);
-    if (request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID', request.target);
-    const prepared = await this.prepare(request);
-    try {
-      const writableEntries = prepared.plan.entries.filter(
-        (entry) => entry.action === 'CREATE' || entry.action === 'REPLACE',
-      );
-      const skippedCount = prepared.plan.entries.length - writableEntries.length;
-      if (writableEntries.length === 0) {
-        return {
-          targetStatus: prepared.plan.targetStatus,
-          definitionIds: prepared.plan.entries.map((entry) => entry.definitionId),
-          configuredCount: 0,
-          skippedCount,
-          replacedCount: 0,
-          instructionCode: 'NONE',
-        };
-      }
-
-      await this.confirm(request.target, confirmation);
-      const batchEntries = this.materializeBatch(prepared.source, writableEntries);
-      let counts: { configuredCount: number; replacedCount: number };
-      try {
-        counts = await prepared.provisioning.provisionBatchExact(batchEntries, {
-          initializeIfAbsent: true,
-        });
-      } catch (error) {
-        throw this.mapBatchError(error, request.target);
-      }
-      return {
-        targetStatus: { state: 'READY' },
-        definitionIds: prepared.plan.entries.map((entry) => entry.definitionId),
-        configuredCount: counts.configuredCount,
-        skippedCount,
-        replacedCount: counts.replacedCount,
-        instructionCode: request.target === 'default' ? 'RESTART_REQUIRED' : 'RUN_REAL_E2E_PREFLIGHT',
-      };
-    } finally {
-      prepared.source.release();
-    }
-  }
-
-  private async prepare(request: LocalEnvironmentSecretImportRequest): Promise<PreparedImport> {
+    if (request.dryRun) throw new LocalEnvironmentSecretImportError('IMPORT_OPTIONS_INVALID');
     const source = await this.sourceReader.read(request.sourceAbsolutePath);
     try {
-      const definitionIds = source.credentials
-        .map((credential) => credential.definitionId)
-        .sort((left, right) => String(left).localeCompare(String(right)));
-      if (
-        new Set(definitionIds.map(String)).size !== definitionIds.length
-        || definitionIds.some((definitionId) => !this.catalog.isKnownDefinition(definitionId))
-      ) {
-        throw new LocalEnvironmentSecretImportError('IMPORT_MAPPING_INVALID', request.target);
+      const plan = await this.inspectSource(source, request.overwrite);
+      if (plan.counts.blocked > 0) {
+        throw new LocalEnvironmentSecretImportError('IMPORT_TARGET_NOT_READY');
       }
-
-      const provisioning = this.provisioningFactory(this.targetResolver.resolve(request.target));
-      const snapshot = await provisioning.inspectExact(definitionIds);
-      const plan = this.buildPlan(snapshot, definitionIds, request.overwrite);
-      return { source, provisioning, plan };
-    } catch (error) {
-      source.release();
-      if (error instanceof LocalEnvironmentSecretImportError) throw error;
-      throw new LocalEnvironmentSecretImportError('IMPORT_TARGET_NOT_READY', request.target);
-    }
-  }
-
-  private buildPlan(
-    snapshot: LocalProvisioningTargetSnapshot,
-    definitionIds: readonly SecretDefinitionId[],
-    overwrite: boolean,
-  ): LocalEnvironmentSecretImportPlan {
-    if (snapshot.targetStatus.state === 'INITIALIZATION_REQUIRED') {
-      return {
-        targetStatus: snapshot.targetStatus,
-        entries: definitionIds.map((definitionId) => ({ definitionId, action: 'CREATE' })),
-      };
-    }
-    if (snapshot.targetStatus.state !== 'READY' || !snapshot.definitionStatus) {
-      return { targetStatus: snapshot.targetStatus, entries: [] };
-    }
-    return {
-      targetStatus: snapshot.targetStatus,
-      entries: definitionIds.map((definitionId) => {
-        const configured = snapshot.definitionStatus?.get(definitionId)?.storageState === 'CONFIGURED';
+      await this.confirm(plan.targetIdentity, confirmation);
+      const execution = await this.executionRuntimeFactory();
+      try {
+        const service = execution.runtime.requireService();
+        const health = await service.getHealth();
+        if (health.state !== 'READY') {
+          throw new LocalEnvironmentSecretImportError('IMPORT_TARGET_CHANGED');
+        }
+        const inputs = source.credentials.map((credential) => ({
+          secretId: credential.secretId,
+          input: SecretValue.fromString(credential.valueBytes.toString('utf8')),
+        }));
+        const counts = await service.saveBatch(inputs, request.overwrite);
         return {
-          definitionId,
-          action: configured ? (overwrite ? 'REPLACE' : 'SKIPPED_CONFIGURED') : 'CREATE',
+          targetIdentity: plan.targetIdentity,
+          targetState: 'READY',
+          secretIds: source.credentials.map((credential) => credential.secretId)
+            .sort((left, right) => String(left).localeCompare(String(right))),
+          ...counts,
+          instructionCode: 'NONE',
         };
-      }),
-    };
+      } catch (error) {
+        if (error instanceof LocalEnvironmentSecretImportError) throw error;
+        throw new LocalEnvironmentSecretImportError('IMPORT_BATCH_FAILED');
+      } finally {
+        await execution.close();
+      }
+    } finally {
+      source.release();
+    }
   }
 
-  private materializeBatch(
+  private async inspectSource(
     source: LocalEnvironmentSourceReadResult,
-    writableEntries: readonly LocalEnvironmentSecretImportPlanEntry[],
-  ): LocalProvisioningBatchEntry[] {
-    const values = new Map(
-      source.credentials.map((credential) => [String(credential.definitionId), credential.valueBytes] as const),
-    );
-    return writableEntries.map((entry) => {
-      const valueBytes = values.get(String(entry.definitionId));
-      if (!valueBytes) throw new LocalEnvironmentSecretImportError('IMPORT_MAPPING_INVALID');
-      return {
-        definitionId: entry.definitionId,
-        value: SecretValue.fromString(valueBytes.toString('utf8')),
-        action: entry.action as 'CREATE' | 'REPLACE',
-      };
-    });
+    overwrite: boolean,
+  ): Promise<LocalEnvironmentSecretImportPlan> {
+    const secretIds = source.credentials.map((credential) => credential.secretId);
+    if (
+      new Set(secretIds.map(String)).size !== secretIds.length
+      || secretIds.some((id) => !providerCredentialCatalog.isKnownSecretId(id))
+    ) {
+      throw new LocalEnvironmentSecretImportError('IMPORT_MAPPING_INVALID');
+    }
+    return this.inspector.inspectImportTarget(secretIds, overwrite);
   }
 
   private async confirm(
-    target: LocalEnvironmentSecretImportTarget,
+    targetIdentity: string,
     confirmation: LocalImportConfirmationPort,
   ): Promise<void> {
     if (!confirmation.isDirectTty()) {
-      throw new LocalEnvironmentSecretImportError('IMPORT_CONFIRMATION_REQUIRED', target);
+      throw new LocalEnvironmentSecretImportError('IMPORT_CONFIRMATION_REQUIRED');
     }
     let response: string | null;
     try {
-      response = await confirmation.readChallenge(expectedConfirmation(target));
+      response = await confirmation.readChallenge('IMPORT', targetIdentity);
     } catch {
-      throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED', target);
+      throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
     }
-    if (response !== expectedConfirmation(target)) {
-      throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED', target);
-    }
-  }
-
-  private mapBatchError(
-    error: unknown,
-    target: LocalEnvironmentSecretImportTarget,
-  ): LocalEnvironmentSecretImportError {
-    if (!(error instanceof LocalProvisioningBatchError)) {
-      return new LocalEnvironmentSecretImportError('IMPORT_BATCH_FAILED', target);
-    }
-    switch (error.code) {
-      case 'TARGET_CHANGED':
-        return new LocalEnvironmentSecretImportError('IMPORT_TARGET_CHANGED', target);
-      case 'TARGET_NOT_READY':
-        return new LocalEnvironmentSecretImportError('IMPORT_TARGET_NOT_READY', target);
-      case 'INITIALIZATION_FAILED':
-        return new LocalEnvironmentSecretImportError('IMPORT_TARGET_INITIALIZATION_FAILED', target);
-      default:
-        return new LocalEnvironmentSecretImportError('IMPORT_BATCH_FAILED', target);
-    }
+    if (response !== 'IMPORT') throw new LocalEnvironmentSecretImportError('IMPORT_CANCELLED');
   }
 
   private validateRequest(request: LocalEnvironmentSecretImportRequest): void {
     const keys = request && typeof request === 'object' ? Object.keys(request).sort() : [];
-    const exactKeys = ['dryRun', 'overwrite', 'sourceAbsolutePath', 'target'];
+    const exactKeys = ['dryRun', 'overwrite', 'sourceAbsolutePath'];
     if (
       keys.length !== exactKeys.length
       || keys.some((key, index) => key !== exactKeys[index])
       || typeof request.sourceAbsolutePath !== 'string'
       || !path.isAbsolute(request.sourceAbsolutePath)
-      || (request.target !== 'default' && request.target !== 'e2e')
       || typeof request.dryRun !== 'boolean'
       || typeof request.overwrite !== 'boolean'
     ) {

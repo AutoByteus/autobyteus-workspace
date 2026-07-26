@@ -18,8 +18,7 @@ export const GET_SEARCH_CONFIG = gql`
   query GetSearchConfig {
     getSearchConfig {
       provider
-      backendHealth
-      lifecycle
+      vaultHealth
       instructionCode
       serperStorageState
       serpapiStorageState

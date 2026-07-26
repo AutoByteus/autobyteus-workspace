@@ -5,13 +5,13 @@ import { ImageGenerationResponse } from '../../utils/response-types.js';
 import { loadImageFromUrl } from '../../utils/api-utils.js';
 import {
   initializeGeminiClientWithRuntime,
-  selectGeminiRuntimeForResolver,
 } from '../../../utils/gemini-helper.js';
 import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../../utils/gemini-runtime.js';
 
 function guessMimeType(source: string): string {
   const mimeType = mime.lookup(source);
@@ -21,10 +21,13 @@ function guessMimeType(source: string): string {
 export class GeminiImageClient extends BaseImageClient {
   private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly runtimeResolver: GeminiRuntimeResolver;
 
-  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
+    if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+    this.runtimeResolver = runtimeResolver;
   }
 
   private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
@@ -33,7 +36,7 @@ export class GeminiImageClient extends BaseImageClient {
   }
 
   private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
-    const selection = await selectGeminiRuntimeForResolver(this.apiKeyResolver);
+    const selection = await this.runtimeResolver();
     return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 

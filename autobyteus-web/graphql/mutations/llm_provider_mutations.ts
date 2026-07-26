@@ -47,9 +47,8 @@ export const CREATE_CUSTOM_LLM_PROVIDER = gql`
       isCustom
       baseUrl
       credentialStatus {
-        backendHealth
+        vaultHealth
         storageState
-        lifecycle
         instructionCode
       }
       status
@@ -81,7 +80,12 @@ export const SAVE_GEMINI_CONFIGURATION_OPTION = gql`
     ) {
       operation
       option
-      effectiveMode
+      optionStatus
+      activeMode
+      outcome
+      configurationOutcome
+      modeOutcome
+      instructionCode
     }
   }
 `;
@@ -91,7 +95,54 @@ export const REMOVE_GEMINI_CONFIGURATION_OPTION = gql`
     removeGeminiConfigurationOption(option: $option) {
       operation
       option
-      effectiveMode
+      optionStatus
+      activeMode
+      outcome
+      configurationOutcome
+      modeOutcome
+      instructionCode
+    }
+  }
+`;
+
+export const ACTIVATE_GEMINI_CONFIGURATION_OPTION = gql`
+  mutation ActivateGeminiConfigurationOption($option: GeminiConfigurationOption!) {
+    activateGeminiConfigurationOption(option: $option) {
+      operation
+      option
+      optionStatus
+      activeMode
+      outcome
+      configurationOutcome
+      modeOutcome
+      instructionCode
+    }
+  }
+`;
+
+export const SAVE_AND_ACTIVATE_GEMINI_CONFIGURATION_OPTION = gql`
+  mutation SaveAndActivateGeminiConfigurationOption(
+    $option: GeminiConfigurationOption!
+    $geminiApiKey: String
+    $vertexApiKey: String
+    $vertexProject: String
+    $vertexLocation: String
+  ) {
+    saveAndActivateGeminiConfigurationOption(
+      option: $option
+      geminiApiKey: $geminiApiKey
+      vertexApiKey: $vertexApiKey
+      vertexProject: $vertexProject
+      vertexLocation: $vertexLocation
+    ) {
+      operation
+      option
+      optionStatus
+      activeMode
+      outcome
+      configurationOutcome
+      modeOutcome
+      instructionCode
     }
   }
 `;

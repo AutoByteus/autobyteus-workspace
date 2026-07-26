@@ -4,7 +4,7 @@ import { useLocalization } from '~/composables/useLocalization'
 import { createProviderApiKeyRemoval } from './providerApiKeyRemoval'
 import { createGeminiConfigurationActions } from './providerApiKeyGeminiActions'
 import {
-  resolveGeminiEffectiveCredentialStatus,
+  resolveGeminiActiveCredentialStatus,
   resolveGeminiProviderConfiguredState,
 } from '~/stores/llmProviderConfigSupport'
 import {
@@ -56,6 +56,7 @@ export function useProviderApiKeySectionRuntime() {
 
   const loading = ref(import.meta.env.MODE === 'test' ? false : true)
   const saving = ref(false)
+  const activating = ref(false)
   const removing = ref(false)
   const notification = ref<ProviderSectionNotification | null>(null)
   const providerConfigs = ref<Record<string, ProviderConfigState>>({})
@@ -191,19 +192,19 @@ export function useProviderApiKeySectionRuntime() {
   )
   const selectedProviderCredentialStatus = computed<CredentialStatus | null>(() => {
     if (selectedProviderId.value === 'GEMINI') {
-      return resolveGeminiEffectiveCredentialStatus(geminiSetup.value)
+      return resolveGeminiActiveCredentialStatus(geminiSetup.value)
     }
     return selectedProviderSummary.value?.credentialStatus
       ?? Object.values(providerConfigs.value).find((entry) => entry.credentialStatus)?.credentialStatus
       ?? null
   })
   const canWriteSelectedCredential = computed(() =>
-    selectedProviderCredentialStatus.value?.backendHealth === 'READY'
-      && selectedProviderCredentialStatus.value.lifecycle === 'WRITABLE',
+    selectedProviderId.value === 'GEMINI'
+      || selectedProviderCredentialStatus.value?.vaultHealth === 'READY',
   )
   const credentialWriteInstruction = computed(() =>
     selectedProviderCredentialStatus.value?.instructionCode
-      ?? selectedProviderCredentialStatus.value?.backendHealth
+      ?? selectedProviderCredentialStatus.value?.vaultHealth
       ?? null,
   )
   const canReloadSelectedProvider = computed(
@@ -340,13 +341,20 @@ export function useProviderApiKeySectionRuntime() {
     }
   }
 
-  const { saveGeminiConfigurationOption, removeGeminiConfigurationOption } =
-    createGeminiConfigurationActions({
+  const {
+    saveGeminiConfigurationOption,
+    saveAndActivateGeminiConfigurationOption,
+    activateGeminiConfigurationOption,
+    removeGeminiConfigurationOption,
+  } = createGeminiConfigurationActions({
       saving,
+      activating,
       removing,
       saveOption: (input) => store.saveGeminiConfigurationOption(input),
+      saveAndActivateOption: (input) => store.saveAndActivateGeminiConfigurationOption(input),
+      activateOption: (option) => store.activateGeminiConfigurationOption(option),
       removeOption: (option) => store.removeGeminiConfigurationOption(option),
-      getEffectiveCredentialStatus: () => resolveGeminiEffectiveCredentialStatus(geminiSetup.value),
+      getActiveCredentialStatus: () => resolveGeminiActiveCredentialStatus(geminiSetup.value),
       setProviderCredentialStatus: (credentialStatus) => {
         providerConfigs.value.GEMINI = { credentialStatus }
       },
@@ -478,6 +486,7 @@ export function useProviderApiKeySectionRuntime() {
   return {
     loading,
     saving,
+    activating,
     removing,
     notification,
     providerConfigs,
@@ -520,6 +529,8 @@ export function useProviderApiKeySectionRuntime() {
     reloadAllModels,
     reloadSelectedProvider,
     saveGeminiConfigurationOption,
+    saveAndActivateGeminiConfigurationOption,
+    activateGeminiConfigurationOption,
     removeGeminiConfigurationOption,
     saveProviderApiKey,
     removeProviderApiKey,

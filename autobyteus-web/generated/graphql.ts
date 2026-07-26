@@ -474,10 +474,9 @@ export type CreateWorkspaceInput = {
 
 export type CredentialStatusObject = {
   __typename?: 'CredentialStatusObject';
-  backendHealth: Scalars['String']['output'];
   instructionCode?: Maybe<Scalars['String']['output']>;
-  lifecycle?: Maybe<Scalars['String']['output']>;
   storageState?: Maybe<Scalars['String']['output']>;
+  vaultHealth: Scalars['String']['output'];
 };
 
 export type CustomLlmProviderInputObject = {
@@ -760,15 +759,22 @@ export type ExternalChannelTeamLaunchPresetInput = {
 };
 
 export enum GeminiConfigurationOperation {
+  Activated = 'ACTIVATED',
   Removed = 'REMOVED',
-  Saved = 'SAVED'
+  Saved = 'SAVED',
+  SavedAndActivated = 'SAVED_AND_ACTIVATED'
 }
 
 export type GeminiConfigurationOperationResultObject = {
   __typename?: 'GeminiConfigurationOperationResultObject';
-  effectiveMode: GeminiEffectiveMode;
+  activeMode?: Maybe<GeminiConfigurationOption>;
+  configurationOutcome: GeminiConfigurationStageOutcome;
+  instructionCode?: Maybe<Scalars['String']['output']>;
+  modeOutcome: GeminiConfigurationStageOutcome;
   operation: GeminiConfigurationOperation;
   option: GeminiConfigurationOption;
+  optionStatus: GeminiConfigurationState;
+  outcome: GeminiConfigurationOutcome;
 };
 
 export enum GeminiConfigurationOption {
@@ -777,22 +783,27 @@ export enum GeminiConfigurationOption {
   VertexProject = 'VERTEX_PROJECT'
 }
 
-export enum GeminiConfigurationState {
-  Configured = 'CONFIGURED',
-  Missing = 'MISSING'
+export enum GeminiConfigurationOutcome {
+  Partial = 'PARTIAL',
+  Succeeded = 'SUCCEEDED'
 }
 
-export enum GeminiEffectiveMode {
-  AiStudio = 'AI_STUDIO',
-  Unconfigured = 'UNCONFIGURED',
-  VertexExpress = 'VERTEX_EXPRESS',
-  VertexProject = 'VERTEX_PROJECT'
+export enum GeminiConfigurationStageOutcome {
+  Failed = 'FAILED',
+  NotRequested = 'NOT_REQUESTED',
+  Succeeded = 'SUCCEEDED'
+}
+
+export enum GeminiConfigurationState {
+  Configured = 'CONFIGURED',
+  Missing = 'MISSING',
+  Unavailable = 'UNAVAILABLE'
 }
 
 export type GeminiSetupConfig = {
   __typename?: 'GeminiSetupConfig';
+  activeMode?: Maybe<GeminiConfigurationOption>;
   aiStudioCredentialStatus: CredentialStatusObject;
-  effectiveMode: GeminiEffectiveMode;
   vertexExpressCredentialStatus: CredentialStatusObject;
   vertexLocation?: Maybe<Scalars['String']['output']>;
   vertexProject?: Maybe<Scalars['String']['output']>;
@@ -1184,6 +1195,7 @@ export enum ModelMetadataProvenance {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  activateGeminiConfigurationOption: GeminiConfigurationOperationResultObject;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
   archiveStoredRun: ArchiveStoredRunMutationResult;
@@ -1241,6 +1253,7 @@ export type Mutation = {
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
   revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
   runAppDataMigration: AppDataMigrationMutationResult;
+  saveAndActivateGeminiConfigurationOption: GeminiConfigurationOperationResultObject;
   saveGeminiConfigurationOption: GeminiConfigurationOperationResultObject;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
   setApplicationsEnabled: ApplicationsCapability;
@@ -1264,6 +1277,11 @@ export type Mutation = {
   uploadSkillFile: Scalars['Boolean']['output'];
   upsertExternalChannelBinding: ExternalChannelBindingGql;
   writeFileContent: Scalars['String']['output'];
+};
+
+
+export type MutationActivateGeminiConfigurationOptionArgs = {
+  option: GeminiConfigurationOption;
 };
 
 
@@ -1538,6 +1556,15 @@ export type MutationRunAppDataMigrationArgs = {
 };
 
 
+export type MutationSaveAndActivateGeminiConfigurationOptionArgs = {
+  geminiApiKey?: InputMaybe<Scalars['String']['input']>;
+  option: GeminiConfigurationOption;
+  vertexApiKey?: InputMaybe<Scalars['String']['input']>;
+  vertexLocation?: InputMaybe<Scalars['String']['input']>;
+  vertexProject?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type MutationSaveGeminiConfigurationOptionArgs = {
   geminiApiKey?: InputMaybe<Scalars['String']['input']>;
   option: GeminiConfigurationOption;
@@ -1714,7 +1741,7 @@ export type Query = {
   getRunFileChanges: Array<RunFileChangeEntryObject>;
   getRunProjection: RunProjectionPayload;
   getSearchConfig: SearchConfig;
-  getSecretStorageStatus: SecretStorageStatus;
+  getSecretVaultStatus: SecretVaultStatus;
   getServerSettings: Array<ServerSetting>;
   getSkillImprovementRunRecord?: Maybe<GraphqlSkillImprovementRunRecord>;
   getTaskDelegationRecords: Array<TaskDelegationRecordObject>;
@@ -2182,24 +2209,20 @@ export type RuntimeAvailabilityObject = {
 
 export type SearchConfig = {
   __typename?: 'SearchConfig';
-  backendHealth: Scalars['String']['output'];
   instructionCode?: Maybe<Scalars['String']['output']>;
-  lifecycle?: Maybe<Scalars['String']['output']>;
   provider: Scalars['String']['output'];
   serpapiStorageState?: Maybe<Scalars['String']['output']>;
   serperStorageState?: Maybe<Scalars['String']['output']>;
+  vaultHealth: Scalars['String']['output'];
   vertexAiSearchServingConfig?: Maybe<Scalars['String']['output']>;
   vertexAiSearchStorageState?: Maybe<Scalars['String']['output']>;
 };
 
-export type SecretStorageStatus = {
-  __typename?: 'SecretStorageStatus';
+export type SecretVaultStatus = {
+  __typename?: 'SecretVaultStatus';
   assurance: Scalars['String']['output'];
   health: Scalars['String']['output'];
   instructionCode?: Maybe<Scalars['String']['output']>;
-  lifecycle?: Maybe<Scalars['String']['output']>;
-  restartRequired: Scalars['Boolean']['output'];
-  selectedKind: Scalars['String']['output'];
 };
 
 export type ServerAddressCandidateGql = {
@@ -3115,7 +3138,7 @@ export type CreateCustomLlmProviderMutationVariables = Exact<{
 }>;
 
 
-export type CreateCustomLlmProviderMutation = { __typename?: 'Mutation', createCustomLlmProvider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null } };
+export type CreateCustomLlmProviderMutation = { __typename?: 'Mutation', createCustomLlmProvider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null } };
 
 export type DeleteCustomLlmProviderMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
@@ -3134,14 +3157,32 @@ export type SaveGeminiConfigurationOptionMutationVariables = Exact<{
 }>;
 
 
-export type SaveGeminiConfigurationOptionMutation = { __typename?: 'Mutation', saveGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, effectiveMode: GeminiEffectiveMode } };
+export type SaveGeminiConfigurationOptionMutation = { __typename?: 'Mutation', saveGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
 
 export type RemoveGeminiConfigurationOptionMutationVariables = Exact<{
   option: GeminiConfigurationOption;
 }>;
 
 
-export type RemoveGeminiConfigurationOptionMutation = { __typename?: 'Mutation', removeGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, effectiveMode: GeminiEffectiveMode } };
+export type RemoveGeminiConfigurationOptionMutation = { __typename?: 'Mutation', removeGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
+
+export type ActivateGeminiConfigurationOptionMutationVariables = Exact<{
+  option: GeminiConfigurationOption;
+}>;
+
+
+export type ActivateGeminiConfigurationOptionMutation = { __typename?: 'Mutation', activateGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
+
+export type SaveAndActivateGeminiConfigurationOptionMutationVariables = Exact<{
+  option: GeminiConfigurationOption;
+  geminiApiKey?: InputMaybe<Scalars['String']['input']>;
+  vertexApiKey?: InputMaybe<Scalars['String']['input']>;
+  vertexProject?: InputMaybe<Scalars['String']['input']>;
+  vertexLocation?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type SaveAndActivateGeminiConfigurationOptionMutation = { __typename?: 'Mutation', saveAndActivateGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
 
 export type ConfigureMcpServerMutationVariables = Exact<{
   input: McpServerInput;
@@ -3405,19 +3446,19 @@ export type GetLlmProviderCredentialStatusQueryVariables = Exact<{
 }>;
 
 
-export type GetLlmProviderCredentialStatusQuery = { __typename?: 'Query', getLlmProviderCredentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null };
+export type GetLlmProviderCredentialStatusQuery = { __typename?: 'Query', getLlmProviderCredentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null };
 
 export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupConfig', effectiveMode: GeminiEffectiveMode, vertexProjectStatus: GeminiConfigurationState, vertexProject?: string | null, vertexLocation?: string | null, aiStudioCredentialStatus: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null }, vertexExpressCredentialStatus: { __typename?: 'CredentialStatusObject', backendHealth: string, storageState?: string | null, lifecycle?: string | null, instructionCode?: string | null } } };
+export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupConfig', activeMode?: GeminiConfigurationOption | null, vertexProjectStatus: GeminiConfigurationState, vertexProject?: string | null, vertexLocation?: string | null, aiStudioCredentialStatus: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null }, vertexExpressCredentialStatus: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } } };
 
 export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3645,7 +3686,7 @@ export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorking
 export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, backendHealth: string, lifecycle?: string | null, instructionCode?: string | null, serperStorageState?: string | null, serpapiStorageState?: string | null, vertexAiSearchStorageState?: string | null, vertexAiSearchServingConfig?: string | null } };
+export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, vaultHealth: string, instructionCode?: string | null, serperStorageState?: string | null, serpapiStorageState?: string | null, vertexAiSearchStorageState?: string | null, vertexAiSearchServingConfig?: string | null } };
 
 export type SkillImprovementCapabilityFieldsFragment = { __typename?: 'SkillImprovementCapability', enabled: boolean, settingKey: string, source: string };
 
@@ -5630,9 +5671,8 @@ export const CreateCustomLlmProviderDocument = gql`
     isCustom
     baseUrl
     credentialStatus {
-      backendHealth
+      vaultHealth
       storageState
-      lifecycle
       instructionCode
     }
     status
@@ -5702,7 +5742,12 @@ export const SaveGeminiConfigurationOptionDocument = gql`
   ) {
     operation
     option
-    effectiveMode
+    optionStatus
+    activeMode
+    outcome
+    configurationOutcome
+    modeOutcome
+    instructionCode
   }
 }
     `;
@@ -5737,7 +5782,12 @@ export const RemoveGeminiConfigurationOptionDocument = gql`
   removeGeminiConfigurationOption(option: $option) {
     operation
     option
-    effectiveMode
+    optionStatus
+    activeMode
+    outcome
+    configurationOutcome
+    modeOutcome
+    instructionCode
   }
 }
     `;
@@ -5763,6 +5813,88 @@ export function useRemoveGeminiConfigurationOptionMutation(options: VueApolloCom
   return VueApolloComposable.useMutation<RemoveGeminiConfigurationOptionMutation, RemoveGeminiConfigurationOptionMutationVariables>(RemoveGeminiConfigurationOptionDocument, options);
 }
 export type RemoveGeminiConfigurationOptionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveGeminiConfigurationOptionMutation, RemoveGeminiConfigurationOptionMutationVariables>;
+export const ActivateGeminiConfigurationOptionDocument = gql`
+    mutation ActivateGeminiConfigurationOption($option: GeminiConfigurationOption!) {
+  activateGeminiConfigurationOption(option: $option) {
+    operation
+    option
+    optionStatus
+    activeMode
+    outcome
+    configurationOutcome
+    modeOutcome
+    instructionCode
+  }
+}
+    `;
+
+/**
+ * __useActivateGeminiConfigurationOptionMutation__
+ *
+ * To run a mutation, you first call `useActivateGeminiConfigurationOptionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useActivateGeminiConfigurationOptionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useActivateGeminiConfigurationOptionMutation({
+ *   variables: {
+ *     option: // value for 'option'
+ *   },
+ * });
+ */
+export function useActivateGeminiConfigurationOptionMutation(options: VueApolloComposable.UseMutationOptions<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables>(ActivateGeminiConfigurationOptionDocument, options);
+}
+export type ActivateGeminiConfigurationOptionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables>;
+export const SaveAndActivateGeminiConfigurationOptionDocument = gql`
+    mutation SaveAndActivateGeminiConfigurationOption($option: GeminiConfigurationOption!, $geminiApiKey: String, $vertexApiKey: String, $vertexProject: String, $vertexLocation: String) {
+  saveAndActivateGeminiConfigurationOption(
+    option: $option
+    geminiApiKey: $geminiApiKey
+    vertexApiKey: $vertexApiKey
+    vertexProject: $vertexProject
+    vertexLocation: $vertexLocation
+  ) {
+    operation
+    option
+    optionStatus
+    activeMode
+    outcome
+    configurationOutcome
+    modeOutcome
+    instructionCode
+  }
+}
+    `;
+
+/**
+ * __useSaveAndActivateGeminiConfigurationOptionMutation__
+ *
+ * To run a mutation, you first call `useSaveAndActivateGeminiConfigurationOptionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSaveAndActivateGeminiConfigurationOptionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSaveAndActivateGeminiConfigurationOptionMutation({
+ *   variables: {
+ *     option: // value for 'option'
+ *     geminiApiKey: // value for 'geminiApiKey'
+ *     vertexApiKey: // value for 'vertexApiKey'
+ *     vertexProject: // value for 'vertexProject'
+ *     vertexLocation: // value for 'vertexLocation'
+ *   },
+ * });
+ */
+export function useSaveAndActivateGeminiConfigurationOptionMutation(options: VueApolloComposable.UseMutationOptions<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables>(SaveAndActivateGeminiConfigurationOptionDocument, options);
+}
+export type SaveAndActivateGeminiConfigurationOptionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables>;
 export const ConfigureMcpServerDocument = gql`
     mutation ConfigureMcpServer($input: McpServerInput!) {
   configureMcpServer(input: $input) {
@@ -7054,9 +7186,8 @@ export type GetFolderChildrenQueryCompositionFunctionResult = VueApolloComposabl
 export const GetLlmProviderCredentialStatusDocument = gql`
     query GetLLMProviderCredentialStatus($providerId: String!) {
   getLlmProviderCredentialStatus(providerId: $providerId) {
-    backendHealth
+    vaultHealth
     storageState
-    lifecycle
     instructionCode
   }
 }
@@ -7096,9 +7227,8 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       isCustom
       baseUrl
       credentialStatus {
-        backendHealth
+        vaultHealth
         storageState
-        lifecycle
         instructionCode
       }
       status
@@ -7134,9 +7264,8 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       isCustom
       baseUrl
       credentialStatus {
-        backendHealth
+        vaultHealth
         storageState
-        lifecycle
         instructionCode
       }
       status
@@ -7165,9 +7294,8 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       isCustom
       baseUrl
       credentialStatus {
-        backendHealth
+        vaultHealth
         storageState
-        lifecycle
         instructionCode
       }
       status
@@ -7196,9 +7324,8 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       isCustom
       baseUrl
       credentialStatus {
-        backendHealth
+        vaultHealth
         storageState
-        lifecycle
         instructionCode
       }
       status
@@ -7245,17 +7372,15 @@ export type GetAvailableLlmProvidersWithModelsQueryCompositionFunctionResult = V
 export const GetGeminiSetupConfigDocument = gql`
     query GetGeminiSetupConfig {
   getGeminiSetupConfig {
-    effectiveMode
+    activeMode
     aiStudioCredentialStatus {
-      backendHealth
+      vaultHealth
       storageState
-      lifecycle
       instructionCode
     }
     vertexExpressCredentialStatus {
-      backendHealth
+      vaultHealth
       storageState
-      lifecycle
       instructionCode
     }
     vertexProjectStatus
@@ -8736,8 +8861,7 @@ export const GetSearchConfigDocument = gql`
     query GetSearchConfig {
   getSearchConfig {
     provider
-    backendHealth
-    lifecycle
+    vaultHealth
     instructionCode
     serperStorageState
     serpapiStorageState

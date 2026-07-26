@@ -16,6 +16,7 @@ import type {
 } from "./media-tool-contract.js";
 import { getMediaModelResolver, type MediaModelResolver } from "./media-tool-model-resolver.js";
 import { getMediaPathResolver, type MediaPathResolver } from "./media-tool-path-resolver.js";
+import { createGeminiRuntimeResolver } from '../../llm-management/services/gemini-runtime-resolver-adapter.js';
 import { createMediaProviderApiKeyResolver } from "../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 
 type ImageClientLike = {
@@ -81,18 +82,27 @@ export class MediaGenerationService {
         modelIdentifier,
         undefined,
         createMediaProviderApiKeyResolver("image"),
+        ImageClientFactory.requiresGeminiRuntimeResolver(modelIdentifier)
+          ? createGeminiRuntimeResolver()
+          : undefined,
       )));
     this.createAudioClient = dependencies.createAudioClient ??
       ((modelIdentifier) => Promise.resolve(AudioClientFactory.createAudioClient(
         modelIdentifier,
         undefined,
         createMediaProviderApiKeyResolver("audio"),
+        AudioClientFactory.requiresGeminiRuntimeResolver(modelIdentifier)
+          ? createGeminiRuntimeResolver()
+          : undefined,
       )));
     this.createVideoClient = dependencies.createVideoClient ??
       ((modelIdentifier) => Promise.resolve(VideoClientFactory.createVideoClient(
         modelIdentifier,
         undefined,
         createMediaProviderApiKeyResolver("video"),
+        VideoClientFactory.requiresGeminiRuntimeResolver(modelIdentifier)
+          ? createGeminiRuntimeResolver()
+          : undefined,
       )));
   }
 

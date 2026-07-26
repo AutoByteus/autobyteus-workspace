@@ -90,7 +90,7 @@
       </div>
 
       <p v-if="!canWriteSecrets" class="text-sm text-amber-700" role="status">
-        Secret changes are unavailable: {{ store.searchConfig.instructionCode || store.searchConfig.backendHealth }}.
+        Secret changes are unavailable: {{ store.searchConfig.instructionCode || store.searchConfig.vaultHealth }}.
       </p>
 
       <p v-if="displayedSearchConfigValidationError" class="text-sm text-red-600">
@@ -154,7 +154,7 @@ const hasSearchConfigChanges = computed(() => {
 })
 
 const canWriteSecrets = computed(() =>
-  store.searchConfig.backendHealth === 'READY' && store.searchConfig.lifecycle === 'WRITABLE',
+  store.searchConfig.vaultHealth === 'READY',
 )
 
 const canSaveSearchConfig = computed(() =>

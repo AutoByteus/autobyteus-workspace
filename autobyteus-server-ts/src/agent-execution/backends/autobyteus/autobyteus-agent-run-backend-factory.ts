@@ -1,3 +1,4 @@
+import { createGeminiRuntimeResolver } from '../../../llm-management/services/gemini-runtime-resolver-adapter.js';
 import fs from "node:fs/promises";
 import {
   AgentConfig,
@@ -141,8 +142,15 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     this.agentDefinitionService =
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
     this.createLLM = options.createLLM ??
-      ((modelIdentifier, configInput) =>
-        LLMFactory.createLLM(modelIdentifier, configInput, createLlmProviderApiKeyResolver()));
+      (async (modelIdentifier, configInput) =>
+        LLMFactory.createLLM(
+          modelIdentifier,
+          configInput,
+          createLlmProviderApiKeyResolver(),
+          await LLMFactory.requiresGeminiRuntimeResolver(modelIdentifier)
+            ? createGeminiRuntimeResolver()
+            : undefined,
+        ));
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.skillService = options.skillService ?? SkillService.getInstance();
     this.registries = {

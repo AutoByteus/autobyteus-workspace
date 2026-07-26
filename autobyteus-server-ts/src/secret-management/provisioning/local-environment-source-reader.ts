@@ -4,8 +4,8 @@ import path from 'node:path';
 import { TextDecoder } from 'node:util';
 import type { Stats } from 'node:fs';
 import type { FileHandle } from 'node:fs/promises';
-import type { SecretDefinitionId } from '../domain/secret-binding.js';
-import { localImportDefinitionForAlias } from './local-import-credential-alias-registry.js';
+import type { SecretId } from '../domain/secret-id.js';
+import { localImportSecretIdForAlias } from './local-import-credential-alias-registry.js';
 import { LocalEnvironmentSecretImportError } from './local-environment-secret-import.js';
 import {
   assertWindowsExclusiveAcl,
@@ -15,7 +15,7 @@ import {
 const MAX_SOURCE_BYTES = 1024 * 1024;
 
 export type LocalEnvironmentMappedCredential = {
-  definitionId: SecretDefinitionId;
+  secretId: SecretId;
   valueBytes: Buffer;
 };
 
@@ -102,10 +102,10 @@ const parseSource = (sourceText: string): LocalEnvironmentMappedCredential[] => 
   try {
     for (const line of sourceText.split(/\r?\n/)) {
       const recognizedName = recognizeAssignmentName(line);
-      const definitionId = recognizedName
-        ? localImportDefinitionForAlias(recognizedName)
+      const secretId = recognizedName
+        ? localImportSecretIdForAlias(recognizedName)
         : null;
-      if (!definitionId) continue;
+      if (!secretId) continue;
       if (line.includes('\r')) fail('IMPORT_SOURCE_SYNTAX_INVALID');
 
       const assignment = parseAssignment(line);
@@ -115,7 +115,7 @@ const parseSource = (sourceText: string): LocalEnvironmentMappedCredential[] => 
       if (assignment.value.includes('${') || assignment.value.includes('$(') || assignment.value.includes('`')) {
         fail('IMPORT_SOURCE_SYNTAX_INVALID');
       }
-      credentials.push({ definitionId, valueBytes: Buffer.from(assignment.value, 'utf8') });
+      credentials.push({ secretId, valueBytes: Buffer.from(assignment.value, 'utf8') });
     }
     if (credentials.length === 0) fail('IMPORT_NO_MAPPED_CREDENTIALS');
     return credentials;

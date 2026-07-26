@@ -1,7 +1,7 @@
 import type { SecretValue } from 'autobyteus-ts';
 import { appConfigProvider } from '../../../config/app-config-provider.js';
-import { getSecretStorageConfigurationService } from '../../../secret-management/configuration/secret-storage-configuration-service.js';
-import { SecretStorageError } from '../../../secret-management/domain/secret-storage-types.js';
+import { getSecretVaultRuntime } from '../../../secret-management/secret-vault-runtime.js';
+import { SecretVaultError } from '../../../secret-management/domain/secret-vault-types.js';
 
 export type ClaudeRuntimeAuthentication =
   | { kind: 'cli' }
@@ -15,14 +15,14 @@ export class ClaudeRuntimeAuthenticationError extends Error {
 }
 
 const mapSecretFailure = (error: unknown): string => {
-  if (!(error instanceof SecretStorageError)) return 'CLAUDE_RUNTIME_SECRET_BINDING_INVALID';
+  if (!(error instanceof SecretVaultError)) return 'CLAUDE_RUNTIME_SECRET_BINDING_INVALID';
   switch (error.code) {
     case 'NOT_FOUND': return 'CLAUDE_RUNTIME_CREDENTIAL_MISSING';
-    case 'BACKEND_LOCKED': return 'CLAUDE_RUNTIME_SECRET_STORE_LOCKED';
-    case 'BACKEND_UNAVAILABLE': return 'CLAUDE_RUNTIME_SECRET_STORE_UNAVAILABLE';
-    case 'CORRUPT_STORE':
+    case 'VAULT_LOCKED': return 'CLAUDE_RUNTIME_SECRET_STORE_LOCKED';
+    case 'VAULT_UNAVAILABLE': return 'CLAUDE_RUNTIME_SECRET_STORE_UNAVAILABLE';
+    case 'CORRUPT_VAULT':
     case 'CORRUPT_STORED_VALUE': return 'CLAUDE_RUNTIME_SECRET_STORE_CORRUPT';
-    case 'INCOMPATIBLE_STORE_FORMAT': return 'CLAUDE_RUNTIME_SECRET_STORE_INCOMPATIBLE';
+    case 'INCOMPATIBLE_FORMAT': return 'CLAUDE_RUNTIME_SECRET_STORE_INCOMPATIBLE';
     default: return 'CLAUDE_RUNTIME_SECRET_BINDING_INVALID';
   }
 };
@@ -32,7 +32,7 @@ export class ClaudeRuntimeAuthenticationService {
     private readonly readMode: () => string | undefined = () =>
       appConfigProvider.config.get('CLAUDE_AGENT_SDK_AUTH_MODE'),
     private readonly managementProvider = () =>
-      getSecretStorageConfigurationService().requireManagementService(),
+      getSecretVaultRuntime().requireService(),
   ) {}
 
   async prepareForLaunch(): Promise<ClaudeRuntimeAuthentication> {

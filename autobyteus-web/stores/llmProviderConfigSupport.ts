@@ -2,9 +2,8 @@ import type { LLMProvider } from '~/types/llm'
 import type { ModelMetadataProvenance } from '~/generated/graphql'
 
 export interface CredentialStatus {
-  backendHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE'
+  vaultHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE'
   storageState: 'MISSING' | 'CONFIGURED' | null
-  lifecycle: 'WRITABLE' | 'EXTERNALLY_MANAGED' | null
   instructionCode: string | null
 }
 
@@ -67,11 +66,10 @@ export interface CustomLlmProviderProbeResult {
 }
 
 export type GeminiConfigurationOption = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT'
-export type GeminiEffectiveMode = GeminiConfigurationOption | 'UNCONFIGURED'
-export type GeminiConfigurationState = 'MISSING' | 'CONFIGURED'
+export type GeminiConfigurationState = 'MISSING' | 'CONFIGURED' | 'UNAVAILABLE'
 
 export interface GeminiSetupConfigState {
-  effectiveMode: GeminiEffectiveMode
+  activeMode: GeminiConfigurationOption | null
   aiStudioCredentialStatus: CredentialStatus
   vertexExpressCredentialStatus: CredentialStatus
   vertexProjectStatus: GeminiConfigurationState
@@ -87,19 +85,34 @@ export interface GeminiOptionSaveInput {
   vertexLocation?: string | null
 }
 
+export const geminiOptionMutationVariables = (
+  input: GeminiOptionSaveInput,
+): Record<string, unknown> => ({
+  option: input.option,
+  geminiApiKey: input.geminiApiKey ?? null,
+  vertexApiKey: input.vertexApiKey ?? null,
+  vertexProject: input.vertexProject ?? null,
+  vertexLocation: input.vertexLocation ?? null,
+})
+
 export interface GeminiConfigurationOperationResult {
-  operation: 'SAVED' | 'REMOVED'
+  operation: 'SAVED' | 'ACTIVATED' | 'SAVED_AND_ACTIVATED' | 'REMOVED'
+  outcome: 'SUCCEEDED' | 'PARTIAL'
   option: GeminiConfigurationOption
-  effectiveMode: GeminiEffectiveMode
+  optionStatus: GeminiConfigurationState
+  activeMode: GeminiConfigurationOption | null
+  configurationOutcome: 'NOT_REQUESTED' | 'SUCCEEDED' | 'FAILED'
+  modeOutcome: 'NOT_REQUESTED' | 'SUCCEEDED' | 'FAILED'
+  instructionCode: string | null
 }
 
 const unavailableCredentialStatus = (): CredentialStatus => ({
-  backendHealth: 'UNAVAILABLE', storageState: null, lifecycle: null,
-  instructionCode: 'SECRET_BACKEND_UNAVAILABLE',
+  vaultHealth: 'UNAVAILABLE', storageState: null,
+  instructionCode: 'SECRET_VAULT_UNAVAILABLE',
 })
 
 export const defaultGeminiSetup = (): GeminiSetupConfigState => ({
-  effectiveMode: 'UNCONFIGURED',
+  activeMode: null,
   aiStudioCredentialStatus: unavailableCredentialStatus(),
   vertexExpressCredentialStatus: unavailableCredentialStatus(),
   vertexProjectStatus: 'MISSING',
@@ -137,8 +150,21 @@ export const resolveGeminiProviderConfiguredState = (setup: GeminiSetupConfigSta
     || setup.aiStudioCredentialStatus.storageState === 'CONFIGURED'
 }
 
-export const resolveGeminiEffectiveCredentialStatus = (
+export const resolveGeminiActiveCredentialStatus = (
   setup: GeminiSetupConfigState,
-): CredentialStatus => setup.effectiveMode === 'VERTEX_EXPRESS'
-  ? setup.vertexExpressCredentialStatus
-  : setup.aiStudioCredentialStatus
+): CredentialStatus => {
+  if (setup.activeMode === 'VERTEX_EXPRESS') return setup.vertexExpressCredentialStatus
+  if (setup.activeMode === 'AI_STUDIO') return setup.aiStudioCredentialStatus
+  if (setup.activeMode === 'VERTEX_PROJECT') {
+    return {
+      vaultHealth: 'READY',
+      storageState: setup.vertexProjectStatus === 'CONFIGURED' ? 'CONFIGURED' : 'MISSING',
+      instructionCode: null,
+    }
+  }
+  return {
+    vaultHealth: setup.aiStudioCredentialStatus.vaultHealth,
+    storageState: 'MISSING',
+    instructionCode: 'GEMINI_SETUP_MODE_NOT_SELECTED',
+  }
+}

@@ -2,12 +2,12 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { defaultSecretCatalog } from '../../../src/secret-management/catalog/secret-catalog.js';
+import { providerCredentialCatalog } from '../../../src/secret-management/catalog/provider-credential-catalog.js';
 import {
   LocalEnvironmentSourceReader,
   verifyWindowsExclusiveAcl,
 } from '../../../src/secret-management/provisioning/local-environment-source-reader.js';
-import { LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION } from '../../../src/secret-management/provisioning/local-import-credential-alias-registry.js';
+import { LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_SECRET_ID } from '../../../src/secret-management/provisioning/local-import-credential-alias-registry.js';
 import { LocalEnvironmentSecretImportError } from '../../../src/secret-management/provisioning/local-environment-secret-import.js';
 
 const privateFile = async (filePath: string, content: string | Buffer): Promise<void> => {
@@ -39,10 +39,10 @@ describe('LocalEnvironmentSourceReader', () => {
     ].join('\r\n'));
 
     const result = await new LocalEnvironmentSourceReader().read(sourcePath);
-    expect(result.credentials.map((credential) => String(credential.definitionId))).toEqual([
+    expect(result.credentials.map((credential) => String(credential.secretId))).toEqual([
       'provider.openai.api-key',
       'search.serper.api-key',
-      'provider.google.vertex-express-api-key',
+      'provider.google.vertex-express.api-key',
     ]);
     expect(result.credentials.map((credential) => credential.valueBytes.toString('utf8'))).toEqual([
       'synthetic"openai',
@@ -58,24 +58,24 @@ describe('LocalEnvironmentSourceReader', () => {
 
   it('maps every immutable approved alias without filename-driven format selection', async () => {
     const sourcePath = path.join(directory, 'not-an-env-file.bin');
-    await privateFile(sourcePath, Object.keys(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION)
+    await privateFile(sourcePath, Object.keys(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_SECRET_ID)
       .map((alias, index) => `${alias}=synthetic-${index}`)
       .join('\n'));
 
     const result = await new LocalEnvironmentSourceReader().read(sourcePath);
     try {
-      expect(result.credentials.map((credential) => String(credential.definitionId))).toEqual(
-        Object.values(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).map(String),
+      expect(result.credentials.map((credential) => String(credential.secretId))).toEqual(
+        Object.values(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_SECRET_ID).map(String),
       );
       expect(result.credentials.every((credential) => (
-        defaultSecretCatalog.isKnownDefinition(credential.definitionId)
+        providerCredentialCatalog.isKnownSecretId(credential.secretId)
       ))).toBe(true);
-      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).toHaveProperty(
+      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_SECRET_ID).toHaveProperty(
         'DASHSCOPE_API_KEY',
         'provider.qwen.api-key',
       );
-      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).not.toHaveProperty('QWEN_API_KEY');
-      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_DEFINITION).not.toHaveProperty('ZHIPU_API_KEY');
+      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_SECRET_ID).not.toHaveProperty('QWEN_API_KEY');
+      expect(LOCAL_IMPORT_CREDENTIAL_ALIAS_TO_SECRET_ID).not.toHaveProperty('ZHIPU_API_KEY');
     } finally {
       result.release();
     }
@@ -100,7 +100,7 @@ describe('LocalEnvironmentSourceReader', () => {
     const result = await new LocalEnvironmentSourceReader().read(sourcePath);
     try {
       expect(result.credentials).toHaveLength(1);
-      expect(result.credentials[0]?.definitionId).toBe('provider.qwen.api-key');
+      expect(result.credentials[0]?.secretId).toBe('provider.qwen.api-key');
       expect(result.credentials[0]?.valueBytes.toString('utf8')).toBe('synthetic-dashscope');
       expect(Object.keys(result).sort()).toEqual(['credentials', 'release']);
       expect(JSON.stringify(result)).not.toContain('QWEN_API_KEY');
@@ -121,7 +121,7 @@ describe('LocalEnvironmentSourceReader', () => {
     const result = await new LocalEnvironmentSourceReader().read(sourcePath);
     try {
       expect(result.credentials).toHaveLength(1);
-      expect(result.credentials[0]?.definitionId).toBe('provider.openai.api-key');
+      expect(result.credentials[0]?.secretId).toBe('provider.openai.api-key');
       expect(result.credentials[0]?.valueBytes.toString('utf8')).toBe('synthetic-openai');
     } finally {
       result.release();
@@ -145,7 +145,7 @@ describe('LocalEnvironmentSourceReader', () => {
     const result = await new LocalEnvironmentSourceReader().read(sourcePath);
     try {
       expect(result.credentials).toHaveLength(1);
-      expect(result.credentials[0]?.definitionId).toBe('search.serper.api-key');
+      expect(result.credentials[0]?.secretId).toBe('search.serper.api-key');
       expect(result.credentials[0]?.valueBytes.toString('utf8')).toBe('synthetic-serper');
       expect(Object.keys(result).sort()).toEqual(['credentials', 'release']);
       expect(JSON.stringify(result)).not.toMatch(/empty|placeholder|ignored/i);
@@ -167,7 +167,7 @@ describe('LocalEnvironmentSourceReader', () => {
 
     const result = await new LocalEnvironmentSourceReader().read(sourcePath);
     try {
-      expect(result.credentials.map(({ definitionId }) => String(definitionId))).toEqual([
+      expect(result.credentials.map(({ secretId }) => String(secretId))).toEqual([
         'provider.openai.api-key',
         'provider.mistral.api-key',
       ]);

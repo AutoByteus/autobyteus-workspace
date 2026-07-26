@@ -12,8 +12,7 @@ const flushPromises = async () => {
 
 const defaultSearchConfig = (): SearchConfigState => ({
   provider: '',
-  backendHealth: 'READY',
-  lifecycle: 'WRITABLE',
+  vaultHealth: 'READY',
   instructionCode: null,
   serperStorageState: 'MISSING',
   serpapiStorageState: 'MISSING',

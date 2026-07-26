@@ -40,3 +40,4 @@ export * from './agent/tool-result-posting.js';
 export * from './agent/utils/index.js';
 export * from './utils/tool-call-format.js';
 export * from './utils/gemini-helper.js';
+export * from './utils/gemini-runtime.js';

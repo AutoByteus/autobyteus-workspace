@@ -8,8 +8,8 @@ import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-
 import { AutobyteusImageModelProvider } from 'autobyteus-ts/multimedia/image/autobyteus-image-provider.js';
 import { MultimediaRuntime } from 'autobyteus-ts/multimedia/runtimes.js';
 import { appConfigProvider } from '../../config/app-config-provider.js';
-import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-binding.js';
-import { getSecretStorageConfigurationService } from '../../secret-management/configuration/secret-storage-configuration-service.js';
+import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-id.js';
+import { getSecretVaultRuntime } from '../../secret-management/secret-vault-runtime.js';
 import type { SecretManagementService } from '../../secret-management/services/secret-management-service.js';
 
 export type AutobyteusRemoteModelKind = 'llm' | 'audio' | 'image';
@@ -52,7 +52,7 @@ export class AutobyteusRemoteModelDiscoveryService {
 
   constructor(
     private readonly managementProvider: () => SecretManagementService = () =>
-      getSecretStorageConfigurationService().requireManagementService(),
+      getSecretVaultRuntime().requireService(),
     private readonly hostsProvider: () => string[] = () => {
       const value = appConfigProvider.config.get('AUTOBYTEUS_LLM_SERVER_HOSTS') ?? '';
       return value.split(',').map((host) => host.trim()).filter(Boolean);

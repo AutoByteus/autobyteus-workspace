@@ -6,6 +6,7 @@ import { BaseLLM } from './base.js';
 import { getLlmProviderDisplayName } from './provider-display-names.js';
 import type { ModelMetadataProvenance } from './metadata/model-metadata-resolver.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 
 export interface LLMModelOptions {
   name: string;
@@ -17,6 +18,7 @@ export interface LLMModelOptions {
     model: LLMModel,
     config: LLMConfig,
     apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
   ) => BaseLLM;
   canonicalName: string;
   defaultConfig?: LLMConfig;
@@ -62,6 +64,7 @@ export class LLMModel {
     model: LLMModel,
     config: LLMConfig,
     apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
   ) => BaseLLM;
   public defaultConfig: LLMConfig;
   public maxContextTokens: number | null;

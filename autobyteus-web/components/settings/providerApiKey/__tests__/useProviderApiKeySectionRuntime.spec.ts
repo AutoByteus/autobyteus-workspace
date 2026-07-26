@@ -9,9 +9,8 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 
 
 const configuredCredentialStatus = {
-  backendHealth: 'READY' as const,
+  vaultHealth: 'READY' as const,
   storageState: 'CONFIGURED' as const,
-  lifecycle: 'WRITABLE' as const,
   instructionCode: null,
 }
 const missingCredentialStatus = {
@@ -27,8 +26,11 @@ const { localizationState } = vi.hoisted(() => ({
       'settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models': 'Failed to reload models',
       'settings.components.settings.ProviderAPIKeyManager.models_reloaded_for_provider': 'Models reloaded for {{provider}}',
       'settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models_for_provider': 'Failed to reload models for {{provider}}',
-      'settings.components.settings.ProviderAPIKeyManager.gemini_option_saved': '{{option}} saved; effective {{effectiveMode}}',
-      'settings.components.settings.ProviderAPIKeyManager.gemini_option_removed': '{{option}} removed; effective {{effectiveMode}}',
+      'settings.components.settings.ProviderAPIKeyManager.gemini_option_saved': '{{option}} saved',
+      'settings.components.settings.ProviderAPIKeyManager.gemini_option_removed': '{{option}} removed',
+      'settings.components.settings.ProviderAPIKeyManager.gemini_mode_activated': '{{option}} activated',
+      'settings.components.settings.ProviderAPIKeyManager.gemini_activation_partial': '{{option}} saved but inactive',
+      'settings.components.settings.ProviderAPIKeyManager.gemini_removal_partial': '{{option}} inactive but not removed',
       'settings.components.settings.ProviderAPIKeyManager.api_key_saved_successfully': 'API key for {{provider}} saved successfully',
       'settings.components.settings.ProviderAPIKeyManager.failed_to_save_api_key': 'Failed to save API key for {{provider}}',
       'settings.components.settings.ProviderAPIKeyManager.api_key_removed_successfully': 'API key for {{provider}} removed successfully',
@@ -153,7 +155,7 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
         imageProvidersWithModels: [],
         videoProvidersWithModels: [],
         geminiSetup: {
-          effectiveMode: 'UNCONFIGURED',
+          activeMode: null,
           aiStudioCredentialStatus: missingCredentialStatus,
           vertexExpressCredentialStatus: missingCredentialStatus,
           vertexProjectStatus: 'MISSING',
@@ -183,14 +185,24 @@ const mountRuntime = (storePatch: Record<string, any> = {}) => {
     return true
   })
   store.saveGeminiConfigurationOption = vi.fn().mockResolvedValue({
-    operation: 'SAVED',
-    option: 'AI_STUDIO',
-    effectiveMode: 'AI_STUDIO',
+    operation: 'SAVED', outcome: 'SUCCEEDED', option: 'AI_STUDIO',
+    optionStatus: 'CONFIGURED', activeMode: null,
+    configurationOutcome: 'SUCCEEDED', modeOutcome: 'NOT_REQUESTED', instructionCode: null,
   })
   store.removeGeminiConfigurationOption = vi.fn().mockResolvedValue({
-    operation: 'REMOVED',
-    option: 'AI_STUDIO',
-    effectiveMode: 'UNCONFIGURED',
+    operation: 'REMOVED', outcome: 'SUCCEEDED', option: 'AI_STUDIO',
+    optionStatus: 'MISSING', activeMode: null,
+    configurationOutcome: 'SUCCEEDED', modeOutcome: 'NOT_REQUESTED', instructionCode: null,
+  })
+  store.saveAndActivateGeminiConfigurationOption = vi.fn().mockResolvedValue({
+    operation: 'SAVED_AND_ACTIVATED', outcome: 'SUCCEEDED', option: 'AI_STUDIO',
+    optionStatus: 'CONFIGURED', activeMode: 'AI_STUDIO',
+    configurationOutcome: 'SUCCEEDED', modeOutcome: 'SUCCEEDED', instructionCode: null,
+  })
+  store.activateGeminiConfigurationOption = vi.fn().mockResolvedValue({
+    operation: 'ACTIVATED', outcome: 'SUCCEEDED', option: 'AI_STUDIO',
+    optionStatus: 'CONFIGURED', activeMode: 'AI_STUDIO',
+    configurationOutcome: 'NOT_REQUESTED', modeOutcome: 'SUCCEEDED', instructionCode: null,
   })
   store.reloadModels = vi.fn().mockResolvedValue(true)
   store.reloadModelsForProvider = vi.fn().mockResolvedValue(true)
@@ -291,7 +303,7 @@ describe('useProviderApiKeySectionRuntime', () => {
     const { wrapper, store } = mountRuntime({
       providersWithModels: [deepFreeze(geminiRow)],
       geminiSetup: {
-        effectiveMode: 'VERTEX_EXPRESS',
+        activeMode: 'VERTEX_EXPRESS',
         aiStudioCredentialStatus: missingCredentialStatus,
         vertexExpressCredentialStatus: configuredCredentialStatus,
         vertexProjectStatus: 'MISSING',
@@ -301,7 +313,7 @@ describe('useProviderApiKeySectionRuntime', () => {
     })
     store.saveGeminiConfigurationOption = vi.fn().mockImplementation(async () => {
       store.geminiSetup = {
-        effectiveMode: 'VERTEX_EXPRESS',
+        activeMode: 'VERTEX_EXPRESS',
         aiStudioCredentialStatus: configuredCredentialStatus,
         vertexExpressCredentialStatus: configuredCredentialStatus,
         vertexProjectStatus: 'MISSING',
@@ -309,9 +321,9 @@ describe('useProviderApiKeySectionRuntime', () => {
         vertexLocation: null,
       }
       return {
-        operation: 'SAVED',
-        option: 'AI_STUDIO',
-        effectiveMode: 'VERTEX_EXPRESS',
+        operation: 'SAVED', outcome: 'SUCCEEDED', option: 'AI_STUDIO',
+        optionStatus: 'CONFIGURED', activeMode: 'VERTEX_EXPRESS',
+        configurationOutcome: 'SUCCEEDED', modeOutcome: 'NOT_REQUESTED', instructionCode: null,
       }
     })
 
@@ -329,7 +341,7 @@ describe('useProviderApiKeySectionRuntime', () => {
       geminiApiKey: 'gemini-key',
     })
     expect((wrapper.vm as any).notification.message).toBe(
-      'AI_STUDIO saved; effective VERTEX_EXPRESS',
+      'AI_STUDIO saved',
     )
     expect((wrapper.vm as any).selectedProviderConfigured).toBe(true)
   })
@@ -338,7 +350,7 @@ describe('useProviderApiKeySectionRuntime', () => {
     const { wrapper, store } = mountRuntime({
       providersWithModels: [geminiRow],
       geminiSetup: {
-        effectiveMode: 'VERTEX_EXPRESS',
+        activeMode: 'VERTEX_EXPRESS',
         aiStudioCredentialStatus: configuredCredentialStatus,
         vertexExpressCredentialStatus: configuredCredentialStatus,
         vertexProjectStatus: 'MISSING',
@@ -349,13 +361,13 @@ describe('useProviderApiKeySectionRuntime', () => {
     store.removeGeminiConfigurationOption = vi.fn().mockImplementation(async () => {
       store.geminiSetup = {
         ...store.geminiSetup,
-        effectiveMode: 'AI_STUDIO',
+        activeMode: 'AI_STUDIO',
         vertexExpressCredentialStatus: missingCredentialStatus,
       }
       return {
-        operation: 'REMOVED',
-        option: 'VERTEX_EXPRESS',
-        effectiveMode: 'AI_STUDIO',
+        operation: 'REMOVED', outcome: 'SUCCEEDED', option: 'VERTEX_EXPRESS',
+        optionStatus: 'MISSING', activeMode: 'AI_STUDIO',
+        configurationOutcome: 'SUCCEEDED', modeOutcome: 'SUCCEEDED', instructionCode: null,
       }
     })
     await (wrapper.vm as any).initialize()
@@ -365,7 +377,7 @@ describe('useProviderApiKeySectionRuntime', () => {
     expect(removed).toBe(true)
     expect(store.removeGeminiConfigurationOption).toHaveBeenCalledWith('VERTEX_EXPRESS')
     expect((wrapper.vm as any).notification.message).toBe(
-      'VERTEX_EXPRESS removed; effective AI_STUDIO',
+      'VERTEX_EXPRESS removed',
     )
   })
 
@@ -373,7 +385,7 @@ describe('useProviderApiKeySectionRuntime', () => {
     const { wrapper, store } = mountRuntime({
       providersWithModels: [geminiRow],
       geminiSetup: {
-        effectiveMode: 'UNCONFIGURED',
+        activeMode: null,
         aiStudioCredentialStatus: missingCredentialStatus,
         vertexExpressCredentialStatus: missingCredentialStatus,
         vertexProjectStatus: 'MISSING',
@@ -381,11 +393,7 @@ describe('useProviderApiKeySectionRuntime', () => {
         vertexLocation: null,
       },
     })
-    let completeSave!: (result: {
-      operation: 'SAVED'
-      option: 'AI_STUDIO'
-      effectiveMode: 'AI_STUDIO'
-    }) => void
+    let completeSave!: (result: any) => void
     store.saveGeminiConfigurationOption = vi.fn().mockReturnValue(new Promise((resolve) => {
       completeSave = resolve
     }))
@@ -401,10 +409,14 @@ describe('useProviderApiKeySectionRuntime', () => {
 
     store.geminiSetup = {
       ...store.geminiSetup,
-      effectiveMode: 'AI_STUDIO',
+      activeMode: 'AI_STUDIO',
       aiStudioCredentialStatus: configuredCredentialStatus,
     }
-    completeSave({ operation: 'SAVED', option: 'AI_STUDIO', effectiveMode: 'AI_STUDIO' })
+    completeSave({
+      operation: 'SAVED', outcome: 'SUCCEEDED', option: 'AI_STUDIO',
+      optionStatus: 'CONFIGURED', activeMode: 'AI_STUDIO',
+      configurationOutcome: 'SUCCEEDED', modeOutcome: 'NOT_REQUESTED', instructionCode: null,
+    })
     await expect(pendingSave).resolves.toBe(true)
     expect((wrapper.vm as any).saving).toBe(false)
 
@@ -424,6 +436,34 @@ describe('useProviderApiKeySectionRuntime', () => {
       expect.any(Error),
     )
     consoleError.mockRestore()
+  })
+
+  it('surfaces a value-free partial save-and-activate result without claiming success', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [geminiRow],
+    })
+    store.saveAndActivateGeminiConfigurationOption = vi.fn().mockResolvedValue({
+      operation: 'SAVED_AND_ACTIVATED',
+      outcome: 'PARTIAL',
+      option: 'AI_STUDIO',
+      optionStatus: 'CONFIGURED',
+      activeMode: null,
+      configurationOutcome: 'SUCCEEDED',
+      modeOutcome: 'FAILED',
+      instructionCode: 'GEMINI_ACTIVATION_RETRY_REQUIRED',
+    })
+    await (wrapper.vm as any).initialize()
+
+    await expect((wrapper.vm as any).saveAndActivateGeminiConfigurationOption({
+      option: 'AI_STUDIO',
+      geminiApiKey: 'synthetic-key',
+    })).resolves.toBe(false)
+
+    expect((wrapper.vm as any).notification).toMatchObject({
+      type: 'error',
+      message: 'AI_STUDIO saved but inactive',
+    })
+    expect((wrapper.vm as any).saving).toBe(false)
   })
 
   it('includes video models in provider totals and selected-provider model details', async () => {

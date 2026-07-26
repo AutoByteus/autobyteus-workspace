@@ -1,39 +1,37 @@
 import {
   LLMProvider,
   SecretValue,
-  selectGeminiRuntime,
   type GeminiRuntimeSelection,
-  type ProviderApiKeyStatus,
 } from 'autobyteus-ts';
 import { appConfigProvider } from '../../config/app-config-provider.js';
-import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-binding.js';
-import { getSecretStorageConfigurationService } from '../../secret-management/configuration/secret-storage-configuration-service.js';
+import type { SecretConsumerIdentity } from '../../secret-management/domain/secret-id.js';
+import { getSecretVaultRuntime } from '../../secret-management/secret-vault-runtime.js';
 
-export type GeminiConfigurationOption =
-  | 'AI_STUDIO'
-  | 'VERTEX_EXPRESS'
-  | 'VERTEX_PROJECT';
-
-export type GeminiEffectiveMode = GeminiConfigurationOption | 'UNCONFIGURED';
-export type GeminiConfigurationState = 'MISSING' | 'CONFIGURED';
-
+export type GeminiConfigurationOption = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT';
+export type GeminiConfigurationState = 'MISSING' | 'CONFIGURED' | 'UNAVAILABLE';
+export type GeminiConfigurationStageOutcome = 'NOT_REQUESTED' | 'SUCCEEDED' | 'FAILED';
 export type GeminiOptionSaveCommand =
   | { option: 'AI_STUDIO'; apiKey: string }
   | { option: 'VERTEX_EXPRESS'; apiKey: string }
   | { option: 'VERTEX_PROJECT'; project: string; location: string };
 
 export type GeminiConfigurationOperationResult = {
-  operation: 'SAVED' | 'REMOVED';
+  operation: 'SAVED' | 'ACTIVATED' | 'SAVED_AND_ACTIVATED' | 'REMOVED';
+  outcome: 'SUCCEEDED' | 'PARTIAL';
   option: GeminiConfigurationOption;
-  effectiveMode: GeminiEffectiveMode;
+  optionStatus: GeminiConfigurationState;
+  activeMode: GeminiConfigurationOption | null;
+  configurationOutcome: GeminiConfigurationStageOutcome;
+  modeOutcome: GeminiConfigurationStageOutcome;
+  instructionCode: string | null;
 };
 
 export type GeminiSetupStatus = {
+  activeMode: GeminiConfigurationOption | null;
   selection: GeminiRuntimeSelection;
-  effectiveMode: GeminiEffectiveMode;
-  aiStudioStatus: ProviderApiKeyStatus;
-  vertexExpressStatus: ProviderApiKeyStatus;
-  vertexProjectStatus: GeminiConfigurationState;
+  aiStudioStatus: GeminiConfigurationState;
+  vertexExpressStatus: GeminiConfigurationState;
+  vertexProjectStatus: Exclude<GeminiConfigurationState, 'UNAVAILABLE'>;
   project: string | null;
   location: string | null;
 };
@@ -44,13 +42,11 @@ const normalizeRequired = (value: string, name: string): string => {
   return normalized;
 };
 
-const effectiveMode = (selection: GeminiRuntimeSelection): GeminiEffectiveMode => {
-  switch (selection.kind) {
-    case 'vertexExpress': return 'VERTEX_EXPRESS';
-    case 'vertexProject': return 'VERTEX_PROJECT';
-    case 'aiStudio': return 'AI_STUDIO';
-    case 'unconfigured': return 'UNCONFIGURED';
-  }
+const readConfiguredMode = (): GeminiConfigurationOption | null => {
+  const value = appConfigProvider.config.get('GEMINI_SETUP_MODE')?.trim().toUpperCase();
+  return value === 'AI_STUDIO' || value === 'VERTEX_EXPRESS' || value === 'VERTEX_PROJECT'
+    ? value
+    : null;
 };
 
 export class GeminiConfigurationService {
@@ -62,15 +58,18 @@ export class GeminiConfigurationService {
     const project = appConfigProvider.config.get('VERTEX_AI_PROJECT')?.trim() || null;
     const location = appConfigProvider.config.get('VERTEX_AI_LOCATION')?.trim() || null;
     const vertexProjectStatus = project && location ? 'CONFIGURED' : 'MISSING';
-    const selection = selectGeminiRuntime({
-      vertexExpressStatus,
+    const activeMode = readConfiguredMode();
+    const selection = this.toRuntimeSelection({
+      activeMode,
       aiStudioStatus,
+      vertexExpressStatus,
+      vertexProjectStatus,
       project,
       location,
     });
     return {
+      activeMode,
       selection,
-      effectiveMode: effectiveMode(selection),
       aiStudioStatus,
       vertexExpressStatus,
       vertexProjectStatus,
@@ -79,9 +78,11 @@ export class GeminiConfigurationService {
     };
   }
 
-  async saveOptionConfiguration(
-    input: GeminiOptionSaveCommand,
-  ): Promise<GeminiConfigurationOperationResult> {
+  async resolveActiveRuntime(): Promise<GeminiRuntimeSelection> {
+    return (await this.getSetupStatus()).selection;
+  }
+
+  async saveOptionConfiguration(input: GeminiOptionSaveCommand): Promise<GeminiConfigurationOperationResult> {
     if (input.option === 'AI_STUDIO') {
       await this.management().saveForConsumer({
         consumer: this.consumer('geminiAiStudioApiKey'),
@@ -93,67 +94,148 @@ export class GeminiConfigurationService {
         value: SecretValue.fromString(normalizeRequired(input.apiKey, 'api_key')),
       });
     } else {
-      appConfigProvider.config.set(
-        'VERTEX_AI_PROJECT',
-        normalizeRequired(input.project, 'project'),
-      );
-      appConfigProvider.config.set(
-        'VERTEX_AI_LOCATION',
-        normalizeRequired(input.location, 'location'),
-      );
+      appConfigProvider.config.set('VERTEX_AI_PROJECT', normalizeRequired(input.project, 'project'));
+      appConfigProvider.config.set('VERTEX_AI_LOCATION', normalizeRequired(input.location, 'location'));
     }
-    return this.operationResult('SAVED', input.option);
+    return this.operationResult('SAVED', input.option, {
+      configurationOutcome: 'SUCCEEDED',
+    });
+  }
+
+  async activateOption(option: GeminiConfigurationOption): Promise<GeminiConfigurationOperationResult> {
+    const status = await this.optionStatus(option);
+    if (status !== 'CONFIGURED') throw new Error('GEMINI_SELECTED_OPTION_NOT_CONFIGURED');
+    appConfigProvider.config.set('GEMINI_SETUP_MODE', option);
+    return this.operationResult('ACTIVATED', option, {
+      modeOutcome: 'SUCCEEDED',
+    });
+  }
+
+  async saveAndActivateOption(
+    input: GeminiOptionSaveCommand,
+  ): Promise<GeminiConfigurationOperationResult> {
+    await this.saveOptionConfiguration(input);
+    try {
+      await this.activateOption(input.option);
+      return this.operationResult('SAVED_AND_ACTIVATED', input.option, {
+        configurationOutcome: 'SUCCEEDED',
+        modeOutcome: 'SUCCEEDED',
+      });
+    } catch {
+      return this.operationResult('SAVED_AND_ACTIVATED', input.option, {
+        outcome: 'PARTIAL',
+        configurationOutcome: 'SUCCEEDED',
+        modeOutcome: 'FAILED',
+        instructionCode: 'GEMINI_ACTIVATION_RETRY_REQUIRED',
+      });
+    }
   }
 
   async removeOptionConfiguration(
     option: GeminiConfigurationOption,
   ): Promise<GeminiConfigurationOperationResult> {
-    if (option === 'AI_STUDIO') {
-      await this.management().removeForConsumer(this.consumer('geminiAiStudioApiKey'));
-    } else if (option === 'VERTEX_EXPRESS') {
-      await this.management().removeForConsumer(this.consumer('geminiVertexExpressApiKey'));
-    } else {
-      appConfigProvider.config.delete('VERTEX_AI_PROJECT');
-      appConfigProvider.config.delete('VERTEX_AI_LOCATION');
+    const wasActive = readConfiguredMode() === option;
+    if (wasActive) appConfigProvider.config.delete('GEMINI_SETUP_MODE');
+    try {
+      if (option === 'AI_STUDIO') {
+        await this.management().removeForConsumer(this.consumer('geminiAiStudioApiKey'));
+      } else if (option === 'VERTEX_EXPRESS') {
+        await this.management().removeForConsumer(this.consumer('geminiVertexExpressApiKey'));
+      } else {
+        appConfigProvider.config.delete('VERTEX_AI_PROJECT');
+        appConfigProvider.config.delete('VERTEX_AI_LOCATION');
+      }
+    } catch (error) {
+      if (!wasActive) throw error;
+      return this.operationResult('REMOVED', option, {
+        outcome: 'PARTIAL',
+        configurationOutcome: 'FAILED',
+        modeOutcome: 'SUCCEEDED',
+        instructionCode: 'GEMINI_REMOVAL_RETRY_REQUIRED',
+      });
     }
-    return this.operationResult('REMOVED', option);
+    return this.operationResult('REMOVED', option, {
+      configurationOutcome: 'SUCCEEDED',
+      modeOutcome: wasActive ? 'SUCCEEDED' : 'NOT_REQUESTED',
+    });
+  }
+
+  private toRuntimeSelection(status: {
+    activeMode: GeminiConfigurationOption | null;
+    aiStudioStatus: GeminiConfigurationState;
+    vertexExpressStatus: GeminiConfigurationState;
+    vertexProjectStatus: 'MISSING' | 'CONFIGURED';
+    project: string | null;
+    location: string | null;
+  }): GeminiRuntimeSelection {
+    if (status.activeMode === 'AI_STUDIO' && status.aiStudioStatus === 'CONFIGURED') {
+      return { kind: 'aiStudio' };
+    }
+    if (status.activeMode === 'VERTEX_EXPRESS' && status.vertexExpressStatus === 'CONFIGURED') {
+      return { kind: 'vertexExpress' };
+    }
+    if (
+      status.activeMode === 'VERTEX_PROJECT'
+      && status.vertexProjectStatus === 'CONFIGURED'
+      && status.project
+      && status.location
+    ) {
+      return { kind: 'vertexProject', project: status.project, location: status.location };
+    }
+    return { kind: 'unconfigured' };
   }
 
   private async operationResult(
-    operation: 'SAVED' | 'REMOVED',
+    operation: GeminiConfigurationOperationResult['operation'],
     option: GeminiConfigurationOption,
+    stages: Partial<Pick<
+      GeminiConfigurationOperationResult,
+      'outcome' | 'configurationOutcome' | 'modeOutcome' | 'instructionCode'
+    >>,
   ): Promise<GeminiConfigurationOperationResult> {
-    return { operation, option, effectiveMode: (await this.getSetupStatus()).effectiveMode };
+    const status = await this.getSetupStatus();
+    return {
+      operation,
+      outcome: stages.outcome ?? 'SUCCEEDED',
+      option,
+      optionStatus: await this.optionStatus(option, status),
+      activeMode: status.activeMode,
+      configurationOutcome: stages.configurationOutcome ?? 'NOT_REQUESTED',
+      modeOutcome: stages.modeOutcome ?? 'NOT_REQUESTED',
+      instructionCode: stages.instructionCode ?? null,
+    };
+  }
+
+  private async optionStatus(
+    option: GeminiConfigurationOption,
+    existingStatus?: GeminiSetupStatus,
+  ): Promise<GeminiConfigurationState> {
+    const status = existingStatus ?? await this.getSetupStatus();
+    if (option === 'AI_STUDIO') return status.aiStudioStatus;
+    if (option === 'VERTEX_EXPRESS') return status.vertexExpressStatus;
+    return status.vertexProjectStatus;
   }
 
   private management() {
-    return getSecretStorageConfigurationService().requireManagementService();
+    return getSecretVaultRuntime().requireService();
   }
 
   private async status(
     credentialSlot: 'geminiAiStudioApiKey' | 'geminiVertexExpressApiKey',
-  ): Promise<ProviderApiKeyStatus> {
+  ): Promise<GeminiConfigurationState> {
+    const runtime = getSecretVaultRuntime();
+    if ((await runtime.getHealth()).state !== 'READY') return 'UNAVAILABLE';
     try {
-      const result = await getSecretStorageConfigurationService()
-        .requireManagementService()
-        .getStatusForConsumer(this.consumer(credentialSlot));
-      const status = result.secret;
-      return result.health.state === 'READY' && status
-        ? status.storageState
-        : 'MISSING';
+      return await runtime.requireService().getStatusForConsumer(this.consumer(credentialSlot));
     } catch {
-      return 'MISSING';
+      return 'UNAVAILABLE';
     }
   }
 
   private consumer(
     credentialSlot: 'geminiAiStudioApiKey' | 'geminiVertexExpressApiKey',
   ): SecretConsumerIdentity {
-    return {
-      kind: 'llm',
-      providerId: LLMProvider.GEMINI,
-      credentialSlot,
-    };
+    return { kind: 'llm', providerId: LLMProvider.GEMINI, credentialSlot };
   }
 }
 

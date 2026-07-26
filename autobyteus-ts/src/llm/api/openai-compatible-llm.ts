@@ -49,10 +49,11 @@ export class OpenAICompatibleLLM extends BaseLLM {
   ): Promise<OpenAIClient> {
     let apiKey = 'not-required';
     if (this.allowUnauthenticated) {
-      const status = await this.apiKeyResolver.getStatus(this.apiKeyProviderId);
-      if (status === 'CONFIGURED') {
+      try {
         const secret = await this.apiKeyResolver.resolve(this.apiKeyProviderId);
         apiKey = secret.revealToTrustedConsumer();
+      } catch {
+        // This provider explicitly supports unauthenticated local endpoints.
       }
     } else {
       const secret = await this.apiKeyResolver.resolve(this.apiKeyProviderId);

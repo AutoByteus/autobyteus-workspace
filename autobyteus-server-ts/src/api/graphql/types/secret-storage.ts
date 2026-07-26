@@ -1,41 +1,27 @@
 import { Field, ObjectType, Query, Resolver } from 'type-graphql';
-import { getSecretStorageConfigurationService } from '../../../secret-management/configuration/secret-storage-configuration-service.js';
+import { getSecretVaultRuntime } from '../../../secret-management/secret-vault-runtime.js';
 
 @ObjectType()
-class SecretStorageStatus {
-  @Field(() => String)
-  selectedKind!: string;
-
+class SecretVaultStatus {
   @Field(() => String)
   health!: string;
 
   @Field(() => String, { nullable: true })
   instructionCode!: string | null;
 
-  @Field(() => String, { nullable: true })
-  lifecycle!: string | null;
-
   @Field(() => String)
-  assurance!: string;
-
-  @Field(() => Boolean)
-  restartRequired!: boolean;
+  assurance!: 'LOCAL_HARDENED';
 }
 
 @Resolver()
 export class SecretStorageResolver {
-  @Query(() => SecretStorageStatus)
-  async getSecretStorageStatus(): Promise<SecretStorageStatus> {
-    const snapshot = await getSecretStorageConfigurationService().snapshot();
+  @Query(() => SecretVaultStatus)
+  async getSecretVaultStatus(): Promise<SecretVaultStatus> {
+    const health = await getSecretVaultRuntime().getHealth();
     return {
-      selectedKind: snapshot.selectedKind,
-      health: snapshot.health.state,
-      instructionCode: 'instructionCode' in snapshot.health
-        ? snapshot.health.instructionCode
-        : null,
-      lifecycle: snapshot.lifecycle?.kind ?? null,
-      assurance: snapshot.assurance,
-      restartRequired: snapshot.restartRequired,
+      health: health.state,
+      instructionCode: 'instructionCode' in health ? health.instructionCode : null,
+      assurance: 'LOCAL_HARDENED',
     };
   }
 }

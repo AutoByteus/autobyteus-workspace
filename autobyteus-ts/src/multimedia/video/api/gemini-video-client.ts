@@ -9,13 +9,13 @@ import { VideoGenerationResponse } from '../../utils/response-types.js';
 import { loadMediaReference } from '../../utils/media-reference-loader.js';
 import {
   initializeGeminiClientWithRuntime,
-  selectGeminiRuntimeForResolver,
 } from '../../../utils/gemini-helper.js';
 import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { VideoModel } from '../video-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../../utils/gemini-runtime.js';
 
 const VIDEO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_video');
 const SUPPORTED_ASPECT_RATIOS = new Set(['16:9', '9:16']);
@@ -244,11 +244,14 @@ const getFileNameForPolling = (candidate: VideoContentLike): string | null => {
 export class GeminiVideoClient extends BaseVideoClient {
   private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly runtimeResolver: GeminiRuntimeResolver;
   private tempFiles: string[] = [];
 
-  constructor(model: VideoModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: VideoModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
+    if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+    this.runtimeResolver = runtimeResolver;
   }
 
   private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
@@ -257,7 +260,7 @@ export class GeminiVideoClient extends BaseVideoClient {
   }
 
   private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
-    const selection = await selectGeminiRuntimeForResolver(this.apiKeyResolver);
+    const selection = await this.runtimeResolver();
     return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 

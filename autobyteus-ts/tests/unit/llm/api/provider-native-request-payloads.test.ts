@@ -20,6 +20,7 @@ import {
 import {
   providerApiKeyResolver,
   geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
   missingProviderApiKeyResolver,
 } from '../../provider-api-key-resolver-test-helpers.js';
 
@@ -52,6 +53,7 @@ class GeminiLLM extends ProductionGeminiLLM {
       inputModel,
       config,
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
     );
   }
 }

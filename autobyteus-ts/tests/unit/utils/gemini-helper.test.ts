@@ -1,9 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  initializeGeminiClientWithRuntime,
-  selectGeminiRuntime,
-  selectGeminiRuntimeForResolver,
-} from '../../../src/utils/gemini-helper.js';
+import { initializeGeminiClientWithRuntime } from '../../../src/utils/gemini-helper.js';
 import { SecretValue } from '../../../src/secrets/secret-value.js';
 import type {
   ProviderApiKeyResolver,
@@ -24,15 +20,6 @@ const resolverFor = (input: {
   aiStudio?: string;
   vertexExpress?: string;
 }): ProviderApiKeyResolver => ({
-  getStatus: vi.fn(async (_providerId: string, slot: ProviderApiKeySlot = 'apiKey') => {
-    if (slot === 'geminiVertexExpressApiKey') {
-      return input.vertexExpress === undefined ? 'MISSING' : 'CONFIGURED';
-    }
-    if (slot === 'geminiAiStudioApiKey') {
-      return input.aiStudio === undefined ? 'MISSING' : 'CONFIGURED';
-    }
-    return 'MISSING';
-  }),
   resolve: vi.fn(async (_providerId: string, slot: ProviderApiKeySlot = 'apiKey') => {
     const value = slot === 'geminiVertexExpressApiKey'
       ? input.vertexExpress
@@ -46,46 +33,6 @@ const resolverFor = (input: {
 
 describe('Gemini runtime selection and SDK construction', () => {
   beforeEach(() => constructorMock.mockClear());
-
-  it('applies Vertex Express, complete Vertex Project, AI Studio, then unconfigured priority', () => {
-    expect(selectGeminiRuntime({
-      vertexExpressStatus: 'CONFIGURED',
-      aiStudioStatus: 'CONFIGURED',
-      project: 'project',
-      location: 'location',
-    })).toEqual({ kind: 'vertexExpress' });
-    expect(selectGeminiRuntime({
-      vertexExpressStatus: 'MISSING',
-      aiStudioStatus: 'CONFIGURED',
-      project: 'project',
-      location: 'location',
-    })).toEqual({ kind: 'vertexProject', project: 'project', location: 'location' });
-    expect(selectGeminiRuntime({
-      vertexExpressStatus: 'MISSING',
-      aiStudioStatus: 'CONFIGURED',
-      project: 'project',
-      location: null,
-    })).toEqual({ kind: 'aiStudio' });
-    expect(selectGeminiRuntime({
-      vertexExpressStatus: 'MISSING',
-      aiStudioStatus: 'MISSING',
-      project: null,
-      location: null,
-    })).toEqual({ kind: 'unconfigured' });
-  });
-
-  it('derives the value-free selection from status only', async () => {
-    const resolver = resolverFor({
-      vertexExpress: 'synthetic-express-key',
-      aiStudio: 'synthetic-ai-key',
-    });
-    await expect(selectGeminiRuntimeForResolver(
-      resolver,
-      'synthetic-project',
-      'synthetic-location',
-    )).resolves.toEqual({ kind: 'vertexExpress' });
-    expect(resolver.resolve).not.toHaveBeenCalled();
-  });
 
   it('constructs exact AI Studio options and resolves only its selected slot', async () => {
     const resolver = resolverFor({ aiStudio: 'synthetic-ai-studio-key' });
