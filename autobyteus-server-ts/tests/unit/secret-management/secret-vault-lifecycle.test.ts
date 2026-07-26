@@ -4,11 +4,12 @@ import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { PrismaClient } from '@prisma/client';
 import { SecretValue } from 'autobyteus-ts';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { resolveApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { SecretVaultBootstrap } from '../../../src/secret-management/bootstrap/secret-vault-bootstrap.js';
 import { secretId } from '../../../src/secret-management/domain/secret-id.js';
 import { SecretVaultPrismaRepository } from '../../../src/secret-management/persistence/secret-vault-prisma-repository.js';
+import { SecretRootKeyFile } from '../../../src/secret-management/root-key/secret-root-key-file.js';
 import { SecretManagementService } from '../../../src/secret-management/services/secret-management-service.js';
 
 const TABLES = `
@@ -175,4 +176,150 @@ describe('one-database secret vault lifecycle', () => {
       await fs.chmod(databasePath, 0o600);
     },
   );
+});
+
+describe('secret vault initialization interruption safety', () => {
+  const createFixture = async () => {
+    const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'secret-vault-initialization-'));
+    if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
+    const location = resolveApplicationDatabaseLocation('file:application.db', directory);
+    const database = new DatabaseSync(location.databasePath);
+    database.exec(TABLES);
+    database.close();
+    const prisma = new PrismaClient({ datasources: { db: { url: location.databaseUrl } } });
+    return {
+      directory,
+      location,
+      prisma,
+      repository: new SecretVaultPrismaRepository(prisma),
+    };
+  };
+
+  it('resumes key-only first initialization despite a terminated initializer sentinel', async () => {
+    const fixture = await createFixture();
+    try {
+      const rootKeyFile = new SecretRootKeyFile(fixture.location);
+      const interruptedKey = await rootKeyFile.createExclusive();
+      const expectedKey = Buffer.from(interruptedKey);
+      interruptedKey.fill(0);
+      await fs.writeFile(`${fixture.location.rootKeyPath}.initialize.lock`, 'terminated-owner', {
+        mode: 0o600,
+      });
+
+      const result = await new SecretVaultBootstrap(
+        fixture.location,
+        fixture.repository,
+      ).initializeOrVerify();
+
+      expect(result.health).toEqual({ state: 'READY' });
+      expect(result.rootKey).not.toBeNull();
+      expect(result.rootKey?.equals(expectedKey)).toBe(true);
+      expect(await fixture.repository.countEntries()).toBe(0);
+      expect(await fixture.repository.readMetadata()).not.toBeNull();
+      expect(await fs.readFile(fixture.location.rootKeyPath)).toEqual(expectedKey);
+      result.rootKey?.fill(0);
+      expectedKey.fill(0);
+    } finally {
+      await fixture.prisma.$disconnect();
+      await fs.rm(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it('serializes live initializers and publishes one key/domain pair', async () => {
+    const fixture = await createFixture();
+    const secondPrisma = new PrismaClient({
+      datasources: { db: { url: fixture.location.databaseUrl } },
+    });
+    let releaseFirst!: () => void;
+    let firstCreated!: () => void;
+    const firstCreatedPromise = new Promise<void>((resolve) => {
+      firstCreated = resolve;
+    });
+    const releaseFirstPromise = new Promise<void>((resolve) => {
+      releaseFirst = resolve;
+    });
+    const firstDelegate = new SecretRootKeyFile(fixture.location);
+    const secondDelegate = new SecretRootKeyFile(fixture.location);
+    const firstRootKeyFile = {
+      inspectExisting: () => firstDelegate.inspectExisting(),
+      createExclusive: async () => {
+        const key = await firstDelegate.createExclusive();
+        firstCreated();
+        await releaseFirstPromise;
+        return key;
+      },
+    } as unknown as SecretRootKeyFile;
+    const secondInspect = vi.fn(() => secondDelegate.inspectExisting());
+    const secondRootKeyFile = {
+      inspectExisting: secondInspect,
+      createExclusive: () => secondDelegate.createExclusive(),
+    } as unknown as SecretRootKeyFile;
+
+    try {
+      const firstPromise = new SecretVaultBootstrap(
+        fixture.location,
+        fixture.repository,
+        firstRootKeyFile,
+      ).initializeOrVerify();
+      await firstCreatedPromise;
+      const secondPromise = new SecretVaultBootstrap(
+        fixture.location,
+        new SecretVaultPrismaRepository(secondPrisma),
+        secondRootKeyFile,
+      ).initializeOrVerify();
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(secondInspect).not.toHaveBeenCalled();
+      releaseFirst();
+
+      const [first, second] = await Promise.all([firstPromise, secondPromise]);
+      expect(first.health).toEqual({ state: 'READY' });
+      expect(second.health).toEqual({ state: 'READY' });
+      expect(first.rootKey?.equals(second.rootKey!)).toBe(true);
+      expect(first.metadata?.encryptionDomainId.equals(
+        second.metadata!.encryptionDomainId,
+      )).toBe(true);
+      expect(await fixture.repository.readMetadata()).not.toBeNull();
+      first.rootKey?.fill(0);
+      second.rootKey?.fill(0);
+    } finally {
+      releaseFirst();
+      await secondPrisma.$disconnect();
+      await fixture.prisma.$disconnect();
+      await fs.rm(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it('does not regenerate a missing key for an established metadata domain', async () => {
+    const fixture = await createFixture();
+    try {
+      const first = await new SecretVaultBootstrap(
+        fixture.location,
+        fixture.repository,
+      ).initializeOrVerify();
+      expect(first.health).toEqual({ state: 'READY' });
+      first.rootKey?.fill(0);
+      await fs.unlink(fixture.location.rootKeyPath);
+
+      const restarted = await new SecretVaultBootstrap(
+        fixture.location,
+        fixture.repository,
+      ).initializeOrVerify();
+
+      expect(restarted).toMatchObject({
+        health: {
+          state: 'LOCKED',
+          instructionCode: 'SECRET_VAULT_LOCKED',
+        },
+        rootKey: null,
+        metadata: null,
+      });
+      await expect(fs.lstat(fixture.location.rootKeyPath)).rejects.toMatchObject({
+        code: 'ENOENT',
+      });
+      expect(await fixture.repository.readMetadata()).not.toBeNull();
+    } finally {
+      await fixture.prisma.$disconnect();
+      await fs.rm(fixture.directory, { recursive: true, force: true });
+    }
+  });
 });

@@ -29,7 +29,12 @@ export type SecretVaultBatchResult = {
 
 type VaultTransactionClient = Pick<
   Prisma.TransactionClient,
-  "secretEntry" | "secretEncryptionMetadata"
+  "secretEntry" | "secretEncryptionMetadata" | "$executeRaw"
+>;
+
+export type SecretVaultInitializationRepository = Pick<
+  SecretVaultPrismaRepository,
+  "readMetadata" | "countEntries" | "createMetadata"
 >;
 
 const toMetadata = (record: SecretEncryptionMetadata): SecretVaultMetadataRecord => ({
@@ -44,7 +49,41 @@ export class SecretVaultPrismaRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async readMetadata(): Promise<SecretVaultMetadataRecord | null> {
-    const rows = await this.prisma.secretEncryptionMetadata.findMany({ take: 2 });
+    return this.readMetadataFrom(this.prisma);
+  }
+
+  async countEntries(): Promise<number> {
+    return this.countEntriesFrom(this.prisma);
+  }
+
+  async createMetadata(record: SecretVaultMetadataRecord): Promise<void> {
+    await this.createMetadataWith(this.prisma, record);
+  }
+
+  async withInitializationLock<T>(
+    operation: (repository: SecretVaultInitializationRepository) => Promise<T>,
+  ): Promise<T> {
+    return this.prisma.$transaction(async (transaction) => {
+      // Force SQLite to acquire its process-bound write lock before key inspection.
+      // SQLite releases this lock if the initializer terminates, unlike a sentinel file.
+      await transaction.$executeRaw`
+        UPDATE "secret_encryption_metadata"
+           SET "singleton_id" = "singleton_id"
+         WHERE "singleton_id" = 1
+      `;
+      const lockedRepository: SecretVaultInitializationRepository = {
+        readMetadata: () => this.readMetadataFrom(transaction),
+        countEntries: () => this.countEntriesFrom(transaction),
+        createMetadata: (record) => this.createMetadataWith(transaction, record),
+      };
+      return operation(lockedRepository);
+    }, { maxWait: 2_000, timeout: 10_000 });
+  }
+
+  private async readMetadataFrom(
+    client: Pick<VaultTransactionClient, "secretEncryptionMetadata">,
+  ): Promise<SecretVaultMetadataRecord | null> {
+    const rows = await client.secretEncryptionMetadata.findMany({ take: 2 });
     if (rows.length === 0) return null;
     if (rows.length !== 1 || rows[0]?.singletonId !== 1) {
       throw new Error("SECRET_VAULT_METADATA_INVALID");
@@ -52,12 +91,17 @@ export class SecretVaultPrismaRepository {
     return toMetadata(rows[0]);
   }
 
-  async countEntries(): Promise<number> {
-    return this.prisma.secretEntry.count();
+  private async countEntriesFrom(
+    client: Pick<VaultTransactionClient, "secretEntry">,
+  ): Promise<number> {
+    return client.secretEntry.count();
   }
 
-  async createMetadata(record: SecretVaultMetadataRecord): Promise<void> {
-    await this.prisma.secretEncryptionMetadata.create({
+  private async createMetadataWith(
+    client: Pick<VaultTransactionClient, "secretEncryptionMetadata">,
+    record: SecretVaultMetadataRecord,
+  ): Promise<void> {
+    await client.secretEncryptionMetadata.create({
       data: {
         singletonId: 1,
         encryptionDomainId: record.encryptionDomainId,

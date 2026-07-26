@@ -1,6 +1,5 @@
 import fsp from "node:fs/promises";
 import { randomBytes } from "node:crypto";
-import path from "node:path";
 import type { ApplicationDatabaseLocation } from "../../config/application-database-location.js";
 import {
   createVaultVerifier,
@@ -17,6 +16,7 @@ import {
   vaultHealthFromError,
 } from "../domain/secret-vault-types.js";
 import type {
+  SecretVaultInitializationRepository,
   SecretVaultMetadataRecord,
   SecretVaultPrismaRepository,
 } from "../persistence/secret-vault-prisma-repository.js";
@@ -81,37 +81,30 @@ export class SecretVaultBootstrap {
   ) {}
 
   async initializeOrVerify(): Promise<SecretVaultBootstrapResult> {
-    let lock: fsp.FileHandle | null = null;
     try {
-      await fsp.mkdir(path.dirname(this.location.rootKeyPath), {
-        recursive: true,
-        mode: 0o700,
-      });
-      lock = await fsp.open(`${this.location.rootKeyPath}.initialize.lock`, "wx", 0o600);
-      const result = await this.initializeOrVerifyUnderLock();
+      await validateDatabaseIdentity(this.location);
+      const result = await this.repository.withInitializationLock(
+        (repository) => this.initializeOrVerifyUnderLock(repository),
+      );
       return { health: READY_SECRET_VAULT_HEALTH, ...result };
     } catch (error) {
       return { health: vaultHealthFromError(error), rootKey: null, metadata: null };
-    } finally {
-      if (lock) {
-        await lock.close();
-        await fsp.unlink(`${this.location.rootKeyPath}.initialize.lock`).catch(() => undefined);
-      }
     }
   }
 
-  private async initializeOrVerifyUnderLock(): Promise<{
+  private async initializeOrVerifyUnderLock(
+    repository: SecretVaultInitializationRepository,
+  ): Promise<{
     rootKey: Buffer;
     metadata: SecretVaultMetadataRecord;
   }> {
-    await validateDatabaseIdentity(this.location);
     const inspectedKey = await this.rootKeyFile.inspectExisting();
     if (inspectedKey.state === "UNSAFE") {
       throw new SecretVaultError("VAULT_LOCKED", false, "SECRET_VAULT_LOCKED");
     }
 
     try {
-      return await this.initializeOrVerifyDomain(inspectedKey);
+      return await this.initializeOrVerifyDomain(repository, inspectedKey);
     } catch (error) {
       if (inspectedKey.state === "VALID") inspectedKey.key.fill(0);
       throw error;
@@ -119,6 +112,7 @@ export class SecretVaultBootstrap {
   }
 
   private async initializeOrVerifyDomain(
+    repository: SecretVaultInitializationRepository,
     inspectedKey: Awaited<ReturnType<SecretRootKeyFile["inspectExisting"]>>,
   ): Promise<{
     rootKey: Buffer;
@@ -128,8 +122,8 @@ export class SecretVaultBootstrap {
     let entryCount: number;
     try {
       [metadata, entryCount] = await Promise.all([
-        this.repository.readMetadata(),
-        this.repository.countEntries(),
+        repository.readMetadata(),
+        repository.countEntries(),
       ]);
     } catch (cause) {
       throw unavailable(cause);
@@ -151,7 +145,7 @@ export class SecretVaultBootstrap {
         verifierAuthenticationTag: verifier.authenticationTag,
       };
       try {
-        await this.repository.createMetadata(metadata);
+        await repository.createMetadata(metadata);
       } catch (cause) {
         rootKey.fill(0);
         throw unavailable(cause);
