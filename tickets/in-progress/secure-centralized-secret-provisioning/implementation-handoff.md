@@ -8,6 +8,8 @@
 - CR-023 source/test commit: `e3d9a06d3c0334f87a7a5864351034249b49071d`
 - CR-024 rework starting HEAD: `7c0b752663cec85a671ea9c530af753f537544e5`
 - CR-024 source/test commit: `14b0f7a96f82d1aa0d27a0858877207ad9953c94`
+- Round-30 importer rework starting HEAD: `eac929a1f1e411a72d232d961578a700bed12829`
+- Round-30 importer source/test commit: `ccc373f3755a30eca38ab50f8639539e6095385f`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -41,7 +43,8 @@
 - Implemented explicit Gemini independent-option configuration plus one explicit `GEMINI_SETUP_MODE`; there is no implicit priority or alternate-mode fallback. Exact AI Studio, Vertex Express, and Vertex Project SDK construction remains provider-owned.
 - Retained curated Gemini metadata independently from runtime selection; AI Studio alone may perform live Developer API enrichment and Vertex/no-selection paths remain curated-only.
 - Reconciled built-in provider Settings, search, managed Claude, AutoByteus remote discovery/invocation, and custom-provider create/probe/list/use/idempotent-delete against the one vault.
-- Reworked the explicit assignment-file importer to target only the current canonical application database. Preview is owned solely by `SecretVaultInspectionService`, opens an existing DB read-only/query-only, and never migrates, initializes, writes, repairs, or changes permissions.
+- Reworked the explicit assignment-file importer so `pnpm secrets:import` requires one absolute source and one explicit absolute SQLite `--database-url`. The CLI converts that raw URL exactly once through `ApplicationDatabaseLocation.fromAbsoluteFileUrl()`, discards it as raw authority, and carries one immutable `targetLocation` through preview, value-free display, confirmation, migration/bootstrap, and execution.
+- Removed importer AppConfig/ambient/profile/test-wrapper target authority. Preview remains owned solely by `SecretVaultInspectionService`, opens an existing DB read-only/query-only, and never migrates, initializes, writes, repairs, or changes permissions.
 - Removed the old default/e2e target resolver, separate Store CLI/setup command, second-backend interfaces, reset/provisioning machinery, and related obsolete unit coverage without compatibility adapters.
 - Updated GraphQL/value-free status projections, the concise Gemini Settings UI, generated web types, localized strings, Electron reset behavior, and focused tests.
 - Kept Docker source/topology unchanged; kept external Codex and both Claude modes unchanged; retained exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0.
@@ -58,7 +61,7 @@
 | `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, GraphQL/web Gemini files. | Implemented with truthful staged outcomes and no priority/fallback. |
 | `BEH-007` | Curated catalog continuity and bounded live metadata. | Existing metadata provisioning/resolver/provider owners plus updated status tests. | Preserved: AI Studio live/fallback; Vertex/no-selection curated-only and zero metadata secret/HTTP. |
 | `BEH-008` | Custom provider create/probe/list/use/delete with split metadata/credential custody. | `llm-provider-service.ts`, custom store/runtime sync, deterministic custom consumer mapping. | Implemented; create compensates metadata on secret-save failure, delete is retryable/idempotent, no persisted update surface added. |
-| `BEH-009` | Explicit importer targets current DB; read-only advisory preview; authoritative atomic execute. | Import CLI/source reader/service, positive alias registry, `SecretVaultInspectionService`, vault batch save. | Implemented; recognize-first, empty-as-absent, DASHSCOPE-only Qwen, no-overwrite/TTY/source immutability preserved. |
+| `BEH-009` | Explicit importer targets one URL-selected application DB; read-only advisory preview; authoritative atomic execute. | `RawImportCliRequest` -> `ApplicationDatabaseLocation.fromAbsoluteFileUrl()` -> exact `ImportRequest`; source reader/import service, positive alias registry, `SecretVaultInspectionService`, vault batch save. | Implemented; the raw URL exists only at the CLI boundary, the same immutable target is used throughout, and AppConfig/ambient/profile/test-wrapper authority is absent. Recognize-first, empty-as-absent, DASHSCOPE-only Qwen, no-overwrite/TTY/source immutability remain. |
 | `BEH-010` | No automatic legacy migration or runtime authority. | AppConfig non-secret projection, current custom-provider v2 parser, removal of migration/compatibility paths. | Implemented; legacy credential values remain untouched and excluded from authority. |
 | `BEH-011` | Normal server reads only ordinary `<data-dir>/.env`; test selection is application DB selection. | AppConfig/runtime contract and removal of separate E2E Store setup command. | Production boundary implemented. Test-runtime `.env.test` bootstrap/scenario reconciliation remains API/E2E-owned downstream work. |
 | `BEH-012` | Exactly Claude `cli` and `managed-secret` modes. | `claude-runtime-authentication-service.ts` and existing governed launch path. | Preserved; CLI is zero lookup, managed mode is exact-child delivery with no fallback. |
@@ -74,7 +77,7 @@
 - Schema/migration: `autobyteus-server-ts/prisma/schema.prisma`, `prisma/migrations/20260726090000_add_secret_vault/migration.sql`
 - Vault custody: `autobyteus-server-ts/src/secret-management/{bootstrap,crypto,persistence,root-key,services}`
 - Runtime/catalog/resolver: `secret-vault-runtime.ts`, `provider-credential-catalog.ts`, `secret-management-provider-api-key-resolver.ts`
-- Importer/inspection: `secret-management/provisioning/local-environment-*`, `secret-vault-inspection-service.ts`, import CLI
+- Importer/inspection: `application-database-location.ts`, `secret-management/provisioning/local-environment-*`, `secret-vault-inspection-service.ts`, import CLI, root `secrets:import` package command
 - Gemini/server provider behavior: `gemini-configuration-service.ts`, `llm-provider-service.ts`, GraphQL Gemini/provider types
 - Core point-of-use clients: `autobyteus-ts/src/{llm,multimedia,secrets,utils}`
 - Web Gemini/Settings: `GeminiSetupForm.vue`, `GeminiConfigurationOptionCard.vue`, runtime/store/GraphQL/localization files
@@ -82,7 +85,7 @@
 
 ## Important Assumptions
 
-- Supported production databases are SQLite file URLs and the canonical database path is resolved exactly once against the server app root.
+- Supported production databases are SQLite file URLs. A running server resolves configured relative URLs once against the server app root; the standalone importer rejects relative URLs and converts its required explicit absolute URL once without a hidden base directory.
 - The application database may be readable under its existing product permissions, but must be a regular non-symlink owned by the current user and not group/other writable; the paired root key must be owner-only.
 - Preview is advisory. Confirmed import runs normal migration/bootstrap and transactionally rechecks vault health and entry existence before applying create/skip/replace.
 - JavaScript cannot guarantee erasure of every engine-created string copy; the implementation limits lifetime, fills owned buffers, and never intentionally serializes values.
@@ -90,7 +93,7 @@
 
 ## Known Risks
 
-- API/E2E has not yet reconciled the tracked `.env.test`/test-runtime bootstrap, removed scenario-manifest flow, restart/reopen, Docker, real-provider, or packaged Electron matrix against round 28. These remain downstream coverage work after source review.
+- API/E2E has not yet reconciled the tracked `.env.test`/test-runtime bootstrap, explicit-URL importer journey, removed scenario-manifest/test-import-wrapper flow, restart/reopen, Docker, real-provider, or packaged Electron matrix against round 30. These remain downstream coverage work after source review.
 - Repository-wide Nuxt typecheck is not green at baseline. The 8 GiB run completed with 5,168 diagnostics across unrelated/generated/test paths; changed store nullability issues were corrected and focused tests plus the production web build are green. Existing generated Apollo optional-import and Electron-test typing diagnostics remain part of that baseline.
 - The root key and application DB are an inseparable backup/restore pair; losing either established component intentionally produces a closed recovery condition.
 - SQLite transaction-scoped initialization exclusion depends on the selected database remaining reachable for the bounded 10-second transaction. A contender that cannot acquire/complete within that bound fails value-free and may retry; it cannot bypass a live initializer.
@@ -113,7 +116,7 @@
 - Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup and old construction/authentication paths.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. `app-config.ts` is exactly 500 effective non-empty lines. The 226-line importer-service replacement and 261-line cohesive Gemini option-card delta were explicitly assessed; both remain single-owner units below 500 effective lines.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. Round-30 importer/config source files remain below 500 effective non-empty lines; the importer service is 168 effective non-empty lines and the CLI is 140.
 - Notes: production scans found no old Store selector/config/access mode, model construction target/context, provider-secret environment lookup, generic secret API, or custom-provider update command.
 
 ## Persisted Data Transition Check (When Applicable)
@@ -137,10 +140,13 @@
 - Server focused unit suite: 16 files / 188 tests passed, including vault lifecycle/inspection/importer/AppConfig/Gemini/provider/custom compensation/Claude/Prisma policy.
 - CR-023 focused rerun: 3 files / 17 tests passed. It proves stale/terminated key-only recovery, live-initializer serialization before key inspection, one key/domain pair, and established-domain missing-key fail-closed behavior.
 - CR-024 focused rerun: 3 files / 18 tests passed. It additionally proves established restart preserves metadata values, root-key bytes/stat, main DB and WAL/SHM/journal bytes/stat/absence, and an independent observer's `PRAGMA data_version`.
+- Round-30 focused importer/config/migration/vault suite: 6 files / 69 tests passed. It proves the exact raw/domain request shapes, one absolute-URL conversion, absence of downstream raw/duplicate authority, same-object inspection/confirmation/execution, invalid URL/option rejection, source immutability, read-only inspection, and existing vault lifecycle behavior.
+- Sanitized built-CLI explicit-target dry-run: passed. With an empty-base environment and a synthetic private assignment source, it reported `INITIALIZATION_REQUIRED` for the explicit target while leaving the DB, key, and sidecars absent.
 - Core LLM/media/provider suite: 76 files / 364 tests passed.
 - Web/Electron focused suite: 9 files / 70 tests passed.
 - `pnpm -C autobyteus-ts build`: passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts build`: passed, including Prisma generation, TypeScript, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` built-module smoke.
+- `pnpm -C autobyteus-server-ts typecheck`: attempted; the existing project configuration includes `tests` while retaining `rootDir: src`, producing repository-wide `TS6059` diagnostics before changed-code checking. Focused Vitest compilation and the production build are green.
 - The server production build and sanitized bootstrap smoke were rerun after CR-023 and passed.
 - `pnpm -C autobyteus-web build`: passed; only the existing large-chunk warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary`: passed.
@@ -164,7 +170,7 @@
 
 - Reconcile the round-28 `.env.test` and shared test-runtime bootstrap without changing the normal built server’s `<data-dir>/.env` contract; prove tracked template byte identity and removal of separate Store/scenario-manifest behavior.
 - Run a pre-feature DB migration and verify ordinary application records plus the two new tables; run fresh create/save/replace/remove/restart/tamper/missing-key/wrong-key/unsupported-version cases.
-- Prove importer preview byte-for-byte non-mutation for absent, pre-feature, ready, and every closed state, then confirmed migration/bootstrap/atomic create-skip-replace against only the selected DB.
+- Prove `pnpm secrets:import` is the sole command; invalid/missing/duplicate/relative URLs fail before target access; parent/AppConfig/source/cwd cannot redirect it; preview is byte-for-byte non-mutating for absent, pre-feature, ready, and every closed state; then confirm migration/bootstrap/atomic create-skip-replace against only the exact URL-selected DB.
 - Exercise provider Settings/catalog status under ready and every degraded vault state; verify no key readback or credential-dependent catalog disappearance.
 - Run Gemini save, first-time save-and-use, use-mode, active removal, partial-stage retry, restart, exact SDK constructor, selected-slot-only, metadata provenance, and no-fallback journeys.
 - Exercise custom provider probe/create/list/use/idempotent delete and partial-failure retry; verify no update mutation exists.
@@ -173,4 +179,4 @@
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Round-28 implementation source and implementation-scoped checks are complete, but the cumulative package must pass full implementation-source review first. Only then may `api_e2e_engineer` reconcile durable test/environment changes and execute the broader matrix before proportional test-code review.
+Yes. Round-30 implementation source and implementation-scoped checks are complete, but the cumulative package must pass full implementation-source review first. Only then may `api_e2e_engineer` reconcile durable test/environment changes and execute the broader matrix before proportional test-code review.
