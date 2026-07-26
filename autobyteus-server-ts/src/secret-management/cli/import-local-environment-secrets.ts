@@ -97,6 +97,13 @@ export const formatLocalImportResult = (result: LocalEnvironmentSecretImportResu
   `INSTRUCTION ${result.instructionCode}`,
 ].join('\n') + '\n';
 
+export const formatLocalImportFailure = (error: unknown): string => {
+  const projected = error instanceof LocalEnvironmentSecretImportError
+    ? error.toJSON()
+    : { code: 'IMPORT_BATCH_FAILED' as const };
+  return `LOCAL_SECRET_IMPORT_FAILED ${projected.code}\n`;
+};
+
 const createConfirmationPort = () => ({
   isDirectTty: (): boolean => Boolean(stdin.isTTY && stderr.isTTY),
   readChallenge: async (
@@ -141,10 +148,7 @@ const main = async (): Promise<void> => {
     process.stdout.write(result.output);
     if (result.blocked) process.exitCode = 1;
   } catch (error) {
-    const projected = error instanceof LocalEnvironmentSecretImportError
-      ? error.toJSON()
-      : { code: 'IMPORT_BATCH_FAILED' as const };
-    process.stderr.write(`LOCAL_SECRET_IMPORT_FAILED ${projected.code}\n`);
+    process.stderr.write(formatLocalImportFailure(error));
     process.exitCode = 1;
   }
 };

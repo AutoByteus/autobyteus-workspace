@@ -6,10 +6,15 @@ import { ApplicationDatabaseLocation } from '../../../src/config/application-dat
 import { secretId } from '../../../src/secret-management/domain/secret-id.js';
 import {
   createImportRequest,
+  formatLocalImportFailure,
   formatLocalImportPlan,
   formatLocalImportResult,
   parseLocalImportArguments,
+  runLocalEnvironmentImportCli,
 } from '../../../src/secret-management/cli/import-local-environment-secrets.js';
+import {
+  LocalEnvironmentSecretImportService,
+} from '../../../src/secret-management/provisioning/local-environment-secret-import-service.js';
 
 describe('local environment import CLI adapter', () => {
   const absoluteSource = path.resolve('/synthetic/operator/source-with-any-name');
@@ -109,6 +114,7 @@ describe('local environment import CLI adapter', () => {
     'postgresql://example.invalid/application',
     'file:/absolute/application.db?mode=ro',
     'file:/absolute/application.db#fragment',
+    'file:///tmp/review%00target.db',
   ])('rejects invalid explicit database URL %s before service construction', (databaseUrl) => {
     const raw = {
       sourcePath: absoluteSource,
@@ -117,6 +123,30 @@ describe('local environment import CLI adapter', () => {
       overwrite: false,
     };
     expect(() => createImportRequest(raw)).toThrowError('IMPORT_OPTIONS_INVALID');
+  });
+
+  it('rejects a decoded NUL before service/source/target access and emits no control byte', async () => {
+    const preview = vi.spyOn(LocalEnvironmentSecretImportService.prototype, 'preview');
+    const execute = vi.spyOn(LocalEnvironmentSecretImportService.prototype, 'execute');
+    let caught: unknown;
+
+    try {
+      await runLocalEnvironmentImportCli([
+        '--source', absoluteSource,
+        '--database-url', 'file:///tmp/review%00target.db',
+        '--dry-run',
+      ]);
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(preview).not.toHaveBeenCalled();
+    expect(execute).not.toHaveBeenCalled();
+    expect(caught).toMatchObject({ code: 'IMPORT_OPTIONS_INVALID' });
+    expect(formatLocalImportFailure(caught)).toBe(
+      'LOCAL_SECRET_IMPORT_FAILED IMPORT_OPTIONS_INVALID\n',
+    );
+    expect(formatLocalImportFailure(caught)).not.toContain('\0');
   });
 
   it('keeps secrets:import as the sole repository importer command', () => {

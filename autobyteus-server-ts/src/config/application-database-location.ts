@@ -63,7 +63,7 @@ export class ApplicationDatabaseLocation {
     } catch {
       throw new ApplicationDatabaseLocationError();
     }
-    if (!path.isAbsolute(databasePath)) {
+    if (!path.isAbsolute(databasePath) || databasePath.includes("\0")) {
       throw new ApplicationDatabaseLocationError();
     }
     return new ApplicationDatabaseLocation(path.resolve(databasePath));
