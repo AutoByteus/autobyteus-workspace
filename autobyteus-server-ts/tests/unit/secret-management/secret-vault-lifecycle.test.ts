@@ -29,6 +29,41 @@ const TABLES = `
   );
 `;
 
+type FileSnapshot = {
+  mode: number;
+  uid: number;
+  gid: number;
+  size: number;
+  mtimeMs: number;
+  ctimeMs: number;
+  bytes: Buffer;
+} | null;
+
+const snapshotFile = async (filePath: string): Promise<FileSnapshot> => {
+  try {
+    const stat = await fs.lstat(filePath);
+    return {
+      mode: stat.mode,
+      uid: stat.uid,
+      gid: stat.gid,
+      size: stat.size,
+      mtimeMs: stat.mtimeMs,
+      ctimeMs: stat.ctimeMs,
+      bytes: await fs.readFile(filePath),
+    };
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null;
+    throw error;
+  }
+};
+
+const snapshotDatabaseFamily = async (databasePath: string) => Object.fromEntries(
+  await Promise.all(['', '-wal', '-shm', '-journal'].map(async (suffix) => [
+    suffix || 'database',
+    await snapshotFile(`${databasePath}${suffix}`),
+  ])),
+);
+
 describe('one-database secret vault lifecycle', () => {
   let directory: string;
   let databasePath: string;
@@ -318,6 +353,47 @@ describe('secret vault initialization interruption safety', () => {
       });
       expect(await fixture.repository.readMetadata()).not.toBeNull();
     } finally {
+      await fixture.prisma.$disconnect();
+      await fs.rm(fixture.directory, { recursive: true, force: true });
+    }
+  });
+
+  it('verifies an established vault without rewriting the database, key, or sidecars', async () => {
+    const fixture = await createFixture();
+    const observer = new DatabaseSync(fixture.location.databasePath, { readOnly: true });
+    try {
+      const initialized = await new SecretVaultBootstrap(
+        fixture.location,
+        fixture.repository,
+      ).initializeOrVerify();
+      expect(initialized.health).toEqual({ state: 'READY' });
+      initialized.rootKey?.fill(0);
+
+      const metadataBefore = await fixture.repository.readMetadata();
+      const keyBefore = await snapshotFile(fixture.location.rootKeyPath);
+      const filesBefore = await snapshotDatabaseFamily(fixture.location.databasePath);
+      const dataVersionBefore = observer.prepare('PRAGMA data_version').get() as {
+        data_version: number;
+      };
+
+      const restarted = await new SecretVaultBootstrap(
+        fixture.location,
+        fixture.repository,
+      ).initializeOrVerify();
+
+      const dataVersionAfter = observer.prepare('PRAGMA data_version').get() as {
+        data_version: number;
+      };
+      expect(restarted.health).toEqual({ state: 'READY' });
+      expect(restarted.metadata).toEqual(metadataBefore);
+      expect(await fixture.repository.readMetadata()).toEqual(metadataBefore);
+      expect(await snapshotFile(fixture.location.rootKeyPath)).toEqual(keyBefore);
+      expect(await snapshotDatabaseFamily(fixture.location.databasePath)).toEqual(filesBefore);
+      expect(dataVersionAfter.data_version).toBe(dataVersionBefore.data_version);
+      restarted.rootKey?.fill(0);
+      keyBefore?.bytes.fill(0);
+    } finally {
+      observer.close();
       await fixture.prisma.$disconnect();
       await fs.rm(fixture.directory, { recursive: true, force: true });
     }

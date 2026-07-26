@@ -29,7 +29,7 @@ export type SecretVaultBatchResult = {
 
 type VaultTransactionClient = Pick<
   Prisma.TransactionClient,
-  "secretEntry" | "secretEncryptionMetadata" | "$executeRaw"
+  "secretEntry" | "secretEncryptionMetadata"
 >;
 
 export type SecretVaultInitializationRepository = Pick<
@@ -63,14 +63,10 @@ export class SecretVaultPrismaRepository {
   async withInitializationLock<T>(
     operation: (repository: SecretVaultInitializationRepository) => Promise<T>,
   ): Promise<T> {
+    // Prisma's SQLite interactive transaction owns the process-bound database lock
+    // before this callback runs. Do not issue a no-op write merely to acquire it:
+    // established verification must leave the database byte-for-byte unchanged.
     return this.prisma.$transaction(async (transaction) => {
-      // Force SQLite to acquire its process-bound write lock before key inspection.
-      // SQLite releases this lock if the initializer terminates, unlike a sentinel file.
-      await transaction.$executeRaw`
-        UPDATE "secret_encryption_metadata"
-           SET "singleton_id" = "singleton_id"
-         WHERE "singleton_id" = 1
-      `;
       const lockedRepository: SecretVaultInitializationRepository = {
         readMetadata: () => this.readMetadataFrom(transaction),
         countEntries: () => this.countEntriesFrom(transaction),
