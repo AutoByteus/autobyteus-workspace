@@ -4,6 +4,8 @@
 
 - Round-28 implementation starting HEAD: `a3f51821019da01d3867ee782f18af9b44c60941`
 - Round-28 implementation source/test commit: `0564559298ccf21267581cb4feec88770c72e7ce`
+- CR-023 rework starting HEAD: `4d0ee81754b6b8329fe3b5ead2ef7c20ead5ed33`
+- CR-023 source/test commit: `e3d9a06d3c0334f87a7a5864351034249b49071d`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -30,6 +32,7 @@
 
 - Replaced the separate Local Store database/configuration/access-mode subsystem with two Prisma-managed secret tables in the one application SQLite database selected by canonical `DATABASE_URL`.
 - Added a database-adjacent 32-byte owner-only root-key sidecar, staged first initialization, metadata verifier, HKDF-SHA-256 per-entry derivation, and AES-256-GCM encryption with ID/domain/version-bound AAD.
+- Replaced the crash-persistent initialization sentinel with application-SQLite transaction-scoped exclusion. SQLite now releases initialization ownership automatically when a process terminates; key-only interrupted initialization resumes, while live initializers serialize before key inspection and publish one key/domain pair.
 - Added fail-closed vault bootstrap/runtime/health and one authorization-owning `SecretManagementService` for write-only save/replace, idempotent removal, status, point-of-use resolve, and atomic importer batches.
 - Kept the storage-neutral `ProviderApiKeyResolver`; concrete LLM/media clients resolve their intrinsic provider/slot lazily at SDK construction. Catalog and model structures remain credential-independent.
 - Implemented explicit Gemini independent-option configuration plus one explicit `GEMINI_SETUP_MODE`; there is no implicit priority or alternate-mode fallback. Exact AI Studio, Vertex Express, and Vertex Project SDK construction remains provider-owned.
@@ -46,7 +49,7 @@
 | --- | --- | --- | --- |
 | `BEH-001` | Credential-independent provider/model/catalog availability. | Built-in catalogs, `model-catalog-service`, `llm-provider-service`, core models/factories. | Implemented; unavailable custody affects status/invocation, not catalog rows. |
 | `BEH-002` | One application DB selected only by canonical `DATABASE_URL`. | `application-database-location.ts`, `app-config.ts`, Prisma schema/migration, `server-runtime.ts`. | Implemented; no second Store URL/config/access mode remains. |
-| `BEH-003` | DB-paired root key and authenticated per-entry encryption. | `secret-vault-bootstrap.ts`, `secret-root-key-file.ts`, `secret-vault-crypto.ts`, Prisma repository. | Implemented with owner/identity checks, verifier, fresh nonces, staged initialization, and value-free closed states. |
+| `BEH-003` | DB-paired root key, interruption-safe initialization, and authenticated per-entry encryption. | `secret-vault-bootstrap.ts`, `secret-root-key-file.ts`, `secret-vault-crypto.ts`, Prisma repository. | Implemented with transaction-lifetime exclusion, key-only recovery, live-initializer serialization, owner/identity checks, verifier, fresh nonces, and value-free closed states. |
 | `BEH-004` | Write-only provider Settings lifecycle and value-free health/status. | `SecretManagementService`, GraphQL secret/provider types, provider/web Settings stores. | Implemented; no value-read GraphQL/API surface exists. |
 | `BEH-005` | Provider-owned lazy point-of-use resolution. | Core `ProviderApiKeyResolver`, LLM/media factories and concrete clients, server resolver adapters. | Implemented; no model auth descriptor, construction target/context, environment fallback, or server service locator in core. |
 | `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, GraphQL/web Gemini files. | Implemented with truthful staged outcomes and no priority/fallback. |
@@ -87,6 +90,7 @@
 - API/E2E has not yet reconciled the tracked `.env.test`/test-runtime bootstrap, removed scenario-manifest flow, restart/reopen, Docker, real-provider, or packaged Electron matrix against round 28. These remain downstream coverage work after source review.
 - Repository-wide Nuxt typecheck is not green at baseline. The 8 GiB run completed with 5,168 diagnostics across unrelated/generated/test paths; changed store nullability issues were corrected and focused tests plus the production web build are green. Existing generated Apollo optional-import and Electron-test typing diagnostics remain part of that baseline.
 - The root key and application DB are an inseparable backup/restore pair; losing either established component intentionally produces a closed recovery condition.
+- SQLite transaction-scoped initialization exclusion depends on the selected database remaining reachable for the bounded 10-second transaction. A contender that cannot acquire/complete within that bound fails value-free and may retry; it cannot bypass a live initializer.
 - Existing downstream-owned documentation/reports/evidence remain dirty and may describe historical architectures. They were intentionally preserved for their owning stages.
 - `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release recheck dependency only, not legal clearance or an authentication redesign. Any authoritative prohibition must return through solution design rather than silently changing either Claude mode.
 
@@ -128,10 +132,12 @@
 ## Local Implementation Checks Run
 
 - Server focused unit suite: 16 files / 188 tests passed, including vault lifecycle/inspection/importer/AppConfig/Gemini/provider/custom compensation/Claude/Prisma policy.
+- CR-023 focused rerun: 3 files / 17 tests passed. It proves stale/terminated key-only recovery, live-initializer serialization before key inspection, one key/domain pair, and established-domain missing-key fail-closed behavior.
 - Core LLM/media/provider suite: 76 files / 364 tests passed.
 - Web/Electron focused suite: 9 files / 70 tests passed.
 - `pnpm -C autobyteus-ts build`: passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts build`: passed, including Prisma generation, TypeScript, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` built-module smoke.
+- The server production build and sanitized bootstrap smoke were rerun after CR-023 and passed.
 - `pnpm -C autobyteus-web build`: passed; only the existing large-chunk warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary`: passed.
 - `pnpm -C autobyteus-web guard:localization-boundary`: passed.
