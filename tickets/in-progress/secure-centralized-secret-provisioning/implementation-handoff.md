@@ -2,8 +2,8 @@
 
 ## Revision Identity
 
-- Round-26 implementation starting HEAD: `63c57237c5ad63afc9ff126ca7a1f01e3d7f2192`
-- Round-26 implementation source/test commit: `8771971101a06255b742eb980f0c8f801543990e`
+- Round-28 implementation starting HEAD: `a3f51821019da01d3867ee782f18af9b44c60941`
+- Round-28 implementation source/test commit: `0564559298ccf21267581cb4feec88770c72e7ce`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -14,138 +14,153 @@
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
 - Supplemental task artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/encrypted-secret-vault-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/gemini-setup-ui-ux-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/use-case-spine-validation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-architecture.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md` (historical-link tombstone only)
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
-- Historical downstream context, preserved without reset:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/api-e2e-test-review-report.md`
+- Historical downstream reports/evidence were preserved without reset and are not treated as target authority.
 
 ## What Changed
 
-- Replaced the single selected-mode Gemini Settings mutation and UI with three independent configuration options: AI Studio, Vertex Express, and Vertex Project.
-- Added option-scoped `saveGeminiConfigurationOption` and `removeGeminiConfigurationOption` GraphQL operations. Responses contain a closed operation, the addressed option, and the independently derived effective mode.
-- Kept one fixed-priority selector as the sole runtime authority: configured Vertex Express, then complete Vertex Project, then configured AI Studio, then unconfigured.
-- `GeminiConfigurationService` now changes only the addressed option. Saving a lower-priority option does not clear or disable another option, and explicit removal is idempotent.
-- Settings status now projects value-free configured/missing state for each option plus the current effective mode. It contains no raw value, persisted selector, last-saved field, cleanup status, or reconciliation result.
-- The web Settings surface renders all three option cards simultaneously, identifies configured options separately from the effective option, keeps API-key editors write-only, exposes explicit per-option removal, and serializes conflicting save/remove actions.
-- Split option-card rendering and Gemini mutation orchestration into focused helpers so changed production files remain within the source-size guardrails.
-- Regenerated the web GraphQL client from the built server schema and added English and Simplified Chinese UI messages for the independent-option flow.
-- Preserved the round-24 provider-owned point-of-use resolver architecture, exact Gemini SDK mapping, credential-independent catalogs, metadata separation, external Codex behavior, both Claude modes, importer/no-automatic-update behavior, unchanged Docker, and exact unpatched `repository_prisma@1.0.8`.
-- Did not implement CR-022 reconciliation or cross-option cleanup. Architecture round 26 expressly replaced that premise with the user-approved independent-option contract.
+- Replaced the separate Local Store database/configuration/access-mode subsystem with two Prisma-managed secret tables in the one application SQLite database selected by canonical `DATABASE_URL`.
+- Added a database-adjacent 32-byte owner-only root-key sidecar, staged first initialization, metadata verifier, HKDF-SHA-256 per-entry derivation, and AES-256-GCM encryption with ID/domain/version-bound AAD.
+- Added fail-closed vault bootstrap/runtime/health and one authorization-owning `SecretManagementService` for write-only save/replace, idempotent removal, status, point-of-use resolve, and atomic importer batches.
+- Kept the storage-neutral `ProviderApiKeyResolver`; concrete LLM/media clients resolve their intrinsic provider/slot lazily at SDK construction. Catalog and model structures remain credential-independent.
+- Implemented explicit Gemini independent-option configuration plus one explicit `GEMINI_SETUP_MODE`; there is no implicit priority or alternate-mode fallback. Exact AI Studio, Vertex Express, and Vertex Project SDK construction remains provider-owned.
+- Retained curated Gemini metadata independently from runtime selection; AI Studio alone may perform live Developer API enrichment and Vertex/no-selection paths remain curated-only.
+- Reconciled built-in provider Settings, search, managed Claude, AutoByteus remote discovery/invocation, and custom-provider create/probe/list/use/idempotent-delete against the one vault.
+- Reworked the explicit assignment-file importer to target only the current canonical application database. Preview is owned solely by `SecretVaultInspectionService`, opens an existing DB read-only/query-only, and never migrates, initializes, writes, repairs, or changes permissions.
+- Removed the old default/e2e target resolver, separate Store CLI/setup command, second-backend interfaces, reset/provisioning machinery, and related obsolete unit coverage without compatibility adapters.
+- Updated GraphQL/value-free status projections, the concise Gemini Settings UI, generated web types, localized strings, Electron reset behavior, and focused tests.
+- Kept Docker source/topology unchanged; kept external Codex and both Claude modes unchanged; retained exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-003` | Preserve runtime priority and exact SDK construction while intentionally replacing selected-mode Settings cleanup with independent option save/remove/status. | `autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.ts`; `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts`; web Gemini store/runtime/form files. | Implemented. Lower-priority saves remain configured without becoming effective while a valid higher-priority option remains. |
-| `BEH-005` | Keep value-free configuration state and serialize conflicting Settings operations. | Gemini GraphQL enums/status, `providerApiKeyGeminiActions.ts`, `GeminiConfigurationOptionCard.vue`. | Implemented. No saved key is returned or repopulated into an editor. |
-| `BEH-009`, `BEH-013` | Provider-owned lazy resolution and intrinsic AutoByteus gateway identity remain authoritative. | Existing round-24 core/provider/server resolver composition. | Preserved; round 26 adds no construction/authentication DTO, model credential field, or pre-resolution path. |
-| `BEH-001`, `BEH-010`, `BEH-011` | Store custody, target isolation, and backend extension boundaries remain unchanged. | Existing secret-management service/backend paths. | Preserved. Gemini secret options still use their catalog-bound consumers through management; Vertex Project remains non-secret operational configuration. |
-| `BEH-002`, `BEH-012` | Governed child hardening and exact two-mode Claude behavior remain; Codex stays external and excluded. | Existing child/Claude/Codex paths. | Preserved; no round-26 delta. |
-| `BEH-004`, `BEH-006`, `BEH-008`, `BEH-014`, `BEH-015` | Real-E2E Store separation, unchanged Docker, no automatic legacy update, explicit importer, and exact repository Prisma integration remain. | Existing test-support, Docker, importer, AppConfig, and package paths. | Preserved; no round-26 dependency, Docker, migration, or importer delta. |
+| `BEH-001` | Credential-independent provider/model/catalog availability. | Built-in catalogs, `model-catalog-service`, `llm-provider-service`, core models/factories. | Implemented; unavailable custody affects status/invocation, not catalog rows. |
+| `BEH-002` | One application DB selected only by canonical `DATABASE_URL`. | `application-database-location.ts`, `app-config.ts`, Prisma schema/migration, `server-runtime.ts`. | Implemented; no second Store URL/config/access mode remains. |
+| `BEH-003` | DB-paired root key and authenticated per-entry encryption. | `secret-vault-bootstrap.ts`, `secret-root-key-file.ts`, `secret-vault-crypto.ts`, Prisma repository. | Implemented with owner/identity checks, verifier, fresh nonces, staged initialization, and value-free closed states. |
+| `BEH-004` | Write-only provider Settings lifecycle and value-free health/status. | `SecretManagementService`, GraphQL secret/provider types, provider/web Settings stores. | Implemented; no value-read GraphQL/API surface exists. |
+| `BEH-005` | Provider-owned lazy point-of-use resolution. | Core `ProviderApiKeyResolver`, LLM/media factories and concrete clients, server resolver adapters. | Implemented; no model auth descriptor, construction target/context, environment fallback, or server service locator in core. |
+| `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, GraphQL/web Gemini files. | Implemented with truthful staged outcomes and no priority/fallback. |
+| `BEH-007` | Curated catalog continuity and bounded live metadata. | Existing metadata provisioning/resolver/provider owners plus updated status tests. | Preserved: AI Studio live/fallback; Vertex/no-selection curated-only and zero metadata secret/HTTP. |
+| `BEH-008` | Custom provider create/probe/list/use/delete with split metadata/credential custody. | `llm-provider-service.ts`, custom store/runtime sync, deterministic custom consumer mapping. | Implemented; create compensates metadata on secret-save failure, delete is retryable/idempotent, no persisted update surface added. |
+| `BEH-009` | Explicit importer targets current DB; read-only advisory preview; authoritative atomic execute. | Import CLI/source reader/service, positive alias registry, `SecretVaultInspectionService`, vault batch save. | Implemented; recognize-first, empty-as-absent, DASHSCOPE-only Qwen, no-overwrite/TTY/source immutability preserved. |
+| `BEH-010` | No automatic legacy migration or runtime authority. | AppConfig non-secret projection, current custom-provider v2 parser, removal of migration/compatibility paths. | Implemented; legacy credential values remain untouched and excluded from authority. |
+| `BEH-011` | Normal server reads only ordinary `<data-dir>/.env`; test selection is application DB selection. | AppConfig/runtime contract and removal of separate E2E Store setup command. | Production boundary implemented. Test-runtime `.env.test` bootstrap/scenario reconciliation remains API/E2E-owned downstream work. |
+| `BEH-012` | Exactly Claude `cli` and `managed-secret` modes. | `claude-runtime-authentication-service.ts` and existing governed launch path. | Preserved; CLI is zero lookup, managed mode is exact-child delivery with no fallback. |
+| `BEH-013` | External Codex account/home behavior unchanged. | Existing Codex App Server client. | Preserved; no Codex vault consumer or synthetic home. |
+| `BEH-014` | Governed-child `LOCAL_HARDENED` controls. | Existing child environment/file-root/redaction paths plus database/key deny paths in `server-runtime.ts`. | Preserved and extended to deny DB/key/sidecars; Codex remains excluded; no strong-isolation claim. |
+| `BEH-015` | AutoByteus remote discovery/invocation with one intrinsic key. | AutoByteus discovery service, agent backend/media construction, provider resolver. | Preserved; no endpoint fallback and credential replacement invalidates discovery generation. |
+| `BEH-016` | Exact safe `repository_prisma@1.0.8`, Prisma 5.22.0. | Root/server manifests and lock, policy probe, Prisma client factory. | Preserved unpatched; no production repository owner/import was added. |
+| `BEH-017` | Production-shaped Electron/Docker persistence and diagnosability. | Electron AppData reset, one-DB/key lifecycle, existing Docker volume/topology. | Implementation wiring complete; actual packaged/Docker lifecycle remains downstream executable evidence. |
 
 ## Key Files Or Areas
 
-- Server option policy: `autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.ts`
-- Server provider facade: `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts`
-- GraphQL status/mutations: `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts`
-- Web state/actions: `autobyteus-web/stores/llmProviderConfigSupport.ts`, `autobyteus-web/stores/llmProviderConfig.ts`
-- Web operation orchestration: `autobyteus-web/components/settings/providerApiKey/providerApiKeyGeminiActions.ts`, `autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts`
-- Web UI: `autobyteus-web/components/settings/providerApiKey/GeminiSetupForm.vue`, `autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionCard.vue`
-- GraphQL documents/generated client: `autobyteus-web/graphql/{queries,mutations}/llm_provider_*.ts`, `autobyteus-web/generated/graphql.ts`
+- Database identity/config: `autobyteus-server-ts/src/config/application-database-location.ts`, `app-config.ts`, `prisma-client-factory.ts`
+- Schema/migration: `autobyteus-server-ts/prisma/schema.prisma`, `prisma/migrations/20260726090000_add_secret_vault/migration.sql`
+- Vault custody: `autobyteus-server-ts/src/secret-management/{bootstrap,crypto,persistence,root-key,services}`
+- Runtime/catalog/resolver: `secret-vault-runtime.ts`, `provider-credential-catalog.ts`, `secret-management-provider-api-key-resolver.ts`
+- Importer/inspection: `secret-management/provisioning/local-environment-*`, `secret-vault-inspection-service.ts`, import CLI
+- Gemini/server provider behavior: `gemini-configuration-service.ts`, `llm-provider-service.ts`, GraphQL Gemini/provider types
+- Core point-of-use clients: `autobyteus-ts/src/{llm,multimedia,secrets,utils}`
+- Web Gemini/Settings: `GeminiSetupForm.vue`, `GeminiConfigurationOptionCard.vue`, runtime/store/GraphQL/localization files
+- Electron lifecycle: `autobyteus-web/electron/server/services/AppDataService.ts`
 
 ## Important Assumptions
 
-- A successful Settings command means the addressed option operation completed; it does not assert that the addressed option became effective.
-- Effective mode is always computed from current value-free state using fixed priority. No save-order authority or selector is stored.
-- AI Studio and Vertex Express key values remain write-only and are resolved only by their concrete provider at SDK creation.
-- Vertex Project/location remain non-secret operational settings and are usable only when both values are present.
+- Supported production databases are SQLite file URLs and the canonical database path is resolved exactly once against the server app root.
+- The application database may be readable under its existing product permissions, but must be a regular non-symlink owned by the current user and not group/other writable; the paired root key must be owner-only.
+- Preview is advisory. Confirmed import runs normal migration/bootstrap and transactionally rechecks vault health and entry existence before applying create/skip/replace.
+- JavaScript cannot guarantee erasure of every engine-created string copy; the implementation limits lifetime, fills owned buffers, and never intentionally serializes values.
+- Configured Gemini options and the explicit active mode are distinct; no save implies activation unless the user chooses the combined first-time action.
 
 ## Known Risks
 
-- API/E2E has not rerun the independent-option GraphQL/browser journey, restart persistence, Docker lifecycle, or real-provider matrix. Those remain downstream executable facts after source review.
-- The repository-wide Nuxt typecheck is not green at baseline. The 8 GiB run completed with 5,173 existing diagnostics across unrelated/generated/packaged/test paths. The changed-production-path filter found no Gemini production diagnostic; two nullable assertions in the changed store test were corrected afterward and the focused suite was rerun green.
-- Existing downstream-owned documentation still mentions the historical `setGeminiSetupConfig` API. It was intentionally preserved during implementation engineering and requires delivery-owned documentation refresh after the implementation/API-E2E gates.
-- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release recheck dependency only. It is not legal clearance or an authentication-mode redesign. An authoritative prohibition must return through solution design rather than silently changing either Claude mode.
+- API/E2E has not yet reconciled the tracked `.env.test`/test-runtime bootstrap, removed scenario-manifest flow, restart/reopen, Docker, real-provider, or packaged Electron matrix against round 28. These remain downstream coverage work after source review.
+- Repository-wide Nuxt typecheck is not green at baseline. The 8 GiB run completed with 5,168 diagnostics across unrelated/generated/test paths; changed store nullability issues were corrected and focused tests plus the production web build are green. Existing generated Apollo optional-import and Electron-test typing diagnostics remain part of that baseline.
+- The root key and application DB are an inseparable backup/restore pair; losing either established component intentionally produces a closed recovery condition.
+- Existing downstream-owned documentation/reports/evidence remain dirty and may describe historical architectures. They were intentionally preserved for their owning stages.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release recheck dependency only, not legal clearance or an authentication redesign. Any authoritative prohibition must return through solution design rather than silently changing either Claude mode.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: independent Gemini Settings options over the preserved provider-owned resolver/runtime priority.
-- Reviewed root-cause classification: the single selected-mode Settings contract and automatic cross-option cleanup conflicted with the newly user-approved independent-option behavior.
+- Reviewed change posture: clean-state security refactor and deletion of a duplicated persistence/configuration subsystem while preserving supported product behavior.
+- Reviewed root-cause classification: boundary/ownership duplication, loose shared authentication structures, and compatibility pressure.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; no new requirement/design gap was found.
-- Evidence / notes: focused server/web tests, production builds, schema/client generation, policy scans, rendered frontend inspection, and source-size checks completed.
+- Evidence / notes: one canonical database location, one repository, one root-key owner, one runtime service, narrow preview inspector, provider-owned resolver, and obsolete subsystem deletion are reflected in source and focused checks.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for the old Gemini selected-mode production/unit-test path.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup and old construction/authentication paths.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; the largest changed production file is 486 effective non-empty lines, and the initially oversized Gemini form was split into a 71-line coordinator and 181-line option card.
-- Notes: no compatibility mutation, persisted mode, reconciliation branch, cross-option cleanup helper, or fallback was added.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. `app-config.ts` is exactly 500 effective non-empty lines. The 226-line importer-service replacement and 261-line cohesive Gemini option-card delta were explicitly assessed; both remain single-owner units below 500 effective lines.
+- Notes: production scans found no old Store selector/config/access mode, model construction target/context, provider-secret environment lookup, generic secret API, or custom-provider update command.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Not Affected` for round 26; the cumulative legacy credential outcome remains explicit import/rebuild with no automatic transition.
-- Design-spec decision reference: `BEH-003`, `REQ-011`, `AC-001`, `AC-005`, and the Gemini/workload identity section.
+- Approved decision: ordinary application SQLite data is `Directly Usable — No Migration` beyond normal Prisma migration; superseded separate Local Store/test state and legacy plaintext credential authority are `Discard or Rebuild`.
+- Design-spec decision reference: BEH-002–003, BEH-009–011, REQ-002–005, REQ-011–013, persisted-data decision table.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: independent Gemini options reuse existing exact Store consumers and existing non-secret project/location keys. No schema, SQL migration, Store format, alias, or selector was added.
-- Migration implementation and focused checks, only when `Migration Required`: `N/A`.
+- Direct-use evidence or discard/rebuild result, when applicable: the normal Prisma migration adds only `secret_entries` and `secret_encryption_metadata`; no reader/mover targets the superseded Store or legacy plaintext values.
+- Migration implementation and focused checks, only when `Migration Required`: Prisma client generation, reset/application of the new migration in focused server tests, and production build passed.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
-- `repository_prisma` remains exactly locked at unpatched `1.0.8`; `prisma` and `@prisma/client` remain `5.22.0`.
-- Docker files/topology/ports/four volumes/launcher have no round-26 delta.
-- Production scans found no `GEMINI_SETUP_MODE`, old selected-mode mutation/action, reconciliation error, or provider-secret environment read in the changed path.
-- No secret-bearing `.env`, Store, database, provider credential, or real account state was read or printed.
+- Server manifest requests `repository_prisma:^1.0.8`; canonical lock resolves only `1.0.8`; no `1.0.6/1.0.7` or package-patch residue exists.
+- `prisma` and `@prisma/client` remain `5.22.0`; the focused exact package policy probe passed 11/11.
+- Docker source/topology/ports/volumes/launcher have no implementation delta.
+- No real `.env`, `.env.test`, canonical application DB, root key, provider secret, external account state, or secret-bearing source file was inspected or printed.
 
 ## Local Implementation Checks Run
 
-- Server focused suite: 3 files / 29 tests passed.
-- Server production build: `pnpm -C autobyteus-server-ts run build:full` passed, including TypeScript compilation, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` built-module smoke.
-- Built server schema generation plus web GraphQL codegen passed.
-- Web focused suite: 4 files / 30 tests passed.
+- Server focused unit suite: 16 files / 188 tests passed, including vault lifecycle/inspection/importer/AppConfig/Gemini/provider/custom compensation/Claude/Prisma policy.
+- Core LLM/media/provider suite: 76 files / 364 tests passed.
+- Web/Electron focused suite: 9 files / 70 tests passed.
+- `pnpm -C autobyteus-ts build`: passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts build`: passed, including Prisma generation, TypeScript, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` built-module smoke.
+- `pnpm -C autobyteus-web build`: passed; only the existing large-chunk warning remains.
 - `pnpm -C autobyteus-web guard:web-boundary`: passed.
 - `pnpm -C autobyteus-web guard:localization-boundary`: passed.
 - `pnpm -C autobyteus-web audit:localization-literals`: passed with zero unresolved findings.
-- `pnpm -C autobyteus-web build`: passed. The existing large-chunk warning remains.
-- `git diff --check`, stale selected-mode/reconciliation scans, `GEMINI_SETUP_MODE` scan, and changed-source size checks passed.
-- Repository-wide `pnpm -C autobyteus-web exec nuxi typecheck`: attempted with an 8 GiB heap and remained non-green on the pre-existing 5,173-diagnostic baseline. It is not claimed as passed.
-- No API/E2E, real-provider, Docker, canonical Store, database, or packaged-application execution was performed or claimed by implementation engineering.
+- `git diff --check`, dependency/lock/patch scans, removed-path/environment/custom-update residue scans, Docker-diff scan, and changed-source size checks passed.
+- Repository-wide `pnpm -C autobyteus-web exec nuxi typecheck`: attempted with an 8 GiB heap and remained non-green on the existing 5,168-diagnostic baseline; it is not claimed as passed.
+- No API/E2E, real-provider, Docker daemon, canonical database/Store, or packaged-application execution was performed or claimed by implementation engineering.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Settings -> API Key Management -> Gemini.
-- Approved UI/UX, interaction, requirement, or design references: independent options, configured-options projection, fixed effective-mode indicator, option-scoped save/remove, write-only keys, and pending-operation serialization from `BEH-003`, `REQ-011`, `AC-001`, and `AC-005`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: the existing provider list/header, status badges, provider editor controls, spacing, focus, disabled-state, and responsive Settings layout.
-- Project development / preview instructions and rendered surface used: production static web build served locally against an isolated built server using a synthetic empty data directory and non-secret operational configuration.
-- States, layouts, viewports, and interactions inspected: 710x738 responsive Settings viewport; Gemini selected; all three option cards present; effective mode `Unconfigured`; each option displayed `Not Configured`; empty save controls disabled; scrolled Vertex Express/Vertex Project layout; provider list and model counts remained visible.
-- Visual or interaction issues found and corrected: the initial monolithic form exceeded the proactive delta signal and was split into a focused option card. Key fields reset on refreshed snapshots, visibility buttons gained accessible labels, and all conflicting controls disable during save/remove.
-- Supporting evidence and remaining unverified states or limitations: `/Users/normy/.autobyteus/browser-artifacts/25c09f-1784804159075.png`. Configured/effective combinations and operation behavior are covered deterministically in component/runtime/store tests; real API/browser persistence remains for API/E2E.
+- Affected surfaces / journeys: Settings -> API Key Management -> Gemini configuration.
+- Approved UI/UX, interaction, requirement, or design references: `gemini-setup-ui-ux-spec.md`, BEH-006, REQ-010, AC-006.
+- Existing design system, shared components, and adjacent product surfaces reviewed: provider cards, status badges, editor controls, focus/disabled states, spacing, and responsive Settings layout.
+- Project development / preview instructions and rendered surface used: repository Nuxt development setup with a temporary isolated page rendering the actual `GeminiSetupForm`; the temporary page was removed after inspection.
+- States, layouts, viewports, and interactions inspected: 1440x1000 and 390x844; unconfigured/configured/active badges; one-editor-only expansion; automatic focus; independent save; explicit activation; global pending lock and re-enable.
+- Visual or interaction issues found and corrected: option-card indentation/layout, write-only input reset behavior, conflicting-control locking, and focused test expectations were corrected.
+- Supporting evidence and remaining unverified states or limitations: rendered wide/narrow surfaces were visually clean with no overflow. The isolated component intentionally ran without a backend, so real GraphQL persistence remains for downstream browser/API coverage. No screenshot was added to the repository.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Exercise GraphQL status with all options absent, each option alone, all options configured, and partial Vertex Project configuration.
-- Save AI Studio while Vertex Express remains configured; verify operation `SAVED`, AI Studio becomes configured, and effective mode remains Vertex Express.
-- Explicitly remove Vertex Express, then Vertex Project, then AI Studio; verify fixed-priority advancement and idempotent repeated removal.
-- Verify API-key editors never receive stored values and clear after every refreshed snapshot.
-- Exercise concurrent/double save/remove attempts and stable value-free errors.
-- Re-run restart/reopen persistence and the unchanged Docker same-volume lifecycle.
-- Re-run real Vertex Express LLM/audio/image, AI Studio LLM/live-or-curated metadata, external Codex, AutoByteus gateway, and both Claude modes under the existing coverage plan.
-- Preserve value-free evidence scanning and `LOCAL_HARDENED`-only claims; do not claim `STRONG_AGENT_ISOLATION`.
+- Reconcile the round-28 `.env.test` and shared test-runtime bootstrap without changing the normal built server’s `<data-dir>/.env` contract; prove tracked template byte identity and removal of separate Store/scenario-manifest behavior.
+- Run a pre-feature DB migration and verify ordinary application records plus the two new tables; run fresh create/save/replace/remove/restart/tamper/missing-key/wrong-key/unsupported-version cases.
+- Prove importer preview byte-for-byte non-mutation for absent, pre-feature, ready, and every closed state, then confirmed migration/bootstrap/atomic create-skip-replace against only the selected DB.
+- Exercise provider Settings/catalog status under ready and every degraded vault state; verify no key readback or credential-dependent catalog disappearance.
+- Run Gemini save, first-time save-and-use, use-mode, active removal, partial-stage retry, restart, exact SDK constructor, selected-slot-only, metadata provenance, and no-fallback journeys.
+- Exercise custom provider probe/create/list/use/idempotent delete and partial-failure retry; verify no update mutation exists.
+- Re-run AutoByteus replacement/discovery races, both Claude modes, external Codex continuity, governed child redaction/deny roots, and real OpenAI/Anthropic/Gemini/media/search capabilities where configured.
+- Run unchanged Docker same-volume DB/key restart/removal and the isolated full packaged Electron lifecycle, preserving `LOCAL_HARDENED`-only claims.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Round-26 implementation source and implementation-scoped checks are complete, but the cumulative package must pass another full implementation-source review first. Only then may `api_e2e_engineer` reconcile durable coverage and execute the broader matrix before proportional test-code review.
+Yes. Round-28 implementation source and implementation-scoped checks are complete, but the cumulative package must pass full implementation-source review first. Only then may `api_e2e_engineer` reconcile durable test/environment changes and execute the broader matrix before proportional test-code review.
