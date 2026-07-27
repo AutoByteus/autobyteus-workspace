@@ -74,10 +74,9 @@ const acquireCrossProcessLock = async (
         const stat = await fs.stat(lockPath);
         const ownerText = await fs.readFile(lockPath, "utf8").catch(() => "");
         const ownerPid = Number(ownerText.trim());
-        const deadOwner = Number.isSafeInteger(ownerPid)
-          && ownerPid > 0
-          && !isLiveProcess(ownerPid);
-        const ownerMissingAndStale = !Number.isSafeInteger(ownerPid)
+        const hasPidOwner = Number.isSafeInteger(ownerPid) && ownerPid > 0;
+        const deadOwner = hasPidOwner && !isLiveProcess(ownerPid);
+        const ownerMissingAndStale = !hasPidOwner
           && now - stat.mtimeMs > STALE_LOCK_MS;
         if (deadOwner || ownerMissingAndStale) {
           await fs.unlink(lockPath).catch((unlinkError) => {

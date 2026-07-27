@@ -240,6 +240,42 @@ describe('CustomProviderV1AppDataMigration', () => {
     await expect(fs.lstat(`${providerPath}.lock`)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
+  it('recovers an aged zero-byte lock left by the pre-migration provider writer', async () => {
+    await writeV1();
+    const lockPath = `${providerPath}.lock`;
+    await fs.writeFile(lockPath, Buffer.alloc(0), { mode: 0o600 });
+    const aged = new Date(Date.now() - 61_000);
+    await fs.utimes(lockPath, aged, aged);
+
+    await expect(migration().execute()).resolves.toMatchObject({
+      status: 'SUCCEEDED',
+      summary: { migratedCount: 1 },
+    });
+    await expect(fs.lstat(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
+  });
+
+  it('does not reclaim an aged lock owned by a live positive PID', async () => {
+    const source = await writeV1();
+    const lockPath = `${providerPath}.lock`;
+    await fs.writeFile(lockPath, `${process.pid}\n`, { mode: 0o600 });
+    const aged = new Date(Date.now() - 61_000);
+    await fs.utimes(lockPath, aged, aged);
+    let settled = false;
+    const run = migration().execute().finally(() => {
+      settled = true;
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 75));
+    expect(settled).toBe(false);
+    expect(await fs.readFile(providerPath)).toEqual(source);
+    await fs.unlink(lockPath);
+
+    await expect(run).resolves.toMatchObject({
+      status: 'SUCCEEDED',
+      summary: { migratedCount: 1 },
+    });
+  });
+
   it('deletes invalid or duplicate v1 without touching the vault', async () => {
     await writeV1(v1File([
       {
