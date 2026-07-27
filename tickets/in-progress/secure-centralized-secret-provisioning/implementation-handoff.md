@@ -26,6 +26,8 @@
 - Round-36 exhaustive scope-reset source/test commit: `7fa54b18da3c3950983ccab367d338b93dfd8a17`
 - CR-031 rework starting HEAD: `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd`
 - CR-031 source/test commit: `3afcf86b3cdd389ddf3506d205ad9fed3edf0a23`
+- Gemini UI refinement starting HEAD: `4bf6e7d18229336cd690497370f1a66dedaafc4a`
+- Gemini UI source/test/evidence commit: `b5657ae28b8c9a49a759196fd932e7ca7d043daa`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -52,6 +54,9 @@
 
 ## What Changed
 
+- Refined the existing three-option Gemini Settings presentation without changing its behavior contract. The previous stacked cards and repeated text badges/actions are now one compact divided list with a concise active-mode header, plain green configured dots, radio-style mode selection, and pencil/chevron configuration controls.
+- Preserved explicit labels for assistive technology and native hover titles for every icon-only action. The compact rows use 44px controls, visible keyboard focus, an active-row rail/tint, and a quiet `Not Configured` exception label rather than repeating `Configured`.
+- Split the option editor and API-key visibility control into focused components. Expanded editors retain secret non-prefill/clearing, initial focus, visible field labels, responsive project/location layout, Save/overwrite, first-time Save-and-use, and no standalone removal.
 - Corrected CR-031 by replacing the post-custom-provider-Delete whole AutoByteus catalog reload with the existing targeted `reloadLlmModelsForProvider(providerId, AUTOBYTEUS)` path. That path synchronizes the saved custom-provider runtime/catalog and removes the deleted provider without requiring independently governed AutoByteus remote discovery.
 - Preserved failure transparency: vault removal, provider-record deletion, and targeted custom runtime/catalog synchronization errors still propagate. No global AutoByteus reload error is swallowed, and no new coordination or fallback path was added.
 - Applied the Round-36 exhaustive `scope-audit.md` cleanup against the audited `3244a7c6...` source state. All 18 `RESTORE_BASE` paths are byte-identical to `origin/personal`, all three `REMOVE_FILE` paths are absent, and all 31 `PARTIAL_CLEANUP` paths were inspected and reconciled hunk-by-hunk without resetting retained work.
@@ -165,7 +170,7 @@
 - Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup, old construction/authentication paths, duplicate provider credential-status DTO/query/map/fallback, generic Gemini operation DTOs, standalone ordinary-provider/Gemini deletion surfaces, and the runtime v1-specific reconfiguration branch.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; provider Settings response types are derived from generated `GetProviderSettingsQuery` rather than maintained in parallel.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes` for implementation owners. The largest reconciled implementation owner is the restored 496-effective-line Claude session; every implementation delta is below 220 changed lines. The two existing localization data registries remain 596 effective lines but were reduced by six obsolete entries each and were not expanded or redesigned.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes` for implementation owners. The largest reconciled implementation owner is the restored 496-effective-line Claude session. The visual replacement in `GeminiConfigurationOptionCard.vue` crossed the changed-line split signal, so editor state/inputs/actions and the visibility control were extracted into focused 178- and 39-effective-line components; the resulting card is 224 effective lines and every changed implementation file remains below 500. The two existing localization data registries remain 596 effective lines and received only the required labels.
 - Notes: production scans found no old Store selector/config/access mode, model construction target/context, managed-provider ambient credential fallback, generic secret API, custom-provider update command, runtime v1 reader, backup/quarantine/recovery scanner, alternate migration source, shared production environment filter, ticket-created Claude authentication subsystem, standalone ordinary-provider removal, or standalone Gemini removal.
 
 ## Persisted Data Transition Check (When Applicable)
@@ -186,6 +191,10 @@
 
 ## Local Implementation Checks Run
 
+- Gemini UI focused Nuxt suite: 2 files / 10 tests passed (`GeminiSetupForm.spec.ts` and `ProviderAPIKeyManager.spec.ts`). Coverage preserves all three options, the exact active mode, configured/unconfigured semantics, icon action labels, single-editor focus, and existing Save/Save-and-use/Use-this-mode behavior.
+- Gemini UI `pnpm -C autobyteus-web build`: passed. The only warning is the existing large-chunk warning.
+- Gemini UI rendered inspection used the already-running project-supported `pnpm dev:test` browser surface at `127.0.0.1:3000`; starting a duplicate runtime was intentionally avoided after the command reported the existing listeners. Collapsed and expanded AI Studio/Vertex Project states, focus, icon visibility, 430px content width, and a synthetic 320px narrow container were inspected without saving or reading any credential.
+- Gemini UI structural checks: `git diff --check` passed. Effective non-empty lines are 90 (`GeminiSetupForm.vue`), 224 (`GeminiConfigurationOptionCard.vue`), 178 (`GeminiConfigurationOptionEditor.vue`), and 39 (`GeminiKeyVisibilityButton.vue`).
 - CR-031 focused server suite: 2 files / 16 tests passed. Coverage proves exact custom vault removal, provider-record deletion, targeted zero-model custom synchronization, Boolean-service completion despite a would-fail whole AutoByteus reload, zero remote-discovery use in the custom targeted owner, ordering, built-in rejection, idempotent missing cleanup, and propagation of intrinsic custom synchronization failure.
 - CR-031 `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`: passed.
 - CR-031 `pnpm -C autobyteus-server-ts build`: passed, including shared/core builds, Prisma 5.22.0 generation, server TypeScript, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` built-module smoke.
@@ -243,13 +252,16 @@
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Settings -> API Key Management -> provider selection, configured state, Save/create-or-overwrite, and subordinate LLM/audio/image/video model sections; Gemini option Save/overwrite, first-time Save-and-use, and Use-this-mode.
-- Approved UI/UX, interaction, requirement, or design references: BEH-001/004/006/008, REQ-001, the round-32 provider-centric design, and `gemini-setup-ui-ux-spec.md`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: provider sidebar rows/counts, status badges, key editor controls, capability headings, spacing, and the established Settings layout.
-- Project development / preview instructions and rendered surface used: Vue Test Utils rendered the affected components through the project Nuxt test harness; the production Nuxt static build also completed.
-- States, layouts, viewports, and interactions inspected: ordinary provider missing/configured/save states and Gemini option configure/use/pending states. Component assertions prove no ordinary-provider or Gemini removal control/event remains.
-- Visual or interaction issues found and corrected: obsolete remove buttons, pending flags, events, action handlers, confirmation helpers, and localized labels were removed together. Existing layout and styling were otherwise left unchanged.
-- Supporting evidence and remaining unverified states or limitations: component rendering/interaction tests passed, but no live browser was started because the worktree's configured downstream E2E state had to remain untouched. CR-031 is backend-only and adds no rendered delta. Real GraphQL persistence and browser interaction remain downstream API/E2E work; no live-render claim is made.
+- Affected surfaces / journeys: Settings -> API Key Management -> Gemini, including the three connection options, configured/unconfigured state, active-mode selection, option editing, Save/overwrite, first-time Save-and-use, and Use-this-mode.
+- Approved UI/UX, interaction, requirement, or design references: BEH-001/004/006/008, REQ-001, the round-32 provider-centric design, `gemini-setup-ui-ux-spec.md`, and the user's implementation-stage visual feedback.
+- Existing design system, shared components, and adjacent product surfaces reviewed: provider sidebar status dots/counts, compact list rows, blue selection treatment, key-editor controls, focus treatment, touch-target sizing, spacing, and the established Settings layout.
+- Project development / preview instructions and rendered surface used: the existing project-supported `pnpm dev:test` browser runtime at `http://127.0.0.1:3000/settings`, plus the Nuxt test harness and production build. The attempted launcher correctly reported that the runtime was already active, so inspection used the existing instance rather than disrupting it.
+- States, layouts, viewports, and interactions inspected: collapsed configured inactive AI Studio, configured active Vertex Express, unconfigured Vertex Project; expanded AI Studio API-key editor and Vertex Project fields; initial focus; visibility icon; active/inactive mode icons; 430px content width; and a 320px narrow container with no horizontal overflow.
+- Visual or interaction issues found and corrected: removed the redundant Connection options card, repeated `Configured` and `Active` pills, large text buttons, per-option descriptive text, and excessive vertical padding. Replaced them with a compact active-mode bar, plain green configured dots, radio-style selection, pencil/chevron controls with native titles and accessible labels, and responsive editor layout. Live inspection also caught non-rendering icon-font classes, which were replaced with deterministic inline SVG.
+- Supporting evidence and remaining unverified states or limitations:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/357-implementation-gemini-compact-ui.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/358-implementation-gemini-expanded-editor.png`
+  - No credential was entered, saved, read, or exposed during implementation inspection. Real GraphQL persistence and independent browser/API coverage remain downstream API/E2E work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
