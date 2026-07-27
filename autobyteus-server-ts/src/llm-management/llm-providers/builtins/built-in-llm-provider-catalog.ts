@@ -14,7 +14,7 @@ export class BuiltInLlmProviderCatalog {
       providerType: providerId,
       isCustom: false,
       baseUrl: null,
-      credentialStatus: null,
+      apiKeyConfigured: false,
       status: 'NOT_APPLICABLE',
       statusMessage: null,
     };

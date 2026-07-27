@@ -1,47 +1,53 @@
 import { defineStore } from 'pinia'
-import { getApolloClient } from '~/utils/apolloClient'
 import {
-  GET_LLM_PROVIDER_CREDENTIAL_STATUS,
-  GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
-  GET_GEMINI_SETUP_CONFIG,
-} from '~/graphql/queries/llm_provider_queries'
-import {
-  CREATE_CUSTOM_LLM_PROVIDER,
-  DELETE_CUSTOM_LLM_PROVIDER,
-  PROBE_CUSTOM_LLM_PROVIDER,
-  REMOVE_LLM_PROVIDER_API_KEY,
-  SET_LLM_PROVIDER_API_KEY,
+  CREATE_CUSTOM_PROVIDER,
+  DELETE_CUSTOM_PROVIDER,
+  PROBE_CUSTOM_PROVIDER,
   RELOAD_LLM_MODELS,
   RELOAD_LLM_PROVIDER_MODELS,
-  REMOVE_GEMINI_CONFIGURATION_OPTION,
-  SAVE_GEMINI_CONFIGURATION_OPTION,
-  ACTIVATE_GEMINI_CONFIGURATION_OPTION,
-  SAVE_AND_ACTIVATE_GEMINI_CONFIGURATION_OPTION,
+  REMOVE_GEMINI_CONFIGURATION,
+  REMOVE_PROVIDER_API_KEY,
+  SAVE_GEMINI_AI_STUDIO,
+  SAVE_GEMINI_VERTEX_EXPRESS,
+  SAVE_GEMINI_VERTEX_PROJECT,
+  SAVE_PROVIDER_API_KEY,
+  USE_GEMINI_MODE,
 } from '~/graphql/mutations/llm_provider_mutations'
+import {
+  GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
+  GET_GEMINI_SETUP_CONFIG,
+  GET_PROVIDER_SETTINGS,
+} from '~/graphql/queries/llm_provider_queries'
 import type { LLMProvider } from '~/types/llm'
+import { getApolloClient } from '~/utils/apolloClient'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import {
   defaultGeminiSetup,
-  geminiOptionMutationVariables,
-  replaceProviderConfiguredState,
-  resolveGeminiActiveCredentialStatus,
-  resolveGeminiProviderConfiguredState,
-  syncProviderConfiguredState,
-  type CredentialStatus,
+  type CatalogProviderRecord,
   type CustomLlmProviderDraftInput,
   type CustomLlmProviderProbeResult,
-  type GeminiConfigurationOperationResult,
   type GeminiConfigurationOption,
   type GeminiOptionSaveInput,
-  type LLMProviderConfig,
-  type ModelInfo,
+  type GeminiSetupConfigState,
+  type ProviderSettingsGroup,
   type ProviderWithModels,
 } from './llmProviderConfigSupport'
-export type * from './llmProviderConfigSupport'
+export * from './llmProviderConfigSupport'
 
-type GeminiMutationDocument =
-  | typeof ACTIVATE_GEMINI_CONFIGURATION_OPTION
-  | typeof SAVE_AND_ACTIVATE_GEMINI_CONFIGURATION_OPTION
+const requireMutationSuccess = (
+  data: Record<string, unknown> | null | undefined,
+  errors: readonly { message: string }[] | undefined,
+  key: string,
+): void => {
+  throwGraphqlErrors(errors)
+  if (data?.[key] !== true) throw new Error(`${key} did not complete`)
+}
+
+const throwGraphqlErrors = (
+  errors: readonly { message: string }[] | null | undefined,
+): void => {
+  if (errors?.length) throw new Error(errors.map(error => error.message).join(', '))
+}
 
 export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
   state: () => ({
@@ -49,238 +55,182 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     audioProvidersWithModels: [] as ProviderWithModels[],
     imageProvidersWithModels: [] as ProviderWithModels[],
     videoProvidersWithModels: [] as ProviderWithModels[],
-    providerConfigs: {} as Record<string, LLMProviderConfig>,
+    providerSettingsGroups: [] as ProviderSettingsGroup[],
     isLoadingModels: false,
+    isLoadingProviderSettings: false,
     isReloadingModels: false,
     isReloadingProviderModels: false,
     reloadingProvider: null as string | null,
     hasFetchedProviders: false,
+    hasFetchedProviderSettings: false,
     modelRuntimeKind: 'autobyteus',
     geminiSetup: defaultGeminiSetup(),
   }),
   getters: {
     providers(state): string[] {
-      return state.providersWithModels.map((row) => row.provider.id)
+      return state.providersWithModels.map(({ provider }) => provider.id)
     },
     models(state): string[] {
-      return state.providersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+      return state.providersWithModels.flatMap(({ models }) =>
+        models.map(({ modelIdentifier }) => modelIdentifier))
     },
     audioModels(state): string[] {
-      return state.audioProvidersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+      return state.audioProvidersWithModels.flatMap(({ models }) =>
+        models.map(({ modelIdentifier }) => modelIdentifier))
     },
     imageModels(state): string[] {
-      return state.imageProvidersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+      return state.imageProvidersWithModels.flatMap(({ models }) =>
+        models.map(({ modelIdentifier }) => modelIdentifier))
     },
     videoModels(state): string[] {
-      return state.videoProvidersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+      return state.videoProvidersWithModels.flatMap(({ models }) =>
+        models.map(({ modelIdentifier }) => modelIdentifier))
     },
-    providerById(state): (providerId: string | null | undefined) => LlmProviderRecord | null {
-      return (providerId: string | null | undefined) => {
-        if (!providerId) return null
-        return state.providersWithModels.find((row) => row.provider.id === providerId)?.provider ?? null
-      }
+    providerById(state): (providerId: string | null | undefined) => CatalogProviderRecord | null {
+      return (providerId) => providerId
+        ? state.providersWithModels.find(({ provider }) => provider.id === providerId)?.provider ?? null
+        : null
     },
     providersWithModelsForSelection(state): ProviderWithModels[] {
-      return state.providersWithModels.filter((row) => row.models && row.models.length > 0)
+      return state.providersWithModels.filter(({ models }) => models.length > 0)
     },
     modelConfigSchemaByIdentifier(state): (modelIdentifier: string | null | undefined) => UiModelConfigSchema | null {
-      return (modelIdentifier: string | null | undefined) => {
+      return (modelIdentifier) => {
         if (!modelIdentifier) return null
-        for (const provider of state.providersWithModels) {
-          const model = provider.models.find((entry) => entry.modelIdentifier === modelIdentifier)
-          if (model?.configSchema) {
-            const normalized = normalizeModelConfigSchema(model.configSchema)
-            if (normalized && Object.keys(normalized).length > 0) {
-              return normalized
-            }
-          }
+        for (const { models } of state.providersWithModels) {
+          const schema = models.find((entry) => entry.modelIdentifier === modelIdentifier)?.configSchema
+          const normalized = schema ? normalizeModelConfigSchema(schema) : null
+          if (normalized && Object.keys(normalized).length > 0) return normalized
         }
         return null
       }
     },
     canonicalModels(state): string[] {
       const canonicalSet = new Set<string>()
-      state.providersWithModels.forEach((provider) => {
-        provider.models.forEach((model) => {
-          if (model.canonicalName) {
-            canonicalSet.add(model.canonicalName)
-          }
-        })
-      })
-      const models = Array.from(canonicalSet).sort()
-      models.unshift('default')
-      return models
+      state.providersWithModels.forEach(({ models }) => models.forEach(({ canonicalName }) => {
+        if (canonicalName) canonicalSet.add(canonicalName)
+      }))
+      return ['default', ...Array.from(canonicalSet).sort()]
     },
   },
   actions: {
     getProviderForModel(modelIdentifier: string): LLMProvider | null {
-      if (!modelIdentifier || !this.providersWithModels) {
-        return null
+      for (const { models } of this.providersWithModels) {
+        const model = models.find((entry) => entry.modelIdentifier === modelIdentifier)
+        if (model) return model.providerType
       }
-
-      for (const providerGroup of this.providersWithModels) {
-        const model = providerGroup.models.find((entry) => entry.modelIdentifier === modelIdentifier)
-        if (model) {
-          return model.providerType
-        }
-      }
-
       return null
     },
 
     getModelValue(modelIdentifier: string): string | null {
-      for (const providerGroup of this.providersWithModels) {
-        const model = providerGroup.models.find((entry) => entry.modelIdentifier === modelIdentifier)
-        if (model) {
-          return model.value
-        }
+      for (const { models } of this.providersWithModels) {
+        const model = models.find((entry) => entry.modelIdentifier === modelIdentifier)
+        if (model) return model.value
       }
       return null
     },
 
     getModelIdentifierByValue(value: string): string | null {
-      for (const providerGroup of this.providersWithModels) {
-        const model = providerGroup.models.find((entry) => entry.value === value)
-        if (model) {
-          return model.modelIdentifier
-        }
+      for (const { models } of this.providersWithModels) {
+        const model = models.find((entry) => entry.value === value)
+        if (model) return model.modelIdentifier
       }
       return null
     },
 
     async fetchProvidersWithModels(runtimeKind = 'autobyteus') {
       if (this.hasFetchedProviders && this.modelRuntimeKind === runtimeKind) return this.providersWithModels
-      this.isLoadingModels = true
-      const client = getApolloClient()
-
-      try {
-        const { data } = await client.query({
-          query: GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
-          variables: { runtimeKind },
-        })
-
-        this.providersWithModels = data?.availableLlmProvidersWithModels ?? []
-        this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? []
-        this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? []
-        this.videoProvidersWithModels = data?.availableVideoProvidersWithModels ?? []
-        this.providerConfigs = syncProviderConfiguredState(this.providersWithModels, this.providerConfigs)
-        this.modelRuntimeKind = runtimeKind
-        this.hasFetchedProviders = true
-        return this.providersWithModels
-      } catch (error) {
-        console.error('Failed to fetch providers and models:', error)
-        this.providersWithModels = []
-        this.audioProvidersWithModels = []
-        this.imageProvidersWithModels = []
-        this.videoProvidersWithModels = []
-        throw error
-      } finally {
-        this.isLoadingModels = false
-      }
+      return this.queryProviderCatalog(runtimeKind, false)
     },
 
     async reloadProvidersWithModels(options: { showLoading?: boolean; runtimeKind?: string } = {}) {
-      const { showLoading = true } = options
-      const runtimeKind = options.runtimeKind ?? this.modelRuntimeKind ?? 'autobyteus'
-      if (showLoading) {
-        this.isReloadingModels = true
-      }
-      const client = getApolloClient()
+      const runtimeKind = options.runtimeKind ?? this.modelRuntimeKind
+      return this.queryProviderCatalog(runtimeKind, true, options.showLoading ?? true)
+    },
 
+    async queryProviderCatalog(runtimeKind: string, networkOnly: boolean, showLoading = true) {
+      if (showLoading) this.isLoadingModels = true
       try {
-        const { data } = await client.query({
+        const { data } = await getApolloClient().query({
           query: GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
           variables: { runtimeKind },
-          fetchPolicy: 'network-only',
+          ...(networkOnly ? { fetchPolicy: 'network-only' as const } : {}),
         })
-
         this.providersWithModels = data?.availableLlmProvidersWithModels ?? []
         this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? []
         this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? []
         this.videoProvidersWithModels = data?.availableVideoProvidersWithModels ?? []
-        this.providerConfigs = syncProviderConfiguredState(this.providersWithModels, this.providerConfigs)
         this.modelRuntimeKind = runtimeKind
         this.hasFetchedProviders = true
         return this.providersWithModels
       } catch (error) {
-        console.error('Failed to reload providers and models:', error)
         this.providersWithModels = []
         this.audioProvidersWithModels = []
         this.imageProvidersWithModels = []
         this.videoProvidersWithModels = []
         throw error
       } finally {
-        if (showLoading) {
-          this.isReloadingModels = false
-        }
+        if (showLoading) this.isLoadingModels = false
+      }
+    },
+
+    async fetchProviderSettings(runtimeKind?: string, networkOnly = false) {
+      const effectiveRuntimeKind = runtimeKind ?? this.modelRuntimeKind
+      if (!networkOnly
+        && this.hasFetchedProviderSettings
+        && this.modelRuntimeKind === effectiveRuntimeKind) {
+        return this.providerSettingsGroups
+      }
+      this.isLoadingProviderSettings = true
+      try {
+        const { data } = await getApolloClient().query({
+          query: GET_PROVIDER_SETTINGS,
+          variables: { runtimeKind: effectiveRuntimeKind },
+          ...(networkOnly ? { fetchPolicy: 'network-only' as const } : {}),
+        })
+        this.providerSettingsGroups = data?.providerSettings ?? []
+        this.modelRuntimeKind = effectiveRuntimeKind
+        this.hasFetchedProviderSettings = true
+        return this.providerSettingsGroups
+      } catch (error) {
+        this.providerSettingsGroups = []
+        throw error
+      } finally {
+        this.isLoadingProviderSettings = false
       }
     },
 
     async reloadModels() {
       this.isReloadingModels = true
-
       try {
-        const client = getApolloClient()
-        const { data, errors } = await client.mutate({
+        const { data, errors } = await getApolloClient().mutate({
           mutation: RELOAD_LLM_MODELS,
-          variables: {
-            runtimeKind: this.modelRuntimeKind,
-          },
+          variables: { runtimeKind: this.modelRuntimeKind },
         })
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-        }
-
-        const responseMessage = data?.reloadLlmModels
-
-        if (responseMessage && responseMessage.includes('successfully')) {
-          await this.reloadProvidersWithModels()
-          return true
-        }
-
-        throw new Error(responseMessage || 'Failed to reload models')
-      } catch (error) {
-        console.error('Failed to reload models:', error)
-        throw error
+        throwGraphqlErrors(errors)
+        if (!data?.reloadLlmModels?.includes('successfully')) throw new Error('Failed to reload models')
+        await this.reloadProvidersWithModels({ showLoading: false })
+        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(this.modelRuntimeKind, true)
+        return true
       } finally {
         this.isReloadingModels = false
       }
     },
 
     async reloadModelsForProvider(providerId: string) {
-      if (!providerId) {
-        throw new Error('Provider is required to reload models.')
-      }
-
+      if (!providerId) throw new Error('Provider is required to reload models.')
       this.isReloadingProviderModels = true
       this.reloadingProvider = providerId
-
       try {
-        const client = getApolloClient()
-        const { data, errors } = await client.mutate({
+        const { data, errors } = await getApolloClient().mutate({
           mutation: RELOAD_LLM_PROVIDER_MODELS,
-          variables: {
-            providerId,
-            runtimeKind: this.modelRuntimeKind,
-          },
+          variables: { providerId, runtimeKind: this.modelRuntimeKind },
         })
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-        }
-
-        const responseMessage = data?.reloadLlmProviderModels
-
-        if (responseMessage && responseMessage.includes('successfully')) {
-          await this.reloadProvidersWithModels({ showLoading: false })
-          return true
-        }
-
-        throw new Error(responseMessage || 'Failed to reload provider models')
-      } catch (error) {
-        console.error(`Failed to reload models for provider ${providerId}:`, error)
-        throw error
+        throwGraphqlErrors(errors)
+        if (!data?.reloadLlmProviderModels?.includes('successfully')) throw new Error('Failed to reload provider models')
+        await this.reloadProvidersWithModels({ showLoading: false })
+        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(this.modelRuntimeKind, true)
+        return true
       } finally {
         this.isReloadingProviderModels = false
         this.reloadingProvider = null
@@ -288,271 +238,103 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     },
 
     async setLLMProviderApiKey(providerId: string, apiKey: string) {
-      try {
-        const client = getApolloClient()
-        const { data, errors } = await client.mutate({
-          mutation: SET_LLM_PROVIDER_API_KEY,
-          variables: { providerId, apiKey },
-        })
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-        }
-
-        const responseMessage = data?.setLlmProviderApiKey
-
-        if (responseMessage && responseMessage.includes('successfully')) {
-          const credentialStatus: CredentialStatus = {
-            vaultHealth: 'READY',
-            storageState: 'CONFIGURED',
-            instructionCode: null,
-          }
-          this.providerConfigs[providerId] = { credentialStatus }
-          this.providersWithModels = replaceProviderConfiguredState(
-            this.providersWithModels, providerId, credentialStatus,
-          )
-
-          if (providerId === 'AUTOBYTEUS') {
-            await this.reloadModels()
-          }
-          return true
-        }
-
-        throw new Error(responseMessage || 'Failed to set API key')
-      } catch (error) {
-        console.error('Failed to set provider API key:', error)
-        throw error
-      }
-    },
-
-    async removeLLMProviderApiKey(providerId: string) {
-      const client = getApolloClient()
-      const { data, errors } = await client.mutate({
-        mutation: REMOVE_LLM_PROVIDER_API_KEY,
-        variables: { providerId },
+      const { data, errors } = await getApolloClient().mutate({
+        mutation: SAVE_PROVIDER_API_KEY,
+        variables: { providerId, apiKey },
       })
-      if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-      }
-      const responseMessage = data?.removeLlmProviderApiKey
-      if (!responseMessage || !responseMessage.includes('successfully')) {
-        throw new Error(responseMessage || 'Failed to remove provider credential')
-      }
-      await this.reloadProvidersWithModels({ showLoading: false })
+      requireMutationSuccess(data, errors, 'saveProviderApiKey')
+      if (providerId === 'AUTOBYTEUS') await this.reloadModels()
+      await this.fetchProviderSettings(this.modelRuntimeKind, true)
       return true
     },
 
-    async getLLMProviderCredentialStatus(providerId: string) {
-      const currentValue = this.providersWithModels.find((row) => row.provider.id === providerId)?.provider.credentialStatus
-      if (currentValue) {
-        this.providerConfigs[providerId] = { credentialStatus: currentValue }
-        return currentValue
-      }
-
-      const client = getApolloClient()
-
-      try {
-        const { data } = await client.query({
-          query: GET_LLM_PROVIDER_CREDENTIAL_STATUS,
-          variables: { providerId },
-        })
-
-        const credentialStatus = data?.getLlmProviderCredentialStatus as CredentialStatus | null
-        this.providerConfigs[providerId] = { credentialStatus }
-        return credentialStatus
-      } catch (error) {
-        console.error(`Failed to get provider API key configured status for ${providerId}:`, error)
-        throw error
-      }
+    async removeLLMProviderApiKey(providerId: string) {
+      const { data, errors } = await getApolloClient().mutate({
+        mutation: REMOVE_PROVIDER_API_KEY,
+        variables: { providerId },
+      })
+      requireMutationSuccess(data, errors, 'removeProviderApiKey')
+      await this.fetchProviderSettings(this.modelRuntimeKind, true)
+      return true
     },
 
     async probeCustomProvider(input: CustomLlmProviderDraftInput) {
-      const client = getApolloClient()
-      const { data, errors } = await client.mutate({
-        mutation: PROBE_CUSTOM_LLM_PROVIDER,
+      const { data, errors } = await getApolloClient().mutate({
+        mutation: PROBE_CUSTOM_PROVIDER,
         variables: { input },
       })
-
-      if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-      }
-
-      return data?.probeCustomLlmProvider as CustomLlmProviderProbeResult
+      throwGraphqlErrors(errors)
+      if (!data?.probeCustomProvider) throw new Error('Failed to probe custom provider')
+      return data.probeCustomProvider as CustomLlmProviderProbeResult
     },
 
-    async createCustomProvider(input: CustomLlmProviderDraftInput, runtimeKind?: string) {
-      const resolvedRuntimeKind = runtimeKind ?? this.modelRuntimeKind
-      const client = getApolloClient()
-      const { data, errors } = await client.mutate({
-        mutation: CREATE_CUSTOM_LLM_PROVIDER,
-        variables: { input, runtimeKind: resolvedRuntimeKind },
+    async createCustomProvider(input: CustomLlmProviderDraftInput) {
+      const { data, errors } = await getApolloClient().mutate({
+        mutation: CREATE_CUSTOM_PROVIDER,
+        variables: { input },
       })
-
-      if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-      }
-
-      const provider = data?.createCustomLlmProvider as LlmProviderRecord | undefined
-      if (!provider) {
-        throw new Error('Failed to create custom provider')
-      }
-
-      await this.reloadProvidersWithModels({ showLoading: false, runtimeKind: resolvedRuntimeKind })
-      return provider
+      throwGraphqlErrors(errors)
+      const providerId = data?.createCustomProvider as string | undefined
+      if (!providerId) throw new Error('Failed to create custom provider')
+      await Promise.all([
+        this.reloadProvidersWithModels({ showLoading: false }),
+        this.fetchProviderSettings(this.modelRuntimeKind, true),
+      ])
+      return providerId
     },
 
-    async deleteCustomProvider(providerId: string, runtimeKind?: string) {
-      const resolvedRuntimeKind = runtimeKind ?? this.modelRuntimeKind
-      const client = getApolloClient()
-      const { data, errors } = await client.mutate({
-        mutation: DELETE_CUSTOM_LLM_PROVIDER,
-        variables: { providerId, runtimeKind: resolvedRuntimeKind },
+    async deleteCustomProvider(providerId: string) {
+      const { data, errors } = await getApolloClient().mutate({
+        mutation: DELETE_CUSTOM_PROVIDER,
+        variables: { providerId },
       })
-
-      if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-      }
-
-      const responseMessage = data?.deleteCustomLlmProvider as string | undefined
-      if (!responseMessage || !responseMessage.includes('successfully')) {
-        throw new Error(responseMessage || 'Failed to delete custom provider')
-      }
-
-      delete this.providerConfigs[providerId]
-      await this.reloadProvidersWithModels({ showLoading: false, runtimeKind: resolvedRuntimeKind })
+      requireMutationSuccess(data, errors, 'deleteCustomProvider')
+      await Promise.all([
+        this.reloadProvidersWithModels({ showLoading: false }),
+        this.fetchProviderSettings(this.modelRuntimeKind, true),
+      ])
       return true
     },
 
     async fetchGeminiSetupConfig() {
-      const client = getApolloClient()
-
-      try {
-        const { data } = await client.query({
-          query: GET_GEMINI_SETUP_CONFIG,
-          fetchPolicy: 'network-only',
-        })
-
-        this.geminiSetup = data?.getGeminiSetupConfig ?? defaultGeminiSetup()
-        return this.geminiSetup
-      } catch (error) {
-        console.error('Failed to fetch Gemini setup config:', error)
-        this.geminiSetup = defaultGeminiSetup()
-        throw error
-      }
+      const { data } = await getApolloClient().query({
+        query: GET_GEMINI_SETUP_CONFIG,
+        fetchPolicy: 'network-only',
+        errorPolicy: 'all',
+      })
+      if (!data?.getGeminiSetupConfig) throw new Error('Failed to fetch Gemini setup config')
+      this.geminiSetup = data.getGeminiSetupConfig
+      return this.geminiSetup
     },
 
     async saveGeminiConfigurationOption(
       input: GeminiOptionSaveInput,
-    ): Promise<GeminiConfigurationOperationResult> {
-      const client = getApolloClient()
-
-      try {
-        const { data, errors } = await client.mutate({
-          mutation: SAVE_GEMINI_CONFIGURATION_OPTION,
-          variables: geminiOptionMutationVariables(input),
-        })
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-        }
-
-        const result = data?.saveGeminiConfigurationOption as
-          | GeminiConfigurationOperationResult
-          | undefined
-        if (!result || result.operation !== 'SAVED' || result.option !== input.option) {
-          throw new Error('Failed to save Gemini configuration option')
-        }
-
-        await this.fetchGeminiSetupConfig()
-        this.syncGeminiProviderConfiguredState()
-        return result
-      } catch (error) {
-        console.error('Failed to save Gemini configuration option:', error)
-        throw error
-      }
+      activateAfterSave: boolean,
+    ): Promise<GeminiSetupConfigState> {
+      const command = input.option === 'AI_STUDIO'
+        ? { mutation: SAVE_GEMINI_AI_STUDIO, key: 'saveGeminiAiStudio', variables: { apiKey: input.apiKey, activateAfterSave } }
+        : input.option === 'VERTEX_EXPRESS'
+          ? { mutation: SAVE_GEMINI_VERTEX_EXPRESS, key: 'saveGeminiVertexExpress', variables: { apiKey: input.apiKey, activateAfterSave } }
+          : { mutation: SAVE_GEMINI_VERTEX_PROJECT, key: 'saveGeminiVertexProject', variables: { project: input.project, location: input.location, activateAfterSave } }
+      return this.runGeminiMutation(command.mutation, command.key, command.variables)
     },
 
-    async removeGeminiConfigurationOption(
-      option: GeminiConfigurationOption,
-    ): Promise<GeminiConfigurationOperationResult> {
-      const client = getApolloClient()
-      try {
-        const { data, errors } = await client.mutate({
-          mutation: REMOVE_GEMINI_CONFIGURATION_OPTION,
-          variables: { option },
-        })
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-        }
-
-        const result = data?.removeGeminiConfigurationOption as
-          | GeminiConfigurationOperationResult
-          | undefined
-        if (!result || result.operation !== 'REMOVED' || result.option !== option) {
-          throw new Error('Failed to remove Gemini configuration option')
-        }
-
-        await this.fetchGeminiSetupConfig()
-        this.syncGeminiProviderConfiguredState()
-        return result
-      } catch (error) {
-        console.error('Failed to remove Gemini configuration option:', error)
-        throw error
-      }
+    async activateGeminiConfigurationOption(option: GeminiConfigurationOption) {
+      return this.runGeminiMutation(USE_GEMINI_MODE, 'useGeminiMode', { mode: option })
     },
 
-    async activateGeminiConfigurationOption(
-      option: GeminiConfigurationOption,
-    ): Promise<GeminiConfigurationOperationResult> {
-      return this.runGeminiMutation(
-        ACTIVATE_GEMINI_CONFIGURATION_OPTION,
-        { option },
-        'activateGeminiConfigurationOption',
-        'ACTIVATED',
-        option,
-      )
+    async removeGeminiConfigurationOption(option: GeminiConfigurationOption) {
+      return this.runGeminiMutation(REMOVE_GEMINI_CONFIGURATION, 'removeGeminiConfiguration', { mode: option })
     },
 
-    async saveAndActivateGeminiConfigurationOption(
-      input: GeminiOptionSaveInput,
-    ): Promise<GeminiConfigurationOperationResult> {
-      return this.runGeminiMutation(
-        SAVE_AND_ACTIVATE_GEMINI_CONFIGURATION_OPTION,
-        geminiOptionMutationVariables(input),
-        'saveAndActivateGeminiConfigurationOption',
-        'SAVED_AND_ACTIVATED',
-        input.option,
-      )
-    },
-
-    async runGeminiMutation(
-      mutation: GeminiMutationDocument,
-      variables: Record<string, unknown>,
-      resultKey: string,
-      expectedOperation: GeminiConfigurationOperationResult['operation'],
-      option: GeminiConfigurationOption,
-    ): Promise<GeminiConfigurationOperationResult> {
-      const client = getApolloClient()
-      const { data, errors } = await client.mutate({ mutation, variables })
-      if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
-      }
-      const result = data?.[resultKey] as GeminiConfigurationOperationResult | undefined
-      if (!result || result.operation !== expectedOperation || result.option !== option) {
-        throw new Error('Gemini configuration operation did not complete')
-      }
-      await this.fetchGeminiSetupConfig()
-      this.syncGeminiProviderConfiguredState()
-      return result
-    },
-
-    syncGeminiProviderConfiguredState() {
-      const credentialStatus = resolveGeminiActiveCredentialStatus(this.geminiSetup)
-      this.providerConfigs.GEMINI = { credentialStatus }
-      this.providersWithModels = replaceProviderConfiguredState(
-        this.providersWithModels, 'GEMINI', credentialStatus,
-      )
-      return resolveGeminiProviderConfiguredState(this.geminiSetup)
+    async runGeminiMutation(mutation: unknown, key: string, variables: Record<string, unknown>) {
+      const { data, errors } = await getApolloClient().mutate({ mutation, variables })
+      throwGraphqlErrors(errors)
+      const state = data?.[key] as GeminiSetupConfigState | undefined
+      if (!state) throw new Error('Gemini configuration operation did not complete')
+      this.geminiSetup = state
+      await this.fetchProviderSettings(this.modelRuntimeKind, true)
+      return state
     },
   },
 })

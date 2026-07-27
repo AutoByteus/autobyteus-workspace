@@ -6,48 +6,61 @@ describe('LlmProviderService', () => {
   const builtInCatalog = {
     listProviders: vi.fn(),
     isBuiltInProviderId: vi.fn(),
-    getProvider: vi.fn(),
   };
-
   const customProviderStore = {
     listProviders: vi.fn(),
     getProviderById: vi.fn(),
     createProvider: vi.fn(),
     deleteProvider: vi.fn(),
   };
-
-  const customProviderRuntimeSyncService = {
-    getStatus: vi.fn(),
-  };
-
+  const customProviderRuntimeSyncService = { getStatus: vi.fn() };
   const modelCatalogService = {
     listLlmModels: vi.fn(),
+    listAudioModels: vi.fn(),
+    listImageModels: vi.fn(),
+    listVideoModels: vi.fn(),
     reloadLlmModels: vi.fn(),
     reloadLlmModelsForProvider: vi.fn(),
     clearAutobyteusRemoteModels: vi.fn(),
     invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement: vi.fn(),
     invalidateGeminiMetadata: vi.fn(),
   };
-
-  const discovery = {
-    probeEndpoint: vi.fn(),
-  };
-
+  const discovery = { probeEndpoint: vi.fn() };
   const secretManagement = {
     saveForConsumer: vi.fn(),
     removeForConsumer: vi.fn(),
     getStatusForConsumer: vi.fn(),
   };
-
   const secretVaultRuntime = {
     requireService: vi.fn(() => secretManagement),
     getHealth: vi.fn(),
   };
-
   const geminiConfigurationService = {
     getSetupStatus: vi.fn(),
     saveOptionConfiguration: vi.fn(),
+    activateOption: vi.fn(),
     removeOptionConfiguration: vi.fn(),
+  };
+
+  const openAiProvider = {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    providerType: LLMProvider.OPENAI,
+    isCustom: false,
+    baseUrl: null,
+    apiKeyConfigured: false,
+    status: 'NOT_APPLICABLE',
+    statusMessage: null,
+  };
+  const geminiProvider = {
+    id: 'GEMINI',
+    name: 'Gemini',
+    providerType: LLMProvider.GEMINI,
+    isCustom: false,
+    baseUrl: null,
+    apiKeyConfigured: false,
+    status: 'NOT_APPLICABLE',
+    statusMessage: null,
   };
 
   const createService = () => new LlmProviderService(
@@ -61,76 +74,31 @@ describe('LlmProviderService', () => {
   );
 
   beforeEach(() => {
-    builtInCatalog.listProviders.mockReset();
-    builtInCatalog.isBuiltInProviderId.mockReset();
-    builtInCatalog.getProvider.mockReset();
-    builtInCatalog.listProviders.mockReturnValue([
-      {
-        id: 'OPENAI',
-        name: 'OpenAI',
-        providerType: LLMProvider.OPENAI,
-        isCustom: false,
-        baseUrl: null,
-        apiKeyConfigured: true,
-        status: 'NOT_APPLICABLE',
-        statusMessage: null,
-      },
-    ]);
+    vi.clearAllMocks();
+    builtInCatalog.listProviders.mockReturnValue([openAiProvider, geminiProvider]);
     builtInCatalog.isBuiltInProviderId.mockImplementation(
-      (providerId: string) => providerId === 'OPENAI' || providerId === 'AUTOBYTEUS',
+      (providerId: string) => ['OPENAI', 'GEMINI', 'AUTOBYTEUS'].includes(providerId),
     );
-    builtInCatalog.getProvider.mockImplementation((providerId: string) => ({
-      id: providerId,
-      name: providerId === 'AUTOBYTEUS' ? 'AutoByteus' : 'OpenAI',
-      providerType: providerId,
-      isCustom: false,
-      baseUrl: null,
-      credentialStatus: null,
-      status: 'NOT_APPLICABLE',
-      statusMessage: null,
-    }));
-
-    customProviderStore.listProviders.mockReset();
-    customProviderStore.getProviderById.mockReset();
-    customProviderStore.createProvider.mockReset();
-    customProviderStore.deleteProvider.mockReset();
     customProviderStore.listProviders.mockResolvedValue([]);
     customProviderStore.getProviderById.mockResolvedValue(null);
     customProviderStore.deleteProvider.mockResolvedValue(undefined);
-
-    customProviderRuntimeSyncService.getStatus.mockReset();
     customProviderRuntimeSyncService.getStatus.mockReturnValue({
       providerId: 'provider_gateway',
       status: 'READY',
       message: null,
-      modelCount: 2,
+      modelCount: 1,
       preservedPreviousModels: false,
     });
-
-    modelCatalogService.listLlmModels.mockReset();
-    modelCatalogService.reloadLlmModels.mockReset();
-    modelCatalogService.reloadLlmModelsForProvider.mockReset();
-    modelCatalogService.clearAutobyteusRemoteModels.mockReset();
-    modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement.mockReset();
-    modelCatalogService.invalidateGeminiMetadata.mockReset();
     modelCatalogService.listLlmModels.mockResolvedValue([]);
-    modelCatalogService.reloadLlmModels.mockResolvedValue(undefined);
-    modelCatalogService.reloadLlmModelsForProvider.mockResolvedValue(2);
-
-    discovery.probeEndpoint.mockReset();
-    discovery.probeEndpoint.mockResolvedValue([
-      { id: 'model-a', name: 'Model A' },
-    ]);
-    secretManagement.saveForConsumer.mockReset();
-    secretManagement.removeForConsumer.mockReset();
-    secretManagement.getStatusForConsumer.mockReset();
-    secretManagement.getStatusForConsumer.mockResolvedValue('CONFIGURED');
-    secretVaultRuntime.requireService.mockClear();
-    secretVaultRuntime.getHealth.mockReset();
+    modelCatalogService.listAudioModels.mockResolvedValue([]);
+    modelCatalogService.listImageModels.mockResolvedValue([]);
+    modelCatalogService.listVideoModels.mockResolvedValue([]);
+    modelCatalogService.reloadLlmModelsForProvider.mockResolvedValue(1);
+    discovery.probeEndpoint.mockResolvedValue([{ id: 'model-a', name: 'Model A' }]);
+    secretManagement.saveForConsumer.mockResolvedValue(undefined);
+    secretManagement.removeForConsumer.mockResolvedValue(undefined);
     secretVaultRuntime.getHealth.mockResolvedValue({ state: 'READY', instructionCode: null });
-    geminiConfigurationService.getSetupStatus.mockReset();
-    geminiConfigurationService.saveOptionConfiguration.mockReset();
-    geminiConfigurationService.removeOptionConfiguration.mockReset();
+    secretManagement.getStatusForConsumer.mockResolvedValue('MISSING');
     geminiConfigurationService.getSetupStatus.mockResolvedValue({
       activeMode: null,
       selection: { kind: 'unconfigured' },
@@ -142,312 +110,150 @@ describe('LlmProviderService', () => {
     });
   });
 
-  it('rejects built-in provider name collisions after normalization', async () => {
-    const service = createService();
-
-    await expect(service.probeCustomProvider({
-      name: '  OpenAI  ',
-      providerType: 'OPENAI_COMPATIBLE',
-      baseUrl: 'https://gateway.example.com/v1/',
-      apiKey: 'synthetic-test-key',
-    })).rejects.toThrow("Provider name 'OpenAI' conflicts with existing provider 'OpenAI'.");
-
-    expect(discovery.probeEndpoint).not.toHaveBeenCalled();
-  });
-
-  it('projects all Gemini option states and their independent effective mode', async () => {
-    geminiConfigurationService.getSetupStatus.mockResolvedValue({
-      activeMode: 'VERTEX_EXPRESS',
-      selection: { kind: 'vertexExpress' },
-      aiStudioStatus: 'CONFIGURED',
-      vertexExpressStatus: 'CONFIGURED',
-      vertexProjectStatus: 'CONFIGURED',
-      project: 'synthetic-project',
-      location: 'global',
-    });
-
-    await expect(createService().getGeminiConfigurationStatus()).resolves.toEqual({
-      activeMode: 'VERTEX_EXPRESS',
-      aiStudioCredentialStatus: {
-        vaultHealth: 'READY',
-        storageState: 'CONFIGURED',
-        instructionCode: null,
-      },
-      vertexExpressCredentialStatus: {
-        vaultHealth: 'READY',
-        storageState: 'CONFIGURED',
-        instructionCode: null,
-      },
-      vertexProjectStatus: 'CONFIGURED',
-      vertexProject: 'synthetic-project',
-      vertexLocation: 'global',
-    });
-  });
-
-  it('invalidates optional Gemini metadata after an option-scoped save or remove', async () => {
-    geminiConfigurationService.saveOptionConfiguration.mockResolvedValue({
-      operation: 'SAVED',
-      option: 'AI_STUDIO',
-      outcome: 'SUCCEEDED',
-      optionStatus: 'CONFIGURED',
-      activeMode: 'VERTEX_EXPRESS',
-      configurationOutcome: 'SUCCEEDED',
-      modeOutcome: 'NOT_REQUESTED',
-      instructionCode: null,
-    });
-    geminiConfigurationService.removeOptionConfiguration.mockResolvedValue({
-      operation: 'REMOVED',
-      option: 'VERTEX_EXPRESS',
-      outcome: 'SUCCEEDED',
-      optionStatus: 'MISSING',
-      activeMode: 'AI_STUDIO',
-      configurationOutcome: 'SUCCEEDED',
-      modeOutcome: 'NOT_REQUESTED',
-      instructionCode: null,
-    });
-    const service = createService();
-
-    await expect(service.saveGeminiOptionConfiguration({
-      option: 'AI_STUDIO',
-      apiKey: 'synthetic-key',
-    })).resolves.toEqual({
-      operation: 'SAVED',
-      option: 'AI_STUDIO',
-      outcome: 'SUCCEEDED',
-      optionStatus: 'CONFIGURED',
-      activeMode: 'VERTEX_EXPRESS',
-      configurationOutcome: 'SUCCEEDED',
-      modeOutcome: 'NOT_REQUESTED',
-      instructionCode: null,
-    });
-    await expect(service.removeGeminiOptionConfiguration('VERTEX_EXPRESS')).resolves.toEqual({
-      operation: 'REMOVED',
-      option: 'VERTEX_EXPRESS',
-      outcome: 'SUCCEEDED',
-      optionStatus: 'MISSING',
-      activeMode: 'AI_STUDIO',
-      configurationOutcome: 'SUCCEEDED',
-      modeOutcome: 'NOT_REQUESTED',
-      instructionCode: null,
-    });
-
-    expect(geminiConfigurationService.saveOptionConfiguration).toHaveBeenCalledWith({
-      option: 'AI_STUDIO',
-      apiKey: 'synthetic-key',
-    });
-    expect(geminiConfigurationService.removeOptionConfiguration).toHaveBeenCalledWith(
-      'VERTEX_EXPRESS',
-    );
-    expect(modelCatalogService.invalidateGeminiMetadata).toHaveBeenCalledTimes(2);
-  });
-
-  it('preserves built-in provider rows when custody and optional model sources fail', async () => {
-    secretManagement.getStatusForConsumer.mockRejectedValue(
-      new Error('synthetic status failure'),
-    );
-    secretVaultRuntime.getHealth.mockRejectedValue(new Error('synthetic custody failure'));
-    modelCatalogService.listLlmModels.mockRejectedValue(
-      new Error('synthetic model-catalog failure'),
-    );
-    customProviderStore.listProviders.mockRejectedValue(
-      new Error('synthetic custom-provider failure'),
-    );
-
-    const result = await createService().listProvidersWithModels('autobyteus');
-
-    expect(result).toEqual([{
-      provider: expect.objectContaining({
-        id: 'OPENAI',
-        credentialStatus: {
-          vaultHealth: 'UNAVAILABLE',
-          storageState: null,
-          instructionCode: 'SECRET_VAULT_STATUS_UNAVAILABLE',
-        },
-      }),
-      models: [],
+  it('composes one provider row with four exact-ID model lists and one credential fact', async () => {
+    modelCatalogService.listLlmModels.mockResolvedValue([{
+      provider_id: 'OPENAI', name: 'GPT', modelIdentifier: 'gpt',
     }]);
+    modelCatalogService.listAudioModels.mockResolvedValue([{
+      provider: 'OPENAI', name: 'Whisper', modelIdentifier: 'whisper',
+    }]);
+    modelCatalogService.listImageModels.mockResolvedValue([{
+      provider: 'OPENAI', name: 'Image', modelIdentifier: 'image',
+    }]);
+    modelCatalogService.listVideoModels.mockResolvedValue([{
+      provider: 'GEMINI', name: 'Video', modelIdentifier: 'video',
+    }]);
+    secretManagement.getStatusForConsumer.mockResolvedValue('CONFIGURED');
+    geminiConfigurationService.getSetupStatus.mockResolvedValue({
+      activeMode: null,
+      selection: { kind: 'unconfigured' },
+      aiStudioStatus: 'MISSING',
+      vertexExpressStatus: 'CONFIGURED',
+      vertexProjectStatus: 'MISSING',
+      project: null,
+      location: null,
+    });
+
+    const result = await createService().listProviderSettings('autobyteus');
+
+    expect(result).toEqual([
+      expect.objectContaining({
+        provider: expect.objectContaining({ id: 'GEMINI', apiKeyConfigured: true }),
+        llmModels: [], audioModels: [], imageModels: [],
+        videoModels: [expect.objectContaining({ modelIdentifier: 'video' })],
+      }),
+      expect.objectContaining({
+        provider: expect.objectContaining({ id: 'OPENAI', apiKeyConfigured: true }),
+        llmModels: [expect.objectContaining({ modelIdentifier: 'gpt' })],
+        audioModels: [expect.objectContaining({ modelIdentifier: 'whisper' })],
+        imageModels: [expect.objectContaining({ modelIdentifier: 'image' })],
+        videoModels: [],
+      }),
+    ]);
+    expect(secretManagement.getStatusForConsumer).toHaveBeenCalledWith({
+      kind: 'llm', providerId: 'OPENAI', credentialSlot: 'apiKey',
+    });
   });
 
-  it('rejects existing custom provider name collisions after normalization', async () => {
-    customProviderStore.listProviders.mockResolvedValue([
-      {
-        id: 'provider_existing',
-        name: 'My Gateway',
-        providerType: LLMProvider.OPENAI_COMPATIBLE,
-        baseUrl: 'https://existing.example.com/v1',
-        apiKey: 'secret',
-      },
-    ]);
+  it('rejects orphan catalog rows instead of inventing provider authority', async () => {
+    modelCatalogService.listAudioModels.mockResolvedValue([{
+      provider: 'ORPHAN', name: 'Orphan', modelIdentifier: 'orphan',
+    }]);
+    await expect(createService().listProviderSettings('autobyteus'))
+      .rejects.toThrow('PROVIDER_SETTINGS_ORPHAN_MODEL');
+  });
 
-    const service = createService();
+  it('keeps provider catalogs credential-independent when custody is unavailable', async () => {
+    secretVaultRuntime.getHealth.mockResolvedValue({ state: 'LOCKED' });
+    modelCatalogService.listLlmModels.mockResolvedValue([{
+      provider_id: 'OPENAI', provider_name: 'OpenAI', provider_type: LLMProvider.OPENAI,
+      name: 'GPT', modelIdentifier: 'gpt',
+    }]);
+    const rows = await createService().listProvidersWithModels('autobyteus');
+    expect(rows.find(({ provider }) => provider.id === 'OPENAI')).toEqual(expect.objectContaining({
+      models: [expect.objectContaining({ modelIdentifier: 'gpt' })],
+    }));
+    expect(secretVaultRuntime.getHealth).not.toHaveBeenCalled();
+  });
 
-    await expect(service.probeCustomProvider({
-      name: '  my   gateway ',
-      providerType: 'OPENAI_COMPATIBLE',
+  it('probes custom providers with constant server type and returns only models', async () => {
+    await expect(createService().probeCustomProvider({
+      name: ' Internal Gateway ',
       baseUrl: 'https://gateway.example.com/v1/',
-      apiKey: 'synthetic-test-key',
-    })).rejects.toThrow("Provider name 'my gateway' conflicts with existing provider 'My Gateway'.");
+      apiKey: ' synthetic-key ',
+    })).resolves.toEqual({ discoveredModels: [{ id: 'model-a', name: 'Model A' }] });
+    expect(discovery.probeEndpoint).toHaveBeenCalledWith({
+      baseUrl: 'https://gateway.example.com/v1', apiKey: 'synthetic-key',
+    });
+  });
 
+  it('rejects normalized provider-name collisions before probing', async () => {
+    await expect(createService().probeCustomProvider({
+      name: ' openAI ', baseUrl: 'https://gateway.example.com/v1', apiKey: 'synthetic-key',
+    })).rejects.toThrow("conflicts with existing provider 'OpenAI'");
     expect(discovery.probeEndpoint).not.toHaveBeenCalled();
   });
 
-  it('creates custom providers, reloads the real cache path, and returns provider objects', async () => {
+  it('creates custom metadata and credential, returning only the assigned ID', async () => {
     customProviderStore.createProvider.mockResolvedValue({
-      id: 'provider_gateway',
-      name: 'Internal Gateway',
+      id: 'provider_gateway', name: 'Internal Gateway',
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'secret',
     });
-
-    const service = createService();
-    const result = await service.createCustomProvider({
-      name: '  Internal   Gateway ',
-      providerType: 'OPENAI_COMPATIBLE',
-      baseUrl: 'https://gateway.example.com/v1/',
-      apiKey: ' secret ',
-    }, 'autobyteus');
-
-    expect(discovery.probeEndpoint).toHaveBeenCalledWith({
-      baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'secret',
-    });
+    await expect(createService().createCustomProvider({
+      name: 'Internal Gateway', baseUrl: 'https://gateway.example.com/v1', apiKey: 'synthetic-key',
+    })).resolves.toBe('provider_gateway');
     expect(customProviderStore.createProvider).toHaveBeenCalledWith({
-      name: 'Internal Gateway',
-      providerType: LLMProvider.OPENAI_COMPATIBLE,
+      name: 'Internal Gateway', providerType: LLMProvider.OPENAI_COMPATIBLE,
       baseUrl: 'https://gateway.example.com/v1',
     });
     expect(secretManagement.saveForConsumer).toHaveBeenCalledWith({
       consumer: { kind: 'llm', providerId: 'provider_gateway', credentialSlot: 'apiKey' },
       value: expect.anything(),
     });
-    expect(modelCatalogService.reloadLlmModelsForProvider).toHaveBeenCalledWith('provider_gateway', 'autobyteus');
-    expect(result).toEqual(expect.objectContaining({
-      id: 'provider_gateway',
-      name: 'Internal Gateway',
-      providerType: LLMProvider.OPENAI_COMPATIBLE,
-      isCustom: true,
-      baseUrl: 'https://gateway.example.com/v1',
-      credentialStatus: {
-        vaultHealth: 'READY', storageState: 'CONFIGURED', instructionCode: null,
-      },
-      status: 'READY',
-      statusMessage: null,
-    }));
   });
 
   it('compensates custom metadata when credential persistence fails', async () => {
-    customProviderStore.createProvider.mockResolvedValue({
-      id: 'provider_gateway',
-      name: 'Internal Gateway',
-      providerType: LLMProvider.OPENAI_COMPATIBLE,
-      baseUrl: 'https://gateway.example.com/v1',
-    });
+    customProviderStore.createProvider.mockResolvedValue({ id: 'provider_gateway' });
     secretManagement.saveForConsumer.mockRejectedValue(new Error('synthetic vault failure'));
-
     await expect(createService().createCustomProvider({
-      name: 'Internal Gateway',
-      providerType: 'OPENAI_COMPATIBLE',
-      baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'synthetic-test-key',
-    }, 'autobyteus')).rejects.toThrow('synthetic vault failure');
-
-    expect(customProviderStore.deleteProvider).toHaveBeenCalledWith('provider_gateway');
-    expect(modelCatalogService.reloadLlmModelsForProvider).not.toHaveBeenCalled();
-  });
-
-  it('deletes saved custom providers and triggers a full authoritative refresh', async () => {
-    customProviderStore.getProviderById.mockResolvedValue({
-      id: 'provider_gateway',
-      name: 'Internal Gateway',
-      providerType: LLMProvider.OPENAI_COMPATIBLE,
-      baseUrl: 'https://gateway.example.com/v1',
-    });
-
-    const service = createService();
-    const deletedName = await service.deleteCustomProvider('provider_gateway', 'autobyteus');
-
-    expect(customProviderStore.deleteProvider).toHaveBeenCalledWith('provider_gateway');
-    expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
-      kind: 'llm', providerId: 'provider_gateway', credentialSlot: 'apiKey',
-    });
-    expect(modelCatalogService.reloadLlmModels).toHaveBeenCalledWith('autobyteus');
-    expect(modelCatalogService.reloadLlmModelsForProvider).not.toHaveBeenCalled();
-    expect(deletedName).toBe('Internal Gateway');
-  });
-
-  it('keeps custom metadata retryable when credential removal fails', async () => {
-    customProviderStore.getProviderById.mockResolvedValue({
-      id: 'provider_gateway',
-      name: 'Internal Gateway',
-      providerType: LLMProvider.OPENAI_COMPATIBLE,
-      baseUrl: 'https://gateway.example.com/v1',
-    });
-    secretManagement.removeForConsumer.mockRejectedValueOnce(new Error('synthetic vault failure'));
-    const service = createService();
-
-    await expect(service.deleteCustomProvider('provider_gateway', 'autobyteus'))
-      .rejects.toThrow('synthetic vault failure');
-    expect(customProviderStore.deleteProvider).not.toHaveBeenCalled();
-
-    await expect(service.deleteCustomProvider('provider_gateway', 'autobyteus'))
-      .resolves.toBe('Internal Gateway');
+      name: 'Internal Gateway', baseUrl: 'https://gateway.example.com/v1', apiKey: 'synthetic-key',
+    })).rejects.toThrow('synthetic vault failure');
     expect(customProviderStore.deleteProvider).toHaveBeenCalledWith('provider_gateway');
   });
 
-  it('rejects deleting built-in providers through the custom delete lifecycle', async () => {
-    const service = createService();
-
-    await expect(service.deleteCustomProvider('OPENAI', 'autobyteus')).rejects.toThrow(
-      "Deleting built-in providers is not supported in this ticket. Received 'OPENAI'.",
-    );
-
-    expect(customProviderStore.deleteProvider).not.toHaveBeenCalled();
-    expect(modelCatalogService.reloadLlmModels).not.toHaveBeenCalled();
-  });
-
-  it('treats repeated custom-provider deletion as success without mutating models', async () => {
-    customProviderStore.getProviderById.mockResolvedValue(null);
-    const service = createService();
-
-    await expect(service.deleteCustomProvider('provider_missing', 'autobyteus'))
-      .resolves.toBe('provider_missing');
+  it('deletes custom providers idempotently while rejecting built-ins', async () => {
+    await expect(createService().deleteCustomProvider('provider_missing')).resolves.toBeUndefined();
     expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
       kind: 'llm', providerId: 'provider_missing', credentialSlot: 'apiKey',
     });
-    expect(customProviderStore.deleteProvider).not.toHaveBeenCalled();
-    expect(modelCatalogService.reloadLlmModels).not.toHaveBeenCalled();
+    await expect(createService().deleteCustomProvider('OPENAI'))
+      .rejects.toThrow("Deleting built-in providers is not supported. Received 'OPENAI'.");
   });
 
-  it('removes the AutoByteus credential and clears only gateway runtime catalogs', async () => {
-    const service = createService();
-
-    await expect(service.removeProviderApiKey('AUTOBYTEUS')).resolves.toEqual(
-      expect.objectContaining({ id: 'AUTOBYTEUS', name: 'AutoByteus' }),
-    );
-    expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
-      kind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey',
-    });
+  it('invalidates AutoByteus discovery after save and clears it after remove', async () => {
+    await createService().setProviderApiKey('AUTOBYTEUS', 'synthetic-key');
+    await createService().removeProviderApiKey('AUTOBYTEUS');
+    expect(modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement)
+      .toHaveBeenCalledOnce();
     expect(modelCatalogService.clearAutobyteusRemoteModels).toHaveBeenCalledOnce();
   });
 
-  it('invalidates AutoByteus discovery only after credential replacement succeeds', async () => {
-    secretManagement.saveForConsumer.mockResolvedValue(undefined);
+  it('returns the actual Gemini state and invalidates optional metadata after commands', async () => {
+    const configured = {
+      activeMode: 'AI_STUDIO', selection: { kind: 'aiStudio' },
+      aiStudioStatus: 'CONFIGURED', vertexExpressStatus: 'MISSING',
+      vertexProjectStatus: 'MISSING', project: null, location: null,
+    };
+    geminiConfigurationService.saveOptionConfiguration.mockResolvedValue(configured);
+    geminiConfigurationService.activateOption.mockResolvedValue(configured);
+    geminiConfigurationService.removeOptionConfiguration.mockResolvedValue(configured);
     const service = createService();
-
-    await expect(service.setProviderApiKey('AUTOBYTEUS', 'synthetic-new-key')).resolves.toEqual(
-      expect.objectContaining({ id: 'AUTOBYTEUS', name: 'AutoByteus' }),
-    );
-
-    expect(secretManagement.saveForConsumer).toHaveBeenCalledWith({
-      consumer: { kind: 'llm', providerId: 'AUTOBYTEUS', credentialSlot: 'apiKey' },
-      value: expect.anything(),
-    });
-    expect(modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement)
-      .toHaveBeenCalledOnce();
-    expect(secretManagement.saveForConsumer.mock.invocationCallOrder[0]).toBeLessThan(
-      modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement
-        .mock.invocationCallOrder[0]!,
-    );
+    await expect(service.saveGeminiOptionConfiguration(
+      { option: 'AI_STUDIO', apiKey: 'synthetic-key' }, true,
+    )).resolves.toBe(configured);
+    await service.activateGeminiOption('AI_STUDIO');
+    await service.removeGeminiOptionConfiguration('AI_STUDIO');
+    expect(modelCatalogService.invalidateGeminiMetadata).toHaveBeenCalledTimes(3);
   });
 });

@@ -2,19 +2,13 @@ import type { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 
 export type LlmProviderStatus = 'READY' | 'STALE_ERROR' | 'ERROR' | 'NOT_APPLICABLE';
 
-export type CredentialStatusProjection = {
-  vaultHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE';
-  storageState: 'MISSING' | 'CONFIGURED' | null;
-  instructionCode: string | null;
-};
-
 export type LlmProviderRecord = {
   id: string;
   name: string;
   providerType: LLMProvider;
   isCustom: boolean;
   baseUrl: string | null;
-  credentialStatus: CredentialStatusProjection | null;
+  apiKeyConfigured: boolean;
   status: LlmProviderStatus;
   statusMessage: string | null;
 };
@@ -24,9 +18,21 @@ export type LlmProviderWithModels<TModel> = {
   models: TModel[];
 };
 
+export type ProviderSettingsGroup<
+  TLlmModel,
+  TAudioModel,
+  TImageModel,
+  TVideoModel,
+> = {
+  provider: LlmProviderRecord;
+  llmModels: TLlmModel[];
+  audioModels: TAudioModel[];
+  imageModels: TImageModel[];
+  videoModels: TVideoModel[];
+};
+
 export type CustomLlmProviderDraftInput = {
   name: string;
-  providerType: string;
   baseUrl: string;
   apiKey: string;
 };
@@ -37,9 +43,6 @@ export type CustomLlmProviderProbeModel = {
 };
 
 export type CustomLlmProviderProbeResult = {
-  name: string;
-  providerType: LLMProvider;
-  baseUrl: string;
   discoveredModels: CustomLlmProviderProbeModel[];
 };
 

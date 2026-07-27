@@ -36,20 +36,11 @@ vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({ t: translate }),
 }))
 
-const missingStatus = {
-  vaultHealth: 'READY' as const,
-  storageState: 'MISSING' as const,
-  instructionCode: null,
-}
-const configuredStatus = { ...missingStatus, storageState: 'CONFIGURED' as const }
-
 const setup = (overrides: Record<string, unknown> = {}) => ({
   activeMode: 'VERTEX_EXPRESS' as const,
-  aiStudioCredentialStatus: configuredStatus,
-  vertexExpressCredentialStatus: configuredStatus,
-  vertexProjectStatus: 'CONFIGURED' as const,
-  vertexProject: 'project-1',
-  vertexLocation: 'us-central1',
+  aiStudioConfigured: true,
+  vertexExpressConfigured: true,
+  vertexProject: { project: 'project-1', location: 'us-central1' },
   ...overrides,
 })
 
@@ -96,7 +87,7 @@ describe('GeminiSetupForm', () => {
 
     expect(wrapper.emitted('save')).toEqual([[{
       option: 'AI_STUDIO',
-      geminiApiKey: 'synthetic-gemini-key',
+      apiKey: 'synthetic-gemini-key',
     }]])
 
     await expand(wrapper, 'VERTEX_PROJECT')
@@ -113,7 +104,7 @@ describe('GeminiSetupForm', () => {
 
     expect(wrapper.emitted('save-and-activate')).toEqual([[{
       option: 'AI_STUDIO',
-      geminiApiKey: 'synthetic-gemini-key',
+      apiKey: 'synthetic-gemini-key',
     }]])
     expect(wrapper.emitted('activate')).toEqual([['VERTEX_PROJECT']])
   })
@@ -147,11 +138,7 @@ describe('GeminiSetupForm', () => {
     const wrapper = mountComponent({
       geminiSetup: setup({
         activeMode: null,
-        aiStudioCredentialStatus: {
-          vaultHealth: 'LOCKED',
-          storageState: null,
-          instructionCode: 'SECRET_VAULT_LOCKED',
-        },
+        aiStudioConfigured: null,
       }),
     })
 

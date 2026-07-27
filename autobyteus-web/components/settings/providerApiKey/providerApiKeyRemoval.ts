@@ -7,7 +7,6 @@ export type ProviderApiKeyRemovalDependencies = {
   saving: Ref<boolean>
   removing: Ref<boolean>
   removeCredential: (providerId: string) => Promise<unknown>
-  hydrateCredentialStatus: () => Promise<void>
   resetEditor: () => void
   getProviderLabel: (providerId: string) => string
   notify: (message: string, type: 'success' | 'error') => void
@@ -21,7 +20,6 @@ export const createProviderApiKeyRemoval = (dependencies: ProviderApiKeyRemovalD
     dependencies.removing.value = true
     try {
       await dependencies.removeCredential(providerId)
-      await dependencies.hydrateCredentialStatus()
       dependencies.resetEditor()
       dependencies.notify(
         dependencies.translate(

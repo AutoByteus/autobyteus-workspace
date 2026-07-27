@@ -1,505 +1,154 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { getApolloClient } from '~/utils/apolloClient'
 
-vi.mock('~/utils/apolloClient', () => ({
-  getApolloClient: vi.fn(),
-}))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }))
 
+const provider = (id: string, apiKeyConfigured: boolean) => ({
+  id,
+  name: id === 'OPENAI' ? 'OpenAI' : id,
+  providerType: id,
+  isCustom: false,
+  baseUrl: null,
+  apiKeyConfigured,
+  status: 'NOT_APPLICABLE',
+  statusMessage: null,
+})
 
-const configuredCredentialStatus = {
-  vaultHealth: 'READY' as const,
-  storageState: 'CONFIGURED' as const,
-  instructionCode: null,
-}
-const missingCredentialStatus = {
-  ...configuredCredentialStatus,
-  storageState: 'MISSING' as const,
-}
+const openAiGroup = (configured = true) => ({
+  provider: provider('OPENAI', configured),
+  llmModels: [{ modelIdentifier: 'gpt-4.1', name: 'GPT 4.1', providerType: 'OPENAI' }],
+  audioModels: [{ modelIdentifier: 'whisper-1', name: 'Whisper', providerType: 'OPENAI' }],
+  imageModels: [{ modelIdentifier: 'gpt-image-1', name: 'GPT Image', providerType: 'OPENAI' }],
+  videoModels: [],
+})
 
-const openAiRow = {
-  provider: {
-    id: 'OPENAI',
-    name: 'OpenAI',
-    providerType: 'OPENAI',
-    isCustom: false,
-    baseUrl: null,
-    credentialStatus: configuredCredentialStatus,
-    status: 'NOT_APPLICABLE',
-    statusMessage: null,
-  },
-  models: [
-    {
-      modelIdentifier: 'gpt-4o',
-      name: 'GPT-4o',
-      value: 'gpt-4o',
-      canonicalName: 'gpt-4o',
-      providerId: 'OPENAI',
-      providerName: 'OpenAI',
-      providerType: 'OPENAI',
-      runtime: 'api',
-      hostUrl: null,
-      configSchema: null,
-      maxContextTokens: 128000,
-      activeContextTokens: 32768,
-      maxInputTokens: null,
-      maxOutputTokens: null,
-      metadataProvenance: 'CURATED_ONLY' as const,
-    },
-  ],
-}
+const geminiState = (overrides: Record<string, unknown> = {}) => ({
+  activeMode: null,
+  aiStudioConfigured: false,
+  vertexExpressConfigured: false,
+  vertexProject: null,
+  ...overrides,
+})
 
-const geminiRow = {
-  provider: {
-    id: 'GEMINI',
-    name: 'Gemini',
-    providerType: 'GEMINI',
-    isCustom: false,
-    baseUrl: null,
-    credentialStatus: missingCredentialStatus,
-    status: 'NOT_APPLICABLE',
-    statusMessage: null,
-  },
-  models: [
-    {
-      modelIdentifier: 'gemini-2.5-flash',
-      name: 'Gemini 2.5 Flash',
-      value: 'gemini-2.5-flash',
-      canonicalName: 'gemini-2.5-flash',
-      providerId: 'GEMINI',
-      providerName: 'Gemini',
-      providerType: 'GEMINI',
-      runtime: 'api',
-      hostUrl: null,
-      configSchema: null,
-      maxContextTokens: 1048576,
-      activeContextTokens: 32768,
-      maxInputTokens: null,
-      maxOutputTokens: null,
-    },
-  ],
-}
-
-const geminiVideoRow = {
-  provider: {
-    ...geminiRow.provider,
-  },
-  models: [
-    {
-      modelIdentifier: 'gemini-omni-flash-preview',
-      name: 'Gemini Omni Flash Preview',
-      value: 'gemini-omni-flash-preview',
-      canonicalName: 'gemini-omni-flash-preview',
-      providerId: 'GEMINI',
-      providerName: 'Gemini',
-      providerType: 'GEMINI',
-      runtime: 'api',
-      hostUrl: null,
-      configSchema: null,
-      maxContextTokens: null,
-      activeContextTokens: null,
-      maxInputTokens: null,
-      maxOutputTokens: null,
-    },
-  ],
-}
-
-const deepFreeze = <T>(value: T): T => {
-  if (value && typeof value === 'object') {
-    Object.freeze(value)
-    for (const nested of Object.values(value as Record<string, unknown>)) {
-      if (nested && typeof nested === 'object' && !Object.isFrozen(nested)) {
-        deepFreeze(nested)
-      }
-    }
-  }
-
-  return value
-}
-
-describe('llmProviderConfig store', () => {
+describe('llmProviderConfig provider Settings store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    vi.clearAllMocks()
   })
 
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
-
-  it('fetchGeminiSetupConfig populates geminiSetup state', async () => {
-    const queryMock = vi.fn().mockResolvedValue({
-      data: {
-        getGeminiSetupConfig: {
-          activeMode: 'VERTEX_PROJECT',
-          aiStudioCredentialStatus: missingCredentialStatus,
-          vertexExpressCredentialStatus: missingCredentialStatus,
-          vertexProjectStatus: 'CONFIGURED',
-          vertexProject: 'project-1',
-          vertexLocation: 'us-central1',
-        },
-      },
-    })
-
-    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any)
-
+  it('stores one provider-centric group without a parallel status map', async () => {
+    const query = vi.fn().mockResolvedValue({ data: { providerSettings: [openAiGroup()] } })
+    vi.mocked(getApolloClient).mockReturnValue({ query } as any)
     const store = useLLMProviderConfigStore()
-    const result = await store.fetchGeminiSetupConfig()
 
-    expect(queryMock).toHaveBeenCalledTimes(1)
-    expect(result.activeMode).toBe('VERTEX_PROJECT')
-    expect(store.geminiSetup.vertexProject).toBe('project-1')
+    await expect(store.fetchProviderSettings('autobyteus')).resolves.toEqual([openAiGroup()])
+    expect(store.providerSettingsGroups[0]?.provider.apiKeyConfigured).toBe(true)
+    expect(store.providerSettingsGroups[0]?.audioModels).toHaveLength(1)
+    expect('providerConfigs' in store).toBe(false)
   })
 
-  it('fetchProvidersWithModels stores provider objects and provider-centered model metadata', async () => {
-    const queryMock = vi.fn().mockResolvedValue({
-      data: {
-        availableLlmProvidersWithModels: [openAiRow],
-        availableAudioProvidersWithModels: [],
-        availableImageProvidersWithModels: [],
-        availableVideoProvidersWithModels: [geminiVideoRow],
-      },
-    })
-
-    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any)
-
+  it('refetches the canonical provider group after Boolean save completion', async () => {
+    const mutate = vi.fn().mockResolvedValue({ data: { saveProviderApiKey: true } })
+    const query = vi.fn().mockResolvedValue({ data: { providerSettings: [openAiGroup(true)] } })
+    vi.mocked(getApolloClient).mockReturnValue({ mutate, query } as any)
     const store = useLLMProviderConfigStore()
-    const providers = await store.fetchProvidersWithModels('autobyteus')
 
-    expect(queryMock).toHaveBeenCalledTimes(1)
-    expect(providers).toHaveLength(1)
-    expect(store.providersWithModels[0]?.provider).toEqual(expect.objectContaining({
-      id: 'OPENAI',
-      name: 'OpenAI',
-      credentialStatus: configuredCredentialStatus,
+    await expect(store.setLLMProviderApiKey('OPENAI', 'synthetic-key')).resolves.toBe(true)
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { providerId: 'OPENAI', apiKey: 'synthetic-key' },
     }))
-    expect(store.providersWithModels[0]?.models[0]).toEqual(expect.objectContaining({
-      providerId: 'OPENAI',
-      providerName: 'OpenAI',
-      providerType: 'OPENAI',
-      maxContextTokens: 128000,
-      activeContextTokens: 32768,
-      metadataProvenance: 'CURATED_ONLY',
+    expect(query).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { runtimeKind: 'autobyteus' }, fetchPolicy: 'network-only',
     }))
-    expect(store.videoModels).toEqual(['gemini-omni-flash-preview'])
+    expect(store.providerSettingsGroups[0]?.provider.apiKeyConfigured).toBe(true)
   })
 
-  it('getLLMProviderCredentialStatus uses hydrated provider booleans before querying', async () => {
-    const queryMock = vi.fn()
-    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any)
-
+  it('refetches exact missing state after Boolean remove completion', async () => {
+    const mutate = vi.fn().mockResolvedValue({ data: { removeProviderApiKey: true } })
+    const query = vi.fn().mockResolvedValue({ data: { providerSettings: [openAiGroup(false)] } })
+    vi.mocked(getApolloClient).mockReturnValue({ mutate, query } as any)
     const store = useLLMProviderConfigStore()
-    store.providersWithModels = [openAiRow as any]
 
-    const configured = await store.getLLMProviderCredentialStatus('OPENAI')
-
-    expect(configured?.storageState).toBe('CONFIGURED')
-    expect(queryMock).not.toHaveBeenCalled()
-    expect(store.providerConfigs.OPENAI?.credentialStatus?.storageState).toBe('CONFIGURED')
+    await store.removeLLMProviderApiKey('OPENAI')
+    expect(store.providerSettingsGroups[0]?.provider.apiKeyConfigured).toBe(false)
   })
 
-  it('setLLMProviderApiKey updates configured state after a successful write-only save', async () => {
-    const mutateMock = vi.fn().mockResolvedValue({
-      data: {
-        setLlmProviderApiKey: 'API key for provider OpenAI has been set successfully.',
-      },
-      errors: undefined,
-    })
-    vi.mocked(getApolloClient).mockReturnValue({ mutate: mutateMock } as any)
-
-    const store = useLLMProviderConfigStore()
-    store.providersWithModels = [
-      {
-        ...openAiRow,
-        provider: {
-          ...openAiRow.provider,
-          credentialStatus: missingCredentialStatus,
-        },
-      } as any,
-    ]
-
-    const success = await store.setLLMProviderApiKey('OPENAI', 'runtime-key')
-
-    expect(success).toBe(true)
-    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { providerId: 'OPENAI', apiKey: 'runtime-key' },
-    }))
-    expect(store.providerConfigs.OPENAI?.credentialStatus?.storageState).toBe('CONFIGURED')
-    expect(store.providersWithModels[0]?.provider.credentialStatus?.storageState).toBe('CONFIGURED')
-  })
-
-  it('setLLMProviderApiKey replaces immutable provider rows instead of mutating Apollo query results in place', async () => {
-    const mutateMock = vi.fn().mockResolvedValue({
-      data: {
-        setLlmProviderApiKey: 'API key for provider OpenAI has been set successfully.',
-      },
-      errors: undefined,
-    })
-    vi.mocked(getApolloClient).mockReturnValue({ mutate: mutateMock } as any)
-
-    const store = useLLMProviderConfigStore()
-    const frozenRow = deepFreeze({
-      ...openAiRow,
-      provider: {
-        ...openAiRow.provider,
-        credentialStatus: missingCredentialStatus,
-      },
-    }) as any
-    store.providersWithModels = [frozenRow]
-
-    const success = await store.setLLMProviderApiKey('OPENAI', 'runtime-key')
-
-    expect(success).toBe(true)
-    expect(store.providersWithModels[0]?.provider.credentialStatus?.storageState).toBe('CONFIGURED')
-    expect(store.providersWithModels[0]).not.toBe(frozenRow)
-    expect(store.providersWithModels[0]?.provider).not.toBe(frozenRow.provider)
-  })
-
-  it('createCustomProvider saves then refreshes the provider list', async () => {
-    const mutateMock = vi.fn().mockResolvedValue({
-      data: {
-        createCustomLlmProvider: {
-          id: 'provider_gateway',
-          name: 'Internal Gateway',
-          providerType: 'OPENAI_COMPATIBLE',
-          isCustom: true,
-          baseUrl: 'https://gateway.example.com/v1',
-          credentialStatus: configuredCredentialStatus,
-          status: 'READY',
-          statusMessage: null,
-        },
-      },
-      errors: undefined,
-    })
-    const queryMock = vi.fn().mockResolvedValue({
-      data: {
-        availableLlmProvidersWithModels: [openAiRow],
+  it('uses tight custom probe/create/delete contracts', async () => {
+    const mutate = vi.fn()
+      .mockResolvedValueOnce({ data: { probeCustomProvider: { discoveredModels: [{ id: 'm', name: 'M' }] } } })
+      .mockResolvedValueOnce({ data: { createCustomProvider: 'provider_gateway' } })
+      .mockResolvedValueOnce({ data: { deleteCustomProvider: true } })
+    const query = vi.fn()
+      .mockResolvedValue({ data: {
+        providerSettings: [openAiGroup()],
+        availableLlmProvidersWithModels: [],
         availableAudioProvidersWithModels: [],
         availableImageProvidersWithModels: [],
         availableVideoProvidersWithModels: [],
-      },
-    })
-
-    vi.mocked(getApolloClient).mockReturnValue({
-      mutate: mutateMock,
-      query: queryMock,
-    } as any)
-
+      } })
+    vi.mocked(getApolloClient).mockReturnValue({ mutate, query } as any)
     const store = useLLMProviderConfigStore()
-    const provider = await store.createCustomProvider({
-      name: 'Internal Gateway',
-      providerType: 'OPENAI_COMPATIBLE',
-      baseUrl: 'https://gateway.example.com/v1',
-      apiKey: 'secret',
-    }, 'autobyteus')
-
-    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: {
-        input: {
-          name: 'Internal Gateway',
-          providerType: 'OPENAI_COMPATIBLE',
-          baseUrl: 'https://gateway.example.com/v1',
-          apiKey: 'secret',
-        },
-        runtimeKind: 'autobyteus',
-      },
-    }))
-    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { runtimeKind: 'autobyteus' },
-      fetchPolicy: 'network-only',
-    }))
-    expect(provider).toEqual(expect.objectContaining({
-      id: 'provider_gateway',
-      name: 'Internal Gateway',
-      isCustom: true,
-    }))
-  })
-
-  it('deleteCustomProvider removes stale provider config and refreshes the provider list', async () => {
-    const mutateMock = vi.fn().mockResolvedValue({
-      data: {
-        deleteCustomLlmProvider: 'Deleted custom provider Internal Gateway successfully.',
-      },
-      errors: undefined,
-    })
-    const queryMock = vi.fn().mockResolvedValue({
-      data: {
-        availableLlmProvidersWithModels: [openAiRow],
-        availableAudioProvidersWithModels: [],
-        availableImageProvidersWithModels: [],
-        availableVideoProvidersWithModels: [],
-      },
-    })
-
-    vi.mocked(getApolloClient).mockReturnValue({ mutate: mutateMock, query: queryMock } as any)
-
-    const store = useLLMProviderConfigStore()
-    store.providerConfigs = {
-      OPENAI: { credentialStatus: configuredCredentialStatus },
-      provider_gateway: { credentialStatus: configuredCredentialStatus },
+    const input = {
+      name: 'Gateway', baseUrl: 'https://gateway.example.com/v1', apiKey: 'synthetic-key',
     }
 
-    const success = await store.deleteCustomProvider('provider_gateway', 'autobyteus')
-
-    expect(success).toBe(true)
-    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { providerId: 'provider_gateway', runtimeKind: 'autobyteus' },
-    }))
-    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { runtimeKind: 'autobyteus' },
-      fetchPolicy: 'network-only',
-    }))
-    expect(store.providerConfigs.provider_gateway).toBeUndefined()
-  })
-
-  it('saveGeminiConfigurationOption saves one option and refreshes the independent status', async () => {
-    const mutateMock = vi.fn().mockResolvedValue({
-      data: {
-        saveGeminiConfigurationOption: {
-          operation: 'SAVED', outcome: 'SUCCEEDED',
-          option: 'AI_STUDIO', optionStatus: 'CONFIGURED',
-          activeMode: 'VERTEX_EXPRESS',
-          configurationOutcome: 'SUCCEEDED', modeOutcome: 'NOT_REQUESTED', instructionCode: null,
-        },
-      },
-      errors: undefined,
+    await expect(store.probeCustomProvider(input)).resolves.toEqual({
+      discoveredModels: [{ id: 'm', name: 'M' }],
     })
-    const queryMock = vi.fn().mockResolvedValue({
-      data: {
-        getGeminiSetupConfig: {
-          activeMode: 'VERTEX_EXPRESS',
-          aiStudioCredentialStatus: configuredCredentialStatus,
-          vertexExpressCredentialStatus: configuredCredentialStatus,
-          vertexProjectStatus: 'CONFIGURED',
-          vertexProject: 'project-1',
-          vertexLocation: 'us-central1',
-        },
-      },
-    })
-
-    vi.mocked(getApolloClient).mockReturnValue({
-      mutate: mutateMock,
-      query: queryMock,
-    } as any)
-
-    const store = useLLMProviderConfigStore()
-    const result = await store.saveGeminiConfigurationOption({
-      option: 'AI_STUDIO',
-      geminiApiKey: 'gemini-key',
-    })
-
-    expect(result).toEqual({
-      operation: 'SAVED', outcome: 'SUCCEEDED',
-      option: 'AI_STUDIO', optionStatus: 'CONFIGURED',
-      activeMode: 'VERTEX_EXPRESS',
-      configurationOutcome: 'SUCCEEDED', modeOutcome: 'NOT_REQUESTED', instructionCode: null,
-    })
-    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: {
-        option: 'AI_STUDIO',
-        geminiApiKey: 'gemini-key',
-        vertexApiKey: null,
-        vertexProject: null,
-        vertexLocation: null,
-      },
-    }))
-    expect(queryMock).toHaveBeenCalledTimes(1)
-    expect(store.geminiSetup.activeMode).toBe('VERTEX_EXPRESS')
-    expect(store.geminiSetup.aiStudioCredentialStatus.storageState).toBe('CONFIGURED')
-    expect(store.geminiSetup.vertexExpressCredentialStatus.storageState).toBe('CONFIGURED')
-  })
-
-  it('saveGeminiConfigurationOption replaces immutable Gemini provider rows instead of mutating hydrated query results in place', async () => {
-    const mutateMock = vi.fn().mockResolvedValue({
-      data: {
-        saveGeminiConfigurationOption: {
-          operation: 'SAVED', outcome: 'SUCCEEDED',
-          option: 'AI_STUDIO', optionStatus: 'CONFIGURED',
-          activeMode: 'AI_STUDIO',
-          configurationOutcome: 'SUCCEEDED', modeOutcome: 'NOT_REQUESTED', instructionCode: null,
-        },
-      },
-      errors: undefined,
-    })
-    const queryMock = vi.fn().mockResolvedValue({
-      data: {
-        getGeminiSetupConfig: {
-          activeMode: 'AI_STUDIO',
-          aiStudioCredentialStatus: configuredCredentialStatus,
-          vertexExpressCredentialStatus: missingCredentialStatus,
-          vertexProjectStatus: 'MISSING',
-          vertexProject: null,
-          vertexLocation: null,
-        },
-      },
-    })
-
-    vi.mocked(getApolloClient).mockReturnValue({
-      mutate: mutateMock,
-      query: queryMock,
-    } as any)
-
-    const store = useLLMProviderConfigStore()
-    const frozenRow = deepFreeze(geminiRow) as any
-    store.providersWithModels = [frozenRow]
-
-    const result = await store.saveGeminiConfigurationOption({
-      option: 'AI_STUDIO',
-      geminiApiKey: 'gemini-key',
-    })
-
-    expect(result.operation).toBe('SAVED')
-    expect(store.providerConfigs.GEMINI?.credentialStatus?.storageState).toBe('CONFIGURED')
-    expect(store.providersWithModels[0]?.provider.credentialStatus?.storageState).toBe('CONFIGURED')
-    expect(store.providersWithModels[0]).not.toBe(frozenRow)
-    expect(store.providersWithModels[0]?.provider).not.toBe(frozenRow.provider)
-    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
-      fetchPolicy: 'network-only',
+    await expect(store.createCustomProvider(input)).resolves.toBe('provider_gateway')
+    await expect(store.deleteCustomProvider('provider_gateway')).resolves.toBe(true)
+    expect(mutate).toHaveBeenNthCalledWith(2, expect.objectContaining({ variables: { input } }))
+    expect(mutate).toHaveBeenNthCalledWith(3, expect.objectContaining({
+      variables: { providerId: 'provider_gateway' },
     }))
   })
 
-  it('removeGeminiConfigurationOption removes only the addressed option and refreshes effective mode', async () => {
-    const mutateMock = vi.fn().mockResolvedValue({
-      data: {
-        removeGeminiConfigurationOption: {
-          operation: 'REMOVED', outcome: 'SUCCEEDED',
-          option: 'VERTEX_EXPRESS', optionStatus: 'MISSING',
-          activeMode: 'VERTEX_PROJECT',
-          configurationOutcome: 'SUCCEEDED', modeOutcome: 'SUCCEEDED', instructionCode: null,
-        },
-      },
-      errors: undefined,
-    })
-    const queryMock = vi.fn().mockResolvedValue({
-      data: {
-        getGeminiSetupConfig: {
-          activeMode: 'VERTEX_PROJECT',
-          aiStudioCredentialStatus: configuredCredentialStatus,
-          vertexExpressCredentialStatus: missingCredentialStatus,
-          vertexProjectStatus: 'CONFIGURED',
-          vertexProject: 'project-1',
-          vertexLocation: 'us-central1',
-        },
-      },
-    })
-    vi.mocked(getApolloClient).mockReturnValue({
-      mutate: mutateMock,
-      query: queryMock,
-    } as any)
-    const store = useLLMProviderConfigStore()
-
-    const result = await store.removeGeminiConfigurationOption('VERTEX_EXPRESS')
-
-    expect(result).toEqual({
-      operation: 'REMOVED', outcome: 'SUCCEEDED',
-      option: 'VERTEX_EXPRESS', optionStatus: 'MISSING',
+  it('loads and stores the tight Gemini setup state', async () => {
+    const state = geminiState({
       activeMode: 'VERTEX_PROJECT',
-      configurationOutcome: 'SUCCEEDED', modeOutcome: 'SUCCEEDED', instructionCode: null,
+      vertexProject: { project: 'project-1', location: 'global' },
     })
-    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { option: 'VERTEX_EXPRESS' },
+    const query = vi.fn().mockResolvedValue({ data: { getGeminiSetupConfig: state } })
+    vi.mocked(getApolloClient).mockReturnValue({ query } as any)
+    const store = useLLMProviderConfigStore()
+
+    await expect(store.fetchGeminiSetupConfig()).resolves.toEqual(state)
+    expect(store.geminiSetup.vertexProject).toEqual({ project: 'project-1', location: 'global' })
+  })
+
+  it('routes each Gemini option through its specialized mutation and retains returned state', async () => {
+    const state = geminiState({ activeMode: 'AI_STUDIO', aiStudioConfigured: true })
+    const mutate = vi.fn().mockResolvedValue({ data: { saveGeminiAiStudio: state } })
+    const query = vi.fn().mockResolvedValue({ data: { providerSettings: [openAiGroup()] } })
+    vi.mocked(getApolloClient).mockReturnValue({ mutate, query } as any)
+    const store = useLLMProviderConfigStore()
+
+    await expect(store.saveGeminiConfigurationOption(
+      { option: 'AI_STUDIO', apiKey: 'synthetic-key' }, true,
+    )).resolves.toEqual(state)
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { apiKey: 'synthetic-key', activateAfterSave: true },
     }))
-    expect(store.geminiSetup.activeMode).toBe('VERTEX_PROJECT')
-    expect(store.geminiSetup.aiStudioCredentialStatus.storageState).toBe('CONFIGURED')
+    expect(store.geminiSetup).toEqual(state)
+  })
+
+  it('preserves credential-independent catalog state for non-Settings consumers', async () => {
+    const query = vi.fn().mockResolvedValue({ data: {
+      availableLlmProvidersWithModels: [{
+        provider: { ...provider('OPENAI', false), apiKeyConfigured: undefined },
+        models: [{ modelIdentifier: 'gpt', providerType: 'OPENAI', value: 'gpt', canonicalName: 'gpt' }],
+      }],
+      availableAudioProvidersWithModels: [],
+      availableImageProvidersWithModels: [],
+      availableVideoProvidersWithModels: [],
+    } })
+    vi.mocked(getApolloClient).mockReturnValue({ query } as any)
+    const store = useLLMProviderConfigStore()
+
+    await store.fetchProvidersWithModels()
+    expect(store.models).toEqual(['gpt'])
+    expect(store.providersWithModels[0]?.provider).not.toHaveProperty('credentialStatus')
   })
 })

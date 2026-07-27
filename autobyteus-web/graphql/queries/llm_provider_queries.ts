@@ -1,36 +1,39 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
-export const GET_LLM_PROVIDER_CREDENTIAL_STATUS = gql`
-  query GetLLMProviderCredentialStatus($providerId: String!) {
-    getLlmProviderCredentialStatus(providerId: $providerId) {
-      vaultHealth
-      storageState
-      instructionCode
-    }
-  }
-`;
-
-export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
-  query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
-    availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-      __typename
+export const GET_PROVIDER_SETTINGS = gql`
+  query GetProviderSettings($runtimeKind: String) {
+    providerSettings(runtimeKind: $runtimeKind) {
       provider {
-        __typename
         id
         name
         providerType
         isCustom
         baseUrl
-        credentialStatus {
-          vaultHealth
-          storageState
-          instructionCode
-        }
+        apiKeyConfigured
+        status
+        statusMessage
+      }
+      llmModels { modelIdentifier name providerType }
+      audioModels { modelIdentifier name providerType }
+      imageModels { modelIdentifier name providerType }
+      videoModels { modelIdentifier name providerType }
+    }
+  }
+`
+
+export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
+  query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
+    availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
+      provider {
+        id
+        name
+        providerType
+        isCustom
+        baseUrl
         status
         statusMessage
       }
       models {
-        __typename
         modelIdentifier
         name
         description
@@ -50,24 +53,16 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
       }
     }
     availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {
-      __typename
       provider {
-        __typename
         id
         name
         providerType
         isCustom
         baseUrl
-        credentialStatus {
-          vaultHealth
-          storageState
-          instructionCode
-        }
         status
         statusMessage
       }
       models {
-        __typename
         modelIdentifier
         name
         value
@@ -80,24 +75,16 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
       }
     }
     availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
-      __typename
       provider {
-        __typename
         id
         name
         providerType
         isCustom
         baseUrl
-        credentialStatus {
-          vaultHealth
-          storageState
-          instructionCode
-        }
         status
         statusMessage
       }
       models {
-        __typename
         modelIdentifier
         name
         value
@@ -110,24 +97,16 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
       }
     }
     availableVideoProvidersWithModels(runtimeKind: $runtimeKind) {
-      __typename
       provider {
-        __typename
         id
         name
         providerType
         isCustom
         baseUrl
-        credentialStatus {
-          vaultHealth
-          storageState
-          instructionCode
-        }
         status
         statusMessage
       }
       models {
-        __typename
         modelIdentifier
         name
         value
@@ -140,25 +119,18 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
       }
     }
   }
-`;
+`
 
 export const GET_GEMINI_SETUP_CONFIG = gql`
   query GetGeminiSetupConfig {
     getGeminiSetupConfig {
       activeMode
-      aiStudioCredentialStatus {
-        vaultHealth
-        storageState
-        instructionCode
+      aiStudioConfigured
+      vertexExpressConfigured
+      vertexProject {
+        project
+        location
       }
-      vertexExpressCredentialStatus {
-        vaultHealth
-        storageState
-        instructionCode
-      }
-      vertexProjectStatus
-      vertexProject
-      vertexLocation
     }
   }
-`;
+`

@@ -472,32 +472,21 @@ export type CreateWorkspaceInput = {
   rootPath: Scalars['String']['input'];
 };
 
-export type CredentialStatusObject = {
-  __typename?: 'CredentialStatusObject';
-  instructionCode?: Maybe<Scalars['String']['output']>;
-  storageState?: Maybe<Scalars['String']['output']>;
-  vaultHealth: Scalars['String']['output'];
-};
-
-export type CustomLlmProviderInputObject = {
+export type CustomProviderInputObject = {
   apiKey: Scalars['String']['input'];
   baseUrl: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  providerType: Scalars['String']['input'];
 };
 
-export type CustomLlmProviderProbeModelObject = {
-  __typename?: 'CustomLlmProviderProbeModelObject';
+export type CustomProviderProbeModelObject = {
+  __typename?: 'CustomProviderProbeModelObject';
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
 };
 
-export type CustomLlmProviderProbeResultObject = {
-  __typename?: 'CustomLlmProviderProbeResultObject';
-  baseUrl: Scalars['String']['output'];
-  discoveredModels: Array<CustomLlmProviderProbeModelObject>;
-  name: Scalars['String']['output'];
-  providerType: Scalars['String']['output'];
+export type CustomProviderProbeResultObject = {
+  __typename?: 'CustomProviderProbeResultObject';
+  discoveredModels: Array<CustomProviderProbeModelObject>;
 };
 
 export type DefaultLaunchConfig = {
@@ -758,56 +747,24 @@ export type ExternalChannelTeamLaunchPresetInput = {
   workspaceRootPath: Scalars['String']['input'];
 };
 
-export enum GeminiConfigurationOperation {
-  Activated = 'ACTIVATED',
-  Removed = 'REMOVED',
-  Saved = 'SAVED',
-  SavedAndActivated = 'SAVED_AND_ACTIVATED'
-}
-
-export type GeminiConfigurationOperationResultObject = {
-  __typename?: 'GeminiConfigurationOperationResultObject';
-  activeMode?: Maybe<GeminiConfigurationOption>;
-  configurationOutcome: GeminiConfigurationStageOutcome;
-  instructionCode?: Maybe<Scalars['String']['output']>;
-  modeOutcome: GeminiConfigurationStageOutcome;
-  operation: GeminiConfigurationOperation;
-  option: GeminiConfigurationOption;
-  optionStatus: GeminiConfigurationState;
-  outcome: GeminiConfigurationOutcome;
-};
-
-export enum GeminiConfigurationOption {
+export enum GeminiSetupMode {
   AiStudio = 'AI_STUDIO',
   VertexExpress = 'VERTEX_EXPRESS',
   VertexProject = 'VERTEX_PROJECT'
 }
 
-export enum GeminiConfigurationOutcome {
-  Partial = 'PARTIAL',
-  Succeeded = 'SUCCEEDED'
-}
+export type GeminiSetupStateObject = {
+  __typename?: 'GeminiSetupStateObject';
+  activeMode?: Maybe<GeminiSetupMode>;
+  aiStudioConfigured?: Maybe<Scalars['Boolean']['output']>;
+  vertexExpressConfigured?: Maybe<Scalars['Boolean']['output']>;
+  vertexProject?: Maybe<GeminiVertexProjectObject>;
+};
 
-export enum GeminiConfigurationStageOutcome {
-  Failed = 'FAILED',
-  NotRequested = 'NOT_REQUESTED',
-  Succeeded = 'SUCCEEDED'
-}
-
-export enum GeminiConfigurationState {
-  Configured = 'CONFIGURED',
-  Missing = 'MISSING',
-  Unavailable = 'UNAVAILABLE'
-}
-
-export type GeminiSetupConfig = {
-  __typename?: 'GeminiSetupConfig';
-  activeMode?: Maybe<GeminiConfigurationOption>;
-  aiStudioCredentialStatus: CredentialStatusObject;
-  vertexExpressCredentialStatus: CredentialStatusObject;
-  vertexLocation?: Maybe<Scalars['String']['output']>;
-  vertexProject?: Maybe<Scalars['String']['output']>;
-  vertexProjectStatus: GeminiConfigurationState;
+export type GeminiVertexProjectObject = {
+  __typename?: 'GeminiVertexProjectObject';
+  location: Scalars['String']['output'];
+  project: Scalars['String']['output'];
 };
 
 export type GraphqlSkillImprovementConfigSourceTraceEntry = {
@@ -930,8 +887,8 @@ export type ImportMcpServerConfigsResult = {
 
 export type LlmProviderObject = {
   __typename?: 'LlmProviderObject';
+  apiKeyConfigured: Scalars['Boolean']['output'];
   baseUrl?: Maybe<Scalars['String']['output']>;
-  credentialStatus?: Maybe<CredentialStatusObject>;
   id: Scalars['String']['output'];
   isCustom: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
@@ -1195,7 +1152,6 @@ export enum ModelMetadataProvenance {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  activateGeminiConfigurationOption: GeminiConfigurationOperationResultObject;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
   archiveStoredRun: ArchiveStoredRunMutationResult;
@@ -1207,14 +1163,14 @@ export type Mutation = {
   createAgentRun: CreateAgentRunResult;
   createAgentTeamDefinition: AgentTeamDefinition;
   createAgentTeamRun: CreateAgentTeamRunResult;
-  createCustomLlmProvider: LlmProviderObject;
+  createCustomProvider: Scalars['String']['output'];
   createFileOrFolder: Scalars['String']['output'];
   createMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
   createSkill: Skill;
   createWorkspace: WorkspaceMetadata;
   deleteAgentDefinition: DeleteAgentDefinitionResult;
   deleteAgentTeamDefinition: DeleteAgentTeamDefinitionResult;
-  deleteCustomLlmProvider: Scalars['String']['output'];
+  deleteCustomProvider: Scalars['Boolean']['output'];
   deleteExternalChannelBinding: Scalars['Boolean']['output'];
   deleteFileOrFolder: Scalars['String']['output'];
   deleteMcpServer: DeleteMcpServerResult;
@@ -1233,7 +1189,7 @@ export type Mutation = {
   importMcpServerConfigs: ImportMcpServerConfigsResult;
   moveFileOrFolder: Scalars['String']['output'];
   prepareAgentRun: PrepareAgentRunResult;
-  probeCustomLlmProvider: CustomLlmProviderProbeResultObject;
+  probeCustomProvider: CustomProviderProbeResultObject;
   refreshAgentDefinitionCatalog: Scalars['Boolean']['output'];
   refreshAgentTeamDefinitionCatalog: Scalars['Boolean']['output'];
   regenerateMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
@@ -1244,8 +1200,8 @@ export type Mutation = {
   reloadToolSchema: ReloadToolSchemaResult;
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
-  removeGeminiConfigurationOption: GeminiConfigurationOperationResultObject;
-  removeLlmProviderApiKey: Scalars['String']['output'];
+  removeGeminiConfiguration: GeminiSetupStateObject;
+  removeProviderApiKey: Scalars['Boolean']['output'];
   removeSkillSource: Array<SkillSource>;
   removeWorkspace: RemoveWorkspaceResultInfo;
   renameFileOrFolder: Scalars['String']['output'];
@@ -1253,11 +1209,12 @@ export type Mutation = {
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
   revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
   runAppDataMigration: AppDataMigrationMutationResult;
-  saveAndActivateGeminiConfigurationOption: GeminiConfigurationOperationResultObject;
-  saveGeminiConfigurationOption: GeminiConfigurationOperationResultObject;
+  saveGeminiAiStudio: GeminiSetupStateObject;
+  saveGeminiVertexExpress: GeminiSetupStateObject;
+  saveGeminiVertexProject: GeminiSetupStateObject;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
+  saveProviderApiKey: Scalars['Boolean']['output'];
   setApplicationsEnabled: ApplicationsCapability;
-  setLlmProviderApiKey: Scalars['String']['output'];
   setSearchConfig: Scalars['String']['output'];
   setSkillImprovementEnabled: SkillImprovementCapability;
   startAgentRunSkillImprovement: GraphqlSkillImprovementStartResult;
@@ -1276,12 +1233,8 @@ export type Mutation = {
   updateSkill: Skill;
   uploadSkillFile: Scalars['Boolean']['output'];
   upsertExternalChannelBinding: ExternalChannelBindingGql;
+  useGeminiMode: GeminiSetupStateObject;
   writeFileContent: Scalars['String']['output'];
-};
-
-
-export type MutationActivateGeminiConfigurationOptionArgs = {
-  option: GeminiConfigurationOption;
 };
 
 
@@ -1340,9 +1293,8 @@ export type MutationCreateAgentTeamRunArgs = {
 };
 
 
-export type MutationCreateCustomLlmProviderArgs = {
-  input: CustomLlmProviderInputObject;
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+export type MutationCreateCustomProviderArgs = {
+  input: CustomProviderInputObject;
 };
 
 
@@ -1378,9 +1330,8 @@ export type MutationDeleteAgentTeamDefinitionArgs = {
 };
 
 
-export type MutationDeleteCustomLlmProviderArgs = {
+export type MutationDeleteCustomProviderArgs = {
   providerId: Scalars['String']['input'];
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1468,8 +1419,8 @@ export type MutationPrepareAgentRunArgs = {
 };
 
 
-export type MutationProbeCustomLlmProviderArgs = {
-  input: CustomLlmProviderInputObject;
+export type MutationProbeCustomProviderArgs = {
+  input: CustomProviderInputObject;
 };
 
 
@@ -1509,12 +1460,12 @@ export type MutationRemoveApplicationPackageArgs = {
 };
 
 
-export type MutationRemoveGeminiConfigurationOptionArgs = {
-  option: GeminiConfigurationOption;
+export type MutationRemoveGeminiConfigurationArgs = {
+  mode: GeminiSetupMode;
 };
 
 
-export type MutationRemoveLlmProviderApiKeyArgs = {
+export type MutationRemoveProviderApiKeyArgs = {
   providerId: Scalars['String']['input'];
 };
 
@@ -1556,21 +1507,22 @@ export type MutationRunAppDataMigrationArgs = {
 };
 
 
-export type MutationSaveAndActivateGeminiConfigurationOptionArgs = {
-  geminiApiKey?: InputMaybe<Scalars['String']['input']>;
-  option: GeminiConfigurationOption;
-  vertexApiKey?: InputMaybe<Scalars['String']['input']>;
-  vertexLocation?: InputMaybe<Scalars['String']['input']>;
-  vertexProject?: InputMaybe<Scalars['String']['input']>;
+export type MutationSaveGeminiAiStudioArgs = {
+  activateAfterSave: Scalars['Boolean']['input'];
+  apiKey: Scalars['String']['input'];
 };
 
 
-export type MutationSaveGeminiConfigurationOptionArgs = {
-  geminiApiKey?: InputMaybe<Scalars['String']['input']>;
-  option: GeminiConfigurationOption;
-  vertexApiKey?: InputMaybe<Scalars['String']['input']>;
-  vertexLocation?: InputMaybe<Scalars['String']['input']>;
-  vertexProject?: InputMaybe<Scalars['String']['input']>;
+export type MutationSaveGeminiVertexExpressArgs = {
+  activateAfterSave: Scalars['Boolean']['input'];
+  apiKey: Scalars['String']['input'];
+};
+
+
+export type MutationSaveGeminiVertexProjectArgs = {
+  activateAfterSave: Scalars['Boolean']['input'];
+  location: Scalars['String']['input'];
+  project: Scalars['String']['input'];
 };
 
 
@@ -1579,14 +1531,14 @@ export type MutationSaveManagedMessagingGatewayProviderConfigArgs = {
 };
 
 
-export type MutationSetApplicationsEnabledArgs = {
-  enabled: Scalars['Boolean']['input'];
+export type MutationSaveProviderApiKeyArgs = {
+  apiKey: Scalars['String']['input'];
+  providerId: Scalars['String']['input'];
 };
 
 
-export type MutationSetLlmProviderApiKeyArgs = {
-  apiKey: Scalars['String']['input'];
-  providerId: Scalars['String']['input'];
+export type MutationSetApplicationsEnabledArgs = {
+  enabled: Scalars['Boolean']['input'];
 };
 
 
@@ -1677,6 +1629,11 @@ export type MutationUpsertExternalChannelBindingArgs = {
 };
 
 
+export type MutationUseGeminiModeArgs = {
+  mode: GeminiSetupMode;
+};
+
+
 export type MutationWriteFileContentArgs = {
   content: Scalars['String']['input'];
   filePath: Scalars['String']['input'];
@@ -1690,6 +1647,15 @@ export type PrepareAgentRunResult = {
   preparedExpiresAt?: Maybe<Scalars['String']['output']>;
   runId?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
+};
+
+export type ProviderSettingsGroup = {
+  __typename?: 'ProviderSettingsGroup';
+  audioModels: Array<ModelDetail>;
+  imageModels: Array<ModelDetail>;
+  llmModels: Array<ModelDetail>;
+  provider: LlmProviderObject;
+  videoModels: Array<ModelDetail>;
 };
 
 export type ProviderWithModels = {
@@ -1733,8 +1699,7 @@ export type Query = {
   getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
   getEffectiveWorkingContextCompactionStrategyId: Scalars['String']['output'];
-  getGeminiSetupConfig: GeminiSetupConfig;
-  getLlmProviderCredentialStatus?: Maybe<CredentialStatusObject>;
+  getGeminiSetupConfig: GeminiSetupStateObject;
   getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
   getMemorySyncStatus: MemorySyncStatusGql;
   getRunEventMonitorActiveTracePage: EventMonitorActiveTracePage;
@@ -1769,6 +1734,7 @@ export type Query = {
   managedMessagingGatewayWeComAccounts: Array<ManagedMessagingGatewayWeComAccountObject>;
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
+  providerSettings: Array<ProviderSettingsGroup>;
   runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
   searchFiles: Array<Scalars['String']['output']>;
   skill?: Maybe<Skill>;
@@ -1867,11 +1833,6 @@ export type QueryGetAgentRunSkillImprovementEligibilityArgs = {
 
 export type QueryGetAgentRunTokenUsageSummaryArgs = {
   runId: Scalars['String']['input'];
-};
-
-
-export type QueryGetLlmProviderCredentialStatusArgs = {
-  providerId: Scalars['String']['input'];
 };
 
 
@@ -2011,6 +1972,11 @@ export type QueryManagedMessagingGatewayPeerCandidatesArgs = {
 
 export type QueryPreviewMcpServerToolsArgs = {
   input: McpServerInput;
+};
+
+
+export type QueryProviderSettingsArgs = {
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -3095,20 +3061,20 @@ export type CreateFileOrFolderMutationVariables = Exact<{
 
 export type CreateFileOrFolderMutation = { __typename?: 'Mutation', createFileOrFolder: string };
 
-export type SetLlmProviderApiKeyMutationVariables = Exact<{
+export type SaveProviderApiKeyMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
   apiKey: Scalars['String']['input'];
 }>;
 
 
-export type SetLlmProviderApiKeyMutation = { __typename?: 'Mutation', setLlmProviderApiKey: string };
+export type SaveProviderApiKeyMutation = { __typename?: 'Mutation', saveProviderApiKey: boolean };
 
-export type RemoveLlmProviderApiKeyMutationVariables = Exact<{
+export type RemoveProviderApiKeyMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
 }>;
 
 
-export type RemoveLlmProviderApiKeyMutation = { __typename?: 'Mutation', removeLlmProviderApiKey: string };
+export type RemoveProviderApiKeyMutation = { __typename?: 'Mutation', removeProviderApiKey: boolean };
 
 export type ReloadLlmModelsMutationVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
@@ -3125,64 +3091,65 @@ export type ReloadLlmProviderModelsMutationVariables = Exact<{
 
 export type ReloadLlmProviderModelsMutation = { __typename?: 'Mutation', reloadLlmProviderModels: string };
 
-export type ProbeCustomLlmProviderMutationVariables = Exact<{
-  input: CustomLlmProviderInputObject;
+export type ProbeCustomProviderMutationVariables = Exact<{
+  input: CustomProviderInputObject;
 }>;
 
 
-export type ProbeCustomLlmProviderMutation = { __typename?: 'Mutation', probeCustomLlmProvider: { __typename?: 'CustomLlmProviderProbeResultObject', name: string, providerType: string, baseUrl: string, discoveredModels: Array<{ __typename?: 'CustomLlmProviderProbeModelObject', id: string, name: string }> } };
+export type ProbeCustomProviderMutation = { __typename?: 'Mutation', probeCustomProvider: { __typename?: 'CustomProviderProbeResultObject', discoveredModels: Array<{ __typename?: 'CustomProviderProbeModelObject', id: string, name: string }> } };
 
-export type CreateCustomLlmProviderMutationVariables = Exact<{
-  input: CustomLlmProviderInputObject;
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+export type CreateCustomProviderMutationVariables = Exact<{
+  input: CustomProviderInputObject;
 }>;
 
 
-export type CreateCustomLlmProviderMutation = { __typename?: 'Mutation', createCustomLlmProvider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null } };
+export type CreateCustomProviderMutation = { __typename?: 'Mutation', createCustomProvider: string };
 
-export type DeleteCustomLlmProviderMutationVariables = Exact<{
+export type DeleteCustomProviderMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type DeleteCustomLlmProviderMutation = { __typename?: 'Mutation', deleteCustomLlmProvider: string };
+export type DeleteCustomProviderMutation = { __typename?: 'Mutation', deleteCustomProvider: boolean };
 
-export type SaveGeminiConfigurationOptionMutationVariables = Exact<{
-  option: GeminiConfigurationOption;
-  geminiApiKey?: InputMaybe<Scalars['String']['input']>;
-  vertexApiKey?: InputMaybe<Scalars['String']['input']>;
-  vertexProject?: InputMaybe<Scalars['String']['input']>;
-  vertexLocation?: InputMaybe<Scalars['String']['input']>;
+export type SaveGeminiAiStudioMutationVariables = Exact<{
+  apiKey: Scalars['String']['input'];
+  activateAfterSave: Scalars['Boolean']['input'];
 }>;
 
 
-export type SaveGeminiConfigurationOptionMutation = { __typename?: 'Mutation', saveGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
+export type SaveGeminiAiStudioMutation = { __typename?: 'Mutation', saveGeminiAiStudio: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
 
-export type RemoveGeminiConfigurationOptionMutationVariables = Exact<{
-  option: GeminiConfigurationOption;
+export type SaveGeminiVertexExpressMutationVariables = Exact<{
+  apiKey: Scalars['String']['input'];
+  activateAfterSave: Scalars['Boolean']['input'];
 }>;
 
 
-export type RemoveGeminiConfigurationOptionMutation = { __typename?: 'Mutation', removeGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
+export type SaveGeminiVertexExpressMutation = { __typename?: 'Mutation', saveGeminiVertexExpress: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
 
-export type ActivateGeminiConfigurationOptionMutationVariables = Exact<{
-  option: GeminiConfigurationOption;
+export type SaveGeminiVertexProjectMutationVariables = Exact<{
+  project: Scalars['String']['input'];
+  location: Scalars['String']['input'];
+  activateAfterSave: Scalars['Boolean']['input'];
 }>;
 
 
-export type ActivateGeminiConfigurationOptionMutation = { __typename?: 'Mutation', activateGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
+export type SaveGeminiVertexProjectMutation = { __typename?: 'Mutation', saveGeminiVertexProject: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
 
-export type SaveAndActivateGeminiConfigurationOptionMutationVariables = Exact<{
-  option: GeminiConfigurationOption;
-  geminiApiKey?: InputMaybe<Scalars['String']['input']>;
-  vertexApiKey?: InputMaybe<Scalars['String']['input']>;
-  vertexProject?: InputMaybe<Scalars['String']['input']>;
-  vertexLocation?: InputMaybe<Scalars['String']['input']>;
+export type UseGeminiModeMutationVariables = Exact<{
+  mode: GeminiSetupMode;
 }>;
 
 
-export type SaveAndActivateGeminiConfigurationOptionMutation = { __typename?: 'Mutation', saveAndActivateGeminiConfigurationOption: { __typename?: 'GeminiConfigurationOperationResultObject', operation: GeminiConfigurationOperation, option: GeminiConfigurationOption, optionStatus: GeminiConfigurationState, activeMode?: GeminiConfigurationOption | null, outcome: GeminiConfigurationOutcome, configurationOutcome: GeminiConfigurationStageOutcome, modeOutcome: GeminiConfigurationStageOutcome, instructionCode?: string | null } };
+export type UseGeminiModeMutation = { __typename?: 'Mutation', useGeminiMode: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
+
+export type RemoveGeminiConfigurationMutationVariables = Exact<{
+  mode: GeminiSetupMode;
+}>;
+
+
+export type RemoveGeminiConfigurationMutation = { __typename?: 'Mutation', removeGeminiConfiguration: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
 
 export type ConfigureMcpServerMutationVariables = Exact<{
   input: McpServerInput;
@@ -3441,24 +3408,24 @@ export type GetFolderChildrenQueryVariables = Exact<{
 
 export type GetFolderChildrenQuery = { __typename?: 'Query', folderChildren: string };
 
-export type GetLlmProviderCredentialStatusQueryVariables = Exact<{
-  providerId: Scalars['String']['input'];
+export type GetProviderSettingsQueryVariables = Exact<{
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetLlmProviderCredentialStatusQuery = { __typename?: 'Query', getLlmProviderCredentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null };
+export type GetProviderSettingsQuery = { __typename?: 'Query', providerSettings: Array<{ __typename?: 'ProviderSettingsGroup', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, apiKeyConfigured: boolean, status: string, statusMessage?: string | null }, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, providerType: string }> }> };
 
 export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: { __typename: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null, credentialStatus?: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } | null }, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null }> }>, availableAudioProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }>, availableVideoProvidersWithModels: Array<{ __typename?: 'ProviderWithModels', provider: { __typename?: 'LlmProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, status: string, statusMessage?: string | null }, models: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupConfig', activeMode?: GeminiConfigurationOption | null, vertexProjectStatus: GeminiConfigurationState, vertexProject?: string | null, vertexLocation?: string | null, aiStudioCredentialStatus: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null }, vertexExpressCredentialStatus: { __typename?: 'CredentialStatusObject', vaultHealth: string, storageState?: string | null, instructionCode?: string | null } } };
+export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
 
 export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5517,61 +5484,61 @@ export function useCreateFileOrFolderMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<CreateFileOrFolderMutation, CreateFileOrFolderMutationVariables>(CreateFileOrFolderDocument, options);
 }
 export type CreateFileOrFolderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateFileOrFolderMutation, CreateFileOrFolderMutationVariables>;
-export const SetLlmProviderApiKeyDocument = gql`
-    mutation SetLLMProviderApiKey($providerId: String!, $apiKey: String!) {
-  setLlmProviderApiKey(providerId: $providerId, apiKey: $apiKey)
+export const SaveProviderApiKeyDocument = gql`
+    mutation SaveProviderApiKey($providerId: String!, $apiKey: String!) {
+  saveProviderApiKey(providerId: $providerId, apiKey: $apiKey)
 }
     `;
 
 /**
- * __useSetLlmProviderApiKeyMutation__
+ * __useSaveProviderApiKeyMutation__
  *
- * To run a mutation, you first call `useSetLlmProviderApiKeyMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSetLlmProviderApiKeyMutation` returns an object that includes:
+ * To run a mutation, you first call `useSaveProviderApiKeyMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSaveProviderApiKeyMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useSetLlmProviderApiKeyMutation({
+ * const { mutate, loading, error, onDone } = useSaveProviderApiKeyMutation({
  *   variables: {
  *     providerId: // value for 'providerId'
  *     apiKey: // value for 'apiKey'
  *   },
  * });
  */
-export function useSetLlmProviderApiKeyMutation(options: VueApolloComposable.UseMutationOptions<SetLlmProviderApiKeyMutation, SetLlmProviderApiKeyMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetLlmProviderApiKeyMutation, SetLlmProviderApiKeyMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SetLlmProviderApiKeyMutation, SetLlmProviderApiKeyMutationVariables>(SetLlmProviderApiKeyDocument, options);
+export function useSaveProviderApiKeyMutation(options: VueApolloComposable.UseMutationOptions<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>(SaveProviderApiKeyDocument, options);
 }
-export type SetLlmProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetLlmProviderApiKeyMutation, SetLlmProviderApiKeyMutationVariables>;
-export const RemoveLlmProviderApiKeyDocument = gql`
-    mutation RemoveLLMProviderApiKey($providerId: String!) {
-  removeLlmProviderApiKey(providerId: $providerId)
+export type SaveProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>;
+export const RemoveProviderApiKeyDocument = gql`
+    mutation RemoveProviderApiKey($providerId: String!) {
+  removeProviderApiKey(providerId: $providerId)
 }
     `;
 
 /**
- * __useRemoveLlmProviderApiKeyMutation__
+ * __useRemoveProviderApiKeyMutation__
  *
- * To run a mutation, you first call `useRemoveLlmProviderApiKeyMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveLlmProviderApiKeyMutation` returns an object that includes:
+ * To run a mutation, you first call `useRemoveProviderApiKeyMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProviderApiKeyMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useRemoveLlmProviderApiKeyMutation({
+ * const { mutate, loading, error, onDone } = useRemoveProviderApiKeyMutation({
  *   variables: {
  *     providerId: // value for 'providerId'
  *   },
  * });
  */
-export function useRemoveLlmProviderApiKeyMutation(options: VueApolloComposable.UseMutationOptions<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables>(RemoveLlmProviderApiKeyDocument, options);
+export function useRemoveProviderApiKeyMutation(options: VueApolloComposable.UseMutationOptions<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables>(RemoveProviderApiKeyDocument, options);
 }
-export type RemoveLlmProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveLlmProviderApiKeyMutation, RemoveLlmProviderApiKeyMutationVariables>;
+export type RemoveProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables>;
 export const ReloadLlmModelsDocument = gql`
     mutation ReloadLLMModels($runtimeKind: String) {
   reloadLlmModels(runtimeKind: $runtimeKind)
@@ -5627,12 +5594,9 @@ export function useReloadLlmProviderModelsMutation(options: VueApolloComposable.
   return VueApolloComposable.useMutation<ReloadLlmProviderModelsMutation, ReloadLlmProviderModelsMutationVariables>(ReloadLlmProviderModelsDocument, options);
 }
 export type ReloadLlmProviderModelsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadLlmProviderModelsMutation, ReloadLlmProviderModelsMutationVariables>;
-export const ProbeCustomLlmProviderDocument = gql`
-    mutation ProbeCustomLlmProvider($input: CustomLlmProviderInputObject!) {
-  probeCustomLlmProvider(input: $input) {
-    name
-    providerType
-    baseUrl
+export const ProbeCustomProviderDocument = gql`
+    mutation ProbeCustomProvider($input: CustomProviderInputObject!) {
+  probeCustomProvider(input: $input) {
     discoveredModels {
       id
       name
@@ -5642,259 +5606,263 @@ export const ProbeCustomLlmProviderDocument = gql`
     `;
 
 /**
- * __useProbeCustomLlmProviderMutation__
+ * __useProbeCustomProviderMutation__
  *
- * To run a mutation, you first call `useProbeCustomLlmProviderMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useProbeCustomLlmProviderMutation` returns an object that includes:
+ * To run a mutation, you first call `useProbeCustomProviderMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useProbeCustomProviderMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useProbeCustomLlmProviderMutation({
+ * const { mutate, loading, error, onDone } = useProbeCustomProviderMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useProbeCustomLlmProviderMutation(options: VueApolloComposable.UseMutationOptions<ProbeCustomLlmProviderMutation, ProbeCustomLlmProviderMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ProbeCustomLlmProviderMutation, ProbeCustomLlmProviderMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ProbeCustomLlmProviderMutation, ProbeCustomLlmProviderMutationVariables>(ProbeCustomLlmProviderDocument, options);
+export function useProbeCustomProviderMutation(options: VueApolloComposable.UseMutationOptions<ProbeCustomProviderMutation, ProbeCustomProviderMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ProbeCustomProviderMutation, ProbeCustomProviderMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ProbeCustomProviderMutation, ProbeCustomProviderMutationVariables>(ProbeCustomProviderDocument, options);
 }
-export type ProbeCustomLlmProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ProbeCustomLlmProviderMutation, ProbeCustomLlmProviderMutationVariables>;
-export const CreateCustomLlmProviderDocument = gql`
-    mutation CreateCustomLlmProvider($input: CustomLlmProviderInputObject!, $runtimeKind: String) {
-  createCustomLlmProvider(input: $input, runtimeKind: $runtimeKind) {
-    id
-    name
-    providerType
-    isCustom
-    baseUrl
-    credentialStatus {
-      vaultHealth
-      storageState
-      instructionCode
-    }
-    status
-    statusMessage
-  }
+export type ProbeCustomProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ProbeCustomProviderMutation, ProbeCustomProviderMutationVariables>;
+export const CreateCustomProviderDocument = gql`
+    mutation CreateCustomProvider($input: CustomProviderInputObject!) {
+  createCustomProvider(input: $input)
 }
     `;
 
 /**
- * __useCreateCustomLlmProviderMutation__
+ * __useCreateCustomProviderMutation__
  *
- * To run a mutation, you first call `useCreateCustomLlmProviderMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateCustomLlmProviderMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreateCustomProviderMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCustomProviderMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useCreateCustomLlmProviderMutation({
+ * const { mutate, loading, error, onDone } = useCreateCustomProviderMutation({
  *   variables: {
  *     input: // value for 'input'
- *     runtimeKind: // value for 'runtimeKind'
  *   },
  * });
  */
-export function useCreateCustomLlmProviderMutation(options: VueApolloComposable.UseMutationOptions<CreateCustomLlmProviderMutation, CreateCustomLlmProviderMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateCustomLlmProviderMutation, CreateCustomLlmProviderMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateCustomLlmProviderMutation, CreateCustomLlmProviderMutationVariables>(CreateCustomLlmProviderDocument, options);
+export function useCreateCustomProviderMutation(options: VueApolloComposable.UseMutationOptions<CreateCustomProviderMutation, CreateCustomProviderMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateCustomProviderMutation, CreateCustomProviderMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateCustomProviderMutation, CreateCustomProviderMutationVariables>(CreateCustomProviderDocument, options);
 }
-export type CreateCustomLlmProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateCustomLlmProviderMutation, CreateCustomLlmProviderMutationVariables>;
-export const DeleteCustomLlmProviderDocument = gql`
-    mutation DeleteCustomLlmProvider($providerId: String!, $runtimeKind: String) {
-  deleteCustomLlmProvider(providerId: $providerId, runtimeKind: $runtimeKind)
+export type CreateCustomProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateCustomProviderMutation, CreateCustomProviderMutationVariables>;
+export const DeleteCustomProviderDocument = gql`
+    mutation DeleteCustomProvider($providerId: String!) {
+  deleteCustomProvider(providerId: $providerId)
 }
     `;
 
 /**
- * __useDeleteCustomLlmProviderMutation__
+ * __useDeleteCustomProviderMutation__
  *
- * To run a mutation, you first call `useDeleteCustomLlmProviderMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeleteCustomLlmProviderMutation` returns an object that includes:
+ * To run a mutation, you first call `useDeleteCustomProviderMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCustomProviderMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useDeleteCustomLlmProviderMutation({
+ * const { mutate, loading, error, onDone } = useDeleteCustomProviderMutation({
  *   variables: {
  *     providerId: // value for 'providerId'
- *     runtimeKind: // value for 'runtimeKind'
  *   },
  * });
  */
-export function useDeleteCustomLlmProviderMutation(options: VueApolloComposable.UseMutationOptions<DeleteCustomLlmProviderMutation, DeleteCustomLlmProviderMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteCustomLlmProviderMutation, DeleteCustomLlmProviderMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeleteCustomLlmProviderMutation, DeleteCustomLlmProviderMutationVariables>(DeleteCustomLlmProviderDocument, options);
+export function useDeleteCustomProviderMutation(options: VueApolloComposable.UseMutationOptions<DeleteCustomProviderMutation, DeleteCustomProviderMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteCustomProviderMutation, DeleteCustomProviderMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteCustomProviderMutation, DeleteCustomProviderMutationVariables>(DeleteCustomProviderDocument, options);
 }
-export type DeleteCustomLlmProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteCustomLlmProviderMutation, DeleteCustomLlmProviderMutationVariables>;
-export const SaveGeminiConfigurationOptionDocument = gql`
-    mutation SaveGeminiConfigurationOption($option: GeminiConfigurationOption!, $geminiApiKey: String, $vertexApiKey: String, $vertexProject: String, $vertexLocation: String) {
-  saveGeminiConfigurationOption(
-    option: $option
-    geminiApiKey: $geminiApiKey
-    vertexApiKey: $vertexApiKey
-    vertexProject: $vertexProject
-    vertexLocation: $vertexLocation
+export type DeleteCustomProviderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteCustomProviderMutation, DeleteCustomProviderMutationVariables>;
+export const SaveGeminiAiStudioDocument = gql`
+    mutation SaveGeminiAiStudio($apiKey: String!, $activateAfterSave: Boolean!) {
+  saveGeminiAiStudio(apiKey: $apiKey, activateAfterSave: $activateAfterSave) {
+    activeMode
+    aiStudioConfigured
+    vertexExpressConfigured
+    vertexProject {
+      project
+      location
+    }
+  }
+}
+    `;
+
+/**
+ * __useSaveGeminiAiStudioMutation__
+ *
+ * To run a mutation, you first call `useSaveGeminiAiStudioMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSaveGeminiAiStudioMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSaveGeminiAiStudioMutation({
+ *   variables: {
+ *     apiKey: // value for 'apiKey'
+ *     activateAfterSave: // value for 'activateAfterSave'
+ *   },
+ * });
+ */
+export function useSaveGeminiAiStudioMutation(options: VueApolloComposable.UseMutationOptions<SaveGeminiAiStudioMutation, SaveGeminiAiStudioMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveGeminiAiStudioMutation, SaveGeminiAiStudioMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SaveGeminiAiStudioMutation, SaveGeminiAiStudioMutationVariables>(SaveGeminiAiStudioDocument, options);
+}
+export type SaveGeminiAiStudioMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveGeminiAiStudioMutation, SaveGeminiAiStudioMutationVariables>;
+export const SaveGeminiVertexExpressDocument = gql`
+    mutation SaveGeminiVertexExpress($apiKey: String!, $activateAfterSave: Boolean!) {
+  saveGeminiVertexExpress(apiKey: $apiKey, activateAfterSave: $activateAfterSave) {
+    activeMode
+    aiStudioConfigured
+    vertexExpressConfigured
+    vertexProject {
+      project
+      location
+    }
+  }
+}
+    `;
+
+/**
+ * __useSaveGeminiVertexExpressMutation__
+ *
+ * To run a mutation, you first call `useSaveGeminiVertexExpressMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSaveGeminiVertexExpressMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSaveGeminiVertexExpressMutation({
+ *   variables: {
+ *     apiKey: // value for 'apiKey'
+ *     activateAfterSave: // value for 'activateAfterSave'
+ *   },
+ * });
+ */
+export function useSaveGeminiVertexExpressMutation(options: VueApolloComposable.UseMutationOptions<SaveGeminiVertexExpressMutation, SaveGeminiVertexExpressMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveGeminiVertexExpressMutation, SaveGeminiVertexExpressMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SaveGeminiVertexExpressMutation, SaveGeminiVertexExpressMutationVariables>(SaveGeminiVertexExpressDocument, options);
+}
+export type SaveGeminiVertexExpressMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveGeminiVertexExpressMutation, SaveGeminiVertexExpressMutationVariables>;
+export const SaveGeminiVertexProjectDocument = gql`
+    mutation SaveGeminiVertexProject($project: String!, $location: String!, $activateAfterSave: Boolean!) {
+  saveGeminiVertexProject(
+    project: $project
+    location: $location
+    activateAfterSave: $activateAfterSave
   ) {
-    operation
-    option
-    optionStatus
     activeMode
-    outcome
-    configurationOutcome
-    modeOutcome
-    instructionCode
+    aiStudioConfigured
+    vertexExpressConfigured
+    vertexProject {
+      project
+      location
+    }
   }
 }
     `;
 
 /**
- * __useSaveGeminiConfigurationOptionMutation__
+ * __useSaveGeminiVertexProjectMutation__
  *
- * To run a mutation, you first call `useSaveGeminiConfigurationOptionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSaveGeminiConfigurationOptionMutation` returns an object that includes:
+ * To run a mutation, you first call `useSaveGeminiVertexProjectMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSaveGeminiVertexProjectMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useSaveGeminiConfigurationOptionMutation({
+ * const { mutate, loading, error, onDone } = useSaveGeminiVertexProjectMutation({
  *   variables: {
- *     option: // value for 'option'
- *     geminiApiKey: // value for 'geminiApiKey'
- *     vertexApiKey: // value for 'vertexApiKey'
- *     vertexProject: // value for 'vertexProject'
- *     vertexLocation: // value for 'vertexLocation'
+ *     project: // value for 'project'
+ *     location: // value for 'location'
+ *     activateAfterSave: // value for 'activateAfterSave'
  *   },
  * });
  */
-export function useSaveGeminiConfigurationOptionMutation(options: VueApolloComposable.UseMutationOptions<SaveGeminiConfigurationOptionMutation, SaveGeminiConfigurationOptionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveGeminiConfigurationOptionMutation, SaveGeminiConfigurationOptionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SaveGeminiConfigurationOptionMutation, SaveGeminiConfigurationOptionMutationVariables>(SaveGeminiConfigurationOptionDocument, options);
+export function useSaveGeminiVertexProjectMutation(options: VueApolloComposable.UseMutationOptions<SaveGeminiVertexProjectMutation, SaveGeminiVertexProjectMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveGeminiVertexProjectMutation, SaveGeminiVertexProjectMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SaveGeminiVertexProjectMutation, SaveGeminiVertexProjectMutationVariables>(SaveGeminiVertexProjectDocument, options);
 }
-export type SaveGeminiConfigurationOptionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveGeminiConfigurationOptionMutation, SaveGeminiConfigurationOptionMutationVariables>;
-export const RemoveGeminiConfigurationOptionDocument = gql`
-    mutation RemoveGeminiConfigurationOption($option: GeminiConfigurationOption!) {
-  removeGeminiConfigurationOption(option: $option) {
-    operation
-    option
-    optionStatus
+export type SaveGeminiVertexProjectMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveGeminiVertexProjectMutation, SaveGeminiVertexProjectMutationVariables>;
+export const UseGeminiModeDocument = gql`
+    mutation UseGeminiMode($mode: GeminiSetupMode!) {
+  useGeminiMode(mode: $mode) {
     activeMode
-    outcome
-    configurationOutcome
-    modeOutcome
-    instructionCode
+    aiStudioConfigured
+    vertexExpressConfigured
+    vertexProject {
+      project
+      location
+    }
   }
 }
     `;
 
 /**
- * __useRemoveGeminiConfigurationOptionMutation__
+ * __useUseGeminiModeMutation__
  *
- * To run a mutation, you first call `useRemoveGeminiConfigurationOptionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveGeminiConfigurationOptionMutation` returns an object that includes:
+ * To run a mutation, you first call `useUseGeminiModeMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUseGeminiModeMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useRemoveGeminiConfigurationOptionMutation({
+ * const { mutate, loading, error, onDone } = useUseGeminiModeMutation({
  *   variables: {
- *     option: // value for 'option'
+ *     mode: // value for 'mode'
  *   },
  * });
  */
-export function useRemoveGeminiConfigurationOptionMutation(options: VueApolloComposable.UseMutationOptions<RemoveGeminiConfigurationOptionMutation, RemoveGeminiConfigurationOptionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveGeminiConfigurationOptionMutation, RemoveGeminiConfigurationOptionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveGeminiConfigurationOptionMutation, RemoveGeminiConfigurationOptionMutationVariables>(RemoveGeminiConfigurationOptionDocument, options);
+export function useUseGeminiModeMutation(options: VueApolloComposable.UseMutationOptions<UseGeminiModeMutation, UseGeminiModeMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UseGeminiModeMutation, UseGeminiModeMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UseGeminiModeMutation, UseGeminiModeMutationVariables>(UseGeminiModeDocument, options);
 }
-export type RemoveGeminiConfigurationOptionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveGeminiConfigurationOptionMutation, RemoveGeminiConfigurationOptionMutationVariables>;
-export const ActivateGeminiConfigurationOptionDocument = gql`
-    mutation ActivateGeminiConfigurationOption($option: GeminiConfigurationOption!) {
-  activateGeminiConfigurationOption(option: $option) {
-    operation
-    option
-    optionStatus
+export type UseGeminiModeMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UseGeminiModeMutation, UseGeminiModeMutationVariables>;
+export const RemoveGeminiConfigurationDocument = gql`
+    mutation RemoveGeminiConfiguration($mode: GeminiSetupMode!) {
+  removeGeminiConfiguration(mode: $mode) {
     activeMode
-    outcome
-    configurationOutcome
-    modeOutcome
-    instructionCode
+    aiStudioConfigured
+    vertexExpressConfigured
+    vertexProject {
+      project
+      location
+    }
   }
 }
     `;
 
 /**
- * __useActivateGeminiConfigurationOptionMutation__
+ * __useRemoveGeminiConfigurationMutation__
  *
- * To run a mutation, you first call `useActivateGeminiConfigurationOptionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useActivateGeminiConfigurationOptionMutation` returns an object that includes:
+ * To run a mutation, you first call `useRemoveGeminiConfigurationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveGeminiConfigurationMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useActivateGeminiConfigurationOptionMutation({
+ * const { mutate, loading, error, onDone } = useRemoveGeminiConfigurationMutation({
  *   variables: {
- *     option: // value for 'option'
+ *     mode: // value for 'mode'
  *   },
  * });
  */
-export function useActivateGeminiConfigurationOptionMutation(options: VueApolloComposable.UseMutationOptions<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables>(ActivateGeminiConfigurationOptionDocument, options);
+export function useRemoveGeminiConfigurationMutation(options: VueApolloComposable.UseMutationOptions<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables>(RemoveGeminiConfigurationDocument, options);
 }
-export type ActivateGeminiConfigurationOptionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ActivateGeminiConfigurationOptionMutation, ActivateGeminiConfigurationOptionMutationVariables>;
-export const SaveAndActivateGeminiConfigurationOptionDocument = gql`
-    mutation SaveAndActivateGeminiConfigurationOption($option: GeminiConfigurationOption!, $geminiApiKey: String, $vertexApiKey: String, $vertexProject: String, $vertexLocation: String) {
-  saveAndActivateGeminiConfigurationOption(
-    option: $option
-    geminiApiKey: $geminiApiKey
-    vertexApiKey: $vertexApiKey
-    vertexProject: $vertexProject
-    vertexLocation: $vertexLocation
-  ) {
-    operation
-    option
-    optionStatus
-    activeMode
-    outcome
-    configurationOutcome
-    modeOutcome
-    instructionCode
-  }
-}
-    `;
-
-/**
- * __useSaveAndActivateGeminiConfigurationOptionMutation__
- *
- * To run a mutation, you first call `useSaveAndActivateGeminiConfigurationOptionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSaveAndActivateGeminiConfigurationOptionMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useSaveAndActivateGeminiConfigurationOptionMutation({
- *   variables: {
- *     option: // value for 'option'
- *     geminiApiKey: // value for 'geminiApiKey'
- *     vertexApiKey: // value for 'vertexApiKey'
- *     vertexProject: // value for 'vertexProject'
- *     vertexLocation: // value for 'vertexLocation'
- *   },
- * });
- */
-export function useSaveAndActivateGeminiConfigurationOptionMutation(options: VueApolloComposable.UseMutationOptions<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables>(SaveAndActivateGeminiConfigurationOptionDocument, options);
-}
-export type SaveAndActivateGeminiConfigurationOptionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveAndActivateGeminiConfigurationOptionMutation, SaveAndActivateGeminiConfigurationOptionMutationVariables>;
+export type RemoveGeminiConfigurationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables>;
 export const ConfigureMcpServerDocument = gql`
     mutation ConfigureMcpServer($input: McpServerInput!) {
   configureMcpServer(input: $input) {
@@ -7183,59 +7151,78 @@ export function useGetFolderChildrenLazyQuery(variables?: GetFolderChildrenQuery
   return VueApolloComposable.useLazyQuery<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>(GetFolderChildrenDocument, variables, options);
 }
 export type GetFolderChildrenQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>;
-export const GetLlmProviderCredentialStatusDocument = gql`
-    query GetLLMProviderCredentialStatus($providerId: String!) {
-  getLlmProviderCredentialStatus(providerId: $providerId) {
-    vaultHealth
-    storageState
-    instructionCode
+export const GetProviderSettingsDocument = gql`
+    query GetProviderSettings($runtimeKind: String) {
+  providerSettings(runtimeKind: $runtimeKind) {
+    provider {
+      id
+      name
+      providerType
+      isCustom
+      baseUrl
+      apiKeyConfigured
+      status
+      statusMessage
+    }
+    llmModels {
+      modelIdentifier
+      name
+      providerType
+    }
+    audioModels {
+      modelIdentifier
+      name
+      providerType
+    }
+    imageModels {
+      modelIdentifier
+      name
+      providerType
+    }
+    videoModels {
+      modelIdentifier
+      name
+      providerType
+    }
   }
 }
     `;
 
 /**
- * __useGetLlmProviderCredentialStatusQuery__
+ * __useGetProviderSettingsQuery__
  *
- * To run a query within a Vue component, call `useGetLlmProviderCredentialStatusQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetLlmProviderCredentialStatusQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetProviderSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProviderSettingsQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetLlmProviderCredentialStatusQuery({
- *   providerId: // value for 'providerId'
+ * const { result, loading, error } = useGetProviderSettingsQuery({
+ *   runtimeKind: // value for 'runtimeKind'
  * });
  */
-export function useGetLlmProviderCredentialStatusQuery(variables: GetLlmProviderCredentialStatusQueryVariables | VueCompositionApi.Ref<GetLlmProviderCredentialStatusQueryVariables> | ReactiveFunction<GetLlmProviderCredentialStatusQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>(GetLlmProviderCredentialStatusDocument, variables, options);
+export function useGetProviderSettingsQuery(variables: GetProviderSettingsQueryVariables | VueCompositionApi.Ref<GetProviderSettingsQueryVariables> | ReactiveFunction<GetProviderSettingsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>(GetProviderSettingsDocument, variables, options);
 }
-export function useGetLlmProviderCredentialStatusLazyQuery(variables?: GetLlmProviderCredentialStatusQueryVariables | VueCompositionApi.Ref<GetLlmProviderCredentialStatusQueryVariables> | ReactiveFunction<GetLlmProviderCredentialStatusQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>(GetLlmProviderCredentialStatusDocument, variables, options);
+export function useGetProviderSettingsLazyQuery(variables: GetProviderSettingsQueryVariables | VueCompositionApi.Ref<GetProviderSettingsQueryVariables> | ReactiveFunction<GetProviderSettingsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>(GetProviderSettingsDocument, variables, options);
 }
-export type GetLlmProviderCredentialStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetLlmProviderCredentialStatusQuery, GetLlmProviderCredentialStatusQueryVariables>;
+export type GetProviderSettingsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProviderSettingsQuery, GetProviderSettingsQueryVariables>;
 export const GetAvailableLlmProvidersWithModelsDocument = gql`
     query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
   availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-    __typename
     provider {
-      __typename
       id
       name
       providerType
       isCustom
       baseUrl
-      credentialStatus {
-        vaultHealth
-        storageState
-        instructionCode
-      }
       status
       statusMessage
     }
     models {
-      __typename
       modelIdentifier
       name
       description
@@ -7255,24 +7242,16 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
     }
   }
   availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {
-    __typename
     provider {
-      __typename
       id
       name
       providerType
       isCustom
       baseUrl
-      credentialStatus {
-        vaultHealth
-        storageState
-        instructionCode
-      }
       status
       statusMessage
     }
     models {
-      __typename
       modelIdentifier
       name
       value
@@ -7285,24 +7264,16 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
     }
   }
   availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
-    __typename
     provider {
-      __typename
       id
       name
       providerType
       isCustom
       baseUrl
-      credentialStatus {
-        vaultHealth
-        storageState
-        instructionCode
-      }
       status
       statusMessage
     }
     models {
-      __typename
       modelIdentifier
       name
       value
@@ -7315,24 +7286,16 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
     }
   }
   availableVideoProvidersWithModels(runtimeKind: $runtimeKind) {
-    __typename
     provider {
-      __typename
       id
       name
       providerType
       isCustom
       baseUrl
-      credentialStatus {
-        vaultHealth
-        storageState
-        instructionCode
-      }
       status
       statusMessage
     }
     models {
-      __typename
       modelIdentifier
       name
       value
@@ -7373,19 +7336,12 @@ export const GetGeminiSetupConfigDocument = gql`
     query GetGeminiSetupConfig {
   getGeminiSetupConfig {
     activeMode
-    aiStudioCredentialStatus {
-      vaultHealth
-      storageState
-      instructionCode
+    aiStudioConfigured
+    vertexExpressConfigured
+    vertexProject {
+      project
+      location
     }
-    vertexExpressCredentialStatus {
-      vaultHealth
-      storageState
-      instructionCode
-    }
-    vertexProjectStatus
-    vertexProject
-    vertexLocation
   }
 }
     `;

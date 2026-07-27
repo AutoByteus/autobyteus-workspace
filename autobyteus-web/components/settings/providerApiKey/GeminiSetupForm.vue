@@ -17,8 +17,8 @@
       :active="geminiSetup.activeMode === option"
       :active-mode="geminiSetup.activeMode"
       :refresh-snapshot="geminiSetup"
-      :vertex-project="geminiSetup.vertexProject"
-      :vertex-location="geminiSetup.vertexLocation"
+      :vertex-project="geminiSetup.vertexProject?.project ?? null"
+      :vertex-location="geminiSetup.vertexProject?.location ?? null"
       :saving="saving"
       :activating="activating"
       :removing="removing"
@@ -40,6 +40,10 @@ import type {
   GeminiConfigurationOption,
   GeminiOptionSaveInput,
   GeminiSetupConfigState,
+} from '~/stores/llmProviderConfig'
+import {
+  isGeminiOptionAvailable,
+  isGeminiOptionConfigured,
 } from '~/stores/llmProviderConfig'
 
 const props = defineProps<{
@@ -73,22 +77,10 @@ const optionLabel = (option: GeminiConfigurationOption | null): string => {
 }
 
 const isConfigured = (option: GeminiConfigurationOption): boolean => {
-  if (option === 'AI_STUDIO') {
-    return props.geminiSetup.aiStudioCredentialStatus.storageState === 'CONFIGURED'
-  }
-  if (option === 'VERTEX_EXPRESS') {
-    return props.geminiSetup.vertexExpressCredentialStatus.storageState === 'CONFIGURED'
-  }
-  return props.geminiSetup.vertexProjectStatus === 'CONFIGURED'
+  return isGeminiOptionConfigured(props.geminiSetup, option)
 }
 
 const optionUnavailable = (option: GeminiConfigurationOption): boolean => {
-  if (option === 'AI_STUDIO') {
-    return props.geminiSetup.aiStudioCredentialStatus.vaultHealth !== 'READY'
-  }
-  if (option === 'VERTEX_EXPRESS') {
-    return props.geminiSetup.vertexExpressCredentialStatus.vaultHealth !== 'READY'
-  }
-  return false
+  return !isGeminiOptionAvailable(props.geminiSetup, option)
 }
 </script>

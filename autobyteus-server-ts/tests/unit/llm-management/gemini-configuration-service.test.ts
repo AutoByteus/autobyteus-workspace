@@ -77,16 +77,16 @@ describe('GeminiConfigurationService explicit mode commands', () => {
     await service.saveOptionConfiguration({
       option: 'AI_STUDIO',
       apiKey: 'synthetic-ai-studio-key',
-    });
+    }, false);
     await service.saveOptionConfiguration({
       option: 'VERTEX_EXPRESS',
       apiKey: 'synthetic-vertex-express-key',
-    });
+    }, false);
     await service.saveOptionConfiguration({
       option: 'VERTEX_PROJECT',
       project: 'synthetic-project',
       location: 'global',
-    });
+    }, false);
 
     expect(await service.getSetupStatus()).toMatchObject({
       activeMode: null,
@@ -96,10 +96,8 @@ describe('GeminiConfigurationService explicit mode commands', () => {
       vertexProjectStatus: 'CONFIGURED',
     });
     await expect(service.activateOption('AI_STUDIO')).resolves.toMatchObject({
-      operation: 'ACTIVATED',
-      option: 'AI_STUDIO',
-      optionStatus: 'CONFIGURED',
       activeMode: 'AI_STUDIO',
+      aiStudioStatus: 'CONFIGURED',
     });
     expect(await service.resolveActiveRuntime()).toEqual({ kind: 'aiStudio' });
     await service.activateOption('VERTEX_EXPRESS');
@@ -113,14 +111,14 @@ describe('GeminiConfigurationService explicit mode commands', () => {
   });
 
   it('keeps active mode unchanged when its configuration is replaced', async () => {
-    await service.saveAndActivateOption({
+    await service.saveOptionConfiguration({
       option: 'AI_STUDIO',
       apiKey: 'synthetic-first',
-    });
+    }, true);
     await service.saveOptionConfiguration({
       option: 'AI_STUDIO',
       apiKey: 'synthetic-replacement',
-    });
+    }, false);
 
     expect((await service.getSetupStatus()).activeMode).toBe('AI_STUDIO');
     expect(vaultHarness.configured.get('geminiAiStudioApiKey')).toBe('synthetic-replacement');
@@ -130,16 +128,14 @@ describe('GeminiConfigurationService explicit mode commands', () => {
     await service.saveOptionConfiguration({
       option: 'AI_STUDIO',
       apiKey: 'synthetic-ai-studio',
-    });
-    await service.saveAndActivateOption({
+    }, false);
+    await service.saveOptionConfiguration({
       option: 'VERTEX_EXPRESS',
       apiKey: 'synthetic-vertex-express',
-    });
+    }, true);
 
     await expect(service.removeOptionConfiguration('VERTEX_EXPRESS')).resolves.toMatchObject({
-      operation: 'REMOVED',
-      option: 'VERTEX_EXPRESS',
-      optionStatus: 'MISSING',
+      vertexExpressStatus: 'MISSING',
       activeMode: null,
     });
     expect(vaultHarness.configured.has('geminiAiStudioApiKey')).toBe(true);
@@ -159,36 +155,26 @@ describe('GeminiConfigurationService explicit mode commands', () => {
       originalSet(key, value);
     });
 
-    await expect(service.saveAndActivateOption({
+    await expect(service.saveOptionConfiguration({
       option: 'AI_STUDIO',
       apiKey: 'synthetic-saved-key',
-    })).resolves.toMatchObject({
-      operation: 'SAVED_AND_ACTIVATED',
-      outcome: 'PARTIAL',
-      configurationOutcome: 'SUCCEEDED',
-      modeOutcome: 'FAILED',
-      instructionCode: 'GEMINI_ACTIVATION_RETRY_REQUIRED',
-      optionStatus: 'CONFIGURED',
+    }, true)).resolves.toMatchObject({
+      aiStudioStatus: 'CONFIGURED',
       activeMode: null,
     });
   });
 
   it('clears active mode and returns a retryable partial result when removal fails', async () => {
-    await service.saveAndActivateOption({
+    await service.saveOptionConfiguration({
       option: 'VERTEX_EXPRESS',
       apiKey: 'synthetic-vertex-express',
-    });
+    }, true);
     vaultHarness.removeForConsumer.mockRejectedValueOnce(
       new Error('SYNTHETIC_REMOVE_FAILURE'),
     );
 
     await expect(service.removeOptionConfiguration('VERTEX_EXPRESS')).resolves.toMatchObject({
-      operation: 'REMOVED',
-      outcome: 'PARTIAL',
-      configurationOutcome: 'FAILED',
-      modeOutcome: 'SUCCEEDED',
-      instructionCode: 'GEMINI_REMOVAL_RETRY_REQUIRED',
-      optionStatus: 'CONFIGURED',
+      vertexExpressStatus: 'CONFIGURED',
       activeMode: null,
     });
   });

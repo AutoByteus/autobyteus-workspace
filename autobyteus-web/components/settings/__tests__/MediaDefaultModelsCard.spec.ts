@@ -67,7 +67,6 @@ const provider = (id: string, name: string) => ({
   providerType: 'OPENAI' as any,
   isCustom: false,
   baseUrl: null,
-  credentialStatus: { vaultHealth: 'READY' as const, storageState: 'CONFIGURED' as const, instructionCode: null },
   status: 'READY' as const,
   statusMessage: null,
 })

@@ -12,12 +12,11 @@ import {
 import { GraphQLJSON } from 'graphql-scalars';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import { ModelMetadataProvenance } from 'autobyteus-ts/llm/metadata/model-metadata-resolver.js';
-import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
+import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
 import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
 import type { VideoModel } from 'autobyteus-ts/multimedia/video/video-model.js';
-import { appConfigProvider } from '../../../config/app-config-provider.js';
 import {
   getBuiltInLlmProviderCatalog,
   type BuiltInLlmProviderCatalog,
@@ -25,17 +24,17 @@ import {
 import {
   getLlmProviderService,
   type LlmProviderService,
+  type ProviderSettings,
 } from '../../../llm-management/llm-providers/services/llm-provider-service.js';
 import type {
   GeminiConfigurationOption,
   GeminiConfigurationState,
+  GeminiSetupStatus,
 } from '../../../llm-management/services/gemini-configuration-service.js';
 import { getModelCatalogService } from '../../../llm-management/services/model-catalog-service.js';
-import type { CredentialStatusProjection } from '../../../llm-management/llm-providers/domain/models.js';
 import {
-  GeminiConfigurationOperationResultObject,
-  GeminiConfigurationOptionGraphql,
-  GeminiConfigurationStateGraphql,
+  GeminiSetupModeGraphql,
+  GeminiSetupStateObject,
 } from './gemini-configuration.js';
 
 registerEnumType(ModelMetadataProvenance, { name: 'ModelMetadataProvenance' });
@@ -92,18 +91,6 @@ class ModelDetail {
 }
 
 @ObjectType()
-class CredentialStatusObject implements CredentialStatusProjection {
-  @Field(() => String)
-  vaultHealth!: CredentialStatusProjection['vaultHealth'];
-
-  @Field(() => String, { nullable: true })
-  storageState!: CredentialStatusProjection['storageState'];
-
-  @Field(() => String, { nullable: true })
-  instructionCode!: string | null;
-}
-
-@ObjectType()
 class LlmProviderObject {
   @Field(() => String)
   id!: string;
@@ -120,8 +107,8 @@ class LlmProviderObject {
   @Field(() => String, { nullable: true })
   baseUrl!: string | null;
 
-  @Field(() => CredentialStatusObject, { nullable: true })
-  credentialStatus!: CredentialStatusObject | null;
+  @Field(() => Boolean)
+  apiKeyConfigured!: boolean;
 
   @Field(() => String)
   status!: string;
@@ -140,28 +127,25 @@ class ProviderWithModels {
 }
 
 @ObjectType()
-class GeminiSetupConfig {
-  @Field(() => GeminiConfigurationOptionGraphql, { nullable: true })
-  activeMode!: GeminiConfigurationOption | null;
+class ProviderSettingsGroup {
+  @Field(() => LlmProviderObject)
+  provider!: LlmProviderObject;
 
-  @Field(() => CredentialStatusObject)
-  aiStudioCredentialStatus!: CredentialStatusObject;
+  @Field(() => [ModelDetail])
+  llmModels!: ModelDetail[];
 
-  @Field(() => CredentialStatusObject)
-  vertexExpressCredentialStatus!: CredentialStatusObject;
+  @Field(() => [ModelDetail])
+  audioModels!: ModelDetail[];
 
-  @Field(() => GeminiConfigurationStateGraphql)
-  vertexProjectStatus!: GeminiConfigurationState;
+  @Field(() => [ModelDetail])
+  imageModels!: ModelDetail[];
 
-  @Field(() => String, { nullable: true })
-  vertexProject!: string | null;
-
-  @Field(() => String, { nullable: true })
-  vertexLocation!: string | null;
+  @Field(() => [ModelDetail])
+  videoModels!: ModelDetail[];
 }
 
 @ObjectType()
-class CustomLlmProviderProbeModelObject {
+class CustomProviderProbeModelObject {
   @Field(() => String)
   id!: string;
 
@@ -170,27 +154,15 @@ class CustomLlmProviderProbeModelObject {
 }
 
 @ObjectType()
-class CustomLlmProviderProbeResultObject {
-  @Field(() => String)
-  name!: string;
-
-  @Field(() => String)
-  providerType!: string;
-
-  @Field(() => String)
-  baseUrl!: string;
-
-  @Field(() => [CustomLlmProviderProbeModelObject])
-  discoveredModels!: CustomLlmProviderProbeModelObject[];
+class CustomProviderProbeResultObject {
+  @Field(() => [CustomProviderProbeModelObject])
+  discoveredModels!: CustomProviderProbeModelObject[];
 }
 
 @InputType()
-class CustomLlmProviderInputObject {
+class CustomProviderInputObject {
   @Field(() => String)
   name!: string;
-
-  @Field(() => String)
-  providerType!: string;
 
   @Field(() => String)
   baseUrl!: string;
@@ -198,8 +170,6 @@ class CustomLlmProviderInputObject {
   @Field(() => String)
   apiKey!: string;
 }
-
-const normalizeText = (value: string | null | undefined): string => value?.trim() ?? '';
 
 const mapLlmModel = (model: ModelInfo): ModelDetail => ({
   modelIdentifier: model.model_identifier,
@@ -241,17 +211,35 @@ const mapMultimediaModel = (
 });
 
 const sortModels = (models: ModelDetail[]): ModelDetail[] =>
-  models.slice().sort((a, b) => a.name.localeCompare(b.name));
+  models.slice().sort((left, right) => left.name.localeCompare(right.name));
 
 const groupModelsByProvider = (models: ModelDetail[]): Map<string, ModelDetail[]> => {
   const grouped = new Map<string, ModelDetail[]>();
   for (const model of models) {
-    const list = grouped.get(model.providerId) ?? [];
-    list.push(model);
-    grouped.set(model.providerId, list);
+    grouped.set(model.providerId, [...(grouped.get(model.providerId) ?? []), model]);
   }
   return grouped;
 };
+
+const configuredBoolean = (state: GeminiConfigurationState): boolean | null =>
+  state === 'UNAVAILABLE' ? null : state === 'CONFIGURED';
+
+const mapGeminiSetup = (setup: GeminiSetupStatus): GeminiSetupStateObject => ({
+  activeMode: setup.activeMode,
+  aiStudioConfigured: configuredBoolean(setup.aiStudioStatus),
+  vertexExpressConfigured: configuredBoolean(setup.vertexExpressStatus),
+  vertexProject: setup.vertexProjectStatus === 'CONFIGURED' && setup.project && setup.location
+    ? { project: setup.project, location: setup.location }
+    : null,
+});
+
+const mapProviderSettings = (group: ProviderSettings): ProviderSettingsGroup => ({
+  provider: group.provider,
+  llmModels: sortModels(group.llmModels.map(mapLlmModel)),
+  audioModels: sortModels(group.audioModels.map(mapMultimediaModel)),
+  imageModels: sortModels(group.imageModels.map(mapMultimediaModel)),
+  videoModels: sortModels(group.videoModels.map(mapMultimediaModel)),
+});
 
 @Resolver()
 export class LlmProviderResolver {
@@ -267,20 +255,16 @@ export class LlmProviderResolver {
     return getBuiltInLlmProviderCatalog();
   }
 
-  @Query(() => CredentialStatusObject, { nullable: true })
-  async getLlmProviderCredentialStatus(
-    @Arg('providerId', () => String) providerId: string,
-  ): Promise<CredentialStatusObject | null> {
-    try {
-      return await this.llmProviderService.getProviderCredentialStatus(providerId);
-    } catch {
-      return null;
-    }
+  @Query(() => [ProviderSettingsGroup])
+  async providerSettings(
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
+  ): Promise<ProviderSettingsGroup[]> {
+    return (await this.llmProviderService.listProviderSettings(runtimeKind)).map(mapProviderSettings);
   }
 
-  @Query(() => GeminiSetupConfig)
-  async getGeminiSetupConfig(): Promise<GeminiSetupConfig> {
-    return this.llmProviderService.getGeminiConfigurationStatus();
+  @Query(() => GeminiSetupStateObject)
+  async getGeminiSetupConfig(): Promise<GeminiSetupStateObject> {
+    return mapGeminiSetup(await this.llmProviderService.getGeminiConfigurationStatus());
   }
 
   @Query(() => [ProviderWithModels])
@@ -294,224 +278,129 @@ export class LlmProviderResolver {
   async availableAudioProvidersWithModels(
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<ProviderWithModels[]> {
-    const models = (await this.runtimeModelCatalogService.listAudioModels(runtimeKind)).map(mapMultimediaModel);
-    const grouped = groupModelsByProvider(models);
-
-    return Array.from(grouped.entries())
-      .map(([providerId, items]) => ({
-        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
-        models: sortModels(items),
-      }))
-      .sort((a, b) => a.provider.name.localeCompare(b.provider.name));
+    return this.groupMultimediaModels(
+      await this.runtimeModelCatalogService.listAudioModels(runtimeKind),
+    );
   }
 
   @Query(() => [ProviderWithModels])
   async availableImageProvidersWithModels(
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<ProviderWithModels[]> {
-    const models = (await this.runtimeModelCatalogService.listImageModels(runtimeKind)).map(mapMultimediaModel);
-    const grouped = groupModelsByProvider(models);
-
-    return Array.from(grouped.entries())
-      .map(([providerId, items]) => ({
-        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
-        models: sortModels(items),
-      }))
-      .sort((a, b) => a.provider.name.localeCompare(b.provider.name));
+    return this.groupMultimediaModels(
+      await this.runtimeModelCatalogService.listImageModels(runtimeKind),
+    );
   }
-
 
   @Query(() => [ProviderWithModels])
   async availableVideoProvidersWithModels(
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<ProviderWithModels[]> {
-    const models = (await this.runtimeModelCatalogService.listVideoModels(runtimeKind)).map(mapMultimediaModel);
-    const grouped = groupModelsByProvider(models);
-
-    return Array.from(grouped.entries())
-      .map(([providerId, items]) => ({
-        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
-        models: sortModels(items),
-      }))
-      .sort((a, b) => a.provider.name.localeCompare(b.provider.name));
+    return this.groupMultimediaModels(
+      await this.runtimeModelCatalogService.listVideoModels(runtimeKind),
+    );
   }
 
-  @Mutation(() => String)
-  async setLlmProviderApiKey(
+  @Mutation(() => Boolean)
+  async saveProviderApiKey(
     @Arg('providerId', () => String) providerId: string,
     @Arg('apiKey', () => String) apiKey: string,
-  ): Promise<string> {
-    try {
-      const provider = await this.llmProviderService.setProviderApiKey(providerId, apiKey);
-      return `Credential for provider ${provider.name} has been set successfully.`;
-    } catch {
-      return 'Error setting credential: PROVIDER_CREDENTIAL_REJECTED';
-    }
+  ): Promise<boolean> {
+    await this.llmProviderService.setProviderApiKey(providerId, apiKey);
+    return true;
   }
 
-  @Mutation(() => String)
-  async removeLlmProviderApiKey(
+  @Mutation(() => Boolean)
+  async removeProviderApiKey(
     @Arg('providerId', () => String) providerId: string,
-  ): Promise<string> {
-    try {
-      const provider = await this.llmProviderService.removeProviderApiKey(providerId);
-      return `Credential for provider ${provider.name} has been removed successfully.`;
-    } catch {
-      return 'Error removing credential: PROVIDER_CREDENTIAL_REMOVE_REJECTED';
-    }
+  ): Promise<boolean> {
+    await this.llmProviderService.removeProviderApiKey(providerId);
+    return true;
   }
 
-  @Mutation(() => CustomLlmProviderProbeResultObject)
-  async probeCustomLlmProvider(
-    @Arg('input', () => CustomLlmProviderInputObject) input: CustomLlmProviderInputObject,
-  ): Promise<CustomLlmProviderProbeResultObject> {
+  @Mutation(() => CustomProviderProbeResultObject)
+  async probeCustomProvider(
+    @Arg('input', () => CustomProviderInputObject) input: CustomProviderInputObject,
+  ): Promise<CustomProviderProbeResultObject> {
     return this.llmProviderService.probeCustomProvider(input);
   }
 
-  @Mutation(() => LlmProviderObject)
-  async createCustomLlmProvider(
-    @Arg('input', () => CustomLlmProviderInputObject) input: CustomLlmProviderInputObject,
-    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
-  ): Promise<LlmProviderObject> {
-    return this.llmProviderService.createCustomProvider(input, runtimeKind);
-  }
-
   @Mutation(() => String)
-  async deleteCustomLlmProvider(
-    @Arg('providerId', () => String) providerId: string,
-    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
+  async createCustomProvider(
+    @Arg('input', () => CustomProviderInputObject) input: CustomProviderInputObject,
   ): Promise<string> {
-    try {
-      const providerName = await this.llmProviderService.deleteCustomProvider(providerId, runtimeKind);
-      return `Deleted custom provider ${providerName} successfully.`;
-    } catch {
-      return 'Error deleting custom provider: CUSTOM_PROVIDER_DELETE_REJECTED';
-    }
+    return this.llmProviderService.createCustomProvider(input);
   }
 
-  @Mutation(() => GeminiConfigurationOperationResultObject)
-  async saveGeminiConfigurationOption(
-    @Arg('option', () => GeminiConfigurationOptionGraphql)
-    option: GeminiConfigurationOptionGraphql,
-    @Arg('geminiApiKey', () => String, { nullable: true }) geminiApiKey?: string | null,
-    @Arg('vertexApiKey', () => String, { nullable: true }) vertexApiKey?: string | null,
-    @Arg('vertexProject', () => String, { nullable: true }) vertexProject?: string | null,
-    @Arg('vertexLocation', () => String, { nullable: true }) vertexLocation?: string | null,
-  ): Promise<GeminiConfigurationOperationResultObject> {
-    try {
-      const selectedOption = option as GeminiConfigurationOption;
-
-      const normalizedGeminiApiKey = normalizeText(geminiApiKey);
-      const normalizedVertexApiKey = normalizeText(vertexApiKey);
-      const normalizedVertexProject = normalizeText(vertexProject);
-      const normalizedVertexLocation = normalizeText(vertexLocation);
-
-      if (selectedOption === GeminiConfigurationOptionGraphql.AI_STUDIO) {
-        if (!normalizedGeminiApiKey) {
-          throw new Error('GEMINI_API_KEY_REQUIRED');
-        }
-        return this.llmProviderService.saveGeminiOptionConfiguration({
-          option: selectedOption,
-          apiKey: normalizedGeminiApiKey,
-        });
-      }
-      if (selectedOption === GeminiConfigurationOptionGraphql.VERTEX_EXPRESS) {
-        if (!normalizedVertexApiKey) {
-          throw new Error('VERTEX_AI_API_KEY_REQUIRED');
-        }
-        return this.llmProviderService.saveGeminiOptionConfiguration({
-          option: selectedOption,
-          apiKey: normalizedVertexApiKey,
-        });
-      }
-
-      if (!normalizedVertexProject || !normalizedVertexLocation) {
-        throw new Error('VERTEX_PROJECT_CONFIGURATION_REQUIRED');
-      }
-      return this.llmProviderService.saveGeminiOptionConfiguration({
-        option: selectedOption,
-        project: normalizedVertexProject,
-        location: normalizedVertexLocation,
-      });
-    } catch {
-      throw new Error('GEMINI_CONFIGURATION_SAVE_REJECTED');
-    }
+  @Mutation(() => Boolean)
+  async deleteCustomProvider(
+    @Arg('providerId', () => String) providerId: string,
+  ): Promise<boolean> {
+    await this.llmProviderService.deleteCustomProvider(providerId);
+    return true;
   }
 
-  @Mutation(() => GeminiConfigurationOperationResultObject)
-  async removeGeminiConfigurationOption(
-    @Arg('option', () => GeminiConfigurationOptionGraphql)
-    option: GeminiConfigurationOptionGraphql,
-  ): Promise<GeminiConfigurationOperationResultObject> {
-    try {
-      return this.llmProviderService.removeGeminiOptionConfiguration(
-        option as GeminiConfigurationOption,
-      );
-    } catch {
-      throw new Error('GEMINI_CONFIGURATION_REMOVE_REJECTED');
-    }
+  @Mutation(() => GeminiSetupStateObject)
+  async saveGeminiAiStudio(
+    @Arg('apiKey', () => String) apiKey: string,
+    @Arg('activateAfterSave', () => Boolean) activateAfterSave: boolean,
+  ): Promise<GeminiSetupStateObject> {
+    return mapGeminiSetup(await this.llmProviderService.saveGeminiOptionConfiguration(
+      { option: 'AI_STUDIO', apiKey },
+      activateAfterSave,
+    ));
   }
 
-  @Mutation(() => GeminiConfigurationOperationResultObject)
-  async activateGeminiConfigurationOption(
-    @Arg('option', () => GeminiConfigurationOptionGraphql)
-    option: GeminiConfigurationOptionGraphql,
-  ): Promise<GeminiConfigurationOperationResultObject> {
-    try {
-      return this.llmProviderService.activateGeminiOption(
-        option as GeminiConfigurationOption,
-      );
-    } catch {
-      throw new Error('GEMINI_CONFIGURATION_ACTIVATION_REJECTED');
-    }
+  @Mutation(() => GeminiSetupStateObject)
+  async saveGeminiVertexExpress(
+    @Arg('apiKey', () => String) apiKey: string,
+    @Arg('activateAfterSave', () => Boolean) activateAfterSave: boolean,
+  ): Promise<GeminiSetupStateObject> {
+    return mapGeminiSetup(await this.llmProviderService.saveGeminiOptionConfiguration(
+      { option: 'VERTEX_EXPRESS', apiKey },
+      activateAfterSave,
+    ));
   }
 
-  @Mutation(() => GeminiConfigurationOperationResultObject)
-  async saveAndActivateGeminiConfigurationOption(
-    @Arg('option', () => GeminiConfigurationOptionGraphql)
-    option: GeminiConfigurationOptionGraphql,
-    @Arg('geminiApiKey', () => String, { nullable: true }) geminiApiKey?: string | null,
-    @Arg('vertexApiKey', () => String, { nullable: true }) vertexApiKey?: string | null,
-    @Arg('vertexProject', () => String, { nullable: true }) vertexProject?: string | null,
-    @Arg('vertexLocation', () => String, { nullable: true }) vertexLocation?: string | null,
-  ): Promise<GeminiConfigurationOperationResultObject> {
-    try {
-      const selectedOption = option as GeminiConfigurationOption;
-      if (selectedOption === GeminiConfigurationOptionGraphql.AI_STUDIO) {
-        return this.llmProviderService.saveAndActivateGeminiOption({
-          option: selectedOption,
-          apiKey: normalizeText(geminiApiKey),
-        });
-      }
-      if (selectedOption === GeminiConfigurationOptionGraphql.VERTEX_EXPRESS) {
-        return this.llmProviderService.saveAndActivateGeminiOption({
-          option: selectedOption,
-          apiKey: normalizeText(vertexApiKey),
-        });
-      }
-      return this.llmProviderService.saveAndActivateGeminiOption({
-        option: selectedOption,
-        project: normalizeText(vertexProject),
-        location: normalizeText(vertexLocation),
-      });
-    } catch {
-      throw new Error('GEMINI_CONFIGURATION_SAVE_AND_ACTIVATE_REJECTED');
-    }
+  @Mutation(() => GeminiSetupStateObject)
+  async saveGeminiVertexProject(
+    @Arg('project', () => String) project: string,
+    @Arg('location', () => String) location: string,
+    @Arg('activateAfterSave', () => Boolean) activateAfterSave: boolean,
+  ): Promise<GeminiSetupStateObject> {
+    return mapGeminiSetup(await this.llmProviderService.saveGeminiOptionConfiguration(
+      { option: 'VERTEX_PROJECT', project, location },
+      activateAfterSave,
+    ));
+  }
+
+  @Mutation(() => GeminiSetupStateObject)
+  async useGeminiMode(
+    @Arg('mode', () => GeminiSetupModeGraphql) mode: GeminiSetupModeGraphql,
+  ): Promise<GeminiSetupStateObject> {
+    return mapGeminiSetup(await this.llmProviderService.activateGeminiOption(
+      mode as GeminiConfigurationOption,
+    ));
+  }
+
+  @Mutation(() => GeminiSetupStateObject)
+  async removeGeminiConfiguration(
+    @Arg('mode', () => GeminiSetupModeGraphql) mode: GeminiSetupModeGraphql,
+  ): Promise<GeminiSetupStateObject> {
+    return mapGeminiSetup(await this.llmProviderService.removeGeminiOptionConfiguration(
+      mode as GeminiConfigurationOption,
+    ));
   }
 
   @Mutation(() => String)
   async reloadLlmModels(
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<string> {
-    try {
-      await this.runtimeModelCatalogService.reloadLlmModels(runtimeKind);
-      await this.runtimeModelCatalogService.reloadAudioModels(runtimeKind);
-      await this.runtimeModelCatalogService.reloadImageModels(runtimeKind);
-      await this.runtimeModelCatalogService.reloadVideoModels(runtimeKind);
-      return 'All models (LLM and Multimedia) reloaded successfully.';
-    } catch {
-      return 'Error reloading models: MODEL_RELOAD_FAILED';
-    }
+    await this.runtimeModelCatalogService.reloadLlmModels(runtimeKind);
+    await this.runtimeModelCatalogService.reloadAudioModels(runtimeKind);
+    await this.runtimeModelCatalogService.reloadImageModels(runtimeKind);
+    await this.runtimeModelCatalogService.reloadVideoModels(runtimeKind);
+    return 'All models (LLM and Multimedia) reloaded successfully.';
   }
 
   @Mutation(() => String)
@@ -519,15 +408,19 @@ export class LlmProviderResolver {
     @Arg('providerId', () => String) providerId: string,
     @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<string> {
-    if (!providerId) {
-      return 'Error reloading provider models: providerId must be specified.';
-    }
+    const count = await this.llmProviderService.reloadProviderModels(providerId, runtimeKind);
+    return `Reloaded ${count} models for provider ${providerId} successfully.`;
+  }
 
-    try {
-      const count = await this.llmProviderService.reloadProviderModels(providerId, runtimeKind);
-      return `Reloaded ${count} models for provider ${providerId} successfully.`;
-    } catch {
-      return 'Error reloading models for provider: PROVIDER_MODEL_RELOAD_FAILED';
-    }
+  private groupMultimediaModels(
+    models: Array<AudioModel | ImageModel | VideoModel>,
+  ): ProviderWithModels[] {
+    const grouped = groupModelsByProvider(models.map(mapMultimediaModel));
+    return Array.from(grouped.entries())
+      .map(([providerId, items]) => ({
+        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
+        models: sortModels(items),
+      }))
+      .sort((left, right) => left.provider.name.localeCompare(right.provider.name));
   }
 }

@@ -243,11 +243,11 @@ const canSave = computed(() => {
 
 const buildInput = (): GeminiOptionSaveInput => {
   const input: GeminiOptionSaveInput = { option: props.option }
-  if (props.option === 'AI_STUDIO') input.geminiApiKey = geminiApiKey.value
-  if (props.option === 'VERTEX_EXPRESS') input.vertexApiKey = vertexApiKey.value
+  if (props.option === 'AI_STUDIO') input.apiKey = geminiApiKey.value
+  if (props.option === 'VERTEX_EXPRESS') input.apiKey = vertexApiKey.value
   if (props.option === 'VERTEX_PROJECT') {
-    input.vertexProject = vertexProject.value
-    input.vertexLocation = vertexLocation.value
+    input.project = vertexProject.value
+    input.location = vertexLocation.value
   }
   return input
 }

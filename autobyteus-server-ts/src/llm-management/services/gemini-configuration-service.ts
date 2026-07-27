@@ -9,22 +9,10 @@ import { getSecretVaultRuntime } from '../../secret-management/secret-vault-runt
 
 export type GeminiConfigurationOption = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT';
 export type GeminiConfigurationState = 'MISSING' | 'CONFIGURED' | 'UNAVAILABLE';
-export type GeminiConfigurationStageOutcome = 'NOT_REQUESTED' | 'SUCCEEDED' | 'FAILED';
 export type GeminiOptionSaveCommand =
   | { option: 'AI_STUDIO'; apiKey: string }
   | { option: 'VERTEX_EXPRESS'; apiKey: string }
   | { option: 'VERTEX_PROJECT'; project: string; location: string };
-
-export type GeminiConfigurationOperationResult = {
-  operation: 'SAVED' | 'ACTIVATED' | 'SAVED_AND_ACTIVATED' | 'REMOVED';
-  outcome: 'SUCCEEDED' | 'PARTIAL';
-  option: GeminiConfigurationOption;
-  optionStatus: GeminiConfigurationState;
-  activeMode: GeminiConfigurationOption | null;
-  configurationOutcome: GeminiConfigurationStageOutcome;
-  modeOutcome: GeminiConfigurationStageOutcome;
-  instructionCode: string | null;
-};
 
 export type GeminiSetupStatus = {
   activeMode: GeminiConfigurationOption | null;
@@ -82,7 +70,10 @@ export class GeminiConfigurationService {
     return (await this.getSetupStatus()).selection;
   }
 
-  async saveOptionConfiguration(input: GeminiOptionSaveCommand): Promise<GeminiConfigurationOperationResult> {
+  async saveOptionConfiguration(
+    input: GeminiOptionSaveCommand,
+    activateAfterSave: boolean,
+  ): Promise<GeminiSetupStatus> {
     if (input.option === 'AI_STUDIO') {
       await this.management().saveForConsumer({
         consumer: this.consumer('geminiAiStudioApiKey'),
@@ -97,43 +88,26 @@ export class GeminiConfigurationService {
       appConfigProvider.config.set('VERTEX_AI_PROJECT', normalizeRequired(input.project, 'project'));
       appConfigProvider.config.set('VERTEX_AI_LOCATION', normalizeRequired(input.location, 'location'));
     }
-    return this.operationResult('SAVED', input.option, {
-      configurationOutcome: 'SUCCEEDED',
-    });
+    if (activateAfterSave) {
+      try {
+        return await this.activateOption(input.option);
+      } catch {
+        return this.getSetupStatus();
+      }
+    }
+    return this.getSetupStatus();
   }
 
-  async activateOption(option: GeminiConfigurationOption): Promise<GeminiConfigurationOperationResult> {
+  async activateOption(option: GeminiConfigurationOption): Promise<GeminiSetupStatus> {
     const status = await this.optionStatus(option);
     if (status !== 'CONFIGURED') throw new Error('GEMINI_SELECTED_OPTION_NOT_CONFIGURED');
     appConfigProvider.config.set('GEMINI_SETUP_MODE', option);
-    return this.operationResult('ACTIVATED', option, {
-      modeOutcome: 'SUCCEEDED',
-    });
-  }
-
-  async saveAndActivateOption(
-    input: GeminiOptionSaveCommand,
-  ): Promise<GeminiConfigurationOperationResult> {
-    await this.saveOptionConfiguration(input);
-    try {
-      await this.activateOption(input.option);
-      return this.operationResult('SAVED_AND_ACTIVATED', input.option, {
-        configurationOutcome: 'SUCCEEDED',
-        modeOutcome: 'SUCCEEDED',
-      });
-    } catch {
-      return this.operationResult('SAVED_AND_ACTIVATED', input.option, {
-        outcome: 'PARTIAL',
-        configurationOutcome: 'SUCCEEDED',
-        modeOutcome: 'FAILED',
-        instructionCode: 'GEMINI_ACTIVATION_RETRY_REQUIRED',
-      });
-    }
+    return this.getSetupStatus();
   }
 
   async removeOptionConfiguration(
     option: GeminiConfigurationOption,
-  ): Promise<GeminiConfigurationOperationResult> {
+  ): Promise<GeminiSetupStatus> {
     const wasActive = readConfiguredMode() === option;
     if (wasActive) appConfigProvider.config.delete('GEMINI_SETUP_MODE');
     try {
@@ -147,17 +121,9 @@ export class GeminiConfigurationService {
       }
     } catch (error) {
       if (!wasActive) throw error;
-      return this.operationResult('REMOVED', option, {
-        outcome: 'PARTIAL',
-        configurationOutcome: 'FAILED',
-        modeOutcome: 'SUCCEEDED',
-        instructionCode: 'GEMINI_REMOVAL_RETRY_REQUIRED',
-      });
+      return this.getSetupStatus();
     }
-    return this.operationResult('REMOVED', option, {
-      configurationOutcome: 'SUCCEEDED',
-      modeOutcome: wasActive ? 'SUCCEEDED' : 'NOT_REQUESTED',
-    });
+    return this.getSetupStatus();
   }
 
   private toRuntimeSelection(status: {
@@ -183,27 +149,6 @@ export class GeminiConfigurationService {
       return { kind: 'vertexProject', project: status.project, location: status.location };
     }
     return { kind: 'unconfigured' };
-  }
-
-  private async operationResult(
-    operation: GeminiConfigurationOperationResult['operation'],
-    option: GeminiConfigurationOption,
-    stages: Partial<Pick<
-      GeminiConfigurationOperationResult,
-      'outcome' | 'configurationOutcome' | 'modeOutcome' | 'instructionCode'
-    >>,
-  ): Promise<GeminiConfigurationOperationResult> {
-    const status = await this.getSetupStatus();
-    return {
-      operation,
-      outcome: stages.outcome ?? 'SUCCEEDED',
-      option,
-      optionStatus: await this.optionStatus(option, status),
-      activeMode: status.activeMode,
-      configurationOutcome: stages.configurationOutcome ?? 'NOT_REQUESTED',
-      modeOutcome: stages.modeOutcome ?? 'NOT_REQUESTED',
-      instructionCode: stages.instructionCode ?? null,
-    };
   }
 
   private async optionStatus(
