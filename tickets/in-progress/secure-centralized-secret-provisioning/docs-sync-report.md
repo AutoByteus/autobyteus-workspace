@@ -3,85 +3,86 @@
 ## Scope
 
 - Ticket: `secure-centralized-secret-provisioning`
-- Trigger: Round 21 API/E2E Pass at 98.9% and proportional durable-test review
-  Pass at exact implementation/test HEAD
-  `ec0df6b1a9d216366e08262cd96f5280686b04d0`.
+- Trigger: Round 22 API/E2E `Pass` at 98.7% and proportional durable-test gate
+  `Not Applicable` with no unresolved finding at exact reviewed/executed HEAD
+  `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`.
 - Bootstrap base reference: `origin/personal`
 - Integrated base reference used for docs sync:
   `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`.
-- Local reviewed-package safety checkpoint:
-  `c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a`.
-- Delivery-docs checkpoint and exact fresh-package source HEAD:
-  `4bf6e7d18229336cd690497370f1a66dedaafc4a`.
-- Integration method: already current after a 2026-07-27 fetch; the checkpointed
-  ticket branch was 53 commits ahead and 0 behind, and its merge-base equaled
-  the tracked base.
+- Reviewed-package delivery checkpoint:
+  `57863a7005d13a0f5b68fa330b7f9c3ce5ce1dd7`.
+- Integration method: already current after a 2026-07-27 fetch; the ticket
+  branch was 58 commits ahead and 0 behind, and its merge-base equaled the
+  tracked base.
 - Post-integration verification:
-  `execution-evidence/353-delivery-round21-integrated-state-check-corrected.log`
-  (16/16 focused unit tests, all 18 exact base restorations, redundant-removal
-  absence, dependency lock, and unchanged Docker topology passed). Evidence
-  `352` is retained as a superseded delivery-check mistake: its implementation
-  scan accidentally traversed a preserved historical build backup; no product
-  correction was required.
+  - `execution-evidence/370-delivery-round22-latest-base-refresh.log`
+  - `execution-evidence/371-delivery-round22-integrated-state-check.log`
+    (0 product-path changes after the exact reviewed HEAD, focused Gemini web
+    suite 25/25, `git diff --check`, and read-only user-runtime continuity).
 
 ## Why Docs Were Updated
 
-Round 21 is the first delivery-ready state after the user's narrow-scope reset.
-The durable documentation therefore had to replace historical Round 17 claims
-that no longer describe the product:
+Round 22 changes the presentation, not the approved credential contract. The
+long-lived Settings document needed to record the user-visible compact Gemini
+interaction so future maintainers do not reintroduce a permanently expanded or
+multi-editor secret form:
 
-- Claude authentication is `auto|cli|api-key` with default `cli`; only explicit
-  `api-key` resolves the Anthropic vault slot.
-- Restored Electron, terminal, Claude, and Codex environment inheritance is
-  continuity behavior, not process-isolation evidence.
-- `LOCAL_HARDENED` is limited to local vault, file-root, and value-safe custody;
-  `STRONG_AGENT_ISOLATION` remains deferred.
-- Ordinary provider and Gemini Settings retain save/overwrite and explicit
-  Gemini mode selection, but no standalone key-removal surface. Existing custom
-  provider Delete remains provider lifecycle and removes its own credential.
+- exactly three compact option rows initially;
+- exactly one focused editor when configured;
+- password-masked, write-only key input with transient visibility control;
+- successful-save clearing and value-free Configured/Active state across reload;
+- Save/overwrite, first-time Save-and-use, and Use-this-mode;
+- no standalone Gemini credential-removal operation.
 
-These are long-lived operator and maintainer contracts, not ticket-only detail.
+The Round 21 durable boundaries remain unchanged: exact Claude
+`auto|cli|api-key`, inherited-environment continuity rather than isolation,
+local-only `LOCAL_HARDENED`, custom-provider entity Delete, explicit importer
+authority, one DB plus adjacent key, no automatic `.env` credential migration,
+exact repository Prisma versions, and unchanged Docker topology.
 
 ## Long-Lived Docs Reviewed
 
-| Doc Path | Result | Durable impact |
-| --- | --- | --- |
-| `autobyteus-server-ts/README.md` | Updated | Adds the exact Claude selector/default/vault-use boundary and inherited-environment limitation. |
-| `autobyteus-server-ts/docs/modules/secret_management.md` | Updated | Replaces superseded `managed-secret` and child-environment claims; records save/overwrite-only ordinary/Gemini behavior and retained custom-provider Delete. |
-| `autobyteus-server-ts/docs/modules/llm_management.md` | Updated | Adds the exact Claude `auto|cli|api-key` point-of-use contract and no-process-isolation boundary. |
-| `autobyteus-server-ts/docs/modules/codex_integration.md` | Updated | Clarifies that external Codex inheritance is continuity outside vault governance, not a governed-child isolation claim. |
-| `autobyteus-web/docs/electron_packaging.md` | Updated | Records inherited runtime-discriminator/environment continuity required by packaged helpers and account-backed tools. |
-| `autobyteus-server-ts/docker/README.md` | No change | Docker service topology, mounts, volumes, and ownership remain unchanged. |
-| Root `README.md` | No change | Module docs remain the durable owners; no root-level workflow changed. |
+| Doc Path | Why It Was Reviewed | Result | Notes |
+| --- | --- | --- | --- |
+| `autobyteus-web/docs/settings.md` | Round 22 changes the actual Gemini Settings interaction. | Updated | Records compact rows, one focused editor, write-only visibility/clearing, value-free badges, and existing command semantics. |
+| `autobyteus-server-ts/docs/modules/llm_management.md` | Provider lifecycle and Gemini command contract must match current source. | Already updated in reviewed Round 22 | Correctly records targeted custom-provider synchronization and current Gemini authority. |
+| `autobyteus-server-ts/docs/modules/secret_management.md` | Vault, consumer, migration, and assurance boundaries remain durable authority. | No additional change | Current Round 21 text remains accurate. |
+| `autobyteus-server-ts/README.md` | Operator-facing import and Claude boundaries. | No additional change | Current text remains accurate. |
+| `autobyteus-server-ts/docs/modules/codex_integration.md` | Codex exclusion and environment-continuity limitation. | No additional change | Current text remains accurate. |
+| `autobyteus-web/docs/electron_packaging.md` | Packaged runtime environment and terminal continuity. | No additional change | Round 22 is renderer-equivalent; package runtime mechanics did not change. |
+| `autobyteus-server-ts/docker/README.md` | Topology and persisted-state ownership. | No change | Docker topology is byte-identical and unchanged. |
+| Root `README.md` | Repository-wide entry point. | No change | Module docs remain the correct durable owners. |
+
+## Docs Updated
+
+| Doc Path | Type Of Update | What Changed | Why |
+| --- | --- | --- | --- |
+| `autobyteus-web/docs/settings.md` | UI/runtime contract | Added compact three-option, one-editor, focus, masked/write-only visibility, save-clearing, and reload-state behavior. | These are the user-visible Round 22 behaviors directly proven in the actual `open_tab` browser. |
+| `autobyteus-server-ts/docs/modules/llm_management.md` | Provider lifecycle correction (reviewed Round 22 source) | Replaced obsolete full-catalog refresh description with targeted custom-provider synchronization. | Matches the reviewed CR-031 production path and avoids implying dependency on unrelated AutoByteus discovery. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
-| Topic | Durable truth | Source artifacts |
-| --- | --- | --- |
-| Narrow credential-custody scope | Unrelated launcher, PTY, Claude MCP/session, built-in-default, and redundant deletion changes were restored/removed; only the approved vault and adjacent work remain. | `scope-audit.md`, requirements, design, Round 36 design review, Round 45 source review |
-| Claude authentication | Preserve `auto|cli|api-key`, default `cli`; only explicit `api-key` resolves `agentRuntime/claude_agent_sdk/apiKey` and changes `ANTHROPIC_API_KEY`. | implementation handoff, code review, Round 19/21 evidence |
-| Assurance boundary | `LOCAL_HARDENED` covers local vault/file-root/value-safe custody, not child-process isolation; inherited environments are continuity; Codex remains excluded; `STRONG_AGENT_ISOLATION` is deferred. | threat model, secret architecture, scope audit |
-| Provider removal boundary | Ordinary and Gemini credentials use save/overwrite only; existing custom-provider Delete owns metadata plus its linked vault credential. | scope audit, GraphQL/UI source, Round 21 packaged delete evidence |
-| Existing-user transition | One application DB plus adjacent key; bounded custom-provider-v1 migration; no automatic `.env` import/update; explicit importer target and source immutability. | migration contract, secret docs, Round 21 package evidence |
+| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
+| --- | --- | --- | --- |
+| Compact Gemini interaction | Three compact options, one focused editor, transient write-only key handling, value-free state, explicit actions, no standalone removal. | `gemini-setup-ui-ux-spec.md`, implementation handoff, Round 22 browser evidence `360`–`364` | `autobyteus-web/docs/settings.md` |
+| Targeted custom-provider deletion sync | Provider Delete removes its credential/metadata and refreshes the owning custom-provider boundary without unrelated remote discovery. | design, implementation handoff, Round 21 evidence `335` | `autobyteus-server-ts/docs/modules/llm_management.md` |
+| Assurance boundary | `LOCAL_HARDENED` is local vault/file-root/value-safe custody; Codex excluded; inherited environments are continuity; strong isolation deferred. | threat model, secret architecture, scope audit | existing README/module/Electron docs (already current) |
 
 ## Removed / Replaced Components Recorded
 
-| Superseded concept | Current documented truth |
-| --- | --- |
-| Claude `cli|managed-secret` | `auto|cli|api-key`, default `cli`; explicit `api-key` is the sole vault-backed Claude mode. |
-| Purpose-built/sanitized production child environments as a security boundary | Restored inherited environments preserve product continuity and do not prove process isolation. |
-| Broad governed-child portion of `LOCAL_HARDENED` | Local vault/file-root/value-safe custody only; Codex excluded and strong isolation deferred. |
-| Ordinary/Gemini standalone credential removal | Save/overwrite only; Gemini keeps Save, Save-and-use, and Use-this-mode. |
-| Treating custom-provider Delete as redundant key removal | Retained existing provider-entity lifecycle; Delete removes that provider and its linked vault credential. |
+| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| --- | --- | --- |
+| Always-expanded or multiple simultaneous Gemini editors | Three compact rows with exactly one focused editor | `autobyteus-web/docs/settings.md` |
+| Readable persisted key field | Empty write-only password input with transient visibility only for newly typed text and clearing after save | `autobyteus-web/docs/settings.md` |
+| Ordinary/Gemini standalone removal | Save/create-or-overwrite; custom-provider Delete remains entity lifecycle | Settings, secret-management, and LLM-management docs |
+| Full LLM catalog refresh after custom-provider Delete | Targeted custom-provider runtime/catalog synchronization | `autobyteus-server-ts/docs/modules/llm_management.md` |
+| Claude `cli|managed-secret` | `auto|cli|api-key`, default `cli`, explicit `api-key` as the only vault-backed mode | server README and secret/LLM docs |
 
 ## Delivery Continuation
 
-- Result: `Pass`.
-- Current candidate scope and long-lived docs agree with the Round 21 integrated
-  state.
-- A fresh local macOS verification candidate was built from exact HEAD
-  `4bf6e7d18229336cd690497370f1a66dedaafc4a` and passed artifact, packaged
-  server, native terminal, and packaged Electron PTY checks (`354`–`355`).
-- Next action: request renewed explicit user verification of that candidate.
-- Ticket archive, branch push, merge, tag, release, deployment, and worktree
-  cleanup remain prohibited until the user explicitly verifies that candidate.
+- Result: `Pass`
+- Next owner: `delivery_engineer`
+- Notes: build and validate a fresh Electron candidate from the exact integrated
+  Round 22 product plus synchronized docs, then request explicit user
+  verification. Ticket archive, push, merge, tag, release, deployment, and
+  worktree cleanup remain prohibited before that user signal.

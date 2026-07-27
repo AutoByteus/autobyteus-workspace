@@ -16,7 +16,13 @@ server's centralized encrypted vault:
 - ordinary built-in providers support Save/create-or-overwrite and value-free
   configured status, with no standalone credential-removal action;
 - Gemini uses its specialized three-option Settings flow for Save/overwrite,
-  first-time Save-and-use, and Use-this-mode; and
+  first-time Save-and-use, and Use-this-mode;
+- Gemini initially renders three compact option rows. Configure expands and
+  focuses exactly one editor at a time. Key inputs remain write-only password
+  fields, the visibility control affects only the transient typed value, and a
+  successful save clears that input;
+- configured and active state are value-free badges derived from the
+  authoritative setup state and remain accurate after a Settings reload; and
 - successful commands refetch the provider-centered Settings read so the UI
   reflects authoritative provider and catalog state.
 
