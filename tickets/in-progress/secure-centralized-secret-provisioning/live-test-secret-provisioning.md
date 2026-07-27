@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Status | `Design-ready for architecture review — custom-provider-v1 migration/delete-and-reconfigure proof included` |
+| Status | `User-approved cumulative narrow-scope correction submitted for architecture review; implementation/API-E2E/delivery remain unauthorized until Pass` |
 | Purpose | Define simple non-secret test database configuration, fixed custom-provider-v1 transition proof, explicit provisioning, realistic execution, and cleanup |
 | Related requirements | `REQ-001`, `REQ-002`, `REQ-006`, `REQ-009`, `REQ-011`–`REQ-013`, `REQ-015`, `REQ-017`, `REQ-018` |
 | Related acceptance criteria | `AC-007`–`AC-009`, `AC-011`, `AC-013`–`AC-015` |
-| Approval applicability | Existing test DB/importer/provider-group behavior and custom-provider migration/reset scenarios are user-approved for architecture review |
+| Approval applicability | The retained test DB/importer/provider-group/custom-provider scenarios, exact base-equivalent launcher/environment restoration, and removal of standalone built-in/Gemini credential deletion are user-approved and submitted for architecture review |
 
 The fixed historical transition and its failure semantics are governed by [custom-provider-v1-migration-contract.md](./custom-provider-v1-migration-contract.md).
 
@@ -45,7 +45,7 @@ Rules:
 8. backend-E2E, test-server, and real-provider-E2E entrypoints read this exact file through one `TestRuntimeBootstrap`; the actual server and standalone importer never read it; no `test-config/live-e2e.env`, profile, special test-import command, or second committed environment/configuration file exists;
 9. deterministic tests may override the baseline `DATABASE_URL` with a fresh temporary database per test/run and must clean that isolated target;
 10. no broad dotenv import or `.env.test` discovery is added to production libraries;
-11. the bootstrap starts from an empty/allowlisted OS environment, validates the exact fixed launch schema, canonicalizes the DB URL relative to the server root, and materializes/reconciles those fixed keys into an ignored test app-data root's ordinary writable `.env` before launching the actual built server with `--data-dir`;
+11. the test-only bootstrap may start its child from an empty/allowlisted OS environment, validates the exact fixed launch schema, canonicalizes the DB URL relative to the server root, and materializes/reconciles those fixed keys into an ignored test app-data root's ordinary writable `.env` before launching the actual built server with `--data-dir`; this isolation is test infrastructure and must not be imported or generalized into production launchers;
 12. `.env.test` is checked byte-identical across server/E2E execution; importer coverage proves it is not read.
 
 This follows the conventional environment-per-mode shape while preserving test isolation and Settings semantics: `.env.test` supplies immutable launch defaults, the ordinary ignored runtime `.env` stores mutable application settings, and deterministic tests replace mutable infrastructure with per-test temporary instances.
@@ -74,7 +74,7 @@ It owns:
 3. canonical validation that the database resolves inside the ignored server test root;
 4. fresh-root policy for deterministic backend E2E and persistent-root policy for manual/real-provider E2E;
 5. first-run materialization and subsequent fixed-key reconciliation of the ignored ordinary writable `.env`, preserving unrelated mutable Settings keys;
-6. an empty/allowlisted OS child environment that does not carry `DATABASE_URL`, Gemini settings, or credentials;
+6. a test-only empty/allowlisted OS child environment that does not carry `DATABASE_URL`, Gemini settings, or credentials and is not reusable production launcher policy;
 7. the unchanged actual built `dist/app.js --data-dir=<runtime-root>` launch, health readiness, shutdown, and value-safe logs.
 
 The generated ignored runtime `.env` is normal application state, not a second operator-authored test configuration. It is never committed and is not a Store/profile selector.
@@ -219,7 +219,7 @@ Deterministic suites must cover:
 13. `.env` legacy-source non-authority;
 14. custom-provider current create/delete compensation;
 15. fixed custom-provider-v1 missing/v2 no-op, successful all-or-nothing preservation, collision/invalid/stage/DB/publish/interruption reset, exact same-process compensation, failed-migration deletion without backup, and built-in Settings/New Provider continuity;
-16. Claude/Codex/governed child boundaries;
+16. unchanged Codex plus Claude restoration to `auto|cli|api-key` with zero vault lookup for `auto`/`cli` and one Anthropic vault lookup/one-key override for explicit `api-key`; production terminal/shell/MCP/watcher/worker/messaging/agent/tool/application launchers preserve established environment inheritance while separately approved file-root/value-safe behavior remains;
 17. exact repository_prisma 1.0.8 import/log policy;
 18. restart/reopen and cleanup fences.
 
@@ -309,7 +309,7 @@ Required checks:
 - a capability with no matching models is `[]`; missing credentials do not remove any model list;
 - custom-provider proof retains the existing custom identity/base URL/catalog status and exact deletion behavior; a failed synthetic v1 transition omits only custom rows and never hides built-ins or New Provider;
 - custom Probe/Create/Delete carries only the exact tight input/results and refetches the canonical group after Create;
-- write-only Save/Remove returns only Boolean command completion and a network-only canonical refetch updates only the request-owned exact provider group;
+- ordinary write-only Save/create-or-overwrite returns only Boolean command completion, no ordinary key Remove action exists, and a network-only canonical refetch updates only the request-owned exact provider group;
 - empty-vault and configured-provider matrices render models independently of credential state;
 - Gemini compact UI matches [gemini-setup-ui-ux-spec.md](./gemini-setup-ui-ux-spec.md), and every command returns its one exact setup state with no parallel outcome protocol;
 - no value is prefilled or returned;
@@ -325,7 +325,7 @@ Required flow:
 2. Settings catalogs are non-empty with empty vault;
 3. one isolated existing-user fixture proves successful custom-provider-v1 preservation;
 4. a separate forced-delete fixture proves built-ins/New Provider remain usable and frontend reconfiguration succeeds;
-5. synthetic credential save/status/remove succeeds;
+5. synthetic ordinary-provider credential Save/overwrite and status succeed with no standalone Remove action; custom-provider Delete independently removes only its owned credential;
 6. restart reopens the same DB/key pair and current v2 custom state;
 7. startup failure shows value-safe technical details and log location;
 8. cleanup removes only the unique test-owned candidate roots;

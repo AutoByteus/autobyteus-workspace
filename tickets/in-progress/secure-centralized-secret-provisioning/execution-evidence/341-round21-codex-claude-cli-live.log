@@ -1,0 +1,190 @@
+ROUND=21
+HEAD=ec0df6b1a9d216366e08262cd96f5280686b04d0
+COMMAND_1=RUN_CODEX_E2E=1 Codex live 4
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > creates a real thread, sends a live turn, and reaches completion
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > requests terminal approval, denies it, and leaves the command unapplied
+[CodexAppServerClient] stderr: 2026-07-27T18:17:15.936804Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc "cat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-thread-deny-QsUIiw/source.txt' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-thread-deny-QsUIiw/destination.txt'"`: CreateProcess { message: "Rejected(\"rejected by user\")" }
+
+ ✓ tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts (4 tests) 22853ms
+     ✓ creates a real thread, sends a live turn, and reaches completion  3542ms
+     ✓ requests terminal approval, approves it, and completes the command  8567ms
+     ✓ requests terminal approval, denies it, and leaves the command unapplied  7820ms
+     ✓ interrupts an active long-running terminal turn  2922ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  20:16:56
+   Duration  23.79s (transform 269ms, setup 15ms, import 366ms, tests 22.85s, environment 0ms)
+
+COMMAND_2=RUN_CLAUDE_E2E=1 Claude CLI live 4
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts (4 tests) 16570ms
+     ✓ lists live models, runs a live Claude query turn, and fetches live session messages  2645ms
+     ✓ loads a project skill from .claude/skills when project skill settings are enabled  4187ms
+     ✓ resumes a live Claude query session and retains prior session history  5883ms
+     ✓ configures a custom MCP server and executes a simple custom MCP tool  3854ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  20:17:20
+   Duration  19.82s (transform 1.37s, setup 10ms, import 2.71s, tests 16.57s, environment 0ms)
+

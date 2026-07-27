@@ -130,6 +130,22 @@ pnpm -C autobyteus-server-ts exec prisma migrate deploy
 
 You can also run it manually.
 
+After Prisma and encrypted-vault initialization, registered app-data migrations
+run before normal provider consumers. This includes the one-time transition of
+the supported version-1
+`<app-data-dir>/llm/custom-llm-providers.json` file: a complete valid set is
+migrated atomically into encrypted vault entries plus secret-free v2 metadata.
+An invalid or colliding v1 set is deleted and requires reconfiguration through
+**Settings -> API Key Management -> New Provider**. If the v1 file cannot be
+deleted safely, the server and built-in Settings still start, but custom
+provider creation remains unavailable until the filesystem issue is fixed and
+the server restarts. There is no manual v1 command, backup/quarantine copy,
+runtime v1 reader, partial migration, or automatic `.env` import.
+
+See `docs/modules/secret_management.md` and
+`docs/modules/llm_management.md` for the full value-free migration and reset
+contract.
+
 ## Android Hardware Control (Non-Root)
 
 `run_bash` can control Android hardware only through Android API bridges available to Termux user.

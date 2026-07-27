@@ -99,7 +99,14 @@ describe('server restart one-database secret-vault lifecycle', () => {
       databaseUrlOverride: database.databaseUrl,
       serverUrlOverride: `http://127.0.0.1:${port}`,
     });
-    const runtimeEnvironmentBefore = fs.readFileSync(materialized.runtimeEnvironmentPath);
+    const runtimeEnvironmentBeforeFirstStart = fs.readFileSync(
+      materialized.runtimeEnvironmentPath,
+    );
+    expect(
+      runtimeEnvironmentBeforeFirstStart
+        .toString('utf8')
+        .includes(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID),
+    ).toBe(false);
     const syntheticCanary = 'synthetic-restart-secret-canary';
 
     const firstServer = await startBuiltTestServer({
@@ -128,6 +135,16 @@ describe('server restart one-database secret-vault lifecycle', () => {
     expect((await autoByteusStatus(firstServer.serverUrl)).storageState).toBe('CONFIGURED');
     await firstServer.stop();
     runningServers.delete(firstServer);
+    const runtimeEnvironmentAfterFirstStart = fs.readFileSync(
+      materialized.runtimeEnvironmentPath,
+    );
+    expect(runtimeEnvironmentAfterFirstStart).not.toEqual(runtimeEnvironmentBeforeFirstStart);
+    expect(
+      runtimeEnvironmentAfterFirstStart
+        .toString('utf8')
+        .split(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)
+        .length - 1,
+    ).toBe(1);
 
     expect(fs.existsSync(database.databasePath)).toBe(true);
     expect(fs.existsSync(database.rootKeyPath)).toBe(true);
@@ -144,6 +161,15 @@ describe('server restart one-database secret-vault lifecycle', () => {
       port,
     });
     runningServers.add(secondServer);
+    const runtimeEnvironmentAtSecondListen = fs.readFileSync(
+      materialized.runtimeEnvironmentPath,
+    );
+    expect(
+      runtimeEnvironmentAtSecondListen
+        .toString('utf8')
+        .split(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)
+        .length - 1,
+    ).toBe(1);
     const reopened = await autoByteusStatus(secondServer.serverUrl);
     expect(reopened).toEqual({
       vaultHealth: 'READY',
@@ -164,7 +190,9 @@ describe('server restart one-database secret-vault lifecycle', () => {
     runningServers.delete(secondServer);
 
     expect(readTrackedTestEnvironment().bytes).toEqual(templateBefore);
-    expect(fs.readFileSync(materialized.runtimeEnvironmentPath)).toEqual(runtimeEnvironmentBefore);
+    expect(fs.readFileSync(materialized.runtimeEnvironmentPath)).toEqual(
+      runtimeEnvironmentAtSecondListen,
+    );
     const combinedOutput = firstServer.output() + secondServer.output();
     expect(combinedOutput).toContain('Database migrations completed successfully.');
     expect(combinedOutput).not.toContain(syntheticCanary);

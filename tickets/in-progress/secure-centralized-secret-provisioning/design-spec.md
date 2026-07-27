@@ -2,7 +2,7 @@
 
 ## Status
 
-`Design-ready — user-approved for architecture review. The prior clean-state architecture remains approved, and this revision adds the observed fixed-path custom-provider-v1 migration plus availability-first delete-and-reconfigure fallback. Implementation, API/E2E, and delivery remain unauthorized until a passing architecture gate.`
+`Design-ready for architecture review — every previously approved in-scope feature remains retained. This user-approved cumulative correction applies the exhaustive latest-HEAD scope audit: restore all residual launcher/Electron/Claude-session/built-in-default changes and remove standalone ordinary-provider/Gemini key removal. Implementation, API/E2E, and delivery remain unauthorized until a passing architecture gate.`
 
 This document replaces every earlier incremental design assertion. Earlier reviewer, implementation, API/E2E, delivery, and execution artifacts remain evidence only. They do not authorize a second Store, model authentication metadata, implicit Gemini selection, or any other superseded structure.
 
@@ -16,8 +16,10 @@ The current ticket source is useful refactor input but is not the target archite
 5. Provider Settings currently return four provider-with-model collections. Provider identity is repeated in LLM/audio/image/video rows; only the LLM OpenAI occurrence carries vault state, while media occurrences carry `null`. Apollo normalizes repeated `LlmProviderObject:OPENAI` objects to one cache entity, so result order can overwrite `CONFIGURED`. Direct `origin/personal` and target-source inspection shows that `LlmProviderObject` and `ModelDetail` are otherwise established working contracts. The defect is the repeated provider/configuration authority and client merge, not those types.
 6. Current Gemini clients use correct Google SDK shapes, but a helper infers a mode from credential status priority. Settings also expose configured/effective state without a separate activation command. The approved target instead uses explicit `GEMINI_SETUP_MODE` and a concise configured-versus-active UI.
 7. Current custom-provider v2 metadata is secret-free JSON, but the supported historical v1 fixed-path file contains plaintext keys. The current v2-only store throws `CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED`, and `listProviderSettings()` currently allows that custom listing error to reject all built-in Settings. The repository already has a non-critical `AppDataMigrationRunner`; it is the correct historical-schema boundary, while the normal store must remain v2-only.
+8. Latest audited HEAD `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f` still contains residual changes outside credential custody: synthetic/filtering environment logic in packaged Electron and the isolated PTY bridge; an in-process Claude SDK MCP/session/diagnostic refactor; an in-memory built-in-agent runtime-default redesign; Electron reset changes; and standalone ordinary/Gemini key removal. [scope-audit.md](./scope-audit.md) exhaustively assigns all 311 non-ticket changed paths to retain, hunk-level cleanup, exact base restoration, or deletion.
 8. The importer parser is already recognize-first and value-safe, but its target selection has moved through separate Store targets, AppConfig, `.env.test`, and parent-process state. A real dry-run inherited a production DB when a test DB was expected. The target must be one explicit command argument rather than inferred configuration.
 9. Electron already forwards embedded-server output to its application log and exposes the log path. Packaging validation did not previously run the full packaged lifecycle against isolated data/port state.
+10. The current ticket added `non-secret-environment-projection.ts` plus a shared `agent-child-environment.ts` empty-base/allowlist filter and routed multiple production launchers through it. This changed previously working environment inheritance. Moving provider credential authority to the vault does not require or authorize that runtime behavior change.
 
 Detailed source evidence and commands are recorded in [investigation-notes.md](./investigation-notes.md). The stable approved behavior is in [requirements.md](./requirements.md).
 
@@ -39,7 +41,8 @@ Build one clean credential-vault capability inside the existing application data
 - importer, tests, Electron, direct server, Docker, and single-Pod use the same database/key lifecycle;
 - one `CustomProviderV1AppDataMigration` transforms only the fixed application-owned v1 file into current v2 metadata plus an atomic create-only vault batch;
 - migration failure deletes the legacy v1 file, resets only custom-provider current state, and keeps startup, built-in Settings, catalogs, and New Provider available for normal reconfiguration;
-- superseded Store/backend/authentication/context/manifest machinery is deleted without wrappers.
+- superseded Store/backend/authentication/context/manifest machinery is deleted without wrappers;
+- production AppConfig and child launchers preserve their established environment loading/inheritance. The shared ticket-owned environment filter and its production call sites are removed. Codex remains exactly unchanged; Claude restores the `origin/personal` `auto|cli|api-key` contract and differs only where explicit `api-key` obtains Anthropic from the vault immediately before launch. Separately approved Gemini, file-root/value-safe, test-isolation, and other feature work remain.
 
 ## Relevant Behavior And Production-Path Map
 
@@ -48,17 +51,17 @@ Build one clean credential-vault capability inside the existing application data
 | `BEH-001` | User | Provider-centric API-key Settings grouping plus credential-independent catalogs; REQ-001, REQ-008; AC-001, AC-005 | Open API Settings or reload displayed models; separately open a model selector/media default | Investigation `EVID-CATALOG-001`, `EVID-PROVIDER-READ-001` | API-key screen receives each provider once with four existing model lists; existing provider/model types and other catalog-query consumers remain | `DS-UC002`, `DS-UC003B`, `DS-R001` |
 | `BEH-002` | System | One database; REQ-002–REQ-003; AC-002 | Server/test/importer starts with `DATABASE_URL` | `EVID-DB-001`, `EVID-STORE-001` | Application DB owns secret tables; second Store removed | `DS-UC001`, `DS-L001`, `DS-L002` |
 | `BEH-003` | System | External root key and fail-closed crypto; REQ-004–REQ-005; AC-003–AC-004 | Post-migration vault bootstrap or secret operation | `EVID-CRYPTO-001` | Preserve sound primitives, rebind them to application DB/domain/SecretId | `DS-UC001`, `DS-L002`, `DS-L003` |
-| `BEH-004` | User | Write-only Settings lifecycle; REQ-006; AC-004 | Save/remove/status in provider Settings | `EVID-SETTINGS-001` | Provider-specific APIs call one service; no readback or echoed command identity | `DS-UC003A`, `DS-UC003B`, `DS-R001` |
+| `BEH-004` | User | Origin-compatible ordinary provider Settings lifecycle; REQ-006; AC-004 | Save/create-or-overwrite/status in provider Settings | `EVID-SETTINGS-001` | Provider-specific Save calls one service; no readback, echoed command identity, or ordinary key-removal surface | `DS-UC003A`, `DS-UC003B`, `DS-R001` |
 | `BEH-005` | System | Provider-owned lazy resolution; REQ-007–REQ-008; AC-005 | LLM/media/search construction and first use | `EVID-RESOLVER-001` | Keep narrow resolver; remove all model/auth/context coupling and secret fallbacks | `DS-UC004A`–`DS-UC004C`, `DS-L003` |
-| `BEH-006` | User | Explicit Gemini mode; REQ-009–REQ-010; AC-006 | Configure, activate, remove, or invoke Gemini | `EVID-GEMINI-001` | Independent options plus sole-authority `GEMINI_SETUP_MODE`; one setup-state query/command result; exact SDK shapes | `DS-UC004A`, `DS-UC004B`, `DS-UC005A`–`DS-UC005C`, `DS-L005` |
+| `BEH-006` | User | Explicit Gemini mode; REQ-009–REQ-010; AC-006 | Configure/overwrite, activate, or invoke Gemini | `EVID-GEMINI-001` | Independent Save/overwrite plus sole-authority `GEMINI_SETUP_MODE`; one setup-state query/command result; no removal action; exact SDK shapes | `DS-UC004A`, `DS-UC004B`, `DS-UC005A`–`DS-UC005C`, `DS-L005` |
 | `BEH-007` | System | Honest Gemini metadata; REQ-001, REQ-010; AC-006 | Catalog list/reload | `EVID-METADATA-001` | AI Studio live/fallback; Vertex/no mode curated-only; catalog never removed | `DS-UC006`, `DS-R003` |
 | `BEH-008` | System + User | Fixed-path custom-provider-v1 preservation with availability-first delete-and-reconfigure fallback, then current create/probe/list/use/delete; REQ-001–REQ-009, REQ-012, REQ-015, REQ-018; AC-008, AC-013–AC-015 | Existing-user startup or New Provider after a failed migration | `EVID-CUSTOM-001`, `EVID-CUSTOM-MIG-001` | Isolate v1 parsing in one app-data migration; publish complete v2 plus create-only encrypted batch or delete v1 and fall back to normal frontend reconfiguration; custom failure never rejects built-ins; normal runtime stays v2-only | `DS-UC007A`–`DS-UC007D`, `DS-L006`, `DS-L007` |
 | `BEH-009` | Operational | Explicit recognize-first importer; REQ-002, REQ-006, REQ-009, REQ-011; AC-007 | PNPM command with absolute source | `EVID-IMPORT-001` | Keep parser; add one service-owned non-mutating inspection path; target only selected app DB; test wrapper materializes normal runtime `.env`; remove target selector | `DS-UC008A`, `DS-UC008B`, `DS-UC008C`, `DS-L004` |
 | `BEH-010` | System | No automatic arbitrary-source/`.env` update; REQ-011–REQ-012; AC-008 | Upgrade/start with legacy `.env` credentials present | `EVID-LEGACY-001` | Ignore `.env` credential values; leave bytes untouched; explicit reconfigure/import only. The fixed custom-provider-v1 app-data transition is exclusively `BEH-008`. | `DS-UC009` |
 | `BEH-011` | Operational | Simple but executable backend-E2E configuration; REQ-013; AC-009 | Backend E2E, test server/frontend, or real-provider E2E start; separate explicit import | `EVID-E2E-001`, `EVID-IMPORT-001` | Actual server remains `.env`-only; test tooling reads immutable `.env.test`, materializes ignored writable runtime `.env`, and drives the actual server; scenarios live in code; importer takes the desired test DB URL explicitly and does not join the bootstrap | `DS-UC008C`, `DS-UC010A`, `DS-UC010B`, `DS-UC011` |
-| `BEH-012` | User | Preserve Claude modes; REQ-014; AC-010 | Start Claude runtime in `cli` or `managed-secret` | `EVID-CLAUDE-001` | No auth redesign or cross-mode fallback | `DS-UC012A`, `DS-UC012B` |
+| `BEH-012` | User | Restore Claude runtime; REQ-014; AC-010 | Start Claude runtime under original `auto|cli|api-key` | `EVID-CLAUDE-001` | `auto`/`cli` unchanged; explicit `api-key` substitutes only vault-backed Anthropic acquisition | `DS-UC012A`, `DS-UC012B` |
 | `BEH-013` | User | Preserve Codex; REQ-014; AC-010 | Start Codex after external login | `EVID-CODEX-001` | Exact external home/environment login behavior; no Store owner | `DS-UC013` |
-| `BEH-014` | System | Bounded local hardening; REQ-014; AC-010 | Governed child launch | `EVID-CHILD-001` | Empty-base/allowlisted governed children; Codex excluded; no strong claim | `DS-UC014` |
+| `BEH-014` | System | Preserve working environment inheritance; REQ-014; AC-010 | Terminal/shell/MCP/watcher/worker/messaging/agent/tool/application child launch | `EVID-CHILD-001` | Restore each production launcher’s `origin/personal` environment and caller-owned additions; delete the shared filter. Explicit Claude `api-key` adds/overrides only `ANTHROPIC_API_KEY` over the inherited base. Retain separately approved file-root/redaction behavior. | `DS-UC014` |
 | `BEH-015` | User | Preserve AutoByteus remote capabilities; REQ-007, REQ-009, REQ-017; AC-013 | Settings reload/discovery or invocation | `EVID-AUTOBYTEUS-001` | One provider key, same hosts/discovery/invocation, exact unavailable outcome | `DS-UC015A`, `DS-UC015B` |
 | `BEH-016` | Contract | Exact dependency; REQ-016; AC-012 | Clean/frozen install and import | `EVID-PRISMA-001` | Exact unpatched 1.0.8; no production owner adoption | `DS-UC017` |
 | `BEH-017` | Operational | Real packaged lifecycle; REQ-015, REQ-018; AC-011, AC-014 | Delivery launches isolated packaged candidate | `EVID-ELECTRON-001` | Isolated data/port identity, full server health/Settings smoke, value-safe logs | `DS-UC016A`, `DS-UC016B`, `DS-UC018`, `DS-R004` |
@@ -76,6 +79,7 @@ Build one clean credential-vault capability inside the existing application data
 | [threat-model-and-option-analysis.md](./threat-model-and-option-analysis.md) | Trust boundaries, custom-v1 reset controls, API-key-read controls, assurance limits, rejected options | REQ-001, REQ-004–REQ-007, REQ-011–REQ-015, REQ-018 | Governs security claims and proportional controls | Ready for architecture review |
 | [custom-provider-v1-migration-contract.md](./custom-provider-v1-migration-contract.md) | Normative fixed-path migration, collision, rollback, delete-and-reconfigure reset, and Settings-containment contract | REQ-001, REQ-006, REQ-008–REQ-009, REQ-012, REQ-015, REQ-018 / AC-008, AC-011, AC-013–AC-015 | Governs the only credential-bearing app-data migration and its failure behavior | User-approved for architecture review |
 | [repository-prisma-1.0.8-assessment.md](./repository-prisma-1.0.8-assessment.md) | Exact package evidence | REQ-016 / AC-012 | Retained evidence; no intended behavior | Approval `N/A` |
+| [scope-audit.md](./scope-audit.md) | Exhaustive latest-HEAD path and hunk disposition | REQ-006, REQ-010, REQ-014–REQ-018 / AC-004, AC-006, AC-010, AC-014–AC-015 | Proves the target removes every unrelated/redundant delta without discarding valid mixed-file work | Complete evidence; approval `N/A` |
 
 The former `secret-storage-backend-contract.md` is retained only as a tombstone stating that its separate-backend contract is superseded; it is not part of the active package.
 
@@ -89,7 +93,7 @@ The former `secret-storage-backend-contract.md` is retained only as a tombstone 
 - **Design response:** collapse physical custody into the application DB, isolate vault persistence/crypto behind one service, preserve only a narrow resolver port at provider construction, give the API-key screen one provider-centric group that reuses existing provider/model types, remove duplicate credential authority and the security-specific status wrapper, use explicit Gemini mode, isolate historical custom-provider parsing in one app-data migration with delete-and-reconfigure fallback, make the normal store v2-only, contain custom failures at Settings, and delete superseded structures.
 - **Refactor rationale:** adding adapters around the second Store would preserve the cause of the complexity. A clean cut removes more code and produces one authority for each subject.
 - **Intentional deferrals:** remote/enterprise vault backends; strong same-user isolation; multi-replica shared SQLite; live Vertex model listing; generic secret blobs; Prisma major upgrade.
-- **Residual risk:** same-user memory/filesystem compromise remains outside `LOCAL_HARDENED`; JavaScript zeroization is best effort; DB and root key must be backed up/restored together; a failed custom-provider migration deliberately discards legacy provider configuration and requires explicit frontend reconfiguration.
+- **Residual risk:** same-user memory/filesystem/process access remains outside the credential-custody claim; inherited environments may contain ordinary application variables and transient credentials by established product behavior. JavaScript zeroization is best effort; DB and root key must be backed up/restored together; a failed custom-provider migration deliberately discards legacy provider configuration and requires explicit frontend reconfiguration.
 
 ## Terminology
 
@@ -102,7 +106,7 @@ The former `secret-storage-backend-contract.md` is retained only as a tombstone 
 | Credential status | Value-free `MISSING\|CONFIGURED` plus vault health; not provider validity. |
 | API-key Settings group | `ProviderSettingsGroup` contains one existing `LlmProviderObject` plus four existing `ModelDetail` lists; it is a page-level organization, not another provider/model domain type. |
 | Gemini mode | Explicit non-secret `AI_STUDIO\|VERTEX_EXPRESS\|VERTEX_PROJECT`; sole runtime selector. |
-| Governed child | A child process under `LOCAL_HARDENED`; Codex is explicitly not one for environment inheritance. |
+| Production child environment | Each established launcher inherits/builds its environment as in `origin/personal`; this ticket adds no common filtering policy. Test-only isolated launchers remain test infrastructure, not production policy. |
 
 ## Design Reading Order
 
@@ -118,7 +122,7 @@ The former `secret-storage-backend-contract.md` is retained only as a tombstone 
 - Remove the separate Store database/configuration/backend/access-mode/runtime-selection architecture.
 - Remove `SecretDefinitionId` terminology in favor of `SecretId`.
 - Remove old Google AI Studio ID, Store target names, Store lifecycle DTOs, implicit Gemini priority, and scenario manifest.
-- Do not add compatibility aliases, dual runtime reads/writes, environment credential fallback, automatic arbitrary-source import, or wrapper re-exports. Historical custom-provider v1 parsing exists only inside the one migration boundary and is removed from normal runtime.
+- Do not add compatibility aliases, dual runtime reads/writes, managed-provider credential fallback to environment aliases, automatic arbitrary-source import, or wrapper re-exports. Historical custom-provider v1 parsing exists only inside the one migration boundary and is removed from normal runtime.
 - Preserve old reports/evidence as historical artifacts only; current runtime and active design depend solely on the new contract.
 
 ## Persisted Data / State Transition Decision
@@ -151,7 +155,7 @@ The complete 43-spine traceability table and node-count validation is in [use-ca
 | `DS-UC004C` | Primary End-to-End | BEH-005 / UC-004 | Search tool call | Search result | Search provider adapter | Preserves specialized search path. |
 | `DS-UC005A` | Primary End-to-End | BEH-006 / UC-005 | Gemini `Save only` | One option configured | `GeminiConfigurationService` | Separates configuration from activation. |
 | `DS-UC005B` | Primary End-to-End | BEH-006 / UC-005 | `Use this mode` | Persisted active mode | `GeminiConfigurationService` | Makes mode selection explicit. |
-| `DS-UC005C` | Primary End-to-End | BEH-006 / UC-005 | Remove option | Removed option + truthful active state | `GeminiConfigurationService` | Prevents implicit fallback. |
+| `DS-UC005C` | Primary End-to-End | BEH-006 / UC-005 | First-time `Save and use this mode` | Saved option + truthful active state | `GeminiConfigurationService` | Makes the only compound action explicit without a removal surface. |
 | `DS-UC006` | Primary End-to-End | BEH-007 / UC-006 | Catalog enrichment | Models + provenance | `ModelMetadataProvisioningService` | Separates optional metadata from availability. |
 | `DS-UC007A` | Primary End-to-End | BEH-008 / UC-007 | Create custom provider | Metadata + encrypted credential | `LlmProviderService` | Coordinates two owners without plaintext persistence. |
 | `DS-UC007B` | Primary End-to-End | BEH-008 / UC-007 | Custom catalog sync/invoke | Discovered model/provider response | Custom runtime sync + concrete client | Preserves functionality. |
@@ -164,10 +168,10 @@ The complete 43-spine traceability table and node-count validation is in [use-ca
 | `DS-UC010A` | Primary End-to-End | BEH-011 / UC-010 | Deterministic backend-E2E command | Actual-server API assertions + fresh-root cleanup | Backend-E2E runner + `TestRuntimeBootstrap` | Proves test tooling loads `.env.test` while the unchanged server reads only a fresh normal `.env`. |
 | `DS-UC010B` | Primary End-to-End | BEH-011 / UC-010 | `server:test`, `web:test`, or `dev:test` | Actual server/UI assertions + persistent isolated test state | `TestRuntimeBootstrap` | Proves manual test-server/frontend operation and mutable Settings persistence without tracked-file mutation. |
 | `DS-UC011` | Primary End-to-End | BEH-011 / UC-011 | Real-E2E command | Normal-API provider evidence + cleanup | Real-E2E runner using `TestRuntimeBootstrap` | Uses the actual built server, normal DB/key path, and scenario code without a harness-only Store. |
-| `DS-UC012A` | Primary End-to-End | BEH-012 / UC-012 | Claude `cli` run | Claude result | Claude runtime owner | Preserves external account state and zero lookup. |
-| `DS-UC012B` | Primary End-to-End | BEH-012 / UC-012 | Claude managed run | Exact-child Anthropic execution | Claude auth/launch policy | Constrains JIT child delivery. |
+| `DS-UC012A` | Primary End-to-End | BEH-012 / UC-012 | Claude `auto` or `cli` run | Claude result | Original Claude runtime owner | Preserves base selector/environment/options/account behavior and zero vault lookup. |
+| `DS-UC012B` | Primary End-to-End | BEH-012 / UC-012 | Explicit Claude `api-key` run | Inherited launch environment plus one Anthropic override -> Claude result | Original Claude client plus narrow server vault adapter | Changes credential source only at point of use. |
 | `DS-UC013` | Primary End-to-End | BEH-013 / UC-013 | Codex run | Codex result | Codex App Server client | Preserves original login/home environment. |
-| `DS-UC014` | Primary End-to-End | BEH-014 / UC-014 | Governed child request | Constrained child result | Governed launcher | Preserves local hardening boundary. |
+| `DS-UC014` | Primary End-to-End | BEH-014 / UC-014 | Production child request | Child result with established environment semantics | Existing concrete launcher | Restores the working environment path while retaining separately approved non-environment controls. |
 | `DS-UC015A` | Primary End-to-End | BEH-015 / UC-015 | AutoByteus reload/discovery | Remote catalog/status | Remote discovery service | Preserves one key + configured hosts. |
 | `DS-UC015B` | Primary End-to-End | BEH-015 / UC-015 | AutoByteus invocation | Remote response/media | Concrete AutoByteus client | Preserves functional capabilities. |
 | `DS-UC016A` | Primary End-to-End | BEH-017 / UC-016 | Electron/direct start/restart | Healthy server + persisted vault | Server runtime | Proves same lifecycle outside tests. |
@@ -257,7 +261,7 @@ DS-UC011: real-provider E2E -> TestRuntimeBootstrap reads fixed .env.test
           -> status-only preflight -> configured scenarios -> value-free evidence -> stop/preserve
 
 DS-UC018: Delivery smoke -> packaged Electron with isolated root/port -> embedded server
-          -> health -> Settings catalog -> synthetic save/status/remove -> restart -> value-safe logs -> isolated cleanup
+          -> health -> Settings catalog -> synthetic save/status/overwrite + absent ordinary Remove -> restart -> value-safe logs -> isolated cleanup
 ```
 
 All other primary chains are specified node-for-node in [use-case-spine-validation.md](./use-case-spine-validation.md).
@@ -272,7 +276,7 @@ All other primary chains are specified node-for-node in [use-case-spine-validati
 | Provider invocation (`DS-UC004A`–`C`, `DS-R002`) | Existing factories select models/config; concrete clients resolve only when constructing SDKs. | Factory, concrete provider, resolver, SDK | Concrete provider client | Consumer authorization, error mapping |
 | Gemini (`DS-UC005A`–`DS-UC006`, `DS-L005`) | Save options independently, activate explicitly, read selected non-secret configuration, resolve only its key slot, construct exact SDK, and report honest metadata provenance. | Gemini configuration, provider helper, resolver, metadata strategy | `GeminiConfigurationService` for setting; concrete Gemini client for SDK | Vault status, UI state, config persistence |
 | Import/test (`DS-UC008A`–`DS-UC011`, `DS-L004`) | Require an explicit absolute SQLite database URL for every import, parse only recognized aliases, inspect exactly that DB/key pair without mutation, show observed statuses/planned actions, and write atomically after confirmation with an authoritative transactional recheck; independently, backend test tooling reads immutable `.env.test`, materializes/reconciles fixed launch keys into ignored normal runtime `.env`, and starts the unchanged actual built server/frontend lifecycle. | CLI location input, `ApplicationDatabaseLocation`, source reader, import service, `SecretVaultInspectionService`, normal bootstrap/secret service, `TestRuntimeBootstrap`, actual server, test runner | Import service / internal inspection service / `TestRuntimeBootstrap` / real-E2E runner | explicit target, TTY, file trust, no-mutation inspection, write races, clean child env, fresh-versus-persistent root, tracked-file immutability, scanner, cleanup |
-| Specialized runtimes (`DS-UC012A`–`DS-UC015B`) | Preserve Claude/Codex/governed-child/AutoByteus behavior while changing only secret custody where approved. | Existing runtime owners | Existing runtime-specific owners | Auth mode, child env, endpoint availability |
+| Specialized runtimes (`DS-UC012A`–`DS-UC015B`) | Preserve Claude/Codex/production-child/AutoByteus behavior while changing only AutoByteus-managed credential acquisition where approved. | Existing runtime owners | Existing runtime-specific owners | Auth mode, child env, endpoint availability |
 | Delivery (`DS-UC016A`–`DS-UC018`, `DS-R004`) | Use one DB/key pair in every packaging/deployment form and exercise the actual packaged app with isolated identity and logs. | Electron server manager, server runtime, deployment volume, smoke runner | Existing platform owners | Port/data isolation, cleanup, log path |
 
 ## Spine Actors / Main-Line Nodes
@@ -302,7 +306,7 @@ All other primary chains are specified node-for-node in [use-case-spine-validati
 | Prisma migration runner | Current application schema | Root-key state or credential migration |
 | `SecretVaultBootstrap` | First-init/verify state machine and key/domain pairing | Provider mapping or API operations |
 | `SecretVaultRuntime` | One process-local service lifecycle after bootstrap | Backend selection or access mode |
-| `SecretManagementService` | Health, authorization, status, save/remove/batch/resolve, and internal create-only custom-v1 migration batch with exact conditional compensation receipt | Provider validation, UI, model selection, historical file parsing, or historical-file reset policy |
+| `SecretManagementService` | Health, authorization, status, create/replace/batch/resolve, internal custom-provider lifecycle deletion, and internal create-only custom-v1 migration batch with exact conditional compensation receipt | Provider validation, ordinary-provider key-removal UI/API, model selection, historical file parsing, or historical-file reset policy |
 | `SecretVaultInspectionService` | Import-preview-only classification of the explicitly URL-selected DB/key pair and exact entry existence through read-only filesystem/SQLite operations | Migration, bootstrap, key creation, permission repair, writes, provider validation, or an operator-selectable access mode |
 | `SecretVaultPrismaRepository` | Metadata/entry persistence and transaction | Crypto, mapping, filesystem |
 | `SecretVaultCrypto` | HKDF/AES/verifier operations and temporary buffers | DB and provider policy |
@@ -317,7 +321,7 @@ All other primary chains are specified node-for-node in [use-case-spine-validati
 | `LlmProviderService.listProviderSettings()` | Deterministic composition of one canonical provider record plus four existing model lists by exact provider ID | Credential persistence, GraphQL/client state, model-schema redefinition, cross-provider status fallback, or synthesizing providers from orphan models |
 | `GeminiConfigurationService` | Option completeness, explicit activation, mode persistence, authoritative setup state | Secret crypto or SDK request behavior |
 | Import service | Source selection, recognize-first plan, call to the authoritative inspection service, confirmation, and normal bootstrap/batch command | Direct repository/key access, alternate DB selection, runtime fallback, or claiming preview as the write result |
-| `TestRuntimeBootstrap` | Fixed `.env.test` validation, server-root-relative DB canonicalization, fixed-key materialization/reconciliation into ignored test app-data/runtime `.env`, empty/allowlisted OS child environment, real server process, health/shutdown | Product server config parsing, scenario definitions, credentials, provider invocation, production/default data |
+| `TestRuntimeBootstrap` | Fixed `.env.test` validation, server-root-relative DB canonicalization, fixed-key materialization/reconciliation into ignored test app-data/runtime `.env`, isolated test-only OS child environment, real server process, health/shutdown | Production launcher policy, product server config parsing, scenario definitions, credentials, provider invocation, production/default data |
 | Electron server manager | Embedded process/data/port/log lifecycle | Secret content and DB schema |
 
 ## Thin Entry Facades / Public Wrappers
@@ -347,8 +351,16 @@ All other primary chains are specified node-for-node in [use-case-spine-validati
 | Implicit `selectGeminiRuntime*` status priority | Contradicts explicit selection | typed explicit-mode reader + configuration service | In this change | No missing-mode fallback. |
 | API-key page's combined consumption of four `availableLlm\|Audio\|Image\|VideoProvidersWithModels` results | Repeats one provider/configured fact and exposes Apollo cache-order collisions | One `providerSettings` query returning `ProviderSettingsGroup`; keep established catalog queries for current non-Settings consumers | In this change | No compatibility wrapper or cache workaround; the Settings page changes consumers cleanly. |
 | `CredentialStatusObject`, `vaultHealth`, `storageState`, and `instructionCode` on the provider read | Security-specific wrapper duplicated the origin-compatible configured fact and complicated the UI | Restore `LlmProviderObject.apiKeyConfigured` backed by the vault; operation failures remain GraphQL errors | In this change | Retain established provider/custom fields; do not add another replacement status protocol. |
+| Ordinary `removeProviderApiKey` GraphQL/service/web action and ordinary key Remove button | Not present in `origin/personal`; Save already creates or overwrites and the user rejected the redundant feature | Keep only ordinary provider Save + canonical status refetch | In this change | Internal deletion remains available only to the owning custom-provider Delete/compensation lifecycle. |
+| `removeGeminiConfiguration` GraphQL/service/web action and Gemini Remove controls | The user approved only explicit Gemini mode selection beyond origin-compatible Save/overwrite; standalone key/configuration removal is unnecessary | Keep option-specific Save/overwrite, `Use this mode`, and first-time `Save and use this mode` | In this change | Switching modes never deletes another configuration. |
 | Parallel web `providerConfigs` map, API-key four-array/all-provider merge, `sync/replaceProviderConfiguredState`, and cross-provider fallback | Compete with the exact provider row and permit one provider to supply another's configured fact | One `ProviderSettingsGroup[]`; exact provider-ID refetch | In this change | Existing catalog stores remain for their current consumers; no Apollo workaround or compatibility facade. |
 | API-key four-array aggregation responsibilities inside `llmProviderConfig.ts` / `llmProviderConfigSupport.ts` | Mix screen credential authority with general catalog selection | Add one focused provider-Settings store/action around `providerSettings`; retain current catalog store APIs for supported consumers | In this change | Reuse generated `LlmProviderObject`/`ModelDetail`; no parallel hand-written contract or re-exported credential helpers. |
+| `src/config/non-secret-environment-projection.ts` and production AppConfig credential masking/projection changes | Provider credential non-authority belongs at the resolver, not global process configuration; filtering changed established behavior | Restore `origin/personal` `.env` -> `process.env` behavior while retaining typed DB/Gemini additions | In this change | Remove only the filtering concern; do not revert approved AppConfig features. |
+| `autobyteus-ts/src/tools/terminal/agent-child-environment.ts` and its production imports/callers | Shared empty-base/allowlist policy changed working terminal/shell/MCP/watcher/worker/messaging/application behavior and is not required by the vault | Restore each concrete launcher’s `origin/personal` environment construction/inheritance and caller-owned additions | In this change | Retain separately approved file-root/redaction behavior and test-only isolation. |
+| Residual isolated PTY bridge environment allowlist | Escaped the first restoration and still changes shell behavior | Restore `isolated-pty-bridge-source.ts` exactly to base environment construction | In this change | File-root authorization is separate and remains. |
+| Packaged Electron synthetic HOME/TMP environment and related app-data/reset changes | Not required for credential custody; alters working application/child behavior | Restore all three platform server managers and `AppDataService` behavior/tests exactly to `origin/personal` | In this change | Keep only separate vault-aware documentation and isolated delivery validation; no synthetic account/data root. |
+| Ticket-created Claude `managed-secret`, authentication service, synthetic HOME/PATH/TMP/account-home policy, strict MCP/tool filtering, setting-source overrides, in-process SDK MCP/session replacement, diagnostic changes, and broad auth/turn-error changes | Replaced established auth and agent-tools behavior and expanded beyond secret custody | Restore complete `origin/personal` Claude behavior; retain only a narrow explicit-`api-key` vault resolve and `ANTHROPIC_API_KEY` override immediately before launch | In this change | `auto`/`cli` and all ordinary launch options/settings/HTTP MCP/session/diagnostics/account behavior remain unchanged. |
+| Built-in-agent `initializeRuntimeDefault` and `ServerSettingsService.runtimeDefaults` changes | Change unrelated application-setting persistence to in-memory behavior | Restore base built-in setting initialization and remove runtime-default API/map/tests | In this change | Retain sensitive generic-setting rejection and value-free error/log hunks in the mixed settings service. |
 | Model authentication/context/resolved-auth structures | Superseded and currently absent | Resolver constructor argument | Structural prohibition | Static scan prevents return. |
 | Docs that describe second Store/reset preservation | Obsolete | Updated one-DB docs | In this change | Tombstone old ticket contract only. |
 
@@ -388,17 +400,17 @@ DS-R004: Embedded server stdout/stderr/exit -> Electron logger/status manager
 | Cryptography | UC-001,003,004,008 | Secret service | HKDF/AES/AAD/verifier | Reusable, testable crypto contract | Persistence/provider code handles bytes. |
 | Provider credential catalog | UC-003–007,012,015 | Secret service/resolvers | Subject/provider/slot authorization | Stable tight identity mapping | Models become credential registry. |
 | Custom-provider-v1 migration/reset | UC-007 | Existing app-data migration owner | Fixed-path historical parse, complete mapping, create-only batch, staged publish, failed-migration deletion | Keeps historical schema and destructive reset off normal runtime | v2 store/GraphQL/providers learn v1 or arbitrary migration logic. |
-| Import alias registry | UC-008 | Source reader/import service | Input-only current aliases | Separates legacy syntax from runtime identity | Runtime gains environment fallback. |
+| Import alias registry | UC-008 | Source reader/import service | Input-only current aliases | Separates legacy syntax from runtime identity | Managed provider runtime gains an alternate credential authority. |
 | Metadata enrichment | UC-002,006 | Model catalog | Optional live/curated merge + provenance | Availability stays independent | Provider listing waits on credentials/network. |
 | API-key Settings grouping | UC-002,003 | `LlmProviderService.listProviderSettings()` | Emit one canonical provider object and four existing model lists by exact provider ID | One response without duplicate credential authority or replacement DTOs | GraphQL resolver or web store recreates four-array merging. |
 | Redaction/evidence scanner | All executable flows | Runtime/test owners | Prevent value leakage | Security evidence | Becomes alternate error path. |
-| File-tool denied paths | UC-001,014,016 | Governed launcher/file policy | Deny DB/key/journal access | Local hardening | Vault owns child policy. |
+| File-tool denied paths | UC-001,014,016 | Existing file-tool policy | Deny DB/key/journal access | Retained filesystem protection | Secret vault would otherwise own unrelated launcher/file policy. |
 | TTY confirmation | UC-008 | Import service | Human confirmation before writes | Prevent accidental target mutation | Parser/DB code handles UI. |
 | Electron log forwarding | UC-016,018 | Electron server manager | Value-safe startup diagnostics | Real user recovery | Server runtime owns desktop presentation. |
 
 ## Ownership Boundaries
 
-1. `AppConfig` is the only authority for a running application’s non-secret settings. Runtime consumers use its canonical DB location. The standalone importer is a separate operator boundary: its required `--database-url` is its sole target authority and is parsed only through the same `ApplicationDatabaseLocation` type; it never initializes AppConfig or loads/inherits `.env`, `.env.test`, or parent `DATABASE_URL`.
+1. `AppConfig` remains the running application’s environment/configuration projection owner and the authority for typed non-secret settings. Runtime consumers use its canonical DB location; managed provider credential authority remains the vault-backed resolver even when legacy aliases are present in the projected process environment. The standalone importer is a separate operator boundary: its required `--database-url` is its sole target authority and is parsed only through the same `ApplicationDatabaseLocation` type; it never initializes AppConfig or loads/inherits `.env`, `.env.test`, or parent `DATABASE_URL`.
 2. `SecretManagementService` is the only runtime secret lifecycle boundary. Its repository, crypto, root-key handle, and catalog are internal. `SecretVaultInspectionService` is the one narrower secret-management-owned exception for importer preview: it may inspect only the selected target through non-mutating filesystem checks, verifier validation, and read-only schema/entry queries; it exposes no value and cannot migrate/bootstrap/write.
 3. `AppDataMigrationRunner` is the startup migration lifecycle boundary; `CustomProviderV1AppDataMigration` is the sole owner of historical custom-provider schema transformation and failed-migration deletion. `CustomLlmProviderStore` is current-v2-only. The migration uses an internal create-only service command without bypassing `SecretManagementService`.
 4. Provider Settings services expose provider-specific commands. GraphQL and web do not receive `SecretId` for ordinary built-ins and never receive values.
@@ -406,8 +418,8 @@ DS-R004: Embedded server stdout/stderr/exit -> Electron logger/status manager
 6. Model catalogs own model data and `LlmProviderService` owns provider identity/configured/custom facts. `listProviderSettings()` composes the page group from those public owners without creating a second provider/model contract. Catalog membership never depends on credential state. Existing catalog GraphQL fields remain supported for their current consumers; the API-key page alone stops combining them into four repeated provider collections.
 7. Gemini configuration owns explicit mode and option completeness; concrete Gemini clients own SDK construction. Metadata reads the mode but cannot select/retry it.
 8. Importer source parsing and operator interaction are outside secret persistence. Preview crosses only `SecretVaultInspectionService`; the batch crosses `SecretManagementService` only after a plan/confirmation and normal execution bootstrap.
-9. `TestRuntimeBootstrap` is the only owner allowed to interpret the tracked `.env.test`. It accepts only the fixed non-secret launch schema, canonicalizes the test DB against the server root, materializes/reconciles fixed keys into an ignored ordinary runtime `.env`, and launches the unchanged actual server with `--data-dir` under an empty/allowlisted OS environment. It does not inject `DATABASE_URL` or other application settings into the child environment. Test runners consume its typed result; the importer does not depend on this bootstrap and receives the desired canonical DB URL explicitly.
-10. Existing runtime owners remain authoritative for Claude, Codex, governed children, AutoByteus remote, Electron, and Docker behavior.
+9. `TestRuntimeBootstrap` is the only owner allowed to interpret the tracked `.env.test`. It accepts only the fixed non-secret launch schema, canonicalizes the test DB against the server root, materializes/reconciles fixed keys into an ignored ordinary runtime `.env`, and may use an isolated OS environment only as test-owned process setup. This is not a reusable production environment policy. Test runners consume its typed result; the importer does not depend on this bootstrap and receives the desired canonical DB URL explicitly.
+10. Existing runtime owners remain authoritative for Claude, Codex, every concrete production child launcher, AutoByteus remote, Electron, and Docker behavior. The vault adapter supplies only the explicit Claude `api-key` value and does not become a Claude authentication/launch owner.
 
 ## Boundary Encapsulation Map
 
@@ -422,7 +434,7 @@ DS-R004: Embedded server stdout/stderr/exit -> Electron logger/status manager
 | `LlmProviderService.listProviderSettings()` | Canonical provider records plus four existing model lists grouped by exact provider ID | GraphQL `providerSettings` query | GraphQL/web recomputing provider identity/status, cross-provider fallback, or creating providers from orphan models | Extend the established provider owner rather than add another read service. |
 | `ProviderApiKeyResolver` | consumer authorization + service resolution | core LLM/media provider clients | Core -> server Store/Prisma/env credential alias | Extend subject mapping server-side. |
 | `ModelCatalogService` | curated registries and metadata merge | GraphQL/reload/provider UI | UI/provider status deciding catalog membership | Add catalog-only method. |
-| `GeminiConfigurationService` | option status/save/remove/activate | GraphQL and metadata strategy | UI directly editing multiple AppConfig/secret owners | Add explicit commands with one shared setup-state result. |
+| `GeminiConfigurationService` | option status/save-or-overwrite/activate | GraphQL and metadata strategy | UI directly editing multiple AppConfig/secret owners | Add explicit Save/Use commands with one shared setup-state result; no removal command. |
 | Import service | parse/inspect/plan/confirm/batch sequence | CLI | CLI calling source reader/repository/key directly | Add preview/execute method backed by the inspection service. |
 | Electron server manager | child/data/port/log lifecycle | Electron main/status IPC | Renderer spawn/path/process access | Add safe IPC/status detail. |
 
@@ -433,14 +445,14 @@ DS-R004: Embedded server stdout/stderr/exit -> Electron logger/status manager
 3. `SecretManagementService` may depend on `ProviderCredentialCatalog`, crypto, root-key handle, and repository ports; none may depend on provider/model/UI services.
 4. `ModelCatalogService` must not depend on vault health or credential status for base availability. Optional metadata provisioning may resolve a key after the curated catalog exists.
 5. `LlmProviderService.listProviderSettings()` may depend on its existing provider directory/status and `ModelCatalogService` boundaries. It emits each canonical provider once, groups current model objects by exact provider ID, uses `[]` for a capability with no matching models, and never invents credential state from a catalog row or result order. The GraphQL layer maps the established domain records to existing `LlmProviderObject`/`ModelDetail`; no reduced parallel DTO, availability wrapper, or status protocol is introduced.
-6. Provider Settings command services may call `SecretManagementService`, but GraphQL may not call service internals directly. Ordinary Save/Remove returns only Boolean command completion; the request already identifies the provider, authoritative state comes from a canonical-row refetch, and failure uses GraphQL errors.
-7. `AppConfig` may parse/persist only approved non-secret settings. Credential aliases are masked and never projected to `process.env`.
+6. Provider Settings command services may call `SecretManagementService`, but GraphQL may not call service internals directly. Ordinary Save returns only Boolean command completion; it creates or overwrites the exact provider slot, the request already identifies the provider, authoritative state comes from a canonical-row refetch, and failure uses GraphQL errors. There is no ordinary provider-key Remove mutation/button. Internal deletion is callable only by an owning lifecycle such as custom-provider Delete or bounded compensation.
+7. `AppConfig` preserves its established full `.env` parsing and `process.env` projection/inheritance behavior, including legacy credential assignments. Managed provider consumers do not treat those aliases as authority because they resolve through the vault-backed port; this policy is enforced at credential acquisition, not by filtering the process environment. Generic `AppConfig.set()`/`.delete()` still reject managed credential names, the old `setLlmApiKey`/`getLlmApiKey` authority stays removed, and Settings credential saves write only to the vault.
 8. The explicit Gemini mode/project/location are non-secret runtime configuration. `AppConfig` validates them and `GeminiConfigurationService.resolveActiveRuntime()` returns one tight `GeminiRuntimeSelection`; no model field or secret-status inference is allowed.
 9. The core owns the function type `GeminiRuntimeResolver = () => Promise<GeminiRuntimeSelection>`. The server adapter closes over `GeminiConfigurationService`; Gemini LLM/media clients call it lazily at SDK initialization and then resolve only the slot selected by that result. This is a separate provider-specific dependency from `ProviderApiKeyResolver`.
 10. Factories preserve the three-argument `model, effectiveConfig, apiKeyResolver` path for every ordinary provider. Their only specialized overload is an optional fourth `geminiRuntimeResolver` argument. It is required and accepted only for a Gemini model; missing Gemini resolution fails `GEMINI_RUNTIME_UNCONFIGURED`, and a non-Gemini model rejects a supplied Gemini resolver. There is no generic construction context or authentication union.
 11. `AppDataMigrationRunner` may call only the registered `CustomProviderV1AppDataMigration` public definition. The migration may call the internal create-only `SecretManagementService` batch and access only the fixed current custom-provider path. Normal provider/GraphQL/runtime code may depend only on the v2 store and must never call the v1 parser/reset internals. The migration must sanitize its own result/throwable before the generic runner writes status/logs.
 12. Importer may call `ApplicationDatabaseLocation.fromAbsoluteFileUrl`, source reader, `SecretVaultInspectionService`, normal vault bootstrap, and `SecretManagementService` only. It must require exactly one explicit database URL and may not initialize AppConfig, load `.env`/`.env.test`, read parent `DATABASE_URL`, derive a target from the source/current working directory, accept a key-path/profile/backend selector, open the repository/key directly, or turn the internal inspector into an operator access mode.
-13. Governed child environment builders receive no credential aliases, `DATABASE_URL`, derived key path, or root-key bytes. Codex retains its explicit exception.
+13. No shared production child-environment filtering boundary exists. Each terminal, shell, MCP, watcher/search, worker, messaging, Claude/Codex, agent/tool/application, or other launcher restores its established `origin/personal` environment behavior and explicit caller additions. Codex has no ticket delta. Claude restores its original `auto|cli|api-key` selector and launch behavior; explicit `api-key` alone resolves the exact Anthropic slot and adds/overrides only `ANTHROPIC_API_KEY`. Root-key bytes are never intentionally placed in environment variables by vault code.
 14. No code may retry another credential ID/mode after `NOT_FOUND`, auth failure, or provider error.
 15. No compatibility re-export, duplicated provider DTO/store authority, Apollo order/type-policy mask, or dual-path module may preserve removed Store/backend/authentication/provider-read machinery.
 16. Only backend-test entrypoints may depend on `TestRuntimeBootstrap`. Product runtime code must not auto-discover `.env.test`; the actual server must continue reading only `<data-dir>/.env`; deterministic tests must not share the provisioned real-E2E DB; and the tracked `.env.test` must never be an `AppConfig.set()`/`.delete()` persistence target.
@@ -454,28 +466,49 @@ DS-R004: Embedded server stdout/stderr/exit -> Electron logger/status manager
 | `SecretManagementService.getHealth()` | Vault | Value-free health | Current runtime only | No DB/key paths in public API. |
 | `getStatusForConsumer(consumer)` | Credential | Existence only | `SecretConsumerIdentity` | Does not decrypt/provider-validate. |
 | `saveForConsumer({consumer,value})` | Credential | Atomic create/replace | Authorized consumer | Write-only input. |
-| `removeForConsumer(consumer)` | Credential | Idempotent delete | Authorized consumer | No missing error. |
+| internal `removeForConsumer(consumer)` | Credential owned by a deleting entity | Idempotent cleanup | Custom-provider Delete or bounded internal compensation only | Not exposed by ordinary provider or Gemini Settings; no missing error. |
 | `resolveForUse(consumer)` | Credential | Authorized decrypt | Authorized consumer | Returns `SecretValue` only across the trusted in-process adapter/client boundary. |
 | `saveBatch(entries, overwrite)` | Credential batch | Atomic importer writes | Exact `SecretId` plan authorized by importer registry | No arbitrary raw API. |
 | internal `createMissingBatchForCustomProviderMigration(entries)` | Fixed custom-v1 credential batch | Require every exact ID missing, encrypt/insert all in one transaction, return memory-only exact compensation receipt | Migration-owned complete provider-ID mapping only | No overwrite/use/compare mode; receipt never crosses process/log boundary. |
 | `compensateUnpublishedCustomProviderBatch(receipt)` | Same-process migration rollback | Conditionally delete only exact unchanged rows inserted by the receipt | In-memory receipt from the immediately preceding batch | Never deletes pre-existing or changed rows; no persisted/general delete token. |
 | `ProviderApiKeyResolver.resolve(providerId, slot?)` | Provider key | Lazy trusted resolution | Provider ID + typed slot | Core-owned port. |
+| file-local/injected `ClaudeApiKeyResolver()` | Explicit Claude Agent SDK API-key value | Resolve the Anthropic slot only after the original mode selector returns `api-key` | No caller-selected ID; server composition binds the exact agent-runtime consumer | Not a Claude auth service or generic construction context; `auto`/`cli` never call it. |
 | `GeminiRuntimeResolver()` | Gemini runtime config | Lazy value-free selected-mode/config resolution | No input; server adapter is subject-scoped | Core-owned function type; never returns a secret. |
 | `providerSettings(runtimeKind)` | API-key Settings read | One canonical provider plus four existing model collections | Optional existing runtime-kind selector | One API-key-page query; established catalog queries remain for other consumers. |
 | `LlmProviderService.listProviderSettings(runtimeKind)` | API-key Settings composition | Acquire canonical provider/configured/custom facts once, group four catalog results by exact ID, and emit one group/provider | Optional existing runtime-kind selector | Reuses current domain/GraphQL provider and model contracts; no client merge. |
-| provider credential Save/Remove | Provider credential operation | Return only Boolean command completion | Exact provider ID + transient key for Save; provider ID for Remove | The caller already owns the ID; canonical state is refetched; failures use GraphQL errors. |
+| provider credential Save | Ordinary provider credential operation | Create/overwrite and return only Boolean command completion | Exact provider ID + transient key | The caller already owns the ID; canonical state is refetched; failures use GraphQL errors; no Remove operation exists. |
 | custom-provider Probe/Create | Custom provider | Probe base URL or create metadata+credential | Exactly name, base URL, transient key | Type/runtime are server constants. Probe returns only `{id,name}` models; Create returns only assigned ID. |
 | custom-provider Delete | Custom provider | Idempotent metadata+credential removal | Exact provider ID | Returns success only; failures use GraphQL errors. |
 | `CustomProviderV1AppDataMigration.execute()` | Fixed custom-provider app-data transition | Produce `MIGRATED`, `RECONFIGURATION_REQUIRED`, or `RESET_UNAVAILABLE` through the existing migration result/status shape | Fixed app-data path and injected current vault owner only | No caller path/source parameter; no value output; startup failure is non-critical. |
 | `getGeminiSetupConfig` | Gemini configuration | Exact configured/active state | Singleton | Returns only active mode, two key configured booleans, and nullable complete Vertex Project config. |
 | three option-specific Gemini Save commands | Gemini option | Save one exact option, optionally use it after Save | AI Studio key; Express key; or project+location, each with `activateAfterSave` | No generic nullable-field bag; returns the same `GeminiSetupState`. |
 | `useGeminiMode` | Gemini mode | Validate and set active mode | Exact mode union | Returns `GeminiSetupState`; no priority/fallback. |
-| `removeGeminiConfiguration` | Gemini option | Remove one; clear active first if selected | Exact mode union | Returns actual `GeminiSetupState`; never activates another. |
 | `previewImport` | Assignment import preview | Non-mutating target classification and planned actions | `ImportRequest`: absolute source, immutable `targetLocation`, overwrite intent | The CLI has already discarded the raw URL; returns target identity/state, per-ID `MISSING\|CONFIGURED\|UNAVAILABLE`, `CREATE\|SKIP_CONFIGURED\|REPLACE\|BLOCKED`, and counts. |
 | `executeImport` | Confirmed assignment import | Normal bootstrap plus authoritative transactional batch | Confirmed plan plus the same immutable `targetLocation`, absolute source, overwrite intent, direct TTY | No raw URL is re-parsed; revalidates exact typed target identity and entry state; preview is advisory; actual result is authoritative. |
-| `TestRuntimeBootstrap.load()` | Backend-E2E launch configuration | Validate fixed `.env.test`, canonicalize the ignored test target, materialize/reconcile fixed keys into ordinary ignored runtime `.env`, and build an allowlisted OS child launch | No caller-supplied config path | Server still reads only runtime `.env`; returns value-free typed paths/launch settings; owns no scenario/provider policy. |
+| `TestRuntimeBootstrap.load()` | Backend-E2E launch configuration | Validate fixed `.env.test`, canonicalize the ignored test target, materialize/reconcile fixed keys into ordinary ignored runtime `.env`, and build an isolated test-only child launch | No caller-supplied config path | Server still reads only runtime `.env`; returns value-free typed paths/launch settings; owns no production environment policy or scenario/provider policy. |
 | `server:test` / `dev:test` | Actual test application | Ask the bootstrap to materialize runtime `.env`, then build/start the unchanged real server and normal web client against the test DB | Fixed bootstrap only | No server `.env.test` support, harness-only Store, or product-code test profile. |
 | `secrets:import` | Assignment import for any environment | Validate required explicit database URL, then invoke one normal importer implementation | Absolute source; absolute SQLite database URL; dryRun/overwrite | No `local`/test command, profile, implicit target, or AppConfig/ambient/source-file database selection. |
+
+### Minimal Claude Vault Bridge
+
+The Claude target is the original runtime with one credential-source substitution, not a new authentication subsystem:
+
+```ts
+type ClaudeApiKeyResolver = () => Promise<SecretValue>;
+
+// Preserve the origin selector and spawn-environment construction first.
+const mode = resolveClaudeSdkAuthMode(effectiveInputEnvironment);
+const env = originalClaudeSpawnEnvironment(effectiveInputEnvironment, callerOptions);
+
+if (mode === 'api-key') {
+  const key = await resolveClaudeApiKey();
+  env.ANTHROPIC_API_KEY = key.revealToTrustedConsumer();
+}
+
+// auto/cli return the environment produced by the original logic unchanged and never call the vault.
+```
+
+`originalClaudeSpawnEnvironment` is explanatory pseudocode for the restored `origin/personal` logic, including caller-supplied `options.env`, setting sources, tools, MCP servers, working directory, stderr callback, and account state. The implementation must not create another context object, authentication service, synthetic home, or policy wrapper. Missing/closed vault state in explicit `api-key` produces a stable value-free launch failure; it does not fall back to an inherited API-key alias.
 
 ### Provider-Centric API-Key Settings Read Contract
 
@@ -567,8 +600,6 @@ Exact provider/custom/Gemini operations remain:
 
 ```graphql
 saveProviderApiKey(providerId: String!, apiKey: String!): Boolean!
-removeProviderApiKey(providerId: String!): Boolean!
-
 probeCustomProvider(input: CustomProviderInputObject!): CustomProviderProbeResultObject!
 createCustomProvider(input: CustomProviderInputObject!): String!
 deleteCustomProvider(providerId: String!): Boolean!
@@ -578,10 +609,9 @@ saveGeminiAiStudio(apiKey: String!, activateAfterSave: Boolean!): GeminiSetupSta
 saveGeminiVertexExpress(apiKey: String!, activateAfterSave: Boolean!): GeminiSetupStateObject!
 saveGeminiVertexProject(project: String!, location: String!, activateAfterSave: Boolean!): GeminiSetupStateObject!
 useGeminiMode(mode: GeminiSetupMode!): GeminiSetupStateObject!
-removeGeminiConfiguration(mode: GeminiSetupMode!): GeminiSetupStateObject!
 ```
 
-Provider Save/Remove returns command completion and the page refetches `providerSettings`; failures use GraphQL errors. Custom Probe/Create input is exactly name, base URL, and transient key; type/runtime remain server policy. Probe keeps its purpose-specific `{id,name}` discovery result, Create returns the assigned provider ID, and Delete returns completion. These command shapes do not redefine `ModelDetail`.
+Ordinary provider Save returns command completion and the page refetches `providerSettings`; saving while configured overwrites the exact slot, and no ordinary provider-key Remove mutation exists. Failures use GraphQL errors. Custom Probe/Create input is exactly name, base URL, and transient key; type/runtime remain server policy. Probe keeps its purpose-specific `{id,name}` discovery result, Create returns the assigned provider ID, and Delete returns completion while internally cleaning up its associated credential. These command shapes do not redefine `ModelDetail`.
 
 `GeminiSetupStateObject` remains the specialized authoritative query/result for Gemini option configuration and explicit active-mode selection. It is not folded into `ProviderSettingsGroup`, and no operation/outcome/stage/instruction DTO is added.
 
@@ -666,7 +696,7 @@ This recheck makes the no-overwrite guarantee authoritative without pretending t
 | Provider API-key resolver | Yes | Yes | Low | Optional slot has canonical default `apiKey`. |
 | Gemini runtime resolver | Yes | Yes | Low | One no-argument function returns the exact active non-secret union. |
 | API-key Settings read | Yes | Yes | Low | One provider subject per group; the query selection stays screen-tight while established schema types and other catalog consumers remain. |
-| Gemini commands | Yes | Yes | Low | Separate save/activate/remove and truthful compound result. |
+| Gemini commands | Yes | Yes | Low | Separate save/activate and truthful save-and-activate result; no removal command. |
 | Import command | Yes | Yes | Low | Require one explicit database URL; reject profiles, named targets, key-path overrides, and ambient inference. |
 | Test bootstrap | Yes | Yes | Low | Fixed `.env.test` template; fixed-key runtime `.env` materialization; ignored root; actual server; no scenario data. |
 
@@ -734,7 +764,7 @@ This recheck makes the no-overwrite guarantee authoritative without pretending t
 | importer files | Secret | Import service | Input trust, mapping, plan, command | Separate concrete concerns | Import types |
 | `llm-management/llm-providers/domain/models.ts` | LLM management | Existing provider domain | Add only the internal `ProviderSettingsGroup` composition shape if needed; reuse current provider/model records | Existing domain owner | `LlmProviderRecord`, current model records |
 | `llm-management/llm-providers/services/llm-provider-service.ts` | LLM management | Existing provider owner | Add `listProviderSettings(runtimeKind)` exact-ID composition over existing provider/catalog owners | Extends established owner; no new service | Existing provider/model contracts |
-| `llm-management/services/gemini-configuration-service.ts` | LLM settings | Gemini owner | Save/remove/activate/status | One configuration subject | Gemini unions |
+| `llm-management/services/gemini-configuration-service.ts` | LLM settings | Gemini owner | Save/overwrite/activate/status | One configuration subject | Gemini unions |
 | `llm-management/services/gemini-runtime-resolver-adapter.ts` | LLM composition | Gemini adapter | Expose the selected value-free runtime through the core function port | One composition concern | `GeminiRuntimeResolver` |
 | `secrets/provider-api-key-resolver.ts` | Core provider | Credential port | Storage-neutral provider/optional-slot key resolution | One narrow capability | `ProviderApiKeySlot`, `SecretValue` |
 | `utils/gemini-runtime.ts` | Core provider | Gemini runtime port | Tight mode/config union plus resolver function type | One provider-specific value contract | `GeminiRuntimeSelection` |
@@ -783,7 +813,13 @@ This recheck makes the no-overwrite guarantee authoritative without pretending t
 |---|---|---|---|
 | `autobyteus-server-ts/prisma/schema.prisma` + new migration | Modify/Add | Application schema | Add the two exact vault models/constraints. |
 | `src/config/application-database-location.ts` | Add | Config | Canonical SQLite location/key derivation for AppConfig plus strict absolute-file-URL construction for importer. |
-| `src/config/app-config.ts` | Modify | Config | Use/expose typed DB location; validate/persist explicit Gemini settings; mask credentials. |
+| `src/config/app-config.ts` | Modify | Config | Use/expose typed DB location and validate/persist explicit Gemini settings while restoring full `.env` loading/`process.env` projection. Remove read/get masking; retain generic managed-credential write/delete rejection and keep old LLM-key getter/setter removed. Provider credential authority remains the resolver/vault. |
+| `src/config/non-secret-environment-projection.ts` | Remove | Config cleanup | Delete ticket-owned global filtering/projection authority. |
+| `autobyteus-ts/src/tools/terminal/agent-child-environment.ts` | Remove | Runtime cleanup | Delete shared production empty-base/allowlist environment builder. |
+| terminal/direct/PTY/WSL/non-interactive shell, isolated PTY bridge source, stdio MCP, ripgrep, watcher, application-worker, messaging-gateway launch files | Restore environment concern only | Existing concrete runtime owners | Reapply each `origin/personal` environment construction while preserving unrelated approved changes in the same files. |
+| `autobyteus-web/electron/server/{linuxServerManager,macOSServerManager,windowsServerManager}.ts` and `services/AppDataService.ts` plus focused tests | Restore exact base behavior | Existing Electron server/app-data owners | Remove synthetic HOME/TMP and child-by-child reset/tmp-directory changes; restore inherited environment and original app-data/reset lifecycle. |
+| Claude auth-environment/client; ticket-created authentication/launch policy; Claude `agent-tools-mcp/**` and `session/**` deltas | Restore + narrow client/auth modification | Original Claude runtime owner + vault adapter | Restore selector, inherited environment, options, setting sources, HTTP MCP materializer/session, diagnostics, tools, and account behavior; explicit `api-key` calls one subject-scoped Anthropic resolver and overrides one key. Remove `managed-secret`, synthetic environment/account-home, strict policy, in-process SDK MCP replacement, and broad auth/turn changes. |
+| `src/built-in-agents/built-in-agent-bootstrapper.ts`, `src/services/server-settings-service.ts`, bootstrap smoke/tests | Restore + hunk-level cleanup | Existing built-in/settings owners | Restore persistent default initialization. Remove runtime-default map/API and its tests while retaining sensitive generic-setting rejection and value-free output changes in the mixed service. |
 | `src/config/prisma-client-factory.ts`, `src/startup/migrations.ts` | Modify | DB composition | Consume canonical URL only. |
 | `src/server-runtime.ts` | Modify | Startup | migrations -> vault bootstrap -> routes; close vault on shutdown. |
 | `src/secret-management/domain/secret-id.ts` | Add/rename | Secret domain | `SecretId`, consumer identity, custom ID. |
@@ -816,12 +852,13 @@ This recheck makes the no-overwrite guarantee authoritative without pretending t
 | `autobyteus-web/graphql/queries/llm_provider_queries.ts` | Modify | Web transport | Add one `GET_PROVIDER_SETTINGS` operation for the API-key page using tight selection sets; retain established catalog queries for other consumers. |
 | `autobyteus-web/stores/llmProviderConfig.ts` / focused Settings state file | Retighten | Web catalog and Settings state | Keep existing catalog getters used elsewhere; replace the API-key page's four-array merge/`providerConfigs` authority with one `ProviderSettingsGroup[]`. |
 | Provider API-key runtime/components, generated GraphQL types, and focused tests | Modify | Web API-key consumers | Consume one grouped row directly; retain existing `isCustom`, `baseUrl`, status, and model fields where the UI uses them. |
+| `providerApiKeyRemoval.ts`, provider-only removal props/events, provider removal GraphQL/store/service/localization/tests | Remove | Settings cleanup | Restore ordinary provider Save/create-or-overwrite only; no wrapper or replacement removal operation. |
 | Media defaults, runtime model selection, messaging/agent/history/workspace consumers and tests | Preserve/update imports only if schema generation requires | Web catalog consumers | Continue using established catalog contracts and behavior. |
-| Gemini Vue components/store/localization/tests | Rewrite | Web Settings | Approved compact UI/behavior. |
+| Gemini service/GraphQL/actions/Vue/store/localization/tests | Rewrite | Gemini Settings | Approved compact Save/overwrite/Save-and-use/Use behavior only; remove every configuration-removal branch/control/result. |
 | `autobyteus-server-ts/.env.test` | Add/track | Test launch configuration | Immutable launch-only `APP_ENV`, `DB_TYPE`, `DATABASE_URL`, and server host/port; no credentials or mutable Gemini settings. |
-| `test-support/test-runtime/test-runtime-bootstrap.mjs` | Add | Backend-E2E runtime | Directly executable fixed-template validation, canonical ignored target, fresh/persistent root policy, fixed-key runtime `.env` materialization/reconciliation, allowlisted OS child launch, health/shutdown. |
+| `test-support/test-runtime/test-runtime-bootstrap.mjs` | Add | Backend-E2E runtime | Directly executable fixed-template validation, canonical ignored target, fresh/persistent root policy, fixed-key runtime `.env` materialization/reconciliation, isolated test-only child launch, health/shutdown; never imported as production launcher policy. |
 | root/server package scripts, server `.gitignore`, live-E2E support | Modify | Test/operator | Keep `server:test`, `web:test`, `dev:test`, actual-server real E2E, isolated DB overrides, and scenario-in-code flow; remove the test-import wrapper/script and document the generic explicit-URL importer. |
-| Electron data paths/runtime env/status/smoke support | Modify | Desktop/delivery | Isolated candidate root/port and full smoke. |
+| Electron candidate identity/status/smoke support outside production server-manager/AppData owners | Modify test/delivery integration only | Desktop/delivery | Isolated candidate root/port and full smoke; production launcher environment and AppData/reset behavior remain exact base. |
 | README/module/Electron packaging docs | Modify | Documentation | One DB/key, importer, backup/reset/test flow. |
 
 ## Applied Patterns
@@ -831,7 +868,7 @@ This recheck makes the no-overwrite guarantee authoritative without pretending t
 - **State machine:** first-init/established/closed vault bootstrap.
 - **Discriminated union:** Gemini runtime configuration and vault health.
 - **Curated-first enrichment:** base catalog plus optional metadata provenance.
-- **Command separation:** Gemini save, activate, remove; importer preview, execute.
+- **Command separation:** Gemini save/overwrite and activate; importer preview and execute. Standalone ordinary/Gemini key removal is absent.
 - **Isolated app-data migration:** fixed custom-provider v1 is transformed before current runtime; historical schema does not leak into the v2 store.
 - **Compensating transaction:** exact same-process receipt repairs only the just-inserted unchanged batch if file publication fails.
 - **Composition root:** server startup wires canonical DB, migration, vault, app-data migration, and routes.
@@ -912,7 +949,7 @@ The layout is intentionally compact: it exposes real boundaries without recreati
 | Factory | `LLMFactory.createLLM(model, config, apiKeyResolver)` | model contains `authenticationRequirement`/`credentialProviderId` | Credentials are provider runtime dependencies, not model identity. |
 | Gemini factory | `LLMFactory.createLLM(model, config, apiKeyResolver, geminiRuntimeResolver)` only when `model.provider === GEMINI` | generic dependency context or status-priority helper | The genuine provider-specific non-secret dependency stays explicit and tight. |
 | API-key Settings read | `ProviderSettingsGroup { provider: LlmProviderObject, llmModels/audioModels/imageModels/videoModels: ModelDetail[] }` | four repeated provider arrays, another reduced provider/model DTO family, or client merge | Reuses working contracts while making provider/configuration authority singular. |
-| API-key Settings commands | provider Save/Remove -> completion Boolean then canonical refetch; custom input `{name,baseUrl,apiKey}` -> Probe models/Create ID; every Gemini command -> `GeminiSetupState` | echoed provider ID/type/runtime/input or operation/outcome/instruction DTOs | The client already owns command identity/input; ordinary provider state comes from the canonical read and Gemini commands return their specialized authoritative state. |
+| API-key Settings commands | ordinary provider Save/create-or-overwrite -> completion Boolean then canonical refetch; custom input `{name,baseUrl,apiKey}` -> Probe models/Create ID and custom Delete -> completion; every Gemini Save/Use command -> `GeminiSetupState` | ordinary provider/Gemini key-removal actions, echoed provider ID/type/runtime/input, or operation/outcome/instruction DTOs | The client already owns command identity/input; ordinary provider state comes from the canonical read and Gemini commands return their specialized authoritative state. |
 | Secret use | provider lazily calls `resolver.resolve(OPENAI)` at SDK init | server pre-resolves into construction context/config | Minimizes exposure and machinery. |
 | Gemini | explicit mode -> selected config -> selected slot -> exact SDK | check Vertex key/project/Gemini key priority | User intent is deterministic and visible. |
 | Vault | App DB -> Prisma tables + adjacent key | application DB + second Store DB/config/access mode | One physical selector/lifecycle. |
@@ -952,12 +989,13 @@ This is explanatory only. The authoritative boundaries are the ownership and enc
 
 1. Lock the approved `SecretId` and consumer/alias mappings; update Google AI Studio ID.
 2. Add canonical application-database location and tests; make migrations/Prisma/Electron/test commands consume the AppConfig-owned path and make the importer consume only the strict explicit absolute-URL path.
+2a. Apply [scope-audit.md](./scope-audit.md) before feature reconciliation: remove the production projection/filter helper; restore the isolated PTY bridge and all packaged Electron server managers; restore baseline Electron app-data/reset and built-in-agent default persistence; keep Codex unchanged; restore Claude's complete auth/HTTP-MCP/session/options/diagnostic behavior and then add only the explicit-`api-key` vault resolve plus `ANTHROPIC_API_KEY` override. Preserve all approved hunks in mixed files.
 3. Add Prisma models/migration and the new repository/crypto/root-key/bootstrap/service/runtime plus the internal non-mutating inspection service behind tests.
 4. Change startup order to migrate then bootstrap; configure denied DB/key paths; keep catalog APIs available under degraded vault health.
 5. Add/register the fixed-path custom-provider-v1 app-data migration with its migrate-or-delete policy. Extend the secret service with the internal create-only batch/conditional compensation receipt, keep the current store v2-only/missing-as-empty, and contain custom listing failure before the assembled Settings result.
-6. Rewire Settings, provider resolver, search, Claude managed mode, AutoByteus discovery, and current custom providers to the runtime service; rewire importer preview only to the inspection service and importer execution to normal bootstrap plus the runtime service.
-7. Extend `LlmProviderService` with `listProviderSettings(runtimeKind)` and add `ProviderSettingsGroup`/`providerSettings` to the existing GraphQL provider file. Restore one vault-backed `apiKeyConfigured` fact on the established provider object; remove `CredentialStatusObject`, the separate status query, the API-key page's four-array aggregation/fallback/`providerConfigs` authority, and redundant command DTOs. Keep existing catalog queries and `ModelDetail` for their supported consumers; only the API-key page moves to the grouped read.
-8. Implement explicit Gemini mode commands and compact approved UI around the one `GeminiSetupState`; replace implicit priority and parallel outcome fields; preserve exact SDK and metadata policies.
+6. Rewire Settings, provider resolver, search, explicit Claude `api-key` mode, AutoByteus discovery, and current custom providers to the runtime service; rewire importer preview only to the inspection service and importer execution to normal bootstrap plus the runtime service.
+7. Extend `LlmProviderService` with `listProviderSettings(runtimeKind)` and add `ProviderSettingsGroup`/`providerSettings` to the existing GraphQL provider file. Restore one vault-backed `apiKeyConfigured` fact on the established provider object; remove `CredentialStatusObject`, the separate status query, the entire ordinary `removeProviderApiKey` surface/file/props/localization/tests, the Gemini `removeGeminiConfiguration` surface, the API-key page's four-array aggregation/fallback/`providerConfigs` authority, and redundant command DTOs. Keep existing catalog queries and `ModelDetail` for their supported consumers; only the API-key page moves to the grouped read. Preserve custom-provider Delete and its internal credential cleanup.
+8. Implement explicit Gemini Save/overwrite and mode-selection commands plus the compact approved UI around one `GeminiSetupState`; remove the redundant configuration-removal command/control, replace implicit priority and parallel outcome fields, and preserve exact SDK and metadata policies.
 9. Add immutable tracked non-secret `autobyteus-server-ts/.env.test` and `TestRuntimeBootstrap`; add `server:test`, `web:test`, and `dev:test`; materialize/reconcile fixed launch keys into only an ignored ordinary runtime `.env`; keep actual server/AppConfig `.env`-only; remove the live-E2E manifest, harness-only Store path, and test-import target wrapper without adding another committed config; keep deterministic fresh-root/temporary-DB overrides; move scenarios/assertions to code; and update the generic explicit-URL importer, runners, and cleanup.
 10. Add isolated packaged Electron root/port/smoke and value-safe failure/log proof.
 11. Remove every second-Store/backend/access-mode/target/manifest/old-ID/implicit-mode file and import; update docs.
@@ -969,7 +1007,7 @@ No temporary dual runtime path is allowed. Implementation may stage files locall
 ## Key Tradeoffs
 
 - **One DB simplifies configuration and consistency** but makes DB + key backup/reset inseparable and adds secret tables to ordinary schema ownership.
-- **External root key protects DB-only disclosure** but not a same-user compromise with access to both files; assurance remains `LOCAL_HARDENED`.
+- **External root key protects DB-only disclosure** but not a same-user compromise with access to both files or the live process. The claim is encrypted local credential custody, not filtered child environments or process isolation.
 - **Provider-owned point-of-use resolution minimizes exposure and code changes** but requires explicit resolver injection at every supported construction surface.
 - **One provider-centric API-key transport strengthens identity coherence with less new machinery**; it reuses existing provider/model types and selection sets, while the API-key page changes from four repeated collections to one grouped collection.
 - **Explicit Gemini mode removes ambiguity** but requires users upgrading from implicit behavior to choose a mode once.
@@ -988,6 +1026,7 @@ No temporary dual runtime path is allowed. Implementation may stage files locall
 8. Errors/logs can leak provider/DB/crypto details; stable codes and evidence scanners remain mandatory.
 9. Failed migration intentionally deletes the plaintext legacy file. This accepted configuration loss avoids hidden retained plaintext and is covered by explicit frontend reconfiguration behavior.
 10. Current dirty downstream source/tests may contain superseded assumptions; implementation must reconcile, not merge blindly.
+11. Mixed launcher/AppConfig files contain both approved feature changes and the rejected environment concern. A whole-file base restore would lose correct work; implementation must revert only environment construction/projection hunks and prove the remaining behavior separately.
 
 ## Guidance For Implementation
 
@@ -1005,4 +1044,5 @@ No temporary dual runtime path is allowed. Implementation may stage files locall
 - Preserve `LLMFactory(model, config, apiKeyResolver)` as the ordinary provider shape; any Gemini non-secret configuration seam must remain specialized and must not recreate a generic construction context.
 - Generate GraphQL types after schema changes; do not hand-maintain stale parallel shapes.
 - Remove stale tests whose only purpose is backend/access-mode/target compatibility; replace them with vault, resolver, UI, one-DB, and realistic lifecycle tests.
-- Keep `EXT-ANTHROPIC-AGENT-SDK-AUTH` as delivery/release recheck only; do not redesign either Claude mode.
+- Do not restore whole mixed files from base. Remove `agent-child-environment`/non-secret projection dependencies and restore only each file’s environment behavior; retain every separately approved Gemini, vault, importer, Settings, custom-provider, file-root, redaction, Electron, dependency, and test change.
+- Keep `EXT-ANTHROPIC-AGENT-SDK-AUTH` as delivery/release recheck only. Do not retain a Claude authentication redesign: restore `auto|cli|api-key` and limit the ticket delta to the explicit `api-key` vault lookup/one-key override.

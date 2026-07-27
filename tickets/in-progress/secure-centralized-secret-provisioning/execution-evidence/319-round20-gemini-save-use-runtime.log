@@ -1,0 +1,81 @@
+ROUND20_BROWSER_STACK BACKEND=http://127.0.0.1:58120 FRONTEND=http://127.0.0.1:33120 RUNTIME=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/round20-browser-save-use-runtime DATABASE=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/db/round20-browser-save-use.db
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+Loaded tool group: Skills Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-07-27T17:22:53.321Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Pre-loaded 0 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://localhost:1234
+Finished LM Studio discovery. Total models registered: 14
+Successfully fetched 40 models from LLMFactory.
+LLM models cache populated with 40 items.
+Pre-loaded 40 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Successfully fetched 7 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5
+Image models by runtime: api=7
+Image models cache populated with 7 items.
+Pre-loaded 7 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+> autobyteus@1.4.26 dev /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 33120
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:33120/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 38ms
+✔ Vite server built in 625ms
+[nitro] ✔ Nuxt Nitro server built in 551ms
+ℹ Vite client warmed up in 1ms
+Populating Video models cache for the first time...
+Fetching list of available Video models from VideoClientFactory...
+Successfully fetched 1 video models from VideoClientFactory.
+Video models by provider: GEMINI=1
+Video models by runtime: api=1
+Video models cache populated with 1 items.
+Failed to resolve model metadata for provider GEMINI: Gemini Developer API metadata request failed with status 400
+[2026-07-27T17:24:05.369Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-07-27T17:24:05.522Z] [INFO] [server.runtime] Server closed cleanly.
+ROUND20_BROWSER_STACK_CLEANED

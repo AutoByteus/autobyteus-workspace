@@ -639,7 +639,18 @@ At runtime, the server:
 
 1. Runs on a fixed port (`29695`)
 2. Stores data in `~/.autobyteus/server-data/`
-3. Provides endpoints: `/graphql`, `/rest`, `/transcribe`
+3. Runs the normal Prisma/vault/app-data startup sequence before provider
+   consumers
+4. Provides endpoints: `/graphql`, `/rest`, `/transcribe`
+
+An existing supported version-1 custom-provider file is handled during that
+startup sequence. A complete valid set is migrated atomically to secret-free v2
+metadata plus encrypted vault entries. Invalid or colliding v1 content follows
+the delete-and-reconfigure path; built-in Settings remains available. If the
+legacy file cannot be deleted safely, custom-provider creation remains
+unavailable until the filesystem issue is corrected and the app restarts.
+There is no runtime v1 reader, backup/quarantine copy, partial migration, or
+automatic `.env` import.
 
 For one-time migration of an existing SQLite DB into `server-data`, use:
 

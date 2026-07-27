@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| Status | `Design-ready for architecture review — custom-provider-v1 migration/delete-and-reconfigure reset included` |
+| Status | `Design-ready for architecture review — retained spines plus exhaustive narrow-scope restoration/removal cleanup` |
 | Purpose | Prove every approved use case, behavior, requirement, and acceptance criterion has a complete target data-flow spine and governing owner |
 | Authority | [requirements.md](./requirements.md), [design-spec.md](./design-spec.md) |
-| Approval applicability | `N/A` for additional user behavior; validates the reopened custom-provider transition against the requirements/design package |
+| Approval applicability | `N/A` for additional user behavior; validates the retained, user-approved package and latest-HEAD scope audit submitted for architecture review |
 
 The persisted custom-provider transition spines are constrained by [custom-provider-v1-migration-contract.md](./custom-provider-v1-migration-contract.md).
 
@@ -35,14 +35,14 @@ API-key-screen grouping, model catalogs, credential custody, runtime selection, 
 |---|---|---|---|---|---|
 | `DS-UC001` | UC-001 | BEH-002–004 | process -> AppConfig location -> migration -> vault bootstrap -> routes | `SecretVaultRuntime` | Ready or value-free degraded API |
 | `DS-UC002` | UC-002 | BEH-001 | API-key Settings -> one `providerSettings` query -> `LlmProviderService.listProviderSettings()` -> one canonical provider + four existing model lists -> UI | `LlmProviderService` | Existing contracts reorganized with one provider/configured authority |
-| `DS-UC003A` | UC-003 | BEH-004 | editor -> provider mutation -> secret service -> Prisma vault row | Provider service | Saved/replaced/removed status, never value |
+| `DS-UC003A` | UC-003 | BEH-004 | editor Save -> provider mutation -> secret service -> Prisma vault row | Provider service | Created/overwritten status, never value; no ordinary key removal |
 | `DS-UC003B` | UC-003 | BEH-004 | Boolean command completion -> network-only `providerSettings` refetch -> exact provider group -> UI | Provider credential owner + `LlmProviderService` | `apiKeyConfigured` changes only on the addressed provider |
 | `DS-UC004A` | UC-004 | BEH-005 | agent -> LLM factory -> concrete client -> resolver -> SDK | Concrete LLM client | LLM response/stream |
 | `DS-UC004B` | UC-004 | BEH-005 | media tool -> media factory -> concrete client -> resolver -> SDK | Concrete media client | Audio/image/video result |
 | `DS-UC004C` | UC-004 | BEH-005 | search tool -> search adapter -> secret service -> provider | Search adapter | Search result |
 | `DS-UC005A` | UC-005 | BEH-006 | Gemini editor -> save option -> secret/non-secret owner -> authoritative setup state | `GeminiConfigurationService` | Option configured, active mode unchanged |
 | `DS-UC005B` | UC-005 | BEH-006 | Use this mode -> validate option -> persist mode -> project status | `GeminiConfigurationService` | Exact active mode |
-| `DS-UC005C` | UC-005 | BEH-006 | remove option -> clear active if same -> remove chosen data -> status | `GeminiConfigurationService` | Removed option; no implicit replacement |
+| `DS-UC005C` | UC-005 | BEH-006 | first-time Save and use -> save chosen option -> activate same mode -> status | `GeminiConfigurationService` | Truthful configured/active result; no removal action |
 | `DS-UC006` | UC-006 | BEH-007 | catalog -> selected metadata strategy -> optional live call -> merge/provenance | `ModelMetadataProvisioningService` | Models plus honest provenance |
 | `DS-UC007A` | UC-007 | BEH-008 | create custom provider -> metadata + secret -> catalog sync | `LlmProviderService` | Current provider available |
 | `DS-UC007B` | UC-007 | BEH-008 | custom catalog -> concrete endpoint client -> resolver -> endpoint | Custom runtime owner | Discovered model response |
@@ -51,14 +51,14 @@ API-key-screen grouping, model catalogs, credential custody, runtime selection, 
 | `DS-UC008A` | UC-008 | BEH-009 | import CLI + required absolute DB URL -> canonical location -> trusted reader -> registry -> inspector read-only target classification -> preview | Import service + `ApplicationDatabaseLocation` + `SecretVaultInspectionService` | Explicit target/IDs/status/actions/counts with zero mutation |
 | `DS-UC008B` | UC-008 | BEH-009 | exact URL-derived plan -> TTY target confirmation -> execution-only migration/bootstrap -> transactional target/status recheck -> conditional batch | Import service + normal vault/secret service | Atomic authoritative explicit-DB result |
 | `DS-UC008C` | UC-008,010 | BEH-009,011 | generic import command + explicit canonical test DB URL -> reject AppConfig/ambient/template/source target influence -> normal inspector/import -> test DB | `ApplicationDatabaseLocation` + normal import services | Test DB import uses the same one command and identical preview/write semantics with no wrapper/profile/target fork |
-| `DS-UC009` | UC-009 | BEH-010 | upgrade/start -> non-secret projection -> normal runtime | `AppConfig` | Legacy values untouched and ignored |
+| `DS-UC009` | UC-009 | BEH-010 | upgrade/start -> ordinary AppConfig environment load -> vault-backed provider resolution -> normal runtime | `AppConfig` + provider credential consumer | Legacy file remains untouched; aliases may exist in process state but are not credential authority |
 | `DS-UC010A` | UC-010 | BEH-011 | backend-E2E command -> bootstrap reads `.env.test` -> fresh root/runtime `.env` -> unchanged actual server -> API assertions -> cleanup | Backend-E2E runner + `TestRuntimeBootstrap` | Conventional backend test configuration and deterministic isolation |
 | `DS-UC010B` | UC-010 | BEH-011 | `server:test`/`dev:test` -> bootstrap reads `.env.test` -> persistent isolated runtime `.env` -> unchanged actual server + frontend -> Settings/API | `TestRuntimeBootstrap` | Manual full-stack validation with mutable Settings persistence |
 | `DS-UC011` | UC-011 | BEH-011 | real runner -> same bootstrap and actual server/API -> same test DB/key -> preflight -> provider operations -> evidence -> cleanup | Real-E2E runner | Sanitized real-provider evidence without a harness-only Store |
-| `DS-UC012A` | UC-012 | BEH-012 | Claude cli selection -> external local account state -> CLI | Claude runtime owner | Claude response; zero vault lookup |
-| `DS-UC012B` | UC-012 | BEH-012 | managed selection -> Anthropic resolve -> exact child env -> SDK | Claude managed launch owner | Claude response or stable auth failure |
+| `DS-UC012A` | UC-012 | BEH-012 | Claude `auto`/`cli` selection -> original inherited environment/options/settings/tools/HTTP MCP/session/diagnostics/account path -> SDK | Original Claude runtime owner | Claude response; zero vault lookup |
+| `DS-UC012B` | UC-012 | BEH-012 | explicit `api-key` selection -> original inherited launch environment/options -> Anthropic vault resolve -> override `ANTHROPIC_API_KEY` -> SDK | Original Claude runtime owner + vault adapter | Claude response or value-free missing-key failure |
 | `DS-UC013` | UC-013 | BEH-013 | Codex selection -> unchanged App Server launch/login state | Codex client manager | Codex response |
-| `DS-UC014` | UC-014 | BEH-014 | governed request -> policy -> empty-base/allowlist env + roots -> child | Governed launcher | Constrained child result |
+| `DS-UC014` | UC-014 | BEH-014 | child request -> existing concrete launcher, including isolated PTY bridge or packaged Electron server manager -> established inherited environment + caller additions -> child | Existing concrete launcher | Working child result with separately approved file-root/value-safe controls |
 | `DS-UC015A` | UC-015 | BEH-015 | Settings/reload -> hosts -> AutoByteus resolver -> discovery -> sync | Remote discovery owner | Remote catalog/status |
 | `DS-UC015B` | UC-015 | BEH-015 | selected remote model/media -> concrete client -> resolver -> endpoint | AutoByteus client | Remote result or exact unavailable status |
 | `DS-UC016A` | UC-016 | BEH-002,003,017 | Electron/direct start -> DB/key -> runtime -> restart | Server runtime | Healthy persisted application |
@@ -147,13 +147,16 @@ The group contains one existing `LlmProviderObject` and four non-null existing `
 - Requirements: `REQ-001`, `REQ-008`.
 - Acceptance: `AC-001`, `AC-015`.
 
-### UC-003 — Provider credential lifecycle
+### UC-003 — Origin-compatible provider credential lifecycle
+
+Ordinary providers expose Save only. Save creates or overwrites the exact slot; there is no standalone provider-key Remove UI/API. Custom-provider Delete remains a separate entity lifecycle and performs its own internal credential cleanup.
 
 ```text
 provider editor
+ -> Save
  -> provider-specific mutation
  -> provider validation
- -> SecretManagementService.save/removeForConsumer()
+ -> SecretManagementService.saveForConsumer()
  -> SecretVaultPrismaRepository transaction
  -> Boolean command completion
  -> network-only providerSettings refetch
@@ -201,10 +204,10 @@ Use this mode
  -> invalidate/rebuild new-client metadata state
  -> return authoritative GeminiSetupState
 
-Remove
- -> if selected: clear mode first
- -> remove only selected option
- -> never choose another option
+Save and use this mode
+ -> save one option
+ -> validate that saved option
+ -> persist exact GEMINI_SETUP_MODE
  -> return authoritative GeminiSetupState
 ```
 
@@ -306,11 +309,11 @@ Preview is an observation, not a reservation. The transaction is authoritative: 
 
 ```text
 startup with legacy .env aliases
- -> AppConfig reads approved non-secret settings only
- -> credential aliases masked/ignored
+ -> AppConfig performs its established .env load/process.env projection
  -> no .env migration/import/scrub/rewrite/delete
- -> vault-only runtime
- -> visible reconfiguration guidance when missing
+ -> managed provider resolves its credential only through the vault-backed resolver
+ -> ambient alias is not credential authority or fallback
+ -> visible reconfiguration guidance when the vault slot is missing
 ```
 
 - Spine: `DS-UC009`.
@@ -355,29 +358,32 @@ real-E2E runner explicitly reads tracked immutable .env.test
 - Requirements: `REQ-002`, `REQ-011`, `REQ-013`, `REQ-015`.
 - Acceptance: `AC-007`, `AC-009`, `AC-011`.
 
-### UC-012 — Claude modes
+### UC-012 — Claude original authentication contract
 
-- `cli`: external local account state, zero Store lookup, no managed restrictions added.
-- `managed-secret`: resolve Anthropic at use; deliver only `ANTHROPIC_API_KEY` to exact child; no fallback.
+- `auto` and `cli`: preserve `origin/personal` selector/default, inherited environment, caller options, setting sources, tools, HTTP MCP materialization, session/diagnostic behavior, and external account behavior; zero vault lookup.
+- explicit `api-key`: preserve that same launch behavior, resolve Anthropic from the vault immediately before launch, and add/override only `ANTHROPIC_API_KEY`.
+- remove `managed-secret`, synthetic account HOME/PATH/TMP, strict MCP/tool filtering, setting-source overrides, the in-process SDK MCP replacement, and broad auth/turn/diagnostic redesign.
 - Spines: `DS-UC012A`, `DS-UC012B`, `DS-L003`, `DS-R002`.
 - Requirements: `REQ-014`; acceptance: `AC-010`.
 
 ### UC-013 — Codex
 
-Codex keeps the reviewed-base `options.env ?? process.env`/real home behavior required for established `codex login`. It is explicitly outside the governed empty-base child claim.
+Codex keeps the reviewed-base `options.env ?? process.env`/real home behavior required for established `codex login`. This ticket adds no shared production child-environment claim or filter.
 
 - Spine: `DS-UC013`.
 - Requirements: `REQ-014`; acceptance: `AC-010`.
 
-### UC-014 — Governed children
+### UC-014 — Established production child environments
 
 ```text
-agent/tool/application child request
- -> governing launcher policy
- -> empty base + explicit allowlist + authorized server-specific env
- -> denied DB/key/journal/root paths
+agent/tool/application/Electron child request
+ -> existing concrete launcher
+ -> established inherited environment plus caller-owned additions
+ -> separately approved file-root/value-safe controls
  -> child result
 ```
+
+The scope audit also restores base Electron app-data/reset behavior and built-in-agent default persistence. Those are exact source-preservation constraints rather than new runtime spines; they are verified by base-diff and existing owner tests under `AC-010`/`AC-015`.
 
 - Spine: `DS-UC014`; return: `DS-R002`.
 - Requirements: `REQ-014`; acceptance: `AC-010`.
@@ -412,7 +418,7 @@ isolated candidate identity/root/port
  -> actual packaged Electron launch
  -> embedded server health
  -> provider catalog visible with empty vault
- -> synthetic save/status/remove
+ -> synthetic save/status/overwrite plus absence of ordinary Remove
  -> restart verification
  -> value-safe technical details/log path on failure
  -> cleanup only isolated root

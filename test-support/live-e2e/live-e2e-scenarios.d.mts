@@ -4,7 +4,7 @@ export type LiveE2eOperation =
   | 'search'
   | 'audio'
   | 'image'
-  | 'claude-managed'
+  | 'claude-api-key'
   | 'autobyteus-llm'
   | 'autobyteus-audio'
   | 'autobyteus-image';

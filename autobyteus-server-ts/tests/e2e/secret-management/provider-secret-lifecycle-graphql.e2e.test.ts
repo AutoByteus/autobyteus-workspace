@@ -118,6 +118,32 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     expect(evidence).not.toContain(secondCanary);
   });
 
+  it('exposes only the approved ordinary-provider and Gemini configuration commands', async () => {
+    const schema = await execute<{
+      mutationType: {
+        fields: Array<{ name: string }>;
+      };
+    }>(`
+      query MutationSurface {
+        mutationType: __type(name: "Mutation") {
+          fields { name }
+        }
+      }
+    `);
+    const fields = schema.mutationType.fields.map(({ name }) => name);
+
+    expect(fields).toEqual(expect.arrayContaining([
+      'saveProviderApiKey',
+      'saveGeminiAiStudio',
+      'saveGeminiVertexExpress',
+      'saveGeminiVertexProject',
+      'useGeminiMode',
+      'deleteCustomProvider',
+    ]));
+    expect(fields).not.toContain('removeProviderApiKey');
+    expect(fields).not.toContain('removeGeminiConfiguration');
+  });
+
   it('keeps Gemini configuration independent and activation explicit with no priority/fallback', async () => {
     expect((await geminiStatus()).getGeminiSetupConfig).toEqual({
       activeMode: null,

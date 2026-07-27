@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Status | `Design-ready — user-approved for architecture review; custom-provider-v1 migration mapping included` |
+| Status | `Design-ready for architecture review — all approved provider/slot/Gemini/custom-provider mappings remain; exhaustive scope cleanup restores unrelated behavior and removes redundant ordinary/Gemini removal without changing resolver authority` |
 | Purpose | Canonical mapping from product consumer/provider slot and fixed custom-provider-v1 identity to one `SecretId`, including explicit-import aliases |
 | Related requirements | `REQ-001`, `REQ-005`–`REQ-012`, `REQ-014`, `REQ-017` |
 | Related acceptance criteria | `AC-004`–`AC-008`, `AC-010`, `AC-013`, `AC-015` |
-| Approval applicability | Existing provider-owned-slot behavior and the fixed custom-provider migration mapping are user-approved for architecture review |
+| Approval applicability | Existing provider-owned-slot behavior, the fixed custom-provider migration mapping, and the bounded latest-HEAD scope correction are user-approved and submitted for architecture review |
 
 This supplement is normative. It is subordinate to [requirements.md](./requirements.md) and aligned with [design-spec.md](./design-spec.md) and [encrypted-secret-vault-contract.md](./encrypted-secret-vault-contract.md). The historical custom-provider boundary is defined by [custom-provider-v1-migration-contract.md](./custom-provider-v1-migration-contract.md).
 
@@ -47,7 +47,7 @@ export interface ProviderApiKeyResolver {
 | Provider/runtime ID | Slot | Canonical `SecretId` | Import alias | Production consumers | Notes |
 |---|---|---|---|---|---|
 | `OPENAI` | `apiKey` | `provider.openai.api-key` | `OPENAI_API_KEY` | OpenAI LLM, Responses, audio, image | One provider key shared by capabilities. |
-| `ANTHROPIC` | `apiKey` | `provider.anthropic.api-key` | `ANTHROPIC_API_KEY` | Native Anthropic LLM; Claude `managed-secret` | Claude `cli` performs no Store lookup. |
+| `ANTHROPIC` | `apiKey` | `provider.anthropic.api-key` | `ANTHROPIC_API_KEY` | Native Anthropic LLM; explicit Claude Agent SDK `api-key` mode | Claude `auto`/`cli` preserve `origin/personal` behavior and perform no vault lookup. |
 | `MISTRAL` | `apiKey` | `provider.mistral.api-key` | `MISTRAL_API_KEY` | Mistral LLM | No environment fallback. |
 | `DEEPSEEK` | `apiKey` | `provider.deepseek.api-key` | `DEEPSEEK_API_KEY` | DeepSeek LLM | No environment fallback. |
 | `GROK` | `apiKey` | `provider.grok.api-key` | `GROK_API_KEY` | Grok LLM | No environment fallback. |
@@ -75,7 +75,7 @@ The server injects a separate `GeminiRuntimeResolver` function into Gemini clien
 - saving Vertex Express changes only `provider.google.vertex-express-api-key`;
 - saving Vertex Project changes only non-secret `VERTEX_AI_PROJECT` and `VERTEX_AI_LOCATION`;
 - `Use this mode` changes only `GEMINI_SETUP_MODE` after the option validates as configured;
-- removal changes only the chosen option; if it is active, the service clears active mode before removal and does not select another;
+- no standalone Gemini key/configuration removal is exposed; Save overwrites an option and `Use this mode` changes only the selected mode;
 - `Save and use this mode` is an explicit compound command. It returns the same authoritative Gemini setup state as the query and other commands; configured option plus actual active mode truthfully exposes full or partial completion without a parallel outcome DTO.
 
 ## Search Mapping
@@ -118,7 +118,7 @@ Rules:
 | Vertex Project | Uses explicit non-secret project/location plus platform identity; no Store key. |
 | Claude `cli` | Uses its established external local account state; no Store lookup. |
 | Codex | Preserves established external `codex login` state; no Store owner is added. |
-| Governed child launchers | Receive no credential alias, root key, or application DB descriptor. |
+| Production child launchers | Preserve their established inherited environment and caller-owned additions. The vault never intentionally injects root-key bytes; managed provider clients still ignore ambient aliases as credential authority, while explicit Claude `api-key` may add/override only `ANTHROPIC_API_KEY` for its exact child. |
 
 ## Positive Import Registry
 
@@ -161,8 +161,8 @@ Importer rules:
 | `media` | OpenAI `apiKey`; selected Gemini slot; supported AutoByteus media | Anthropic/search/custom unsupported media |
 | `search` | exact search provider slot | LLM/provider IDs |
 | `modelDiscovery` | AutoByteus `apiKey`; optional AI Studio live metadata slot | Vertex key sent to Developer API, arbitrary provider key |
-| `agentRuntime` | Claude managed -> Anthropic `apiKey` | Claude CLI, Codex, arbitrary provider |
-| `settings` | exact provider option save/remove/status | raw read/decrypt, arbitrary secret ID |
+| `agentRuntime` | explicit Claude `api-key` -> Anthropic `apiKey` | Claude `auto`/`cli`, Codex, arbitrary provider |
+| `settings` | ordinary provider/Gemini option save-or-overwrite plus value-free status; explicit Gemini mode selection | ordinary/Gemini key removal, raw read/decrypt, arbitrary secret ID |
 | `importer` | exact positive registry plan | arbitrary supplied `SecretId`, Store target, DB/key path |
 | `customProviderV1Migration` | only deterministic custom-provider IDs derived from the complete fixed v1 file | built-in IDs, arbitrary source/path/ID, overwrite/read/compare/delete of current secret |
 
@@ -172,7 +172,7 @@ The authorization registry is server-owned. Core providers never receive `Secret
 
 - `authenticationRequirement`, `credentialProviderId`, `secretId`, or secret status on a model definition;
 - a `ResolvedAuthentication` or construction-context object passed through model/catalog layers;
-- `process.env.*_API_KEY` or legacy-file fallback inside a provider client;
+- `process.env.*_API_KEY` or legacy-file fallback inside a managed provider client (this forbids credential authority/fallback, not ordinary environment inheritance by shells or child processes);
 - returning a plural API-key bag;
 - resolver lookup by arbitrary raw `SecretId` from core/provider code;
 - Gemini slot selection from key presence, status priority, model identity, or last-saved option;

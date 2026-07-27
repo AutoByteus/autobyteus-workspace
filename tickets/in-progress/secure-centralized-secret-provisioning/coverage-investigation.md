@@ -5,22 +5,22 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
-- Supplemental Task Artifacts: `use-case-spine-validation.md`, `secret-storage-architecture.md`, `secret-storage-backend-contract.md`, `credential-consumer-mapping.md`, `live-test-secret-provisioning.md`, `threat-model-and-option-analysis.md`, and `repository-prisma-1.0.8-assessment.md` in this ticket directory.
+- Supplemental Task Artifacts: `encrypted-secret-vault-contract.md`, `gemini-setup-ui-ux-spec.md`, `credential-consumer-mapping.md`, `custom-provider-v1-migration-contract.md`, `use-case-spine-validation.md`, `secret-storage-architecture.md`, `secret-storage-backend-contract.md`, `live-test-secret-provisioning.md`, `threat-model-and-option-analysis.md`, and `repository-prisma-1.0.8-assessment.md` in this ticket directory.
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md`
-- Current Investigation Round: 13
-- Trigger: Round-32 source-review Pass at `eac929a1f1e411a72d232d961578a700bed12829`; reconcile the downstream-owned test runtime and executable coverage with the user-approved one-application-database encrypted-vault contract.
-- Prior Investigation Reviewed: Rounds 1–12. Their execution evidence is retained as historical context, but the separate Store/manifest/read-only-harness claims are superseded and cannot authorize a current Pass.
-- Latest Authoritative Investigation: Round 13 (the Round 13 authoritative update at the end of this file governs where it differs from earlier rounds).
+- Current Investigation Round: 21
+- Trigger: Round-45 CR-031 source-review Pass at final HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`; recheck the Round-20 packaged existing-user failure first, then execute the affected custom-provider, provider, restart, Docker, browser, package, and external-runtime matrix.
+- Prior Investigation Reviewed: Rounds 1–20. Their evidence remains cumulative historical context; Round 20 is a truthful superseded Fail whose exact failing scenario is rechecked first in Round 21.
+- Latest Authoritative Investigation: Round 21 (the Round-21 final update governs where it differs from earlier rounds).
 
 ## Current Requirement And Design Basis
 
-The validation basis is BEH-001–BEH-015, REQ-001–REQ-021, AC-001–AC-021, and the current reviewed solution package. Critical proof includes: server-owned write-only lifecycle/status; explicit catalog-bound JIT authentication; the five-state health model; Local Store pair authentication, read-only use, fault handling, restart, reset, and contention; byte-identical legacy-source non-authority with no automatic update; the explicit operator importer; exact `repository_prisma@1.0.8`; `LOCAL_HARDENED` launch/file-root behavior; exact Claude `cli` and `managed-secret` modes; preserved AutoByteus Settings/discovery/invocation; and a tracked read-only real-E2E Store workflow.
+The current basis is the reviewed one-application-database encrypted-vault package at final HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`. Critical proof covers: one application database plus one adjacent root key; value-free Settings/GraphQL lifecycle; explicit-target/source-immutable operator import; custom-provider-v1 migration/reset; exact provider-owned JIT resolution; configured real LLM/agent/audio/image paths; metadata provenance; restart/reopen and unchanged Docker persistence; actual browser Settings/terminal behavior; exact `repository_prisma@1.0.8` with Prisma 5.22.0; and restored concrete child-environment continuity.
 
-`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a mandatory delivery/release recheck dependency, not legal clearance or permission to change authentication modes. The four official Anthropic sources recorded upstream must be rechecked by delivery before release.
+Claude authentication is exactly `auto|cli|api-key`, default `cli`. `auto` and `cli` perform zero managed-vault lookup. Explicit `api-key` performs one subject-scoped `agentRuntime/claude_agent_sdk/apiKey` lookup immediately before SDK query launch and overrides only `ANTHROPIC_API_KEY`. The removed `managed-secret` service/name is not a compatibility authority.
 
-The current approved contract supports operator-invoked hidden-input provisioning and the reviewed explicit-source importer. API/E2E never reads the user's assignment source, `.env.test`, a default Store, Store values, or credential files: importer coverage uses synthetic private temporary sources/Stores, while real execution uses only status projection and read-only JIT resolution from the independently provisioned dedicated E2E Store.
+`LOCAL_HARDENED` describes vault custody/file-root/value-safe behavior only. It does not establish child/process isolation; Codex and the restored concrete launchers are not covered by a process-isolation claim, and `STRONG_AGENT_ISOLATION` remains deferred. `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck dependency only, not legal clearance or an authentication redesign.
 
 ## Changed Behavior Summary
 
@@ -1869,3 +1869,206 @@ excluded; `STRONG_AGENT_ISOLATION` remains deferred. Exact unpatched
 `repository_prisma@1.0.8` with Prisma 5.22.0, no automatic import/update,
 unchanged Docker topology, source/template immutability, and
 `DASHSCOPE_API_KEY` as the sole Qwen mapping remain authoritative.
+
+## Round 19 Final-HEAD Claude, Environment, Browser, Provider, And Lifecycle Investigation
+
+### Entry Point And Superseded Assertions
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
+- Final reviewed HEAD: `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f`
+- Source review: Round 35 **Pass**, 96.4%, no open implementation-source finding.
+- Round 18 is retained as a correct-worktree browser checkpoint for the terminal and Classroom Simulation Team using exact Codex GPT-5.6-Luna, observed directly by the user. Round 19 independently rechecks the final implementation identity.
+- Every older `managed-secret`, `ClaudeRuntimeAuthenticationService`, separate Store/manifest, read-only whole-suite, child-environment sanitization, or process-isolation statement is historical and superseded.
+
+### Changed Boundary Classification And Coverage Decision
+
+| Boundary | Final coverage decision | Evidence plan |
+| --- | --- | --- |
+| Claude `auto|cli|api-key` | **Update Durable Coverage** | Replace removed auth-service fixture with the production `ClaudeSdkClient` resolver seam; prove unit-level zero/one lookup and one-key override; run real explicit API-key and CLI paths. |
+| restored child environments | **Existing Coverage Still Valid after source-review identity proof** | Run concrete launcher, file-root, AppConfig, Settings filtering, URL/output redaction, and child-session suites. Do not convert continuity evidence into an isolation claim. |
+| one-DB vault/import/restart | **Still Valid; rerun affected lifecycle** | Run cumulative actual-process importer/GraphQL/migration/metadata/restart E2E. |
+| configured providers | **Still Valid; rerun canonical full matrix** | Use only the already provisioned project test vault through product resolution; report unavailable capabilities exactly. |
+| web-equivalent desktop UI | **Temporary Real Browser Validation Required** | Start documented `pnpm dev:test`, use actual `open_tab`, verify configured Settings, sensitive Server Settings filtering, terminal sentinel/pwd, and correlate backend logs. |
+| unchanged Docker | **Real lifecycle rerun required** | Exact tracked `docker-start.sh ... --build-local`, clean current source image, same named volume, one DB/key, restart/reopen/removal, cleanup. |
+| repository Prisma | **Selected integration/policy rerun** | Verify exact installed 1.0.8, no 1.0.6/1.0.7 residue, and five directly relevant integration/policy files. |
+
+### Durable Coverage Reconciliation
+
+Updated downstream-owned durable paths:
+
+- `test-support/live-e2e/live-e2e-harness.ts`
+- `test-support/live-e2e/live-e2e-scenarios.d.mts`
+- `test-support/live-e2e/live-e2e-scenarios.mjs`
+- `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`
+
+The scenario is now `anthropic.claude-agent-sdk-api-key` / `claude-api-key`. It constructs `ClaudeSdkClient` with the exact subject-scoped resolver seam, supplies explicit `CLAUDE_AGENT_SDK_AUTH_MODE=api-key`, and removes the deleted managed-secret service and app-data mutation fixture. No production source changed in this stage.
+
+Durable validity:
+
+- **Still Valid:** one-DB vault lifecycle, explicit-target importer, custom-provider-v1 migration/reset, provider/Gemini GraphQL, metadata provenance, restart, static model registry, value-safe runner/scanner, exact repository Prisma integration.
+- **Updated:** Claude real-provider scenario and harness seam above.
+- **Intentionally Absent:** removed manifest and removed `run-test-import.mjs`; the sole importer authority remains `pnpm secrets:import -- --source <absolute> --database-url <absolute-file-url>`.
+- **Not claimed:** process/child isolation, `STRONG_AGENT_ISOLATION`, unconfigured AI Studio/Serper execution, or unavailable AutoByteus remote discovery/invocation.
+
+### Repository And Broader-Validation Decision
+
+Repository/focused checks passed: reconciled Claude/harness 27/27; file-root/environment/value-safe 167/167; server production build; cumulative API/E2E 13/13; restart 1/1; exact repository Prisma selected suite 34/34. Real execution passed: configured-provider 27 passed / 5 truthful skips, explicit Claude API-key live query, external Codex 4/4, Claude CLI 4/4, actual final-HEAD browser terminal/Settings journey, and clean unchanged-Docker lifecycle. Evidence is recorded in `287`–`308`; `286` and the first Docker readiness probe `301a` are explicitly superseded setup probes.
+
+Broader validation was **Required and completed** because the final delta changes real launch/authentication behavior and earlier user reports involved assembled UI/process paths. Final execution closed the material risk without claiming process isolation. The Round 19 execution report is the authoritative result and confidence scorecard.
+
+## Round 20 Scope-Reset Coverage Investigation — Pre-Execution
+
+### Reviewed Entry Point
+
+- Final reviewed HEAD: `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd`.
+- Source review: Round 43 / scope reset **Pass**, 97.3%, no open implementation finding.
+- Governing supplemental manifest: `scope-audit.md` (259 RETAIN / 31 PARTIAL_CLEANUP / 18 RESTORE_BASE / 3 REMOVE_FILE).
+- Round-19 execution remains historical because public removal surfaces, Electron AppData/reset, isolated PTY inheritance, Claude HTTP MCP/session behavior, and built-in default persistence changed afterward.
+
+### Affected Boundaries And Existing-Coverage Validity
+
+| Boundary | Existing durable evidence decision | Planned direct proof |
+| --- | --- | --- |
+| ordinary provider Settings | **Updated upstream and still valid**: `provider-secret-lifecycle-graphql.e2e.test.ts` now proves Save/create-or-overwrite and configured status without removal | assembled schema introspection, actual browser Save then overwrite on an isolated vault, no Remove control/mutation |
+| Gemini setup | **Updated upstream and still valid**: GraphQL E2E retains independent Save plus explicit Use | assembled schema/UI Save, Save-and-use, Use; no standalone removal |
+| restart/reopen | **Updated upstream and still valid**: no public deletion dependency; persistent default assertion restored | run actual two-process lifecycle and verify one DB/key, configured reopen, persistent built-in default |
+| unchanged Docker | **Needs executable adaptation only** | synthetic Save/overwrite, same-volume configured reopen, no public deletion; cleanup by deleting the task-owned volume/project rather than product removal |
+| custom provider | **Still valid** | actual-process migration one/multiple/reset plus GraphQL probe/create/catalog/entity Delete |
+| provider-centric Settings/real providers | **Still valid; rerun** | final-head browser and canonical configured-provider matrix; truthful AutoByteus discovery limitations |
+| Electron AppData/reset and packaged existing-user | **Prior package evidence superseded** | restored Electron focused suite, current package build/isolated package launch, existing-user migration/reset where feasible without touching user profile |
+| isolated PTY/Terminal | **Source restored; browser proof required** | final-head real browser terminal sentinel and `pwd`; focused PTY inheritance checks |
+| built-in defaults | **Behavior changed from runtime-only to established persistence** | focused settings/bootstrap tests plus actual restart value persistence |
+| Claude | **Round-19 explicit key fixture remains valid; surrounding session/MCP changed** | zero lookup auto/cli, one lookup api-key, HTTP MCP/session focused suite and external CLI/API-key execution |
+| Codex | **Source byte-identical but final-head runtime proof required** | external live continuity; no process-isolation claim |
+
+### Environment And Safety Decision
+
+Browser Save/overwrite and Gemini mutations will use a task-owned database/runtime under `autobyteus-server-ts/tests/.tmp` and `autobyteus-server-ts/db`, never the persistent configured real-provider vault. The canonical configured-provider runner will use the preserved project test vault only through product resolution and will not display or inspect values. Docker uses a unique project and disposable named volumes. The user's installed Electron process/profile is not owned and will not be stopped or reused.
+
+Broader validation is **Required** because the scope reset changes assembled public API/UI behavior and restores process/package boundaries that mocked/unit checks cannot fully prove. A final Pass requires real browser evidence, actual restart and Docker persistence, configured external provider execution, current package/start evidence, exact unavailable-capability reporting, complete task-owned cleanup, and no process-isolation overclaim.
+
+### Round 20 Restart Assertion Reconciliation
+
+The first cumulative API/E2E run exposed one stale downstream assertion rather
+than an implementation failure. The prior test required the generated runtime
+`.env` to remain byte-identical from before the first process through the second
+process, but Round 36 intentionally restored the persistent built-in default.
+The server therefore writes
+`AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` once during the
+first start. The durable test now proves:
+
+- the committed `.env.test` template remains byte-identical;
+- the generated runtime file initially lacks the default;
+- the first process persists exactly one default assignment;
+- the second process observes the same effective setting and does not mutate its
+  already materialized runtime file; and
+- the vault database/key and configured secret reopen unchanged.
+
+The reconciled focused restart passed 1/1 in
+`execution-evidence/314-round20-restart-reconciled.log`. This is an
+API/E2E-owned `Needs Update` decision grounded in the reviewed persistent-default
+contract; it does not change production source.
+
+### Round 20 Execution Evidence And Critical Finding
+
+Repository and realistic execution completed through the first critical
+failure:
+
+| Boundary | Result | Evidence |
+| --- | --- | --- |
+| focused server scope-reset matrix | **Pass:** 10 files / 105 tests | `309-round20-focused-server-scope-reset.log` |
+| focused web and Electron scope-reset matrix | **Pass:** 7 files / 41 tests | `310-round20-focused-web-electron-scope-reset.log` |
+| focused PTY inheritance | **Pass:** 4 files / 15 tests | `311-round20-focused-pty-inheritance.log` |
+| server production build | **Pass** | `312-round20-server-build.log` |
+| cumulative API/E2E after restart reconciliation | **Pass:** 7 files / 28 tests | `314-round20-restart-reconciled.log`, `315-round20-cumulative-api-e2e-rerun.log` |
+| actual browser provider Save/overwrite, Gemini Save/Use/Save-and-use, Terminal | **Pass** | `316`–`320`, including `317-round20-browser-settings-terminal-journey.md` |
+| configured external providers | **Pass where configured:** 27 passed / 5 exact skips | `321-round20-real-provider-preflight.log`, `322-round20-real-provider-full.log` |
+| external Codex and Claude CLI | **Pass:** 4/4 and 4/4 | `323-round20-codex-claude-cli-live.log` |
+| unchanged Docker build and same-volume lifecycle | **Pass** | `324`–`326` |
+| current Electron package build and isolated packaged-server startup | **Pass** | `327-round20-electron-package-build.log`, `328-round20-packaged-server-startup.log` |
+| packaged existing-user custom-provider migration/reopen/Delete | **Fail at Delete** | `329-round20-packaged-existing-user-migration.log` |
+
+`SCSP-E2E-PACKAGED-EXISTING-USER-001` used the current packaged application
+server, an isolated application database/key, a valid v1 custom-provider file,
+and a controlled local OpenAI-compatible discovery endpoint. Startup migrated
+the provider exactly once, removed the plaintext field, wrote no plaintext
+canary to the database or logs, reopened it configured after process restart,
+and preserved the one-database contract.
+
+The required entity Delete then returned GraphQL error
+`AUTOBYTEUS_LLM_DISCOVERY_FAILED` instead of success. A post-response read
+proved the provider was nevertheless absent from both the assembled catalog
+and current provider file. The destructive action therefore committed while
+the public command reported failure. The failure was reproduced twice and is
+not a credential, migration, packaging, or test-fixture failure: the separate
+real-provider matrix independently records that AutoByteus remote discovery is
+currently unavailable, and a custom-provider Delete must not depend on that
+unrelated external discovery succeeding.
+
+Coverage decision: **Fail / implementation-owned preliminary classification**.
+Stop additional broad execution and return the exact failure to
+`code_reviewer` for focused failure-origin review. No implementation source was
+changed. All task-owned processes, ports, Docker resources, package worktree,
+and temporary data were cleaned; the user's installed Electron remained
+untouched (`330-round20-package-and-process-cleanup.log`).
+
+## Round 21 CR-031 Resolution And Final Coverage Investigation
+
+### Reviewed Entry Point And First-Failure Policy
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
+- Branch: `codex/secure-centralized-secret-provisioning`
+- Final reviewed HEAD: `ec0df6b1a9d216366e08262cd96f5280686b04d0`
+- Source review: Round 45 **Pass**, 97.5%, no open implementation-source finding.
+- Recheck-first scenario: `SCSP-E2E-PACKAGED-EXISTING-USER-001`.
+- Round 20 is retained as a truthful historical failure. Its custom-provider
+  Delete result was not inherited as passing.
+
+### Changed Boundary And Coverage Validity
+
+CR-031 changes only custom-provider post-delete runtime/catalog synchronization.
+The custom entity and its vault credential are still removed through the
+existing lifecycle, and targeted synchronization failures remain governing.
+The aggregate cache wrapper may perform its established best-effort AutoByteus
+remote discovery; the required product statement is independence from that
+unrelated remote availability, not zero possible best-effort attempts.
+
+| Boundary | Round-21 decision | Direct evidence |
+| --- | --- | --- |
+| packaged existing-user v1 migration/reopen/Delete | **Recheck first** | current Electron package; isolated DB/key/data; controlled OpenAI-compatible endpoint; migration/reopen/GraphQL/catalog/file/vault assertions |
+| targeted custom-provider runtime/catalog synchronization | **Affected durable coverage still valid; rerun focused and cumulative** | two focused CR-031 files plus assembled provider E2E |
+| actual Settings custom-provider Save/Delete | **Browser validation required** | documented `pnpm dev:test`, actual `open_tab`, production UI controls, correlated server log |
+| configured provider and exact-unavailable outcomes | **Still valid; rerun canonical full runner** | product resolver paths through the already configured project test vault |
+| restart and one-DB/key lifecycle | **Still valid; rerun cumulative** | actual two-process restart E2E |
+| unchanged Docker | **Still valid; clean current-source rerun** | tracked `docker-start.sh ... --build-local`, same volume, one DB/key |
+| external Codex and Claude CLI | **Still valid; rerun live** | exact external runtime suites; no process-isolation claim |
+| repository Prisma 1.0.8 | **Still valid; rerun selected integration/policy suite** | installed-package identity, lock residue scan, 5 files / 34 tests |
+
+No new API/E2E production-source change was made. The cumulative six-file
+durable delta from Round 20 remains the review subject; Round 21 added temporary
+packaged/browser/Docker/process evidence only.
+
+### Completed Coverage And Outcome
+
+The exact packaged failure passed before broader continuation. Migration finalized
+once, restart reopened configured state, GraphQL returned `true`, the provider
+was absent from the current file and assembled catalog, its managed credential
+was absent, and AutoByteus remote discovery remained separately unavailable.
+The actual browser then created a synthetic custom provider, loaded one controlled
+model, saved it, and removed it through the production Delete control. The row,
+details card, runtime model, and catalog model disappeared, while the backend
+log showed targeted one-model then zero-model reloads and no governing unrelated
+remote error.
+
+Affected cumulative API/E2E passed 28/28; configured external execution passed
+27 scenarios with 5 exact skips; unchanged Docker build/persistence/restart
+passed; external Codex and Claude CLI passed 4/4 each; and exact
+`repository_prisma@1.0.8` policy/integration passed 34/34. The final browser,
+package, process, and Docker resources were cleaned without touching the user's
+installed Electron.
+
+The final value-safety scanner and package inventory also passed with zero raw/base64 canary or structural-secret matches and exact HEAD/durable-path identity (`349`–`350`).
+
+Broader validation was **Required and completed**. The current API/E2E outcome
+is **Pass**. The canonical execution report contains the final confidence
+scorecard and full command/evidence inventory.

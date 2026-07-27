@@ -3,7 +3,6 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { LLMUserMessage } from 'autobyteus-ts/llm/user-message.js';
-import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import {
   classifyAutoByteusDiscoveryUnavailable,
   LiveE2eHarness,
@@ -156,17 +155,19 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         return;
       }
 
-      if (scenario.operation === 'claude-managed') {
-        const tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-managed-real-e2e-'));
-        appConfigProvider.resetForTests();
-        appConfigProvider.config.setCustomAppDataDir(tempDirectory);
-        const client = execution.createManagedClaudeClient();
+      if (scenario.operation === 'claude-api-key') {
+        const tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-api-key-real-e2e-'));
+        const client = execution.createApiKeyClaudeClient();
         let query: Awaited<ReturnType<typeof client.startQueryTurn>> | null = null;
         try {
           query = await safeExternalOperation(scenarioId, () => client.startQueryTurn({
             prompt: 'Reply with the single word pong.',
             model: scenario.model!,
             workingDirectory: tempDirectory,
+            env: {
+              ...process.env,
+              CLAUDE_AGENT_SDK_AUTH_MODE: 'api-key',
+            },
             mcpServers: {},
             allowedTools: [],
           }));
@@ -180,7 +181,6 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           expect(observedEvents).toBeGreaterThan(0);
         } finally {
           client.closeQuery(query);
-          appConfigProvider.resetForTests();
           await fs.rm(tempDirectory, { recursive: true, force: true });
         }
         return;

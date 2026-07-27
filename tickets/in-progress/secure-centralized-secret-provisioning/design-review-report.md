@@ -5,32 +5,31 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
-- Delta-defining supplement: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/custom-provider-v1-migration-contract.md`
-- Other directly affected supplements: `encrypted-secret-vault-contract.md`, `credential-consumer-mapping.md`, `use-case-spine-validation.md`, `secret-storage-architecture.md`, `live-test-secret-provisioning.md`, and `threat-model-and-option-analysis.md`
-- Carried-forward unchanged supplements: `gemini-setup-ui-ux-spec.md`, `repository-prisma-1.0.8-assessment.md`, and superseded tombstone `secret-storage-backend-contract.md`
-- Current Review Round: 33
-- Trigger: user-approved fixed-path custom-provider-v1 migrate-or-delete transition after the observed packaged existing-user Settings failure
-- Prior Review Round Reviewed: 32
-- Latest Authoritative Round: 33
-- Review Scope: **bounded delta review only**. The review covers the custom-provider-v1 persisted-data transition, its exact create-only vault batch/compensation boundary, delete-and-reconfigure outcome, current-v2-only runtime, Settings/catalog containment, directly affected spines, and package consistency. The previously passed one-database vault, importer, provider-centric Settings shape, Gemini, Claude, Codex, Docker, test bootstrap, dependency, and assurance decisions are carried forward without re-review.
-- Current-State Evidence Basis: direct `origin/personal` custom-provider v1 schema/writer and create/list/use/delete path; current target v2-only custom-provider store and assembled `listProviderSettings()` path; existing `AppDataMigrationRunner`/registry/status GraphQL and startup ordering; value-free post-delivery evidence `238`/`240`; no real custom-provider file, credential, vault row, DB content, root key, or authentication state was opened.
-- Independent Delta Checks: 11 active package files passed link/fence checks; exact 17 BEH / 18 REQ / 15 AC / 18 UC sets and 43 spine rows passed; scoped `git diff --check` passed; focused recovery/runtime-v1 contradiction scan passed. The solution package records a successful 15/15 Mermaid render; the delta diagram also received focused semantic inspection.
+- Supplemental Task Artifacts Reviewed: `encrypted-secret-vault-contract.md`, `gemini-setup-ui-ux-spec.md`, `credential-consumer-mapping.md`, `custom-provider-v1-migration-contract.md`, new evidence-only `scope-audit.md`, `use-case-spine-validation.md`, `secret-storage-architecture.md`, `live-test-secret-provisioning.md`, `threat-model-and-option-analysis.md`, and evidence-only `repository-prisma-1.0.8-assessment.md`; `secret-storage-backend-contract.md` remains a superseded tombstone.
+- Current Review Round: 36
+- Trigger: user-approved latest-HEAD exhaustive scope reset, restoration of every newly inventoried unrelated runtime/product delta, and removal of the ticket-added ordinary-provider and Gemini standalone credential-removal UI/API.
+- Prior Review Round Reviewed: 35 plus the post-round-35 implementation hold.
+- Latest Authoritative Round: 36
+- Review Scope: delta review of the new exhaustive scope-audit/restoration plan and the ordinary-provider/Gemini removal-surface correction. Previously reviewed vault, resolver, importer, provider-centric Settings read, custom-provider migration, repository dependency, cryptography, test lifecycle, and delivery behavior is carried forward except where this correction constrains its exposed deletion or preservation paths.
+- Current-State Evidence Basis: audited ticket HEAD `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f`; `origin/personal` and merge base `d6983612c5a77fb94d9266df85a9d03fe2d1c68b`; exact Git manifest comparison; direct `origin/personal` inspection of `ProviderApiKeyEditor.vue` and provider GraphQL mutations; current-source scans for removal operations and internal secret deletion; intended-behavior artifacts only. No credential value, secret-bearing file, Store/database content, root key, installed profile, or authentication state was opened.
+- Independent Checks: `scope-audit.md` contains 311 unique non-ticket path rows and matches `git diff --name-status origin/personal...HEAD` exactly with zero missing, extra, duplicate, or status-mismatched paths: 259 `RETAIN`, 31 `PARTIAL_CLEANUP`, 18 `RESTORE_BASE`, and three `REMOVE_FILE`. Active links/fences passed; exact 17 BEH / 18 REQ / 15 AC / 18 UC sets passed; 43 unique active spine rows passed; full `git diff --check` passed. The package records a successful 15/15 Mermaid render with Mermaid CLI 11.16.0.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1–31 | Earlier clean-state/provider-centric rounds | AR-001–AR-026 and recorded material premises | As historically recorded | Fail/Pass iterations | No | Historical progression; unchanged areas are not re-reviewed here. |
-| 32 | Bounded AR-026 correction | AR-026 / MP-012 | None | Pass | No | Provider-centric Settings contract became coherent. |
-| 33 | User-approved custom-provider-v1 migration/reset delta | Round-32 Pass plus post-delivery custom-provider requirement gap | None | Pass | Yes | Fixed-path historical data gets one isolated migration; failure is contained to custom providers and uses the approved delete-and-reconfigure outcome. |
+| 1–34 | Earlier design and scope corrections | Historical AR/MP findings | As historically recorded | Fail/Pass iterations | No | Unchanged areas are not reopened here. |
+| 35 | Bounded AR-027 approval/gate reconciliation | AR-027 | None | Pass, later held | No | Implementation was subsequently paused when the user questioned the newly added ordinary-provider Remove surface. |
+| Post-35 | Removal-surface and latest-HEAD scope investigation | Current implementation authority | N/A | Held | No | No revised implementation authority existed during investigation. |
+| 36 | Exhaustive scope reset and redundant removal-surface cleanup | Post-35 hold | None | Pass | Yes | The exact HEAD delta is inventoried, unrelated behavior has explicit base restoration, and standalone ordinary/Gemini removal is cleanly removed. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-| Prior Round / Trigger | Finding Or Gap | Previous Severity | Current Resolution | Evidence | Notes |
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 32 | AR-026 / MP-012 | Medium | Remains resolved | The custom-provider delta does not change the four non-null provider capability-list contract. | Carried forward without re-review. |
-| Post-delivery observed journey | Fixed v1 file caused `CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED` and could reject the general Settings read | Requirement gap / Design Impact | Resolved in design | BEH-008, REQ-012, AC-008, UC-007, DS-UC007D, DS-L007, and the normative migration contract define preservation, reset, and Settings containment. | Implementation must reconcile the preserved downstream source rather than treat it as design authority. |
-| 1–31 | AR-001–AR-025 / MP-001–MP-011 and CR-027 design impact | Critical–Low | Resolved or superseded | Round-32 authoritative report and current clean-state package | No unchanged decision was reopened. |
+| Post-35 | Gate hold — ordinary-provider/Gemini removal surfaces | N/A | Resolved | BEH-004, BEH-006, REQ-006, REQ-010, AC-004, AC-006, DS-UC003A/B, DS-UC005A–C; direct base UI/GraphQL evidence | Ordinary-provider Save/create-or-overwrite remains; standalone ordinary and Gemini removal operations are eliminated; custom-provider Delete remains a separate owning lifecycle. |
+| 35 | AR-027 | Medium | Remains resolved | Active package approval/status metadata | The current package is user-approved and submitted for architecture review; downstream stages remain gated until this decision. |
+| 1–34 | Historical AR-001–AR-026 and material premises | Critical–Low | Resolved or superseded as previously recorded | Current package and prior review history | No earlier resolved technical area was reopened except the exact scope-restoration/removal delta described above. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -38,210 +37,188 @@
 - Approved requirements / intended behavior understood: yes.
 - Relevant existing behavior and evidence confirmed: yes.
 - Approved change, preserved behavior, and outside scope understood: yes.
-- Remaining material ambiguity: none.
+- Remaining material ambiguity: none for this review delta.
 
-| Behavior ID | Kind | Design Alignment With Approved Intent | Trigger / Current Evidence | Target Path Coherence | Status | Required Action |
+| Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-008 | System + User | Pass | `origin/personal` writes the fixed v1 plaintext-key file; packaged upgrade evidence reaches the current v2-only rejection; New Provider is the supported recovery surface. | Pass | Confirmed | None. |
-| BEH-010 | System | Pass | Arbitrary `.env` sources remain separate and receive no automatic transition. | Pass | Confirmed | None. |
-| BEH-001 / BEH-017 | User / Operational | Pass | General API-key Settings and packaged startup are the independently supported surfaces affected by the v1 failure. | Pass | Confirmed | None. |
-| Remaining behaviors | Previously reviewed | Pass | Round-32 basis | Pass | Carried forward | None. |
+| BEH-004 | User | Pass | `origin/personal` API-key Settings exposes Save only; configured keys are replaced by entering and saving a new key. | Save/create-or-overwrite -> Boolean completion -> canonical provider-settings refetch; no standalone ordinary Remove. | Confirmed | None. |
+| BEH-006 | User | Pass | The user approved explicit Gemini mode/configuration but rejected the ticket-added standalone removal command. | Option-specific Save/overwrite, first-time Save-and-use, and Use-this-mode return one authoritative setup state; no removal action. | Confirmed | None. |
+| BEH-008 | User / System | Pass | Custom-provider Delete is an established provider-entity lifecycle distinct from ordinary key removal. | Custom Delete owns its metadata/credential cleanup and bounded compensation; low-level deletion remains internal. | Confirmed | None. |
+| BEH-012 | User | Pass | Base Claude supports inherited environment, HTTP MCP/session/options/tools/diagnostics/account behavior and `auto|cli|api-key`. | Restore all base behavior; only explicit `api-key` performs one Anthropic vault resolution and one environment override. | Confirmed | None. |
+| BEH-014 | System / User | Pass | Supported Electron, isolated PTY, built-in-agent default, and reset paths existed before the ticket and were changed without credential-custody need. | Restore exact base owners and behavior; retained vault/file-root/value-safe changes remain concern-scoped. | Confirmed | None. |
+| Complete HEAD scope | Contract | Pass | The approved scope is credential custody plus explicitly named adjacent work, not general runtime redesign. | Every one of 311 non-ticket delta paths has one exact disposition and the cleanup sequence forbids whole-file reverts of mixed files. | Confirmed | None. |
 
 ## Supplemental Artifact Coherence Verdict
 
-| Artifact | Purpose/Scope | Linked | Complete | Consistent | Status/Approval | Required Action |
+| Artifact | Purpose And Scope Clear? | Linked? | Internally Complete? | Consistent With Core? | Status And Approval Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `custom-provider-v1-migration-contract.md` | Exact fixed-path migration/reset and Settings-containment behavior | Pass | Pass | Pass | User-approved normative behavior | None. |
-| `encrypted-secret-vault-contract.md` | Create-only batch and exact same-process compensation boundary | Pass | Pass | Pass | User-approved delta | None. |
-| `credential-consumer-mapping.md` | Preserved-ID to deterministic current `SecretId` mapping | Pass | Pass | Pass | User-approved delta | None. |
-| `use-case-spine-validation.md` | DS-UC007D / DS-L007 and coverage matrices | Pass | Pass | Pass | Architecture-validation artifact | None. |
-| `secret-storage-architecture.md` | Startup and migration/reset diagrams | Pass | Pass | Pass | Architecture-validation artifact | None. |
-| `live-test-secret-provisioning.md` | Deterministic, packaged, reset, leak, and reconfiguration proof | Pass | Pass | Pass | User-approved delta | None. |
-| `threat-model-and-option-analysis.md` | Destructive reset tradeoff and controls | Pass | Pass | Pass | Architecture-validation artifact | None. |
-| Unchanged supplements | Previously reviewed purposes | Pass | Pass | Pass | Carried forward | None. |
-
-The investigation notes contain the canonical supplement inventory, and every delta-defining supplement is linked from the core package with purpose, scope, status, and approval applicability.
+| Three mandatory core artifacts | Pass | Pass | Pass | Pass | Pass | None. |
+| `encrypted-secret-vault-contract.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `gemini-setup-ui-ux-spec.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `credential-consumer-mapping.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `custom-provider-v1-migration-contract.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `scope-audit.md` | Pass | Pass | Pass | Pass | Pass (`N/A` evidence) | None. |
+| `use-case-spine-validation.md` | Pass | Pass | Pass | Pass | Pass (`N/A` additional behavior) | None. |
+| `secret-storage-architecture.md` | Pass | Pass | Pass | Pass | Pass (`N/A` additional behavior) | None. |
+| `live-test-secret-provisioning.md` | Pass | Pass | Pass | Pass | Pass | None. |
+| `threat-model-and-option-analysis.md` | Pass | Pass | Pass | Pass | Pass (`N/A` additional behavior) | None. |
+| `repository-prisma-1.0.8-assessment.md` | Pass | Pass | Pass | Pass | Pass (`N/A` evidence) | None. |
+| `secret-storage-backend-contract.md` | Pass | Pass | Pass | Pass | Pass (`N/A`, superseded tombstone) | None. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Current task posture present | Pass | The package classifies the fixed v1 file as `Migration Required`; arbitrary `.env` and superseded Store data retain their prior distinct decisions. | None. |
-| Root-cause classification explicit/evidence-backed | Pass | The historical application-owned v1 schema contains plaintext `apiKey`; the current v2 reader rejects it; the assembled Settings path propagates the failure. | None. |
-| Refactor decision explicit | Pass | Historical parsing is isolated in one existing app-data migration owner; normal store/runtime remain v2-only. | None. |
-| Concrete design supports decision | Pass | Ordering, fixed identity, complete validation, create-only transaction, staged publish, interruption handling, delete fallback, status, current runtime, files, and tests are actionable. | None. |
+| Assessment is present for the current task posture | Pass | Investigation and scope audit distinguish credential custody from unrelated ticket-created behavior. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Direct base/current comparison identifies boundary overreach, redundant command surfaces, and mixed-file responsibility drift. | None. |
+| Refactor decision is explicit | Pass | Restore base owners; keep only narrow credential substitution; delete redundant files/operations without wrappers. | None. |
+| Concrete design supports the decision | Pass | Exact path manifest, file mapping, mixed-file rules, interfaces, spines, sequence, and acceptance scans align. | None. |
 
 ## Spine Inventory Verdict
 
-| Spine IDs | Scope | Readable | Span Sufficient | Facade/Owner | Ownership | Off-Spine | Verdict | Notes |
+| Spine ID | Scope | Readable? | Narrative Clear? | Facade / Owner Clear? | Subject Naming Clear? | Ownership Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-UC007D | Existing-user startup through preservation or reset to usable Settings/Create | Pass | Pass | Pass | Pass | Pass | Pass | Spans startup, vault, migration, file/DB publish outcome, and user recovery. |
-| DS-L007 | Cross-resource staged publish / transaction / compensation / interruption loop | Pass | Pass | Pass | Pass | Pass | Pass | Correctly bounded under the migration owner. |
-| DS-UC007A–C / DS-L006 | Current create/probe/list/use/delete | Pass | Pass | Pass | Pass | Pass | Pass | Remain current-v2-only and distinct from migration. |
-| Remaining 38 spines | Previously reviewed behavior | Pass | Pass | Pass/N/A | Pass | Pass | Pass | Carried forward. |
+| DS-UC003A/B | Ordinary provider Save and canonical status refetch | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-UC005A–C | Gemini Save, Use, and Save-and-use | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-UC007C / DS-L006 | Custom-provider Delete and compensation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-UC012A/B | Restored Claude modes plus explicit-key substitution | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-UC014 | Restored production child/Electron inheritance | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| Remaining 34 spines | Carried-forward reviewed behavior | Pass | Pass | Pass/N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
-| Boundary / Owner | Public Entry Clear | Internals Stay Internal | Bypass Controlled | Verdict | Notes |
+| Boundary / Owner | Public Entry Clear? | Internals Stay Internal? | Bypass Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AppDataMigrationRunner` -> `CustomProviderV1AppDataMigration` | Pass | Pass | Pass | Pass | Reuses the established non-critical startup migration lifecycle. |
-| `CustomProviderV1AppDataMigration` | Pass | Pass | Pass | Pass | Sole owner of v1 parse/validation, staged v2, reset deletion, and sanitized result. |
-| `SecretManagementService` | Pass | Pass | Pass | Pass | Owns only the authorized create-missing batch and receipt-based conditional compensation. |
-| `CustomLlmProviderStore` | Pass | Pass | Pass | Pass | Missing-as-empty, v2-only normal store; no historical parser or migration policy. |
-| `LlmProviderService.listProviderSettings()` | Pass | Pass | Pass | Pass | Contains custom contribution failure without weakening built-in provider/catalog authority. |
+| Ordinary provider Settings owner | Pass | Pass | Pass | Pass | Public commands are Save/create-or-overwrite plus read status; no public delete. |
+| `GeminiConfigurationService` | Pass | Pass | Pass | Pass | Owns exact option Save/activate sequencing and setup state; no removal command. |
+| Custom-provider lifecycle | Pass | Pass | Pass | Pass | Entity Delete owns linked credential cleanup; this does not become a generic key-delete surface. |
+| `SecretManagementService` | Pass | Pass | Pass | Pass | `removeForConsumer` is internal-only for owning lifecycle/compensation paths. |
+| Claude / Electron / launcher / built-in owners | Pass | Pass | Pass | Pass | Base responsibilities are restored; vault logic does not absorb unrelated behavior. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
-| Owner / Boundary | Allowed Dependencies Clear | Forbidden Shortcuts Explicit | Direction Coherent | Verdict | Notes |
+| Owner / Boundary | Allowed Dependencies Clear? | Forbidden Shortcuts Explicit? | Direction Coherent? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| App-data migration | Pass | Pass | Pass | Pass | May call the fixed-path file boundary and internal secret batch only. |
-| Secret service/repository | Pass | Pass | Pass | Pass | Never parses historical files or owns reset policy. |
-| Normal provider runtime | Pass | Pass | Pass | Pass | Depends only on v2 metadata and point-of-use resolver; no v1/environment fallback. |
-| Settings/catalog composition | Pass | Pass | Pass | Pass | Custom failure becomes an empty custom contribution, not a general-query failure or synthetic availability DTO. |
+| Provider Settings -> secret service | Pass | Pass | Pass | Pass | Save/status only; no arbitrary SecretId or public deletion. |
+| Custom-provider owner -> internal deletion | Pass | Pass | Pass | Pass | Exact provider-owned ID only; no ordinary/Gemini reuse. |
+| Gemini owner -> vault/AppConfig | Pass | Pass | Pass | Pass | Exact option write and explicit mode; no implicit selection or standalone removal. |
+| Claude client -> injected key resolver | Pass | Pass | Pass | Pass | One resolve only after explicit `api-key`; base launch behavior stays authoritative. |
+| Scope cleanup -> base owners | Pass | Pass | Pass | Pass | Restoration reuses existing owners rather than introducing a coordinating compatibility layer. |
 
 ## Interface Boundary Verdict
 
-| Interface / Query / Command | Subject Clear | Singular Responsibility | Identity Explicit | Generic Risk | Verdict |
+| Interface / API | Subject Clear? | Singular Responsibility? | Identity Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `CustomProviderV1AppDataMigration.execute()` | Pass | Pass | Pass | Low | Pass |
-| `createMissingBatchForCustomProviderMigration(entries)` | Pass | Pass | Pass | Low | Pass |
-| `compensateUnpublishedCustomProviderBatch(receipt)` | Pass | Pass | Pass | Low | Pass |
-| Existing app-data migration status projection | Pass | Pass | Pass | Low | Pass |
-| Current custom Create/Probe/Delete and `providerSettings` | Pass | Pass | Pass | Low | Pass |
+| ordinary provider Save mutation | Pass | Pass | Pass | Low | Pass |
+| `providerSettings(runtimeKind)` | Pass | Pass | Pass | Low | Pass |
+| Gemini option Save / Use commands | Pass | Pass | Pass | Low | Pass |
+| custom-provider Delete | Pass | Pass | Pass | Low | Pass |
+| internal `removeForConsumer(consumer)` | Pass | Pass | Pass | Medium, controlled by authorization and call-site restriction | Pass |
+| file-local Claude key resolver | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
-| Need | Existing Area Checked | Reuse Decision Sound | New Piece Justified | Verdict | Notes |
+| Need / Concern | Existing Area Checked? | Reuse Decision Sound? | New Support Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Startup migration lifecycle | Pass | Pass | N/A | Pass | Existing runner already records warning/failure without aborting startup. |
-| Current custom metadata store | Pass | Pass | N/A | Pass | Remains secret-free and v2-only. |
-| Vault encryption/transactions | Pass | Pass | Pass | Pass | Two narrow internal migration operations extend the authoritative service instead of bypassing it. |
-| Settings/catalog composition | Pass | Pass | N/A | Pass | Existing provider owner performs containment; no new read service/DTO. |
+| Ordinary key update | Pass | Pass | N/A | Pass | Existing Save behavior becomes vault-backed; no extra removal feature. |
+| Gemini setup | Pass | Pass | Pass | Pass | Existing provider Settings area receives a specialized, tight mode/configuration owner. |
+| Custom deletion | Pass | Pass | N/A | Pass | Existing entity lifecycle owns cleanup. |
+| Electron/PTY/Claude/built-in behavior | Pass | Pass | N/A | Pass | Exact base behavior is restored instead of keeping ticket-created machinery. |
+| Complete scope control | Pass | Pass | Pass | Pass | Evidence supplement inventories every HEAD-delta path without becoming runtime machinery. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
-| Subsystem | Ownership Clear | Decision Sound | Supports Spine | Verdict | Notes |
+| Subsystem | Ownership Clear? | Reuse / Extend / Create Decision Sound? | Supports Right Spines? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| App-data migrations | Pass | Pass | Pass | Pass | Historical schema and reset sequencing only. |
-| Secret management | Pass | Pass | Pass | Pass | Current encrypted batch/compensation only. |
-| LLM provider management | Pass | Pass | Pass | Pass | Current v2 store, current CRUD, and failure-contained Settings composition. |
-| Test/package validation | Pass | Pass | Pass | Pass | Synthetic existing-user fixtures and actual packaged lifecycle. |
+| Provider Settings | Pass | Pass | Pass | Pass | Read/status and Save stay provider-owned. |
+| Gemini configuration | Pass | Pass | Pass | Pass | Specialized mode and option writes remain separate from general provider status. |
+| Custom provider | Pass | Pass | Pass | Pass | Entity metadata and credential lifecycle remain coupled only at the owning service. |
+| Runtime launchers / Electron / Claude | Pass | Pass | Pass | Pass | Base subsystems resume their original responsibilities. |
+| Scope audit | Pass | Pass | N/A | Pass | Evidence-only implementation map, not a production subsystem. |
 
 ## Reusable Owned Structures Verdict
 
-| Repeated Structure / Logic | Extraction Need Evaluated | Shared File Choice Sound | Ownership Clear | Verdict | Notes |
+| Repeated Structure / Logic | Extraction Need Evaluated? | Shared File Choice Sound? | Ownership Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Deterministic custom-provider `SecretId` derivation | Pass | Pass | Pass | Pass | One canonical mapping shared by migration authorization and current runtime. |
-| Migration batch receipt | Pass | Pass | Pass | Pass | Opaque, memory-only, owned by secret service; not a generic transaction coordinator. |
-| Migration outward result | Pass | Pass | Pass | Pass | Reuses existing app-data status/summary instead of adding provider availability/status DTOs. |
+| Provider credential resolution | Pass | Pass | Pass | Pass | Narrow provider-owned resolver remains the reusable port. |
+| Secret deletion | Pass | Pass | Pass | Pass | One internal service operation is reused only by authorized owning lifecycles; no public generic command. |
+| Scope restoration classification | Pass | N/A | Pass | Pass | Kept in one evidence supplement rather than duplicated through production code. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
-| Structure | One Meaning/Field | Redundant Removed | Overlap Controlled | Composition Sound | Verdict | Notes |
+| Structure / Type | One Meaning Per Field? | Redundancy Removed? | Overlap Controlled? | Shared vs Specialized Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Historical v1 shape | Pass | Pass | Pass | N/A | Pass | Exists only inside the migration file. |
-| Current v2 provider record | Pass | Pass | Pass | Pass | Pass | ID/name/type/base URL only; credential value stays in vault. |
-| `CustomProviderV1MigrationOutcome` | Pass | Pass | Pass | Pass | Pass | Exactly migrated, reconfiguration required, or reset unavailable. |
-| `CustomProviderMigrationBatchReceipt` | Pass | Pass | Pass | Pass | Pass | Contains only opaque exact-row compensation authority and never crosses process/output boundaries. |
+| `ProviderSettingsGroup` | Pass | Pass | Pass | Pass | Pass | Reuses existing provider/model types and adds no removal outcome protocol. |
+| `GeminiSetupState` | Pass | Pass | Pass | Pass | Pass | One authoritative query/command state; no removal or parallel outcome DTO. |
+| `SecretManagementService` deletion contract | Pass | Pass | Pass | Pass | Pass | Internal lifecycle operation, not another Settings subject. |
+| Scope-audit manifest row | Pass | Pass | Pass | N/A | Pass | Disposition, Git status, and path are singular evidence facts. |
 
 ## File Responsibility Mapping Verdict
 
-| File | Responsibility Singular/Clear | Matches Owner | Re-tightened | Verdict | Notes |
+| File / Group | Responsibility Clear? | Matches Owner? | Re-tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts` | Pass | Pass | Pass | Pass | Fixed-path historical transition and reset only. |
-| `secret-management/services/secret-management-service.ts` | Pass | Pass | Pass | Pass | Current lifecycle plus narrow internal batch/compensation methods. |
-| `secret-management/persistence/secret-vault-prisma-repository.ts` | Pass | Pass | Pass | Pass | Transactional create-only insert and exact conditional compensation. |
-| `llm-management/.../custom-llm-provider-store.ts` | Pass | Pass | Pass | Pass | Current v2 read/write; missing means empty. |
-| provider Settings/runtime sync files | Pass | Pass | Pass | Pass | Contain custom omission and clear stale custom contribution without carrying v1 types. |
+| 18 `RESTORE_BASE` paths | Pass | Pass | Pass | Pass | Exact baseline behavior; no retained ticket concern in those deltas. |
+| 31 `PARTIAL_CLEANUP` paths | Pass | Pass | Pass | Pass | Hunk-level cleanup preserves approved vault/Settings work. |
+| Three `REMOVE_FILE` paths | Pass | Pass | Pass | Pass | Redundant provider removal helper/localization files are deleted without tombstones. |
+| Provider GraphQL/service/web files | Pass | Pass | Pass | Pass | Remove only ordinary/Gemini deletion; retain Save/status/grouping/custom Delete. |
+| Claude mixed files | Pass | Pass | Pass | Pass | Restore baseline behavior and retain only explicit-key resolution/override. |
+| Server Settings / built-in files | Pass | Pass | Pass | Pass | Restore persistent defaults while retaining sensitive-setting/value-safe changes in mixed owners. |
 
 ## Subsystem / Folder / File Placement Verdict
 
-| Path / Item | Placement Clear | Folder Matches Owner | Mixed/Over-Split Risk | Verdict | Notes |
+| Path / Item | Placement Clear? | Folder Matches Owner? | Mixed/Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts` | Pass | Pass | Low | Pass | Correct existing historical-data boundary. |
-| Secret service/repository changes | Pass | Pass | Low | Pass | No separate migration subsystem or generic coordinator. |
-| Current custom-provider store/service | Pass | Pass | Low | Pass | Remain under LLM provider management. |
+| `scope-audit.md` | Pass | Pass | Low | Pass | Evidence belongs with the solution package. |
+| Provider API-key components/store/GraphQL | Pass | Pass | Medium | Pass | Mixed-file instructions are explicit and complete. |
+| Gemini service/components | Pass | Pass | Low | Pass | Specialized owner remains in established management/Settings areas. |
+| Claude/Electron/PTY/built-in paths | Pass | Pass | Low | Pass | Existing base placement remains authoritative. |
 
 ## Removal / Decommission Completeness Verdict
 
-| Item / Area | Obsolete Piece Named | Replacement Clear | Scope Explicit | Verdict | Notes |
+| Item / Area | Obsolete Piece Named? | Replacement Clear? | Scope Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime v1 parser/error authority | Pass | Pass | Pass | Pass | Historical parser moves exclusively to migration; current runtime stays v2-only. |
-| Backup/recovery/quarantine machinery | Pass | N/A | Pass | Pass | Explicitly absent; approved failure outcome is deletion and normal reconfiguration. |
-| Whole-Settings rejection from custom state | Pass | Pass | Pass | Pass | Bounded empty custom contribution retains built-ins/catalogs/New Provider. |
-| Arbitrary `.env` automatic migration/fallback | Pass | Pass | Pass | Pass | Remains excluded and separate from this fixed-path transition. |
+| ordinary `removeProviderApiKey` | Pass | Pass | Pass | Pass | Remove resolver/service/store/component/generated/localization/test surface; Save/status remain. |
+| `removeGeminiConfiguration` | Pass | Pass | Pass | Pass | Remove service/GraphQL/web/control/test branches; Save/Use remain. |
+| provider removal helper/localization files | Pass | Pass | Pass | Pass | Three exact files and imports are named for deletion. |
+| ticket-created Electron/PTY/Claude/built-in behavior | Pass | Pass | Pass | Pass | Exact restore paths and mixed-file constraints are named. |
+| compatibility wrappers/tombstones | Pass | N/A | Pass | Pass | Explicitly prohibited. |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Area | Wrapper/Dual Path/Legacy Retention Exists | Clean Cut Explicit | Verdict | Notes |
+| Area | Compatibility / Dual Path Exists? | Clean-Cut Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Historical custom-provider v1 | No runtime compatibility; migration-only historical parser | Pass | Pass | Required isolated migration is not a normal-runtime dual path. |
-| Current custom-provider runtime | No | Pass | Pass | One v2 metadata path plus vault resolver. |
-| Environment credentials | No | Pass | Pass | No automatic import or runtime fallback. |
+| ordinary/Gemini removal commands | No | Pass | Pass | Removed completely rather than deprecated or wrapped. |
+| restored base runtime behavior | No new path | Pass | Pass | Base behavior is singular; no compatibility policy layer remains. |
+| custom-provider v1 | Migration-owned only | Pass | Pass | Historical schema remains isolated from current v2 runtime. |
+| managed environment credentials | No runtime fallback | Pass | Pass | Ordinary inheritance may remain, but managed clients use vault authority only. |
 
 ## Persisted-Data Transition Verdict
 
-| Area / Stored Subject | Approved Decision | Evidence Sufficient | Choice Proportionate | Migration Safety Complete | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| Fixed application-owned custom-provider v1 file | Migration Required, otherwise delete and reconfigure | Pass | Pass | Pass | Pass | Complete validation; preserved IDs; all-missing gate; one create-only DB transaction; staged atomic v2 publish; exact same-process compensation; interruption collision rule; explicit destructive reset; deletion-failure containment; idempotent completion. |
-| Current custom-provider v2 | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Already secret-free/current. |
-| Arbitrary `.env` credentials | Prior Discard/Rebuild-as-authority decision | Pass | Pass | N/A | Pass | Not affected by this exception. |
+The current correction adds no new persisted-data transition. It deliberately removes public deletion commands without deleting existing vault entries or introducing cleanup migration machinery. Ordinary credentials remain replaceable by Save/overwrite. Gemini option data remains replaceable by option Save and selectable through explicit mode. Custom-provider Delete and migration compensation retain their previously reviewed, owner-bounded deletion behavior. The one custom-provider-v1 migration remains the only historical credential transition and is carried forward unchanged.
 
 ## Change / Refactor Safety Verdict
 
-| Area | Sequence Realistic | Temporary Seams Explicit | Cleanup/Removal Explicit | Verdict |
+| Area | Sequence Realistic? | Temporary Seams Explicit? | Cleanup Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Prisma/vault startup -> app-data migration -> provider exposure | Pass | Pass | Pass | Pass |
-| v1 stage -> DB batch -> file publish / compensation / reset | Pass | Pass | Pass | Pass |
-| Settings containment and current-v2-only cutover | Pass | Pass | Pass | Pass |
-| Downstream dirty-work reconciliation | Pass | Pass | Pass | Pass |
+| Apply exhaustive scope dispositions | Pass | Pass | Pass | Pass |
+| Restore base-only paths | Pass | Pass | Pass | Pass |
+| Reconcile mixed files | Pass | Pass | Pass | Pass |
+| Remove ordinary/Gemini deletion schema/UI | Pass | Pass | Pass | Pass |
+| Regenerate GraphQL/localization/tests | Pass | Pass | Pass | Pass |
+| Preserve downstream dirty state | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
-| Topic / Area | Example Needed | Present/Clear | Avoided Shape Explained | Verdict | Notes |
+| Topic | Needed? | Present/Clear? | Avoided Shape Explained? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Success sequence | Yes | Pass | Pass | Pass | Exact stage/batch/publish ordering is shown. |
-| Failure/interruption matrix | Yes | Pass | Pass | Pass | Collision, staging, DB, publish, power loss, deletion, and finalization are separated. |
-| User reconfiguration | Yes | Pass | Pass | Pass | Built-ins/New Provider and new generated IDs are explicit. |
-| Forbidden compatibility/recovery shapes | Yes | Pass | Pass | Pass | Runtime v1 reader, backups, fallback, overwrite, and wrapper DTOs are rejected. |
+| Ordinary provider lifecycle | Yes | Pass | Pass | Pass | Save/create-or-overwrite and canonical refetch are explicit. |
+| Gemini command set | Yes | Pass | Pass | Pass | Save, Save-and-use, and Use-only examples are explicit. |
+| Mixed-file restoration | Yes | Pass | Pass | Pass | Exact dispositions and no-whole-file-revert rules are explicit. |
+| Internal deletion restriction | Yes | Pass | Pass | Pass | Vault contract names allowed owners and forbids ordinary/Gemini Settings access. |
 
 ## Material Premise Validation
 
-### MP-013 — A supported existing installation can contain the fixed plaintext custom-provider-v1 file
-
-- Related approved requirement or established contract: BEH-008 / REQ-012 / AC-008; preserve supported existing-user custom providers when safe and never let custom state disable general Settings.
-- Relevant behavior ID(s): BEH-008, BEH-001, BEH-017.
-- Initiating basis kind: `User` + `System`.
-- Independent product-supported initiating trigger or applicable governing contract: under `origin/personal`, the user creates a custom OpenAI-compatible provider through the supported Settings surface; that version writes `<app-data-dir>/llm/custom-llm-providers.json` v1 with the key. The user then starts the upgraded packaged application.
-- Support evidence: direct `origin/personal` schema/store/service source; observed packaged value-free `CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED`; evidence `238`/`240`.
-- Forward production path: `Settings Create custom provider -> origin/personal v1 writer -> persisted fixed app-owned file -> install/start upgraded application -> Prisma/vault startup -> provider Settings/list path -> current v2-only rejection`.
-- Lifecycle preconditions and consequence: a normal supported prior write persists v1; the upgraded read cannot treat it as v2 and can hide built-ins if uncontained.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: one fixed-path migration plus independent Settings containment is justified; arbitrary-source migration and permanent v1 runtime compatibility are not.
-
-### MP-014 — The cross-resource migration can be interrupted after the DB batch commits and before v2 publication
-
-- Related approved requirement or established contract: persisted-data migration safety under REQ-012 / AC-008.
-- Relevant behavior ID(s): BEH-008.
-- Initiating basis kind: `Operational` / `Contract`.
-- Independent product-supported initiating trigger or applicable governing contract: process termination or power loss during an approved startup migration; durable migrations must define interruption behavior.
-- Support evidence: existing app-data runner persists RUNNING/terminal records and retries failed/stale work; the approved target necessarily spans SQLite commit and filesystem rename, which cannot be one physical transaction.
-- Forward production path: `upgraded server startup -> app-data migration -> staged v2 -> create-only DB commit -> process/power interruption before canonical rename -> restart -> runner re-enters migration -> v1 still canonical + target IDs configured`.
-- Lifecycle preconditions and consequence: DB entries may exist without authoritative v2 metadata; guessing ownership or overwriting/deleting existing rows would risk current credentials.
-- Reachability: `Reachable` under the governing persisted-migration contract.
-- Review consequence / proportionate response: treat configured targets as collision, never overwrite/delete them, delete only the approved legacy file, and reconfigure with newly generated IDs. Do not add recovery scanning or a runtime fallback.
-
-### MP-015 — The approved failed-preservation deletion can itself be unavailable
-
-- Related approved requirement or established contract: REQ-012 / AC-008 availability containment.
-- Relevant behavior ID(s): BEH-008, BEH-001.
-- Initiating basis kind: `Contract`.
-- Independent product-supported initiating trigger or applicable governing contract: the approved destructive reset attempts to unlink the fixed app-owned file; the explicit contract requires a truthful non-blocking outcome if the filesystem refuses that operation.
-- Support evidence: user-approved migration contract and existing non-critical app-data migration lifecycle; the normal Settings surface is independently supported and must remain available.
-- Forward production path: `startup migration -> preservation failure -> canonical v1 delete attempt -> filesystem rejects delete -> RESET_UNAVAILABLE/FAILED -> API exposure -> providerSettings built-ins + empty custom contribution`.
-- Lifecycle preconditions and consequence: physical v1 remains, so current custom Create cannot safely replace it; allowing the custom error to reject general Settings would repeat the observed product failure.
-- Reachability: `Reachable` by the applicable approved transition/availability contract.
-- Review consequence / proportionate response: keep the file untouched, omit custom rows, retain built-ins/New Provider, block only custom creation until repair and restart, and expose existing value-free migration guidance. No availability wrapper or recovery service is needed.
+None. The corrections are grounded in direct supported product surfaces and base/current evidence: the ordinary API-key editor and mutation set, custom-provider Delete lifecycle, Gemini's user-approved target commands, supported Claude/Electron/PTY/built-in paths, and the exact audited Git delta. No finding or machinery depends on a hypothetical production state.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -251,7 +228,7 @@ None.
 
 `Pass`.
 
-The bounded custom-provider-v1 delta is ready for implementation. The prior round-32 pass remains inherited for unchanged areas. The fixed historical source has one isolated migration owner; the normal runtime remains v2-only; destructive reset and deletion-unavailable behavior are explicit; general Settings/catalog availability is preserved; and no reviewed mechanism depends on an unsupported premise.
+The revised package is implementation-ready. It retains the approved secure credential-custody feature set, removes the two redundant public deletion surfaces, restores every latest-HEAD unrelated behavior identified by the exhaustive scope audit, and gives implementation exact base-restoration, mixed-file, deletion, and preservation rules without compatibility machinery.
 
 ## Findings
 
@@ -259,8 +236,7 @@ None.
 
 ## Classification
 
-- Overall: `Pass`
-- Routing classification: implementation-ready bounded design delta
+`Pass — implementation-ready latest-HEAD scope correction.`
 
 ## Recommended Recipient
 
@@ -268,16 +244,16 @@ None.
 
 ## Residual Risks
 
-- JSON metadata and SQLite secret rows cannot commit atomically. The reviewed staged-publish, exact same-process compensation, and restart collision/reset rules must be implemented exactly.
-- A crash after DB commit can leave non-authoritative encrypted rows. They must never become runtime fallback or be guessed/deleted on restart; reconfiguration uses new provider IDs.
-- Failed preservation intentionally deletes the plaintext legacy custom-provider configuration. This user-approved loss is limited to custom providers and requires clear value-free reconfiguration guidance.
-- If deletion is unavailable, custom creation remains unavailable until filesystem repair and restart, while built-ins and the rest of Settings must remain usable.
-- Existing downstream dirty source/tests/reports/evidence and configured E2E state must be preserved and reconciled against this reviewed delta, not reset.
-- Prior carried-forward risks remain: DB and root key are an inseparable backup pair; JavaScript zeroization is best effort; `LOCAL_HARDENED` does not claim `STRONG_AGENT_ISOLATION`; Codex remains excluded from governed child-environment claims; and `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck only.
+- The 31 mixed files must be reconciled hunk-by-hunk; whole-file base checkout could discard approved vault, Settings, value-safe, or file-root work.
+- Generated GraphQL, localization indexes, tests, and documentation must be regenerated or rewritten so neither ordinary nor Gemini removal remains reachable or referenced.
+- `removeForConsumer` must remain callable only through exact custom-provider lifecycle/compensation composition; it must not reappear as a general GraphQL, Settings, resolver, or importer operation.
+- Restored Claude behavior must include HTTP MCP/session/options/tools/diagnostics/account semantics; explicit `api-key` alone performs one vault lookup and one `ANTHROPIC_API_KEY` override.
+- Restored Electron server-manager/AppData, isolated PTY, and built-in defaults must be base-equivalent while separately approved DB/key file-root and value-safe controls remain intact.
+- Existing downstream dirty source/tests/reports/evidence, untracked packaged artifacts, and configured state must be preserved and reconciled without reset or accidental loss.
+- Carried-forward vault, custom-provider migration, importer, Gemini, dependency, and realistic-test risks remain as recorded in their normative supplements and prior review history.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Mode: `Bounded delta review`
 - Material-Premise Gate: `Pass`
-- Notes: the user-approved custom-provider-v1 migrate-or-delete design is ready for implementation. All unchanged round-32 architecture remains carried forward without re-review; API/E2E and delivery remain governed by their normal downstream gates.
+- Notes: Round 36 is authoritative. The exact latest-HEAD scope reset and removal-surface correction passed architecture review; implementation is authorized against the cumulative reviewed package, while API/E2E and delivery remain subject to their normal downstream gates.

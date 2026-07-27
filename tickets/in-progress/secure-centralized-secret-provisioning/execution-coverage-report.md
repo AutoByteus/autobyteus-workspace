@@ -5,15 +5,15 @@
 - Requirements Doc: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md
 - Investigation Notes: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md
 - Design Spec: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md
-- Supplemental Task Artifacts: use-case-spine-validation.md, secret-storage-architecture.md, secret-storage-backend-contract.md, credential-consumer-mapping.md, live-test-secret-provisioning.md, threat-model-and-option-analysis.md, and repository-prisma-1.0.8-assessment.md in the same ticket directory.
+- Supplemental Task Artifacts: encrypted-secret-vault-contract.md, gemini-setup-ui-ux-spec.md, credential-consumer-mapping.md, custom-provider-v1-migration-contract.md, use-case-spine-validation.md, secret-storage-architecture.md, secret-storage-backend-contract.md, live-test-secret-provisioning.md, threat-model-and-option-analysis.md, and repository-prisma-1.0.8-assessment.md in the same ticket directory.
 - Design Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md
 - Implementation Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md
 - Code Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md
 - Coverage Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md
-- Current Execution Round: 13
-- Trigger: Round-32 implementation-source review Pass at `eac929a1f1e411a72d232d961578a700bed12829`; reconcile and execute the user-approved one-application-database encrypted-vault contract.
-- Prior Round Reviewed: Rounds 1–12. Their evidence remains historical context, but prior separate-Store/manifest results cannot authorize the current one-database implementation.
-- Latest Authoritative Round: Round 13 (the Round 13 authoritative result at the end of this report governs where it differs from earlier rounds).
+- Current Execution Round: 21
+- Trigger: Round-45 CR-031 source-review Pass at final HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`; recheck `SCSP-E2E-PACKAGED-EXISTING-USER-001` first, then execute the affected custom-provider, provider, restart, Docker, browser, package, repository-Prisma, and external-runtime matrix.
+- Prior Round Reviewed: Rounds 1–20. Their evidence remains cumulative context; Round 20 remains a truthful historical Fail but does not authorize the final result after CR-031.
+- Latest Authoritative Round: Round 21 (the final section of this report governs where it differs from earlier rounds).
 
 ## Round History
 
@@ -31,7 +31,15 @@
 | 10 | Round-21 empty-as-absent source-review Pass | SCSP-E2E-IMPORT-001, restart, Docker, real providers | Store-backed Vertex Express product mode loss; AutoByteus endpoint DNS unavailable | **Fail** | No | Importer, 205 focused tests, restart, Docker, real OpenAI, and managed Anthropic pass. Gemini corrected-mode diagnostic passes exact models, isolating a product mode-propagation defect. |
 | 11 | Round-26 exact-Gemini-mode/Codex source-review Pass | Vertex Express LLM/audio/image, metadata, Codex, restart, Docker | None; exact external limitations retained | **Pass** | No | Historical. 104 focused tests; real Vertex Express LLM/audio/image, Codex, OpenAI, Anthropic, restart, and Docker passed under the prior metadata contract. |
 | 12 | Round-27 metadata strategy/provider/provenance source-review Pass | assembled provenance, real Vertex/provider paths, Codex, restart, Docker | None; exact external limitations retained | **Pass** | No | Historical. 196 focused tests/builds; new assembled GraphQL provenance E2E; real Vertex Express/OpenAI/Anthropic/Codex, restart, and Docker pass under the prior storage contract. |
-| 13 | Round-32 one-application-database vault source-review Pass | test-runtime reconciliation, importer, restart, Docker, Settings, metadata, custom provider, configured external capabilities, Codex, both Claude modes, Electron/app-data | None after bounded API/E2E fixture/assertion corrections | **Pass** | **Yes** | Current one-DB/key lifecycle, actual browser, clean Docker, current packaged Electron runtime, Codex and Claude CLI pass. All 14 managed-provider scenarios are exactly `READY/MISSING` and are not claimed as executed. |
+| 13 | Round-32 one-application-database vault source-review Pass | test-runtime reconciliation, importer, restart, Docker, Settings, metadata, custom provider, configured external capabilities, Codex, both Claude modes, Electron/app-data | None after bounded API/E2E fixture/assertion corrections | **Pass** | No | Current one-DB/key lifecycle, actual browser, clean Docker, current packaged Electron runtime, Codex and Claude CLI pass. All 14 managed-provider scenarios are exactly `READY/MISSING` and are not claimed as executed. |
+| 14 | approved real-source explicit-target investigation | importer target safety | ambiguous implicit target | **Fail** | No | Historical target-authority failure; corrected by later explicit `--database-url` design. |
+| 15 | explicit-target source-review Pass | real import and browser Settings | configured provider rendered not configured | **Fail** | No | Historical assembled frontend cache identity defect. |
+| 16 | provider cache fix source-review Pass | actual browser, DeepSeek agent, providers, lifecycle/package | None | **Pass** | No | Historical cumulative pass before later custom-provider and environment/authentication changes. |
+| 17 | custom-provider-v1 migration source-review Pass | existing-user migration/reset/package | None | **Pass** | No | Historical current persisted-data proof; retained where unchanged. |
+| 18 | user-requested correct-worktree live terminal/team validation | actual browser terminal and Classroom Simulation Team | None | **Pass** | No | Correct worktree checkpoint; user directly observed exact GPT-5.6-Luna team execution. Superseded only as final implementation identity. |
+| 19 | Round-35 final source-review Pass | Claude harness reconciliation, restored environments, final browser/provider/restart/Docker/Prisma matrix | None | **Pass** | No | Historical final result at HEAD `3244a7c6`; superseded by the Round-36 scope reset. |
+| 20 | Round-36 scope-reset source-review Pass | no-public-removal Settings/Gemini, restart, Docker, packaged existing-user/custom Delete, PTY, Claude/Codex, configured providers | `SCSP-E2E-PACKAGED-EXISTING-USER-001` | **Fail** | No | Migration/reopen passed, but custom-provider Delete destructively committed while GraphQL returned unrelated `AUTOBYTEUS_LLM_DISCOVERY_FAILED`. |
+| 21 | Round-45 CR-031 source-review Pass | `SCSP-E2E-PACKAGED-EXISTING-USER-001`, targeted custom-provider Delete, affected cumulative matrix | None | **Pass** | **Yes** | Exact packaged failure now passes; actual browser Save/Delete, configured providers, restart, unchanged Docker, external Codex/Claude, and repository-Prisma integration all pass or report exact unavailable capability. |
 
 ## Investigation And Execution Basis
 
@@ -2238,3 +2246,434 @@ excluded; `STRONG_AGENT_ISOLATION` remains deferred. Exact unpatched
 import/update, unchanged Docker topology, explicit importer target authority,
 source/template immutability, and `DASHSCOPE_API_KEY` as the sole Qwen mapping
 remain authoritative.
+
+## Round 19 Final-HEAD Claude, Environment, Browser, Provider, And Lifecycle Execution — Pass
+
+### Identity, Scope, And Commands
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
+- Branch: `codex/secure-centralized-secret-provisioning`
+- Final reviewed HEAD: `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f`
+- Source review: Round 35 **Pass**, 96.4%, no open source finding.
+- Broader validation: **Required and completed**.
+
+Representative exact commands, all from the worktree root unless `-C`/`--filter` selected a package:
+
+```bash
+pnpm -C autobyteus-server-ts exec vitest run   tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts   tests/unit/secret-management/live-e2e-harness.test.ts --no-watch
+
+pnpm --filter autobyteus-server-ts build
+pnpm test:e2e:real:preflight -- --scenarios=anthropic.claude-agent-sdk-api-key
+pnpm test:e2e:real
+
+RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run   tests/integration/runtime-management/codex/codex-app-server-live.integration.test.ts   tests/integration/runtime-management/claude/claude-code-live.integration.test.ts --no-watch
+
+pnpm dev:test
+
+DOCKER_CONFIG=<task-owned-credentialless-config>   ./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round19 --build-local
+
+pnpm -C autobyteus-server-ts exec vitest run   tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts   tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts   tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts   tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts   tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts --no-watch
+```
+
+The task-owned Docker configuration contained no credentials and was used only because the user's configured Docker credential helper stalled public frontend-image resolution. It did not alter tracked Docker/Compose/launcher source or product environment. The clean local-source build and exact tracked lifecycle then completed.
+
+### Authoritative Results
+
+| Scenario / boundary | Result | Evidence |
+| --- | --- | --- |
+| Claude/harness reconciliation | **Pass:** 2 files / 27 tests; no deleted auth service or managed-secret residue | `287-round19-claude-harness-reconciliation-corrected.log` |
+| concrete child environments, file roots, AppConfig, Settings filtering, value-safe output | **Pass:** core 12 files / 58; server 8 files / 109 | `288-round19-environment-file-root-value-safe.log` |
+| server production build | **Pass:** Prisma 5.22 generation, TS build, sanitized no-DATABASE_URL bootstrap | `289-round19-server-build.log` |
+| explicit Claude API-key preflight | **Pass:** exact scenario `READY/CONFIGURED` | `290-round19-claude-api-key-preflight.log` |
+| explicit Claude API-key real invocation | **Pass:** preflight plus live SDK query, 2/2 | `291-round19-claude-api-key-real.log` |
+| external Codex and Claude CLI | **Pass:** 2 files / 8 tests; Codex thread/approve/deny/interrupt continuity and Claude CLI operations | `292-round19-codex-claude-cli-live.log`; independent Claude confirmation `293` |
+| final-HEAD actual-browser terminal | **Pass:** unique sentinel and `pwd` rendered; prompt returned | `294`, `295`, `297` |
+| final-HEAD actual-browser Settings | **Pass:** Anthropic rendered Configured; Server Settings rendered no sensitive names | `294`, `296`, `297` |
+| `SCSP-E2E-DOCKER-001` | **Pass:** clean current-source image, migrations/listen, one DB/key, value-free missing/configured, same container+volume restart/reopen, removal | `300`, `301` |
+| Docker cleanup | **Pass:** zero owned containers/volumes/listeners; owned config removed | `302` |
+| configured real-provider matrix | **Pass:** 27 passed / 5 truthful skips | `303` |
+| `SCSP-E2E-RESTART-001` | **Pass:** 1/1 immutable template, one adjacent key, reopen/removal | `304` |
+| cumulative migration/import/GraphQL/metadata/restart | **Pass:** 5 files / 13 scenarios | `305` |
+| exact repository Prisma policy/integration | **Pass:** 1.0.8, no 1.0.6/1.0.7 residue, 5 files / 34 tests | `306` |
+| evidence safety | **Pass:** 16 strict artifacts, 17 raw/base64 canaries, zero structural assignments; redaction artifact explicitly shows `[redacted]` | `307` |
+| final identity/diff/cleanup | **Pass** | `308` |
+
+`286` is an invalid/superseded first harness invocation with an extra delimiter. `298`/`299` are superseded Docker setup attempts that diagnosed the user's public-image credential-helper stall without creating a product failure. `301a` is a superseded GET readiness probe; the authoritative POST GraphQL lifecycle is `301`.
+
+### Actual Browser And Agent-Team Evidence
+
+At final HEAD, `pnpm dev:test` started the built backend on port 8000 and Nuxt frontend on port 3000 using the committed test-runtime materialization. The actual `open_tab` browser exercised the real UI; it was not substituted with direct GraphQL, Playwright, CDP, or an Electron shell. Terminal output showed `SCSP_R19_TERMINAL_1785166800` and `/Users/normy`; Anthropic was Configured; the reachable Server Settings UI exposed none of `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `DATABASE_URL`, `SECRET_ROOT`, or `SECRET_KEY`.
+
+The correct-worktree Round 18 checkpoint had already imported `/Users/normy/autobyteus_org/autobyteus-agents` through Settings and exercised the Classroom Simulation Team through the actual browser with exact Codex App Server model GPT-5.6-Luna. Professor/student messages streamed, the student answered `12`, the professor summarized, and the team returned Idle; the user directly observed the working journey (`282`–`284`). Round 19 independently proves final-HEAD external Codex continuity, while source review proves the Codex launcher is byte-identical to origin/personal. This retained checkpoint is not represented as a final-HEAD rerun of the entire classroom UI.
+
+### Configured External Capability Matrix
+
+| Capability | Final result |
+| --- | --- |
+| OpenAI LLM / product agent / audio / image | **Pass — real configured execution** |
+| DeepSeek LLM / product agent | **Pass — real configured execution** |
+| Gemini Vertex Express LLM / audio / image | **Pass — real configured execution** |
+| Anthropic native LLM | **Pass — real configured execution** |
+| Claude SDK explicit `api-key` | **Pass — exact subject-scoped vault resolution and real query** |
+| Claude CLI | **Pass — authenticated external execution; zero managed-vault lookup by approved mode contract** |
+| Codex App Server | **Pass — authenticated external execution; excluded from any process-isolation claim** |
+| Gemini AI Studio / live metadata | **Unavailable — `provider.google.ai-studio.api-key` not configured** |
+| Serper | **Unavailable — `search.serper.api-key` not configured** |
+| AutoByteus remote LLM / audio / image | **Unavailable — configured credential, but discovery returned exact `AUTOBYTEUS_*_DISCOVERY_FAILED` codes** |
+
+No unavailable capability is claimed as passed.
+
+### Durable Coverage Delta
+
+Updated:
+
+- `test-support/live-e2e/live-e2e-harness.ts`
+- `test-support/live-e2e/live-e2e-scenarios.d.mts`
+- `test-support/live-e2e/live-e2e-scenarios.mjs`
+- `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`
+
+The delta removes the deleted `ClaudeRuntimeAuthenticationService`/`managed-secret` test contract and routes explicit API-key execution through `ClaudeSdkClient`'s exact resolver seam. No production source was changed by API/E2E. All earlier cumulative durable additions/updates/removals remain as inventoried in their latest applicable sections; `test-config/live-e2e.json`, `live-e2e-manifest.ts`, and `run-test-import.mjs` remain intentionally absent.
+
+### Cleanup, Assurance Boundary, And Residual Risk
+
+- Owned dev backend/frontend stopped; ports 8000/3000 were free.
+- `scsp-round19` container, network, volumes, runtime state, and task-owned Docker config were removed.
+- The project test database/key/configuration remains intentionally preserved; it was accessed only through reviewed product boundaries.
+- The user's installed `/Applications/AutoByteus.app` server on port 29695 was identified as user-owned and left running and untouched.
+- No real credential value, source assignment value, root key, or vault row was displayed or inspected.
+- `LOCAL_HARDENED` covers the reviewed local vault/file-root/value-safe boundary only. Restored child environments and external Codex are continuity evidence, not process isolation. `STRONG_AGENT_ISOLATION` remains deferred.
+
+Residual risks are bounded and truthful: unavailable external services remain unavailable; final-head actual desktop-shell packaging was not rerun because the changed browser-equivalent/auth/environment boundaries were directly exercised and the user's installed Electron was preserved. Prior actual packaged one-DB/custom-provider migration evidence remains historical support, not a final-HEAD shell claim.
+
+### Confidence Scorecard And Outcome
+
+| Category | Final score | Basis |
+| --- | ---: | --- |
+| requirement and acceptance-criteria proof | 99% | all critical current auth/vault/import/provider/lifecycle requirements directly proven; unavailable services reported exactly |
+| changed-boundary execution directness | 99% | exact resolver seam, real Claude/API providers, restored launch tests, real Docker and browser |
+| cross-boundary integration realism and mock gap | 99% | actual SDK/agent/media, GraphQL, Nuxt, terminal, restart, Docker; retained observed team journey |
+| environment/configuration/identity/fixture fidelity | 99% | exact final HEAD, persistent project test vault, tracked commands, clean source image, user process preserved |
+| failure/edge/lifecycle/recovery evidence | 99% | zero/one lookup, file-root/redaction, migration/reset/import hostility, restart/reopen/removal, cleanup |
+| user-surface/browser/desktop-shell confidence | 97% | final-head actual browser direct; retained packaged evidence, but no final-head desktop-shell rerun |
+| durable regression coverage quality and relevance | 97% | narrow requirement-linked four-file reconciliation plus broad retained suite; proportional review pending |
+
+- Overall confidence: **98.4%** (simple average).
+- Applicable category below 90%: **None**.
+- Critical missing/failing acceptance criterion: **None**.
+- Broader validation: **Required and completed**.
+- Final API/E2E outcome: **Pass**.
+- Next recipient: `code_reviewer` for a separate proportional review of the four updated durable test-support/test files.
+
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release recheck only, not legal clearance or an authentication redesign. Claude modes remain exactly `auto|cli|api-key`; no process-isolation claim is made. Exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, no automatic import/update, unchanged Docker topology, explicit importer target authority, source/template immutability, the one-DB/adjacent-key contract, and `DASHSCOPE_API_KEY` as the sole Qwen mapping remain authoritative.
+
+## Round 20 Scope-Reset Final-Head Execution — Authoritative Fail
+
+### Entry Point And Execution Scope
+
+- Worktree:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
+- Branch: `codex/secure-centralized-secret-provisioning`
+- Reviewed final HEAD: `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd`
+- Source review: Round 43 **Pass**, 97.3%, no implementation-source finding.
+- Governing scope: `scope-audit.md` and the Round-36 no-public-removal
+  contract.
+- Broader validation decision: **Required and executed** because the delta
+  changes assembled Settings/Gemini commands and restores Electron, PTY,
+  persistent-default, Claude-session, and packaged existing-user boundaries.
+
+Round 19 is historical for the pre-scope-reset candidate. Round 20 is the
+current execution authority.
+
+### Durable Coverage Reconciliation
+
+Updated in this stage:
+
+- `autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts`
+  - proves assembled mutation availability for ordinary Save, Gemini
+    Save/Use, and custom-provider entity Delete;
+  - proves `removeProviderApiKey` and `removeGeminiConfiguration` are absent.
+- `autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts`
+  - proves the committed `.env.test` template remains immutable;
+  - accepts the approved one-time persistence of the built-in retrospective
+    default in the generated runtime `.env`;
+  - proves no second-process mutation, same DB/key, configured vault reopen,
+    migrations, and listen.
+- `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`
+- `test-support/live-e2e/live-e2e-harness.ts`
+- `test-support/live-e2e/live-e2e-scenarios.d.mts`
+- `test-support/live-e2e/live-e2e-scenarios.mjs`
+  - retain the Round-19 explicit `claude-api-key` reconciliation through the
+    production `ClaudeSdkClient` resolver seam; the deleted managed-secret
+    service is not restored.
+
+No production implementation source was changed by API/E2E.
+
+### Repository And Realistic Execution
+
+| Scenario / command | Result | Evidence |
+| --- | --- | --- |
+| focused Round-36 server suite | **Pass:** 10 files / 105 tests | `309-round20-focused-server-scope-reset.log` |
+| focused web and Electron suite | **Pass:** 7 files / 41 tests | `310-round20-focused-web-electron-scope-reset.log` |
+| isolated/direct PTY inheritance | **Pass:** 4 files / 15 tests | `311-round20-focused-pty-inheritance.log` |
+| `pnpm --filter autobyteus-server-ts build` | **Pass** | `312-round20-server-build.log` |
+| reconciled two-process restart | **Pass:** 1/1 | `314-round20-restart-reconciled.log` |
+| cumulative affected API/E2E | **Pass:** 7 files / 28 tests | `315-round20-cumulative-api-e2e-rerun.log` |
+| actual browser ordinary Save/overwrite and no Remove | **Pass** | `316`–`318`, `317-round20-browser-settings-terminal-journey.md` |
+| actual browser Gemini Save, Save-and-use, Use, no standalone removal | **Pass** | `316`, `317`, `319`, `320` |
+| actual browser Terminal/PTY sentinel and `pwd` | **Pass** | `316`, `317`, `318` |
+| `pnpm test:e2e:real:preflight` | **Pass:** 16/16 value-free preflights | `321-round20-real-provider-preflight.log` |
+| `pnpm test:e2e:real` | **Pass where available:** 27 passed / 5 skipped exactly | `322-round20-real-provider-full.log` |
+| external Codex and Claude CLI | **Pass:** 4/4 and 4/4 | `323-round20-codex-claude-cli-live.log` |
+| exact unchanged `docker-start.sh ... --build-local` | **Pass:** clean source image | `324-round20-docker-build-up.log` |
+| same-container/same-volume Docker Save/overwrite/reopen | **Pass** | `325-round20-docker-lifecycle.log` |
+| current macOS Electron package build | **Pass:** application, DMG, ZIP | `327-round20-electron-package-build.log` |
+| packaged server with isolated data and unique port | **Pass** | `328-round20-packaged-server-startup.log` |
+| packaged existing-user migration/reopen/custom Delete | **Fail at Delete** | `329-round20-packaged-existing-user-migration.log` |
+
+Docker validation intentionally used synthetic Save/overwrite plus deletion of
+the whole owned Compose project/volume for cleanup; it did not restore or rely
+on the removed public credential-removal mutations.
+
+### Configured External Capability Outcomes
+
+| Capability | Result |
+| --- | --- |
+| OpenAI LLM / agent flow / audio / image | **Pass — real configured execution** |
+| DeepSeek LLM / agent flow | **Pass — real configured execution** |
+| Gemini Vertex Express LLM / audio / image | **Pass — real configured execution** |
+| Anthropic native LLM / explicit Claude `api-key` | **Pass — real configured execution** |
+| Claude CLI | **Pass — authenticated external execution** |
+| Codex | **Pass — external thread/turn continuity; excluded from LOCAL_HARDENED** |
+| Gemini AI Studio metadata and Serper | **Unavailable — exact managed definitions not configured** |
+| AutoByteus remote LLM / audio / image | **Unavailable — exact discovery returned `AUTOBYTEUS_LLM_DISCOVERY_FAILED`, `AUTOBYTEUS_AUDIO_DISCOVERY_FAILED`, and `AUTOBYTEUS_IMAGE_DISCOVERY_FAILED`** |
+
+No unavailable capability is counted as passed.
+
+### Critical Failure: `SCSP-E2E-PACKAGED-EXISTING-USER-001`
+
+The scenario used:
+
+- the current Electron package's built server and Electron binary in Node mode;
+- a unique port and task-owned application-data directory;
+- one task-owned application database with its adjacent key;
+- a valid one-provider v1 custom-provider file containing a synthetic
+  credential; and
+- a controlled local OpenAI-compatible discovery endpoint.
+
+Observed before the failure:
+
+- startup migration `20260727_custom_provider_v1_secret_migration` finalized
+  `SUCCEEDED`, attempts `1`;
+- the provider rendered `READY` and configured;
+- the current provider file was version 2 with no plaintext credential field;
+- the database and retained process output contained no synthetic canary;
+- a second packaged-server process reopened the same provider configured and
+  retained migration attempts `1`.
+
+Expected:
+
+- GraphQL `deleteCustomProvider` returns `true`;
+- the custom-provider entity and its managed credential are deleted; and
+- an unrelated unavailable AutoByteus remote endpoint does not change the
+  outcome of the entity lifecycle command.
+
+Observed:
+
+- HTTP/GraphQL transport returned status 200 with a null mutation result and
+  `AUTOBYTEUS_LLM_DISCOVERY_FAILED`;
+- a post-response catalog query and the current provider file both showed that
+  the provider had nevertheless been deleted.
+
+The public command therefore reports failure **after the destructive operation
+has committed**. This was reproduced twice. The exact unavailable AutoByteus
+discovery state is independently recorded in the canonical real-provider
+matrix, so this is not a credential, package, migration, or controlled-fixture
+failure. The relevant production sequence removes the vault entry and entity,
+then performs a full AutoByteus model reload that propagates remote-discovery
+failure (`331-round20-custom-delete-failure-origin.log`).
+
+Preliminary classification: **implementation-owned source behavior**.
+`code_reviewer` must perform focused failure-origin review before an owner is
+finalized. No production fix was attempted in API/E2E.
+
+### Confidence Scorecard
+
+| Category | Score | Evidence and remaining gap |
+| --- | ---: | --- |
+| requirement and acceptance-criteria proof | 86% | almost all current critical paths directly pass, but custom-provider Delete reports failure after committing |
+| changed-boundary execution directness | 99% | actual GraphQL, browser, package, process, provider SDK, PTY, restart, and Docker paths |
+| cross-boundary integration realism and mock gap | 97% | realistic package execution exposed the failure missed by focused coverage |
+| environment/configuration/identity/fixture fidelity | 99% | exact HEAD, current package, isolated data/ports, controlled endpoint, configured vault through product resolution |
+| failure/edge/lifecycle/recovery evidence | 95% | migration/reopen/cleanup and post-failure state proven; product outcome remains incorrect |
+| user-surface/browser/desktop-shell confidence | 96% | actual browser plus current package/server and Electron-focused coverage; full current shell not launched over the user's installed instance |
+| durable regression coverage quality and relevance | 95% | narrow current-contract reconciliation; packaged failure currently has temporary executable evidence rather than a passing regression |
+
+- Overall confidence: **95.3%** (simple average).
+- Critical acceptance criterion failing: **Yes**.
+- Score override permitted: **No**. A critical failure prevents Pass regardless
+  of the numerical average.
+- Final API/E2E outcome: **Fail**.
+- Required route: `code_reviewer` focused failure-origin analysis for
+  `SCSP-E2E-PACKAGED-EXISTING-USER-001`.
+
+### Cleanup And Safety
+
+- Browser tabs and both task-owned development stacks were stopped.
+- Docker project `scsp-round20`, its volumes, generated state, and owned
+  credential-free Docker configuration were removed.
+- The detached package worktree and all task-owned packaged-server data were
+  removed.
+- Ports `58120`, `33120`, `61791`, and `61374` were free.
+- The user's installed Electron process/profile was not used, stopped, or
+  modified.
+- No real credential value, source assignment value, vault row, key file, or
+  secret-bearing artifact was displayed or retained.
+- The canonical scanner passed across 22 Round-20 text artifacts plus both
+  canonical reports with raw/base64 canary and structural-field enforcement
+  (`332-round20-final-evidence-scan.log`).
+- Cleanup evidence: `326-round20-docker-cleanup.log` and
+  `330-round20-package-and-process-cleanup.log`.
+
+Preserved constraints remain authoritative:
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` is a delivery/release recheck only, not legal
+clearance or an authentication redesign; Claude remains exactly
+`auto|cli|api-key`; `LOCAL_HARDENED` covers only local vault/file-root/value-safe
+custody with Codex excluded; inherited child environments are continuity
+evidence, not isolation; `STRONG_AGENT_ISOLATION` remains deferred; exact
+unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker
+topology, explicit importer target and source immutability, one DB plus adjacent
+key, no automatic `.env` credential migration, and DASHSCOPE-only Qwen mapping
+remain authoritative.
+
+## Round 21 CR-031 Packaged-Delete Resolution — Authoritative Pass
+
+### Entry Point
+
+- Exact final HEAD: `ec0df6b1a9d216366e08262cd96f5280686b04d0`
+- Source review: Round 45 **Pass**, 97.5%, no open implementation-source finding.
+- Broader-validation decision: **Required and completed** because the prior
+  failure existed only across package, migration, vault, GraphQL, custom runtime,
+  catalog, and unrelated remote-discovery boundaries.
+- Round 20 remains historical **Fail**. Round 21 is the current execution authority.
+
+### First Recheck: `SCSP-E2E-PACKAGED-EXISTING-USER-001`
+
+A detached exact-HEAD worktree was installed with the frozen lock and packaged
+through `pnpm -C autobyteus-web build:electron:mac`. The packaged Electron server
+was launched in Node mode on a unique port with a task-owned data directory,
+one application database and adjacent key, one valid synthetic v1 custom
+provider, and a controlled loopback OpenAI-compatible model endpoint.
+
+**Pass:** migration status was `SUCCEEDED` with attempts `1`; the v2 current
+provider file contained no plaintext credential field; the process restarted and
+reopened the provider `READY`; GraphQL `deleteCustomProvider` returned `true`;
+the provider disappeared from the assembled provider/current-file/runtime/catalog
+sets; its managed credential count changed from one to zero; and the database/log
+canary scans were clean. AutoByteus remote discovery was still unavailable, but
+did not govern Delete completion. Evidence: `334`–`335`.
+
+### Repository, Browser, External, Docker, And Package Matrix
+
+| Scenario / command | Result | Evidence |
+| --- | --- | --- |
+| exact current Electron package | **Pass:** application, DMG, ZIP | `334-round21-electron-package-build.log` |
+| packaged existing-user migration/reopen/Delete | **Pass** | `335-round21-packaged-existing-user-rerun.log` |
+| focused CR-031 service/catalog tests | **Pass:** 2 files / 16 tests | `336-round21-focused-and-cumulative-rerun.log` |
+| cumulative migration/import/provider/metadata/terminal/settings/restart E2E | **Pass:** 7 files / 28 tests | `336` |
+| canonical configured-provider runner | **Pass where configured:** 27 passed / 5 exact skips | `337-round21-real-provider-full.log` |
+| unchanged clean current-source Docker build | **Pass** | `338-round21-docker-build-up.log` |
+| Docker one-DB/key save/overwrite/same-volume restart/reopen | **Pass** | `339-round21-docker-lifecycle.log` |
+| Docker cleanup | **Pass:** zero owned container/volume/network | `340-round21-docker-cleanup.log` |
+| external Codex and Claude CLI | **Pass:** 4/4 and 4/4 | `341-round21-codex-claude-cli-live.log` |
+| actual browser custom-provider Save/Delete | **Pass:** one controlled model, READY, targeted removal, visible absence | `343`–`346` |
+| exact repository Prisma policy/integration | **Pass:** 1.0.8, no 1.0.6/1.0.7 residue, 5 files / 34 tests | `347-round21-repository-prisma-integrations-policy.log` |
+| final task-owned cleanup | **Pass** | `348-round21-final-cleanup.log` |
+| final value-safety scanner | **Pass:** 14 text artifacts plus both canonical reports; zero raw/base64 canary or structural-secret matches | `349-round21-final-evidence-scan.log` |
+| final identity/diff/inventory check | **Pass** | `350-round21-final-package-check.log` |
+
+The browser scenario used the project-documented root `pnpm dev:test`, which
+built and launched the server at `127.0.0.1:8000` from committed `.env.test`
+runtime materialization and started Nuxt at `127.0.0.1:3000`. The actual
+`open_tab` tool—not Playwright, CDP, a direct API substitute, or Electron shell—
+selected New Provider, entered a synthetic hidden credential, loaded one model,
+saved the provider, and clicked the production custom-provider Delete control.
+The row and details card disappeared. The correlated backend log shows targeted
+reload with one model after Save and zero models after Delete, followed by a
+40-model aggregate cache. Supporting screenshots are `344` and `345`; semantic
+journey evidence is `346`.
+
+### External Capability Results
+
+| Capability | Result |
+| --- | --- |
+| OpenAI LLM / agent / audio / image | **Pass — real configured execution** |
+| DeepSeek LLM / agent | **Pass — real configured execution** |
+| Gemini Vertex Express LLM / audio / image | **Pass — real configured execution** |
+| Anthropic native LLM / explicit Claude `api-key` | **Pass — real configured execution** |
+| Claude CLI | **Pass — authenticated external execution** |
+| Codex | **Pass — external continuity; excluded from LOCAL_HARDENED** |
+| Gemini AI Studio / Serper | **Unavailable — exact managed definitions not configured** |
+| AutoByteus remote LLM / audio / image | **Unavailable — exact discovery failure codes retained and not counted as Pass** |
+
+No unavailable capability is claimed as passed.
+
+### Durable Coverage Delta For Proportional Review
+
+Updated cumulative durable test/support paths:
+
+- `autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`
+- `test-support/live-e2e/live-e2e-harness.ts`
+- `test-support/live-e2e/live-e2e-scenarios.d.mts`
+- `test-support/live-e2e/live-e2e-scenarios.mjs`
+
+No API/E2E-owned production source changed. Removed paths remain intentionally
+absent: `test-config/live-e2e.json`, `test-support/live-e2e/live-e2e-manifest.ts`,
+and `test-support/live-e2e/run-test-import.mjs`.
+
+### Cleanup, Safety, And Residual Risk
+
+- Browser tab, root `pnpm dev:test`, and the controlled loopback fixture stopped;
+  ports 3000, 8000, 63221, and 62578 were free.
+- The detached package worktree and all task-owned package data were removed.
+- Docker project `scsp-round21` had zero owned containers, volumes, and networks;
+  its temporary Docker configuration was removed.
+- The user's installed Electron was not stopped, reused, or modified.
+- The persistent project test database/key remains intentionally configured;
+  real values were accessed only through reviewed product resolver boundaries.
+- No real credential value, source assignment value, vault row, or root-key bytes
+  were displayed or inspected.
+- Residual risk is bounded to truthfully unavailable external capabilities and
+  platform variants not present on this macOS host. The actual changed package,
+  browser, GraphQL, vault, migration, runtime/catalog, provider, Docker, and
+  repository-Prisma boundaries were directly exercised.
+
+### Confidence Scorecard And Outcome
+
+| Category | Final score | Basis |
+| --- | ---: | --- |
+| requirement and acceptance-criteria proof | 99% | prior critical packaged Delete failure rechecked first and resolved; applicable lifecycle/provider/UI obligations directly proven |
+| changed-boundary execution directness | 100% | exact package, migration, vault, GraphQL, targeted runtime/catalog sync, and actual browser Delete executed |
+| cross-boundary integration realism and mock gap | 99% | package, browser, external SDK/runtime, Docker, restart, and repository integrations all exercised |
+| environment/configuration/identity/fixture fidelity | 99% | exact HEAD, frozen package, committed test runtime, persistent configured vault, controlled fixture, unique owned resources |
+| failure/edge/lifecycle/recovery evidence | 99% | historical failure reproduced then resolved; migration/reopen, restart, unavailable remote, overwrite, and cleanup proven |
+| user-surface/browser/desktop-shell confidence | 99% | actual current browser plus exact current macOS package and isolated packaged server; no user profile reuse |
+| durable regression coverage quality and relevance | 97% | six narrow cumulative requirement-linked paths pass; separate proportional review pending |
+
+- Overall confidence: **98.9%** (simple average).
+- Applicable category below 90%: **None**.
+- Critical missing/failing acceptance criterion: **None**.
+- Broader validation: **Required and completed**.
+- Final API/E2E outcome: **Pass**.
+- Next recipient: `code_reviewer` for separate proportional durable-test review.
+
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release recheck
+only, not legal clearance or an authentication redesign. Claude remains exactly
+`auto|cli|api-key`. `LOCAL_HARDENED` remains limited to the local vault/file-root/
+value-safe boundary with Codex excluded; inherited environments and external
+runtime continuity are not process-isolation proof, and `STRONG_AGENT_ISOLATION`
+remains deferred. Exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0,
+unchanged Docker topology, explicit importer target and source immutability, one
+database plus adjacent key, no automatic `.env` credential migration, and
+DASHSCOPE-only Qwen mapping remain authoritative.

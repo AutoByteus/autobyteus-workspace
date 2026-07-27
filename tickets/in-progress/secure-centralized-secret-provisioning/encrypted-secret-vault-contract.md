@@ -2,7 +2,7 @@
 
 ## Status
 
-`Requirements-ready — user-approved for architecture review. The one-database vault remains approved, and this revision adds the internal create-only batch/compensation contract required by fixed-path custom-provider-v1 migration. Implementation remains unauthorized until a passing architecture gate.`
+`Requirements-ready — the retained one-database vault and custom-provider batch/compensation contract remain user-approved. The cumulative narrow-scope cleanup, including removal of standalone ordinary/Gemini deletion surfaces, is submitted for architecture review; implementation/API-E2E/delivery remain unauthorized until Pass.`
 
 ## Purpose
 
@@ -138,7 +138,7 @@ The target does not store:
 
 Provider/slot mapping belongs to the credential catalog/adapter. Provider validation state belongs to its provider service. The encrypted table is a vault, not a configuration registry.
 
-The provider-centric API-key Settings read asks the vault only whether an exact provider credential slot is configured. `LlmProviderService` maps that value-free result to the established `LlmProviderObject.apiKeyConfigured` Boolean exactly once per provider and groups existing model lists separately. For ordinary key-backed providers, `true` means the exact vault slot is confirmed `CONFIGURED`; otherwise it is `false`. Gemini preserves its established aggregate provider meaning: true when AI Studio or Vertex Express is configured, or when Vertex Project has complete non-secret project/location configuration. That aggregate never selects the active Gemini mode. It must not expose vault health, storage state, instruction codes, secret IDs, or values. Ordinary provider Save/Remove returns Boolean command completion and the web refetches `providerSettings`; custom and Gemini transport-specific shapes remain owned by their provider/configuration services and do not expose vault internals. Catalog membership never depends on this configured fact. This grouping does not change vault persistence or authorization ownership.
+The provider-centric API-key Settings read asks the vault only whether an exact provider credential slot is configured. `LlmProviderService` maps that value-free result to the established `LlmProviderObject.apiKeyConfigured` Boolean exactly once per provider and groups existing model lists separately. For ordinary key-backed providers, `true` means the exact vault slot is confirmed `CONFIGURED`; otherwise it is `false`. Gemini preserves its established aggregate provider meaning: true when AI Studio or Vertex Express is configured, or when Vertex Project has complete non-secret project/location configuration. That aggregate never selects the active Gemini mode. It must not expose vault health, storage state, instruction codes, secret IDs, or values. Ordinary provider Save creates or overwrites and returns Boolean command completion; the web refetches `providerSettings`, and no standalone ordinary key-removal action exists. Custom-provider Delete remains an entity lifecycle and may internally remove its linked credential. Gemini exposes Save/overwrite and explicit mode selection but no standalone key/configuration removal. Catalog membership never depends on this configured fact. This grouping does not change vault persistence or authorization ownership.
 
 ## Secret Identity Contract
 
@@ -147,7 +147,7 @@ Examples:
 | Provider / purpose | `secret_id` |
 |---|---|
 | OpenAI shared LLM/audio/image | `provider.openai.api-key` |
-| Anthropic native LLM + managed Claude runtime | `provider.anthropic.api-key` |
+| Anthropic native LLM + explicit Claude Agent SDK `api-key` execution | `provider.anthropic.api-key` |
 | Google AI Studio | `provider.google.ai-studio.api-key` |
 | Google Vertex Express | `provider.google.vertex-express.api-key` |
 | AutoByteus remote LLM/audio/image | `provider.autobyteus.api-key` |
@@ -319,7 +319,7 @@ interface SecretManagementService {
 Rules:
 
 - `saveForConsumer` is atomic create-or-replace after authorization;
-- `removeForConsumer` is idempotent;
+- `removeForConsumer` is idempotent and internal-only for an owning entity lifecycle such as custom-provider Delete or bounded compensation; ordinary provider and Gemini Settings cannot call it;
 - `getStatusForConsumer` never decrypts and never validates with the provider;
 - `saveBatch` accepts only the exact importer-registry plan and performs one transaction;
 - `createMissingBatchForCustomProviderMigration` is internal to the fixed custom-provider migration: it requires every target ID to be `MISSING`, encrypts/inserts every entry in one transaction, has no overwrite/use/compare mode, and returns an opaque memory-only receipt identifying the exact inserted encrypted rows;
@@ -458,7 +458,7 @@ Forbidden:
 - model -> secret ID mapping;
 - provider client importing server secret management/Prisma/filesystem;
 - global service locator;
-- environment fallback;
+- managed-provider credential fallback to environment aliases;
 - alternate secret retry;
 - decrypted value in config/model/GraphQL/log/artifact state.
 
@@ -470,7 +470,7 @@ Forbidden:
 AI_STUDIO | VERTEX_EXPRESS | VERTEX_PROJECT
 ```
 
-It is the sole runtime authority. Settings saves configure one option but do not implicitly activate it. The concise UI exposes a separate `Use this mode` action and may expose an explicit first-time compound `Save and use this mode` action. Saving never clears another option. `GeminiConfigurationService` owns each compound command: save-and-activate saves first and activates second; active removal clears mode first and removes second. The query and every command return the same actual setup state, so cross-owner partial completion is visible without claiming atomicity or adding staged-outcome/instruction fields. An absent, invalid, or incomplete selected mode is a visible closed state; no priority or alternate-mode fallback runs.
+It is the sole runtime authority. Settings saves create or overwrite one option but do not implicitly activate it. The concise UI exposes a separate `Use this mode` action and may expose an explicit first-time compound `Save and use this mode` action. Saving never clears another option. `GeminiConfigurationService` owns the only compound command: save-and-activate saves first and activates second. The query and every Save/Use command return the same actual setup state, so cross-owner partial completion is visible without claiming atomicity or adding staged-outcome/instruction fields. No standalone key/configuration-removal command exists. An absent, invalid, or incomplete selected mode is a visible closed state; no priority or alternate-mode fallback runs.
 
 Core Gemini clients receive a second narrow, non-secret function dependency:
 
@@ -608,12 +608,14 @@ Implementation must remove, not wrap:
 - LLM/media construction targets/contexts/resolved-auth unions;
 - implicit Gemini priority/fallback and any model-level mode selector;
 - old Google AI Studio secret ID;
-- environment credential fallback;
+- managed-provider credential fallback to environment aliases;
 - runtime custom-provider-v1 parser/error branch and any backup/recovery-file machinery;
+- ordinary `removeProviderApiKey` UI/GraphQL/service surface and ordinary key Remove controls;
+- `removeGeminiConfiguration` UI/GraphQL/service surface and Gemini Remove controls;
 - compatibility re-exports for removed files/types.
 
 ## Approval
 
-`The one-database vault and custom-provider migration batch/compensation extension are user-approved for architecture review.`
+`The one-database vault, custom-provider migration batch/compensation extension, and restriction of deletion to owning custom-provider lifecycle/compensation paths are user-approved as part of the cumulative narrow-scope correction.`
 
-Architecture review is authorized. No implementation is authorized until a passing gate.
+Architecture review is authorized. Implementation, API/E2E, and delivery remain unauthorized until a passing gate.

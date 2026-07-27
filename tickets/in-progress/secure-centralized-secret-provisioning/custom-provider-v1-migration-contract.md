@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `Requirements-ready — user-approved for architecture review` |
+| Status | `Requirements-ready — retained custom-provider transition plus cumulative narrow-scope cleanup submitted for architecture review; implementation/API-E2E/delivery remain unauthorized until Pass` |
 | Purpose | Define the one-time custom-provider-v1 credential migration, its simple delete-and-reconfigure failure path, and the general Settings availability invariant |
 | Related requirements | `REQ-001`, `REQ-006`, `REQ-008`, `REQ-009`, `REQ-012`, `REQ-015`, `REQ-018` |
 | Related acceptance criteria | `AC-001`, `AC-004`, `AC-005`, `AC-008`, `AC-011`, `AC-013`, `AC-014`, `AC-015` |
@@ -29,7 +29,7 @@ It does not authorize:
 
 - automatic import from `.env`, `.env.test`, arbitrary paths, or the standalone importer's source;
 - a runtime v1 compatibility reader;
-- environment fallback;
+- managed-provider credential fallback to environment aliases;
 - silent replacement, comparison, use, or deletion of an existing vault credential;
 - migration of unrelated application data;
 - a backup/recovery/quarantine directory or retained plaintext copy after failed migration.

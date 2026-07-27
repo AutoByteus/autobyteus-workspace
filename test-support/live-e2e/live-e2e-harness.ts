@@ -23,7 +23,6 @@ import type { SecretManagementService } from '../../autobyteus-server-ts/src/sec
 import { AutobyteusRemoteModelDiscoveryService } from '../../autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.js';
 import { createGeminiRuntimeResolver } from '../../autobyteus-server-ts/src/llm-management/services/gemini-runtime-resolver-adapter.js';
 import { getGeminiConfigurationService } from '../../autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.js';
-import { ClaudeRuntimeAuthenticationService } from '../../autobyteus-server-ts/src/runtime-management/claude/client/claude-runtime-authentication-service.js';
 import { ClaudeSdkClient } from '../../autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.js';
 import { AgentDefinition } from '../../autobyteus-server-ts/src/agent-definition/domain/models.js';
 import type { AgentDefinitionService } from '../../autobyteus-server-ts/src/agent-definition/services/agent-definition-service.js';
@@ -351,11 +350,12 @@ export class LiveE2eScenarioExecution {
     );
   }
 
-  createManagedClaudeClient(): ClaudeSdkClient {
-    return new ClaudeSdkClient(new ClaudeRuntimeAuthenticationService(
-      () => 'managed-secret',
-      () => this.management,
-    ));
+  createApiKeyClaudeClient(): ClaudeSdkClient {
+    return new ClaudeSdkClient(() => this.management.resolveForUse({
+      kind: 'agentRuntime',
+      runtimeKind: 'claude_agent_sdk',
+      credentialSlot: 'apiKey',
+    }));
   }
 
   async search(query: string, numResults: number): Promise<string> {

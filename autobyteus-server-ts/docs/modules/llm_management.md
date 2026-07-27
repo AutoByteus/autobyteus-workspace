@@ -211,6 +211,28 @@ The current file version is `2` and is metadata-only. Credentials are stored in
 the encrypted vault inside the current application database under the custom
 provider's stable definition ID. See [Secret Management](./secret_management.md).
 
+### Upgrade From The Supported V1 File
+
+Startup has one bounded transition for the canonical version-1 custom-provider
+file created by the supported pre-vault application. It runs after the
+application database and vault are ready and before normal provider discovery:
+
+- a complete valid v1 set migrates all providers atomically, preserving IDs and
+  names, storing credentials in the vault, and publishing secret-free v2
+  metadata;
+- an invalid, duplicated, unsafe, or vault-colliding set is not partially
+  preserved; the plaintext v1 file is removed and the user re-adds providers
+  through **New Provider**;
+- if the v1 file cannot be removed safely, built-in providers and general
+  Settings remain available, but custom-provider creation remains unavailable
+  until the filesystem issue is fixed and the application restarts;
+- an aged zero-byte lock left by the supported v1 writer can be reclaimed,
+  while a live positive-PID owner is never displaced.
+
+Normal runtime remains v2-only. There is no v1 compatibility reader, backup or
+quarantine copy, alternate legacy source, automatic `.env` import, or partial
+provider migration. Migration outcomes and APIs remain value-free.
+
 ## Custom Provider Lifecycle
 
 ### Probe And Create

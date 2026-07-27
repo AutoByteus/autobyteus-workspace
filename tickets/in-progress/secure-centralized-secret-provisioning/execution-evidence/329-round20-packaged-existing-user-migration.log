@@ -1,0 +1,24 @@
+ROUND=20
+HEAD=1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd
+SCENARIO=SCSP-E2E-PACKAGED-EXISTING-USER-001
+FIRST_MIGRATION={"migrationId":"20260727_custom_provider_v1_secret_migration","status":"SUCCEEDED","attempts":1,"summary":{"scannedCount":1,"migratedCount":1,"skippedCount":0,"failedCount":0,"details":[{"itemId":"custom-provider-v1","status":"MIGRATED","message":"CUSTOM_PROVIDER_V1_MIGRATED"}]}}
+FIRST_PROVIDER={"provider":{"id":"provider_packaged_round20","apiKeyConfigured":true,"status":"READY"},"llmModels":[{"modelIdentifier":"openai-compatible:provider_packaged_round20:packaged-round20-model"}]}
+CURRENT_FILE_VERSION=2
+CURRENT_FILE_PLAINTEXT_FIELD_ABSENT=true
+DATABASE_CANARY_SCAN_CLEAN=true
+REOPENED_MIGRATION={"migrationId":"20260727_custom_provider_v1_secret_migration","status":"SUCCEEDED","attempts":1,"summary":{"scannedCount":1,"migratedCount":1,"skippedCount":0,"failedCount":0,"details":[{"itemId":"custom-provider-v1","status":"MIGRATED","message":"CUSTOM_PROVIDER_V1_MIGRATED"}]}}
+REOPENED_PROVIDER={"provider":{"id":"provider_packaged_round20","apiKeyConfigured":true,"status":"READY"},"llmModels":[{"modelIdentifier":"openai-compatible:provider_packaged_round20:packaged-round20-model"}]}
+DELETE_RESPONSE_META={"status":200,"result":null,"errors":[{"message":"AUTOBYTEUS_LLM_DISCOVERY_FAILED","path":["deleteCustomProvider"]}]}
+PROVIDER_ABSENT_AFTER_DELETE=true
+CUSTOM_FILE_PROVIDER_ABSENT_AFTER_DELETE=true
+PACKAGED_LOG_CANARY_SCAN_CLEAN=true
+SCSP-E2E-PACKAGED-EXISTING-USER-001=FAIL
+PACKAGED_EXISTING_USER_CLEANUP=PASS
+file:///private/tmp/scsp-round20-packaged-existing-user.mjs:56
+  if(reopened.migration?.attempts!==1||!reopened.provider?.provider.apiKeyConfigured||deleteMeta.result!==true||deleteMeta.errors.length!==0||afterDelete.provider!==undefined||!logsClean){console.log('SCSP-E2E-PACKAGED-EXISTING-USER-001=FAIL');throw new Error('PACKAGED_REOPEN_DELETE_FAILED');}
+                                                                                                                                                                                                                                                          ^
+
+Error: PACKAGED_REOPEN_DELETE_FAILED
+    at file:///private/tmp/scsp-round20-packaged-existing-user.mjs:56:251
+
+Node.js v22.23.1

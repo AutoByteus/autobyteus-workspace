@@ -58,7 +58,9 @@ Startup follows one ordered lifecycle:
 1. obtain and canonicalize `DATABASE_URL`;
 2. run ordinary application migrations;
 3. initialize a new vault or verify the established database/key pair;
-4. expose runtime APIs with value-free vault health.
+4. run registered app-data migrations, including the bounded custom-provider-v1
+   transition described below;
+5. expose runtime APIs with value-free vault health.
 
 First initialization is interruption-safe and transactionally excludes
 concurrent initializers. If an interruption leaves only a valid secure 32-byte
@@ -160,13 +162,41 @@ Both modes remain unchanged. Anthropic's third-party subscription-authentication
 guidance is a release-time external recheck dependency, not legal clearance or
 a license to redesign authentication.
 
-## Legacy Sources And Explicit Import
+## Legacy Sources, Custom-Provider V1, And Explicit Import
 
 Runtime startup never imports, copies, scrubs, deletes, or rewrites credentials
-from `.env`, `.env.test`, ambient aliases, another checkout, or legacy custom
-provider files. Legacy credential aliases are non-authoritative. Users
-reconfigure through Settings or explicitly run the importer, then decide
-whether to rotate and remove plaintext sources themselves.
+from `.env`, `.env.test`, ambient aliases, or another checkout. Legacy
+credential aliases are non-authoritative. Users reconfigure through Settings or
+explicitly run the importer, then decide whether to rotate and remove plaintext
+sources themselves.
+
+The only bounded startup credential transition is the application-owned
+`CustomProviderV1AppDataMigration` for the canonical
+`<app-data-dir>/llm/custom-llm-providers.json` file written by the supported
+pre-vault application:
+
+- it runs after Prisma migration and vault initialization, before normal custom
+  provider consumers;
+- a valid complete v1 set is converted all-or-nothing into encrypted vault
+  entries plus secret-free v2 metadata, preserving stable provider IDs and
+  names;
+- the staged v2 file is atomically published only after the complete encrypted
+  create-only batch succeeds;
+- an invalid, duplicated, unsafe, or colliding v1 set is not partially
+  imported; the plaintext v1 file is deleted and the user re-adds the needed
+  providers through **New Provider**;
+- if safe deletion itself fails, startup and built-in Settings remain
+  available, while custom-provider creation remains unavailable until the
+  filesystem problem is corrected and the application restarts;
+- the supported aged zero-byte legacy lock may be reclaimed, while a live
+  positive-PID owner remains protected;
+- no backup, quarantine copy, runtime v1 reader, compatibility fallback,
+  automatic `.env` import, or alternate source is created.
+
+After that one-time boundary, normal runtime reads and writes only v2 metadata
+and the encrypted vault. Migration status is value-free and records successful
+migration, reconfiguration-required warning, or reset-unavailable failure
+without exposing credential material.
 
 From the workspace root, preview an explicitly selected owner-private source
 against an explicitly identified SQLite application database:

@@ -74,8 +74,8 @@ export const liveE2eScenarios = Object.freeze({
     requiredSecretId: 'provider.anthropic.api-key',
     model: 'claude-sonnet-4.6',
   }),
-  'anthropic.claude-agent-sdk-managed': Object.freeze({
-    operation: 'claude-managed',
+  'anthropic.claude-agent-sdk-api-key': Object.freeze({
+    operation: 'claude-api-key',
     providerId: 'ANTHROPIC',
     requiredSecretId: 'provider.anthropic.api-key',
     model: 'claude-sonnet-4-6',

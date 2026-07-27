@@ -1,0 +1,36 @@
+ROUND=20
+HEAD=1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd
+SCENARIO=SCSP-E2E-PACKAGED-EXISTING-USER-001
+PRELIMINARY_OWNER=implementation_engineer
+OBSERVED=deleteCustomProvider returned AUTOBYTEUS_LLM_DISCOVERY_FAILED after provider entity and secret removal committed
+SOURCE_DELETE_PATH=
+   232	
+   233	  async deleteCustomProvider(providerId: string): Promise<void> {
+   234	    const normalizedProviderId = normalizeRequiredString(providerId, 'providerId');
+   235	    if (this.builtInCatalog.isBuiltInProviderId(normalizedProviderId.toUpperCase())) {
+   236	      throw new Error(`Deleting built-in providers is not supported. Received '${providerId}'.`);
+   237	    }
+   238	    const provider = await this.customProviderStore.getProviderById(normalizedProviderId);
+   239	    await this.secretVaultRuntime.requireService().removeForConsumer(
+   240	      this.customConsumer(provider?.id ?? normalizedProviderId),
+   241	    );
+   242	    if (provider) await this.customProviderStore.deleteProvider(provider.id);
+   243	    await this.modelCatalogService.reloadLlmModels(RuntimeKind.AUTOBYTEUS);
+   244	  }
+SOURCE_REFRESH_PATH=
+    49	  async refreshModels(): Promise<void> {
+    50	    logger.info('Triggering LLMFactory re-initialization to refresh models...');
+    51	    try {
+    52	      await LLMFactory.reinitialize();
+    53	      await this.customLlmProviderRuntimeSyncService.syncSavedProviders();
+    54	      await this.remoteDiscoveryService.refresh('llm');
+    55	      logger.info('LLMFactory re-initialized successfully.');
+    56	    } catch (error) {
+    57	      logger.error(`Failed to re-initialize LLMFactory: ${String(error)}`);
+    58	      throw error;
+    59	    }
+CONFIGURED_PROVIDER_MATRIX_AUTOBYTEUS_RESULT=
+{"scenarioId":"autobyteus.remote-llm","status":"SKIPPED_CAPABILITY_UNAVAILABLE","capability":"llm-model-discovery","instructionCode":"AUTOBYTEUS_LLM_DISCOVERY_FAILED"}
+{"scenarioId":"autobyteus.remote-audio","status":"SKIPPED_CAPABILITY_UNAVAILABLE","capability":"audio-model-discovery","instructionCode":"AUTOBYTEUS_AUDIO_DISCOVERY_FAILED"}
+{"scenarioId":"autobyteus.remote-image","status":"SKIPPED_CAPABILITY_UNAVAILABLE","capability":"image-model-discovery","instructionCode":"AUTOBYTEUS_IMAGE_DISCOVERY_FAILED"}
+PRODUCTION_SOURCE_CHANGED_BY_API_E2E=false

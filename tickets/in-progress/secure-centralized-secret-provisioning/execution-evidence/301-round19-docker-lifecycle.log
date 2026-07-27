@@ -1,0 +1,39 @@
+ROUND=19
+HEAD=3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f
+SCENARIO=SCSP-E2E-DOCKER-001
+PORT=58633
+INITIAL_READY=YES
+CONTAINER_ID=4c35bda4f93e
+DATA_VOLUME=scsp-round19_autobyteus-server-data
+INITIAL_LAYOUT_BEGIN
+DATA_FILE_NAMES=.env
+APPLICATION_DATABASE_COUNT=0
+ROOT_KEY_COUNT=0
+ENV_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+INITIAL_LAYOUT_END
+INITIAL_VALUE_FREE_STATUS={"errors":[],"vault":{"health":"READY","instructionCode":null,"assurance":"LOCAL_HARDENED"},"provider":{"id":"AUTOBYTEUS","apiKeyConfigured":false,"status":"NOT_APPLICABLE","statusMessage":null}}
+SAVE_VALUE_FREE={"data":{"saveProviderApiKey":true}}
+POST_SAVE_VALUE_FREE_STATUS={"errors":[],"vault":{"health":"READY","instructionCode":null,"assurance":"LOCAL_HARDENED"},"provider":{"id":"AUTOBYTEUS","apiKeyConfigured":true,"status":"NOT_APPLICABLE","statusMessage":null}}
+RESTART_COMMAND=docker compose -p scsp-round19 -f autobyteus-server-ts/docker/docker-compose.yml restart autobyteus-server
+ Container scsp-round19-autobyteus-server-1  Restarting
+ Container scsp-round19-autobyteus-server-1  Started
+RESTART_READY=YES
+CONTAINER_ID=4c35bda4f93e
+DATA_VOLUME=scsp-round19_autobyteus-server-data
+RESTART_LAYOUT_BEGIN
+DATA_FILE_NAMES=.env
+APPLICATION_DATABASE_COUNT=0
+ROOT_KEY_COUNT=0
+ENV_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+RESTART_LAYOUT_END
+REOPENED_VALUE_FREE_STATUS={"errors":[],"vault":{"health":"READY","instructionCode":null,"assurance":"LOCAL_HARDENED"},"provider":{"id":"AUTOBYTEUS","apiKeyConfigured":true,"status":"NOT_APPLICABLE","statusMessage":null}}
+REMOVE_VALUE_FREE={"data":{"removeProviderApiKey":true}}
+FINAL_VALUE_FREE_STATUS={"errors":[],"vault":{"health":"READY","instructionCode":null,"assurance":"LOCAL_HARDENED"},"provider":{"id":"AUTOBYTEUS","apiKeyConfigured":false,"status":"NOT_APPLICABLE","statusMessage":null}}
+CONTAINER_LOG_CANARY_SCAN=CLEAN
+SCSP-E2E-DOCKER-001=PASS
+CORRECTED_RECURSIVE_LAYOUT_BEGIN
+DATA_FILE_NAMES_RECURSIVE=20260517_team_run_metadata_member_tree-2026-07-27T15-50-38-157Z.log,20260521_run_history_index_v2-2026-07-27T15-50-38-304Z.log,20260521_team_run_history_index_v2-2026-07-27T15-50-38-285Z.log,20260617_raw_trace_rotation_layout-2026-07-27T15-50-38-221Z.log,20260623_remove_self_evolution_run_metadata-2026-07-27T15-50-38-267Z.log,20260701_team_communication_projection_addresses-2026-07-27T15-50-38-166Z.log,20260703_drop_token_usage_legacy_path_columns-2026-07-27T15-50-38-210Z.log,20260703_token_usage_execution_address_backfill-2026-07-27T15-50-38-181Z.log,20260706_remove_global_skill_discovery_mode-2026-07-27T15-50-38-146Z.log,20260707_raw_trace_active_file_name-2026-07-27T15-50-38-231Z.log,20260727_custom_provider_v1_secret_migration-2026-07-27T15-50-38-136Z.log,agent-config.json,agent-config.json,agent.md,agent.md,.env,gateway-callback-outbox.json,production.db,production.db.secret.key,run_history_index.json,server.log,team_run_history_index.json
+APPLICATION_DATABASE_COUNT_RECURSIVE=1
+ROOT_KEY_COUNT_RECURSIVE=1
+ONE_DATABASE_ADJACENT_KEY_ASSERTION=PASS
+CORRECTED_RECURSIVE_LAYOUT_END

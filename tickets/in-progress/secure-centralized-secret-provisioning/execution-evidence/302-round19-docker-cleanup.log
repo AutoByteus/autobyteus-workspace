@@ -1,0 +1,20 @@
+ROUND=19
+SCENARIO=SCSP-E2E-DOCKER-001-CLEANUP
+ Container scsp-round19-autobyteus-server-1  Stopping
+ Container scsp-round19-autobyteus-server-1  Stopped
+ Container scsp-round19-autobyteus-server-1  Removing
+ Container scsp-round19-autobyteus-server-1  Removed
+ Volume scsp-round19_autobyteus-server-root-home  Removing
+ Volume scsp-round19_autobyteus-server-workspace  Removing
+ Volume scsp-round19_autobyteus-server-chromium-profile  Removing
+ Network scsp-round19_default  Removing
+ Volume scsp-round19_autobyteus-server-data  Removing
+ Volume scsp-round19_autobyteus-server-root-home  Removed
+ Volume scsp-round19_autobyteus-server-chromium-profile  Removed
+ Volume scsp-round19_autobyteus-server-workspace  Removed
+ Volume scsp-round19_autobyteus-server-data  Removed
+ Network scsp-round19_default  Removed
+[2026-07-27 17:55:35] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/docker/.runtime/scsp-round19.env
+REMAINING_CONTAINERS=0
+REMAINING_VOLUMES=0
+CLEANUP=PASS

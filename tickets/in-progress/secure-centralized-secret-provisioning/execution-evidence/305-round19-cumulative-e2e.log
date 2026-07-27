@@ -1,0 +1,192 @@
+ROUND=19
+HEAD=3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f
+COMMAND=pnpm -C autobyteus-server-ts exec vitest run \
+  tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts \
+  tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts \
+  tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts \
+  tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts \
+  tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts \
+  --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+ ✓ tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts (3 tests) 9579ms
+     ✓ migrates 'one' valid provider set all-or-nothing and reopens after restart  3209ms
+     ✓ migrates 'multiple' valid provider set all-or-nothing and reopens after restart  3197ms
+     ✓ resets an invalid v1 file without blocking Settings and supports current reconfiguration  3172ms
+stdout | tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 3164ms
+     ✓ materializes the immutable template, migrates, initializes one adjacent key, reopens value-free, and removes  3163ms
+(node:51423) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "current-db-import-51423-1785167879447-06550399b52ef.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/db/current-db-import-51423-1785167879447-06550399b52ef.db"
+
+18 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+stdout | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts > explicit target database importer lifecycle > ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 1740ms
+     ✓ ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database  1739ms
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:51435) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4/.env
+[dotenv@17.3.1] injecting env (1) from tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-51435-1785167884282-38177e0cb5fe4/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+Successfully fetched 26 models from LLMFactory.
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+LLM models cache populated with 26 items.
+
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (4 tests) 1473ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (4 tests) 1622ms
+
+ Test Files  5 passed (5)
+      Tests  13 passed (13)
+   Start at  17:57:44
+   Duration  23.43s (transform 3.22s, setup 21ms, import 5.00s, tests 17.58s, environment 0ms)
+

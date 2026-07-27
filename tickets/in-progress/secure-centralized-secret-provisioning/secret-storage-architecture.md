@@ -4,11 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Status | `Design-ready for architecture review — custom-provider-v1 migration/delete-and-reconfigure reset included` |
+| Status | `Design-ready for architecture review — retained one-database architecture plus exhaustive latest-HEAD scope restoration/removal` |
 | Purpose | Visualize the clean target boundaries, fixed custom-provider-v1 transition, and data-flow spines |
 | Related requirements | `REQ-001`–`REQ-018` |
 | Related acceptance criteria | `AC-001`–`AC-015` |
-| Approval applicability | `N/A` for additional user behavior; diagrams express the current user-review basis including non-blocking custom-provider reset |
+| Approval applicability | `N/A` for additional user behavior; diagrams express the retained, user-approved design submitted for architecture review |
 
 The normative behavior lives in [requirements.md](./requirements.md), the detailed design in [design-spec.md](./design-spec.md), and the persistence/crypto rules in [encrypted-secret-vault-contract.md](./encrypted-secret-vault-contract.md). The only historical credential-bearing app-data transition is defined by [custom-provider-v1-migration-contract.md](./custom-provider-v1-migration-contract.md).
 
@@ -62,7 +62,7 @@ sequenceDiagram
   participant DataMig as App-data migrations
   participant API as API runtime
 
-  Entry->>Config: load approved non-secret configuration
+  Entry->>Config: load normal application environment configuration
   Config->>Loc: canonicalize DATABASE_URL once
   Loc-->>Entry: canonical URL + DB path + derived key path
   Entry->>Mig: migrate(canonical URL)
@@ -182,8 +182,8 @@ The API-key GraphQL selection requests only provider/model fields the page rende
 flowchart TB
   UI[Gemini Settings]
   Save[Save option]
+  SaveUse[Save and use this mode]
   Activate[Use this mode]
-  Remove[Remove option]
   ConfigService[GeminiConfigurationService]
   AppConfig[AppConfig\nGEMINI_SETUP_MODE + project/location]
   Vault[SecretManagementService\nAI Studio / Vertex Express slots]
@@ -193,11 +193,11 @@ flowchart TB
   SDK[GoogleGenAI]
 
   UI --> Save
+  UI --> SaveUse
   UI --> Activate
-  UI --> Remove
   Save --> ConfigService
+  SaveUse --> ConfigService
   Activate --> ConfigService
-  Remove --> ConfigService
   ConfigService --> AppConfig
   ConfigService --> Vault
 
@@ -278,22 +278,12 @@ sequenceDiagram
   Owner-->>GQL: authoritative provider group
   GQL-->>UI: authoritative configured state
 
-  UI->>GQL: remove
-  GQL->>Owner: provider-specific remove
-  Owner->>Secret: idempotent removeForConsumer
-  Secret->>DB: delete exact secret_id
-  Secret-->>Owner: MISSING
-  Owner-->>GQL: Boolean command completion
-  GQL-->>UI: true
-  UI->>GQL: refetch providerSettings
-  GQL->>Owner: listProviderSettings
-  Owner-->>GQL: authoritative provider group
-  GQL-->>UI: authoritative configured state
+  Note over UI,DB: No standalone ordinary-provider key removal operation
 ```
 
 Provider-specific APIs never provide a readback mutation/query. The only plaintext input is write-only and short-lived.
 
-The caller already owns the provider ID, so Save/Remove does not echo it. Its Boolean means command completion; canonical configured state comes from the subsequent provider-row refetch. Custom Probe/Create accepts exactly name, base URL, and transient key; it carries no constant provider type/runtime. Probe returns only discovered `{id,name}` models, Create only the assigned ID, and Delete only success. Gemini Query/Save/Use/Save-and-use/Remove all return one authoritative setup state rather than a parallel operation/outcome protocol.
+The caller already owns the provider ID, so ordinary Save does not echo it. Its Boolean means create-or-overwrite command completion; canonical configured state comes from the subsequent provider-row refetch. No ordinary provider-key Remove action exists. Custom Probe/Create accepts exactly name, base URL, and transient key; it carries no constant provider type/runtime. Probe returns only discovered `{id,name}` models, Create only the assigned ID, and custom-provider Delete only success while internally cleaning up its linked credential. Gemini Query/Save/Use/Save-and-use all return one authoritative setup state rather than a parallel operation/outcome protocol; no Gemini key/configuration-removal action exists.
 
 ## 9. Custom Provider V1 Migration And Reset
 
@@ -420,29 +410,31 @@ flowchart TB
 
 Models, expected capabilities, required-definition assertions, and scenario modes are test code, not launch configuration. The tracked `.env.test` remains byte-identical and is read only by backend-test tooling. The bootstrap canonicalizes the DB URL, materializes/reconciles fixed keys into the ordinary ignored writable runtime `.env`, and starts the unchanged actual built server rather than a harness-only Store. The server remains unaware of `.env.test`. The importer also remains unaware of it: importing into the test DB requires passing that DB’s canonical absolute URL explicitly. Mutable Gemini settings are applied through normal Settings/API commands. Deterministic backend E2E uses fresh roots/DBs; manual and real-provider E2E use the explicit persistent isolated test root. Direct, Electron, Docker/Pod, and packaged-server paths retain their normal `.env`/deployment configuration.
 
-## 12. Runtime Exceptions And Child Boundary
+## 12. Runtime Authentication And Established Child Environment
 
 ```mermaid
 flowchart TB
-  ClaudeCli[Claude cli]
-  ClaudeManaged[Claude managed-secret]
+  ClaudeExternal[Claude auto or cli]
+  ClaudeApiKey[Claude explicit api-key]
   Codex[Codex App Server]
-  Governed[Governed tool/app/MCP children]
+  Children[Tool app MCP isolated PTY and Electron children]
   Vault[Secret vault]
-  Empty[Empty-base allowlisted env]
-  Home[Established real home/login state]
+  Inherited[Established inherited environment]
+  Home[Established real home and login state]
 
-  ClaudeCli --> Home
+  ClaudeExternal --> Home
   Codex --> Home
-  ClaudeManaged --> Vault
-  ClaudeManaged --> Empty
-  Governed --> Empty
+  Children --> Inherited
+  ClaudeApiKey --> Inherited
+  Vault -->|ANTHROPIC_API_KEY override| ClaudeApiKey
 ```
 
-- Claude CLI and Codex retain their approved external local account behavior.
-- Claude managed mode resolves only Anthropic and delivers it only to the exact child.
-- Governed children receive no credential aliases, `DATABASE_URL`, DB/key paths, or root key.
-- Assurance is `LOCAL_HARDENED`; strong agent isolation remains deferred.
+- Codex is unchanged from `origin/personal`. Claude restores its `auto|cli|api-key` selector, default, inherited environment, launch options, setting sources, tools, HTTP agent-tools MCP materialization, session/diagnostic, and account behavior.
+- Claude `auto`/`cli` perform no vault lookup. Explicit `api-key` starts from the same inherited environment, resolves only Anthropic immediately before launch, and adds or overrides only `ANTHROPIC_API_KEY`.
+- Terminal, shell, MCP, watcher/search, worker, messaging, agent/tool/application, isolated PTY bridge, and packaged Electron server launchers retain their concrete `origin/personal` environment construction and caller-owned additions.
+- Electron app-data/reset semantics and built-in-agent default persistence also remain exactly baseline; they have no vault-owned replacement behavior.
+- Managed provider consumers do not treat ambient credential aliases as authority; the vault never intentionally exports root-key bytes. This ticket makes no child-environment or process-isolation claim.
+- Separately approved file-root and redaction controls remain unchanged.
 
 ## 13. Electron / Direct / Docker Lifecycle
 

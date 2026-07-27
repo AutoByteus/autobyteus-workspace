@@ -1,0 +1,15 @@
+ROUND=20
+HEAD=1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd
+GIT_DIFF_CHECK=PASS
+API_E2E_DURABLE_CHANGED_PATHS=
+autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts
+autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
+autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+test-support/live-e2e/live-e2e-harness.ts
+test-support/live-e2e/live-e2e-scenarios.d.mts
+test-support/live-e2e/live-e2e-scenarios.mjs
+PRODUCTION_SOURCE_CHANGED_BY_API_E2E=false
+CANONICAL_COVERAGE_INVESTIGATION_PRESENT=true
+CANONICAL_EXECUTION_REPORT_PRESENT=true
+FAILURE_EVIDENCE_PRESENT=true
+FINAL_PACKAGE_CHECK=PASS

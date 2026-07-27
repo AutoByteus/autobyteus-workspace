@@ -2868,3 +2868,721 @@ Not applicable — review passed.
 - Score Summary: `9.62/10` (`96.2/100`); every category `>=9.5`.
 - Recommended Recipient: `api_e2e_engineer`
 - Notes: `CR-030` is resolved with no scope widening. The reviewed Round-33 custom-provider-v1 migrate-or-delete package may resume API/E2E at final handoff HEAD `dd1d37f90d00331d427bad1b36e4401a3a733038`.
+
+# Review Round 42 — Round-35 Environment-Preservation Implementation Delta
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context: `encrypted-secret-vault-contract.md`, `gemini-setup-ui-ux-spec.md`, `credential-consumer-mapping.md`, `custom-provider-v1-migration-contract.md`, `use-case-spine-validation.md`, `secret-storage-architecture.md`, `live-test-secret-provisioning.md`, `threat-model-and-option-analysis.md`, evidence-only `repository-prisma-1.0.8-assessment.md`, and superseded-tombstone `secret-storage-backend-contract.md`
+- Current Review Round: `42`
+- Trigger: Architecture Round-35 implementation of the approved AppConfig, production-child environment, Claude, and Codex preservation correction.
+- Prior Review Round Reviewed: `41`
+- Latest Authoritative Round: `42`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
+- Design Review Report Reviewed As Context: Architecture Round `35`, `Pass`
+- Implementation Handoff Reviewed As Context: source/test commit `a0b99dd3ba3ff0ede6e36ec13d149bcbd5a23bc4`; final handoff HEAD `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f`
+- Review proportionality: per the user's standing direction, source was reviewed against the complete approved package but the implementation audit was bounded to `3877b39bdcad2e8c88bb9f86d190308aaf034829..a0b99dd3ba3ff0ede6e36ec13d149bcbd5a23bc4`; already accepted vault, importer, Gemini, provider Settings, custom-provider migration, dependency, Docker, Electron, and unrelated runtime source was not redundantly reopened.
+- Coverage Investigation Reviewed: `N/A` for this implementation-source entry point; prior reports remain cumulative historical context.
+- Execution Coverage Report Reviewed: `N/A` for this implementation-source entry point.
+- Failing Scenario IDs: `N/A`
+- Exact Failing Commands / Execution Mode: `N/A`
+- Failure Evidence Paths: `N/A`
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1–41 | Prior implementation and failure-origin rounds | As recorded in the historical sections above | As recorded | Historical Fail/Pass iterations | No | Preserved without redundant restatement. |
+| 42 | Round-35 environment-preservation source/test delta | Round 41 had no open findings; all previously closed findings carried forward | None | Pass | Yes | Exact origin/personal launcher and Codex behavior is restored; Claude differs only by the approved explicit-`api-key` resolver seam. |
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 41 | None open | N/A | Remains closed | The Round-35 delta does not touch CR-030 lock recovery or the reviewed custom-provider migration boundary. | Carried forward. |
+| 40 | `CR-030` | Medium | Remains resolved | No delta in `store-utils.ts` or custom-provider migration source. | Not reopened. |
+| Earlier rounds | All previously closed findings | Critical–Low | Remain resolved or superseded as recorded | Exact delta inventory and no package/Docker/dependency delta. | Only the approved Round-35 environment/Claude correction was reviewed anew. |
+
+## Review Scope
+
+- Changed implementation and behavior reviewed:
+  - full AppConfig dotenv parsing/process projection while retaining typed database/Gemini behavior and subject-specific managed-secret writes;
+  - removal of the ticket-created shared production environment filter;
+  - restoration of ten concrete launchers to their exact `origin/personal` environment behavior;
+  - restoration of Claude `auto|cli|api-key` with default `cli`, zero vault lookup for `auto`/`cli`, and one subject-scoped Anthropic resolution for explicit `api-key`;
+  - deletion of the ticket-created Claude authentication service, launch policy, synthetic environment/account machinery, and broad error-policy changes;
+  - unchanged Codex source/behavior.
+- Files / areas reviewed: all 23 paths in `3877b39..a0b99dd`, their direct production callers, `ServerSettingsService` value-filtering boundary, managed-credential alias registry, relevant Claude/session/config/launcher tests, and downstream live-E2E harness compatibility.
+- Explicit exclusions: unchanged cumulative subsystems outside the delta; execution of live providers, Docker, packaged Electron, real account state, real secret-bearing files, canonical application DB/root key, and downstream-owned durable API/E2E reconciliation.
+
+## Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `BEH-005`, `BEH-010`, `BEH-012`–`BEH-014`; `REQ-006`, `REQ-014`; `AC-005`, `AC-010`.
+- Design-spec behavior map verified against the implementation: yes. The actual source follows `DS-UC009`, `DS-UC012A`, `DS-UC012B`, `DS-UC013`, `DS-UC014`, `DS-L003`, and `DS-R002`.
+- Design review report and round confirmed: Architecture Round 35 `Pass`; its Round-34 technical decision is carried forward after the Round-35 metadata correction.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior: none.
+- Remaining material ambiguity: none.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `BEH-005` | Confirmed | Supported provider invocation/catalog path continues through provider-owned `ProviderApiKeyResolver`; production scan finds no managed-provider environment-key read. AppConfig projection does not become provider credential authority. | None. |
+| `BEH-010` | Confirmed | Normal server/Electron startup -> `AppConfig.initialize()` -> complete dotenv parse/process projection -> typed DB/Gemini initialization. The changed path neither imports nor rewrites credential assignments at startup. `ServerSettingsService` filters sensitive names from the reachable Settings query. | None. |
+| `BEH-012` | Confirmed | Claude runtime selection -> `ClaudeSdkClient.resolveSpawnEnvironment()`. `auto`/`cli` preserve the established process/caller environment path and perform zero resolver calls; explicit `api-key` performs one exact agent-runtime Anthropic lookup, reveals at the launch boundary, and changes only `ANTHROPIC_API_KEY` before the SDK query. | None. |
+| `BEH-013` | Confirmed | Supported Codex runtime selection -> external Codex client/login/account path. `codex-app-server-client.ts` is byte-identical to `origin/personal`. | None. |
+| `BEH-014` | Confirmed | Supported Terminal, shell, MCP, watcher/search, worker, and messaging actions -> their concrete launchers -> established inherited/caller environment -> child process. All ten affected launchers are byte-identical to `origin/personal`; the shared filter is absent. | None. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The approved assessment identifies the shared filter and Claude auth subsystem as the over-scoped ownership error; the delta removes them. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Credential mapping and threat-model limits match the resolver seam, inherited environment, and no-isolation claim. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Each changed path has an independent supported trigger and reaches its meaningful launch/query outcome through the approved owner. | None. |
+| Ownership boundary preservation and clarity | Pass | AppConfig owns configuration projection; provider clients own managed credential resolution; concrete launchers own launch environment; Claude owns its mode selector. | None. |
+| Off-spine concern clarity | Pass | The file-local/injected Claude resolver supplies only the selected secret and does not become an auth/launch coordinator. | None. |
+| Existing capability/subsystem reuse check | Pass | The existing vault runtime and established launcher/Claude owners are reused; no new authentication service or environment policy subsystem exists. | None. |
+| Reusable owned structures check | Pass | The one Claude auth-environment module owns mode/environment rules; managed aliases remain in the existing registry. | None. |
+| Shared-structure/data-model tightness check | Pass | No construction context, mode DTO, synthetic account structure, or generic secret request was added. | None. |
+| Repeated coordination ownership check | Pass | Shared filtering coordination was removed; each concrete launcher has its established semantics. | None. |
+| Empty indirection check | Pass | Deleted Claude service/policy and environment helpers remove pass-through/policy indirection. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | AppConfig, Claude environment selection, Claude client launch, and concrete process launch responsibilities are distinct. | None. |
+| Ownership-driven dependency check | Pass | Claude depends on one subject-scoped resolver; providers do not depend on AppConfig for credentials; no new cycle or service locator in core. | None. |
+| Authoritative Boundary Rule check | Pass | Callers use the owning Claude client, AppConfig, or concrete launcher; none combines an outer boundary with its internals. | None. |
+| File placement check | Pass | `claude-sdk-auth-environment.ts` sits with the SDK client; configuration and launcher changes remain under their owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | Removing three ticket-created policy/helper files makes the layout smaller without hiding a distinct owner. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | No public API changed; the injected resolver is a zero-argument, fixed-subject function and the existing Claude options remain intact. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `resolveSpawnEnvironment`, `resolveClaudeSdkAuthMode`, and `ClaudeApiKeyResolver` reflect their exact narrow roles. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated mode/status/request structure; exact launcher-local semantics are intentional established ownership, not a second shared policy. | None. |
+| Patch-on-patch complexity control | Pass | The delta deletes 671 lines, restores exact base behavior, and adds only a narrow explicit-key seam. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Shared filter, agent-child helper, Claude authentication service, launch policy, and superseded unit test are removed with zero production imports. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Tests cover selector/default, zero/one lookup counts, exact one-key override, value-free failure, AppConfig projection/write rejection, session behavior, and launcher environment semantics. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Resolver injection and SDK module seam allow focused value-safe tests without vault/database or account access. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Implementation-owned superseded auth-service coverage was deleted. The separately owned live-E2E harness is explicitly identified for downstream reconciliation. | `api_e2e_engineer` must replace its removed-service/`managed-secret` fixture with explicit `api-key` coverage before execution. |
+| API/E2E readiness for the next workflow stage | Pass | Production source/build checks pass; the required downstream harness reconciliation is bounded and already inventoried. | Reconcile the durable harness, then run the approved real/runtime matrix. |
+
+## Source File Size And Structure Audit
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | 497 | Pass | Pass (`+1/-2`) | Pass; removes superseded error-policy coupling only | Pass | Pass | None |
+| `autobyteus-server-ts/src/application-engine/runtime/application-worker-supervisor.ts` | 99 | Pass | Pass (`+4/-2`) | Pass | Pass | Pass | None |
+| `autobyteus-server-ts/src/config/app-config.ts` | 497 | Pass | Pass (`+12/-11`) | Pass; configuration projection remains separate from credential resolution | Pass | Pass | None |
+| `autobyteus-server-ts/src/file-explorer/search-strategy/ripgrep-search-strategy.ts` | 92 | Pass | Pass (`+1/-2`) | Pass | Pass | Pass | None |
+| `autobyteus-server-ts/src/file-explorer/watcher/runtime/watcher-runtime-client.ts` | 218 | Pass | Pass (`+1/-2`) | Pass | Pass | Pass | None |
+| `autobyteus-server-ts/src/managed-capabilities/messaging-gateway/messaging-gateway-process-supervisor.ts` | 217 | Pass | Pass (`+3/-3`) | Pass | Pass | Pass | None |
+| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-auth-environment.ts` | 49 | Pass | Pass (`+58/-0`) | Pass; one mode/environment concern | Pass | Pass | None |
+| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts` | 458 | Pass | Pass (`+55/-63`) | Pass; restored SDK owner plus narrow resolver seam | Pass | Pass | None |
+| `autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts` | 62 | Pass | Pass (`+1/-2`) | Pass | Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/command-execution/non-interactive-shell-resolver.ts` | 113 | Pass | Pass (`+3/-4`) | Pass | Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/direct-shell-session.ts` | 208 | Pass | Pass (`+3/-3`) | Pass | Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/isolated-pty-session.ts` | 345 | Pass | Pass (`+3/-3`) | Pass; approved bridge/file-root work remains separate | Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/pty-session.ts` | 253 | Pass | Pass (`+3/-3`) | Pass | Pass | Pass | None |
+| `autobyteus-ts/src/tools/terminal/wsl-tmux-session.ts` | 174 | Pass | Pass (`+3/-3`) | Pass | Pass | Pass | None |
+
+Deleted production files are covered under cleanup rather than line thresholds: `non-secret-environment-projection.ts`, `agent-child-environment.ts`, `claude-runtime-authentication-service.ts`, and `claude-sdk-launch-policy.ts`.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | Restoring supported origin/personal launch behavior is the approved current contract, not a compatibility branch. |
+| No legacy old-behavior retention in changed scope | Pass | The ticket-created filter/auth redesign is removed; no dual mode names or fallback remains. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | All four superseded production files and their production imports are absent. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Round-35 changes no persisted schema or transition behavior. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Explicit Claude `api-key` has one vault source and no ambient fallback. |
+| Approved transition mechanics match the reviewed design | Pass | Existing vault/custom-provider migration source is unchanged. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None remain in implementation-owned Round-35 source.
+
+The downstream-owned `test-support/live-e2e/live-e2e-harness.ts` still imports the now-removed `ClaudeRuntimeAuthenticationService` and names `managed-secret`; this is a bounded API/E2E-owned stale-test reconciliation, not retained production compatibility.
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`
+- Why: user/operator documentation must describe restored full configuration/child inheritance, Claude `auto|cli|api-key` with default `cli`, explicit vault-backed `api-key`, and the absence of a process-isolation claim. Current `autobyteus-server-ts/docs/modules/secret_management.md` still contains superseded `managed-secret` language.
+- Files or areas likely affected: `autobyteus-server-ts/docs/modules/secret_management.md`, related runtime/configuration README sections, delivery/release notes, and assurance wording. This is a downstream documentation-sync obligation and does not block the source review.
+
+## Material Premise Validation
+
+### Upstream Design-Review Material-Premise Decisions
+
+The authoritative Architecture Round-35 report recorded no new material premise. The relevant triggers are direct supported product paths—server startup, Claude/Codex runtime selection, Terminal/MCP/file/application actions—and no new or reclassified premise was needed for this review.
+
+No finding, score deduction, or implementation machinery in this round depends on a speculative lifecycle state.
+
+## Independent Validation
+
+- Exact source delta inventory: 23 paths, `321` insertions / `671` deletions.
+- `git diff --check 3877b39bdcad2e8c88bb9f86d190308aaf034829..a0b99dd3ba3ff0ede6e36ec13d149bcbd5a23bc4`: passed.
+- Ten affected concrete launchers and `codex-app-server-client.ts` are byte-identical to `origin/personal`.
+- Production residue scan: no shared environment-filter helper/import, ticket-created Claude authentication service/launch policy, or `managed-secret` production symbol.
+- Managed-provider credential scan: production provider clients contain no direct managed credential environment read; aliases appear only in the importer registry and explicit Claude auth-environment boundary.
+- Package/Docker/dependency delta: none.
+- Independent server focused run: 5 files / 57 tests passed (the reported 54-test AppConfig/Claude/legacy/session matrix plus 3 messaging-supervisor tests).
+- Independent core focused run: 6 files / 33 tests passed for stdio MCP, noninteractive shell, direct shell, isolated PTY, PTY, and terminal-session behavior.
+- `pnpm -C autobyteus-ts build`: passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`: passed.
+- Changed implementation-source size audit: no file exceeds 500 effective non-empty lines and no file delta exceeds 220 lines.
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.64/10`
+- Overall score (`/100`): `96.4/100`
+- Score calculation note: simple average across the ten mandatory categories; every category meets the clean-pass target.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.7 | Supported startup, runtime-selection, and child-launch spines are explicit and source-confirmed. | Real cross-process execution remains downstream. | Exercise each approved runtime spine under API/E2E. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.7 | Projection, secret resolution, mode selection, and concrete launch ownership are cleanly separated. | AppConfig is near the source-size limit from broader established responsibilities. | Avoid adding unrelated configuration behavior to AppConfig. |
+| 3 | API / Interface / Query / Command Clarity | 9.6 | No public API churn; the resolver is fixed-subject and the Claude selector remains established. | The file-local resolver returns a general `SecretValue` because it reuses the vault boundary. | Keep the seam fixed to Anthropic and do not generalize it. |
+| 4 | Separation of Concerns and File Placement | 9.7 | Four policy/helper files are removed and the remaining concern sits with its owner. | Two inherited large files remain close to 500 lines. | Preserve bounded future deltas and split only when a real new owner emerges. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | No synthetic auth DTO/context or overlapping environment model remains. | Environment objects necessarily retain the established loose `ProcessEnv` shape. | Do not introduce a second environment/auth representation. |
+| 6 | Naming Quality and Local Readability | 9.6 | Mode, resolver, and spawn-environment names are exact and readable. | Claude client remains a sizeable SDK adapter. | Keep new concerns outside it unless they are intrinsic SDK lifecycle work. |
+| 7 | API/E2E Readiness | 9.3 | Focused tests and production compilation pass, and downstream obligations are explicit. | The durable live-E2E harness still imports a removed service and must be reconciled before execution. | Replace the stale fixture with explicit `api-key`, then run auto/cli/api-key and launcher coverage. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.7 | Ten launchers and Codex are exact to origin; Claude differs only at the approved one-key point. | Real Claude account/API-key and inherited-child execution are not implementation-scoped proof. | Validate all modes and concrete child paths realistically. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | The superseded filter/auth redesign is deleted with no wrapper, alias, dual mode, or fallback. | None material. | Preserve the clean cut. |
+| 10 | Cleanup Completeness | 9.7 | Production residue scans are clean and the change removes substantially more code than it adds. | Stale downstream test/docs wording remains outside implementation ownership. | Reconcile the harness in API/E2E and documentation during delivery. |
+
+## Findings
+
+No open implementation-source findings.
+
+## Classification
+
+Not applicable — review passed.
+
+## Recommended Recipient
+
+`api_e2e_engineer`
+
+## Residual Risks
+
+- Before execution, reconcile the downstream-owned Claude durable scenario/harness from the removed authentication service and `managed-secret` name to explicit `api-key` using the restored `ClaudeSdkClient` resolver seam.
+- API/E2E must prove zero lookup for Claude `auto`/`cli`, one subject-scoped lookup and one-key override for explicit `api-key`, external Codex continuity, and concrete child environment behavior without claiming child/process isolation.
+- Re-run separately approved file-root and value-safe output scans because environment inheritance was restored; do not infer a leak merely from inheritance and do not claim `STRONG_AGENT_ISOLATION`.
+- Preserve exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker topology, explicit importer target/source immutability, the one application database/adjacent key contract, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck only, not legal clearance or an authentication redesign.
+- Documentation sync must remove superseded `managed-secret` wording and state the current assurance boundary accurately.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review — bounded Round-35 source/test delta`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.64/10` (`96.4/100`); every category `>=9.3`.
+- Failure Origin: `N/A`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Round-35 source commit `a0b99dd3ba3ff0ede6e36ec13d149bcbd5a23bc4` passes at final handoff HEAD `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f`. Previously accepted cumulative source remains carried forward; API/E2E may resume after its bounded Claude harness reconciliation.
+
+# Review Round 43 — Round-36 Exhaustive Scope-Reset Delta Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context: `encrypted-secret-vault-contract.md`, `gemini-setup-ui-ux-spec.md`, `credential-consumer-mapping.md`, `custom-provider-v1-migration-contract.md`, evidence-only `scope-audit.md`, `use-case-spine-validation.md`, `secret-storage-architecture.md`, `live-test-secret-provisioning.md`, `threat-model-and-option-analysis.md`, and `repository-prisma-1.0.8-assessment.md`; `secret-storage-backend-contract.md` remains a superseded tombstone.
+- Current Review Round: `43`
+- Trigger: Architecture Round 36 `Pass` and implementation handoff for the exhaustive 311-path scope reset, exact restoration of unrelated origin/personal behavior, and deletion of the rejected ordinary-provider/Gemini standalone credential-removal surfaces.
+- Prior Review Round Reviewed: `42 — Pass, Round-35 bounded environment/Claude delta, 9.64/10`
+- Latest Authoritative Round: `43`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
+- Design Review Report Reviewed As Context: Architecture Round 36 `Pass`
+- Implementation Handoff Reviewed As Context: final handoff HEAD `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd`
+- Exact Source/Test Delta Reviewed: `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f..7fa54b18da3c3950983ccab367d338b93dfd8a17`
+- User-requested review posture: delta review of the complete new source/test change against the carried-forward accepted package; previously reviewed unchanged vault, importer, provider resolver, provider-centric Settings, Gemini SDK/metadata, custom-provider migration, dependency, and assurance behavior was not redundantly reopened.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `1–41` | Historical implementation/failure-origin iterations | Historical findings as recorded | As recorded | Fail/Pass iterations | No | All findings through `CR-030` were closed before this round. |
+| `42` | Round-35 environment-preservation/Claude narrowing | None open | None | Pass | No | Restored established process/configuration behavior while retaining one explicit Claude API-key substitution. |
+| `43` | Round-36 exhaustive scope reset and removal-surface cleanup | No open finding; carried-forward Round-42 result confirmed | None | Pass | Yes | Exact manifest, source, tests, generated boundary, and builds are consistent with the narrowed approved scope. |
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `42` | None open | N/A | Remains closed | Round-36 source does not change the retained Claude explicit-key resolver/client seam; exact base Claude MCP/session behavior and child/Electron owners are restored as approved. | No prior finding was reopened. |
+| `40–41` | `CR-030` | Medium | Remains resolved | Round-36 does not touch `store-utils.ts` or the custom-provider migration protocol. | Existing-user migration/API-E2E obligations carry forward. |
+
+## Review Scope
+
+- Changed implementation and behavior reviewed:
+  - exact application of the 311-row `scope-audit.md` disposition manifest;
+  - 18 `RESTORE_BASE` paths returned byte-for-byte to `origin/personal`;
+  - three `REMOVE_FILE` paths deleted without wrappers or tombstone exports;
+  - all 31 `PARTIAL_CLEANUP` paths inspected, with 27 changed in this delta and four already compliant from the preceding accepted round;
+  - three retained model-discovery/catalog paths additionally simplified because their removed clear/fencing machinery existed only for the deleted ordinary-provider key-removal command;
+  - ordinary provider Settings remains Save/create-or-overwrite plus value-free configured status, with no public standalone removal;
+  - Gemini remains option-specific Save/Save-and-use/Use, with no standalone configuration removal;
+  - custom-provider entity Delete retains its exact owned credential cleanup;
+  - exact origin/personal Electron environment/AppData/reset, isolated PTY inheritance, Claude HTTP MCP/session/options/tools/diagnostics, and persistent built-in-agent defaults are restored.
+- Files / areas reviewed: all 51 changed source/test/docs/generated paths in `3244a7c6..7fa54b18`, final source objects at `7fa54b18`, direct callers, current schema/client residue, the scope manifest, and the final handoff-only commit.
+- Explicit exclusions: unchanged cumulative implementation outside the delta; actual API/E2E, live providers, Docker, packaged Electron, canonical user database/root key, real credential sources, and external account state. Those belong to the next workflow stage.
+
+## Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `BEH-004`, `BEH-006`, `BEH-008`, `BEH-012`, `BEH-014`; `REQ-006`, `REQ-010`, `REQ-014`–`REQ-018`; `AC-004`, `AC-006`; exact Round-36 scope manifest.
+- Design-spec behavior map verified against the implementation: yes; relevant spines are `DS-UC003A/B`, `DS-UC005A–C`, `DS-UC007C`, `DS-UC012A/B`, `DS-UC014`, and the associated local/return spines.
+- Design review report and round confirmed: Architecture Round 36 `Pass`.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior: none.
+- Remaining material ambiguity: none.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `BEH-004` | Confirmed | Settings ordinary provider editor -> `saveProviderApiKey` -> `LlmProviderService.setProviderApiKey()` -> vault overwrite -> canonical `providerSettings` refetch. GraphQL, store, component, generated client, localization, and service scans contain no ordinary provider key-removal command. | None. |
+| `BEH-006` | Confirmed | Gemini option card -> specialized Save or Use command -> `GeminiConfigurationService` -> exact option slot/config and explicit mode -> returned `GeminiSetupState`. No remove mutation, service branch, action, control, label, or generated client symbol remains. | None. |
+| `BEH-008` | Confirmed | Custom-provider Settings Delete -> `LlmProviderService.deleteCustomProvider()` -> exact custom consumer `removeForConsumer()` -> current provider metadata deletion -> catalog reload. Production `removeForConsumer` has no other external caller. | None. |
+| `BEH-012` | Confirmed | Claude runtime continues through the accepted Round-35 `auto|cli|api-key` client seam. Round-36 restores the surrounding origin/personal HTTP MCP/session/options/tools/diagnostic owners exactly and does not alter explicit-key resolution. | None. |
+| `BEH-014` | Confirmed | Supported Electron start/reset, Terminal isolated PTY, and built-in startup paths now execute their exact origin/personal production owners. All 18 manifest restoration objects are byte-identical to `origin/personal`. | None. |
+| Complete audited scope | Confirmed | The evidence manifest has 311 unique rows and exact counts `259 RETAIN / 31 PARTIAL_CLEANUP / 18 RESTORE_BASE / 3 REMOVE_FILE`; final source object checks prove every exact restoration and deletion. | None. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Round-36 identifies the prior scope overreach and maps every non-ticket path to one evidence-backed disposition. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Vault, Gemini, consumer mapping, custom migration, and scope-audit contracts align with actual paths and removed surfaces. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Save/status, Gemini Save/Use, custom Delete, Claude, Electron/PTY, and built-in startup paths each retain one supported trigger and meaningful outcome. | None. |
+| Ownership boundary preservation and clarity | Pass | Provider Settings owns Save/status; Gemini owns specialized mode/configuration; custom provider owns entity Delete; secret deletion stays internal; restored subsystems own their established behavior. | None. |
+| Off-spine concern clarity | Pass | Vault persistence, discovery invalidation, localization, generated transport, and Claude credential substitution serve their exact owners without becoming competing coordinators. | None. |
+| Existing capability/subsystem reuse check | Pass | The implementation restores or narrows existing owners instead of adding another policy/service layer. | None. |
+| Reusable owned structures check | Pass | Existing `ProviderSettingsGroup`, `GeminiSetupState`, provider resolver, and secret service are reused; the standalone removal helper is deleted. | None. |
+| Shared-structure/data-model tightness check | Pass | No removal outcome DTO, duplicate credential map, generic status protocol, or alternate Gemini representation remains. | None. |
+| Repeated coordination ownership check | Pass | Credential replacement invalidation remains in model catalog/discovery owners; the removed clear lifecycle has no remaining caller or duplicate policy. | None. |
+| Empty indirection check | Pass | Three redundant files and the removal-only service/GraphQL/store layers are removed rather than preserved as wrappers. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The delta is net `-809` lines and restores established subsystem owners while retaining only credential-custody-related behavior. | None. |
+| Ownership-driven dependency check | Pass | Public Settings does not call internal deletion; only the custom-provider lifecycle depends on that internal operation. | None. |
+| Authoritative Boundary Rule check | Pass | Callers use provider/Gemini/custom/Claude/Electron owning boundaries and do not combine those owners with their internals. | None. |
+| File placement check | Pass | Restored files match established placement; remaining provider/Gemini files sit under their existing service/GraphQL/web owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | Removing removal-specific helpers/localization reduces fragmentation without collapsing distinct provider/Gemini/custom subjects. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Ordinary Save returns Boolean; Gemini commands return one specialized state; custom Delete returns Boolean; each command has one exact subject. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Remaining names describe Save, activation, discovery invalidation, and custom deletion accurately; obsolete removal names are absent. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No parallel credential map, remove flow, or duplicated state representation remains. | None. |
+| Patch-on-patch complexity control | Pass | The clean cut restores exact base behavior or deletes superseded machinery; no compatibility patch was layered over it. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Exact source/generated/localization scans find no `removeProviderApiKey`, `removeGeminiConfiguration`, removal helper, runtime-default map/API, or removal-only AutoByteus clear method. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Focused tests prove Save/overwrite, explicit Gemini Save/Use, persistent defaults, exact base Electron/reset, Claude session behavior, and absence of removed command calls. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing service/component/store fixtures were narrowed; no second removal-only fixture layer remains. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Removal-only unit scenarios were deleted and two durable E2E scenarios were structurally reconciled. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Focused source tests, production compilation, Electron compilation, web guards, and web production build pass. Durable E2E files are ready for execution rather than claimed as executed. | Run the Round-36 affected real browser/restart/Docker/packaged/runtime matrix. |
+
+## Source File Size And Structure Audit
+
+The hard source threshold applies to implementation logic. The two existing 596-line locale dictionaries are static message registries, not implementation-control files; this delta only removes six obsolete keys from each and introduces no structural pressure. Generated GraphQL output and tests are excluded by the review rules.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.ts` | 24 | Pass | Pass (`+28/-0`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts` | 61 | Pass | Pass (`+0/-6`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.ts` | 11 | Pass | Pass (`+6/-35`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts` | 72 | Pass | Pass (`+6/-6`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-mcp-server-config.ts` | 8 | Pass | Pass (`+3/-6`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | 496 | Pass | Pass (`+1/-2`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts` | 344 | Pass | Pass (`+0/-17`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts` | 205 | Pass | Pass (`+22/-15`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 398 | Pass | Pass (`+0/-18`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/llm-management/services/autobyteus-remote-model-discovery-service.ts` | 191 | Pass | Pass (`+4/-36`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.ts` | 156 | Pass | Pass (`+0/-21`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts` | 165 | Pass | Pass (`+0/-5`) | Pass | Pass | None | None |
+| `autobyteus-server-ts/src/services/server-settings-service.ts` | 363 | Pass | Pass (`+3/-29`) | Pass | Pass | None | None |
+| `autobyteus-ts/src/tools/terminal/isolated-pty-bridge-source.ts` | 89 | Pass | Pass (`+1/-5`) | Pass | Pass | None | None |
+| `autobyteus-web/components/settings/ProviderAPIKeyManager.vue` | 166 | Pass | Pass (`+0/-7`) | Pass | Pass | None | None |
+| `autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionCard.vue` | 229 | Pass | Pass (`+1/-23`) | Pass | Pass | None | None |
+| `autobyteus-web/components/settings/providerApiKey/GeminiSetupForm.vue` | 73 | Pass | Pass (`+0/-4`) | Pass | Pass | None | None |
+| `autobyteus-web/components/settings/providerApiKey/ProviderApiKeyEditor.vue` | 58 | Pass | Pass (`+1/-23`) | Pass | Pass | None | None |
+| `autobyteus-web/components/settings/providerApiKey/providerApiKeyGeminiActions.ts` | 77 | Pass | Pass (`+17/-28`) | Pass | Pass | None | None |
+| `autobyteus-web/components/settings/providerApiKey/providerApiKeyRemoval.ts` | Deleted | N/A | Pass (`+0/-45`) | Pass | Pass | None | None |
+| `autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts` | 343 | Pass | Pass (`+1/-18`) | Pass | Pass | None | None |
+| `autobyteus-web/electron/server/linuxServerManager.ts` | 61 | Pass | Pass (`+2/-3`) | Pass | Pass | None | None |
+| `autobyteus-web/electron/server/macOSServerManager.ts` | 66 | Pass | Pass (`+2/-3`) | Pass | Pass | None | None |
+| `autobyteus-web/electron/server/services/AppDataService.ts` | 236 | Pass | Pass (`+4/-7`) | Pass | Pass | None | None |
+| `autobyteus-web/electron/server/windowsServerManager.ts` | 154 | Pass | Pass (`+1/-5`) | Pass | Pass | None | None |
+| `autobyteus-web/graphql/mutations/llm_provider_mutations.ts` | 81 | Pass | Pass (`+0/-17`) | Pass | Pass | None | None |
+| `autobyteus-web/localization/messages/en/index.ts` | 48 | Pass | Pass (`+0/-2`) | Pass | Pass | None | None |
+| `autobyteus-web/localization/messages/en/providerApiKey.ts` | Deleted | N/A | Pass (`+0/-10`) | Pass | Pass | None | None |
+| `autobyteus-web/localization/messages/en/settings.ts` | 596 | N/A — static locale data registry; removal-only | Pass (`+0/-6`) | Pass | Pass | None | None |
+| `autobyteus-web/localization/messages/zh-CN/index.ts` | 48 | Pass | Pass (`+0/-2`) | Pass | Pass | None | None |
+| `autobyteus-web/localization/messages/zh-CN/providerApiKey.ts` | Deleted | N/A | Pass (`+0/-10`) | Pass | Pass | None | None |
+| `autobyteus-web/localization/messages/zh-CN/settings.ts` | 596 | N/A — static locale data registry; removal-only | Pass (`+0/-6`) | Pass | Pass | None | None |
+| `autobyteus-web/stores/llmProviderConfig.ts` | 322 | Pass | Pass (`+0/-16`) | Pass | Pass | None | None |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | Exact base restoration and direct command deletion create one current path, not dual behavior. |
+| No legacy old-behavior retention in changed scope | Pass | Rejected ticket-created removal/environment/session/default machinery is absent. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Removed source/generated/localization symbols and files have zero current-source residue. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Removing public deletion does not mutate stored credentials or add a migration. Existing custom-provider-v1 transition is unchanged. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Ordinary Save and Gemini Save/Use have one current schema; no compatibility mutation or wrapper remains. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Custom-provider migration and vault lifecycle source are untouched. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None remain in the reviewed Round-36 implementation delta.
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`
+- Why: operator/developer documentation must describe Save/overwrite without ordinary/Gemini standalone removal and must preserve the restored environment/AppData/Claude/no-isolation assurance boundary.
+- Files or areas likely affected: `autobyteus-server-ts/docs/modules/llm_management.md`, `secret_management.md`, Electron packaging docs, README/release/handoff material. The implementation commit correctly removes obsolete LLM mutation documentation; the existing dirty cumulative docs remain for delivery reconciliation.
+
+## Material Premise Validation
+
+### Upstream Design-Review Material-Premise Decisions
+
+Architecture Round 36 introduced no new material-premise ID. The reviewed behavior is grounded directly in supported Settings Save, Gemini configuration, custom-provider Delete, Claude runtime, Electron start/reset, Terminal, and server-startup triggers. No finding, score deduction, or retained machinery depends on a speculative lifecycle state.
+
+No new or reclassified material premise was needed.
+
+## Independent Validation
+
+- Exact manifest parse: `311` rows / `311` unique paths; counts `259 RETAIN`, `31 PARTIAL_CLEANUP`, `18 RESTORE_BASE`, `3 REMOVE_FILE`.
+- Commit-object validation: all `18/18` `RESTORE_BASE` paths at source commit `7fa54b18` are byte-identical to `origin/personal`; all `3/3` `REMOVE_FILE` paths are absent.
+- Delta inventory: 51 paths, `155` insertions / `964` deletions; no package, lockfile, Prisma schema/migration, or Docker path changed.
+- `git diff --check 3244a7c6..7fa54b18`: passed.
+- Residue scans: zero ordinary-provider/Gemini removal operation names in production GraphQL, generated client, store, component, or localization paths; zero runtime-default APIs; production `removeForConsumer` is limited to `SecretManagementService` plus the custom-provider lifecycle.
+- Independent server focused suite: 8 files / 100 tests passed for GraphQL/provider/Gemini/discovery, persistent built-in defaults, Server Settings, and restored Claude session/MCP behavior.
+- Independent web focused suite: 5 files / 27 tests passed for API-key Settings, base provider editor, Gemini Save/Use, runtime, and store.
+- Independent Electron focused suite: 2 files / 14 tests passed for exact-base server manager and AppData/reset behavior.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`: passed.
+- `pnpm -C autobyteus-web transpile-electron`: passed.
+- Web boundary/localization guards and literal audit: passed with zero unresolved findings.
+- `pnpm -C autobyteus-web build`: passed with the existing large-chunk warning only; all 15 static routes prerendered.
+- An initially mistyped web command forwarded `-- run` through the package script and started the broad repository suite. It was interrupted after reaching known unrelated run-history fixture failures and is not used as evidence. The exact five-path focused command was then run directly and passed 27/27; no test/build process remains.
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.73/10`
+- Overall score (`/100`): `97.3/100`
+- Score calculation note: simple average across the ten mandatory categories; every category meets the clean-pass target.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | Data-Flow Spine Inventory and Clarity | 9.8 | The narrowed Save/status, Gemini, custom Delete, Claude, Electron/PTY, and startup paths are explicit and source-confirmed. | Broader real execution remains downstream. | Execute the affected spines under API/E2E. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.8 | Public provider/Gemini commands and internal custom deletion are cleanly separated; restored subsystems own their established behavior. | `LlmProviderService` remains a sizeable existing composition owner. | Keep future lifecycle additions in their intrinsic owners. |
+| `3` | API / Interface / Query / Command Clarity | 9.8 | Ordinary Save, specialized Gemini state, and custom Delete have exact singular subjects; redundant remove mutations are gone. | No material source weakness. | Preserve the tight command set. |
+| `4` | Separation of Concerns and File Placement | 9.8 | The delta deletes unnecessary helpers and restores exact base responsibilities instead of centralizing unrelated policies. | Existing mixed Settings/service files remain moderately large. | Avoid reintroducing cross-cutting behavior. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.7 | One provider-group read and one Gemini state remain; no duplicate removal/result shape survives. | Existing provider records still serve both built-in and custom catalog composition by reviewed design. | Keep fields semantically singular. |
+| `6` | Naming Quality and Local Readability | 9.7 | Obsolete removal names disappear and remaining Save/Use/invalidation names match behavior. | Two large static locale registries are navigationally broad, though this delta only shrinks them. | Do not expand them with new unrelated control logic. |
+| `7` | API/E2E Readiness | 9.4 | Focused tests, production compilation, Electron compilation, guards, and web build are green. | Two durable E2E paths were structurally changed but not executed by implementation engineering. | Run the complete affected API/E2E matrix before delivery. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 9.7 | Exact base restoration proves established owners; focused tests prove Save/overwrite, Gemini Save/Use, defaults, and reset semantics. | Packaged/live process behavior is not source-review evidence. | Validate browser, restart, Docker, Claude, Electron, and provider continuity. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 9.8 | Rejected operations and policy machinery are removed outright with no wrappers, aliases, or fallback. | Approved migration-only v1 knowledge remains elsewhere by design. | Preserve migration/runtime separation. |
+| `10` | Cleanup Completeness | 9.8 | Manifest, exact-base checks, deleted files, generated output, localization, tests, and residue scans agree. | Cumulative downstream reports/docs are intentionally dirty and must be refreshed after execution. | Reconcile them in API/E2E/delivery. |
+
+## Findings
+
+No open implementation-source findings.
+
+## Classification
+
+Not applicable — review passed.
+
+## Recommended Recipient
+
+`api_e2e_engineer`
+
+## Residual Risks
+
+- API/E2E must execute the structurally reconciled ordinary-provider/Gemini Save-only GraphQL/browser paths and prove the removed commands are absent from the assembled schema/UI.
+- Re-run persistent restart/reopen, real configured-provider, AutoByteus discovery, custom-provider Delete/migration, unchanged Docker, and packaged Electron existing-user/reset journeys against final HEAD `1931d6ec`.
+- Prove restored Claude HTTP MCP/session behavior, `auto|cli|api-key` lookup counts, external Codex continuity, Terminal/PTY inheritance, and built-in default persistence without claiming child/process isolation.
+- `LOCAL_HARDENED` covers the local vault/file-root/value-safe boundary only; `STRONG_AGENT_ISOLATION` remains deferred and Codex remains excluded from that assurance claim.
+- Preserve exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker topology, explicit importer target/source immutability, one application database plus adjacent key, no automatic `.env` credential migration, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck only, not legal clearance or an authentication redesign.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review — Round-36 exhaustive scope-reset delta`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.73/10` (`97.3/100`); every category `>=9.4`.
+- Failure Origin: `N/A`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: source/test commit `7fa54b18da3c3950983ccab367d338b93dfd8a17` passes at final handoff HEAD `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd`. The complete previously accepted implementation remains carried forward except for the exact approved scope reset reviewed here. API/E2E may resume.
+
+# Review Round 44 — Round-20 API/E2E Failure-Origin Review
+
+## Review Round Meta
+
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Requirements Doc Reviewed As Context: `requirements.md` (`REQ-006`, `REQ-012`, `REQ-017`; `AC-004`, `AC-008`, `AC-015`)
+- Supplemental Task Artifacts Reviewed As Context: `custom-provider-v1-migration-contract.md`, `scope-audit.md`, `use-case-spine-validation.md`, `credential-consumer-mapping.md`
+- Current Review Round: `44`
+- Trigger: Round-20 API/E2E `Fail` after packaged existing-user custom-provider migration/restart; public custom-provider Delete reported `AUTOBYTEUS_LLM_DISCOVERY_FAILED` after its destructive state changes had committed.
+- Prior Review Round Reviewed: `43`
+- Latest Authoritative Round: `44`
+- Investigation Notes Reviewed As Context: `investigation-notes.md`
+- Design Spec Reviewed As Context: `design-spec.md`
+- Design Review Report Reviewed As Context: `design-review-report.md` (Architecture Round 36)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (final HEAD `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd`)
+- Coverage Investigation Reviewed: `coverage-investigation.md`
+- Execution Coverage Report Reviewed: `execution-coverage-report.md`
+- Failing Scenario IDs: `SCSP-E2E-PACKAGED-EXISTING-USER-001`
+- Exact Failing Commands / Execution Mode: current macOS Electron package built from exact HEAD in a detached task worktree; packaged server launched with the package Electron binary in Node mode against an owned data root, application DB, adjacent key, synthetic valid v1 provider file, and controlled custom-provider discovery fixture; Delete invoked through public GraphQL after migration and same-data restart.
+- Failure Evidence Paths: `execution-evidence/329-round20-packaged-existing-user-migration.log`, `execution-evidence/331-round20-custom-delete-failure-origin.log`, `execution-evidence/332-round20-final-evidence-scan.log`, `execution-evidence/333-round20-final-package-check.log`
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `43` | Round-36 exhaustive scope-reset implementation | All prior findings resolved | None | Pass | No | Historical source result; reopened only for the affected custom-provider Delete path. |
+| `44` | Round-20 API/E2E critical failure | Round-43 custom-provider Delete readiness/rationale | `CR-031` | Fail | Yes | Implementation-owned post-commit failure coupling confirmed. |
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `43` | None open | N/A | Reopened only in the affected rationale | Round-20 evidence plus the forward source trace below | The full Round-43 audit is not repeated. Its custom-provider Delete API/E2E-readiness and runtime-correctness conclusions are superseded until `CR-031` is corrected and re-reviewed. |
+
+## Review Scope
+
+- Changed implementation and behavior reviewed: the supported custom-provider Delete command after a successful fixed-path v1 migration and restart, specifically its credential/entity deletion, custom runtime/catalog synchronization, Boolean GraphQL completion, and interaction with independently unavailable AutoByteus remote discovery.
+- Files / areas reviewed: `llm-provider-service.ts`, `model-catalog-service.ts`, `autobyteus-model-catalog.ts`, cached and concrete AutoByteus LLM model providers, `custom-llm-provider-runtime-sync-service.ts`, GraphQL `deleteCustomProvider`, its focused unit/E2E coverage, the canonical Round-20 reports, and evidence `329`/`331`.
+- Explicit exclusions: no full source re-audit or scorecard repetition; no review of the preserved durable API/E2E delta; no production-source edit; no reinterpretation of unrelated successful provider, browser, Docker, Claude/Codex, PTY, or packaging evidence.
+
+## Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: `REQ-006` makes custom-provider Delete a Boolean provider-specific command that internally cleans up that provider credential; `AC-004` requires internal deletion to be exercised through that owning lifecycle and unavailable operations to use GraphQL errors. `REQ-017` independently preserves AutoByteus remote discovery and its truthful availability failures, but does not make that unrelated remote operation part of custom-provider Delete completion.
+- Design-spec behavior map verified against the implementation: the public command and internal cleanup path exist, but the implementation extends the Delete return path through a full AutoByteus catalog reload and therefore through unrelated remote discovery.
+- Design review report and round confirmed: Architecture Round 36 preserved custom-provider Delete and catalog behavior without approving post-commit dependence on AutoByteus remote availability.
+- Behavior-basis status: `Contradicted`
+- Changed or newly discovered behavior: none; the implementation contradicts the already approved custom-provider Delete completion behavior.
+- Remaining material ambiguity: none.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
+| --- | --- | --- | --- |
+| `UC-003` / `REQ-006` / `AC-004` custom-provider Delete | `Contradicted` | Settings or GraphQL Delete -> resolver -> `LlmProviderService.deleteCustomProvider` -> remove exact vault consumer -> delete provider record -> full `reloadLlmModels(AUTOBYTEUS)` -> `AutobyteusLlmModelProvider.refreshModels` -> remote AutoByteus `refresh('llm')` -> GraphQL Boolean only after the whole chain returns. | Evidence `329` records HTTP 200 with a null mutation and `AUTOBYTEUS_LLM_DISCOVERY_FAILED`, followed by both provider and current-file absence. Evidence `331` reproduces the source chain and independently records AutoByteus remote discovery as unavailable. |
+| `UC-008` / `REQ-012` custom-provider-v1 migration and same-data reopen | `Confirmed` | Fixed-path v1 migration -> encrypted credential/current v2 publication -> restart -> provider READY/configured -> public custom Delete. | Evidence `329` confirms migration and reopen before the Delete contradiction; the migration itself is not the origin. |
+| `UC-015` / `REQ-017` AutoByteus remote discovery | `Confirmed` | AutoByteus-specific discovery trigger -> exact Store-backed credential resolution -> configured hosts -> remote discovery -> exact unavailable error. | Evidence `331` confirms the remote capability is independently unavailable; that truthful result is correct for its own operation, not authority to fail custom-provider Delete after commit. |
+
+## Material Premise Validation
+
+### `CR-MP-031` — A supported custom-provider Delete can commit and then encounter independently unavailable AutoByteus remote discovery
+
+- Origin: `New`
+- Related approved requirement or established contract: `REQ-006`, `REQ-012`, `REQ-017`; `AC-004`, `AC-015`
+- Relevant behavior ID(s): `UC-003`, `UC-008`, `UC-015`
+- Initiating basis kind: `User`
+- Independent product-supported initiating trigger or applicable governing contract: the Settings custom-provider card and public GraphQL `deleteCustomProvider(providerId)` action for an existing custom provider.
+- Support evidence: the product exposes custom-provider entity Delete; the packaged existing-user path creates a supported existing provider through the approved v1 migration, reopens it configured after restart, and invokes that public Delete. AutoByteus remote discovery is a separately supported capability whose configured endpoint can truthfully be unavailable.
+- Forward current production path: Settings/GraphQL Delete -> resolver -> `LlmProviderService.deleteCustomProvider` -> exact vault consumer removal -> `CustomLlmProviderStore.deleteProvider` -> `ModelCatalogService.reloadLlmModels(AUTOBYTEUS)` -> cached AutoByteus catalog full refresh -> `LLMFactory.reinitialize` -> custom-provider synchronization -> `AutobyteusRemoteModelDiscoveryService.refresh('llm')` -> `AUTOBYTEUS_LLM_DISCOVERY_FAILED` -> GraphQL null/error instead of Boolean `true`.
+- Lifecycle preconditions and material consequence: one custom provider exists and AutoByteus remote discovery is independently unavailable. Provider and credential deletion complete before the failing remote call, so the client is told the command failed although the destructive operation committed; a user can reasonably retry or distrust the displayed lifecycle state.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: implementation-owned bounded correction. Custom-provider Delete must refresh/clear its own custom-provider runtime/catalog state without requiring an unrelated full AutoByteus remote discovery to succeed.
+
+## Focused Failure-Origin Analysis
+
+- Failure origin: `Implementation defect`
+- Root-cause classification: `Local Implementation Defect`
+- Exact source origin:
+  - `llm-provider-service.ts:233-243` completes vault and provider-record deletion, then unconditionally calls the full `reloadLlmModels(AUTOBYTEUS)`.
+  - `model-catalog-service.ts:72-77` delegates that call to the whole AutoByteus catalog refresh.
+  - `autobyteus-llm-model-provider.ts:49-58` reinitializes the whole LLM factory, synchronizes custom providers, then refreshes unrelated AutoByteus remote LLM discovery and rethrows its failure.
+  - The GraphQL resolver returns `true` only after the service returns, so the later unrelated failure becomes a null/error despite committed deletion.
+- Smallest existing ownership path relevant to correction: the codebase already has provider-targeted reload in `ModelCatalogService.reloadLlmModelsForProvider` and custom-provider synchronization in `CustomLlmProviderRuntimeSyncService.syncSavedProviders`; the custom path contains discovery failure per saved custom endpoint and can rebuild the OpenAI-compatible provider set. The correction should reuse that owned targeted boundary rather than suppressing failures globally.
+- Test gap: `llm-provider-service.test.ts:256-263` covers only an already-missing ID and built-in rejection. It neither deletes a present provider nor proves that unrelated full AutoByteus discovery is outside the command's completion boundary.
+- Earlier review gap: yes. Round 43 explicitly accepted the custom-provider Delete spine but did not trace its unconditional full reload far enough to the separate AutoByteus remote refresh after destructive commit. That source path and the `REQ-006` Boolean-completion invariant were available and should have been caught. Only the affected Round-43 API/E2E-readiness and runtime-correctness rationale is reopened; the exhaustive scope audit is not invalidated.
+- Not the origin: custom-provider-v1 migration, packaging, GraphQL transport, fixture setup, or truthful AutoByteus availability classification. Evidence proves migration/reopen and actual deletion, while the same failure is deterministically explained by the source chain.
+
+## Findings
+
+### `CR-031` — Custom-provider Delete reports failure after its destructive commit
+
+- Severity: `High`
+- Classification: `Local Fix`
+- Affected approved behavior: `REQ-006`, `AC-004`, `UC-003`
+- Material premise: `CR-MP-031` (`Reachable`)
+- Evidence: `LlmProviderService.deleteCustomProvider` removes the credential and provider before invoking full AutoByteus catalog reload; that reload includes separately governed remote AutoByteus discovery and rethrows its failure. Round-20 packaged evidence reproduced a null/error response while both provider state and file entry were already absent.
+- Required action:
+  1. After the custom credential/entity deletion, synchronize and refresh the custom-provider-owned runtime/catalog state through the existing targeted custom-provider boundary; do not require unrelated AutoByteus remote discovery for Boolean Delete completion.
+  2. Do not globally swallow genuine full AutoByteus reload failures, and do not mask failures intrinsic to vault removal, provider-record deletion, or custom-provider synchronization.
+  3. Add deterministic source coverage for a present custom provider proving exact vault cleanup, provider-record deletion, removal from runtime/catalog state, Boolean completion, and zero invocation/dependence on the unrelated full AutoByteus reload path when remote AutoByteus discovery would fail.
+  4. Return the bounded source delta through source re-review, then rerun the failed packaged scenario and affected API/E2E matrix.
+
+## Classification
+
+- `Local Fix`
+
+## Recommended Recipient
+
+- `implementation_engineer`
+
+## Residual Risks
+
+- The preserved Round-20 durable API/E2E changes remain pending proportional review only after API/E2E returns a successful result.
+- The corrected path must still remove the deleted custom provider from live/cached catalogs; merely catching `AUTOBYTEUS_LLM_DISCOVERY_FAILED` after a full reload would leave ownership coupled and is not sufficient.
+- Preserve the Round-36 narrow scope: no ordinary/Gemini removal surface, no global discovery-error suppression, no compatibility reader, and no expansion of vault behavior.
+- Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only; Claude remains `auto|cli|api-key`.
+- `LOCAL_HARDENED` remains limited to local vault/file-root/value-safe custody; inherited child environments are continuity rather than isolation, Codex is excluded, and `STRONG_AGENT_ISOLATION` remains deferred.
+- Preserve exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker, explicit importer target/source immutability, one application DB plus adjacent key, no automatic `.env` credential migration, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail`
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: `Pass`
+- Score Summary: no scorecard repeated for this focused entry point; Round-43 `9.73/10` remains historical, while its affected custom-provider Delete readiness/correctness rationale is superseded by `CR-031`.
+- Failure Origin: `Implementation-owned local defect; post-commit custom-provider Delete is coupled to unrelated full AutoByteus remote discovery.`
+- Recommended Recipient: `implementation_engineer`
+- Notes: correct `CR-031` as a bounded implementation fix, then return through source review and API/E2E. Do not route to delivery.
+
+# Review Round 45 — CR-031 Bounded Delta Re-review
+
+## Review Meta
+
+- Review date: `2026-07-27`
+- Review entry point: `Implementation re-review — bounded CR-031 source/test delta`
+- Repository/worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
+- Branch: `codex/secure-centralized-secret-provisioning`
+- Prior failing handoff HEAD: `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd`
+- Reviewed source/test commit: `3afcf86b3cdd389ddf3506d205ad9fed3edf0a23`
+- Final handoff HEAD: `ec0df6b1a9d216366e08262cd96f5280686b04d0`
+- Exact reviewed implementation delta: `1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd..3afcf86b3cdd389ddf3506d205ad9fed3edf0a23`
+- Final handoff-only delta: `3afcf86b3cdd389ddf3506d205ad9fed3edf0a23..ec0df6b1a9d216366e08262cd96f5280686b04d0`
+- Prior result: `Round 44 — Fail / CR-031 Local Fix`
+- Current decision: `Pass`
+
+## Review History And Prior-Finding Resolution
+
+| Round / Finding | Prior Status | Current Status | Resolution Evidence |
+| --- | --- | --- | --- |
+| `CR-031` | Open — custom-provider Delete committed vault/entity deletion and then could report failure from unrelated full AutoByteus remote discovery | Resolved | `LlmProviderService.deleteCustomProvider` now calls the existing provider-targeted `reloadLlmModelsForProvider(customId, AUTOBYTEUS)` boundary. The targeted custom branch synchronizes the saved OpenAI-compatible endpoint set and returns the deleted provider's zero-model count without calling the throwing whole-catalog `refreshModels()`/remote `refresh('llm')` path. |
+| Round-43 cumulative package | Previously accepted except for the Round-44 reopened Delete rationale | Carried forward unchanged | The source commit changes exactly one production file and two focused unit files. No Round-36 scope-audit, vault, migration, Settings, Gemini, Claude/Codex, importer, Electron, Docker, package, or dependency source changed. |
+
+## Scope And Approved-Behavior Basis
+
+- Reviewed only the requested bounded three-file source/test delta. The accepted Round-36 exhaustive scope audit was used as context and not redundantly repeated.
+- Applicable authority remains `REQ-006`, `REQ-012`, `REQ-017`, `AC-004`, `BEH-008`, and material premise `CR-MP-031`.
+- Supported trigger remains the Settings/public GraphQL custom-provider Delete action for an existing provider, including one restored by the approved fixed-path v1 migration.
+- Required outcome remains Boolean Delete completion after exact custom credential/entity cleanup, with custom runtime/catalog state synchronized independently of unrelated AutoByteus remote availability.
+
+## Complete Relevant Production Path
+
+Corrected command path:
+
+`Settings custom-provider Delete -> GraphQL deleteCustomProvider -> LlmProviderService.deleteCustomProvider -> remove exact vault consumer -> delete exact provider record -> ModelCatalogService.reloadLlmModelsForProvider(customId, AUTOBYTEUS) -> AutobyteusModelCatalog targeted reload -> CustomLlmProviderRuntimeSyncService.syncSavedProviders -> OpenAI-compatible runtime set rebuilt without deleted provider -> cache repopulated -> GraphQL true`.
+
+Failure-boundary preservation:
+
+`vault removal failure | provider-record deletion failure | intrinsic targeted custom synchronization failure -> propagates through the typed GraphQL error path`.
+
+The corrected path no longer calls the full `reloadLlmModels(AUTOBYTEUS)` operation whose concrete `refreshModels()` branch reinitializes all LLMs and then rethrows AutoByteus remote `refresh('llm')` failure. During targeted cache repopulation, the established aggregate `listModels()` path may still make a best-effort `ensureDiscovered('llm')` attempt; that method catches remote unavailability and therefore does not govern Delete completion. This review claims independence from the unrelated full/throwing refresh, not zero possible best-effort discovery activity in the aggregate cache wrapper.
+
+## Structural Checklist Summary
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Data-flow spine and lifecycle fidelity | Pass | The supported Delete spine now ends at exact custom-provider synchronization and Boolean completion rather than an unrelated remote refresh. |
+| Ownership and authoritative boundaries | Pass | `LlmProviderService` retains command sequencing while the existing provider-targeted model-catalog boundary owns runtime/catalog synchronization. No lower-level bypass was added. |
+| Interface/API clarity | Pass | Public GraphQL shape remains one Boolean custom-provider command; no fallback/status/result DTO was introduced. |
+| Separation of concerns and file placement | Pass | The implementation is a one-call substitution using the existing targeted owner; no new coordinator, helper, or catch layer exists. |
+| Existing capability reuse | Pass | Existing `reloadLlmModelsForProvider` and `syncSavedProviders` paths are reused exactly as intended for custom providers. |
+| Failure transparency | Pass | Intrinsic vault, record, and targeted synchronization failures still propagate; the implementation does not globally suppress AutoByteus discovery errors. |
+| Test readiness | Pass | Present-provider ordering, exact cleanup, targeted invocation, absence of full reload, intrinsic failure propagation, missing-provider idempotency, built-in rejection, and custom targeted zero-model behavior are covered. |
+| Runtime correctness | Pass | The source trace removes the exact post-commit throwing dependency identified by evidence `329`/`331`. |
+| Legacy/runtime separation | Pass | No migration reader, compatibility branch, alternate source, fallback, or automatic import behavior changed. |
+| Cleanup and scope control | Pass | Exact delta is one production file plus two tests; final follow-up commit changes only the canonical handoff. |
+
+## Local-Source And Size Check
+
+| Source Path | Effective Non-Empty Lines | Delta | Result | Notes |
+| --- | ---: | ---: | --- | --- |
+| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 401 | `+4/-1` | Pass | Below the 500-line hard limit and 220-line delta threshold. The file retains its existing provider-lifecycle composition responsibility; the correction narrows rather than expands coordination. |
+
+Tests are excluded from implementation-source size thresholds. The two focused test files add 72 lines across coherent existing suites.
+
+## Legacy / Compatibility / Cleanup Verdict
+
+- New backward-compatibility mechanism: `None`.
+- New fallback or error suppression: `None`.
+- New coordination layer or boundary: `None`.
+- Existing full AutoByteus reload semantics changed globally: `No`.
+- Existing custom-provider migration/runtime separation changed: `No`.
+- Dead, obsolete, duplicate, or compatibility-only source introduced: `None`.
+- Cleanup verdict: `Pass`.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No`
+- Why: this is an internal correctness fix to the existing custom-provider Delete completion boundary. It changes no command, field, operator step, configuration, or user-visible contract.
+
+## Material Premise Validation
+
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `CR-MP-031` | Confirmed and handled | The supported Delete plus independently unavailable AutoByteus remote state remains reachable. The corrected path no longer invokes the full throwing remote refresh after commit, so unrelated remote unavailability cannot convert successful custom cleanup into a GraphQL failure. |
+
+No new or reclassified material premise was introduced.
+
+## Independent Validation
+
+- Exact source/test inventory: three modified paths, `76` insertions / `1` deletion; exactly one implementation-source path and two focused unit paths.
+- Final handoff-only commit inventory: only `implementation-handoff.md`.
+- `git diff --check 1931d6ec3366d1d5c1ec8dcb93be9848fe7f48cd..3afcf86b3cdd389ddf3506d205ad9fed3edf0a23`: passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/llm-management/llm-providers/llm-provider-service.test.ts tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts`: 2 files / 16 tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`: passed.
+- Implementation handoff additionally records a passing full server production build, including shared/core compilation, Prisma 5.22.0 generation, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` smoke.
+- No reviewer-owned source, test, persistent DB/key, provider, Docker, browser, Electron, or external account state was changed or used.
+
+## Review Scorecard
+
+- Overall score: `9.75/10`
+- Overall score: `97.5/100`
+- Score calculation note: simple average across the ten mandatory categories; every category is at or above the clean-pass target. Scores apply to this bounded re-review with the accepted cumulative package carried forward.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.8 | The corrected Delete command has one clear path from public action through exact cleanup, targeted synchronization, and Boolean completion. | Real packaged proof remains downstream. | Rerun the exact failed scenario first. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.8 | The service sequences lifecycle operations and delegates catalog work to the existing provider-targeted owner. | The existing catalog cache still aggregates several model sources by reviewed design. | Preserve targeted ownership for entity lifecycle commands. |
+| 3 | API / Interface / Query / Command Clarity | 9.8 | The Boolean command remains singular and no unrelated availability result leaks into its contract. | No material source weakness. | Preserve. |
+| 4 | Separation of Concerns and File Placement | 9.8 | A one-call substitution removes cross-concern coupling without new machinery. | No material source weakness. | Preserve. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.7 | Existing targeted catalog and custom synchronization structures are reused; no new DTO/helper appears. | Existing generic provider-targeted method serves built-in and custom branches internally. | Keep branch ownership explicit. |
+| 6 | Naming Quality and Local Readability | 9.7 | Method and test names accurately identify targeted custom synchronization and intrinsic failure propagation. | The cache wrapper's later best-effort aggregate list is implicit in this local call-site diff. | Keep future catalog changes explicit about refresh versus best-effort list behavior. |
+| 7 | API/E2E Readiness | 9.5 | Exact focused tests, TypeScript compilation, production build evidence, and diff checks are green. | The packaged failure has not yet been rerun at `ec0df6b1`. | Execute failed packaged scenario and affected matrix. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.8 | The exact throwing dependency is removed while intrinsic operation failures remain visible. | Assembled cache/runtime behavior still needs realistic confirmation. | Confirm provider absence plus GraphQL `true` under remote unavailability. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | No wrapper, fallback, dual path, or runtime v1 knowledge was added. | Approved migration-only v1 handling remains elsewhere unchanged. | Preserve migration/runtime separation. |
+| 10 | Cleanup Completeness | 9.8 | Delta is minimal, focused, whitespace-clean, and leaves no superseded full-reload call in custom Delete. | Downstream reports/evidence remain intentionally dirty for API/E2E reconciliation. | Refresh them after execution. |
+
+## Findings
+
+No open implementation-source findings.
+
+`CR-031` is resolved by the bounded targeted-reload correction and focused regression coverage.
+
+## Classification
+
+Not applicable — review passed.
+
+## Recommended Recipient
+
+`api_e2e_engineer`
+
+## Residual Risks
+
+- API/E2E must rerun `SCSP-E2E-PACKAGED-EXISTING-USER-001` first and prove migration/reopen, GraphQL `true`, exact credential/entity absence, custom runtime/catalog absence, and independence from unavailable AutoByteus remote discovery.
+- After that critical pass, execute the affected cumulative Round-20 matrix before returning for proportional durable-test review.
+- The preserved Round-20 durable API/E2E delta is not reviewed in this source re-review.
+- Preserve the Round-36 narrow scope: no ordinary/Gemini removal surface, no global discovery-error suppression, no compatibility reader, and no vault expansion.
+- Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only; Claude remains `auto|cli|api-key`.
+- `LOCAL_HARDENED` remains limited to local vault/file-root/value-safe custody; inherited child environments are continuity rather than isolation, Codex is excluded, and `STRONG_AGENT_ISOLATION` remains deferred.
+- Preserve exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker, explicit importer target/source immutability, one application DB plus adjacent key, no automatic `.env` credential migration, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation re-review — bounded CR-031 source/test delta`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.75/10` (`97.5/100`); every category `>=9.5`.
+- Failure Origin: `CR-031 resolved; no remaining implementation-source failure in the bounded delta.`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: source/test commit `3afcf86b3cdd389ddf3506d205ad9fed3edf0a23` passes at final handoff HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`. API/E2E should rerun the exact failed packaged custom-provider Delete scenario first; do not route to delivery before a successful execution and proportional test-code review.

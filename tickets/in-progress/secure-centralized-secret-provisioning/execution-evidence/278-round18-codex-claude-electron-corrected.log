@@ -1,0 +1,141 @@
+ROUND=18
+HEAD=3877b39bdcad2e8c88bb9f86d190308aaf034829
+CORRECTION=Evidence 277 had skipped live gates and an invalid electron workspace command; this command is authoritative.
+COMMAND_1=RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 focused external integrations
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > creates a real thread, sends a live turn, and reaches completion
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts > CodexThread integration (live transport) > requests terminal approval, denies it, and leaves the command unapplied
+[CodexAppServerClient] stderr: 2026-07-27T12:31:35.023777Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc "cat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-thread-deny-W2n1m5/source.txt' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-thread-deny-W2n1m5/destination.txt'"`: CreateProcess { message: "Rejected(\"rejected by user\")" }
+
+ ✓ tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts (4 tests) 23480ms
+     ✓ creates a real thread, sends a live turn, and reaches completion  3261ms
+     ✓ requests terminal approval, approves it, and completes the command  9531ms
+     ✓ requests terminal approval, denies it, and leaves the command unapplied  8257ms
+     ✓ interrupts an active long-running terminal turn  2429ms
+stdout | tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live transport) > lists live models, runs a live Claude query turn, and fetches live session messages
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts (4 tests) 18710ms
+     ✓ lists live models, runs a live Claude query turn, and fetches live session messages  4370ms
+     ✓ loads a project skill from .claude/skills when project skill settings are enabled  4871ms
+     ✓ resumes a live Claude query session and retains prior session history  4674ms
+     ✓ configures a custom MCP server and executes a simple custom MCP tool  4794ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  14:31:14
+   Duration  45.04s (transform 1.45s, setup 11ms, import 2.29s, tests 42.19s, environment 0ms)
+
+COMMAND_2=focused Electron AppData/runtime suite
+
+> autobyteus@1.4.26 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web
+> vitest --config ./electron/vitest.config.ts electron/server/__tests__/serverRuntimeEnv.spec.ts electron/server/__tests__/prismaSqliteUrl.spec.ts electron/server/services/__tests__/AppDataService.spec.ts electron/server/__tests__/BaseServerManager.spec.ts --run
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron
+
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (4 tests) 2ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (14 tests) 8ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (1 test) 3ms
+
+ Test Files  4 passed (4)
+      Tests  22 passed (22)
+   Start at  14:32:00
+   Duration  365ms (transform 167ms, setup 0ms, collect 272ms, tests 14ms, environment 0ms, prepare 233ms)
+
+ROUND18_CODEX_CLAUDE_ELECTRON_CORRECTED=PASS

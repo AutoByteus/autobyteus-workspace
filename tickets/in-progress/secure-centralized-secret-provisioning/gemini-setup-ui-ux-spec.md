@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Requirements-ready`/`Refined`)
 
-`Retained approved behavior — Gemini-specific behavior and the provider-centric general Settings group are unchanged by the custom-provider-v1 migration/reset revision. The cumulative package is user-approved for architecture review.`
+`Requirements-ready — the user approved the compact Gemini Save/overwrite, Save-and-use, and Use-this-mode behavior and explicitly rejected standalone configuration/key removal. The cumulative narrow-scope correction is submitted for architecture review; implementation, API/E2E, and delivery remain unauthorized until a Pass.`
 
 ## UX Goal
 
@@ -33,7 +33,7 @@ The page is not a tutorial. Users who need provider-specific credential instruct
 | `UXJ-001` | First-time user | No configured options; no active mode | Configure and activate one mode | Chosen option is `Configured` and `Active` | REQ-006, REQ-009, REQ-010 / AC-004, AC-006 |
 | `UXJ-002` | Existing user | One active configured mode | Update its credentials/config | Same mode remains active with updated configuration | REQ-006, REQ-010 / AC-004, AC-006 |
 | `UXJ-003` | Existing user | Multiple configured options; one active | Switch active mode | Newly selected configured option is active; others remain configured | REQ-010 / AC-006 |
-| `UXJ-004` | Existing user | Active option configured | Remove active option | Configuration removed; active mode becomes `Not selected`; no fallback | REQ-006, REQ-010 / AC-006 |
+| `UXJ-004` | Existing user | One active option; another option not configured | Configure a secondary option without switching | Secondary option becomes `Configured`; original mode remains `Active` | REQ-006, REQ-010 / AC-006 |
 | `UXJ-005` | User during vault failure | Key-backed modes visible but unavailable | Understand/recover without secret exposure | Concise value-free status; catalogs remain usable | REQ-001, REQ-006 / AC-001, AC-004 |
 
 ## Journey Details
@@ -67,21 +67,21 @@ The UI may also provide `Save and use this mode` as the primary first-time actio
 4. The server verifies the selected option is complete, persists `GEMINI_SETUP_MODE`, and returns the new active mode.
 5. Only the `Active` badge moves. Credentials/project configuration remain untouched.
 
-### UXJ-004 — Remove active configuration
+### UXJ-004 — Configure a secondary option without switching
 
-1. User selects `Remove` inside the active option editor.
-2. A concise confirmation appears: `Remove AI Studio configuration? Gemini will have no active mode.`
-3. One server-owned command clears `GEMINI_SETUP_MODE` first and then removes the selected option.
-4. The header becomes `Active mode: Not selected`.
-5. No other configured option becomes active automatically.
+1. One configured option is already active.
+2. User opens a different option through `Configure`.
+3. User enters the required fields and selects `Save`.
+4. The secondary option becomes `Configured`; the existing `GEMINI_SETUP_MODE` and active badge remain unchanged.
+5. The secondary row now exposes `Use this mode`.
 
-If the second step fails, the option remains configured while active mode is already `Not selected`; the UI reports the value-free partial outcome and permits retry. This is safer than leaving active mode pointed at removed data and is honest about the non-transactional application-config/vault boundary.
+Saving is create-or-overwrite only. The screen exposes no standalone Gemini key/configuration-removal action; users switch by selecting `Use this mode` and replace configuration by saving a new value.
 
 ### UXJ-005 — Vault unavailable
 
 1. Provider and model catalogs still render.
 2. AI Studio/Vertex Express status shows `Unavailable` rather than `Not configured` when vault health is not ready.
-3. Secret Save/Remove/Use actions are disabled.
+3. Secret Save/Use actions are disabled.
 4. One concise value-free status line appears under the affected editor, e.g. `Credential storage is locked.`
 5. Vertex Project remains independently governed by normal non-secret configuration availability.
 
@@ -92,9 +92,8 @@ If the second step fails, the option remains configured while active mode is alr
 | API Key Management | Existing provider/model screen | Settings opened | Loading, ready, provider selected | Select Gemini/provider/model/reload |
 | Gemini setup header | Show sole runtime authority | Gemini selected | `Active mode: <mode>` or `Not selected` | Inspect/configure/switch |
 | Mode row | Compact option identity/status/actions | Gemini selected | Not configured, configured, active, unavailable | Configure or activate |
-| Mode editor | Edit exactly one option | `Configure` selected | Clean, dirty, saving, saved, removing, error | Save/remove/collapse |
-| Mode confirmation | Confirm removal of active option | Remove active option | Open, confirming | Cancel or remove/clear active mode |
-| Notification toast | Short operation outcome | Save/remove/select completes/fails | Success/error | Auto-dismiss |
+| Mode editor | Edit exactly one option | `Configure` selected | Clean, dirty, saving, saved, error | Save/collapse |
+| Notification toast | Short operation outcome | Save/select completes/fails | Success/error | Auto-dismiss |
 
 ## Interaction And State-Transition Specification
 
@@ -103,12 +102,10 @@ If the second step fails, the option remains configured while active mode is alr
 | No active mode | Open Gemini | Header shows `Not selected` | Three compact rows | None | Configure |
 | Unconfigured row | `Configure` | Row expands | Required inputs visible | None | Save/collapse |
 | Valid unsaved input | `Save` | Button shows `Saving…` | Input disabled temporarily | Save only addressed option | Retry/use/collapse |
-| First setup, no active mode | `Save and use this mode` | Single pending action | Row becomes configured + active when both stages pass | One server-owned save-then-activate command; if activation fails, saved configuration remains and the response says configured but not active | Retry activation/update/remove |
+| First setup, no active mode | `Save and use this mode` | Single pending action | Row becomes configured + active when both stages pass | One server-owned save-then-activate command; if activation fails, saved configuration remains and the response says configured but not active | Retry activation/update |
 | Configured non-active | `Use this mode` | Button shows `Activating…` | Active badge moves on success | Persist normal non-secret `GEMINI_SETUP_MODE` | Invoke/update/switch |
-| Active mode | Open editor | No redundant warning | Input empty for secrets | None | Update/remove |
-| Remove non-active | Confirm remove | `Removing…` | Row becomes not configured | Remove addressed config only | Configure |
-| Remove active | Confirm remove | `Removing…` | Active becomes not selected | Clear mode first, then remove config; value-free partial outcome if removal fails | Retry remove/configure/activate another |
-| Save active | Save replacement | `Saving…` | Remains active | Replace addressed config only | Invoke/remove |
+| Active mode | Open editor | No redundant warning | Input empty for secrets | None | Update |
+| Save active | Save replacement | `Saving…` | Remains active | Replace addressed config only | Invoke/update |
 | Vault closed | Open key-backed option | Concise status | Actions unavailable | None | Recover vault/choose eligible project mode |
 | Runtime with no active mode | Invoke Gemini | No implicit mode selection | Value-free error directs to Settings | No secret resolution | Open Gemini Settings |
 
@@ -174,7 +171,7 @@ Vertex Project                                      Configured
 Project ID                    Location
 [ my-project              ]   [ us-central1               ]
 
-[Save]  [Remove]
+[Save]
 ```
 
 Project and location are non-secret and may be displayed/prefilled. API key fields are never prefilled.
@@ -236,12 +233,11 @@ Electron and direct browser render the same component and behavior.
 ## Accessibility And Keyboard Behavior
 
 - Mode rows use semantic headings or labelled regions.
-- `Configure`, `Use this mode`, `Save`, and `Remove` are real buttons with visible focus.
+- `Configure`, `Use this mode`, and `Save` are real buttons with visible focus.
 - Expanding an editor moves focus to its first input.
-- Saving/removing/activating announces a concise `aria-live` status.
+- Saving/activating announces a concise `aria-live` status.
 - Status is communicated by text (`Configured`, `Active`, `Unavailable`), never color alone.
 - Secret visibility toggles have accessible names and affect only transient typed input.
-- Removal confirmation traps focus and restores it to the invoking button on cancel.
 
 ## Content, Labels, And Validation Messages
 
@@ -298,14 +294,13 @@ The general `providerSettings` group for Gemini reuses the established provider/
 
 `aiStudioConfigured` and `vertexExpressConfigured` are ordinary booleans when readable. A null value accompanied by its GraphQL field error means the credential state could not be read; no `MISSING|CONFIGURED|UNAVAILABLE` wrapper is needed. Vertex Project is represented by one complete object or null, so it needs no second configured flag.
 
-Required operations:
+Required operations (no removal command):
 
 ```text
 saveGeminiAiStudio(apiKey, activateAfterSave)
 saveGeminiVertexExpress(apiKey, activateAfterSave)
 saveGeminiVertexProject(project, location, activateAfterSave)
 useGeminiMode(mode)
-removeGeminiConfiguration(mode)
 ```
 
 Behavior:
@@ -313,9 +308,9 @@ Behavior:
 - each option-specific Save accepts only fields that option actually needs; **Save** passes `activateAfterSave=false`, while **Save and use this mode** passes `true`;
 - `useGeminiMode` validates current server-side completeness, then persists non-secret `GEMINI_SETUP_MODE`;
 - save does not activate unless `activateAfterSave=true`;
+- Save is create-or-overwrite; neither the ordinary provider surface nor the Gemini surface exposes a standalone key/configuration-removal operation;
 - the compound action saves first and activates second; a failed activation leaves the option configured and active mode unchanged;
-- removing the active option clears mode first and removes second; a failed removal leaves the option configured but inactive;
-- the query and every Gemini mutation return the same authoritative `GeminiSetupState`; the UI compares the requested action with the returned option configuration and `activeMode` to render full or partial success;
+- the query and every Gemini Save/Use mutation return the same authoritative `GeminiSetupState`; the UI compares the requested action with the returned option configuration and `activeMode` to render full or partial success;
 - responses do not add `operation`, `outcome`, stage-outcome, or `instructionCode` fields;
 - queries never return secret values.
 
@@ -331,19 +326,19 @@ Persistence:
 - Provider tutorials or account-creation walkthroughs.
 - Automatic mode inference/priority.
 - Automatic activation after ordinary Save.
-- Automatic activation of another option after removal.
+- Standalone deletion/removal of a Gemini key or configuration; Save overwrites and `Use this mode` switches selection.
 - Secret value display/readback.
 - Model filtering by configured/active mode.
 - Live Vertex model listing.
 
 ## Resolved Design Notes / Risks
 
-- `GeminiConfigurationService` owns Save, Save-and-activate, Activate, and Remove command sequencing and returns one authoritative setup state; the UI never orchestrates cross-owner compensation or interprets a parallel outcome protocol.
+- `GeminiConfigurationService` owns Save, Save-and-activate, and Activate command sequencing and returns one authoritative setup state; the UI never orchestrates cross-owner compensation or interprets a parallel outcome protocol.
 - `AppConfig` owns `GEMINI_SETUP_MODE`, project, and location. The vault owns AI Studio and Vertex Express values. Their cross-owner compound operations return the truthful resulting setup state rather than claim impossible atomicity or add a staged-outcome DTO.
-- No runtime reads credential aliases from `.env`; explicit importer/UI provisioning remains required.
+- Managed Gemini clients never use credential aliases from `.env` as credential authority or fallback; AppConfig may still preserve established `.env`/`process.env` projection for the wider application. Explicit importer/UI vault provisioning remains required.
 
 ## Approval Status
 
-`Gemini journeys/actions and the provider-centric general group remain user-approved. They are unchanged by the custom-provider-v1 migration/reset revision and travel with the architecture-review package.`
+`The compact Gemini Save/overwrite, Save-and-use, and Use-this-mode journeys, the absence of standalone Gemini removal, and the provider-centric general group are user-approved and travel with the cumulative architecture-review package.`
 
 Approval makes this supplement part of the intended-behavior requirements basis. It does not authorize implementation before the complete clean-state design passes architecture review.
