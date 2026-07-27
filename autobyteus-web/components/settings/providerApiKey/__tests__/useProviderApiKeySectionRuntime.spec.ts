@@ -133,6 +133,17 @@ describe('useProviderApiKeySectionRuntime', () => {
     expect(store.removeLLMProviderApiKey).toHaveBeenCalledWith('OPENAI')
   })
 
+  it('pins Settings reload commands to the AutoByteus runtime', async () => {
+    const { wrapper, store } = mountRuntime()
+    await (wrapper.vm as any).initialize()
+
+    await (wrapper.vm as any).reloadAllModels()
+    await (wrapper.vm as any).reloadSelectedProvider('OPENAI')
+
+    expect(store.reloadModels).toHaveBeenCalledWith('autobyteus')
+    expect(store.reloadModelsForProvider).toHaveBeenCalledWith('OPENAI', 'autobyteus')
+  })
+
   it('sends no type/runtime fields in custom provider commands', async () => {
     const { wrapper, store } = mountRuntime()
     await (wrapper.vm as any).initialize()

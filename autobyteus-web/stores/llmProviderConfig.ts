@@ -34,6 +34,8 @@ import {
 } from './llmProviderConfigSupport'
 export * from './llmProviderConfigSupport'
 
+export const PROVIDER_SETTINGS_RUNTIME_KIND = 'autobyteus'
+
 const requireMutationSuccess = (
   data: Record<string, unknown> | null | undefined,
   errors: readonly { message: string }[] | undefined,
@@ -64,6 +66,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     hasFetchedProviders: false,
     hasFetchedProviderSettings: false,
     modelRuntimeKind: 'autobyteus',
+    providerSettingsRuntimeKind: null as typeof PROVIDER_SETTINGS_RUNTIME_KIND | null,
     geminiSetup: defaultGeminiSetup(),
   }),
   getters: {
@@ -174,62 +177,71 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       }
     },
 
-    async fetchProviderSettings(runtimeKind?: string, networkOnly = false) {
-      const effectiveRuntimeKind = runtimeKind ?? this.modelRuntimeKind
+    async fetchProviderSettings(networkOnly = false) {
       if (!networkOnly
         && this.hasFetchedProviderSettings
-        && this.modelRuntimeKind === effectiveRuntimeKind) {
+        && this.providerSettingsRuntimeKind === PROVIDER_SETTINGS_RUNTIME_KIND) {
         return this.providerSettingsGroups
       }
       this.isLoadingProviderSettings = true
       try {
         const { data } = await getApolloClient().query({
           query: GET_PROVIDER_SETTINGS,
-          variables: { runtimeKind: effectiveRuntimeKind },
+          variables: { runtimeKind: PROVIDER_SETTINGS_RUNTIME_KIND },
           ...(networkOnly ? { fetchPolicy: 'network-only' as const } : {}),
         })
         this.providerSettingsGroups = data?.providerSettings ?? []
-        this.modelRuntimeKind = effectiveRuntimeKind
+        this.providerSettingsRuntimeKind = PROVIDER_SETTINGS_RUNTIME_KIND
         this.hasFetchedProviderSettings = true
         return this.providerSettingsGroups
       } catch (error) {
         this.providerSettingsGroups = []
+        this.providerSettingsRuntimeKind = null
+        this.hasFetchedProviderSettings = false
         throw error
       } finally {
         this.isLoadingProviderSettings = false
       }
     },
 
-    async reloadModels() {
+    async reloadModels(runtimeKind?: string) {
+      const effectiveRuntimeKind = runtimeKind ?? this.modelRuntimeKind
       this.isReloadingModels = true
       try {
         const { data, errors } = await getApolloClient().mutate({
           mutation: RELOAD_LLM_MODELS,
-          variables: { runtimeKind: this.modelRuntimeKind },
+          variables: { runtimeKind: effectiveRuntimeKind },
         })
         throwGraphqlErrors(errors)
         if (!data?.reloadLlmModels?.includes('successfully')) throw new Error('Failed to reload models')
-        await this.reloadProvidersWithModels({ showLoading: false })
-        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(this.modelRuntimeKind, true)
+        await this.reloadProvidersWithModels({
+          showLoading: false,
+          runtimeKind: effectiveRuntimeKind,
+        })
+        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(true)
         return true
       } finally {
         this.isReloadingModels = false
       }
     },
 
-    async reloadModelsForProvider(providerId: string) {
+    async reloadModelsForProvider(providerId: string, runtimeKind?: string) {
       if (!providerId) throw new Error('Provider is required to reload models.')
+      const effectiveRuntimeKind = runtimeKind ?? this.modelRuntimeKind
       this.isReloadingProviderModels = true
       this.reloadingProvider = providerId
       try {
         const { data, errors } = await getApolloClient().mutate({
           mutation: RELOAD_LLM_PROVIDER_MODELS,
-          variables: { providerId, runtimeKind: this.modelRuntimeKind },
+          variables: { providerId, runtimeKind: effectiveRuntimeKind },
         })
         throwGraphqlErrors(errors)
         if (!data?.reloadLlmProviderModels?.includes('successfully')) throw new Error('Failed to reload provider models')
-        await this.reloadProvidersWithModels({ showLoading: false })
-        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(this.modelRuntimeKind, true)
+        await this.reloadProvidersWithModels({
+          showLoading: false,
+          runtimeKind: effectiveRuntimeKind,
+        })
+        if (this.hasFetchedProviderSettings) await this.fetchProviderSettings(true)
         return true
       } finally {
         this.isReloadingProviderModels = false
@@ -243,8 +255,8 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         variables: { providerId, apiKey },
       })
       requireMutationSuccess(data, errors, 'saveProviderApiKey')
-      if (providerId === 'AUTOBYTEUS') await this.reloadModels()
-      await this.fetchProviderSettings(this.modelRuntimeKind, true)
+      if (providerId === 'AUTOBYTEUS') await this.reloadModels(PROVIDER_SETTINGS_RUNTIME_KIND)
+      await this.fetchProviderSettings(true)
       return true
     },
 
@@ -254,7 +266,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         variables: { providerId },
       })
       requireMutationSuccess(data, errors, 'removeProviderApiKey')
-      await this.fetchProviderSettings(this.modelRuntimeKind, true)
+      await this.fetchProviderSettings(true)
       return true
     },
 
@@ -277,8 +289,11 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       const providerId = data?.createCustomProvider as string | undefined
       if (!providerId) throw new Error('Failed to create custom provider')
       await Promise.all([
-        this.reloadProvidersWithModels({ showLoading: false }),
-        this.fetchProviderSettings(this.modelRuntimeKind, true),
+        this.reloadProvidersWithModels({
+          showLoading: false,
+          runtimeKind: PROVIDER_SETTINGS_RUNTIME_KIND,
+        }),
+        this.fetchProviderSettings(true),
       ])
       return providerId
     },
@@ -290,8 +305,11 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       })
       requireMutationSuccess(data, errors, 'deleteCustomProvider')
       await Promise.all([
-        this.reloadProvidersWithModels({ showLoading: false }),
-        this.fetchProviderSettings(this.modelRuntimeKind, true),
+        this.reloadProvidersWithModels({
+          showLoading: false,
+          runtimeKind: PROVIDER_SETTINGS_RUNTIME_KIND,
+        }),
+        this.fetchProviderSettings(true),
       ])
       return true
     },
@@ -333,7 +351,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       const state = data?.[key] as GeminiSetupConfigState | undefined
       if (!state) throw new Error('Gemini configuration operation did not complete')
       this.geminiSetup = state
-      await this.fetchProviderSettings(this.modelRuntimeKind, true)
+      await this.fetchProviderSettings(true)
       return state
     },
   },

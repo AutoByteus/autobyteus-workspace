@@ -2,10 +2,11 @@ import { storeToRefs } from 'pinia'
 import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import {
+  PROVIDER_SETTINGS_RUNTIME_KIND,
   useLLMProviderConfigStore,
   type CustomLlmProviderDraftInput,
   type CustomLlmProviderProbeResult,
-  type LlmProviderStatus,
+  type ProviderSettingsGroup,
 } from '~/stores/llmProviderConfig'
 import { createGeminiConfigurationActions } from './providerApiKeyGeminiActions'
 import { createProviderApiKeyRemoval } from './providerApiKeyRemoval'
@@ -20,7 +21,7 @@ export interface ProviderSummary {
   providerType: string
   baseUrl?: string | null
   apiKeyConfigured: boolean
-  status: LlmProviderStatus
+  status: ProviderSettingsGroup['provider']['status']
   statusMessage?: string | null
 }
 
@@ -200,7 +201,7 @@ export function useProviderApiKeySectionRuntime() {
 
   const reloadAllModels = async () => {
     try {
-      await store.reloadModels()
+      await store.reloadModels(PROVIDER_SETTINGS_RUNTIME_KIND)
       showNotification(t('settings.components.settings.ProviderAPIKeyManager.models_reloaded_successfully'), 'success')
     } catch (error) {
       console.error('Failed to reload models:', error)
@@ -212,7 +213,7 @@ export function useProviderApiKeySectionRuntime() {
     if (!providerId || providerId === NEW_CUSTOM_PROVIDER_ID) return
     const providerLabel = allProvidersWithModels.value.find(({ id }) => id === providerId)?.label ?? providerId
     try {
-      await store.reloadModelsForProvider(providerId)
+      await store.reloadModelsForProvider(providerId, PROVIDER_SETTINGS_RUNTIME_KIND)
       showNotification(t(
         'settings.components.settings.ProviderAPIKeyManager.models_reloaded_for_provider',
         { provider: providerLabel },

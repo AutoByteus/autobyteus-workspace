@@ -1,6 +1,13 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import {
+  GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
+  GET_PROVIDER_SETTINGS,
+} from '~/graphql/queries/llm_provider_queries'
+import {
+  PROVIDER_SETTINGS_RUNTIME_KIND,
+  useLLMProviderConfigStore,
+} from '~/stores/llmProviderConfig'
 import { getApolloClient } from '~/utils/apolloClient'
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }))
@@ -24,6 +31,51 @@ const openAiGroup = (configured = true) => ({
   videoModels: [],
 })
 
+const customGatewayGroup = () => ({
+  provider: {
+    ...provider('provider_gateway', true),
+    name: 'Gateway',
+    providerType: 'OPENAI_COMPATIBLE',
+    isCustom: true,
+    baseUrl: 'https://gateway.example.com/v1',
+  },
+  llmModels: [{
+    modelIdentifier: 'gateway-chat',
+    name: 'Gateway Chat',
+    providerType: 'OPENAI_COMPATIBLE',
+  }],
+  audioModels: [],
+  imageModels: [],
+  videoModels: [],
+})
+
+const catalogResponse = (runtimeKind: string) => ({
+  availableLlmProvidersWithModels: [{
+    provider: {
+      id: runtimeKind,
+      name: runtimeKind,
+      providerType: runtimeKind,
+      isCustom: false,
+      baseUrl: null,
+      status: 'NOT_APPLICABLE',
+      statusMessage: null,
+    },
+    models: [{
+      modelIdentifier: `${runtimeKind}-model`,
+      name: `${runtimeKind} model`,
+      value: `${runtimeKind}-model`,
+      canonicalName: `${runtimeKind}-model`,
+      providerId: runtimeKind,
+      providerName: runtimeKind,
+      providerType: runtimeKind,
+      runtime: runtimeKind,
+    }],
+  }],
+  availableAudioProvidersWithModels: [],
+  availableImageProvidersWithModels: [],
+  availableVideoProvidersWithModels: [],
+})
+
 const geminiState = (overrides: Record<string, unknown> = {}) => ({
   activeMode: null,
   aiStudioConfigured: false,
@@ -43,10 +95,54 @@ describe('llmProviderConfig provider Settings store', () => {
     vi.mocked(getApolloClient).mockReturnValue({ query } as any)
     const store = useLLMProviderConfigStore()
 
-    await expect(store.fetchProviderSettings('autobyteus')).resolves.toEqual([openAiGroup()])
+    await expect(store.fetchProviderSettings()).resolves.toEqual([openAiGroup()])
     expect(store.providerSettingsGroups[0]?.provider.apiKeyConfigured).toBe(true)
     expect(store.providerSettingsGroups[0]?.audioModels).toHaveLength(1)
     expect('providerConfigs' in store).toBe(false)
+  })
+
+  it('keeps Settings on its AutoByteus cache identity across Codex and Claude catalog loads', async () => {
+    const settingsGroups = [openAiGroup(), customGatewayGroup()]
+    const query = vi.fn().mockImplementation(({ query: document, variables }) => {
+      if (document === GET_PROVIDER_SETTINGS) {
+        return Promise.resolve({ data: { providerSettings: settingsGroups } })
+      }
+      if (document === GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS) {
+        return Promise.resolve({ data: catalogResponse(variables.runtimeKind) })
+      }
+      throw new Error('Unexpected query')
+    })
+    const mutate = vi.fn().mockResolvedValue({ data: { saveProviderApiKey: true } })
+    vi.mocked(getApolloClient).mockReturnValue({ query, mutate } as any)
+    const store = useLLMProviderConfigStore()
+
+    await store.fetchProvidersWithModels('codex_app_server')
+    await store.fetchProviderSettings()
+    await store.fetchProvidersWithModels('claude_agent_sdk')
+    await store.fetchProviderSettings()
+
+    expect(store.modelRuntimeKind).toBe('claude_agent_sdk')
+    expect(store.providerSettingsRuntimeKind).toBe(PROVIDER_SETTINGS_RUNTIME_KIND)
+    expect(store.providerSettingsGroups).toEqual(settingsGroups)
+
+    await store.setLLMProviderApiKey('OPENAI', 'synthetic-key')
+
+    const settingsRequests = query.mock.calls
+      .map(([request]) => request)
+      .filter(request => request.query === GET_PROVIDER_SETTINGS)
+    expect(settingsRequests).toHaveLength(2)
+    expect(settingsRequests).toEqual([
+      expect.objectContaining({
+        variables: { runtimeKind: PROVIDER_SETTINGS_RUNTIME_KIND },
+      }),
+      expect.objectContaining({
+        variables: { runtimeKind: PROVIDER_SETTINGS_RUNTIME_KIND },
+        fetchPolicy: 'network-only',
+      }),
+    ])
+    expect(store.providerSettingsGroups).toEqual(settingsGroups)
+    expect(store.providerSettingsGroups[0]?.audioModels).toHaveLength(1)
+    expect(store.providerSettingsGroups.some(group => group.provider.isCustom)).toBe(true)
   })
 
   it('refetches the canonical provider group after Boolean save completion', async () => {

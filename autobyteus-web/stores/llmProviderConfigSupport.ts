@@ -1,20 +1,20 @@
-import type { ModelMetadataProvenance } from '~/generated/graphql'
+import type {
+  GetProviderSettingsQuery,
+  ModelMetadataProvenance,
+} from '~/generated/graphql'
 import type { LLMProvider } from '~/types/llm'
 
 export type LlmProviderStatus = 'READY' | 'STALE_ERROR' | 'ERROR' | 'NOT_APPLICABLE'
 
-export interface LlmProviderRecord {
+export interface CatalogProviderRecord {
   id: string
   name: string
   providerType: LLMProvider
   isCustom: boolean
   baseUrl?: string | null
-  apiKeyConfigured: boolean
   status: LlmProviderStatus
   statusMessage?: string | null
 }
-
-export type CatalogProviderRecord = Omit<LlmProviderRecord, 'apiKeyConfigured'>
 
 export interface ModelInfo {
   modelIdentifier: string
@@ -40,15 +40,7 @@ export interface ProviderWithModels {
   models: ModelInfo[]
 }
 
-export type ProviderSettingsModel = Pick<ModelInfo, 'modelIdentifier' | 'name' | 'providerType'>
-
-export interface ProviderSettingsGroup {
-  provider: LlmProviderRecord
-  llmModels: ProviderSettingsModel[]
-  audioModels: ProviderSettingsModel[]
-  imageModels: ProviderSettingsModel[]
-  videoModels: ProviderSettingsModel[]
-}
+export type ProviderSettingsGroup = GetProviderSettingsQuery['providerSettings'][number]
 
 export interface CustomLlmProviderDraftInput {
   name: string
