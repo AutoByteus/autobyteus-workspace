@@ -12,6 +12,8 @@
 - Round-30 importer source/test commit: `ccc373f3755a30eca38ab50f8639539e6095385f`
 - CR-025 rework starting HEAD: `e8ef13c3b0c86400ea79f2de0d15a5f1dc50003e`
 - CR-025 source/test commit: `1ccb12a9aea8c872d7032eb9ac9e1bcf9cf49d8c`
+- CR-027 provider-centric rework starting HEAD: `36fc5af434e8321965854a1235f2f36aa154bd38`
+- CR-027 source/test commit: `658824c9eef48934672a6e069012935cbff9b5e9`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -36,6 +38,9 @@
 
 ## What Changed
 
+- Replaced the API-key Settings screen's repeated LLM/audio/image/video provider/status projection with one `providerSettings(runtimeKind)` read. Each exact provider now appears once with one `apiKeyConfigured` fact and four required subordinate model lists.
+- Removed `CredentialStatusObject`, the separate provider-status query/map, the four-array Settings merge, the cross-provider fallback, and the conflicting repeated Apollo entities. Existing credential-independent catalog queries remain unchanged for non-Settings consumers.
+- Tightened ordinary provider commands to Boolean completion followed by a canonical network-only grouped refetch; tightened custom provider Probe/Create/Delete to the reviewed input/result shapes; and tightened Gemini operations to specialized state-returning commands without generic operation/outcome/stage/instruction DTOs.
 - Replaced the separate Local Store database/configuration/access-mode subsystem with two Prisma-managed secret tables in the one application SQLite database selected by canonical `DATABASE_URL`.
 - Added a database-adjacent 32-byte owner-only root-key sidecar, staged first initialization, metadata verifier, HKDF-SHA-256 per-entry derivation, and AES-256-GCM encryption with ID/domain/version-bound AAD.
 - Replaced the crash-persistent initialization sentinel with application-SQLite transaction-scoped exclusion. SQLite now releases initialization ownership automatically when a process terminates; key-only interrupted initialization resumes, while live initializers serialize before key inspection and publish one key/domain pair.
@@ -56,14 +61,14 @@
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | Credential-independent provider/model/catalog availability. | Built-in catalogs, `model-catalog-service`, `llm-provider-service`, core models/factories. | Implemented; unavailable custody affects status/invocation, not catalog rows. |
+| `BEH-001` | One provider-centric API-key Settings read while catalogs remain credential-independent. | `LlmProviderService.listProviderSettings()` -> GraphQL `providerSettings` -> web `providerSettingsGroups` -> Settings runtime. | Implemented: one exact provider row owns `apiKeyConfigured`; LLM/audio/image/video catalogs are subordinate exact-ID lists, while existing catalog queries remain supported for other consumers. |
 | `BEH-002` | One application DB selected only by canonical `DATABASE_URL`. | `application-database-location.ts`, `app-config.ts`, Prisma schema/migration, `server-runtime.ts`. | Implemented; no second Store URL/config/access mode remains. |
 | `BEH-003` | DB-paired root key, interruption-safe initialization, non-mutating restart verification, and authenticated per-entry encryption. | `secret-vault-bootstrap.ts`, `secret-root-key-file.ts`, `secret-vault-crypto.ts`, Prisma repository. | Implemented with transaction-lifetime exclusion, key-only recovery, live-initializer serialization, byte-stable established verification, owner/identity checks, verifier, fresh nonces, and value-free closed states. |
-| `BEH-004` | Write-only provider Settings lifecycle and value-free health/status. | `SecretManagementService`, GraphQL secret/provider types, provider/web Settings stores. | Implemented; no value-read GraphQL/API surface exists. |
+| `BEH-004` | Write-only provider Settings lifecycle and one value-free configured fact. | `SecretManagementService`, `llm-provider-service.ts`, GraphQL provider group, web Settings store/runtime. | Implemented; ordinary Save/Remove returns completion then refetches the grouped read, and no value-read or duplicate credential-status API exists. |
 | `BEH-005` | Provider-owned lazy point-of-use resolution. | Core `ProviderApiKeyResolver`, LLM/media factories and concrete clients, server resolver adapters. | Implemented; no model auth descriptor, construction target/context, environment fallback, or server service locator in core. |
-| `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, GraphQL/web Gemini files. | Implemented with truthful staged outcomes and no priority/fallback. |
+| `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, specialized GraphQL/web Gemini files. | Implemented with specialized state-returning commands, no generic operation protocol, no priority authority, and no fallback. |
 | `BEH-007` | Curated catalog continuity and bounded live metadata. | Existing metadata provisioning/resolver/provider owners plus updated status tests. | Preserved: AI Studio live/fallback; Vertex/no-selection curated-only and zero metadata secret/HTTP. |
-| `BEH-008` | Custom provider create/probe/list/use/delete with split metadata/credential custody. | `llm-provider-service.ts`, custom store/runtime sync, deterministic custom consumer mapping. | Implemented; create compensates metadata on secret-save failure, delete is retryable/idempotent, no persisted update surface added. |
+| `BEH-008` | Custom provider create/probe/list/use/delete with split metadata/credential custody. | `llm-provider-service.ts`, tight GraphQL commands, custom store/runtime sync, deterministic custom consumer mapping. | Implemented; input is exactly name/base URL/transient key, Probe returns only discovered `{id,name}`, Create returns ID, Delete returns completion, and no update surface exists. |
 | `BEH-009` | Explicit importer targets one URL-selected application DB; read-only advisory preview; authoritative atomic execute. | `RawImportCliRequest` -> `ApplicationDatabaseLocation.fromAbsoluteFileUrl()` -> exact `ImportRequest`; source reader/import service, positive alias registry, `SecretVaultInspectionService`, vault batch save. | Implemented; the raw URL exists only at the CLI boundary, the same immutable target is used throughout, and AppConfig/ambient/profile/test-wrapper authority is absent. Malformed URLs, including decoded-NUL paths, fail value-free before service/source/target access. Recognize-first, empty-as-absent, DASHSCOPE-only Qwen, no-overwrite/TTY/source immutability remain. |
 | `BEH-010` | No automatic legacy migration or runtime authority. | AppConfig non-secret projection, current custom-provider v2 parser, removal of migration/compatibility paths. | Implemented; legacy credential values remain untouched and excluded from authority. |
 | `BEH-011` | Normal server reads only ordinary `<data-dir>/.env`; test selection is application DB selection. | AppConfig/runtime contract and removal of separate E2E Store setup command. | Production boundary implemented. Test-runtime `.env.test` bootstrap/scenario reconciliation remains API/E2E-owned downstream work. |
@@ -81,7 +86,8 @@
 - Vault custody: `autobyteus-server-ts/src/secret-management/{bootstrap,crypto,persistence,root-key,services}`
 - Runtime/catalog/resolver: `secret-vault-runtime.ts`, `provider-credential-catalog.ts`, `secret-management-provider-api-key-resolver.ts`
 - Importer/inspection: `application-database-location.ts`, `secret-management/provisioning/local-environment-*`, `secret-vault-inspection-service.ts`, import CLI, root `secrets:import` package command
-- Gemini/server provider behavior: `gemini-configuration-service.ts`, `llm-provider-service.ts`, GraphQL Gemini/provider types
+- Provider-centric Settings/API: `llm-provider-service.ts`, GraphQL `llm-provider.ts`, `llmProviderConfig.ts`, `llmProviderConfigSupport.ts`, `useProviderApiKeySectionRuntime.ts`
+- Gemini/server provider behavior: `gemini-configuration-service.ts`, specialized GraphQL Gemini types, `GeminiSetupForm.vue`
 - Core point-of-use clients: `autobyteus-ts/src/{llm,multimedia,secrets,utils}`
 - Web Gemini/Settings: `GeminiSetupForm.vue`, `GeminiConfigurationOptionCard.vue`, runtime/store/GraphQL/localization files
 - Electron lifecycle: `autobyteus-web/electron/server/services/AppDataService.ts`
@@ -96,7 +102,7 @@
 
 ## Known Risks
 
-- API/E2E has not yet reconciled the tracked `.env.test`/test-runtime bootstrap, explicit-URL importer journey, removed scenario-manifest/test-import-wrapper flow, restart/reopen, Docker, real-provider, or packaged Electron matrix against round 30. These remain downstream coverage work after source review.
+- API/E2E has not yet rerun the real browser provider-status journey against the provider-centric read, nor reconciled the tracked `.env.test`/test-runtime bootstrap, explicit-URL importer journey, restart/reopen, Docker, configured-provider, or packaged Electron matrix. These remain downstream coverage work after source review.
 - Repository-wide Nuxt typecheck is not green at baseline. The 8 GiB run completed with 5,168 diagnostics across unrelated/generated/test paths; changed store nullability issues were corrected and focused tests plus the production web build are green. Existing generated Apollo optional-import and Electron-test typing diagnostics remain part of that baseline.
 - The root key and application DB are an inseparable backup/restore pair; losing either established component intentionally produces a closed recovery condition.
 - SQLite transaction-scoped initialization exclusion depends on the selected database remaining reachable for the bounded 10-second transaction. A contender that cannot acquire/complete within that bound fails value-free and may retry; it cannot bypass a live initializer.
@@ -105,21 +111,21 @@
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: clean-state security refactor and deletion of a duplicated persistence/configuration subsystem while preserving supported product behavior.
-- Reviewed root-cause classification: boundary/ownership duplication, loose shared authentication structures, and compatibility pressure.
+- Reviewed change posture: clean-state security refactor plus provider-centric Settings/API correction while preserving supported product behavior.
+- Reviewed root-cause classification: boundary/ownership duplication, duplicated provider/status coordination, loose shared authentication structures, and compatibility pressure.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; no new requirement/design gap was found.
-- Evidence / notes: one canonical database location, one repository, one root-key owner, one runtime service, narrow preview inspector, provider-owned resolver, and obsolete subsystem deletion are reflected in source and focused checks.
+- Evidence / notes: one canonical database location, one repository, one root-key owner, one runtime service, narrow preview inspector, provider-owned resolver, and one provider-centric Settings projection are reflected in source and focused checks.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup and old construction/authentication paths.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup, old construction/authentication paths, duplicate provider credential-status DTO/query/map/fallback, and generic Gemini operation DTOs.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. Round-30/CR-025 importer/config source files remain below 500 effective non-empty lines; the importer service is 168 effective non-empty lines and the CLI is 143.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. CR-027 production files remain below 500 effective non-empty lines; the largest are `llm-provider-service.ts` at 370, the Settings runtime at 358, GraphQL provider types at 359, and the web store at 319. Their large replacement diffs are deletion-heavy clean cuts with fewer than 220 added lines per file.
 - Notes: production scans found no old Store selector/config/access mode, model construction target/context, provider-secret environment lookup, generic secret API, or custom-provider update command.
 
 ## Persisted Data Transition Check (When Applicable)
@@ -157,26 +163,30 @@
 - `pnpm -C autobyteus-web guard:web-boundary`: passed.
 - `pnpm -C autobyteus-web guard:localization-boundary`: passed.
 - `pnpm -C autobyteus-web audit:localization-literals`: passed with zero unresolved findings.
+- CR-027 focused server suite: 3 files / 25 tests passed, covering exact provider-group composition and orphan rejection, value-free configured projection, tight custom commands, AutoByteus invalidation, and specialized Gemini commands/GraphQL mapping.
+- CR-027 focused web suite: 8 files / 39 tests passed, covering grouped store/refetch behavior, exact provider-ID isolation, assembled Apollo/Pinia Settings behavior, configured OpenAI with subordinate audio/image models, ordinary/custom/Gemini commands, pending-state fences, and rendered component states.
+- GraphQL schema/codegen: generated from the built server schema; the resulting schema exposes `[ProviderSettingsGroup!]!`, four `[ModelDetail!]!` fields, one non-null `apiKeyConfigured`, tight custom operations, and specialized Gemini state operations with no obsolete credential-status or generic-operation symbols.
+- CR-027 `pnpm -C autobyteus-web build`: passed after regenerated GraphQL types.
 - `git diff --check`, dependency/lock/patch scans, removed-path/environment/custom-update residue scans, Docker-diff scan, and changed-source size checks passed.
-- Repository-wide `pnpm -C autobyteus-web exec nuxi typecheck`: attempted with an 8 GiB heap and remained non-green on the existing 5,168-diagnostic baseline; it is not claimed as passed.
+- Repository-wide `pnpm -C autobyteus-web exec nuxi typecheck`: attempted with an 8 GiB heap and remained non-green on the existing unrelated/generated/test baseline; the captured output contains no diagnostics for the changed CR-027 production, query, mutation, component, or store files. It is not claimed as passed.
 - No API/E2E, real-provider, Docker daemon, canonical database/Store, or packaged-application execution was performed or claimed by implementation engineering.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Settings -> API Key Management -> Gemini configuration.
-- Approved UI/UX, interaction, requirement, or design references: `gemini-setup-ui-ux-spec.md`, BEH-006, REQ-010, AC-006.
-- Existing design system, shared components, and adjacent product surfaces reviewed: provider cards, status badges, editor controls, focus/disabled states, spacing, and responsive Settings layout.
-- Project development / preview instructions and rendered surface used: repository Nuxt development setup with a temporary isolated page rendering the actual `GeminiSetupForm`; the temporary page was removed after inspection.
-- States, layouts, viewports, and interactions inspected: 1440x1000 and 390x844; unconfigured/configured/active badges; one-editor-only expansion; automatic focus; independent save; explicit activation; global pending lock and re-enable.
-- Visual or interaction issues found and corrected: option-card indentation/layout, write-only input reset behavior, conflicting-control locking, and focused test expectations were corrected.
-- Supporting evidence and remaining unverified states or limitations: rendered wide/narrow surfaces were visually clean with no overflow. The isolated component intentionally ran without a backend, so real GraphQL persistence remains for downstream browser/API coverage. No screenshot was added to the repository.
+- Affected surfaces / journeys: Settings -> API Key Management -> provider selection, configured state, key actions, and subordinate LLM/audio/image/video model sections; preserved Gemini option configuration.
+- Approved UI/UX, interaction, requirement, or design references: BEH-001/004/006/008, REQ-001, the round-32 provider-centric design, and `gemini-setup-ui-ux-spec.md`.
+- Existing design system, shared components, and adjacent product surfaces reviewed: provider sidebar rows/counts, status badges, key editor controls, capability headings, spacing, and the established Settings layout.
+- Project development / preview instructions and rendered surface used: the production Nuxt static build served locally; Playwright loaded the actual `/settings` page with a synthetic value-free GraphQL response matching the reviewed `providerSettings`/Gemini contracts.
+- States, layouts, viewports, and interactions inspected: 1440x1000 configured OpenAI selected among OpenAI/Anthropic/New Provider; one Configured badge; Save/Remove controls; one LLM, one audio, and one image model rendered from the same provider group.
+- Visual or interaction issues found and corrected: the clean-cut state/runtime wiring and component test expectations were reconciled; final provider identity, count, status, controls, and capability sections were aligned and visually clean with no overflow or duplicate status.
+- Supporting evidence and remaining unverified states or limitations: direct rendered inspection passed and no screenshot was added to the repository. The response was synthetic and value-free; real GraphQL persistence/browser execution remains downstream API/E2E work.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Reconcile the round-28 `.env.test` and shared test-runtime bootstrap without changing the normal built server’s `<data-dir>/.env` contract; prove tracked template byte identity and removal of separate Store/scenario-manifest behavior.
 - Run a pre-feature DB migration and verify ordinary application records plus the two new tables; run fresh create/save/replace/remove/restart/tamper/missing-key/wrong-key/unsupported-version cases.
 - Prove `pnpm secrets:import` is the sole command; invalid/missing/duplicate/relative URLs fail before target access; parent/AppConfig/source/cwd cannot redirect it; preview is byte-for-byte non-mutating for absent, pre-feature, ready, and every closed state; then confirm migration/bootstrap/atomic create-skip-replace against only the exact URL-selected DB.
-- Exercise provider Settings/catalog status under ready and every degraded vault state; verify no key readback or credential-dependent catalog disappearance.
+- Rerun `SCSP-E2E-BROWSER-REAL-STATUS-001` first: configured OpenAI plus OpenAI audio/image rows must show one Configured/Remove state, exact provider-ID isolation, and no Apollo overwrite; then cover missing/unavailable states without credential-dependent catalog disappearance.
 - Run Gemini save, first-time save-and-use, use-mode, active removal, partial-stage retry, restart, exact SDK constructor, selected-slot-only, metadata provenance, and no-fallback journeys.
 - Exercise custom provider probe/create/list/use/idempotent delete and partial-failure retry; verify no update mutation exists.
 - Re-run AutoByteus replacement/discovery races, both Claude modes, external Codex continuity, governed child redaction/deny roots, and real OpenAI/Anthropic/Gemini/media/search capabilities where configured.
@@ -184,4 +194,4 @@
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. CR-025 implementation source and implementation-scoped checks are complete, but the cumulative package must pass full implementation-source review first. Only then may `api_e2e_engineer` reconcile durable test/environment changes and execute the broader matrix before proportional test-code review.
+Yes. CR-027 provider-centric implementation source and implementation-scoped checks are complete, but the cumulative package must pass full implementation-source review first. Only then may `api_e2e_engineer` rerun the real browser provider-status scenario and continue the broader configured-provider/importer/restart/Docker/Electron matrix before proportional test-code review.
