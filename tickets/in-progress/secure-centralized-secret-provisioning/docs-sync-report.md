@@ -3,77 +3,81 @@
 ## Scope
 
 - Ticket: `secure-centralized-secret-provisioning`
-- Trigger: Round 17 API/E2E Pass at 98.9% and proportional durable-test review
-  Pass at reviewed implementation HEAD
-  `dd1d37f90d00331d427bad1b36e4401a3a733038`.
+- Trigger: Round 21 API/E2E Pass at 98.9% and proportional durable-test review
+  Pass at exact implementation/test HEAD
+  `ec0df6b1a9d216366e08262cd96f5280686b04d0`.
 - Bootstrap base reference: `origin/personal`
 - Integrated base reference used for docs sync:
-  `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`
-- Local validated-state checkpoint:
-  `3877b39bdcad2e8c88bb9f86d190308aaf034829`
+  `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`.
+- Local reviewed-package safety checkpoint and current integrated state:
+  `c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a`.
 - Integration method: already current after a 2026-07-27 fetch; the checkpointed
-  ticket branch was 46 commits ahead and 0 behind, and its merge-base equaled
+  ticket branch was 53 commits ahead and 0 behind, and its merge-base equaled
   the tracked base.
-- Post-integration verification reference:
-  `execution-evidence/267-delivery-round17-latest-base-integration.log`
-  (actual built-server custom-provider-v1 E2E 3/3, removed-authority checks,
-  live-E2E runner syntax, and `git diff --check` passed).
+- Post-integration verification:
+  `execution-evidence/353-delivery-round21-integrated-state-check-corrected.log`
+  (16/16 focused unit tests, all 18 exact base restorations, redundant-removal
+  absence, dependency lock, and unchanged Docker topology passed). Evidence
+  `352` is retained as a superseded delivery-check mistake: its implementation
+  scan accidentally traversed a preserved historical build backup; no product
+  correction was required.
 
 ## Why Docs Were Updated
 
-- Summary: Round 17 adds the approved existing-user transition from the
-  supported plaintext custom-provider version-1 file to encrypted vault entries
-  plus secret-free version-2 metadata. The final path also defines bounded
-  delete-and-reconfigure behavior, custom-provider containment when deletion is
-  unavailable, and stale zero-byte lock recovery.
-- Why this should live in long-lived project docs: operators upgrading an
-  existing installation need to know what startup will migrate, when a provider
-  must be re-added, what remains usable after a reset problem, and which legacy
-  fallbacks deliberately do not exist. Maintainers need the ordered
-  Prisma/vault/app-data lifecycle and current-v2-only runtime boundary.
+Round 21 is the first delivery-ready state after the user's narrow-scope reset.
+The durable documentation therefore had to replace historical Round 17 claims
+that no longer describe the product:
+
+- Claude authentication is `auto|cli|api-key` with default `cli`; only explicit
+  `api-key` resolves the Anthropic vault slot.
+- Restored Electron, terminal, Claude, and Codex environment inheritance is
+  continuity behavior, not process-isolation evidence.
+- `LOCAL_HARDENED` is limited to local vault, file-root, and value-safe custody;
+  `STRONG_AGENT_ISOLATION` remains deferred.
+- Ordinary provider and Gemini Settings retain save/overwrite and explicit
+  Gemini mode selection, but no standalone key-removal surface. Existing custom
+  provider Delete remains provider lifecycle and removes its own credential.
+
+These are long-lived operator and maintainer contracts, not ticket-only detail.
 
 ## Long-Lived Docs Reviewed
 
-| Doc Path | Why It Was Reviewed | Result | Notes |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/README.md` | Primary startup and operator guidance | Updated | Records the automatic post-vault app-data transition and operator outcomes. |
-| `autobyteus-server-ts/docs/modules/secret_management.md` | Canonical vault, importer, and persisted-data-transition contract | Updated | Reconciles the former blanket no-legacy-startup statement with the one approved canonical v1 migration. |
-| `autobyteus-server-ts/docs/modules/llm_management.md` | Canonical custom-provider persistence/runtime contract | Updated | Adds valid migration, reset, containment, lock, and v2-only runtime behavior. |
-| `autobyteus-web/docs/electron_packaging.md` | Packaged Electron embedded-server startup semantics | Updated | Records that the packaged server runs the same Prisma/vault/app-data sequence and the same v1 outcomes. |
-| `autobyteus-server-ts/docs/modules/codex_integration.md` | External Codex account and assurance boundary | No change | Codex behavior remains unchanged and excluded from the governed-child portion of `LOCAL_HARDENED`. |
-| `autobyteus-server-ts/docker/README.md` | Container topology and persistence | No change | Docker topology, service count, mounts, and volume ownership remain unchanged. |
-| Root `README.md` | Workspace/release overview | No change | Module-level server and Electron docs are the durable operational owners; no root workflow changed. |
-
-## Docs Updated
-
-| Doc Path | Type Of Update | What Changed | Why |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/README.md` | Startup/operator guidance | Added automatic v1 migration order, valid migration result, delete-and-reconfigure result, containment when deletion fails, and explicit absent fallbacks | Gives operators a concise upgrade expectation without requiring ticket artifacts. |
-| `autobyteus-server-ts/docs/modules/secret_management.md` | Persisted-data contract correction | Startup now runs app-data migrations after vault readiness; the legacy section documents the sole canonical custom-provider-v1 exception, all-or-nothing encrypted publication, warning/failure outcomes, stale-lock rule, and v2-only runtime | Removes obsolete blanket wording and preserves no-`.env`-import/source immutability. |
-| `autobyteus-server-ts/docs/modules/llm_management.md` | Custom-provider lifecycle extension | Added the one-time v1 upgrade/reset contract and post-transition current-v2-only behavior | Keeps custom-provider operations and persistence understandable to maintainers. |
-| `autobyteus-web/docs/electron_packaging.md` | Embedded startup behavior | Added the normal Prisma/vault/app-data sequence and packaged-app v1 outcome summary | The user-reported problem occurred on packaged existing-user startup; packaging docs must carry the durable operational truth. |
+| Doc Path | Result | Durable impact |
+| --- | --- | --- |
+| `autobyteus-server-ts/README.md` | Updated | Adds the exact Claude selector/default/vault-use boundary and inherited-environment limitation. |
+| `autobyteus-server-ts/docs/modules/secret_management.md` | Updated | Replaces superseded `managed-secret` and child-environment claims; records save/overwrite-only ordinary/Gemini behavior and retained custom-provider Delete. |
+| `autobyteus-server-ts/docs/modules/llm_management.md` | Updated | Adds the exact Claude `auto|cli|api-key` point-of-use contract and no-process-isolation boundary. |
+| `autobyteus-server-ts/docs/modules/codex_integration.md` | Updated | Clarifies that external Codex inheritance is continuity outside vault governance, not a governed-child isolation claim. |
+| `autobyteus-web/docs/electron_packaging.md` | Updated | Records inherited runtime-discriminator/environment continuity required by packaged helpers and account-backed tools. |
+| `autobyteus-server-ts/docker/README.md` | No change | Docker service topology, mounts, volumes, and ownership remain unchanged. |
+| Root `README.md` | No change | Module docs remain the durable owners; no root-level workflow changed. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
-| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
-| --- | --- | --- | --- |
-| Existing-user v1 migration | Valid canonical v1 providers migrate all-or-nothing to encrypted entries plus secret-free v2 metadata after vault initialization | `custom-provider-v1-migration-contract.md`, requirements, design, implementation handoff, Round 17 evidence | Server `README.md`, `secret_management.md`, `llm_management.md`, Electron packaging doc |
-| Reset and containment | Invalid/colliding v1 is deleted and reconfigured; a deletion failure does not block startup/built-ins but contains custom-provider creation | Same contract plus evidence `244`, `261`, `264` | Same four long-lived docs |
-| Lock recovery | The supported aged zero-byte v1 lock can be reclaimed; a live positive-PID owner remains protected | Requirements, source review CR-030, evidence `261`/`264` | `secret_management.md`, `llm_management.md` |
-| Current runtime boundary | After the transition, runtime remains v2-only; no compatibility reader, backup/quarantine, partial migration, alternate source, or automatic `.env` import exists | Requirements, contract, source review | Server and Electron module docs |
+| Topic | Durable truth | Source artifacts |
+| --- | --- | --- |
+| Narrow credential-custody scope | Unrelated launcher, PTY, Claude MCP/session, built-in-default, and redundant deletion changes were restored/removed; only the approved vault and adjacent work remain. | `scope-audit.md`, requirements, design, Round 36 design review, Round 45 source review |
+| Claude authentication | Preserve `auto|cli|api-key`, default `cli`; only explicit `api-key` resolves `agentRuntime/claude_agent_sdk/apiKey` and changes `ANTHROPIC_API_KEY`. | implementation handoff, code review, Round 19/21 evidence |
+| Assurance boundary | `LOCAL_HARDENED` covers local vault/file-root/value-safe custody, not child-process isolation; inherited environments are continuity; Codex remains excluded; `STRONG_AGENT_ISOLATION` is deferred. | threat model, secret architecture, scope audit |
+| Provider removal boundary | Ordinary and Gemini credentials use save/overwrite only; existing custom-provider Delete owns metadata plus its linked vault credential. | scope audit, GraphQL/UI source, Round 21 packaged delete evidence |
+| Existing-user transition | One application DB plus adjacent key; bounded custom-provider-v1 migration; no automatic `.env` import/update; explicit importer target and source immutability. | migration contract, secret docs, Round 21 package evidence |
 
 ## Removed / Replaced Components Recorded
 
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
-| --- | --- | --- |
-| Plaintext custom-provider v1 runtime authority | One bounded startup migration, then secret-free v2 metadata plus vault entries | `secret_management.md`, `llm_management.md`, server `README.md`, Electron packaging doc |
-| Permanent failure on an aged zero-byte legacy lock | Bounded stale ownerless-lock recovery while retaining live positive-PID exclusion | `secret_management.md`, `llm_management.md` |
-| Blanket claim that startup never handles a legacy custom-provider file | Narrow canonical v1 exception; every other ambient/alternate legacy source remains non-authoritative | `secret_management.md` |
+| Superseded concept | Current documented truth |
+| --- | --- |
+| Claude `cli|managed-secret` | `auto|cli|api-key`, default `cli`; explicit `api-key` is the sole vault-backed Claude mode. |
+| Purpose-built/sanitized production child environments as a security boundary | Restored inherited environments preserve product continuity and do not prove process isolation. |
+| Broad governed-child portion of `LOCAL_HARDENED` | Local vault/file-root/value-safe custody only; Codex excluded and strong isolation deferred. |
+| Ordinary/Gemini standalone credential removal | Save/overwrite only; Gemini keeps Save, Save-and-use, and Use-this-mode. |
+| Treating custom-provider Delete as redundant key removal | Retained existing provider-entity lifecycle; Delete removes that provider and its linked vault credential. |
 
 ## Delivery Continuation
 
-- Result: `Pass`
-- Next owner: `delivery_engineer`
-- Notes: Long-lived docs match the Round 17 integrated candidate. Repository
-  archival, push, merge, tag, release, and deployment remain on hold until the
-  user explicitly verifies the candidate.
+- Result: `Pass`.
+- Current candidate scope and long-lived docs agree with the Round 21 integrated
+  state.
+- Next action: build and integrity-check a fresh local macOS verification
+  candidate, then request renewed explicit user verification.
+- Ticket archive, branch push, merge, tag, release, deployment, and worktree
+  cleanup remain prohibited until the user explicitly verifies that candidate.

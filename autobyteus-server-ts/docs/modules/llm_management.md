@@ -135,6 +135,18 @@ copy and do not resolve aliases into different persisted identifiers. Frontend
 runtime-model selectors may render and search the optional description as
 selection guidance; missing descriptions remain valid name-only options.
 
+### Claude Agent SDK Authentication
+
+`CLAUDE_AGENT_SDK_AUTH_MODE` preserves the existing `auto|cli|api-key`
+selector, with blank/invalid input defaulting to `cli`. `auto` and `cli` do not
+resolve the Anthropic vault slot and retain established caller-environment and
+Claude account/configuration behavior. Only explicit `api-key` resolves the
+`agentRuntime/claude_agent_sdk/apiKey` consumer immediately before launch and
+replaces `ANTHROPIC_API_KEY` in the otherwise unchanged launch environment.
+This is credential substitution at the existing use point, not child-process
+isolation; baseline tools, MCP/session behavior, and external Codex behavior
+remain unchanged.
+
 ## Built-In vs. Custom Providers
 
 ### Built-In Providers

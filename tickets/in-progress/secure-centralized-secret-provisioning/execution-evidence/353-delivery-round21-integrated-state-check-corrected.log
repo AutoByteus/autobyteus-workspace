@@ -1,0 +1,187 @@
+INTEGRATED_CHECK_STARTED_UTC=2026-07-27T18:36:55Z
+CORRECTION=Prior evidence 352 had a false-positive scan because it included a deliberately preserved historical Electron artifact backup outside tracked source. That backup has been moved out of the ticket worktree; no implementation correction was needed.
+HEAD=c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a
+ORIGIN_PERSONAL=d6983612c5a77fb94d9266df85a9d03fe2d1c68b
+RELATION=0 53
+CHECK=focused_unit_tests
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+> vitest --run tests/unit/llm-management/llm-providers/llm-provider-service.test.ts tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/unit/llm-management/llm-providers/llm-provider-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/llm-providers/llm-provider-service.test.ts (13 tests) 16ms
+stdout | tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts > AutobyteusLlmModelProvider targeted reload > returns the current static Anthropic count without dynamic discovery reload
+Provider ANTHROPIC does not support targeted reload. Returning current models without refresh.
+
+stdout | tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts > AutobyteusLlmModelProvider targeted reload > removes a deleted custom provider through custom synchronization without remote discovery
+Reloaded 0 models for custom provider provider_gateway.
+
+ ✓ tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts (3 tests) 3ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  20:36:59
+   Duration  3.19s (transform 1.41s, setup 13ms, import 2.61s, tests 19ms, environment 0ms)
+
+FOCUSED_UNIT_TESTS=PASS tests=16
+CHECK=exact_base_restorations
+BASE_RESTORED=PASS path=autobyteus-web/electron/server/linuxServerManager.ts
+BASE_RESTORED=PASS path=autobyteus-web/electron/server/macOSServerManager.ts
+BASE_RESTORED=PASS path=autobyteus-web/electron/server/windowsServerManager.ts
+BASE_RESTORED=PASS path=autobyteus-web/electron/server/services/AppDataService.ts
+BASE_RESTORED=PASS path=autobyteus-web/electron/server/services/__tests__/AppDataService.spec.ts
+BASE_RESTORED=PASS path=autobyteus-web/electron/server/__tests__/BaseServerManager.spec.ts
+BASE_RESTORED=PASS path=autobyteus-ts/src/tools/terminal/isolated-pty-bridge-source.ts
+BASE_RESTORED=PASS path=autobyteus-web/components/settings/providerApiKey/ProviderApiKeyEditor.vue
+BASE_RESTORED=PASS path=autobyteus-web/components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-session-state.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-mcp-server-config.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts
+BASE_RESTORED=PASS path=autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+BASE_RESTORED=PASS path=autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+EXACT_BASE_RESTORATIONS=PASS count=18
+CHECK=removed_redundant_surfaces
+REDUNDANT_FILE_ABSENT=PASS path=autobyteus-web/components/settings/providerApiKey/providerApiKeyRemoval.ts
+REDUNDANT_FILE_ABSENT=PASS path=autobyteus-web/localization/messages/en/providerApiKey.ts
+REDUNDANT_FILE_ABSENT=PASS path=autobyteus-web/localization/messages/zh-CN/providerApiKey.ts
+REDUNDANT_OPERATION_SCAN=PASS
+CHECK=preserved_dependency_and_topology
+DEPENDENCY_LOCK=PASS repository_prisma=1.0.8 prisma=5.22.0 unpatched=true
+DOCKER_TOPOLOGY_UNCHANGED=PASS
+CHECK=worktree_and_user_process_observation
+?? tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/351-delivery-round21-latest-base-refresh.log
+?? tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/352-delivery-round21-integrated-state-check.log
+?? tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/353-delivery-round21-integrated-state-check-corrected.log
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 66552 normy   27u  IPv4 0x548c0d835dd69da5      0t0  TCP *:29695 (LISTEN)
+USER_INSTALLED_ELECTRON_OBSERVED_AND_UNTOUCHED=PASS
+INTEGRATED_CHECK_FINISHED_UTC=2026-07-27T18:37:03Z
+INTEGRATED_CHECK_EXIT_STATUS=0

@@ -672,6 +672,11 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 - `getLoginShellPath()` - Inherits PATH from user's login shell
 - Essential for macOS/Linux where GUI apps have minimal PATH
 - Supports both bash and zsh
+- Embedded-server and terminal launchers preserve their established inherited
+  environment/runtime-discriminator behavior. That continuity is required for
+  account-backed tools and packaged Node-mode helpers; it is not a
+  child-process isolation boundary. Secret Management's `LOCAL_HARDENED` claim
+  is limited to vault/file-root/value-safe custody.
 
 ### Logger (`logger.ts`)
 

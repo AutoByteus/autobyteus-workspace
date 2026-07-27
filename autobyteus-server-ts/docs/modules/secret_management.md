@@ -81,13 +81,16 @@ external root key, the random encryption-domain identity, and stable secret
 identity. The root key is not embedded in SQLite and is not used directly as an
 entry encryption key.
 
-The assurance level is `LOCAL_HARDENED`, not process isolation. It limits
-accidental exposure and common repository, logging, file-tool, and
-environment-inheritance paths, but it does not defeat a same-user process or
-host administrator that can read both database and key. JavaScript and SDK
-memory are not claimed to be deterministically zeroized. Codex App Server is
-explicitly excluded from the governed-child environment claim because it keeps
-its existing Codex-owned account/configuration and launch behavior.
+The assurance level is `LOCAL_HARDENED`, not process isolation. It is limited
+to local encrypted-vault custody, database/key file-root denial, and value-free
+APIs, errors, and logs. It does not claim that Electron, terminal, Claude, or
+Codex child environments are sanitized or isolated. Those processes preserve
+their established caller environment, account, home, and configuration
+behavior for runtime continuity; inherited state is not containment evidence.
+The design also does not defeat a same-user process or host administrator that
+can read both database and key, and JavaScript/SDK memory is not claimed to be
+deterministically zeroized. Codex App Server remains outside credential-vault
+governance and keeps its Codex-owned authentication behavior.
 `STRONG_AGENT_ISOLATION` remains deferred.
 
 ## Runtime Ownership And Provider Lifecycle
@@ -105,10 +108,13 @@ Settings -> API Key Management reads one `providerSettings(runtimeKind)`
 collection. Each exact provider appears once with one provider-owned
 `apiKeyConfigured` Boolean plus its existing LLM/audio/image/video
 `ModelDetail` lists. The web does not merge repeated capability rows or keep a
-second credential-state map. Save/remove commands return only completion; the
-screen refetches the canonical provider group. Saving a replacement never reads
-the old value back. Catalogs and curated models remain available when a
-credential is missing or the vault is unavailable.
+second credential-state map. Ordinary provider and Gemini Settings support
+save/overwrite, not a separate credential-removal action; save commands return
+only completion and the screen refetches the canonical provider group. Saving
+a replacement never reads the old value back. The existing custom-provider
+Delete action remains provider lifecycle ownership and removes only that
+provider's metadata and vault credential. Catalogs and curated models remain
+available when a credential is missing or the vault is unavailable.
 
 Custom OpenAI-compatible provider metadata remains in
 `<app-data-dir>/llm/custom-llm-providers.json` version 2 and contains only
@@ -150,17 +156,21 @@ not be described as live provider metadata.
 
 `CLAUDE_AGENT_SDK_AUTH_MODE` accepts exactly:
 
-- blank / `cli`: use existing node-local Claude account state, perform no
-  managed-secret lookup, and pass a purpose-built child environment;
-- `managed-secret`: resolve `provider.anthropic.api-key` just in time and expose
-  it as `ANTHROPIC_API_KEY` only to the exact SDK child, with empty setting
-  sources, `tools: []`, explicit AutoByteus MCP configuration, and early stderr
-  redaction.
+- `auto`: preserve the established Claude Agent SDK auto-selection behavior
+  and caller-supplied launch environment without resolving a vault credential;
+- blank, invalid, or `cli`: default to the existing node-local Claude
+  account/configuration behavior and do not resolve a vault credential;
+- `api-key`: resolve the `agentRuntime/claude_agent_sdk/apiKey` consumer from
+  `provider.anthropic.api-key` immediately before launch and replace only
+  `ANTHROPIC_API_KEY` in the otherwise established launch environment.
 
-There is no `auto` mode, ambient API-key fallback, or caller environment merge.
-Both modes remain unchanged. Anthropic's third-party subscription-authentication
-guidance is a release-time external recheck dependency, not legal clearance or
-a license to redesign authentication.
+All three modes preserve the baseline SDK options, tools, MCP/session behavior,
+home/account semantics, and caller environment apart from that one explicit
+`api-key` substitution. This is continuity behavior, not process isolation.
+AutoByteus adds no Claude login UI, authentication broker, pooled account, or
+credential relay. Anthropic's third-party subscription-authentication guidance
+is a delivery/release external recheck dependency, not legal clearance or a
+license to redesign authentication.
 
 ## Legacy Sources, Custom-Provider V1, And Explicit Import
 
