@@ -1,220 +1,199 @@
-# Handoff Summary — Secure Centralized Secret Provisioning
+# Secure Centralized Secret Provisioning — Round 16 Verification Handoff
 
-## Delivery Status
+## Status
 
-- Current status: `Blocked — Round 5 API/E2E Fail and renewed Design Impact`
-- Ticket state: `tickets/in-progress/secure-centralized-secret-provisioning/`
-- Dedicated worktree:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
+`Ready for explicit user verification; repository finalization is on hold.`
+
 - Ticket branch: `codex/secure-centralized-secret-provisioning`
-- Finalization target from bootstrap context: `origin/personal`
-- Reviewed implementation commit:
-  `62417e80831a52e627d1b4365e9bfcdc9817ae81`
-- Reviewed API/E2E package checkpoint:
-  `e1aee5a86f82abf2768e25eb722b55c1acb4b937`
-- Latest tracked base checked: `origin/personal` at
-  `71875b938a4b984f2010eae76230b429ff2d2de8`
-- Initial delivery integration: `Merge`, completed without conflicts at
-  `548336b4d2909f2c0ee6c74b5004f1f7ad94f898`
-- Delivery-package checkpoint before the later base refresh:
-  `d22af1175afda66da697e0dd1c6a2a2fca726cd9`
-- Latest delivery integration: `Merge`, completed without conflicts at
-  `09343ae17e016fa68cceda304df257563fc07cdc`
-- Final pre-handoff fetch confirmed the branch remains current with that base:
-  ahead `11`, behind `0`.
-- Latest post-integration result: `Pass` — focused secret-management matrix
-  `24/24` and migration `2/2`.
-- Prior Round 4 API/E2E result: `Pass`, confidence `97.1%`; superseded as a
-  delivery gate by the Round 5 real OpenAI failures.
-- Prior proportional durable-test review: `Pass`; no longer sufficient for
-  delivery until the current failure/redesign paths complete.
-- Repository finalization/release/deployment: `Stopped`.
+- Final reviewed HEAD: `53dd05ecaac6e3196497597cceba0799f8093aba`
+- Tracked base checked:
+  `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`
+- Integration result: already current (ahead 41, behind 0; merge-base equals
+  tracked base after fetch)
+- Delivery integrated-state check: hermetic harness 13/13, removed authorities,
+  Node syntax, and `git diff --check` passed
+- Architecture: Pass
+- Implementation source review: Round 39 Pass, 9.64/10
+- API/E2E: Round 16 Pass, 98.1%; no category below 90%
+- Proportional durable-test review: Round 8 Pass; TCR-001–TCR-006 resolved
 
-## Current Delivery Hold — Round 5
+No ticket archive, final commit, push, merge, tag, release, deployment, or
+worktree cleanup has been performed. Those actions require explicit user
+verification.
 
-- Real OpenAI execution became reachable after operator provisioning. All four
-  selected preflights were `READY` with value-free `CONFIGURED` status.
-- `openai.audio` and `openai.image` passed.
-- `openai.llm` and `openai.agent-flow` failed with
-  `LIVE_E2E_PROVIDER_OPERATION_FAILED`; total result was `6 passed / 2 failed`.
-- Evidence:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/49-round5-real-openai.log`.
-- `code_reviewer` owns the focused failure-origin classification. No delivery
-  conclusion is valid until the owning rework path and required rereviews pass.
-- The user renewed a committed `.env`/`.env.test` to default-or-E2E Store
-  provisioning-script request. This is `Design Impact` and is with
-  `solution_designer`; no importer work or documentation may proceed before a
-  revised design passes architecture review.
-- No credential value was read, copied, logged, or exposed.
-- The ticket branch is currently one commit behind the latest tracked base;
-  the tracked base is `965f97685c08569a98186b2a894243c0b3f602d3`.
-  Refresh/integration is intentionally deferred until delivery re-entry.
+## macOS arm64 Electron Candidate
 
-## Superseded Post-Review Clarification
+DMG absolute path:
 
-- A temporary hold was recorded after an `.env.test` importer was proposed.
-- The importer proposal is now explicitly withdrawn. The user/operator will
-  perform local credential setup independently.
-- Authoritative engineering behavior is unchanged: use only the reviewed
-  hidden-input, target-only provisioning command; do not read, copy, parse, or
-  import credential values from `.env.test`, another checkout, the default
-  Store, or another credential artifact.
-- No requirements, design, implementation, durable-test, runtime, Store,
-  Docker, Claude, or AutoByteus behavior changed. Architecture rereview and
-  downstream revalidation are not required.
-- At that time, the canonical test review reactivated its `Pass`, `97.1%`
-  confidence, and
-  delivery recommendation. The operator-local setup remains unperformed and is
-  not a real-provider execution claim.
-- This section is historical. The renewed importer request and Round 5 failures
-  above supersede it for current workflow and delivery-gate purposes.
+```text
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg
+```
 
-## Delivered Behavior
+ZIP absolute path:
 
-- One server-owned `SecretManagementService` maps semantic LLM, search, media,
-  metadata, AutoByteus discovery/construction, and managed Claude consumers to
-  stable credential definitions.
-- Provider Settings save, replacement, status, and removal are write-only and
-  value-free on read. Degraded backend health remains visible and fails closed.
-- Default server custody is a pair-authenticated encrypted Local Store below
-  the effective app data directory. Database/key mismatch, tamper, incompatible
-  format, contention, and read-only access have explicit outcomes.
-- Core provider clients and factories no longer perform ambient provider-key
-  discovery; credentials are resolved immediately before trusted construction.
-- Custom OpenAI-compatible JSON is metadata-only version 2; its credential is
-  stored separately and removed with the provider lifecycle.
-- AutoByteus gateway Settings/discovery/reload and LLM/audio/image behavior are
-  preserved with one `provider.autobyteus.api-key` definition, even when remote
-  models display another downstream provider.
-- Claude Agent SDK uses exact default `cli` or explicit `managed-secret` mode.
-  CLI performs zero Store lookup. Managed mode resolves the Anthropic key just
-  in time and delivers it only to the exact restricted SDK child. No ambient or
-  cross-mode fallback exists.
-- Startup migration scrubs known plaintext aliases and secret-bearing custom
-  provider values without copying them into the new Store. A value-free ledger
-  records definitions requiring reprovision.
-- Fresh worktrees use a tracked secret-free real-E2E manifest and a physically
-  separate read-only host Store; copied `.env.test` credentials are not part of
-  the supported path.
+```text
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip
+```
 
-## Validation Summary
+Direct app-bundle path:
 
-- Prior architecture review: `Pass`; the renewed Design Impact requires a
-  revised package and architecture review before implementation proceeds.
-- Implementation-source review: `Pass`; implementation HEAD
-  `62417e80831a52e627d1b4365e9bfcdc9817ae81`.
-- Prior API/E2E: `Pass`, `97.1%` confidence. Round 4 focused matrix passed `24/24`;
-  captured canonical real-E2E preflight passed `11/11`; dedicated real-provider
-  capabilities were truthfully `UNAVAILABLE / SECRET_BACKEND_UNAVAILABLE`.
-- Proportional durable-test rereview: `Pass`; `TCR-001` and `TCR-002` resolved.
-- Current API/E2E delivery gate: `Fail`. Round 5 real OpenAI audio/image passed,
-  while LLM and agent-flow failed; focused failure-origin review is pending.
-- Delivery base refresh: fetched `origin/personal`, checkpointed the reviewed
-  dirty test package, merged five newer base commits without conflict, and
-  reran affected executable coverage on the integrated state. After the
-  temporary hold, refreshed the base again to `71875b938a`, checkpointed the
-  delivery package, merged the additional base commits without conflict, and
-  reran the same affected coverage.
-- Delivery integrated-state check: focused matrix `24/24` and legacy cutover
-  migration `2/2`, both passed. Evidence:
-  `execution-evidence/47-delivery-latest-base-rerun.log` (latest); initial
-  refresh evidence remains in
-  `execution-evidence/46-delivery-integration-focused-rerun.log`.
-- No broad real-provider pass is claimed. The bounded Round 5 claims are OpenAI
-  audio/image `Pass` and OpenAI LLM/agent-flow `Fail`; other real-provider
-  execution remains unclaimed.
-- Security claim remains `LOCAL_HARDENED`; `STRONG_AGENT_ISOLATION` remains
-  deferred.
+```text
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+```
 
-## Documentation And Persisted Data
+Integrity:
 
-- Docs sync result: `Updated`.
-- New canonical doc:
-  `autobyteus-server-ts/docs/modules/secret_management.md`.
-- Updated long-lived docs: server README/docs indexes and LLM Management;
-  frontend Settings and Electron packaging/reset behavior.
-- Docs sync report:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/docs-sync-report.md`.
-- Approved persisted-data decision: `Migration Required` for product-managed
-  alias scrubbing and custom-provider v1-to-v2 metadata transformation;
-  `Discard/Reprovision` for credential values.
-- Delivery verification: migration test passed `2/2` after latest-base merge.
-  Existing Round 3 Docker evidence also proves clean startup, Store persistence,
-  restart/reopen, removal, and cleanup against the built integrated product
-  path prior to the base-only diagram changes.
-- Recovery/rollout rule: do not copy legacy plaintext into the Store. Re-enter
-  required credentials through Settings, rotate previously proliferated keys as
-  appropriate, and keep the database/key files paired.
+- DMG SHA-256:
+  `ec5e6dd9d1333f4ba79398cfc1b877a8c9ca243bfa40b155a8029a707144ea84`
+- ZIP SHA-256:
+  `32a4893558c15a3377af2cd10e14c8c7aa01f614f5ac585fbd4450e54945d116`
+- `hdiutil verify`: Pass
+- `unzip -tq`: Pass
+- Bundle: `com.autobyteus.app`, version `1.4.26`, arm64
+- Signing: local ad-hoc/unsigned candidate; not a notarized publication artifact
 
-## External Anthropic Dependency
+## How To Test Without Confusing It With Production
 
-- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a maintained delivery/release
-  dependency, not authorization or legal advice.
-- Delivery rechecked all four official sources on 2026-07-21. Their guidance
-  remains materially inconsistent for the exact self-hosted, no-login-broker
-  path; no new unambiguous prohibition was found, so the reviewed modes were not
-  silently changed.
-- Recheck record:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/delivery-anthropic-auth-recheck.md`.
-- If authoritative guidance later unambiguously forbids the exact path, stop
-  release and return the behavior decision through solution design.
+This candidate has the same application identity and fixed embedded-server port
+(`29695`) as the production app. It is not a side-by-side installation.
 
-## Suggested User Verification
+Safest procedure:
 
-**Suspended:** do not use this checklist as acceptance evidence until a newly
-reviewed candidate is returned to delivery.
+1. Use a separate disposable macOS user account so the candidate receives a
+   separate home directory and `~/.autobyteus` data root.
+2. Completely quit the production AutoByteus app. Confirm nothing is listening
+   on the embedded port:
 
-1. Start the integrated candidate from this worktree in the normal desktop or
-   direct-server development mode.
-2. Open **Settings -> API Key Management** and choose a non-production test
-   provider credential. Confirm initial status is value-free (`MISSING`) and no
-   prior value is displayed.
-3. Save a test credential, refresh/reopen Settings, and confirm status becomes
-   `CONFIGURED` without value readback. Replace it once and confirm the editor
-   clears after success.
-4. Use **Remove**, confirm status returns to `MISSING`, and confirm a repeated
-   removal does not reveal or restore a value.
-5. Restart the server/app with the same data directory and confirm configured
-   status persists before removal, or missing status persists after removal.
-6. If AutoByteus gateway credentials/hosts are available, confirm its remote
-   model list still reloads and that native provider rows remain separate. Do
-   not attach or share real credentials in the ticket/chat.
-7. If Claude Agent SDK is used, verify `cli` with existing local account state
-   separately from explicit `managed-secret`; do not expect or add fallback
-   between modes.
+   ```bash
+   lsof -nP -iTCP:29695 -sTCP:LISTEN
+   ```
 
-## User Verification
+3. Open the current DMG:
 
-- Explicit user completion/verification received: `No`
-- User verification request status: `Withdrawn due to delivery hold`.
-- Required next signal: none from the user at this stage. The focused
-  failure-origin and revised-design workflows must complete first.
-- Do not move the ticket to `done`, make the final ticket commit, push, merge to
-  `personal`, tag, release, deploy, or clean the worktree.
+   ```bash
+   open "/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg"
+   ```
 
-## Artifact Package
+4. Copy `AutoByteus.app` to a temporary Applications folder for the test account.
+   Control-click the app and choose **Open** if macOS warns because the local
+   candidate is unsigned.
+5. Verify that the app reaches server health and Settings -> API Key Management
+   renders each provider once with its model sections and value-free configured
+   state.
+6. Quit the candidate normally.
 
-- Requirements:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
-- Investigation notes:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
-- Design spec:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
-- Supplements: `use-case-spine-validation.md`, `secret-storage-architecture.md`,
-  `secret-storage-backend-contract.md`, `credential-consumer-mapping.md`,
-  `live-test-secret-provisioning.md`, and `threat-model-and-option-analysis.md`
-  in the same ticket directory.
-- Design review: `design-review-report.md`
-- Implementation handoff: `implementation-handoff.md`
-- Source review: `code-review-report.md`
-- Coverage investigation: `coverage-investigation.md`
-- Execution report: `execution-coverage-report.md`
-- API/E2E test review: `api-e2e-test-review-report.md`
-- Docs sync: `docs-sync-report.md`
-- Anthropic delivery recheck: `delivery-anthropic-auth-recheck.md`
-- Delivery report: `release-deployment-report.md`
-- Release notes: `release-notes.md`
-- Integration evidence: `execution-evidence/46-delivery-integration-focused-rerun.log`
-  and `execution-evidence/47-delivery-latest-base-rerun.log` (latest).
-- Current Round 5 failure evidence:
-  `execution-evidence/49-round5-real-openai.log`.
+If a separate macOS account is unavailable, completely quit production and make
+a coordinated backup first. The candidate uses the normal `~/.autobyteus` root,
+startup may apply additive migrations, and **Reset Server Data** deletes the
+whole server app-data directory including the DB and derived key. Do not use
+reset unless the data is intentionally disposable.
+
+## How To Capture A Startup Failure
+
+If the window shows `Server process exited with code 1`:
+
+1. Click **Show technical details** and copy the value-safe text.
+2. The Electron log is:
+
+   ```text
+   ~/.autobyteus/logs/app.log
+   ```
+
+3. Capture the latest lines:
+
+   ```bash
+   tail -n 200 ~/.autobyteus/logs/app.log
+   ```
+
+4. Also include the port check:
+
+   ```bash
+   lsof -nP -iTCP:29695 -sTCP:LISTEN
+   ```
+
+Share only technical details and the log excerpt. Do not share `.env`,
+`.env.test`, an assignment source, the application DB, the `.secret.key`, or
+credential values.
+
+## What Changed Since The Earlier Candidate
+
+- The importer is now exactly one generic command with an explicit target:
+
+  ```bash
+  pnpm secrets:import -- \
+    --source /absolute/path/to/assignments \
+    --database-url file:/absolute/path/to/application.db \
+    --dry-run
+  ```
+
+  The URL is required and cannot be inherited from `.env`, `.env.test`, parent
+  process state, source assignments, AppConfig, or the current directory.
+- API Key Management now uses one `providerSettings` collection. Each provider
+  appears once with one provider-owned `apiKeyConfigured` fact and its existing
+  LLM/audio/image/video model lists. The web maintains no parallel credential
+  map or four-array status merge.
+- Ordinary save/remove commands return completion and refetch the canonical
+  provider row. Custom-provider and Gemini operations use tight purpose-specific
+  results and typed GraphQL errors.
+- The one-application-database vault, derived root key, explicit Gemini mode,
+  Claude/Codex boundaries, Docker topology, Electron reset behavior, and
+  repository-Prisma decision remain unchanged.
+
+## Validation Evidence
+
+- Canonical execution report:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md`
+- Canonical durable-test review:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/api-e2e-test-review-report.md`
+- Round 16 package check:
+  `execution-evidence/218-round16-tcr005-tcr006-package-check.log`
+- Round 16 final evidence scan:
+  `execution-evidence/219-round16-tcr-final-evidence-rescan.log`
+- Delivery latest-base integration:
+  `execution-evidence/220-delivery-round16-latest-base-integration.log`
+- Round 16 Electron build:
+  `execution-evidence/210-round16-electron-macos-arm64-build.log`
+- Electron AppData/runtime tests:
+  `execution-evidence/211-round16-electron-appdata-tests.log`
+- Delivery DMG/ZIP integrity:
+  `execution-evidence/221-delivery-round16-electron-artifact-integrity.log`
+- Delivery packaged-server startup:
+  `execution-evidence/222-delivery-round16-packaged-server-startup.log`
+- Delivery final handoff check:
+  `execution-evidence/223-delivery-round16-final-handoff-check.log`
+
+The current bundled server was executed under the packaged Electron runtime
+against an isolated temporary app-data/database/key root. All migrations ran,
+health passed, and the owned root/process were cleaned. This does not replace the
+requested visible-shell verification.
+
+## Configured External Results And Limitations
+
+Passed configured paths include OpenAI LLM/agent/audio/image, DeepSeek LLM/agent,
+Vertex Express, native Anthropic, managed-secret Claude, Codex, and Claude CLI.
+Browser Settings, restart, Docker, repository-Prisma, and packaging boundaries
+also passed.
+
+Exact limitations:
+
+- Serper and Gemini AI Studio were not configured; no pass is claimed.
+- AutoByteus discovery at declared `api.autobyteus.com` was unavailable; no
+  alternate endpoint or pass was invented.
+- Claude modes remain exactly `cli` and `managed-secret`. The 2026-07-27
+  official-source recheck is a maintained external dependency, not legal
+  clearance or an authentication redesign.
+- Claims remain `LOCAL_HARDENED`; Codex is excluded from its governed-child
+  environment portion and `STRONG_AGENT_ISOLATION` remains deferred.
+- Exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, no automatic
+  import/update, unchanged Docker topology, source/template immutability, and
+  `DASHSCOPE_API_KEY` as the sole Qwen mapping remain authoritative.
+
+## User Decision Needed
+
+Please test the DMG and respond with either:
+
+- **Verified** — the candidate starts and the requested workflow is acceptable;
+  or
+- **Failed** — include the technical-details text and last relevant log lines.
+
+Only **Verified** authorizes ticket archival and repository finalization.

@@ -1,11 +1,11 @@
-import { describe, expect, it, afterEach } from "vitest";
+import { describe, expect, it, afterAll, afterEach } from "vitest";
 import { randomUUID } from "node:crypto";
 import { PrismaClient } from "@prisma/client";
 import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { SqlTokenUsageLedgerRepository } from "../../../../src/token-usage/repositories/sql/token-usage-ledger-repository.js";
 
 const prisma = new PrismaClient();
-const repo = new SqlTokenUsageLedgerRepository();
+const repo = new SqlTokenUsageLedgerRepository(prisma);
 const createdRunIds = new Set<string>();
 
 const buildEvent = (input: {
@@ -62,6 +62,10 @@ afterEach(async () => {
   if (runIds.length > 0) {
     await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
   }
+});
+
+afterAll(async () => {
+  await prisma.$disconnect();
 });
 
 describe("SqlTokenUsageLedgerRepository", () => {

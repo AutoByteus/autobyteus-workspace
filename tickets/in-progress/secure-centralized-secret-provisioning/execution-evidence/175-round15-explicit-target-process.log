@@ -1,0 +1,19 @@
+(node:55450) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TARGET /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/db/round15-explicit-target.db
+TARGET_STATUS INITIALIZATION_REQUIRED
+provider.openai.api-key MISSING CREATE
+CREATE 1
+SKIP_CONFIGURED 0
+REPLACE 0
+BLOCKED 0
+INSTRUCTION SECRET_VAULT_INITIALIZATION_REQUIRED
+HOSTILE_PARENT_DATABASE_URL_IGNORED=PASS
+HOSTILE_PARENT_DB_NAME_IGNORED=PASS
+HOSTILE_SOURCE_DATABASE_URL_IGNORED=PASS
+HOSTILE_CWD_ENV_IGNORED=PASS
+HOSTILE_CWD_ENV_TEST_IGNORED=PASS
+EXPLICIT_TARGET_MUTATION_COUNT=0
+DECOY_MUTATION_COUNT=0
+SOURCE_VALUE_EXPOSURE=NONE
+EXPLICIT_TARGET_PROCESS_PROBE=PASS

@@ -1,0 +1,9 @@
+[ {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@1b23be8a6e1a265dbfdbaf563a0e08115d6cc287/inspector.html?ws=127.0.0.1:64621/devtools/page/13A2B8481551504502CEF19F51D6B25A",
+   "id": "13A2B8481551504502CEF19F51D6B25A",
+   "title": "index.html#/settings",
+   "type": "page",
+   "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:64621/devtools/page/13A2B8481551504502CEF19F51D6B25A"
+} ]

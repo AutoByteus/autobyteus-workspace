@@ -1,0 +1,656 @@
+
+> autobyteus-workspace@ test:e2e:real /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning
+> pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 82ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:86233) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
+Loading non-secret configuration from: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:62425
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:62425
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/memory
+============================================================
+AppConfig initialization completed successfully
+
+{"scenarioId":"openai.llm","health":"READY","configured":["provider.openai.api-key"],"missing":[],"instructionCode":null}
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.llm through its reviewed product boundary
+Discovering Ollama models from host: http://localhost:11434
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.llm through its reviewed product boundary
+Discovering LM Studio models from host: http://localhost:1234
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.llm through its reviewed product boundary
+Finished LM Studio discovery. Total models registered: 14
+
+{"scenarioId":"openai.agent-flow","health":"READY","configured":["provider.openai.api-key"],"missing":[],"instructionCode":null}
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-agent-flow-iHcfAo/workspace.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Resolved system prompt from fresh definition instructions for AgentDefinition live-e2e-agent-flow.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Using temp workspace (ID: live-e2e-agent-workspace) for agent.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentRuntimeState initialized for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': No tools provided in config.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': LLM instance 'OpenAILLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' with config: 'Managed-provider live E2E agent'.
+AgentWorker initialized for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'.
+Registered AgentContext for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'. Context registered.
+Agent facade initialized for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' created and stored successfully.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' requesting runtime to start.
+AgentRuntime for 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Starting worker.
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Starting...
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' asyncRun(): Starting.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Runtime init completed (event store initialized).
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Runtime init completed (status deriver initialized).
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Runtime init completed (AgentEventInbox initialized).
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' to become idle (timeout: 30s)...
+AgentEventStream (ID: dc79fcf9-362c-4052-b5ce-d8bd7e629904) initialized for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'. Subscribed to notifier.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Bootstrapper starting direct lifecycle execution.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Executing SystemPromptProcessingStep.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Final processed system prompt configured on LLM instance. Final length: 51.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Final processed system prompt:
+---
+Reply concisely to the user without invoking tools.
+---
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' has become idle.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentEventStream (ID: dc79fcf9-362c-4052-b5ce-d8bd7e629904) for 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentEventStream (ID: fe074db9-bc34-42c0-b17a-428086eef502) initialized for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'. Subscribed to notifier.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentEventStream (ID: fe074db9-bc34-42c0-b17a-428086eef502) for 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'. Attempting graceful shutdown.
+Agent 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Stop requested.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 68d7d90f-39f9-4958-8e45-cc11059476c1, AgentID: live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' asyncRun() loop has finished.
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Shutdown resource cleanup completed successfully.
+AgentWorker 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Shutdown sequence completed.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Unregistered AgentContext for agent_id 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c'.
+AgentRuntime for 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c': Context unregistered.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+AgentRuntime for 'live_e2e_agent_580e780fb0f74dcb9d506e5a6300d53c' stop() method completed.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Closing FileSystemWorkspace live-e2e-agent-workspace
+
+{"scenarioId":"deepseek.llm","health":"READY","configured":["provider.deepseek.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"deepseek.agent-flow","health":"READY","configured":["provider.deepseek.api-key"],"missing":[],"instructionCode":null}
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-agent-flow-NofTB9/workspace.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Resolved system prompt from fresh definition instructions for AgentDefinition live-e2e-agent-flow.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Using temp workspace (ID: live-e2e-agent-workspace) for agent.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentRuntimeState initialized for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': No tools provided in config.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': LLM instance 'DeepSeekLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' with config: 'Managed-provider live E2E agent'.
+AgentWorker initialized for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'.
+Registered AgentContext for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'. Context registered.
+Agent facade initialized for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' created and stored successfully.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' requesting runtime to start.
+AgentRuntime for 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Starting worker.
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Starting...
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' asyncRun(): Starting.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Runtime init completed (event store initialized).
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Runtime init completed (status deriver initialized).
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Runtime init completed (AgentEventInbox initialized).
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' to become idle (timeout: 30s)...
+AgentEventStream (ID: 35cf74c2-e236-4934-a9b4-e68f67f469af) initialized for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'. Subscribed to notifier.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Bootstrapper starting direct lifecycle execution.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Executing SystemPromptProcessingStep.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Final processed system prompt configured on LLM instance. Final length: 51.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Final processed system prompt:
+---
+Reply concisely to the user without invoking tools.
+---
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' has become idle.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentEventStream (ID: 35cf74c2-e236-4934-a9b4-e68f67f469af) for 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentEventStream (ID: cd0fd977-31aa-4843-b688-8013cb8c3f4f) initialized for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'. Subscribed to notifier.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentEventStream (ID: cd0fd977-31aa-4843-b688-8013cb8c3f4f) for 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'. Attempting graceful shutdown.
+Agent 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Stop requested.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: 506b7e2a-1837-45fc-a194-f7c179b01c30, AgentID: live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' asyncRun() loop has finished.
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Shutdown resource cleanup completed successfully.
+AgentWorker 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Shutdown sequence completed.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Unregistered AgentContext for agent_id 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328'.
+AgentRuntime for 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328': Context unregistered.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+AgentRuntime for 'live_e2e_agent_6a37a5ab0f98418380ccfe44e56f0328' stop() method completed.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Closing FileSystemWorkspace live-e2e-agent-workspace
+
+{"scenarioId":"serper.search","health":"READY","configured":[],"missing":["search.serper.api-key"],"instructionCode":null}
+{"scenarioId":"serper.search","status":"SKIPPED_NOT_CONFIGURED","health":"READY","missing":["search.serper.api-key"],"instructionCode":null}
+{"scenarioId":"openai.audio","health":"READY","configured":["provider.openai.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"openai.image","health":"READY","configured":["provider.openai.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"gemini.vertex-express.llm","health":"READY","configured":["provider.google.vertex-express.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"gemini.vertex-express.audio","health":"READY","configured":["provider.google.vertex-express.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"gemini.vertex-express.image","health":"READY","configured":["provider.google.vertex-express.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"gemini.ai-studio.llm","health":"READY","configured":[],"missing":["provider.google.ai-studio.api-key"],"instructionCode":null}
+{"scenarioId":"gemini.ai-studio.llm","status":"SKIPPED_NOT_CONFIGURED","health":"READY","missing":["provider.google.ai-studio.api-key"],"instructionCode":null}
+{"scenarioId":"anthropic.llm","health":"READY","configured":["provider.anthropic.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"anthropic.claude-agent-sdk-managed","health":"READY","configured":["provider.anthropic.api-key"],"missing":[],"instructionCode":null}
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes anthropic.claude-agent-sdk-managed through its reviewed product boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-managed-real-e2e-EHYx9W
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-managed-real-e2e-EHYx9W/.env
+
+{"scenarioId":"autobyteus.remote-llm","health":"READY","configured":["provider.autobyteus.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"autobyteus.remote-audio","health":"READY","configured":["provider.autobyteus.api-key"],"missing":[],"instructionCode":null}
+{"scenarioId":"autobyteus.remote-image","health":"READY","configured":["provider.autobyteus.api-key"],"missing":[],"instructionCode":null}
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (32 tests | 14 failed | 2 skipped) 421ms
+     ✓ preflights openai.llm without value output 22ms
+     × executes openai.llm through its reviewed product boundary 34ms
+     ✓ preflights openai.agent-flow without value output 9ms
+     × executes openai.agent-flow through its reviewed product boundary 46ms
+     ✓ preflights deepseek.llm without value output 6ms
+     × executes deepseek.llm through its reviewed product boundary 11ms
+     ✓ preflights deepseek.agent-flow without value output 7ms
+     × executes deepseek.agent-flow through its reviewed product boundary 37ms
+     ✓ preflights serper.search without value output 7ms
+     ↓ executes serper.search through its reviewed product boundary 6ms
+     ✓ preflights openai.audio without value output 6ms
+     × executes openai.audio through its reviewed product boundary 14ms
+     ✓ preflights openai.image without value output 5ms
+     × executes openai.image through its reviewed product boundary 11ms
+     ✓ preflights gemini.vertex-express.llm without value output 5ms
+     × executes gemini.vertex-express.llm through its reviewed product boundary 20ms
+     ✓ preflights gemini.vertex-express.audio without value output 6ms
+     × executes gemini.vertex-express.audio through its reviewed product boundary 11ms
+     ✓ preflights gemini.vertex-express.image without value output 3ms
+     × executes gemini.vertex-express.image through its reviewed product boundary 12ms
+     ✓ preflights gemini.ai-studio.llm without value output 5ms
+     ↓ executes gemini.ai-studio.llm through its reviewed product boundary 5ms
+     ✓ preflights anthropic.llm without value output 5ms
+     × executes anthropic.llm through its reviewed product boundary 12ms
+     ✓ preflights anthropic.claude-agent-sdk-managed without value output 5ms
+     × executes anthropic.claude-agent-sdk-managed through its reviewed product boundary 44ms
+     ✓ preflights autobyteus.remote-llm without value output 5ms
+     × executes autobyteus.remote-llm through its reviewed product boundary 11ms
+     ✓ preflights autobyteus.remote-audio without value output 5ms
+     × executes autobyteus.remote-audio through its reviewed product boundary 11ms
+     ✓ preflights autobyteus.remote-image without value output 5ms
+     × executes autobyteus.remote-image through its reviewed product boundary 11ms
+
+ Test Files  1 failed (1)
+      Tests  14 failed | 16 passed | 2 skipped (32)
+   Start at  08:28:46
+   Duration  4.59s (transform 2.76s, setup 11ms, import 3.70s, tests 421ms, environment 0ms)
+
+(node:86259) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.llm through its reviewed product boundary
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.llm through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:openai.llm
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:111:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.agent-flow through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:openai.agent-flow
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:94:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.llm through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:deepseek.llm
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:111:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.agent-flow through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:deepseek.agent-flow
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:94:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.audio through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:openai.audio
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:133:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes openai.image through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:openai.image
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:147:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes gemini.vertex-express.llm through its reviewed product boundary
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes gemini.vertex-express.audio through its reviewed product boundary
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes gemini.vertex-express.image through its reviewed product boundary
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ LiveE2eScenarioExecution.activateGeminiMode ../test-support/live-e2e/live-e2e-harness.ts:216:5
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:91:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes anthropic.llm through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:anthropic.llm
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:111:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes anthropic.claude-agent-sdk-managed through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:anthropic.claude-agent-sdk-managed
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:165:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes autobyteus.remote-llm through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:autobyteus.remote-llm
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:192:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes autobyteus.remote-audio through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:autobyteus.remote-audio
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:192:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes autobyteus.remote-image through its reviewed product boundary
+Error: LIVE_E2E_PROVIDER_OPERATION_FAILED:autobyteus.remote-image
+ ❯ safeExternalOperation tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:33:11
+     31|       throw error;
+     32|     }
+     33|     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`…
+       |           ^
+     34|   }
+     35| };
+ ❯ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts:192:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ ELIFECYCLE  Command failed with exit code 1.

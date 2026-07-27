@@ -1,0 +1,102 @@
+--- stdio complete ---
+[2026-07-27T07:46:44.397Z] [INFO] [electron] Application started
+[2026-07-27T07:46:44.433Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created app data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/db
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/logs
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/download
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/tmp
+
+DevTools listening on ws://127.0.0.1:64603/devtools/browser/e42db2fb-2bc2-4657-9851-d5ab217d00e1
+[2026-07-27T07:46:44.543Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:64604
+[2026-07-27T07:46:44.667Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-07-27T07:46:44.668Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-07-27T07:46:44.668Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.base-server-manager] App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.app-data] Generated runtime .env at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/.env
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-07-27T07:46:44.669Z] [INFO] [electron.server.base-server-manager] Port 29695 is free.
+[2026-07-27T07:46:44.669Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Login shell PATH: /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/tmp/arg0/codex-arg0lFT38A:/Users/normy/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/normy/.lmstudio/bin:/Users/normy/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Using PATH from login shell
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Starting server with port: 29695
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:29695
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.676Z] [INFO] [electron] App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.677Z] [INFO] [electron] Server process spawned with PID: 50507
+[2026-07-27T07:46:44.798Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-07-27T07:46:44.798Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.798Z] [INFO] [electron.embedded-server.stdout] App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/.env
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/.env
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Non-secret configuration parsed without process-wide injection
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:29695
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:29695
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/db
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/logs
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/download
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/memory
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+--- isolated app log complete ---
+[2026-07-27T07:46:44.397Z] [INFO] [electron] Application started
+[2026-07-27T07:46:44.433Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created app data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/db
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/logs
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/download
+[2026-07-27T07:46:44.434Z] [INFO] [electron.server.app-data] Created missing data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/tmp
+[2026-07-27T07:46:44.543Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:64604
+[2026-07-27T07:46:44.667Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-07-27T07:46:44.668Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-07-27T07:46:44.668Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.base-server-manager] App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.app-data] Generated runtime .env at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/.env
+[2026-07-27T07:46:44.668Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-07-27T07:46:44.669Z] [INFO] [electron.server.base-server-manager] Port 29695 is free.
+[2026-07-27T07:46:44.669Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Login shell PATH: /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/tmp/arg0/codex-arg0lFT38A:/Users/normy/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/normy/.lmstudio/bin:/Users/normy/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Using PATH from login shell
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Starting server with port: 29695
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:29695
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.676Z] [INFO] [electron] App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.676Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.677Z] [INFO] [electron] Server process spawned with PID: 50507
+[2026-07-27T07:46:44.798Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-07-27T07:46:44.798Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.798Z] [INFO] [electron.embedded-server.stdout] App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/.env
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/.env
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Non-secret configuration parsed without process-wide injection
+[2026-07-27T07:46:44.799Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:29695
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:29695
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/db
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/logs
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/download
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scsp-electron-pdv2.n8bCsb/home/.autobyteus/server-data/memory
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-07-27T07:46:44.800Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+--- crash reports ---
+--- port/process after failure ---
+50581 50573 R          00:00 rg /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//scsp-electron-pdv2.n8bCsb|/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents

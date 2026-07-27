@@ -1,0 +1,18 @@
+SCENARIO=SCSP-PDV-ELECTRON-STARTUP-001
+TIMESTAMP=2026-07-27T07:46:04Z
+MAIN_PID=50387
+MAIN_ALIVE=no
+HEALTH_READY=0
+CDP_READY=0
+--- health ---
+
+--- fixed port owner ---
+--- remote debug port owner ---
+--- process tree ---
+--- Electron process family ---
+50425 50410 R          00:00 rg /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//scsp-electron-pdv.p1m3x8|/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents
+--- isolated files ---
+--- actual home data path check ---
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//scsp-electron-pdv.p1m3x8/home
+--- user canonical data paths touched since launch (names only) ---
+/Users/normy/.autobyteus/logs/app.log

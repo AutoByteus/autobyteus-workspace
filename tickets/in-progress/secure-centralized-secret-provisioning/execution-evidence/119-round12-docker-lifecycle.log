@@ -1,0 +1,30 @@
+SCENARIO=SCSP-E2E-DOCKER-001
+IMPLEMENTATION_HEAD=ab82847e987646aadb8c38e2400270196f00dbb3
+PROJECT=scsp-round12
+DATABASE_URL_PARENT=UNSET
+PROVIDER_SECRET_ALIASES_PARENT=UNSET
+CONTAINER_BEFORE=bec92bf37d494404115919c4b2b1eb4ff5177d015e6de037b40742f2ab03d806
+DATA_VOLUME_BEFORE=scsp-round12_autobyteus-server-data
+IMAGE_ID=sha256:e628590efdb04a73a288033e33d2a5c42189b625a9337091d95db47ab5092c96
+APPLICATION_ENV_INITIAL=PRESENT size=95
+APPLICATION_ENV_INITIAL_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+SCSP-E2E-DOCKER-001 phase=save initial=MISSING saved=CONFIGURED backend=READY assurance=LOCAL_HARDENED value_exposed=false
+APPLICATION_ENV_AFTER_SAVE=PRESENT size=95
+APPLICATION_ENV_AFTER_SAVE_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+RESTART_COMMAND=docker compose ... restart autobyteus-server
+ Container scsp-round12-autobyteus-server-1  Restarting
+ Container scsp-round12-autobyteus-server-1  Started
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+CONTAINER_AFTER=bec92bf37d494404115919c4b2b1eb4ff5177d015e6de037b40742f2ab03d806
+DATA_VOLUME_AFTER=scsp-round12_autobyteus-server-data
+SAME_NAMED_DATA_VOLUME=true
+SCSP-E2E-DOCKER-001 phase=reopen-remove reopened=CONFIGURED removed=MISSING backend=READY value_exposed=false
+APPLICATION_ENV_AFTER_RESTART=PRESENT size=95
+APPLICATION_ENV_AFTER_RESTART_SHA256=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+--- sanitized lifecycle log signals ---
+Database migrations completed successfully.
+[2026-07-23T05:03:51.071Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+Database migrations completed successfully.
+[2026-07-23T05:06:48.092Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+SCSP-E2E-DOCKER-001=PASS

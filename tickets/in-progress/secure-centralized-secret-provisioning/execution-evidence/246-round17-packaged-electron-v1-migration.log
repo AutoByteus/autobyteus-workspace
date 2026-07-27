@@ -1,0 +1,6 @@
+SCENARIO=SCSP-E2E-PACKAGED-CUSTOM-V1
+HEAD=dd1d37f90d00331d427bad1b36e4401a3a733038
+APP=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+PROFILE=isolated synthetic HOME per scenario; fixed packaged server port 29695; renderer CDP loopback-only
+PRECHECK_PORT_29695_LISTENER_COUNT=1
+SCSP-E2E-PACKAGED-CUSTOM-V1-SUMMARY FAIL code=PACKAGED_FIXED_PORT_IN_USE

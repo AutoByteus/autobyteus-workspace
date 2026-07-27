@@ -1,0 +1,24 @@
+{
+  "title": "",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents?view=list",
+  "readyState": "complete",
+  "serverStatus": {
+    "status": "running",
+    "urls": {
+      "graphql": "http://127.0.0.1:29695/graphql",
+      "rest": "http://127.0.0.1:29695/rest",
+      "ws": "ws://localhost:29695/graphql",
+      "transcription": "ws://localhost:29695/transcribe",
+      "health": "http://127.0.0.1:29695/rest/health"
+    },
+    "healthCheckStatus": "Healthy"
+  },
+  "serverHealth": {
+    "status": "ok",
+    "data": {
+      "status": "ok",
+      "message": "Server is running"
+    }
+  },
+  "textSample": "Agents\nAgent Teams\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nReload\nCreate Agent\nIndividual agents\n2 agents\nMC\nMemory Compactor\n\nSummarizes earlier work so the same agent can continue later.\n\nTools 0\nNone\nSkills 0\nNone\nRun\nView Details\n→\nRS\nRetrospective Skill Improver\n\nImproves configured durable skill packages from target run work-trace evidence.\n\nTools 2\nrun_bash\nsend_message_to\nSkills 1\nretrospective-skill-improver\nRun\nView Details\n→"
+}

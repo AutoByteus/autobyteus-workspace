@@ -5,9 +5,9 @@
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
 - Purpose: retain primary-package evidence and the bounded clean-replacement decision for the user-approved `repository_prisma` update to the latest published version.
 - Scope: exact npm metadata and provenance, packed ESM/CommonJS artifacts, import and query-log policy, current AutoByteus dependency/patch/import surfaces, lifecycle compatibility, persisted-data impact, and required validation.
-- Status: complete for architecture re-review on 2026-07-22.
+- Status: complete evidence from 2026-07-22, rechecked against current ticket source on 2026-07-26.
 - Approval applicability: `N/A` as evidence. The user-approved intended behavior is authoritative in [requirements.md](./requirements.md) and [design-spec.md](./design-spec.md).
-- Related IDs: `BEH-015`, `REQ-021`, `AC-021`, `UC-020`, `DS-UC020`, `AR-010`, `MP-004`.
+- Related clean-state IDs: `BEH-016`, `REQ-016`, `AC-012`, `UC-017`, `DS-UC017`. Earlier reviewer IDs `AR-010`/`MP-004` remain historical evidence only.
 
 ## Approved Request And Clean-Replacement Decision
 
@@ -33,10 +33,10 @@ This dependency-only change does not authorize Prisma ORM/client upgrades, schem
 
 | Evidence | Observed State |
 | --- | --- |
-| `autobyteus-server-ts/package.json` | `repository_prisma: ^1.0.6`, `@prisma/client: ^5.22.0`, `prisma: ^5.22.0` |
-| `pnpm-lock.yaml` | resolves `repository_prisma@1.0.6` with `@prisma/client@5.22.0` |
-| root `package.json` | exact patch key `repository_prisma@1.0.6` points to `patches/repository_prisma@1.0.6.patch` |
-| current patch | changes package query logging from unconditional to explicit `PRISMA_LOG_QUERIES` opt-in |
+| `autobyteus-server-ts/package.json` | Current ticket source declares `repository_prisma:^1.0.8`, `@prisma/client:^5.22.0`, `prisma:^5.22.0`. |
+| `pnpm-lock.yaml` | Current ticket source resolves `repository_prisma@1.0.8` with `@prisma/client@5.22.0`. |
+| root `package.json` | Current ticket source has no `repository_prisma` patched-dependency entry. |
+| patch inventory | Current ticket source has no `repository_prisma` patch file. |
 | production import scan | current production source does not import `repository_prisma`; one focused logging-policy test imports its public boundary |
 | current Prisma owners | direct `@prisma/client` imports plus `createConfiguredPrismaClient()` and bounded lazy repository owners implement reviewed production lifecycles |
 
@@ -136,7 +136,7 @@ This ticket does not introduce a production `repository_prisma` caller. AutoByte
 
 ## Integration Spine
 
-`DS-UC020`:
+`DS-UC017`:
 
 ```text
 approved latest-library request

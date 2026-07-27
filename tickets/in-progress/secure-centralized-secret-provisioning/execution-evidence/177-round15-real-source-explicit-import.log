@@ -1,0 +1,12 @@
+COMMAND=pnpm secrets:import -- --source <approved-absolute-source> --database-url <explicit-project-test-database-url>
+CANONICAL_TARGET=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/db/test.db
+TARGET_STATUS_BEFORE_WRITE=READY
+DIRECT_TTY=PASS
+CONFIRMATION_PHRASE=IMPORT
+MIGRATIONS=NO_PENDING
+CONFIGURED_SECRET_IDS=9
+SKIPPED_SECRET_IDS=0
+REPLACED_SECRET_IDS=0
+INSTRUCTION=NONE
+SOURCE_VALUE_EXPOSURE=NONE
+REAL_SOURCE_EXPLICIT_IMPORT=PASS

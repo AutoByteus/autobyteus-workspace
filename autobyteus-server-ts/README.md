@@ -61,8 +61,8 @@ DISABLE_HTTP_REQUEST_LOGS=true
 
 Notes:
 - `AUTOBYTEUS_SERVER_HOST` is required (used for URL generation).
-- Provider and search credentials must be saved through the applicable product Settings surface (**API Key Management** for model/media providers and **Web Search** configuration for search providers). They are not supported as plaintext `.env` entries or ambient runtime credential aliases.
-- The default encrypted Local Store is the `secret-store/secret-store.db` plus `secret-store/secret-store.key` pair under the effective app data directory. `--data-dir` moves that pair; `AUTOBYTEUS_SECRET_STORAGE_CONFIG_FILE` is the advanced backend-configuration hook. See `docs/modules/secret_management.md`.
+- Provider and search credentials must be saved through the applicable product Settings surface (**API Key Management** for model/media providers and **Web Search** configuration for search providers). Plaintext `.env` entries and ambient aliases are not runtime credential providers. For a one-time transition from an owner-private assignment file, use the sole importer command `pnpm secrets:import -- --source /absolute/path --database-url file:/absolute/path/to/application.db --dry-run` from the workspace root, review the value-free target and plan, and rerun without `--dry-run`. `--database-url` is required and is the importer's only target authority; it is never inferred from `.env`, `.env.test`, the source file, the working directory, or parent `DATABASE_URL`. See the Secret Management doc for URL validation, confirmation, preview, and overwrite rules.
+- Encrypted secret tables live in the same SQLite application database selected by canonical `DATABASE_URL`; the 32-byte root key is the database sibling `<database-path>.secret.key`. Treat the database and key as one backup/restore/reset pair. There is no second Store database or backend configuration hook. See `docs/modules/secret_management.md`.
 - Optional `AUTOBYTEUS_MCP_GATEWAY_TOKEN` protects the general `/mcp/gateway` Streamable HTTP MCP endpoint. When unset, that endpoint is restricted to local loopback requests only.
 - SQLite DB defaults to `db/production.db` (or `db/test.db` when `APP_ENV=test`).
 - `DATABASE_URL` is optional for SQLite; when missing, it is derived from the runtime SQLite DB path.
@@ -379,6 +379,77 @@ cp .env.example .env
 ```bash
 pnpm -C autobyteus-server-ts exec vitest
 ```
+
+### Start the real backend and frontend for live API/E2E testing
+
+Run the combined test development stack from the workspace root:
+
+```bash
+pnpm dev:test
+```
+
+This is a real local runtime, not a mocked test server. The command:
+
+1. builds `autobyteus-server-ts`;
+2. validates the committed non-secret
+   `autobyteus-server-ts/.env.test` template;
+3. automatically materializes
+   `autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env`;
+4. starts the built backend on `http://127.0.0.1:8000` with that directory
+   passed as `--data-dir`; and
+5. starts the Nuxt frontend on `http://127.0.0.1:3000`, configured to use the
+   test backend.
+
+Open `http://127.0.0.1:3000` in a browser. Press `Ctrl+C` in the terminal that
+owns `pnpm dev:test` to stop both processes.
+
+The server reads the generated runtime `.env`, not `.env.test` directly.
+Developers do not create that runtime file manually: the test runner derives it
+from the committed template, writes it atomically with restricted permissions,
+and starts the server with a sanitized child environment. The template selects
+the project-local SQLite test application database under
+`autobyteus-server-ts/db/`. Managed provider credentials remain encrypted in
+that database's vault; do not put provider credential values in `.env.test` or
+the generated runtime `.env`.
+
+To run the processes in separate terminals instead:
+
+```bash
+# Terminal 1, from the workspace root
+pnpm server:test
+```
+
+```bash
+# Terminal 2, from the workspace root
+pnpm web:test
+```
+
+Useful real-provider checks against the same project test runtime:
+
+```bash
+# Report configured, missing, or unavailable capabilities without invoking them
+pnpm test:e2e:real:preflight
+
+# Execute every currently configured capability
+pnpm test:e2e:real
+```
+
+To preview an explicit import into that test runtime, pass its canonical
+absolute SQLite file URL to the same generic importer:
+
+```bash
+pnpm secrets:import -- \
+  --source /absolute/path/to/assignments \
+  --database-url file:/absolute/path/to/autobyteus-server-ts/db/test.db \
+  --dry-run
+```
+
+There is no test-import wrapper. The importer does not read `.env.test` or the
+generated runtime `.env` and does not inherit a target from parent
+`DATABASE_URL`.
+
+Unavailable or unconfigured external capabilities are skipped and reported
+explicitly; they must not be represented as passed.
 
 ## Runtime Sandbox Overrides
 

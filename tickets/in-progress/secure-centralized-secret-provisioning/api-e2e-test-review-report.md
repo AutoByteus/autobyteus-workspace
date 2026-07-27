@@ -1,107 +1,162 @@
 # API/E2E Test Review Report
 
+## Historical Supersession Context
+
+- Review rounds 1–6 resolved `TCR-001`–`TCR-004` across the earlier durable packages.
+- Review round 7 proportionally reviewed the final Round 16 cumulative durable package and opened two bounded API/E2E-owned findings: `TCR-005` for the stale final `run-test-import.mjs` inventory and `TCR-006` for ambient local-model discovery in a unit-level scenario-registry assertion.
+- Review round 8 resolved the bounded `TCR-005`/`TCR-006` corrections.
+- Review round 9 proportionally reviews only the new Round 17 custom-provider-v1 actual-server migration E2E. It is the latest authoritative test-review result.
+
 ## Review Meta
 
-- Review Round: `3`
-- Trigger: API/E2E Round 11 `Pass` at implementation `ad629bc55ed5c653db957ce46bdbc5092c7738ac`; cumulative proportional durable-test review after exact Gemini-mode, separate metadata-contract, Codex-continuity, restart, Docker, and configured-provider execution passed.
+- Review Round: `8`
+- Trigger: bounded API/E2E-owned correction of `TCR-005` and `TCR-006` after the Round 16 API/E2E `Pass` at final HEAD `53dd05ecaac6e3196497597cceba0799f8093aba`.
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
 - Supplemental Task Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/encrypted-secret-vault-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/gemini-setup-ui-ux-spec.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/use-case-spine-validation.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md` (Round 26 implementation review `Pass`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md` (Round 39 source-review Pass, 9.64/10)
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md`
-- API/E2E Result: `Pass`; 104 focused tests, 12/12 canonical preflights, 3/3 real Vertex Express operations, real metadata fallback/zero-lookup checks, real Codex continuity, restart, unchanged Docker lifecycle, and configured OpenAI/Anthropic reruns passed.
-- Final Validation Confidence: `98.0%`
-- Prior unresolved test-review findings rechecked: `TCR-001`, `TCR-002` remain resolved; no unresolved test-review finding entered this round.
-- Review method: proportional review of the eight current durable deltas, current complete files, the nine unchanged previously reviewed durable paths, the eight prior removals, coverage decisions, and Round 11 execution evidence. The successful API/E2E workflow was not rerun. Reviewer-only checks were `node --check` on the scanner/runner, JSON parse of the manifest, and scoped `git diff --check`; all passed.
+- API/E2E Result: `Pass`; the underlying Round 16 result remains authoritative at unchanged implementation HEAD.
+- Final Validation Confidence: `98.1%` (unchanged)
+- Prior unresolved test-review findings rechecked: `TCR-005` and `TCR-006` are resolved. `TCR-001`–`TCR-004` remain resolved.
+- Review method: proportional inspection of the exact test/report delta and focused evidence `217`–`219`; no full product/API/E2E rerun by code review.
 
 ## Review History
 
 | Review Round | Trigger | Result | Notes |
 | --- | --- | --- | --- |
-| 1 | Round 3 successful package | Fail | Opened `TCR-001` for the fail-only gateway branch and `TCR-002` for incomplete canonical output/artifact scanning. |
-| 2 | Round 4 bounded test rework | Pass, later superseded by execution | `TCR-001` and `TCR-002` resolved; later provider/runtime failures paused delivery but did not reopen those test-code findings. |
-| 3 | Round 11 cumulative execution Pass | Pass — latest authoritative | Current eight deltas and all carried-forward durable paths/removals are coherent and requirement-aligned. |
+| 1 | Round 3 successful API/E2E package | Fail | Opened `TCR-001` and `TCR-002`. |
+| 2 | Round 4 bounded API/E2E rework | Pass, superseded | `TCR-001` and `TCR-002` resolved. |
+| 3 | Round 11 cumulative execution Pass | Pass, superseded | Delivery later paused for Gemini metadata separation. |
+| 4 | Round 12 execution Pass | Pass, superseded | Metadata-provenance E2E passed proportional review. |
+| 5 | Round 13 one-database-vault execution Pass | Fail, superseded | Opened `TCR-003` and `TCR-004`. |
+| 6 | Bounded `TCR-003`/`TCR-004` correction | Pass, superseded | Wrapper exit status and terminology corrected. |
+| 7 | Round 16 final cumulative durable package | Fail, superseded | Opened `TCR-005` and `TCR-006`. |
+| 8 | Bounded `TCR-005`/`TCR-006` correction | **Pass — latest authoritative** | Final durable inventory is correct and the scenario-registry unit assertion is hermetic. |
 
 ## Changed Durable Test Scope
 
-Temporary probes, logs, screenshots, generated coverage, and execution-only artifacts are evidence, not durable test code under review. Round 11 evidence `94` is a transparently retained temporary probe with a stale live-2xx expectation; the corrected temporary probe is evidence `95`. Neither temporary probe is durable code.
-
-### Current Direct Review Deltas
+Temporary probes, logs, screenshots, generated coverage, packaged output, and execution-only artifacts are evidence, not durable test code under review.
 
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | Updated | `SCSP-E2E-REAL-GEMINI-VERTEX-001`; BEH-003/004; AC-005/006/016 | Canonical read-only Store-backed real provider execution | Adds `gemini.llm` to the same direct-secret LLM product boundary and keeps provider failures value-safe. |
-| `autobyteus-server-ts/tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts` | Updated | `SCSP-E2E-RESTART-001`; BEH-006/008; AC-007/009/014/016 | Two-process restart/reopen/removal under sanitized environments | Proves runtime default availability and exact application `.env` byte identity without requiring persisted `DATABASE_URL`. |
-| `autobyteus-server-ts/tests/unit/llm-management/model-metadata-provisioning-service.test.ts` | Updated | DS-UC008C; BEH-003; AC-005/006/010 | Exact Gemini metadata consumer selection, established request/mapping, merge, and Vertex Project zero lookup | AI Studio and Vertex Express cases use distinct synthetic Store definitions; Vertex Project proves curated-only behavior. |
-| `autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts` | Updated | SCSP-E2E-001/007; AC-006/018/019 | Manifest/factory consistency and evidence-boundary controls | Adds current Gemini LLM registry coverage and seeded structural scanner controls. |
-| `test-config/live-e2e.json` | Updated | SCSP-E2E-REAL-GEMINI-VERTEX-001; AC-006/019 | Value-free canonical external scenario declarations | Uses registered models and exact Vertex Express mode/definition for Gemini LLM/audio/image. |
-| `test-support/live-e2e/live-e2e-evidence-scanner.mjs` | Updated | SCSP-E2E-007; AC-004/018/019 | Canonical output/artifact structural secret-field scanning | Narrows assignment detection so logical definition IDs remain value-free while secret-bearing fields remain rejected. |
-| `test-support/live-e2e/live-e2e-harness.ts` | Updated | SCSP-E2E-REAL-GEMINI-VERTEX-001 | Product-boundary Store-backed LLM/media provisioning | Applies the declared Google setup mode during exact product construction and restores prior process state in `finally`. |
-| `test-support/live-e2e/live-e2e-manifest.ts` | Updated | SCSP-E2E-001/005/006 | Fixed scenario ID-to-mode registry and manifest parsing | Adds `gemini.llm` as an authoritative `REAL_DIRECT_SECRET` scenario. |
-
-### Previously Reviewed Durable Paths, Unchanged In The Current Delta
-
-| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
-| --- | --- | --- | --- | --- |
-| `test-support/live-e2e/live-e2e-evidence-scanner.ts` | Added, unchanged now | SCSP-E2E-007 | Typed export of canonical scanner | Still a thin wrapper. |
-| `test-support/live-e2e/live-e2e-evidence-scanner.d.mts` | Added, unchanged now | SCSP-E2E-007 | Runtime scanner type contract | No duplicated runtime logic. |
-| `test-support/live-e2e/run-live-e2e.mjs` | Added, unchanged now | SCSP-E2E-001/007/009 | Fixed-root captured/scanned canonical runner | Operational environment allowlist, pre-release scan, and `finally` cleanup remain intact. |
-| `package.json` | Updated, unchanged now | SCSP-E2E-009; AC-006/016 | Canonical setup/preflight/full-run commands | Entry points remain fixed and clear. |
-| `autobyteus-server-ts/tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts` | Added, unchanged now | SCSP-E2E-003; AC-001/007/008/017/019 | Assembled GraphQL lifecycle | Isolated synthetic Store and value-free assertions remain valid. |
-| `autobyteus-server-ts/tests/unit/secret-management/local-secret-storage-backend.test.ts` | Added, unchanged now | SCSP-E2E-002; AC-007/014/015/016 | Local Store health/fault/tamper/lock/concurrency/reset | Filesystem-isolated matrix remains valid. |
-| `autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts` | Updated, unchanged now | SCSP-E2E-003/010; AC-005/019 | Server-owned media tool boundary | Explicit-auth construction fixtures remain current. |
-| `autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts` | Updated, unchanged now | SCSP-E2E-010; AC-005/012 | Curated metadata and explicit-auth construction | No ambient-key dependency. |
-| `autobyteus-server-ts/tests/unit/config/prisma-import-lifecycle.test.ts` | Added, unchanged now | SCSP-E2E-DOCKER-001 / CR-010/011 | Prisma import safety and lazy/shared ownership | Deterministic factory instrumentation remains valid. |
-
-### Removed Stale Tests
-
-| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
-| --- | --- | --- | --- | --- |
-| `autobyteus-ts/tests/integration/multimedia/audio/api/autobyteus-audio-client.test.ts` | Removed | SCSP-E2E-010; AC-005/006/012/019 | Obsolete ambient/no-argument live test | Valid removal; Store-backed manifest coverage replaces it. |
-| `autobyteus-ts/tests/integration/multimedia/audio/api/gemini-audio-client.test.ts` | Removed | SCSP-E2E-010; AC-005/006/012 | Obsolete ambient Gemini live test | Valid removal; exact Vertex Express product execution now passed. |
-| `autobyteus-ts/tests/integration/multimedia/audio/api/openai-audio-client.test.ts` | Removed | SCSP-E2E-010; AC-005/006/012 | Obsolete ambient OpenAI live test | Valid removal; canonical Store-backed execution passed. |
-| `autobyteus-ts/tests/integration/multimedia/audio/autobyteus-audio-provider.test.ts` | Removed | SCSP-E2E-010; AC-006/019 | Stale mixed live/deterministic provider test | Current server discovery lifecycle and canonical harness own coverage. |
-| `autobyteus-ts/tests/integration/multimedia/image/api/autobyteus-image-client.test.ts` | Removed | SCSP-E2E-010; AC-005/006/012/019 | Obsolete ambient/no-argument live test | Valid removal; Store-backed manifest coverage replaces it. |
-| `autobyteus-ts/tests/integration/multimedia/image/api/gemini-image-client.test.ts` | Removed | SCSP-E2E-010; AC-005/006/012 | Obsolete ambient/machine-specific Gemini live test | Valid removal; exact Vertex Express product execution now passed. |
-| `autobyteus-ts/tests/integration/multimedia/image/api/openai-image-client.test.ts` | Removed | SCSP-E2E-010; AC-005/006/012 | Obsolete ambient OpenAI live test | Valid removal; canonical Store-backed execution passed. |
-| `autobyteus-ts/tests/integration/multimedia/image/autobyteus-image-provider.test.ts` | Removed | SCSP-E2E-010; AC-006/019 | Stale mixed live/deterministic provider test | Current server discovery lifecycle and canonical harness own coverage. |
+| `autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts` | Updated | `AC-005`, `AC-009`, `AC-013`, `TCR-006` | Deterministic code-owned scenario/model registry assertion | Native LLM/agent scenarios now use static `supportedModelDefinitions`; all model types assert exact identifier uniqueness, expected provider, and constructor without discovery. |
+| `tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md` | Updated | `REQ-011`, `REQ-013`, `AC-007`, `AC-009`, `TCR-005` | Final durable-path inventory | Latest Round 16 inventory records `run-test-import.mjs` under Removed/intentionally absent and names the sole explicit importer command. |
 
 - No durable test file changed: `No`
 - Review result when no durable test file changed: `N/A`
-- Cumulative scope: `25` API/E2E-owned durable paths (`17` added/updated and `8` removed); `8` paths have current direct deltas.
-- Excluded implementation-owned tests: importer/AppConfig/dependency/Codex/Gemini source-regression tests added by implementation engineering were already covered by full source review and are not reclassified as API/E2E-owned durable changes here.
+- All other Round 16 durable paths retain the proportional conclusions from review round 7 and were not reopened.
+- The user-requested README clarification is documentation-only and is outside this proportional durable-test correction; it travels to delivery for documentation handling.
 
 ## Prior Finding Resolution
 
 | Finding ID | Resolution Evidence | Rereview Decision |
 | --- | --- | --- |
-| `TCR-001` | Fixed ID-to-mode registry still rejects unknown/mismatched scenarios before Store access; gateway dispatch remains distinct and executes the normal Store-bound agent product spine to `ASSISTANT_COMPLETE`; no permanent fail-only branch returned. | Remains resolved. |
-| `TCR-002` | Canonical runner still captures stdout/stderr and recursively scans its owned evidence directory before release, uses an operational environment allowlist, emits stable errors, and cleans in `finally`; seeded stdout/artifact/structural negatives remain. | Remains resolved. |
+| `TCR-001` | Normal product agent execution and cleanup remain unchanged. | Remains resolved. |
+| `TCR-002` | Canonical capture and evidence scanning remain unchanged; focused evidence rescan `219` passes. | Remains resolved. |
+| `TCR-003` | Server-wrapper abnormal/deliberate shutdown handling is unchanged. | Remains resolved. |
+| `TCR-004` | Current one-database-vault terminology is unchanged. | Remains resolved. |
+| `TCR-005` | The latest Round 16 execution-report inventory now lists `run-test-import.mjs` only under Removed/intentionally absent and records `pnpm secrets:import -- --source <absolute> --database-url <absolute-file-url>`. Evidence `218` proves zero latest-Added matches, one latest-Removed match, and path absence. | **Resolved.** |
+| `TCR-006` | The unit test no longer imports or calls `LLMFactory.getProvider()`. It uses `supportedModelDefinitions`, which is consumed by `llm-factory.ts`, and asserts unique identifier/provider/constructor mappings; audio/image checks also assert provider and constructor. Evidence `217` passes 13/13 with zero Ollama/LM Studio discovery or connection output; `218` confirms the residue checks. | **Resolved.** |
 
 ## Proportional Test-Code Checks
 
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | Real provider execution, restart lifecycle, metadata provisioning, manifest/harness, scanner, Store, GraphQL, media, and Prisma responsibilities remain separately named and navigable. |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | Gemini execution reaches normal provisioning/factory paths; metadata assertions prove exact consumer selection, established endpoint/mapping, live-over-curated values, and Vertex Project zero lookup; restart assertions prove the approved byte-invariant runtime behavior. |
-| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | Manifest parsing, fixed mode registry, `LiveE2eScenarioExecution`, shared scanner, Store bootstrap, process helpers, and parameterized Gemini metadata cases centralize material repetition. |
-| Test isolation and determinism are appropriate for the exercised boundary | Pass | Synthetic tests own temp roots/Stores and restore environment/global configuration; the canonical external runner is selected, read-only, captured, and cleaned; `withGoogleSetupMode` restores prior state in `finally` and the canonical scenarios execute sequentially. |
-| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | Each large harness/test file retains one boundary-oriented responsibility; no forced split would improve ownership. |
-| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | The eight ambient/no-argument tests remain valid removals. Default real-suite skip is controlled only by the canonical runner. The invalid temporary live-2xx metadata expectation was not committed and is transparently superseded by evidence `95`. |
-| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Round 11 records 104 focused tests, 12/12 preflights, real Vertex LLM/audio/image, exact metadata fallback/zero lookup, real Codex continuity, restart, Docker, OpenAI/Anthropic reruns, evidence scans, and cleanup; unavailable capabilities remain exact non-pass results. |
+| Scenario grouping and names make intent clear | Pass | The corrected test explicitly names native model fixtures and their static product-factory mapping. |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | The test now proves exact scenario identifier uniqueness, expected provider ownership, and an executable constructor at the static product definition boundary used by the factory. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | The correction reuses `supportedModelDefinitions` and the existing audio/image static factory catalogs rather than duplicating a model map. |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | The unit assertion no longer initializes dynamic local discovery. Evidence `217` has zero Ollama, LM Studio, local-discovery-host, or connection-failure output. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | The bounded change stays within the existing runtime/scenario/evidence helper suite. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | `LLMFactory.getProvider()` residue is zero in the test; the obsolete test-import wrapper remains absent with no compatibility authority. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Latest canonical inventory, path absence, package checks, focused test result, and evidence rescan agree (`217`–`219`). Earlier historical inventory remains historical rather than being rewritten. |
 
 ## Findings
 
-No unresolved actionable durable test-code findings. `TCR-001` and `TCR-002` remain resolved.
+No unresolved actionable durable test-code findings.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: `25` cumulative paths (`17` added/updated and `8` removed); `8` current direct deltas.
+- Changed durable test paths reviewed: `1` updated durable test plus the bounded canonical report inventory correction.
 - Unresolved finding IDs: `None`
 - Recommended Recipient: `delivery_engineer`
-- Notes: This is the separate proportional durable test-code review and does not reopen the implementation scorecard. API/E2E Round 11 passed at `ad629bc55ed5c653db957ce46bdbc5092c7738ac` with `98.0%` confidence. Vertex Express LLM/audio/image, real Codex continuity, restart, Docker, OpenAI, and managed-secret Anthropic passed. Vertex Express live metadata enrichment returned HTTP 403 but the approved curated fallback passed; AI Studio metadata, Serper, and AutoByteus remote invocation remain exact unavailable/unclaimed results. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only, both Claude modes, `LOCAL_HARDENED` with its Codex exclusion, deferred `STRONG_AGENT_ISOLATION`, exact unpatched `repository_prisma@1.0.8`, no automatic update, unchanged Docker topology, target isolation, source immutability, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+- Notes: This Pass completes the separate proportional durable-test review for the Round 16 package. The underlying product/API/E2E result remains `Pass` at implementation `53dd05ecaac6e3196497597cceba0799f8093aba` with `98.1%` confidence. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only, both Claude modes unchanged, `LOCAL_HARDENED` with Codex excluded, deferred `STRONG_AGENT_ISOLATION`, exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, no automatic import/update, unchanged Docker topology, source/template immutability, explicit `secrets:import --database-url`, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+
+# Review Round 9 — Round 17 Custom-Provider-V1 Durable E2E
+
+## Review Meta
+
+- Review Round: `9`
+- Trigger: Round 17 API/E2E `Pass` at reviewed/final implementation HEAD `dd1d37f90d00331d427bad1b36e4401a3a733038`, with one newly added durable actual-server E2E.
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/custom-provider-v1-migration-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/encrypted-secret-vault-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/use-case-spine-validation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md` (Round 41 source-review Pass, 9.62/10)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md`
+- API/E2E Result: `Pass`
+- Final Validation Confidence: `98.9%`; every applicable category `>=98%`
+- Prior unresolved test-review findings rechecked: `None`; `TCR-001`–`TCR-006` remain resolved.
+- Review method: proportional inspection of the single newly added durable E2E and its canonical passed evidence. The successful API/E2E workflow was not rerun by code review.
+
+## Review History
+
+| Review Round | Trigger | Result | Notes |
+| --- | --- | --- | --- |
+| 1–6 | Earlier successful packages and bounded corrections | Superseded | `TCR-001`–`TCR-004` resolved. |
+| 7 | Round 16 cumulative durable package | Fail, superseded | Opened `TCR-005` and `TCR-006`. |
+| 8 | Bounded `TCR-005`/`TCR-006` corrections | Pass, superseded | Inventory and hermetic scenario-registry coverage corrected. |
+| 9 | Round 17 custom-provider-v1 durable actual-server E2E | **Pass — latest authoritative** | New existing-user migration/reset/restart coverage is coherent, deterministic for its boundary, and requirement-proving. |
+
+## Changed Durable Test Scope
+
+Temporary package harnesses, probes, logs, screenshots, generated coverage, and execution-only artifacts are evidence, not durable test code under review.
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts` | Added | `BEH-008`, `REQ-012`, `AC-008`, `DS-UC007D`, `DS-L007`, `CR-MP-030` | Actual-built-server existing-user custom-provider-v1 migration, reset/reconfiguration, restart finalization, local credential-backed discovery, value safety, and cleanup | Three scenarios cover one provider with the exact aged zero-byte legacy lock, multiple providers, and invalid-v1 reset followed by current reconfiguration/list/use/delete persistence. |
+
+- No durable test file changed: `No`
+- Review result when no durable test file changed: `N/A`
+- All earlier cumulative Round 16 durable paths and resolved `TCR-001`–`TCR-006` conclusions remain unchanged and were not redundantly reopened.
+
+## Proportional Test-Code Checks
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | Pass | One describe block owns one startup-migration surface. Parameterized `one`/`multiple` migration and the separately named invalid-reset/reconfiguration scenario make the lifecycle intent explicit. |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | Assertions prove strict v1-to-secret-free-v2 transformation, exact provider ID/name preservation, configured/READY state, real credential-backed `/v1/models` discovery, value-free migration outcome, attempt finalization, restart persistence, invalid-set removal, built-in Settings availability, new-ID reconfiguration, and deletion. Exact migration IDs/outcome codes are governing contract fields rather than incidental internals. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | Runtime/database ownership, local discovery, v1 writing, status queries, readiness waiting, persistent-file scanning, and cleanup are factored into focused helpers; the test reuses the canonical built-test-server bootstrap. |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | Every scenario uses a unique runtime root and database, local ephemeral HTTP fixtures, synthetic credential canaries, bounded readiness polling, owned server tracking, and `afterEach` cleanup. It has no external provider or ambient local-model dependency. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | Although substantial, the file covers one coherent persisted-data/startup surface and is organized as types, focused helpers, cleanup, then three end-to-end lifecycle scenarios. No forced splitting is warranted. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | The E2E complements rather than duplicates unit migration mechanics by proving actual built-server startup, GraphQL Settings/runtime discovery, restart, reset, and cleanup. No disabled scenario, old runtime reader, fallback, or compatibility-only assertion is retained. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Canonical reports inventory exactly this one added durable test. Authoritative actual-server runs `244` and `261` pass 3/3; cumulative matrix `251`, package result `264`, final scan `265`, and package check `266` agree. Intermediate `243` is transparently superseded by the final observable-status reruns. |
+
+## Findings
+
+No unresolved actionable durable test-code findings.
+
+## Latest Authoritative Result
+
+- Result: `Pass`
+- Changed durable test paths reviewed: `1` added durable E2E test file
+- Unresolved finding IDs: `None`
+- Recommended Recipient: `delivery_engineer`
+- Notes: This Pass completes the separate proportional durable-test review for Round 17 at implementation HEAD `dd1d37f90d00331d427bad1b36e4401a3a733038`. The underlying API/E2E result remains `Pass` at `98.9%` confidence. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only, both Claude modes and external Codex unchanged, `LOCAL_HARDENED` with Codex excluded, deferred `STRONG_AGENT_ISOLATION`, exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, no automatic `.env` import/update, unchanged Docker topology, explicit importer target authority, source/template immutability, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.

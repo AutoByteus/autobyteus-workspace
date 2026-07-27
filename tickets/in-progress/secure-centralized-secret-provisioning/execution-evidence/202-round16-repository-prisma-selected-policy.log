@@ -1,0 +1,12 @@
+HEAD=53dd05ecaac6e3196497597cceba0799f8093aba
+SELECTED_PATH=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/node_modules/.pnpm/repository_prisma@1.0.8_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma
+SELECTED_VERSION=1.0.8
+Legend: production dependency, optional only, dev only
+
+autobyteus-server-ts@0.1.1 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts (PRIVATE)
+
+dependencies:
+repository_prisma 1.0.8
+7196:  repository_prisma@1.0.8:
+16388:  repository_prisma@1.0.8(@prisma/client@5.22.0(prisma@5.22.0)):
+LOCK_1_0_6_1_0_7_RESIDUE=ABSENT

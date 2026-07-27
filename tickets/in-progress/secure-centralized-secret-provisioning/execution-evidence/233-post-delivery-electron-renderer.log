@@ -1,0 +1,11 @@
+{
+  "scenario": "SCSP-PDV-ELECTRON-STARTUP-001",
+  "endpoint": "http://127.0.0.1:64621",
+  "pageCount": 1,
+  "title": "",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+  "readyState": "complete",
+  "bodyText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nTask\nModel\nto\nFetch Statistics\nNo agent or team usage found for this date range.\nTry a wider date range or switch to Model.",
+  "hasElectronAPI": true,
+  "bodyChildCount": 4
+}

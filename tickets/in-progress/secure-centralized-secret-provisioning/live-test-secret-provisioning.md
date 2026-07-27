@@ -1,411 +1,399 @@
-# Live-Test Secret Provisioning Specification
+# Live Test Provisioning — Normal Application Database Lifecycle
 
 ## Artifact Metadata
 
-- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
-- Purpose: define hidden-input and explicit source-file provisioning of the physically separate host real-E2E Store, tracked non-secret test contract, per-worktree zero-copy flow, real execution modes including exact Vertex Express LLM/media behavior and preserved dual-key Gemini metadata behavior, managed Claude SDK, preserved AutoByteus remote behavior, and external Codex regression evidence, failure semantics, security boundary, and non-impact on existing Docker deployment.
-- Scope: REQ-002–REQ-005, REQ-008, REQ-009, REQ-012, REQ-016–REQ-020 / AC-003, AC-004, AC-006, AC-010, AC-012, AC-013, AC-015, AC-016, AC-018–AC-020.
-- Status: `Refined — Original Gemini Metadata Preservation Reconciliation; Architecture Re-review Required`.
-- Approval applicability: `Required`; the importer/no-automatic-update workflow remains approved, external Codex preservation is user-approved, and the user confirms the original dual-key Generative Language metadata path works. CR-021 changes the evidence contract only: retain exact LLM/media SDK modes and verify metadata's separate selected-consumer/request/mapping/fallback behavior without source redesign.
-- Core artifacts supported: [requirements.md](./requirements.md), [investigation-notes.md](./investigation-notes.md), [design-spec.md](./design-spec.md).
-- Related supplements: [use-case-spine-validation.md](./use-case-spine-validation.md), [secret-storage-architecture.md](./secret-storage-architecture.md), [secret-storage-backend-contract.md](./secret-storage-backend-contract.md), [credential-consumer-mapping.md](./credential-consumer-mapping.md), [threat-model-and-option-analysis.md](./threat-model-and-option-analysis.md).
+| Field | Value |
+|---|---|
+| Status | `Design-ready for architecture review — custom-provider-v1 migration/delete-and-reconfigure proof included` |
+| Purpose | Define simple non-secret test database configuration, fixed custom-provider-v1 transition proof, explicit provisioning, realistic execution, and cleanup |
+| Related requirements | `REQ-001`, `REQ-002`, `REQ-006`, `REQ-009`, `REQ-011`–`REQ-013`, `REQ-015`, `REQ-017`, `REQ-018` |
+| Related acceptance criteria | `AC-007`–`AC-009`, `AC-011`, `AC-013`–`AC-015` |
+| Approval applicability | Existing test DB/importer/provider-group behavior and custom-provider migration/reset scenarios are user-approved for architecture review |
 
-## Problem Being Solved
+The fixed historical transition and its failure semantics are governed by [custom-provider-v1-migration-contract.md](./custom-provider-v1-migration-contract.md).
 
-Current real tests commonly depend on this path:
+## Goal
 
-```text
-fresh worktree lacks ignored .env.test
- -> human identifies another checkout
- -> credential file is copied
- -> global Vitest setup loads every value into process.env
- -> every test/child may inherit every key
-```
+Tests must exercise the same migration, root-key, vault, Settings, provider-resolution, and restart lifecycle as the normal application. Test configuration chooses an application database. It does not describe secret backends, access modes, models, scenarios, or expected capabilities.
 
-The target makes a machine-global, physically separate real-E2E Local Store—not the worktree—the credential distribution unit:
+## Tracked Non-Secret Configuration
+
+Canonical tracked file:
 
 ```text
-one-time hidden-input setup or explicit operator import provisions real-e2e-secret-store.db with its independent key
- -> Git supplies non-secret scenario/Store configuration to every worktree
- -> test command constructs the Local backend in Agent Server
- -> backend opens the real-E2E Store read-only and validates its format
- -> value-free preflight verifies required logical IDs
- -> trusted test/server boundary resolves only scenario-declared credentials
- -> real provider is exercised
+autobyteus-server-ts/.env.test
 ```
 
-No person copies a secret file or re-enters credentials merely because a worktree was created. The optional importer is an explicit one-time setup action against an operator-selected source; it is never part of per-worktree execution.
+Allowed shape:
 
-Startup performs no legacy credential import, copy, scrub, delete, rewrite, conversion, or Store write; legacy sources remain untouched/non-authoritative. This is not an E2E setup path. Real-E2E custody is populated only by hidden input or the explicit importer selected by the operator.
-
-## Real And Deterministic Coverage Are Complementary
-
-Fake endpoints do not replace real-provider tests. They remain preferable for deterministic lifecycle, error, request-shape, parser, denial, and failure-injection coverage. Real-provider tests remain required when the scenario is intended to detect actual authentication, SDK/protocol compatibility, current model behavior, provider-specific streaming/tools/media, quota, or real endpoint behavior.
-
-| Mode | Credential Delivery | Upstream | Appropriate Scope |
-| --- | --- | --- | --- |
-| `SYNTHETIC` | per-test in-memory backend and synthetic value | local fake/test double | deterministic unit/integration/UI and security negatives |
-| `REAL_GATEWAY` | opaque bounded gateway capability; gateway owns real key | real provider through fixed trusted gateway | broad real behavior where raw-key construction is not under test |
-| `REAL_DIRECT_SECRET` | trusted reviewed client/server resolves scenario-declared key | provider directly | exact storage-to-constructor/authentication path and SDK credential delivery |
-
-No coverage owner may reclassify a required real scenario as synthetic merely to avoid provisioning.
-
-## Tracked Non-Secret Test Contract
-
-Canonical file: `test-config/live-e2e.json`.
-
-```json
-{
-  "version": 1,
-  "backend": {
-    "kind": "local-store",
-    "databaseFile": "real-e2e-secret-store.db",
-    "keyFile": "real-e2e-secret-store.key",
-    "accessMode": "READ_ONLY"
-  },
-  "scenarios": {
-    "openai.llm": {
-      "mode": "REAL_DIRECT_SECRET",
-      "requiredSecrets": ["provider.openai.api-key"],
-      "model": "configured-non-secret-model"
-    },
-    "openai.agent-flow": {
-      "mode": "REAL_GATEWAY",
-      "requiredSecrets": ["provider.openai.api-key"]
-    },
-    "serper.search": {
-      "mode": "REAL_DIRECT_SECRET",
-      "requiredSecrets": ["search.serper.api-key"]
-    },
-    "anthropic.claude-agent-sdk": {
-      "mode": "REAL_DIRECT_SECRET",
-      "runtimeAuthMode": "managed-secret",
-      "requiredSecrets": ["provider.anthropic.api-key"],
-      "model": "configured-non-secret-model"
-    },
-    "autobyteus.remote-llm": {
-      "mode": "REAL_DIRECT_SECRET",
-      "requiredSecrets": ["provider.autobyteus.api-key"],
-      "hosts": ["configured-non-secret-host"],
-      "expectedCapabilities": ["llm-discovery", "llm-invocation"]
-    },
-    "autobyteus.remote-audio": {
-      "mode": "REAL_DIRECT_SECRET",
-      "requiredSecrets": ["provider.autobyteus.api-key"],
-      "hosts": ["configured-non-secret-host"],
-      "expectedCapabilities": ["audio-discovery", "audio-generation"]
-    },
-    "autobyteus.remote-image": {
-      "mode": "REAL_DIRECT_SECRET",
-      "requiredSecrets": ["provider.autobyteus.api-key"],
-      "hosts": ["configured-non-secret-host"],
-      "expectedCapabilities": ["image-discovery", "image-generation"]
-    }
-  }
-}
+```dotenv
+APP_ENV=test
+DB_TYPE=sqlite
+DATABASE_URL=file:./db/test.db
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000
 ```
 
-Allowed tracked content:
+Rules:
 
-- schema version, backend kind, canonical Store filenames, and read-only access mode;
-- scenario IDs/modes and logical secret definition IDs;
-- non-secret models, timeouts, feature flags, expected capabilities, and explicit runtime mode such as `managed-secret`;
-- non-secret server/test ports and URLs, including AutoByteus remote hosts.
+1. this file contains no API key, token, password, ciphertext, root-key bytes, or credential alias;
+2. `DATABASE_URL` is required and is normalized by the same `ApplicationDatabaseLocation` used in production;
+3. the DB path must resolve inside the server package's ignored `/db/` test-runtime root;
+4. the root key is not configured; it derives as `<canonical-db-path>.secret.key`;
+5. the DB, key, WAL, SHM, journal, logs containing runtime details, and temporary roots are gitignored;
+6. the tracked file is an immutable launch baseline. It must not contain mutable provider settings such as `GEMINI_SETUP_MODE`, `VERTEX_AI_PROJECT`, or `VERTEX_AI_LOCATION`; tests configure those through the normal Settings/API commands and the ordinary ignored runtime `.env`;
+7. `autobyteus-server-ts/.gitignore` explicitly admits `.env.test` while continuing to ignore `.env`, other `.env.*` files, and all database/key artifacts;
+8. backend-E2E, test-server, and real-provider-E2E entrypoints read this exact file through one `TestRuntimeBootstrap`; the actual server and standalone importer never read it; no `test-config/live-e2e.env`, profile, special test-import command, or second committed environment/configuration file exists;
+9. deterministic tests may override the baseline `DATABASE_URL` with a fresh temporary database per test/run and must clean that isolated target;
+10. no broad dotenv import or `.env.test` discovery is added to production libraries;
+11. the bootstrap starts from an empty/allowlisted OS environment, validates the exact fixed launch schema, canonicalizes the DB URL relative to the server root, and materializes/reconciles those fixed keys into an ignored test app-data root's ordinary writable `.env` before launching the actual built server with `--data-dir`;
+12. `.env.test` is checked byte-identical across server/E2E execution; importer coverage proves it is not read.
 
-Forbidden tracked content:
+This follows the conventional environment-per-mode shape while preserving test isolation and Settings semantics: `.env.test` supplies immutable launch defaults, the ordinary ignored runtime `.env` stores mutable application settings, and deterministic tests replace mutable infrastructure with per-test temporary instances.
 
-- credential values, encoded variants, hashes, lengths, or recognizable fragments;
-- Local Store encryption-key contents or any other bootstrap credential;
-- Vault/cloud token, private key, cookie, session, or service-account credential;
-- a path to an ignored file or another checkout;
-- a command/environment export containing a secret;
-- a runtime/caller-selected backend path or path outside the canonical trusted host root.
+## Why An Explicit Test Launcher Is Required
 
-`.env.test` may be committed only after every credential field and credential loader is removed. It may retain non-secret compatibility settings such as ports or feature flags during the test-runner cleanup, but it is not the canonical live-secret/Store contract. Package `.gitignore` files must add an explicit exception only after a value/name scan demonstrates the tracked file is secret-free.
+The standalone Node server intentionally does not load `.env.test`:
 
-The root `pnpm test:e2e:real` script resolves `test-config/live-e2e.json` from its own tracked workspace root and passes that non-secret path explicitly to the harness. Package runners do not walk parent directories or guess another checkout to locate it.
+- `src/app.ts` accepts only host, port, and data-dir;
+- `AppConfig.initialize()` requires `<data-dir>/.env`;
+- `AppConfig.set()` and `.delete()` write that runtime `.env`;
+- the current live-E2E runner opens a harness-only Store rather than launching the normal server.
 
-## Machine-Global Local Store State
+A value-free synthetic probe confirmed that current `AppConfig` correctly requires the selected data directory's normal writable `.env`. Loading `.env.test` into the process alone does not change that contract. Once test tooling materializes the runtime `.env`, the test `DATABASE_URL` works.
 
-State outside every repository/worktree contains:
-
-- `~/.autobyteus/server-data/secret-store/real-e2e-secret-store.db`;
-- the independent `real-e2e-secret-store.key` with owner-only permissions;
-- encrypted exact records for the real-E2E logical definitions;
-- no daemon, socket, connection credential, process state, or profile catalog.
-
-Git contains only backend kind, canonical filenames/access mode, scenarios, and logical definition IDs. The root launcher derives the host Store root from `~/.autobyteus/server-data/secret-store/`. Database ciphertext and key bytes remain host machine state and are not committed. This host test contract does not configure or mount Docker.
-
-Stores do not inherit. A missing real-E2E credential fails preflight even if the default Store contains it. Hidden-input setup is constructed with the writable E2E target only and accepts dedicated test credentials directly through transient input. It has no source/default backend dependency, read path, copy command, or automatic inheritance. The separate explicit importer may read one verified absolute plaintext source but writes only the selected E2E Store and never opens the default Store. Both choices preserve the same physical boundary.
-
-## Local Developer Workflow
-
-### One-time machine setup — hidden input
-
-Representative command contract:
+The target therefore adds one test-only bootstrap rather than teaching product code to auto-discover test files:
 
 ```text
-pnpm secrets:local:e2e:setup
- -> initialize the dedicated real-E2E database/key pair if both are absent
- -> accept each provider credential using hidden input or a non-captured trusted UI
- -> construct a writable in-process Local backend against that Store
- -> authenticate the Store/key pair verifier, including before the first record exists
- -> write each exact definition and checkpoint/close the Store
- -> validate selected provider credentials when configured
- -> print only backend health plus logical ID and CONFIGURED/VALID/UNVERIFIED status
+test-support/test-runtime/test-runtime-bootstrap.mjs
 ```
 
-Setup is repeated only for a new machine/Store/provider, rotation/revocation, expired credentials, or Store repair. AutoByteus cannot manufacture an upstream provider key. Provisioning must not run concurrently with host read-only provider execution.
+It owns:
 
-The setup definition set includes `provider.autobyteus.api-key` when any AutoByteus remote scenario is enabled. It is provisioned once, directly into the E2E Store, exactly like other provider definitions. The setup command never writes `AUTOBYTEUS_API_KEY` into `.env`, `.env.test`, process-wide environment, or tracked configuration.
+1. the fixed `autobyteus-server-ts/.env.test` path;
+2. exact allowlisted parsing of `APP_ENV`, `DB_TYPE`, `DATABASE_URL`, and `AUTOBYTEUS_SERVER_HOST`;
+3. canonical validation that the database resolves inside the ignored server test root;
+4. fresh-root policy for deterministic backend E2E and persistent-root policy for manual/real-provider E2E;
+5. first-run materialization and subsequent fixed-key reconciliation of the ignored ordinary writable `.env`, preserving unrelated mutable Settings keys;
+6. an empty/allowlisted OS child environment that does not carry `DATABASE_URL`, Gemini settings, or credentials;
+7. the unchanged actual built `dist/app.js --data-dir=<runtime-root>` launch, health readiness, shutdown, and value-safe logs.
 
-### One-time machine setup — explicit source importer
+The generated ignored runtime `.env` is normal application state, not a second operator-authored test configuration. It is never committed and is not a Store/profile selector.
 
-An operator who already has approved credentials in one privately owned file may use the committed command instead of re-entering each value:
+## Configuration And Startup Case Matrix
+
+| Case | Who reads `.env.test`? | What the actual server reads | Database lifecycle | Primary spine |
+|---|---|---|---|---|
+| Normal direct server | Nobody | Operator/application `<data-dir>/.env` | Normal user DB/key | `DS-UC016A` |
+| Electron | Nobody | Electron-generated `server-data/.env` | Normal user DB/key | `DS-UC016A`, `DS-UC018` |
+| Docker/Pod | Nobody | Normal deployment `.env`/container configuration | Existing volume DB/key | `DS-UC016B` |
+| Deterministic unit/integration | Test setup may use fixed non-secret defaults, then overrides DB | No actual server unless the case starts one | Fresh temporary DB/key | Bounded deterministic coverage |
+| Deterministic backend E2E | `TestRuntimeBootstrap` | Fresh `<test-data-dir>/.env` materialized from fixed test keys | Fresh DB/key; automatic fenced cleanup | `DS-UC010A` |
+| Manual server/frontend test | `TestRuntimeBootstrap` | Persistent ignored `<test-data-dir>/.env` | Persistent isolated test DB/key | `DS-UC010B` |
+| Real-provider backend E2E | `TestRuntimeBootstrap` | Same persistent ignored test runtime `.env` | Explicitly provisioned test DB/key, preserved by default | `DS-UC011` |
+| Generic importer targeting test DB | Nobody; operator/runner supplies canonical absolute DB URL explicitly | Standalone importer, no actual server input | Exact explicit test DB/key only | `DS-UC008C` |
+| Packaged Electron smoke | Nobody | Candidate's isolated Electron-generated `.env` | Fresh isolated candidate DB/key | `DS-UC018` |
+
+This distinction is mandatory: `.env.test` is a backend-test input; `.env` remains the actual server's configuration contract in every environment.
+
+## Removed Scenario Manifest
+
+`test-config/live-e2e.json` and its schema/parser are removed.
+
+The following belong in `test-support/live-e2e/live-e2e-scenarios.ts` or focused fixture files:
+
+- scenario IDs;
+- providers/models;
+- operation modes;
+- prompts/input fixtures;
+- expected capabilities such as LLM turn, audio, image, or agent flow;
+- required configured `SecretId` assertions;
+- endpoint availability policies;
+- timeouts/retries;
+- cleanup expectations.
+
+These are test behavior, not database or credential custody configuration.
+
+## Database Classes
+
+| Class | Purpose | Lifecycle | Credential values |
+|---|---|---|---|
+| Synthetic per-test DB | Unit/integration/browser CRUD | Created under test temp root; migrated; destroyed after test | Canary/synthetic only |
+| Provisioned live-E2E DB | Explicit real-provider execution | Selected by the immutable server-project `.env.test` template and materialized into ignored test app-data/runtime `.env`; user provisions intentionally; preserved between runs unless user requests reset | Real values, never displayed/inspected |
+| Packaged-smoke DB | Full Electron candidate | Unique isolated app root/DB per run; destroyed after smoke | Synthetic only unless a separate real-provider packaged run is explicitly approved |
+| Production/default DB | Normal user application | User-owned | Never accessed by test commands |
+
+“One database” means one application database per running environment, not that unrelated test and production processes share one physical file.
+
+## Provisioning Options
+
+### UI provisioning
+
+1. run `pnpm dev:test`; its bootstrap loads `autobyteus-server-ts/.env.test`, prepares the ignored runtime `.env`, starts the actual built server, waits for health, and starts the normal frontend against it;
+2. open API Key Settings;
+3. enter a provider key in the provider’s write-only editor;
+4. save; the value is encrypted in the selected test application DB;
+5. for Gemini, configure each desired option and explicitly `Use this mode`;
+6. verify only value-free status.
+
+### Explicit importer
+
+```bash
+pnpm secrets:import -- \
+  --source /absolute/path/to/assignments \
+  --database-url file:/absolute/path/to/autobyteus-server-ts/db/test.db \
+  --dry-run
+
+pnpm secrets:import -- \
+  --source /absolute/path/to/assignments \
+  --database-url file:/absolute/path/to/autobyteus-server-ts/db/test.db
+```
+
+There is one importer command for every environment: `secrets:import`. It always requires an explicit absolute SQLite `--database-url` and never initializes AppConfig or loads `.env`, `.env.test`, parent `DATABASE_URL`, or target information from the selected source. To import into the persistent test DB, the operator passes the canonical absolute URL corresponding to the DB selected by the tracked test template. To import into a normal application DB, the operator passes that DB’s canonical absolute URL. There is no `secrets:local:import`, `secrets:local:import:test`, `--target`, `--database`, `--key`, backend, profile, or access-mode option.
+
+The thin PNPM entrypoint normalizes zero or one leading argument separator. Any additional/mid-argument separator is invalid rather than silently reinterpreted.
+
+- missing, duplicate, relative, non-SQLite, malformed, or non-canonicalizable `--database-url` fails before target access;
+- the importer reads only the exact explicit DB; parent application/test variables and a `DATABASE_URL` assignment inside the source are ignored for targeting;
+- dry-run reports only canonical target identity, target state, mapped `SecretId` values, observed `MISSING|CONFIGURED|UNAVAILABLE` status, planned `CREATE|SKIP_CONFIGURED|REPLACE|BLOCKED` action, and aggregate counts;
+- dry-run uses the secret-management-owned `SecretVaultInspectionService` and performs no runtime-config change; it does not create/open-for-write/migrate the explicit DB or create/modify its key, metadata, Settings, or permissions;
+- a missing/pre-feature test DB, or complete migrated secret tables with zero metadata/entries and either no key or one valid secure interrupted-initialization key, is reported as `INITIALIZATION_REQUIRED` with `MISSING/CREATE`; a complete verified vault is `READY`; metadata-without-key, entries-without-metadata, unsafe, incompatible, verifier-failed, or unreadable targets are closed with `UNAVAILABLE/BLOCKED`, exit nonzero, and are not confirmable;
+- populated recognized values are selected;
+- empty recognized values and unrecognized lines are ignored;
+- direct TTY confirmation is required before writes;
+- no-overwrite is default; `--overwrite` is explicit;
+- source remains byte-identical;
+- confirmed execution alone may run normal migration/bootstrap, rechecks target health and each selected entry in the write path, then one Prisma transaction conditionally creates/skips or explicitly replaces records in the selected application DB; its actual counts are authoritative if state changed after preview.
+
+### Hidden-input command
+
+A narrow hidden-input provider provisioning command may remain for one provider at a time. It also targets only current `DATABASE_URL` and never places the value in argv, ambient environment, output, or evidence.
+
+## Normal Server / Frontend Journey
+
+```bash
+# Terminal 1: actual built test server
+pnpm server:test
+
+# Terminal 2: normal Nuxt frontend targeting the test server
+pnpm web:test
+
+# Or one convenience command supervising both
+pnpm dev:test
+```
 
 ```text
-pnpm secrets:local:import -- --source /absolute/path/to/server-data/.env --target e2e --dry-run
-pnpm secrets:local:import -- --source /absolute/path/to/copied-test-api-keys --target e2e --dry-run
-pnpm secrets:local:import -- --source /absolute/path/to/copied-test-api-keys --target e2e
-pnpm secrets:local:import -- --source /absolute/path/to/copied-test-api-keys --target e2e --overwrite
+test entrypoint invokes TestRuntimeBootstrap
+ -> validate immutable autobyteus-server-ts/.env.test
+ -> canonicalize DB path against server root
+ -> materialize/reconcile fixed keys into ignored test app-data/.env
+ -> preserve mutable Settings keys in persistent test runtime
+ -> launch unchanged actual built dist/app.js with --data-dir and clean OS env
+ -> actual server reads only test app-data/.env
+ -> AppConfig canonicalizes DATABASE_URL
+ -> ordinary Prisma migrations
+ -> vault bootstrap creates/verifies adjacent key
+ -> normal server routes
+ -> normal frontend GraphQL
+ -> one ProviderSettingsGroup per provider with four existing model lists
+ -> explicit Settings CRUD against test DB
 ```
 
-The current application `.env` preview is the approved ordinary journey. The CLI accepts its documented single leading PNPM separator (and the equivalent direct-option form), performs source trust/file-safety, recognize-first alias selection, empty-as-absent normalization, populated selected-value/catalog, E2E Store target-status, and current-definition checks, then prints only logical IDs, planned actions, and counts. It never prompts, initializes, or writes. If both E2E pair files are absent it reports `INITIALIZATION_REQUIRED`; the confirmed command stage-initializes only that selected pair, creates missing selected records, and skips configured records. A one-file partial pair remains `CORRUPT`. `--overwrite` is the only replacement form. Every write requires a direct TTY and exact `IMPORT REAL-E2E STORE`; no noninteractive bypass exists.
+No separate harness-only Store implementation is allowed. The backend-E2E runner starts or attaches only to the reviewed bootstrap's actual server process and drives normal HTTP/GraphQL/web-equivalent product boundaries. Direct in-process provider diagnostics may supplement a classified failure, but cannot replace the primary actual-server evidence.
 
-The source path must be absolute, but any filename or extension is accepted so the current application `.env`, renamed/copied files, and extensionless files work. The command never searches the repository, a parent, or another checkout. It rejects symlink/non-regular/raced/wrong-owner/non-private files, files over 1 MiB, and invalid UTF-8/NUL. It then recognizes exact current aliases before parsing assignments. Recognized lines must use the supported static same-line grammar. After unquoting and outer-horizontal-whitespace normalization, an empty recognized assignment is absent/non-selected: it creates no credential, plan/output metadata, warning, count, or failure and does not enter duplicate tracking. Only populated selected aliases are checked for dynamic content and duplicate populated occurrences. Every unrecognized line is ignored without right-hand-side interpretation. Therefore an empty `GEMINI_API_KEY` does not block populated `VERTEX_AI_API_KEY` or other current credentials, while `DATABASE_URL`, `OLLAMA_API_KEY`, `GOOGLE_CSE_API_KEY`, legacy `ZHIPU_API_KEY`, Claude delivery aliases, unknown secret-like names, arbitrary text, and malformed unrelated lines do not block the import and are not reported by name. One positive registry translates current aliases to definition IDs. For Qwen, only `DASHSCOPE_API_KEY` is mapped; `QWEN_API_KEY` and ZHIPU are unrecognized/non-blocking. A source with zero populated selected mapped credentials returns `IMPORT_NO_MAPPED_CREDENTIALS` before target access or mutation.
+## Deterministic Coverage
 
-The importer never mutates/deletes the source, uses shell evaluation, assigns values to `process.env`, creates a plaintext intermediate, accepts a Store/definition/value path in argv, or opens the default Store. All planned creates/replacements commit in one E2E SQLite transaction or none. Output is restricted to target status, logical IDs, action counts, and stable instruction/error codes; ignored-line metadata and values are absent. Selected values necessarily exist transiently in the trusted process; buffers/references are minimized/cleaned best-effort, but JavaScript/runtime zeroization is not claimed. Hidden-input provisioning remains available.
+Deterministic suites must cover:
 
-### Per-worktree execution
+1. canonical relative/absolute SQLite URL resolution;
+2. migration from pre-feature schema into two vault tables;
+3. first initialization and every DB/key mismatch state;
+4. encryption canary, fresh nonce/tag, replacement, idempotent removal, transaction rollback;
+5. provider/slot authorization matrix and point-of-use resolution;
+6. exact provider-centric GraphQL/generated-web schema reusing `LlmProviderObject` and `ModelDetail`, with no replacement provider/model DTO, availability wrapper, or vault-health/instruction protocol;
+7. configured/catalog independence, exact provider-ID grouping, and `[]` for a capability with no models;
+8. exact Boolean command completion with no echoed provider ID and network-only canonical refetch of `apiKeyConfigured` without a parallel credential map;
+9. custom Probe/Create/Delete schema and browser behavior with exactly name/base URL/key input, purpose-specific `{id,name}` Probe models, assigned-ID Create, success-only Delete, and no type/runtime/input echo;
+10. one exact Gemini setup-state query/command result and UI derivation of full/partial compound completion without operation/outcome/stage/instruction fields;
+11. all Gemini Settings states/commands and exact constructors;
+12. importer recognition, empty-as-absent, conflicts, source trust, TTY, atomicity;
+13. `.env` legacy-source non-authority;
+14. custom-provider current create/delete compensation;
+15. fixed custom-provider-v1 missing/v2 no-op, successful all-or-nothing preservation, collision/invalid/stage/DB/publish/interruption reset, exact same-process compensation, failed-migration deletion without backup, and built-in Settings/New Provider continuity;
+16. Claude/Codex/governed child boundaries;
+17. exact repository_prisma 1.0.8 import/log policy;
+18. restart/reopen and cleanup fences.
+
+Synthetic values must be canaries specifically scanned from stdout, stderr, GraphQL, logs, snapshots, reports, and artifacts.
+
+## Custom-Provider Existing-User Transition Coverage
+
+This proof uses only synthetic isolated app-data roots and canary credentials. It never opens the user’s real custom-provider file or production DB.
+
+### Preservation path
 
 ```text
-git creates worktree
- -> tracked test-config/live-e2e.json is already present
- -> pnpm test:e2e:real [scenario filter]
- -> harness parses and validates tracked schema
- -> launcher derives canonical real-E2E database/key paths outside the worktree
- -> Agent Server constructs an in-process read-only Local backend for that pair
- -> backend authenticates the Store/key pair verifier and validates format without mutating it
- -> value-free preflight checks only scenario-required logical IDs
- -> reviewed test/server boundary starts with the explicit Store and requirements
- -> browser/API runner executes normal product behavior against real provider
- -> evidence is sanitized and the backend/database handle is closed
+isolated packaged/server root with valid synthetic fixed-path v1 file
+ -> normal schema migration and vault bootstrap
+ -> AppDataMigrationRunner
+ -> complete provider-ID-preserving v1 transformation
+ -> one create-only encrypted batch
+ -> atomic v2 publish
+ -> providerSettings contains migrated custom providers plus built-ins
+ -> concrete custom invocation resolves the encrypted slot
+ -> source/value scanner
 ```
 
-The harness never searches parent directories, guesses the “main repo,” copies `.env.test`, loads credential dotenv, opens the default Store, or falls back to environment.
+Prove multiple providers, stable IDs/name/base URL, exact deterministic `SecretId`, no plaintext in v2/GraphQL/logs/evidence, and idempotent restart.
 
-### Docker non-impact
+### Delete-and-reconfigure path
 
-This specification does not define a Docker real-E2E Store-sharing path. Existing Docker Compose, launcher, named volumes, and normal node setup remain unchanged.
+Force each material failure separately: invalid/duplicate v1, configured target collision, staging failure, DB transaction failure, file publish failure, interruption after DB commit, and v1-deletion failure.
 
-A normal Docker container is one independent Agent Server node. It derives its default Local Store below its existing `AUTOBYTEUS_DATA_DIR` (`/home/autobyteus/data` in the current Compose file), which is already backed by the `autobyteus-server-data` persistent volume. A user may connect the web or Electron client to that node and configure credentials through the normal server Settings flow; those credentials remain owned by that Docker node. Kubernetes follows the same rule for a single server Pod with its own PVC. Multiple replicas cannot share a writable Local Store and require a future installed centralized adapter; no such production adapter ships in this delivery.
+For every case prove:
 
-Operators remain free to customize Docker volumes or backend configuration themselves, but AutoByteus does not prescribe bind mounts, external E2E volumes, path environment variables, or launcher behavior in this ticket. Host worktree zero-touch testing and Docker node persistence are independent use cases.
+1. no partial v2 is published;
+2. no pre-existing/changed secret is overwritten or deleted;
+3. same-process compensation deletes only exact unchanged batch rows;
+4. ordinary failed-preservation cases delete v1 and create no backup/recovery copy;
+5. server startup and `providerSettings` still return all built-in providers/catalogs;
+6. custom-provider rows alone are omitted when no current v2 metadata exists;
+7. **New Provider** remains visible;
+8. after deletion succeeds, ordinary frontend Probe/Create with name/base URL/key creates a new current provider ID, and list/use/delete works;
+9. the existing app-data migration status reports only stable value-free success/warning/failure guidance;
+10. no runtime v1 reader, backup/recovery mechanism, or fallback occurs.
 
-### Value-free preflight output
+The deletion-unavailable case leaves the physical v1 file untouched, reports a stable value-free failure, and keeps built-in Settings/the rest of the application running. After the filesystem problem is repaired, restart must complete deletion before custom Create is supported.
 
-Allowed:
+## Real Provider Coverage
+
+The scenario registry chooses only scenarios whose required `SecretId` status is `CONFIGURED`. It never reads values.
+
+Minimum substantive matrix when configured:
+
+| Capability | Representative scenario |
+|---|---|
+| OpenAI | LLM turn, audio, image |
+| Anthropic | Native LLM; Claude managed separately |
+| DeepSeek | Agent turn using the configured DeepSeek provider/model path |
+| Google AI Studio | LLM/media exact AI Studio constructor and optional live metadata |
+| Google Vertex Express | LLM/audio/image exact `vertexai:true,apiKey`; metadata curated-only |
+| Google Vertex Project | Exact project/location constructor when platform identity is available |
+| Search | Serper/SerpAPI/Vertex AI Search as configured |
+| AutoByteus | Discovery/reload and LLM/audio/image; exact unavailable outcome allowed |
+| Custom provider | Discovery or configured model plus invocation |
+
+Provider failures are classified; a successful credential on one capability does not automatically prove another capability, but it prevents an unsupported “credential invalid” inference when evidence points elsewhere.
+
+## Gemini Real-E2E Rules
+
+1. Tests use the reviewed activation API to set `GEMINI_SETUP_MODE` in the ignored normal runtime configuration; the tracked `.env.test` remains unchanged.
+2. Only the selected slot is required/resolved.
+3. Empty `GEMINI_API_KEY` in an import source does not block populated `VERTEX_AI_API_KEY`.
+4. AI Studio and Vertex Express scenarios use their exact SDK options.
+5. No scenario uses implicit priority or retries another mode.
+6. Metadata expectations are `LIVE|CURATED_FALLBACK` for AI Studio and `CURATED_ONLY` for Vertex modes.
+
+## Browser And Packaged Validation
+
+### Normal browser validation
+
+Use a synthetic per-test DB. Browser CRUD must not mutate the provisioned real-E2E DB unless the user explicitly requests that exact operation.
+
+Required checks:
+
+- the one `providerSettings` result contains each provider once as `ProviderSettingsGroup { provider, llmModels, audioModels, imageModels, videoModels }`;
+- schema/generated-type scans prove the group reuses `LlmProviderObject` and current `ModelDetail`, and introduces no reduced provider/model DTO or capability availability wrapper;
+- the API-key query selection contains only fields rendered by that page even though the reused types remain rich enough for their established consumers;
+- OpenAI `apiKeyConfigured` is singular and cannot be overwritten by catalog/Apollo order;
+- another provider can be missing/unavailable without supplying or changing OpenAI configured state;
+- a capability with no matching models is `[]`; missing credentials do not remove any model list;
+- custom-provider proof retains the existing custom identity/base URL/catalog status and exact deletion behavior; a failed synthetic v1 transition omits only custom rows and never hides built-ins or New Provider;
+- custom Probe/Create/Delete carries only the exact tight input/results and refetches the canonical group after Create;
+- write-only Save/Remove returns only Boolean command completion and a network-only canonical refetch updates only the request-owned exact provider group;
+- empty-vault and configured-provider matrices render models independently of credential state;
+- Gemini compact UI matches [gemini-setup-ui-ux-spec.md](./gemini-setup-ui-ux-spec.md), and every command returns its one exact setup state with no parallel outcome protocol;
+- no value is prefilled or returned;
+- active/configured state is truthful.
+
+### Packaged Electron validation
+
+Use a unique candidate identity, isolated app-data root, and isolated ports. Launch the actual packaged Electron app and embedded server, not only the terminal binary.
+
+Required flow:
+
+1. candidate starts and reaches server health;
+2. Settings catalogs are non-empty with empty vault;
+3. one isolated existing-user fixture proves successful custom-provider-v1 preservation;
+4. a separate forced-delete fixture proves built-ins/New Provider remain usable and frontend reconfiguration succeeds;
+5. synthetic credential save/status/remove succeeds;
+6. restart reopens the same DB/key pair and current v2 custom state;
+7. startup failure shows value-safe technical details and log location;
+8. cleanup removes only the unique test-owned candidate roots;
+9. production/default data is never read, changed, stopped, or cleaned.
+
+## Docker / One-Pod Validation
+
+- use the unchanged tracked build/start topology;
+- select the container application DB through existing `DATABASE_URL`;
+- DB and derived key persist in the same existing data volume;
+- restart/reopen/removal pass;
+- no new service, volume, Store mount, or environment credential alias is introduced.
+
+## Preflight Output
+
+Allowed output:
 
 ```text
-Real-E2E Store: READY (read-only)
-openai.llm: READY (provider.openai.api-key configured)
-serper.search: MISSING (use hidden-input setup or explicit e2e import; no value shown)
+DATABASE: READY
+VAULT: READY
+MODE: VERTEX_EXPRESS
+provider.openai.api-key: CONFIGURED
+provider.google.vertex-express-api-key: CONFIGURED
+SCENARIOS: eligible=4 skipped=3
 ```
 
-The preflight health vocabulary is exactly `READY`, `LOCKED`, `UNAVAILABLE`, `CORRUPT`, or `INCOMPATIBLE`. Definition state (`MISSING`/`CONFIGURED`) is shown only for `READY`; every other health returns a stable value-free setup instruction and no definition projection. A wrong/swapped key, missing half-pair, or verifier failure reports `CORRUPT`; an unsupported Store/verifier version reports `INCOMPATIBLE`.
+Output may use a value-free DB identity/fingerprint rather than a full path. It must not include:
 
-Forbidden: key fragments, lengths, fingerprints, hashes, absolute backend paths, encryption-key material, raw provider response bodies, or default-Store existence/details.
-
-## Test Harness Trust Boundaries
-
-### Default deterministic harness
-
-- uses a fresh in-memory backend or disposable temporary Local Store, according to the behavior under test;
-- uses synthetic canary values only;
-- cannot open either shared canonical default or real-E2E Store;
-- proves lifecycle, error mapping, redaction, no-fallback, UI, and client-construction behavior deterministically.
-
-### Real direct-secret harness
-
-- is a narrow package or server process, not a general test helper available to arbitrary test code;
-- opens only the host real-E2E database/key pair read-only; the default Store paths are not supplied;
-- loads only the selected scenario declaration;
-- runs only the selected scenario's normal catalog-bound product path; no general raw resolver is exposed to the browser or test API;
-- resolves at the last trusted moment, constructs the SDK client, and discards `SecretValue` references;
-- does not mutate parent `process.env` or add the value to command lines, snapshots, fixtures, browser state, or reporters; the exact Claude managed scenario may place its authorized key only in the exact Claude Code child environment under the specialized contract below;
-- runs only after implementation source review or an equivalent local trust gate;
-- scans logs/results/artifacts using safe synthetic canaries and structural redaction checks.
-
-Direct access is necessary for scenarios whose subject is credential delivery into the actual SDK. Source review before this mode is a team-workflow prerequisite, not an invented runtime attestation/capability subsystem. It is not a claim that reviewed code which receives the key cannot exfiltrate it.
-
-### Gemini metadata preservation harness
-
-- LLM/media constructor capture separately drives all three closed authentication variants through `gemini-helper.ts` and asserts exactly `{ apiKey }`, `{ vertexai: true, apiKey }`, or `{ vertexai: true, project, location }` with no optional/extra mode fields;
-- metadata tests start at `ModelCatalogService.listLlmModels` and reload, prove the exact `llmMetadata/GEMINI/<slot>` consumer for AI Studio/Vertex Express, and prove zero secret resolution/no live provider for Vertex Project;
-- provider tests preserve the existing Generative Language request and response mapping for either selected key; resolver tests prove live-over-curated precedence, timeout/failure containment, and cache invalidation without a real credential;
-- negative tests prove no ambient alias lookup, alternate-definition/Store lookup, credential-presence inference, endpoint override, or cross-mode retry;
-- a real key-backed metadata scenario may begin at the ordinary GraphQL/web model-list or reload surface and verify that a live-returned field reaches the catalog. If provider loading is unavailable, curated-only availability is the existing product fallback and is reported accurately rather than treated as proof of a different SDK mode. No metadata SDK-construction rewrite is required by this harness.
-
-### External Codex preservation harness
-
-- uses the normal user-selectable Codex App Server product path, never a new AutoByteus auth mode or Store definition;
-- deterministic spawn capture proves `CodexAppServerClient` preserves `options.env ?? process.env` and real HOME/CODEX_HOME, removes the ticket-added synthetic-home builder, and makes zero management/Store/account-RPC calls;
-- synthetic HOME/CODEX_HOME/account sentinels are used for durable source tests. They inspect no real Codex auth file and assert no environment dump/output;
-- when Codex is installed and its existing external login is available, a targeted product-path model/turn smoke validates that the preserved path still authenticates. If the runtime is declared available but the established operation fails, the scenario fails with existing sanitized output; no Store/API-key fallback or account login mutation is attempted;
-- the harness and assurance report explicitly exclude Codex environment inheritance from `LOCAL_HARDENED`. Generic output redaction still applies.
-
-### Managed Claude Agent SDK harness
-
-- tracked configuration selects `runtimeAuthMode: "managed-secret"`; no raw key or alias is tracked;
-- the Store-bound server invokes the normal `ClaudeSdkClient`; that client calls its injected `ClaudeRuntimeAuthenticationService`, which resolves the exact `agentRuntime/claude_agent_sdk/apiKey` consumer through `SecretManagementService` immediately before model-discovery/run child construction;
-- the runner, browser, parent server environment, sibling processes, and AutoByteus-owned tool children never receive the key;
-- `ClaudeSdkClient` supplies exactly `ANTHROPIC_API_KEY` to the exact Claude Code child through SDK `env`, with empty setting sources, `tools: []`, and strict explicitly materialized AutoByteus MCP configuration;
-- a real provider authentication plus one bounded Claude SDK request proves the actual Store-to-SDK-child path; missing declared real-E2E credential/capability is reported as explicit unavailable/failure and is never counted as pass or silently replaced with a fake;
-- a synthetic spawn-capture test separately verifies the exact environment shape and parent/sibling/tool-child noninheritance without printing the value;
-- diagnostics are redacted before buffering; scanner coverage includes prompts, messages, tool I/O, stderr, session events, logs, reports, and artifacts;
-- cleanup drops AutoByteus references and closes/aborts the SDK query, without claiming deterministic deletion from the authorized child or SDK memory.
-
-### AutoByteus remote gateway direct-secret harness
-
-- tracked configuration supplies only non-secret hosts, expected capabilities, and `provider.autobyteus.api-key` as the required logical definition;
-- the Store-bound server follows the normal `AutobyteusRemoteModelDiscoveryService` path; the runner/browser receives neither the value nor a raw resolver;
-- with no configured hosts, a synthetic/product integration check proves zero management/backend calls, authoritative clear of only the matching AutoByteus runtime subset, and preservation of native/unrelated catalogs;
-- with configured hosts, the service resolves the exact model-kind discovery consumer and performs real LLM/audio/image discovery through the current AutoByteus remote provider/factory;
-- discovered targets must carry `credentialProviderId: "AUTOBYTEUS"`; a representative real LLM invocation and each advertised audio/image generation capability must traverse the generic construction path and resolve the same Store definition;
-- registry assertions prove replacement is scoped by model kind plus AutoByteus runtime ownership, including native same-provider coexistence, authoritative empty clear, last-known-good preservation on transient pre-authoritative failure, and all-AutoByteus-subset clear without lookup after explicit credential removal;
-- capability absence must be explicit in the tracked scenario or authoritative server response. A declared/advertised capability that cannot be discovered or invoked is a failure, not a skip or pass;
-- no server/test code reads `AUTOBYTEUS_API_KEY`, and safe synthetic leak controls cover request headers, logs, errors, catalog metadata, browser responses, reports, and artifacts.
-
-### Real gateway harness
-
-- gateway holds the key and accepts a narrow provider/scenario protocol;
-- caller receives an opaque, short-lived, scenario-scoped capability;
-- destination/provider/model constraints are server-owned; callers cannot choose an arbitrary URL or header;
-- gateway logs/events remain value-free;
-- this mode reduces broad test-process exposure but cannot replace direct construction tests.
-
-## CI Workflow
-
-CI does not reuse a developer's Local Store. It uses the same logical `SecretManagementService`/consumer contracts with CI custody:
-
-```text
-CI job obtains workload identity
- -> selected CI backend resolves a restricted test namespace
- -> non-secret scenario manifest selects definitions
- -> preflight checks configured status
- -> trusted server/gateway executes real scenarios
- -> results/artifacts are sanitized
- -> ephemeral identity/session/namespace is revoked or expires
-```
-
-Where a CI platform can only expose a credential as a job secret, inject it directly into a one-shot trusted setup/provider process, not a shared environment inherited by agent-controlled commands. Prefer workload identity and external backend resolution.
-
-## Scenario Coverage Intent
-
-| Scenario Purpose | Expected Mode | Reason |
-| --- | --- | --- |
-| lifecycle/atomic-replacement/status/error mapping | `SYNTHETIC` | storage correctness does not require billable providers |
-| UI write-only behavior and no readback | `SYNTHETIC` | deterministic assertions are stronger |
-| provider request shape/error redaction | `SYNTHETIC` | exact interception/fault injection |
-| provider authentication acceptance | `REAL_DIRECT_SECRET` | validates storage-to-SDK path |
-| model simple/streaming/tool behavior | `REAL_GATEWAY` or `REAL_DIRECT_SECRET` | current provider/model behavior changes |
-| agent end-to-end turns | `REAL_GATEWAY` where suitable | real model behavior with narrower key exposure |
-| live Gemini model metadata list/reload for AI Studio or Vertex Express | `REAL_DIRECT_SECRET` for key modes; curated-only for Vertex Project | proves exact metadata consumer selection and the established Generative Language provider/mapping; curated fallback is reported separately and never causes another credential lookup |
-| media formats/generation | real mode | fake bytes do not prove provider behavior |
-| Gemini Vertex Express LLM/audio/image construction and representative operations, plus separately preserved metadata list/reload | `REAL_DIRECT_SECRET` | validates exact `geminiVertexExpress` propagation and `GoogleGenAI({vertexai:true,apiKey})` for LLM/media; metadata independently validates its exact semantic consumer and established Generative Language path without being forced through that SDK-mode union |
-| Codex external-login product turn when installed/account-ready | existing external Codex state, no Store secret | proves the pre-ticket environment/home preservation without inventing an AutoByteus auth lifecycle |
-| live search | real mode | real service/schema behavior |
-| Claude Agent SDK managed authentication and one bounded request | `REAL_DIRECT_SECRET` with `runtimeAuthMode: managed-secret` | validates exact consumer authorization, Store resolution, child environment delivery, and current SDK/CLI authentication |
-| AutoByteus remote LLM discovery plus representative invocation | `REAL_DIRECT_SECRET` | validates host gate, discovery consumer, Store-backed AutoByteus credential ownership, scoped catalog update, and real construction/request |
-| AutoByteus remote audio discovery plus generation when advertised | `REAL_DIRECT_SECRET` | validates the current audio gateway contract and real artifact production; declared capability unavailability is not a fake-success path |
-| AutoByteus remote image discovery plus generation when advertised | `REAL_DIRECT_SECRET` | validates the current image gateway contract and real artifact production; declared capability unavailability is not a fake-success path |
-| isolation, denial, and canary absence | `SYNTHETIC`, plus selected real checks | safe exact negative assertions |
-
-The downstream coverage owner decides the precise durable test inventory after implementation, but may not remove the semantic real-provider intent defined here.
+- values or encoded forms;
+- value lengths/hashes/prefixes;
+- ciphertext, nonces, tags, verifier or key bytes;
+- source lines;
+- environment dumps;
+- raw exceptions.
 
 ## Failure Semantics
 
-| Condition | Required Result |
-| --- | --- |
-| tracked config missing/invalid | fail with file/schema location; never search another checkout |
-| import source/target option missing, duplicated, relative, unknown, or invalid; repeated/misplaced separator | fail value-free before source value handling; never infer source/target; zero/one leading separator succeeds |
-| import source is symlink/non-regular/raced/wrong-owner/non-private/unverifiable | fail closed without changing permissions/ACLs or target Store |
-| import source is oversize/invalid UTF-8/NUL | reject the entire operation before recognition/prompt/write |
-| recognized assignment is valid but normalizes empty | treat as absent/non-selected; continue with populated current credentials; emit no placeholder metadata/warning |
-| recognized assignment is malformed, has a dynamic populated value, or repeats a populated occurrence | reject before target mutation; never emit line/name/value |
-| source contains unrelated settings, unknown/legacy/secret-like names, or malformed unrelated lines | ignore without interpreting their right-hand side; report no ignored-line metadata; continue if at least one recognized credential is populated and valid |
-| every recognized assignment is absent or normalizes empty | fail value-free with `IMPORT_NO_MAPPED_CREDENTIALS` before target access or mutation |
-| import target configured and no `--overwrite` | skip record and preserve it; dry-run may report replacement requires overwrite |
-| import write is non-TTY, unconfirmed, cancelled, or transaction fails | write nothing or roll back all planned records; source and other Store unchanged |
-| real-E2E database and key both absent | fail with the one-time E2E setup command |
-| only database or key exists | fail `CORRUPT_STORE`; never generate a replacement key or overwrite the surviving file |
-| Store files inaccessible | report `UNAVAILABLE` with a value-free setup instruction |
-| Store schema/encryption/verifier format incompatible | report `INCOMPATIBLE` / fail `INCOMPATIBLE_STORE_FORMAT`; do not rewrite, downgrade, or replace the Store |
-| Store locked | report `LOCKED` / fail `BACKEND_LOCKED`; no fallback |
-| wrong/swapped key, one missing pair file, pair-verifier failure, or authenticated-record failure | report `CORRUPT` / fail `CORRUPT_STORE` or `CORRUPT_STORED_VALUE`; no fallback |
-| required definition missing | report logical definition and scenarios only |
-| invalid/revoked provider credential | scenario fails with sanitized `INVALID_PROVIDER_CREDENTIAL` |
-| Claude mode is `auto`, `api-key`, or unknown | fail `CLAUDE_RUNTIME_AUTH_MODE_INVALID` before secret lookup or child spawn |
-| Claude managed definition missing | fail `CLAUDE_RUNTIME_CREDENTIAL_MISSING`; no CLI/ambient fallback |
-| Claude managed Store non-ready | map exactly to `CLAUDE_RUNTIME_SECRET_STORE_LOCKED`, `_UNAVAILABLE`, `_CORRUPT`, or `_INCOMPATIBLE`; no child spawn |
-| Claude managed binding invalid | fail `CLAUDE_RUNTIME_SECRET_BINDING_INVALID`; no backend resolve or child spawn |
-| Claude SDK child spawn/provider auth fails | fail `CLAUDE_RUNTIME_SPAWN_FAILED` or `CLAUDE_RUNTIME_AUTH_FAILED`; redact before buffering and never change mode/backend |
-| AutoByteus host list absent | discovery performs zero management/backend/provider calls and clears only the matching AutoByteus runtime subset; no remote scenario may report pass unless it explicitly tests this no-host contract |
-| AutoByteus credential explicitly removed | idempotent lifecycle success clears every AutoByteus runtime subset without discovery lookup and preserves native models |
-| AutoByteus definition missing or Store non-ready | configured-host discovery/invocation fails value-free; preserves last-known-good remote subset and never reads `AUTOBYTEUS_API_KEY` or another Store |
-| AutoByteus remote discovery/provider auth fails before authoritative response | preserve last-known-good matching runtime subset, keep native models, fail the declared scenario, redact provider details |
-| AutoByteus remote discovery returns authoritative empty | clear only matching model-kind AutoByteus runtime subset; a scenario requiring that capability fails unavailable |
-| AutoByteus advertises LLM/audio/image capability but representative operation fails | fail the exact scenario; do not skip, downgrade to synthetic, or count discovery alone as pass |
-| quota/model/provider issue | fail or classify via existing provider rules; never reinterpret as “secret missing” |
-| Codex external runtime is installed/selected but existing login state is hidden by a synthetic home or the product turn fails authentication | fail the Codex preservation scenario with existing sanitized outcome; do not call Store/account RPC, mutate login, or fall back |
-| Gemini mode/input is invalid or the exact Vertex Express product construction uses AI Studio options | fail before construction or fail the exact real scenario; never infer another mode/key and never count the corrected-mode diagnostic as a product pass |
-| Gemini live metadata request fails but curated metadata still returns | report the exact live-enrichment scenario unavailable/failed while retaining the ordinary curated catalog result; do not count curated fields as proof of exact-mode authentication and do not retry another Google mode |
-| result/log/artifact canary hit | fail the run and restrict evidence; never attach the raw hit |
+| Failure | Result |
+|---|---|
+| Test DB resolves outside allowed runtime root | `TEST_DATABASE_PATH_UNSAFE` |
+| Missing/duplicate/relative/non-SQLite importer database URL | Stable `IMPORT_DATABASE_URL_*`; no target access |
+| DB/key pair invalid | Stable vault health/error; no regeneration |
+| Custom-provider v1 preserved | App-data migration `SUCCEEDED`; current v2 custom providers available |
+| Custom-provider v1 cannot migrate safely | `SUCCEEDED_WITH_WARNINGS` after legacy-file deletion and frontend reconfiguration, or stable `FAILED` if deletion is unavailable; built-ins always available |
+| Required scenario slot missing | Scenario `SKIPPED_NOT_CONFIGURED`; no value access |
+| Explicit active Gemini mode missing/incomplete | `GEMINI_RUNTIME_UNCONFIGURED`; no alternate mode |
+| Provider endpoint unavailable | Exact sanitized provider/endpoint-unavailable classification |
+| Evidence canary found | Whole run fails and evidence is quarantined |
+| Cleanup identity mismatch | Cleanup refuses action |
 
-## Preserved Current API/E2E State At Revision Time
+## Cleanup
 
-- Round 10 confirmed the explicit current-application importer: the dedicated Store remained `READY`, eight recognized credentials were newly configured, the previously configured OpenAI record was preserved, the source remained byte-identical, and empty `GEMINI_API_KEY` was absent/non-blocking while populated `VERTEX_AI_API_KEY` was imported. No credential value was emitted or inspected.
-- Canonical preflight passed 11/11: ten tracked scenarios were `READY/CONFIGURED`; Serper alone was `READY/MISSING`.
-- Real OpenAI LLM, agent-flow, audio, and image all passed. Real Anthropic managed-secret Claude Agent SDK passed.
-- Real Gemini Vertex Express audio/image failed on the normal product path because the correct definition was collapsed to generic `apiKey`; a bounded value-safe same-credential diagnostic using `GoogleGenAI({vertexai:true,apiKey})` passed both. This proves the LLM/media correction direction but is not a product-path pass. Metadata does not share that SDK-construction contract: its original/current dual-key Generative Language path is preserved and verified separately.
-- AutoByteus remote LLM/audio/image were `READY/CONFIGURED` but the declared `https://api.autobyteus.com` endpoint was not DNS-resolvable. AC-019(f) permits exact unavailable reporting. No alternate endpoint may be invented and no remote capability is claimed.
-- Codex remains an established external-login runtime, and the user explicitly directed that it be left alone. The next matrix must prove the restored product path without reading real auth files or adding managed custody.
-- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck dependency only. Both Claude modes remain unchanged. `LOCAL_HARDENED` retains its explicit Codex exclusion and deferred `STRONG_AGENT_ISOLATION`.
+- deterministic/synthetic DB roots: automatic, identity-fenced cleanup;
+- provisioned real-E2E DB/key: preserved by default; reset only by explicit user action against exact test root;
+- imported assignment source: never modified/deleted;
+- failed custom-provider-v1 fixture: assert the legacy file was deleted and no backup/recovery copy exists;
+- production/default DB/key: never accessed;
+- provider-created remote resources: tracked by scenario-specific cleanup code where applicable;
+- logs/evidence: retained only after canary scan.
 
-## Security Checks
+## Validation Outcome Required For Delivery
 
-1. Fresh worktree `git status` shows no copied secret file, Local Store data, or encryption-key material.
-2. Governed test/agent child environments contain no provider key or backend bootstrap material, except the exact Claude Code child in explicit managed mode contains only its authorized `ANTHROPIC_API_KEY`. Codex is the explicit external-runtime exclusion and is not asserted here.
-3. Agent file tools cannot reach Local Store paths and governed child environments/descriptors start from explicit empty-base allowlists. The managed Claude parent, siblings, unrelated governed children, and AutoByteus tool children receive no key. Codex preserves the pre-ticket external environment/home and is excluded. This proves `LOCAL_HARDENED` only within the stated boundary, not denial against Codex inherited state, the authorized Claude process, or arbitrary same-user filesystem/process access.
-4. Browser/GraphQL cannot invoke raw resolve, enumerate values, select another Store, or supply Store paths.
-5. Direct harness can resolve only declared scenario definitions and only during the run.
-6. Gateway cannot attach credentials to caller-supplied destinations.
-7. Logs, errors, traces, snapshots, and artifacts contain neither raw nor expected encoded synthetic canaries.
-8. Cleanup closes backend/database handles and revokes/cleans ephemeral CI capabilities without value output.
-9. A missing real-E2E value never opens or falls back to the default Store, `.env.test`, `.env`, or `process.env`.
-10. Local CRUD tests receive a separate temporary writable pair; neither shared host Store is mutated.
-11. Existing Docker Compose/launcher/volume configuration is unchanged by this test design.
-12. Repository/team workflow runs implementation source review before `REAL_DIRECT_SECRET`; the product does not pretend to prove source trust through a new runtime flag.
-13. Exact Gemini tests prove all three closed variants and exact SDK options for LLM/media. Separate metadata tests prove exact AI Studio/Vertex Express semantic consumers, trusted reveal into the existing provider, preserved Generative Language request/response mapping, Vertex Project zero lookup/no live provider, reload invalidation, curated fallback, and no ambient/alternate-definition fallback. Real scenarios use normal product paths and do not require a metadata SDK-mode rewrite.
-14. Codex tests use synthetic state for durable launch assertions and, when available, the existing external product login for a bounded turn; they never read auth files, dump inherited environment, call Store/account RPC, or claim the environment is hardened.
-13. Empty-Store pair verification proves correct pair `READY`, swapped key/partial pair/verifier tamper `CORRUPT`, and unsupported format `INCOMPATIBLE` without writing or regenerating.
-14. Claude CLI-mode tests make zero management calls; managed-mode synthetic capture proves one resolve per child, no caller `env`, exact child-only alias delivery, empty settings/strict MCP/safe tools, and no fallback for the complete failure matrix.
-15. A real managed-Claude scenario authenticates and completes a bounded SDK request from the read-only real-E2E Store; evidence passes structural redaction checks without reading/exporting the real value. Separate synthetic exact/encoded-canary scans include a seeded negative leak proving the scanner fails correctly.
-16. AutoByteus remote tests prove no-host zero resolution/model-kind scoped clear, exact discovery/construction bindings, runtime-scoped catalog replacement, explicit-removal all-subset clear, native same-provider coexistence, and `credentialProviderId = AUTOBYTEUS` without serializing authentication.
-17. Real AutoByteus LLM/audio/image scenarios use the read-only E2E Store and real hosts; each advertised capability completes a representative operation or reports an explicit failure. Evidence and child/process environments contain no `AUTOBYTEUS_API_KEY` value or fallback alias.
-18. Legacy-source non-authority tests prove canonical application `.env` and parent aliases remain unchanged; `AUTOBYTEUS_API_KEY` and every sensitive alias are excluded before value retention while approved non-secret hosts remain usable; custom-provider-v1 remains byte-unchanged and returns only stable value-free guidance; and normal runtime never dual-reads or falls back.
-19. Importer deterministic tests use synthetic canaries and constructor-injected temporary target resolver/Stores to prove zero/one leading separator, absolute-source/closed-target options, non-mutating source trust checks, file safety, recognize-first positive selection, selected-only validation, full current alias registry, exact Qwen `DASHSCOPE_API_KEY` mapping plus deliberate `QWEN_API_KEY` and ZHIPU absence, dry-run, selected-pair initialization, skip/no-overwrite, explicit replacement, both target-specific TTY phrases, cancellation, changed-plan rejection, atomic rollback/idempotency, source immutability, and other-Store non-access. Mixed fixtures include unrelated settings, unknown secret-like names, malformed unrelated lines, and legacy aliases that remain non-blocking. No CLI/environment path override exists and canonical host Stores are never opened by these tests.
-20. Selected-value canaries and unrecognized-line canaries do not appear in argv, environment, stdout/stderr, logs, exceptions, snapshots, reports, evidence, or source copies; ignored-line metadata is absent, and a seeded negative leak control demonstrates the scanner fails correctly.
-21. The real test runner never invokes the importer. After an operator import, it uses only normal value-free preflight/read-only product execution. Default-target import validation is a separate operator/status/restart check and never participates in host real-E2E execution.
-22. Legacy-source negative tests prove startup performs no Local Store/importer operation and no source or parent-environment mutation, while explicit-import tests prove one selected target only and no test-runner/startup invocation.
+Delivery may claim the feature verified only after:
 
-## Why This Improves The Agent-Driven Workflow
-
-The improvement comes from four properties together:
-
-1. **one-time machine custody** — real values are provisioned once outside all checkouts, either through hidden input or an explicit operator import;
-2. **physically separate E2E custody** — every worktree selects the same real-E2E database/key pair through tracked config while the default Store stays unavailable;
-3. **in-process lifecycle** — Electron and test servers construct the Local backend directly, without another service or user action;
-4. **explicit resolution** — trusted test/server code receives only the declared credential instead of broad ambient environment state.
-
-If a consumer still reads `process.env`, a test still copies an ignored file, or a missing host test value falls back to normal credentials, the workflow and security problem remain unresolved.
+- deterministic suites pass;
+- normal server/frontend passes against an isolated selected DB;
+- configured real-provider scenarios execute or are explicitly reported unavailable/skipped;
+- Docker restart/reopen passes;
+- actual packaged Electron lifecycle passes for fresh state, successful existing-user custom-v1 migration, and forced non-blocking delete-and-reconfigure fallback;
+- value scanner and cleanup audit pass;
+- no production data/secret-bearing source was inspected.

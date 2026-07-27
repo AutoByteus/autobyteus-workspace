@@ -1,0 +1,7 @@
+(node:78256) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SCENARIO=SCSP-E2E-GEMINI-AI-STUDIO-METADATA
+BACKEND_HEALTH=READY
+STORAGE_STATE=MISSING
+VALUE_READ=false
+REAL_LIVE_CALL=UNAVAILABLE_DEFINITION_MISSING

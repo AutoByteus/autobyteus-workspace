@@ -9,6 +9,18 @@ Supported Codex paths:
 - Native runtime: `runtimeKind = codex_app_server`
 - Optional tool-based mode: Codex exposed through MCP tools
 
+## Authentication And Environment Boundary
+
+Codex App Server keeps its established Codex-owned external account,
+configuration, `HOME`/`CODEX_HOME`, and launch-environment behavior. AutoByteus
+does not add a Codex secret definition, Store lookup, managed authentication
+mode, login/status API, rotation lifecycle, or synthetic account root. This is
+an explicit exclusion from the child-environment portion of the Secret
+Management `LOCAL_HARDENED` claim: operator-supplied ambient state inherited by
+the external Codex runtime is outside that assurance. It does not weaken Store
+isolation for the governed AutoByteus/Claude child paths, and it does not turn
+Codex into a credential source for other providers.
+
 ## Native Runtime Architecture
 
 Standalone runs:

@@ -1,0 +1,132 @@
+SCENARIO=SCSP-PDV-ELECTRON-SHUTDOWN-001
+TIMESTAMP=2026-07-27T07:49:19Z
+MAIN_PID=50606
+SERVER_PID=50615
+ACTION=osascript tell application id com.autobyteus.app to quit
+MAIN_GONE=1
+SERVER_GONE=1
+--- fixed port after quit ---
+--- debug port after quit ---
+--- remaining test process family ---
+50828 50813 R          00:01 rg /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//scsp-electron-pdv3.TSbiHc|/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents
+--- final app log tail ---
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] AutobyteusModelCatalog initialized.
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] CachedAudioModelProvider initialized.
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] AudioModelService initialized.
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] CachedImageModelProvider initialized.
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] ImageModelService initialized.
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] CachedVideoModelProvider initialized.
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] VideoModelService initialized.
+[2026-07-27T07:47:35.267Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-07-27T07:47:35.268Z] [INFO] [electron.embedded-server.stdout] System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+[2026-07-27T07:47:35.268Z] [INFO] [electron.embedded-server.stdout] System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+[2026-07-27T07:47:35.268Z] [INFO] [electron.embedded-server.stdout] Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+[2026-07-27T07:47:35.268Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-07-27T07:47:35.268Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-07-27T07:47:35.268Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-07-27T07:47:35.268Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-07-27T07:47:35.268Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:47:35.272Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-07-27T07:47:35.272Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-07-27T07:47:35.272Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-07-27T07:47:35.272Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-07-27T07:47:35.272Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-07-27T07:47:35.272Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-07-27T07:47:35.272Z] [INFO] [electron.embedded-server.stdout] Loading agent tool definitions...
+[2026-07-27T07:47:35.275Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-07-27T07:47:35.275Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-07-27T07:47:35.275Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-07-27T07:47:35.275Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-07-27T07:47:35.275Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Customizations' completed successfully.
+[2026-07-27T07:47:35.278Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-07-27T07:47:35.278Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 2 agent definitions into cache.
+[2026-07-27T07:47:35.278Z] [INFO] [electron.embedded-server.stdout] [2026-07-27T07:47:35.278Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Media Tools
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Background task 'Workspaces' completed successfully.
+[2026-07-27T07:47:35.280Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_available_skills'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_skill_content'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'load_skill'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Skills Tools
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-07-27T07:47:35.281Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Browser Tools
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_task_result'
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'review_task_result'
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Task Delegation Tools
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Published Artifact Tools
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Agent Communication Tools
+[2026-07-27T07:47:35.282Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Tools' completed successfully.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] [2026-07-27T07:47:35.285Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 agent team definitions into cache.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Populating LLM models cache for the first time...
+[2026-07-27T07:47:35.285Z] [INFO] [electron.embedded-server.stdout] Fetching list of available LLM models from LLMFactory...
+[2026-07-27T07:47:35.286Z] [INFO] [electron.embedded-server.stdout] Discovering Ollama models from host: http://localhost:11434
+[2026-07-27T07:47:35.294Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:47:35.295Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-07-27T07:47:35.295Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://localhost:1234
+[2026-07-27T07:47:35.307Z] [INFO] [electron.embedded-server.stdout] Finished LM Studio discovery. Total models registered: 14
+[2026-07-27T07:47:35.310Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 40 models from LLMFactory.
+[2026-07-27T07:47:35.310Z] [INFO] [electron.embedded-server.stdout] LLM models cache populated with 40 items.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 40 LLM models into cache.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Populating Image models cache for the first time...
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Image models from ImageClientFactory...
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 7 image models from ImageClientFactory.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Image models by provider: OPENAI=2, GEMINI=5
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Image models by runtime: api=7
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Image models cache populated with 7 items.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Populating Audio models cache for the first time...
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Audio models from AudioClientFactory...
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 4 audio models from AudioClientFactory.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Audio models by provider: OPENAI=1, GEMINI=3
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Audio models by runtime: api=4
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Audio models cache populated with 4 items.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 4 audio models into cache.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-07-27T07:47:35.315Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-07-27T07:47:35.327Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:47:35.329Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:47:36.117Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:47:36.123Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:47:39.502Z] [INFO] [electron.embedded-server.stdout] Populating Video models cache for the first time...
+[2026-07-27T07:47:39.502Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Video models from VideoClientFactory...
+[2026-07-27T07:47:39.502Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 1 video models from VideoClientFactory.
+[2026-07-27T07:47:39.502Z] [INFO] [electron.embedded-server.stdout] Video models by provider: GEMINI=1
+[2026-07-27T07:47:39.502Z] [INFO] [electron.embedded-server.stdout] Video models by runtime: api=1
+[2026-07-27T07:47:39.502Z] [INFO] [electron.embedded-server.stdout] Video models cache populated with 1 items.
+[2026-07-27T07:47:41.854Z] [INFO] [electron] [updater] Checking for update
+[2026-07-27T07:47:41.859Z] [INFO] [electron] [updater] Generated new staging user ID: 95366fb7-34dc-531b-b902-74e97d3c12db
+[2026-07-27T07:47:42.920Z] [INFO] [electron] [updater] Update for version 1.4.26 is not available (latest version: 1.4.26, downgrade is disallowed).
+[2026-07-27T07:47:46.106Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:47:46.108Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:48:32.651Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:48:32.653Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:48:34.202Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:48:34.203Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:48:48.707Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:48:48.709Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:49:19.384Z] [INFO] [electron] Received start-shutdown signal from renderer. Quitting app.
+[2026-07-27T07:49:19.389Z] [INFO] [electron.server.base-server-manager] Stopping server...
+[2026-07-27T07:49:19.389Z] [INFO] [electron.server.base-server-manager] Sending SIGTERM signal for graceful shutdown
+[2026-07-27T07:49:19.401Z] [INFO] [electron.embedded-server.stdout] [2026-07-27T07:49:19.389Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...

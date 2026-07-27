@@ -5,22 +5,19 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { LLMUserMessage } from 'autobyteus-ts/llm/user-message.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import {
+  classifyAutoByteusDiscoveryUnavailable,
   LiveE2eHarness,
   type LiveE2ePreflight,
 } from '../../../../test-support/live-e2e/live-e2e-harness.js';
 import {
-  loadLiveE2eManifest,
-  requireTrackedLiveE2eManifestPath,
   selectedLiveE2eScenarioIds,
-} from '../../../../test-support/live-e2e/live-e2e-manifest.js';
+} from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
 import { LiveE2eEvidenceScanner } from '../../../../test-support/live-e2e/live-e2e-evidence-scanner.js';
 
 const enabled = process.env.RUN_REAL_E2E === '1';
 const preflightOnly = process.env.AUTOBYTEUS_LIVE_E2E_PREFLIGHT_ONLY === '1';
 const run = enabled ? describe : describe.skip;
-const manifestPath = enabled ? requireTrackedLiveE2eManifestPath() : '';
-const manifest = enabled ? loadLiveE2eManifest(manifestPath) : null;
-const selectedScenarioIds = manifest ? selectedLiveE2eScenarioIds(manifest) : [];
+const selectedScenarioIds = enabled ? selectedLiveE2eScenarioIds() : [];
 const scanner = new LiveE2eEvidenceScanner(['synthetic-live-e2e-scan-canary']);
 
 const assertEvidenceClean = (value: unknown): void => {
@@ -50,11 +47,11 @@ const reportPreflight = (preflight: LiveE2ePreflight): void => {
   process.stdout.write(`${JSON.stringify(report)}\n`);
 };
 
-run('read-only Store-backed real provider capabilities', () => {
+run('value-safe one-database-vault managed-provider capabilities', () => {
   let harness: LiveE2eHarness;
 
   beforeAll(async () => {
-    harness = await LiveE2eHarness.open(manifestPath);
+    harness = await LiveE2eHarness.open();
   });
 
   afterAll(async () => {
@@ -75,22 +72,33 @@ run('read-only Store-backed real provider capabilities', () => {
 
     if (preflightOnly) continue;
 
-    it(`executes ${scenarioId} through its reviewed product boundary`, { timeout: 180_000 }, async () => {
+    it(`executes ${scenarioId} through its reviewed product boundary`, { timeout: 180_000 }, async ({ skip }) => {
+      const preflight = await harness.preflight(scenarioId);
+      if (preflight.health !== 'READY' || preflight.missing.length > 0) {
+        const result = {
+          scenarioId,
+          status: 'SKIPPED_NOT_CONFIGURED',
+          health: preflight.health,
+          missing: preflight.missing,
+          instructionCode: preflight.instructionCode,
+        };
+        assertEvidenceClean(result);
+        process.stdout.write(`${JSON.stringify(result)}\n`);
+        skip();
+        return;
+      }
       const execution = await harness.requireScenario(scenarioId);
       const scenario = execution.scenario;
+      await execution.activateGeminiMode();
 
-      if (scenario.mode === 'REAL_GATEWAY') {
-        if (scenarioId !== 'openai.agent-flow') {
-          throw new Error(`LIVE_E2E_SCENARIO_MODE_MISMATCH:${scenarioId}`);
-        }
+      if (scenario.operation === 'agent-flow') {
         const result = await safeExternalOperation(
           scenarioId,
-          () => execution.executeOpenAiAgentFlow(assertEvidenceClean),
+          () => execution.executeAgentFlow(assertEvidenceClean),
         );
         assertEvidenceClean(result);
         expect(result).toMatchObject({
           scenarioId,
-          mode: 'REAL_GATEWAY',
           capability: 'agent-turn',
           status: 'PASSED',
         });
@@ -98,11 +106,7 @@ run('read-only Store-backed real provider capabilities', () => {
         return;
       }
 
-      if (scenario.mode !== 'REAL_DIRECT_SECRET') {
-        throw new Error(`LIVE_E2E_SCENARIO_MODE_MISMATCH:${scenarioId}`);
-      }
-
-      if (scenarioId === 'openai.llm' || scenarioId === 'gemini.llm') {
+      if (scenario.operation === 'llm') {
         const llm = await safeExternalOperation(scenarioId, () => execution.createLlm(scenario.model!));
         try {
           const response = await safeExternalOperation(scenarioId, () => llm.sendUserMessage(
@@ -117,18 +121,18 @@ run('read-only Store-backed real provider capabilities', () => {
         return;
       }
 
-      if (scenarioId === 'serper.search') {
+      if (scenario.operation === 'search') {
         const result = await safeExternalOperation(scenarioId, () => execution.search('AutoByteus', 2));
         assertEvidenceClean(result);
         expect(result.length).toBeGreaterThan(0);
         return;
       }
 
-      if (scenarioId === 'openai.audio' || scenarioId === 'gemini.audio') {
+      if (scenario.operation === 'audio') {
         const client = await safeExternalOperation(scenarioId, () => execution.createAudioClient(scenario.model!));
         try {
           const result = await safeExternalOperation(scenarioId, () => client.generateSpeech(
-            'Hello from the secure Store-backed audio test.',
+            'Hello from the value-safe managed-provider audio test.',
           ));
           assertEvidenceClean(result);
           expect(result.audio_urls.length).toBeGreaterThan(0);
@@ -138,7 +142,7 @@ run('read-only Store-backed real provider capabilities', () => {
         return;
       }
 
-      if (scenarioId === 'openai.image' || scenarioId === 'gemini.image') {
+      if (scenario.operation === 'image') {
         const client = await safeExternalOperation(scenarioId, () => execution.createImageClient(scenario.model!));
         try {
           const result = await safeExternalOperation(scenarioId, () => client.generateImage(
@@ -152,7 +156,7 @@ run('read-only Store-backed real provider capabilities', () => {
         return;
       }
 
-      if (scenarioId === 'anthropic.claude-agent-sdk') {
+      if (scenario.operation === 'claude-managed') {
         const tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-managed-real-e2e-'));
         appConfigProvider.resetForTests();
         appConfigProvider.config.setCustomAppDataDir(tempDirectory);
@@ -182,11 +186,40 @@ run('read-only Store-backed real provider capabilities', () => {
         return;
       }
 
-      if (scenarioId.startsWith('autobyteus.remote-')) {
-        const kind = scenarioId.endsWith('llm') ? 'llm' : scenarioId.endsWith('audio') ? 'audio' : 'image';
-        const discovered = await safeExternalOperation(scenarioId, () => execution.discoverAutoByteus(kind));
+      if (scenario.operation.startsWith('autobyteus-')) {
+        const kind = scenario.operation.endsWith('llm')
+          ? 'llm'
+          : scenario.operation.endsWith('audio') ? 'audio' : 'image';
+        let discovered: number;
+        try {
+          discovered = await execution.discoverAutoByteus(kind);
+        } catch (error) {
+          const instructionCode = classifyAutoByteusDiscoveryUnavailable(error, kind);
+          if (!instructionCode) throw error;
+          const result = {
+            scenarioId,
+            status: 'SKIPPED_CAPABILITY_UNAVAILABLE',
+            capability: `${kind}-model-discovery`,
+            instructionCode,
+          };
+          assertEvidenceClean(result);
+          process.stdout.write(`${JSON.stringify(result)}\n`);
+          skip();
+          return;
+        }
         assertEvidenceClean(discovered);
-        if (discovered === 0) throw new Error(`LIVE_E2E_CAPABILITY_UNAVAILABLE:${scenarioId}`);
+        if (discovered === 0) {
+          const result = {
+            scenarioId,
+            status: 'SKIPPED_CAPABILITY_UNAVAILABLE',
+            capability: `${kind}-model-discovery`,
+            instructionCode: 'AUTOBYTEUS_DISCOVERY_EMPTY',
+          };
+          assertEvidenceClean(result);
+          process.stdout.write(`${JSON.stringify(result)}\n`);
+          skip();
+          return;
+        }
         const models = await execution.listAutoByteusModels(kind);
         assertEvidenceClean(models);
         const model = scenario.model

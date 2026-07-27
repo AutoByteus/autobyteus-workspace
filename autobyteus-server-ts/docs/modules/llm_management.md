@@ -46,53 +46,77 @@ metadata persistence/sync for the TypeScript server.
 The GraphQL boundary stays provider-centered through
 `src/api/graphql/types/llm-provider.ts`.
 
-### Queries
+### API-Key Settings Query
+
+`providerSettings(runtimeKind?)` is the sole read authority for Settings -> API
+Key Management. It returns each provider exactly once as:
+
+```text
+ProviderSettingsGroup {
+  provider: LlmProviderObject
+  llmModels: ModelDetail[]
+  audioModels: ModelDetail[]
+  imageModels: ModelDetail[]
+  videoModels: ModelDetail[]
+}
+```
+
+`LlmProviderObject` retains the existing provider identity/catalog fields:
+
+- `id`, `name`, `providerType`, `isCustom`, and nullable `baseUrl`;
+- provider-owned `apiKeyConfigured` Boolean;
+- `status` and nullable `statusMessage` for catalog/runtime state.
+
+`apiKeyConfigured` is computed once by the exact provider owner. It is never
+copied from one capability occurrence or another provider. The four model lists
+reuse the existing non-null `ModelDetail` contract and use `[]` when the
+provider has no models in that capability. The web consumes this grouped
+collection directly and maintains no four-array merge or second credential map.
+
+After a save/remove command returns Boolean completion, the client refetches
+`providerSettings` for authoritative state. Secret values are never returned.
+
+### Other Queries
+
+The established catalog queries remain supported for model selectors, media
+defaults, history, workspace, and other non-Settings consumers:
 
 - `availableLlmProvidersWithModels(runtimeKind?)`
 - `availableAudioProvidersWithModels(runtimeKind?)`
 - `availableImageProvidersWithModels(runtimeKind?)`
 - `availableVideoProvidersWithModels(runtimeKind?)`
-- `getLlmProviderCredentialStatus(providerId)`
 - `getGeminiSetupConfig()`
+
+They are not API-key Settings credential authorities.
 
 ### Mutations
 
-- `setLlmProviderApiKey(providerId, apiKey)`
-- `removeLlmProviderApiKey(providerId)`
-- `probeCustomLlmProvider(input)`
-- `createCustomLlmProvider(input, runtimeKind?)`
-- `deleteCustomLlmProvider(providerId, runtimeKind?)`
+- `saveProviderApiKey(providerId, apiKey)` -> Boolean
+- `removeProviderApiKey(providerId)` -> Boolean
+- `probeCustomProvider(input)` -> discovered `{ id, name }` models only
+- `createCustomProvider(input)` -> assigned provider ID only
+- `deleteCustomProvider(providerId)` -> Boolean
+- `saveGeminiAiStudio(apiKey, activateAfterSave)`
+- `saveGeminiVertexExpress(apiKey, activateAfterSave)`
+- `saveGeminiVertexProject(project, location, activateAfterSave)`
+- `useGeminiMode(mode)`
+- `removeGeminiConfiguration(mode)`
 - `reloadLlmProviderModels(providerId, runtimeKind?)`
 - `reloadLlmModels(runtimeKind?)`
-- `setGeminiSetupConfig(...)`
 
-### Provider Read Model
+Gemini mutations return the same exact `GeminiSetupStateObject`; ordinary
+failures use the typed GraphQL error path rather than a parallel outcome,
+instruction-code, or generic status-message protocol.
 
-`ProviderWithModels.provider` is a provider object, not a plain enum/string:
+### Model Detail
 
-- `id`
-- `name`
-- `providerType`
-- `isCustom`
-- `baseUrl`
-- `credentialStatus`
-  - `backendHealth`
-  - nullable `storageState`
-  - nullable `lifecycle`
-  - nullable `instructionCode`
-- `status`
-- `statusMessage`
+Every capability list carries the existing provider-owned `ModelDetail`:
 
-`ProviderWithModels.models[*]` carries provider-owned model metadata:
-
-- `modelIdentifier`
-- `name`, `value`, and `canonicalName`
-- nullable `description` display metadata
-- `providerId`
-- `providerName`
-- `providerType`
-- `runtime`
-- optional host/config/token-limit fields
+- `modelIdentifier`, `name`, `value`, and `canonicalName`;
+- nullable `description` display metadata;
+- `providerId`, `providerName`, `providerType`, and `runtime`;
+- optional host/config/token-limit fields;
+- nullable `metadataProvenance`.
 
 Model `description` is optional plain-text catalog metadata, not model identity.
 Runtime-specific catalogs should preserve it when their authoritative discovery
@@ -120,27 +144,50 @@ selection guidance; missing descriptions remain valid name-only options.
 - Built-in provider IDs are stable enum-backed values such as `OPENAI`,
   `ANTHROPIC`, `GEMINI`, `LMSTUDIO`, and `OLLAMA`.
 - Secret writes/removals remain write-only through
-  `setLlmProviderApiKey(...)` / `removeLlmProviderApiKey(...)`.
-- Readback exposes value-free `credentialStatus`; raw secret values are never
-  returned.
-- Gemini keeps its special setup modes, but it still projects into the same
-  provider-centered list.
+  `saveProviderApiKey(...)` / `removeProviderApiKey(...)`.
+- Readback exposes only provider-owned `apiKeyConfigured`; raw secret values are
+  never returned.
+- Gemini keeps three exact construction modes while projecting into the same
+  provider-centered list: AI Studio supplies `{apiKey}`, Vertex Express
+  supplies `{vertexai: true, apiKey}`, and Vertex Project supplies
+  `{vertexai: true, project, location}`. No mode may silently fall back to another configured option; the explicit
+  `GEMINI_SETUP_MODE` is the sole activation authority.
 - The Autobyteus runtime model catalog delegates built-in LLM entries to the
   `autobyteus-ts` `LLMFactory`; package-level additions such as
   `gemini-3.5-flash` should surface through that path rather than through a
   duplicate server-side Gemini model list.
+
+Gemini metadata intentionally remains distinct from LLM/media SDK mode:
+
+- **AI Studio** is the only live-capable metadata strategy. It resolves only
+  the exact AI Studio metadata consumer and calls the documented Gemini
+  Developer API models endpoint. A matching live record is reported as
+  `LIVE`. An unavailable credential/provider, request failure or timeout, or a
+  response without the matching record retains curated values and reports
+  `CURATED_FALLBACK`.
+- **Vertex Express** is `CURATED_ONLY`. Model-list metadata performs no Gemini
+  metadata Store lookup and no metadata HTTP request, so its API key is never
+  sent to the Gemini Developer API endpoint.
+- **Vertex Project** is also `CURATED_ONLY` and performs no metadata credential
+  lookup or metadata HTTP request.
+
+GraphQL exposes the resulting value-free provenance as nullable
+`ModelDetail.metadataProvenance`. Curated data must not be described as live
+provider metadata. These metadata strategies do not change the three exact
+LLM/media SDK construction modes and do not authorize credential, endpoint, or
+mode fallback.
 
 ### Custom Providers
 
 - Custom providers are currently limited to
   `providerType = OPENAI_COMPATIBLE`.
 - Each saved custom provider gets its own stable provider ID
-  (`provider_<uuid>`), name, provider type, and base URL. Its API key is stored
-  separately by Secret Management.
-- Custom providers are returned in the same provider list as built-ins.
+  (`provider_<uuid>`), name, server-owned `OPENAI_COMPATIBLE` type/runtime, and
+  base URL. Its API key is stored separately by Secret Management.
+- Custom providers are returned in the same `providerSettings` collection as
+  built-ins.
 - Saved custom providers can be removed through
-  `deleteCustomLlmProvider(providerId, runtimeKind?)`; built-ins remain
-  non-deletable.
+  `deleteCustomProvider(providerId)`; built-ins remain non-deletable.
 - The public API does **not** expose a separate top-level
   `openaiCompatibleEndpoints` subject anymore.
 
@@ -163,37 +210,38 @@ and currently contains:
   - `baseUrl`
 
 The current file version is `2` and is metadata-only. Credentials are stored in
-the paired encrypted Local Store (or another selected backend) under the custom
+the encrypted vault inside the current application database under the custom
 provider's stable definition ID. See [Secret Management](./secret_management.md).
 
 ## Custom Provider Lifecycle
 
-### Create
+### Probe And Create
 
-1. The user submits a draft `{ name, providerType, baseUrl, apiKey }`.
-2. `LlmProviderService` normalizes and validates the input:
-   - required strings
-   - normalized absolute `http://` or `https://` base URL
-   - supported provider type (`OPENAI_COMPATIBLE`)
-   - provider-name uniqueness across built-ins and existing custom providers
-3. Probe uses the OpenAI-compatible `/models` discovery owner before save.
-4. On successful create, metadata is persisted and the credential is written
-   through `SecretManagementService`. A failed credential write rolls back the
-   metadata record.
-5. The server triggers provider-targeted model refresh through the real model
-   catalog path.
+1. The user submits exactly `{ name, baseUrl, apiKey }`. Provider type and
+   runtime are server-owned constants.
+2. `LlmProviderService` normalizes/validates required strings, an absolute
+   `http://` or `https://` base URL, and provider-name uniqueness across
+   built-ins and existing custom providers.
+3. Probe uses the OpenAI-compatible `/models` discovery owner and returns only
+   discovered `{ id, name }` rows.
+4. Create persists metadata and the credential, returning only the assigned
+   provider ID. A failed credential write rolls back the metadata record.
+5. The client refetches canonical `providerSettings`; no echoed input,
+   provider-type constant, runtime constant, or parallel outcome DTO is
+   returned.
 
 ### Delete
 
-1. `deleteCustomLlmProvider(providerId, runtimeKind?)` rejects built-in
-   provider IDs and validates that the custom provider exists for the requested
-   runtime kind.
+1. `deleteCustomProvider(providerId)` rejects built-in IDs and verifies that the
+   custom provider exists.
 2. `SecretManagementService.removeForConsumer(...)` removes the credential.
-3. `CustomLlmProviderStore.deleteProvider(...)` removes the metadata record
-   from `custom-llm-providers.json`.
-4. The server then triggers an authoritative full LLM catalog refresh through
-   `reloadLlmModels(runtimeKind?)` so the deleted provider and its models
-   disappear from the served provider list and runtime registry.
+3. `CustomLlmProviderStore.deleteProvider(...)` removes metadata from
+   `custom-llm-providers.json`.
+4. The server refreshes the authoritative LLM catalog, and the client refetches
+   `providerSettings` so the provider and models disappear.
+
+Delete is idempotent at the owning service boundary. Failures use GraphQL
+errors rather than a second status protocol.
 
 ## Runtime Sync and Status
 
@@ -231,7 +279,7 @@ the whole custom-provider slice when one endpoint is broken.
   - reloadable built-ins (`LMSTUDIO`, `OLLAMA`, `AUTOBYTEUS`): refresh through
     `LLMFactory.reloadModels(...)`
   - other built-ins: return current model count without a special reload path
-- `deleteCustomLlmProvider(providerId, runtimeKind?)`
+- `deleteCustomProvider(providerId)`
   - removes the saved custom-provider record first
   - then runs a full LLM catalog refresh so deleted-provider models are removed
     from the authoritative catalog and fresh-process startup state

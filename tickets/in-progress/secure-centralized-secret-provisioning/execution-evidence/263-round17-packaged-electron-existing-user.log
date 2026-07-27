@@ -1,0 +1,9 @@
+SCENARIO=SCSP-E2E-PACKAGED-CUSTOM-V1
+HEAD=dd1d37f90d00331d427bad1b36e4401a3a733038
+PORT_29695_PRECHECK=FREE
+SCSP-E2E-PACKAGED-CUSTOM-V1-ONE PASS providers=1 restart=PASS stale_lock=RECOVERED evidence=value-free
+SCSP-E2E-PACKAGED-CUSTOM-V1-MULTIPLE PASS providers=2 restart=PASS stale_lock=N/A evidence=value-free
+SCSP-E2E-PACKAGED-CUSTOM-V1-SUMMARY FAIL code=locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'New Provider', exact: true })[22m
+
