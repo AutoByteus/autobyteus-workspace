@@ -7,7 +7,8 @@
 - Review round 8 resolved the bounded `TCR-005`/`TCR-006` corrections.
 - Review round 9 proportionally reviewed only the new Round 17 custom-provider-v1 actual-server migration E2E.
 - Review round 10 proportionally reviewed only the four Round 19 Claude explicit-API-key harness/scenario paths.
-- Review round 11 proportionally reviews the Round 21 cumulative six-path durable package after CR-031 resolution. It is the latest authoritative test-review result.
+- Review round 11 proportionally reviewed the Round 21 cumulative six-path durable package after CR-031 resolution.
+- Review round 12 records the Round 22 proportional gate as `Not Applicable`: API/E2E changed no durable test/support path, the implementation-owned Gemini focused spec was already reviewed with source, and the six Round-21 durable paths remain byte-identical to their reviewed checkpoint. It is the latest authoritative test-review result.
 
 ## Review Meta
 
@@ -330,3 +331,82 @@ No unresolved actionable durable test-code findings.
 - Unresolved finding IDs: `None`
 - Recommended Recipient: `delivery_engineer`
 - Notes: This Pass completes the separate proportional durable-test review for Round 21 at exact HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`. The underlying API/E2E result remains `Pass` at `98.9%` confidence. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only, Claude modes exactly `auto|cli|api-key`, `LOCAL_HARDENED` only for local vault/file-root/value-safe custody with Codex excluded, inherited environments as continuity rather than isolation evidence, deferred `STRONG_AGENT_ISOLATION`, exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker topology, explicit importer target/source immutability, one database plus adjacent key, no automatic `.env` credential migration, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+
+# Review Round 12 — Round 22 Compact Gemini Presentation
+
+## Review Meta
+
+- Review Round: `12`
+- Trigger: Round 22 API/E2E `Pass` at exact reviewed HEAD `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`, with no API/E2E-owned durable test/support change.
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/gemini-setup-ui-ux-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/encrypted-secret-vault-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/scope-audit.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md` (latest source-review Round 47 `Pass`, 9.69/10)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md` (Round 22 authoritative section)
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md` (Round 22 authoritative section)
+- API/E2E Result: `Pass`
+- Final Validation Confidence: `98.7%`; no category below 90% and no missing/failing critical criterion.
+- Prior unresolved test-review findings rechecked: `None`; `TCR-001`–`TCR-006` remain resolved.
+- Review method: report/evidence consistency, current repository status, exact durable-path identity, and ownership review. The successful API/E2E workflow was not rerun.
+
+## Review History
+
+| Review Round | Trigger | Result | Notes |
+| --- | --- | --- | --- |
+| 1–10 | Earlier successful packages and bounded corrections | Superseded | `TCR-001`–`TCR-006` resolved. |
+| 11 | Round 21 cumulative six-path durable package | Pass, superseded | Scope-reset/restart/Claude durable package passed proportional review. |
+| 12 | Round 22 compact Gemini presentation with no API/E2E-owned durable change | **Not Applicable — latest authoritative** | Execution evidence and reports are consistent; no new durable test-code subject exists. |
+
+## Changed Durable Test Scope
+
+Temporary browser automation state, logs, screenshots, built outputs, task runtime roots, and evidence artifacts are execution evidence rather than durable test code.
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
+| --- | --- | --- | --- | --- |
+| None | N/A | Round 22 compact Gemini presentation | N/A | API/E2E changed no repository-resident durable test, fixture, runner, scenario, or support path. |
+
+- No durable test file changed: `Yes`
+- Review result when no durable test file changed: `Not Applicable`
+- The implementation-owned `autobyteus-web/components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts` change belongs to the reviewed implementation source package, not to the Round-22 API/E2E-owned delta. It passed 6/6 during execution and does not require a second proportional review.
+- The six cumulative Round-21 API/E2E durable paths are clean and byte-identical to committed checkpoint `c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a`, which captured the package already reviewed in Round 11:
+  - `provider-secret-lifecycle-graphql.e2e.test.ts`
+  - `server-restart-secret-lifecycle.e2e.test.ts`
+  - `real-e2e-provider-capabilities.e2e.test.ts`
+  - `live-e2e-harness.ts`
+  - `live-e2e-scenarios.d.mts`
+  - `live-e2e-scenarios.mjs`
+
+## Proportional Test-Code Checks
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | N/A | No durable test-code delta. |
+| Assertions prove approved requirements instead of incidental implementation details | N/A | No durable test-code delta. The implementation-owned focused spec was already source-reviewed and passed. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | N/A | No durable test-code delta. |
+| Test isolation and determinism are appropriate for the exercised boundary | N/A | No changed fixture/setup to review. Execution nevertheless used an isolated supported test runtime, task-owned ports/DB/key, and complete cleanup. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | N/A | No durable test-code delta. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | No current dirty API/E2E test path; all six previously reviewed paths are byte-identical to the Round-21 checkpoint; removed manifest/config/import-wrapper paths remain absent. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Both Round-22 canonical reports say API/E2E-owned durable changes are `None`; evidence `369` records zero dirty API/E2E test paths and exact HEAD. |
+
+Additional consistency evidence:
+
+- Current HEAD is exactly `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`.
+- `git diff 49c27b2fe... -- autobyteus-server-ts/tests test-support package.json autobyteus-server-ts/.env.test autobyteus-server-ts/.gitignore`: empty.
+- All six cumulative durable paths are byte-identical to checkpoint `c265d1a96`.
+- Round-22 actual browser evidence proves the compact/expanded/focused/write-only/Save-and-use/reload/no-removal behavior directly; this execution proof does not create a durable test-code review subject.
+- Final evidence scanner and package check passed (`368`–`369`).
+
+## Findings
+
+No actionable durable test-code finding.
+
+## Latest Authoritative Result
+
+- Result: `Not Applicable`
+- Changed durable test paths reviewed: `0`
+- Unresolved finding IDs: `None`
+- Recommended Recipient: `delivery_engineer`
+- Notes: Round 22 API/E2E passed at exact HEAD `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254` with 98.7% confidence. No API/E2E-owned durable test/support file changed, the implementation-owned focused spec was already source-reviewed, and the previously reviewed Round-21 durable package remains byte-identical. This completes the required proportional gate. Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only, Claude modes exactly `auto|cli|api-key`, `LOCAL_HARDENED` only for local vault/file-root/value-safe custody with Codex excluded, inherited environments as continuity rather than isolation evidence, deferred `STRONG_AGENT_ISOLATION`, exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker topology, explicit importer target/source immutability, one database plus adjacent key, no automatic `.env` credential migration, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.

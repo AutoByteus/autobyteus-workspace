@@ -2,21 +2,21 @@
 
 ## Release / Publication / Deployment Scope
 
-Prepare the Round 17 integrated candidate, synchronize durable documentation,
-recheck the required Anthropic dependency, verify the current macOS arm64
-artifact, and provide an explicit user-verification handoff. Repository
-finalization and any release/publication/deployment remain excluded until the
-user explicitly verifies the candidate.
+Prepare the Round 21 narrow-scope integrated candidate, synchronize durable
+documentation, recheck the required Anthropic dependency, build and validate a
+fresh macOS arm64 Electron candidate from the secure-ticket worktree, and hold
+for explicit user verification. Repository finalization and all release,
+publication, deployment, and cleanup work are excluded before that signal.
 
 ## Handoff Summary
 
 - Handoff summary artifact:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Round 17 startup correction, exact API/E2E backend/frontend/package
-  launch paths, current artifact paths/hashes, same-port constraint, safe
-  verification steps, diagnostics, limitations, and required user decision are
-  recorded.
+- Notes: exact base and candidate identities, the user's scope concern and 18
+  exact restorations, Round 21 evidence, fresh artifact paths/hashes, isolated
+  terminal/server checks, safe GUI steps, limitations, and the required user
+  decision are recorded.
 
 ## Initial Delivery Integration Refresh
 
@@ -26,32 +26,39 @@ user explicitly verifies the candidate.
 - Base advanced since bootstrap or previous refresh: `No`
 - New base commits integrated into the ticket branch: `No`
 - Local checkpoint commit result: `Completed` —
-  `3877b39bdcad2e8c88bb9f86d190308aaf034829` preserves the reviewed
-  implementation plus the API/E2E-passed and test-reviewed package before
-  delivery-owned edits.
+  `c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a` preserves the complete Round 21
+  reviewed/API-E2E-passed/test-reviewed package before delivery-owned edits.
 - Integration method: `Already current`
 - Integration result: `Completed`
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale: N/A. Although no new base commit existed, delivery reran
-  the actual built-server custom-provider-v1 startup migration E2E (3/3), plus
-  removed-authority, runner-syntax, and diff checks.
+- No-rerun rationale: not applicable; although the base did not advance,
+  delivery reran focused checks and later validated a fresh package because the
+  preceding candidate had historical user-facing regressions.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
+- Branch relation at build-source HEAD
+  `4bf6e7d18229336cd690497370f1a66dedaafc4a`: 0 behind / 54 ahead, with the
+  tracked base as exact merge-base.
 - Evidence:
-  `execution-evidence/267-delivery-round17-latest-base-integration.log`
-- Blocker: None for user verification.
+  - `execution-evidence/351-delivery-round21-latest-base-refresh.log`
+  - `execution-evidence/353-delivery-round21-integrated-state-check-corrected.log`
+- Superseded evidence: `352` incorrectly scanned a preserved historical build
+  backup outside current source. The backup was moved outside the ticket
+  worktree, and corrected evidence `353` passed; no product change was needed.
+- Blocker: none for handoff preparation.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `Yes — Failed`
-- Initial verification reference: 2026-07-27 user screenshot and live packaged
-  Electron report for terminal session
-  `dd9a6eb8-1d5f-49b4-b4ea-cf22d16ced43`; delivery evidence
-  `execution-evidence/270-user-reported-packaged-terminal-failure-origin.log`.
-- Renewed verification required after implementation correction: `Yes`
-- Renewed verification received: `Pending`
-- Renewed verification reference: A corrected candidate does not yet exist.
+- Initial explicit user completion/verification received: `No`
+- Initial verification reference: the user tested an earlier, now-superseded
+  candidate and reported broader behavior and packaged Terminal problems. That
+  was a failed verification, not completion authority.
+- Renewed verification required after later re-integration: `Yes` — required for
+  exact fresh Round 21 build-source HEAD `4bf6e7d18229336cd690497370f1a66dedaafc4a`.
+- Renewed verification received: `No`
+- Renewed verification reference: pending user response to
+  `handoff-summary.md`.
 
 ## Docs Sync Result
 
@@ -62,53 +69,61 @@ user explicitly verifies the candidate.
   - `autobyteus-server-ts/README.md`
   - `autobyteus-server-ts/docs/modules/secret_management.md`
   - `autobyteus-server-ts/docs/modules/llm_management.md`
+  - `autobyteus-server-ts/docs/modules/codex_integration.md`
   - `autobyteus-web/docs/electron_packaging.md`
-- No-impact rationale: N/A. Round 17 added durable existing-user migration,
-  reset, containment, stale-lock, and packaged-startup knowledge that was absent
-  or contradicted by the earlier long-lived docs.
+- Durable corrections include exact Claude `auto|cli|api-key` behavior, inherited
+  environment continuity versus isolation, the narrowed `LOCAL_HARDENED`
+  boundary, deferred `STRONG_AGENT_ISOLATION`, and save/overwrite-only
+  ordinary-provider/Gemini behavior while retaining custom-provider Delete.
+- No-impact rationale: Docker documentation and root overview remain accurate;
+  topology and root workflow did not change.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: Pending explicit user verification.
+- Archived ticket path: not applicable before explicit user verification.
 
 ## Version / Tag / Release Commit
 
-- Candidate version: existing `1.4.26`; no delivery-owned version bump.
-- Tag: none.
+- Candidate application version: `1.4.26`
+- Version bump: none performed during this delivery stage.
 - Release commit: none.
-- Reason: user-verification hold is active.
+- Tag: none.
+- Signed/notarized production artifact: none.
 
 ## Repository Finalization
 
-- Bootstrap context source: `investigation-notes.md`
+- Bootstrap context source: recorded ticket bootstrap/base `origin/personal`.
 - Ticket branch: `codex/secure-centralized-secret-provisioning`
-- Ticket branch commit result: Local safety checkpoint only; final ticket commit
-  pending user verification
-- Ticket branch push result: Pending user verification
+- Ticket branch commit result: local safety/docs checkpoints only; no final
+  ticket commit authorized.
+- Ticket branch push result: not performed.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed`
-- Target branch update result: Pending
-- Merge into target result: Pending
-- Push target branch result: Pending
+- Target advanced after user verification: not applicable; verification pending.
+- Delivery-owned edits protected before re-integration: local checkpoints exist;
+  current handoff/evidence edits remain in the ticket worktree pending user
+  verification.
+- Re-integration before final merge result: not applicable yet; a fresh remote
+  refresh is mandatory after a future explicit verification signal.
+- Target branch update result: not performed.
+- Merge into target result: not performed.
+- Push target branch result: not performed.
 - Repository finalization status: `Blocked`
-- Blocker: Explicit user verification failed. The packaged terminal bridge drops
-  `ELECTRON_RUN_AS_NODE` in its sanitized child environment and relaunches the
-  Electron application instead of starting the Node-mode PTY bridge.
+- Blocker: explicit user verification of the exact fresh candidate has not yet
+  been received.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No` before verification
-- Method: `Other` — local unsigned macOS verification candidate only
-- Method reference / command: current Round 17 `build:electron:mac` artifact;
-  delivery performed integrity verification only
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Used` for local candidate handoff
-- Blocker: Publication/deployment requires later explicit scope and successful
-  repository finalization.
+- Applicable: `No` before repository finalization and a separate release
+  decision.
+- Method: `Other` — no release method invoked.
+- Method reference / command: none.
+- Release/publication/deployment result: `Blocked`
+- Release notes handoff result: `Blocked`
+- Blocker: this is an unsigned local verification build; user verification and
+  repository finalization are pending. No instruction to publish or deploy has
+  been given.
 
 ## Post-Finalization Cleanup
 
@@ -118,115 +133,116 @@ user explicitly verifies the candidate.
 - Worktree prune result: `Blocked`
 - Local ticket branch cleanup result: `Blocked`
 - Remote branch cleanup result: `Not required`
-- Blocker: Ticket remains in progress for user verification.
+- Blocker: cleanup is intentionally prohibited before user verification and
+  safe finalization. The worktree must remain available for this verification.
+
+## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
+
+- Classification: not applicable.
+- Recommended recipient: not applicable.
+- Why final handoff could not complete: handoff preparation is complete; only
+  the required user-verification hold remains.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification:
   `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/release-notes.md`
-- Archived release notes artifact used for release/publication: Not yet archived
+- Archived release notes artifact used for release/publication: not applicable.
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-None executed. The local ad-hoc/unsigned Electron candidate is a user
-verification artifact, not authorization for publication or deployment.
+No deployment steps were run. The README no-sign local package command was used
+only to produce the verification candidate from exact secure-ticket HEAD
+`4bf6e7d18229336cd690497370f1a66dedaafc4a`:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= \
+  DEBUG='electron-builder,electron-builder:*' \
+  DEBUG='app-builder-lib*' DEBUG='builder-util*' \
+  pnpm build:electron:mac
+```
+
+The user's installed AutoByteus application remained running on port `29695`
+and was neither attached to nor stopped.
 
 ## Environment Or Persisted-Data Transition Notes
 
-- Approved persisted-data decision: `Migration Required` for the supported
-  canonical custom-provider v1 file; ordinary database schema change remains a
-  normal additive Prisma startup migration.
-- Delivery action required: `Migration Required`
-- Result and evidence:
-  - the migration runs automatically after Prisma and vault initialization and
-    before provider consumers; there is no separate maintenance command;
-  - authoritative actual-server runs `244` and `261` passed all three scenarios;
-  - packaged Electron evidence `264` passed valid one/multiple migration,
-    invalid reset/reconfiguration, and restart across six real launches;
-  - delivery reran the actual built-server durable E2E 3/3 in evidence `267`;
-  - delivery did not open or mutate the user's real application data.
+- Approved persisted-data decision: `Migration Required` only for the bounded
+  supported custom-provider schema-v1 transition already implemented and
+  exercised by API/E2E; no delivery-time mutation was authorized.
+- Delivery action required: `None`
+- Result and evidence: Round 21 packaged existing-user evidence `335` proves
+  migration, reopen, custom-provider Delete, and resulting provider/file/runtime/
+  catalog/credential absence. Delivery's isolated packaged-server smoke used a
+  temporary new DB plus adjacent key and cleaned it after exit.
 - Migration completion, validation, recovery, and rollout evidence:
-  - completion/finalization is recorded through the existing app-data-migration
-    status surface as `SUCCEEDED`, `SUCCEEDED_WITH_WARNINGS`, or `FAILED`;
-  - valid migration preserves provider IDs/names and verifies configured/READY
-    behavior after restart;
-  - invalid/colliding input deletes the plaintext v1 authority and requires
-    reconfiguration; deletion-unavailable containment leaves startup/built-ins
-    usable but blocks custom-provider creation until repair/restart;
-  - no backup/quarantine is created by the product. Before verifying against
-    non-disposable data, the operator should take a coordinated app-data backup,
-    including the application DB, adjacent `.secret.key`, and legacy metadata
-    source as applicable. DB/key restore must always be paired.
+  - startup runs the bounded all-or-nothing custom-provider-v1 migration after
+    DB migration and vault initialization;
+  - valid supported state becomes secret-free v2 metadata plus encrypted vault
+    data; invalid state resets rather than partially importing;
+  - no automatic `.env` credential migration/update exists;
+  - the application DB and adjacent key are a single backup/restore unit;
+  - explicit importer target/source immutability remains authoritative.
+- User-owned retained persistent project test DB/key/config: preserved and not
+  inspected or modified.
 
 ## Verification Checks
 
-- Architecture: Pass.
-- Implementation source review Round 41: Pass, 9.62/10.
-- API/E2E Round 17: Pass, 98.9%; every applicable category >=98%.
-- Proportional durable-test review Round 9: Pass; no unresolved finding.
-- Delivery integrated-state actual-server migration E2E: 3/3 Pass.
-- Removed authorities and runner syntax: Pass.
-- Round 17 actual packaged Electron existing-user launches: six launches / three
-  scenarios Pass.
-- Round 17 affected API/E2E matrix, real configured-provider matrix, browser
-  Settings, Docker, repository-Prisma, Codex/Claude, Electron AppData/runtime,
-  cleanup, and evidence scans: Pass as recorded.
-- Current DMG SHA-256:
-  `bb220cc8f73af78d795fbab6c1cd0a46534a21bca3ac3854d2faf9feca449fde`.
-- Current ZIP SHA-256:
-  `4274a30f44984804a57aa2b76b55366bb9f0ad37dc7c361bf8d36cf2e6d1afa8`.
-- Delivery DMG `hdiutil verify` and ZIP `unzip -tq`: Pass (`268`).
-- Delivery final claim/boundary/artifact/value-safety check: Pass (`269`).
-- User-owned packaged Terminal verification: Fail. Delivery confirmed the
-  application/server remained healthy, native arm64 `node-pty` and its helper
-  were packaged correctly, and the failure origin is the dropped packaged
-  Electron Node-mode runtime discriminator (`270-user-reported-packaged-terminal-failure-origin.log`).
-- Configured external providers: Pass as recorded; exact unavailable/missing
-  capabilities remain unclaimed.
-- Full user-owned visible Electron verification: Pending.
+- Latest-base refresh: `Pass` (`351`).
+- Integrated focused checks: `Pass` (`353`): 16/16 focused tests, all 18 exact
+  base restorations, redundant-removal absence, exact dependency lock, and
+  unchanged Docker topology.
+- Source review: Round 45 `Pass`, 9.75/10, no open implementation-source
+  finding at `ec0df6b1a9d216366e08262cd96f5280686b04d0`.
+- API/E2E: Round 21 `Pass`, 98.9%, no missing/failing critical acceptance
+  criterion.
+- Proportional durable-test review: Round 11 `Pass`, no unresolved finding.
+- Fresh package build: `Pass` (`354`), macOS arm64 application/DMG/ZIP from
+  exact source HEAD `4bf6e7d18229336cd690497370f1a66dedaafc4a`.
+- Fresh package validation: `Pass` (`355`):
+  - bundle `com.autobyteus.app`, version `1.4.26`, arm64;
+  - DMG verify and ZIP integrity pass;
+  - packaged server isolated startup pass;
+  - native `node-pty` spawn pass;
+  - packaged Electron `IsolatedPtySession` marker pass;
+  - user-owned port-29695 process untouched.
+- Artifact SHA-256:
+  - DMG `70ef790c788fc25e2f4d738224f913c27b0e217a80cb73fe2085f669474d3dd2`
+  - ZIP `411347e28fe919dcb35feb0ea90d9d8565d8775a99c6e0158483b9b6fff8db37`
+- Code-signing: expected ad-hoc/unsigned local candidate; strict deep
+  verification does not pass. This is not a production-signing result.
 
 ## External Dependency Recheck
 
-`EXT-ANTHROPIC-AGENT-SDK-AUTH` was rechecked on 2026-07-27 against the four
-official sources in `delivery-anthropic-auth-recheck.md`. Result: maintained
-external dependency; no legal clearance and no silent `cli`/`managed-secret`
-mode change. Repeat the recheck if finalization/release occurs later or official
-guidance changes.
+- Artifact: `delivery-anthropic-auth-recheck.md`
+- Dependency: `EXT-ANTHROPIC-AGENT-SDK-AUTH`
+- Result: all four approved official Anthropic sources rechecked on 2026-07-27;
+  exact Claude modes remain unchanged.
+- Boundary: delivery/release risk recheck only, not legal clearance or an
+  authentication redesign. Repeat before any later release if sources change.
 
 ## Rollback Criteria
 
-Stop finalization/release and preserve the worktree if:
+Before finalization, any user failure keeps the ticket in progress and routes
+with evidence to the owning specialist; no repository rollback is needed
+because nothing was pushed or merged. After any future finalization, stop and
+revert/repair if:
 
-- the user cannot start the Round 17 candidate after the installed app and fixed
-  port are clear;
-- diagnostics show a ticket-owned shell, migration, vault, provider Settings,
-  or packaging failure;
-- existing valid v1 providers do not migrate, invalid v1 blocks built-in
-  Settings, or restart loses the finalized outcome;
-- database/key pair persistence or provider-group configured state fails;
-- the tracked base advances and reintegration changes the verified state;
-- official Anthropic guidance unambiguously prohibits the exact approved path;
-  or
-- any secret value appears in logs, APIs, evidence, or release artifacts.
-
-A code/packaging failure routes to `implementation_engineer`; design or
-requirement impact routes to `solution_designer`; API/E2E execution/fixture
-failure follows the established `api_e2e_engineer` -> `code_reviewer` path.
-
-Current escalation classification: `Local Fix`.
-Recommended recipient: `implementation_engineer`.
-Required return path: implementation source review, then realistic packaged
-API/E2E terminal validation, proportional durable-test review if applicable,
-and a new delivery/user-verification candidate.
-Handoff status: `Blocked` — the required AutoByteus `send_message_to` capability
-was unavailable after bounded discovery attempts in this delivery session. The
-artifact package and exact owner classification are preserved; no Codex-native
-agent was substituted.
+- application DB and adjacent key cannot be opened as one unit;
+- plaintext secret values appear in metadata, API output, logs, or evidence;
+- Save/overwrite, explicit importer, or custom-provider-v1 migration violates
+  its reviewed contract;
+- ordinary/Gemini standalone removal reappears;
+- unrelated launcher, PTY, Claude MCP/session, or built-in-default changes
+  reappear;
+- `repository_prisma`/Prisma or Docker topology departs from the preserved
+  constraints;
+- the user reports a reproducible regression in this exact candidate.
 
 ## Final Status
 
-`Blocked — Round 17 user verification failed due to a confirmed
-implementation-owned packaged terminal regression. Repository finalization,
-release, publication, deployment, and cleanup remain prohibited pending a
-reviewed fix, packaged API/E2E pass, and renewed explicit user verification.`
+`Awaiting explicit user verification.` The Round 21 package is integrated,
+documented, built, and delivery-validated. It is not finalized or released.
+The ticket remains in progress and its worktree/branch are intentionally
+preserved.

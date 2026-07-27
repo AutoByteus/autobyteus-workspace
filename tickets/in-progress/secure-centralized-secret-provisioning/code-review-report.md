@@ -1,13 +1,15 @@
 # Code Review Report
 
-> Latest authoritative result: **Round 41 — Pass**
-> for the bounded `CR-030` source/test delta
-> `5994a622b71533b064910db4da0449505578ebb3..3dbe351ee78fbc39f1a1d1f1d2dfc59400fd6672`
-> at final handoff HEAD `dd1d37f90d00331d427bad1b36e4401a3a733038`.
-> `CR-030` is resolved: only positive safe integers are PID-bearing owners,
-> aged zero-byte/non-positive legacy locks use bounded stale recovery, and an
-> equally aged lock owned by a live positive PID remains mutually exclusive.
-> The reviewed Round-33 migration package is ready to return to API/E2E.
+> Latest authoritative result: **Round 47 — Pass**
+> for the bounded `CR-032` documentation/comment delta
+> `5f872ed2ce268c6c3c92e2236c22207c8e01da9e..49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`.
+> The three changed durable paths now describe the current provider-centric
+> Settings contract, one-database encrypted vault, targeted custom-provider
+> synchronization, and explicit test-support ownership. `CR-032` is resolved
+> without a runtime, schema, UI-behavior, command, scenario, or compatibility
+> change. The complete Round-46 `origin/personal` scope audit is therefore
+> closed: the implementation is materially clean and ready for API/E2E of the
+> current Gemini presentation HEAD.
 
 ## Historical Post-Review Supersession — User-Approved Explicit Google Metadata Separation
 
@@ -3586,3 +3588,470 @@ Not applicable — review passed.
 - Failure Origin: `CR-031 resolved; no remaining implementation-source failure in the bounded delta.`
 - Recommended Recipient: `api_e2e_engineer`
 - Notes: source/test commit `3afcf86b3cdd389ddf3506d205ad9fed3edf0a23` passes at final handoff HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`. API/E2E should rerun the exact failed packaged custom-provider Delete scenario first; do not route to delivery before a successful execution and proportional test-code review.
+
+# Review Round 46 — Complete Ticket Scope Review Against `origin/personal`
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Review date: `2026-07-27`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/encrypted-secret-vault-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/gemini-setup-ui-ux-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/custom-provider-v1-migration-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/scope-audit.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/use-case-spine-validation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md`
+- Current Review Round: `46`
+- Trigger: the user requested a complete current-ticket comparison against the original `personal` branch to confirm that the branch remains clean, scoped, and free of unnecessary behavior.
+- Prior Review Round Reviewed: `45` plus the accepted Round-36 exhaustive scope-reset design and source package.
+- Latest Authoritative Round: `46`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md` (Round 36 Pass)
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md`
+- Repository/worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
+- Branch: `codex/secure-centralized-secret-provisioning`
+- Comparison baseline / merge base: `origin/personal` at `d6983612c5a77fb94d9266df85a9d03fe2d1c68b`
+- Current reviewed HEAD: `5f872ed2ce268c6c3c92e2236c22207c8e01da9e`
+- Divergence from baseline: `0` baseline-only commits / `56` ticket commits.
+- Coverage Investigation Reviewed: historical downstream context only; this is not a successful-test review.
+- Execution Coverage Report Reviewed: historical downstream context only; this is not a successful-test review.
+- Failing Scenario IDs: N/A.
+- Exact Failing Commands / Execution Mode: N/A.
+- Failure Evidence Paths: N/A.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 43 | Round-36 exhaustive implementation reset | Preserved findings through `CR-030` | None | Pass | No | Accepted the implementation after exact base restoration and removal-surface cleanup. |
+| 44 | Packaged custom-provider Delete failure | None | `CR-031` | Fail | No | Delete committed and then failed on unrelated full AutoByteus discovery. |
+| 45 | Bounded targeted-refresh correction | `CR-031` | None | Pass | No | Custom-provider Delete now uses its targeted runtime/catalog owner. |
+| 46 | User-requested complete current-HEAD comparison against `origin/personal` | `CR-031` and Round-36 scope dispositions | `CR-032` | Fail | Yes | Runtime/product behavior is materially scoped; three changed documentation/comment locations retain obsolete architecture or command descriptions. |
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 44–45 | `CR-031` | High / Local Fix | Remains resolved | Current `LlmProviderService.deleteCustomProvider` uses provider-targeted reload; focused tests and Round-21 packaged/browser evidence passed. | The implementation is independent of unrelated full AutoByteus remote discovery. One documentation bullet still describes the superseded full-reload mechanism and is part of new cleanup finding `CR-032`, not a reopened runtime defect. |
+| 43 / architecture Round 36 | Exact 18 `RESTORE_BASE` paths | Scope gate | Remain resolved | Independent `git diff --quiet origin/personal -- <path>` checks passed for every listed path. | Electron managers/AppData/reset, isolated PTY, Claude MCP/session, built-in defaults, and provider editor behavior are byte-identical to baseline. |
+| 43 / architecture Round 36 | Three `REMOVE_FILE` paths | Scope gate | Remain resolved | All three paths are absent at current HEAD; residue scans found no production removal helper/import. | No tombstone or compatibility export remains. |
+| 43 / architecture Round 36 | Ordinary-provider and Gemini standalone removal surfaces | Scope gate | Remain resolved in runtime/source | Production scans found no removal mutation/service/store/UI action; the only two symbol strings are negative E2E schema assertions. | `autobyteus-web/docs/settings.md` still advertises the removed ordinary-provider action and must be corrected under `CR-032`. |
+| 1–42 | Earlier `CR-*` / `FR-*` findings | Mixed | Remain resolved or superseded as previously recorded | Current complete-delta classification, focused source traces, accepted API/E2E history, and current build/test checks. | No earlier runtime defect was reopened by this whole-scope review. |
+
+## Review Scope
+
+- Changed implementation and behavior reviewed: the complete cumulative current delta `origin/personal...5f872ed2c`, including vault/database/root-key ownership, secret APIs, provider point-of-use resolution, Settings/GraphQL composition, Gemini setup, importer, custom-provider-v1 migration, exact dependency update, database lifecycle alignment, file-root/value-safe controls, test runtime, current Gemini presentation refinement, documentation, tests, and removal/restoration work.
+- Files / areas reviewed:
+  - all `692` current changed paths;
+  - `402` ticket/workflow artifact paths, treated as durable review/evidence history rather than runtime behavior;
+  - all `290` non-ticket product/dependency/documentation/test paths;
+  - the prior exhaustive `311`-path scope manifest and every path whose disposition was `RESTORE_BASE`, `REMOVE_FILE`, or `PARTIAL_CLEANUP`;
+  - the two current non-ticket paths not present in the prior manifest, both focused Gemini presentation components.
+- Explicit exclusions:
+  - historical raw execution evidence under `tickets/**` was not judged as production source and was not rewritten merely to remove captured trailing whitespace;
+  - no real credential, secret-bearing source, persistent application database/key, provider account, user profile, Docker runtime, or packaged application was accessed;
+  - successful API/E2E durable-test review remains a separate later entry point.
+
+## Complete Delta And Scope Classification
+
+Current `origin/personal...HEAD` inventory:
+
+| Scope | Count | Current Assessment |
+| --- | ---: | --- |
+| All changed paths | `692` | Large mainly because durable ticket reports/evidence are committed with the workflow. |
+| Ticket/workflow artifacts | `402` | Non-runtime history and evidence; retained as the cumulative package. |
+| Non-ticket paths | `290` | Exhaustively reconciled against the prior 311-path product manifest. |
+| Current paths still classified `RETAIN` by the prior manifest | `259` | Each belongs to an approved vault/provider/importer/migration/dependency/test/docs class. |
+| Current paths still classified `PARTIAL_CLEANUP` by the prior manifest | `29` | Runtime/schema/UI cleanup is complete; documentation residue is recorded as `CR-032`. |
+| Current `RESTORE_BASE` deltas | `0` | All 18 required paths now match `origin/personal` byte-for-byte. |
+| Current `REMOVE_FILE` deltas | `0` | All three redundant files remain absent. |
+| New current paths after the prior manifest | `2` | `GeminiConfigurationOptionEditor.vue` and `GeminiKeyVisibilityButton.vue`; both serve the approved Gemini Settings presentation only. |
+
+The ticket's large numerical diff does not represent a comparably large feature expansion. Its retained production change classes are the exact classes authorized by `scope-audit.md`:
+
+1. one-application-database encrypted vault plus adjacent root key;
+2. provider-owned point-of-use credential resolution;
+3. provider-centric API-key Settings grouping;
+4. explicit Gemini setup/mode and metadata separation;
+5. explicit operator importer with immutable target authority;
+6. fixed-path custom-provider-v1 migration;
+7. database lifecycle and exact Prisma dependency alignment;
+8. bounded DB/key file-root and value-safe-output controls;
+9. test runtime/configuration and durable coverage;
+10. aligned product documentation and workflow evidence.
+
+No current product delta remains for the rejected general child-environment policy, Electron/AppData/reset redesign, isolated-PTY filtering, Codex redesign, Claude MCP/session redesign, built-in-agent default redesign, or standalone ordinary/Gemini key removal.
+
+## Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: yes. The approved target is narrow credential custody with explicitly named adjacent migration/Settings/Gemini/dependency/test work, while unrelated baseline behavior remains authoritative.
+- Design-spec behavior map verified against the implementation: confirmed for runtime/source; contradicted only by the obsolete descriptions recorded in `CR-032`.
+- Design review report and round confirmed: architecture Round 36 `Pass`.
+- Behavior-basis status: `Confirmed` for implementation behavior; documentation cleanup is incomplete.
+- Changed or newly discovered behavior: none.
+- Remaining material ambiguity: none.
+
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
+| --- | --- | --- | --- |
+| `BEH-001`, `REQ-001` | Confirmed | Settings -> `providerSettings(AUTOBYTEUS)` -> one exact provider/configured fact plus four subordinate existing model lists -> provider-owned rendering and grouped refetch. | None. |
+| `BEH-002`–`BEH-005` | Confirmed | Canonical `DATABASE_URL` -> Prisma migration/vault bootstrap -> adjacent verified key -> authorized `SecretManagementService` -> injected resolver -> concrete provider SDK/client construction. | None. |
+| `BEH-004`, `REQ-006` | Confirmed | Ordinary Settings Save/create-or-overwrite -> Boolean completion -> canonical grouped refetch; no runtime/UI/schema removal action. Custom-provider Delete remains an entity-owned lifecycle. | Product documentation at `autobyteus-web/docs/settings.md:12-20` still describes the removed generic lifecycle/removal protocol. |
+| `BEH-006` | Confirmed | Three independent Gemini options -> specialized Save/Save-and-use/Use commands -> explicit persisted mode -> exact SDK construction; current compact UI changes presentation only. | None. |
+| `BEH-008` | Confirmed | Supported v1 file -> migration-only validation/atomic vault batch/secret-free v2 publish or delete-and-reconfigure -> normal v2-only runtime. | None. |
+| `BEH-009`–`BEH-011` | Confirmed | Explicit `secrets:import --source --database-url` -> immutable target -> read-only preview or confirmed atomic execution; `.env.test` is test-launch configuration only. | `autobyteus-ts/tests/setup.ts:1-2` still names the removed manifest and separate Local Store. |
+| `BEH-012`, `BEH-014` | Confirmed | Baseline Claude/Codex/Electron/PTY/environment owners are restored; only explicit Claude `api-key` performs one vault resolution and one `ANTHROPIC_API_KEY` override. | None. |
+| `BEH-008`, `REQ-006`, `CR-MP-031` | Confirmed | Custom-provider Delete -> exact credential and record deletion -> provider-targeted custom synchronization -> Boolean completion independent of unrelated remote discovery. | `llm_management.md:314-317` still describes the superseded full catalog reload. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Core artifacts and `scope-audit.md` distinguish the narrow credential spine from rejected environment/session/product redesign. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Runtime/schema/UI behavior follows the vault, Gemini, consumer mapping, migration, and scope contracts. | Correct non-normative product docs under `CR-032`; no behavior redesign. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Settings Save/status, provider resolution, Gemini, importer, migration, custom Delete, startup, and restart paths have explicit end-to-end owners. | None. |
+| Ownership boundary preservation and clarity | Pass | `SecretManagementService`, provider clients, Gemini owner, importer target owner, migration owner, and provider Settings owner remain distinct. | None. |
+| Off-spine concern clarity | Pass | Crypto/key/repository, inspection, metadata, runtime sync, and UI projection concerns serve named spine owners. | None. |
+| Existing capability/subsystem reuse check | Pass | Current Prisma/AppConfig/catalog/provider/UI owners are extended; `CR-031` reuses targeted reload rather than adding a coordinator. | None. |
+| Reusable owned structures check | Pass | Provider resolver, typed database location, generated provider Settings query type, `SecretId`, and migration receipt avoid repeated loose shapes. | None. |
+| Shared-structure/data-model tightness check | Pass | One provider group/configured fact, specialized Gemini state, and semantic consumer identity replace overlapping status/authentication structures. | None. |
+| Repeated coordination ownership check | Pass | Vault authorization, Gemini mode, custom synchronization, test runtime materialization, and importer target authority each have one owner. | None. |
+| Empty indirection check | Pass | No newly retained pass-through wrapper or tombstone exists; the two UI helpers own editor and key-visibility concerns. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The two new UI components reduced card pressure; vault, importer, migration, and provider areas remain cohesive. | None. |
+| Ownership-driven dependency check | Pass | GraphQL/web call owning services; concrete provider clients depend on the injected resolver; callers do not select storage internals. | None. |
+| Authoritative Boundary Rule check | Pass | No caller was found depending on both `SecretManagementService` and its repository/crypto internals; importer preview uses its narrow inspector rather than bypassing it. | None. |
+| File placement check | Pass | New vault, migration, provider, configuration, and Settings files are placed under their owning subsystems. | None. |
+| Flat-vs-over-split layout judgment | Pass | Specialized files exist where state/lifecycle differs; current Gemini editor/visibility split is proportionate rather than artificial. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | One provider Settings read, Boolean ordinary Save, specialized Gemini commands, explicit importer target, and entity-owned custom Delete have singular subjects. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Current production names express database location, vault inspection, consumer resolution, provider settings, and custom migration directly. | Replace obsolete “Local Store”, “manifest”, and “full reload” wording under `CR-032`. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Repeated provider projections and handwritten Settings response types were removed; generated/shared owned structures are reused. | None. |
+| Patch-on-patch complexity control | Pass | Round-36 restored baseline owners; later changes are bounded custom-targeted reload and presentation refinement, not compensating wrappers. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | Runtime residue scans are clean, but three changed documentation/comment locations still describe removed architecture or commands. | Resolve `CR-032`. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Negative removal-schema assertions, explicit target tests, migration lifecycle, provider grouping, custom targeted Delete, and Gemini interaction tests match approved behavior. | Update only the stale setup comment; do not remove the negative schema assertions. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Shared live-E2E runtime/scenario/bootstrap and focused fixtures remain owned and deterministic. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Fail | Test behavior is current, but `autobyteus-ts/tests/setup.ts` retains a stale removed-architecture comment. | Correct the comment under `CR-032`; no test behavior change is required. |
+| API/E2E readiness for the next workflow stage | Fail | Runtime/source and focused checks are ready, but implementation-source review cannot pass with a known whole-package cleanup contradiction. | Bounded cleanup, delta source review, then API/E2E. |
+
+## Source File Size And Structure Audit
+
+Tests, generated GraphQL output, ticket artifacts, and execution evidence are excluded from implementation-source thresholds.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `llm-provider-service.ts` | `401` | Pass | `+271/-121`; assessed | Cohesive provider Settings/custom lifecycle/Gemini command owner, though broad | Pass | No finding | Keep future command growth split by subject. |
+| `secret-vault-prisma-repository.ts` | `276` | Pass | `+310`; assessed | Cohesive vault persistence and transaction owner | Pass | No finding | Preserve repository-only responsibility. |
+| `secret-management-service.ts` | `255` | Pass | `+275`; assessed | Cohesive authorization/status/write/resolve/batch owner | Pass | No finding | Preserve semantic-consumer boundary. |
+| `secret-vault-inspection-service.ts` | `238` | Pass | `+252`; assessed | Cohesive non-mutating preview/health inspection owner | Pass | No finding | Preserve read-only boundary. |
+| `custom-provider-v1-app-data-migration.ts` | `216` | Pass | `+235`; assessed | Cohesive one-time migration orchestration | Pass | No finding | Keep historical schema confined here. |
+| `GeminiConfigurationOptionCard.vue` | `224` | Pass | `+239`; assessed | Card owns compact option presentation/expansion; editor logic was extracted | Pass | No finding | No further split required. |
+| `GeminiConfigurationOptionEditor.vue` | `178` | Pass | `+191`; pass | Focused editor/form action owner | Pass | No finding | None. |
+| `GeminiKeyVisibilityButton.vue` | `39` | Pass | `+41`; pass | Focused visibility/accessibility owner | Pass | No finding | None. |
+| `GeminiSetupForm.vue` | `90` | Pass | `+73/-119`; pass | Focused setup-group orchestration | Pass | No finding | None. |
+| `localization/messages/{en,zh-CN}/settings.ts` | `602` each | Data-registry exception assessed; no business logic | `+19/-2` each; pass | Existing localization catalog responsibility | Pass | No finding | Preserve generated/audited catalog organization. |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed runtime scope | Pass | No dual Store, generic compatibility wrapper, environment credential fallback, runtime v1 reader, or removed-command adapter exists. |
+| No legacy old-behavior retention in the changed product package | Fail | Runtime is clean, but `settings.md`, `llm_management.md`, and `tests/setup.ts` retain obsolete descriptions. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | No dead runtime code found; obsolete documentation/comment residue remains under `CR-032`. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Normal DB is directly migrated through Prisma; only the supported fixed-path custom-provider-v1 source has migration-owned historical knowledge. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Normal custom-provider runtime is v2-only; importer and provider paths have one current shape. |
+| Approved transition mechanics match the reviewed design | Pass | Atomic create-missing batch, secret-free publish, exact compensation, lock recovery, delete-and-reconfigure, and current runtime separation remain intact. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| `autobyteus-web/docs/settings.md:12-20,27-30` | `LegacyBranch` (documentation) | Describes backend lifecycle/instruction status, a built-in Remove action, write/remove ownership, and “Local Store”. Current schema exposes one `apiKeyConfigured` fact; ordinary Remove and the Local Store are removed. | It contradicts `BEH-001`, `BEH-002`, `BEH-004`, `REQ-001`, and `REQ-006`, and falsely advertises an unsupported user action. | Rewrite the section to the provider-centric, value-free, Save/overwrite-only current contract; retain entity-owned custom Delete and specialized Gemini behavior. |
+| `autobyteus-server-ts/docs/modules/llm_management.md:178-180,314-317` | `LegacyBranch` (documentation) | Calls the vault a metadata “Store” and says custom Delete runs a full LLM catalog refresh. Current source uses targeted custom-provider synchronization specifically to avoid unrelated remote discovery. | It contradicts the one-database vault terminology and resolved `CR-031` completion boundary. | Use vault terminology and document targeted custom-provider reload/synchronization; do not change runtime. |
+| `autobyteus-ts/tests/setup.ts:1-2` | `UnusedTest` (stale comment only) | Says real-provider execution uses a tracked live-E2E manifest and separate read-only Local Store; both were removed by the approved clean cut. | It misdirects maintainers and leaves explicit removed-architecture residue in a changed test setup file. | Replace with a short accurate description of credential-free default tests and the current test-support/runtime path; no test behavior change. |
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`
+- Why: the runtime architecture is now substantially cleaner than the descriptions in two changed product docs and one changed test comment. The inaccurate text advertises removed user actions and superseded storage/reload mechanisms.
+- Files or areas affected:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/docs/modules/llm_management.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-ts/tests/setup.ts`
+
+## Material Premise Validation
+
+None. `CR-032` is grounded directly in approved behavior, exposed Settings commands, current source, and changed product documentation. It does not depend on an assumed production/failure/lifecycle scenario.
+
+## Independent Review Checks
+
+- Baseline and merge-base identity: both `d6983612c5a77fb94d9266df85a9d03fe2d1c68b`.
+- Complete current path inventory: `692` changed paths; `402` ticket paths; `290` non-ticket paths.
+- Prior-manifest reconciliation: `259` current `RETAIN`, `29` current `PARTIAL_CLEANUP`, zero current `RESTORE_BASE`, zero current `REMOVE_FILE`, and exactly two new in-scope Gemini UI paths.
+- Exact restoration verification: every one of the 18 required base-restoration paths is byte-identical to `origin/personal`.
+- Required deletion verification: all three redundant files remain absent.
+- Runtime residue scans:
+  - zero production ordinary/Gemini removal actions;
+  - zero `providerApiKeyRemoval`, `CredentialStatusObject`, `ClaudeRuntimeAuthenticationService`, `managed-secret`, shared production environment filter, runtime-default, or old LLM key getter/setter residue;
+  - production `removeForConsumer` callers remain limited to exact custom-provider lifecycle plus its service definition;
+  - no changed Docker production path;
+  - Codex production source remains baseline-equivalent.
+- `git diff --check origin/personal...HEAD -- ':(exclude)tickets/**'`: passed.
+- Full `git diff --check origin/personal...HEAD` reports historical raw evidence whitespace under `tickets/**`; this is not product-source residue and was not rewritten.
+- Reviewer-run Gemini UI focused suite: 2 files / 10 tests passed.
+- `pnpm -C autobyteus-web guard:web-boundary`: passed.
+- `pnpm -C autobyteus-web guard:localization-boundary`: passed.
+- `pnpm -C autobyteus-web audit:localization-literals`: passed with zero findings.
+- `pnpm -C autobyteus-web build`: passed; existing large-chunk warning only.
+- Rendered evidence `357-implementation-gemini-compact-ui.png` and `358-implementation-gemini-expanded-editor.png` was inspected and matches the approved compact interaction contract without horizontal overflow or credential readback.
+
+## Review Scorecard
+
+- Overall score: `9.52/10`
+- Overall score: `95.2/100`
+- Score calculation note: simple average across the ten mandatory categories. The high overall score reflects a materially clean implementation, but it does not override the `Cleanup Completeness` score below `9.0` or the open `CR-032` finding.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.7 | The retained Settings, vault, resolution, importer, migration, Gemini, and custom Delete spines are explicit and end at meaningful product outcomes. | The package is large and requires the scope manifest to see the narrow business spine quickly. | Keep `scope-audit.md` current for any later delta. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | Vault, provider, migration, target-location, Gemini, and test-runtime authority are distinct; no mixed-level bypass was found. | `LlmProviderService` remains a broad but coherent composition owner. | Split only if another independent provider subject is added. |
+| 3 | API / Interface / Query / Command Clarity | 9.7 | One grouped read, Boolean Save, specialized Gemini commands, explicit importer target, and entity-owned Delete are tight. | Product docs still describe the removed generic lifecycle/removal protocol. | Resolve `CR-032`. |
+| 4 | Separation of Concerns and File Placement | 9.6 | Subsystems and new UI components map to concrete owners; out-of-scope launcher/session deltas are gone. | Several central files exceed the 220-line change signal because the feature is cross-cutting. | Preserve current owner boundaries; avoid adding adjacent concerns. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | Generated provider Settings shape, semantic consumers, typed DB location, and specialized Gemini state remove prior duplication. | Existing aggregate provider service/catalog structures still cover multiple capabilities. | Keep new capability logic provider-owned and subordinate. |
+| 6 | Naming Quality and Local Readability | 9.5 | Production identifiers closely match their owning concerns and current behavior. | Three stale documentation/comment terms name removed architecture or the wrong reload mechanism. | Resolve `CR-032`. |
+| 7 | API/E2E Readiness | 9.4 | Builds, focused UI tests, boundary guards, prior realistic coverage, and current runtime residue checks are strong. | Source review must pause for the bounded cleanup, and the UI delta still requires downstream execution. | Correct residue, delta review, then API/E2E. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.7 | Current source matches the narrowed approved behavior; `CR-031` remains correctly resolved and no unsupported behavior was found. | Realistic execution of the latest presentation HEAD remains downstream. | Run affected API/E2E after source approval. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.7 | No runtime compatibility path, second Store, fallback, old-schema reader, or removed command remains. | Historical terminology remains in non-runtime changed files. | Resolve `CR-032`. |
+| 10 | Cleanup Completeness | 8.7 | Runtime/source removal and exact-base restoration are excellent. | Two changed product docs and one changed test comment still contradict the final clean-cut architecture. | Complete the bounded three-path documentation/comment cleanup. |
+
+## Findings
+
+### `CR-032` — Changed product documentation/comment still describes removed architecture and commands
+
+- Severity: `Medium`
+- Classification: `Local Fix`
+- Affected approved behavior: `BEH-001`, `BEH-002`, `BEH-004`, `BEH-008`, `BEH-011`, `REQ-001`, `REQ-006`, `AC-004`, and resolved `CR-031`.
+- Evidence:
+  1. `autobyteus-web/docs/settings.md:12-20,27-30` describes lifecycle/instruction fields, a built-in Remove action, write/remove behavior, and a “Local Store”; the current provider-centric schema exposes `apiKeyConfigured`, ordinary Save/create-or-overwrite, no standalone Remove, and one application-database vault.
+  2. `autobyteus-server-ts/docs/modules/llm_management.md:178-180,314-317` retains “metadata Store” and full-catalog-refresh wording; current custom Delete uses targeted custom-provider synchronization and intentionally does not depend on unrelated remote discovery.
+  3. `autobyteus-ts/tests/setup.ts:1-2` names the removed live-E2E manifest and separate read-only Local Store.
+- Why this is a finding: the user explicitly requested a whole-ticket cleanliness/scope review. These are changed, durable product/test-source files, not immutable historical evidence. They falsely present removed user behavior and architecture, undermining the otherwise clean scope reset.
+- Required action:
+  1. Rewrite the Provider Credential Settings section to describe one provider-owned configured fact, credential-independent subordinate model lists, Save/create-or-overwrite only for ordinary providers, specialized Gemini Save/Use behavior, and entity-owned custom-provider Delete.
+  2. Replace Local Store/manifest terminology with the one-application-database vault and current test-runtime/harness ownership.
+  3. Update custom-provider Delete documentation to targeted custom-provider synchronization, preserving failure transparency and independence from unrelated AutoByteus remote discovery.
+  4. Change no production behavior, schema, command surface, runtime mechanism, test scenario, compatibility path, or workflow evidence.
+  5. Return only the bounded three-path delta for re-review.
+
+## Classification
+
+- `Local Fix`
+
+## Recommended Recipient
+
+- `implementation_engineer`
+
+## Residual Risks
+
+- The retained implementation is materially scoped, but the numerical diff will remain large because the workflow preserves extensive historical ticket evidence. Review product scope using the non-ticket manifest rather than raw total path/line count.
+- Central owners such as `LlmProviderService`, `SecretManagementService`, and the vault repository are under the 500-line limit but crossed the 220-line change signal; future adjacent responsibilities should be split rather than accumulated.
+- The current Gemini UI is presentation-only and structurally sound, but API/E2E should still validate the latest HEAD after `CR-032` closes.
+- Keep the historical evidence artifacts unchanged unless their owning stage explicitly revises them; `CR-032` applies only to current product/test-source documentation.
+- Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as a delivery/release recheck only; Claude remains `auto|cli|api-key`.
+- `LOCAL_HARDENED` remains limited to local vault/file-root/value-safe custody; inherited child environments are continuity rather than process-isolation evidence, Codex is excluded, and `STRONG_AGENT_ISOLATION` remains deferred.
+- Preserve exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker topology, explicit importer target/source immutability, one application DB plus adjacent key, no automatic `.env` credential migration, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review — complete ticket comparison against origin/personal`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.52/10` (`95.2/100`); nine categories are `>=9.4`, while Cleanup Completeness is `8.7` due to `CR-032`.
+- Failure Origin: `Bounded implementation-owned documentation/comment cleanup residue; no unnecessary runtime/product behavior found.`
+- Recommended Recipient: `implementation_engineer`
+- Notes: the branch is substantially cleaner and properly scoped compared with `origin/personal`, but source review cannot pass until the three changed durable files stop describing removed architecture and commands. After that bounded delta re-review, return through API/E2E; do not route directly to delivery.
+
+# Review Round 47 — CR-032 Bounded Documentation/Comment Re-review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Review date: `2026-07-27`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
+- Supplemental Task Artifacts Reviewed As Context: the complete Round-46 cumulative package, especially `scope-audit.md`, `secret-storage-architecture.md`, `encrypted-secret-vault-contract.md`, `gemini-setup-ui-ux-spec.md`, and `custom-provider-v1-migration-contract.md`.
+- Current Review Round: `47`
+- Trigger: implementation-owned bounded correction for `CR-032`.
+- Prior Review Round Reviewed: `46`
+- Latest Authoritative Round: `47`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
+- Design Review Report Reviewed As Context: architecture Round 36 `Pass`.
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md`
+- Reviewed starting HEAD: `5f872ed2ce268c6c3c92e2236c22207c8e01da9e`
+- Reviewed commit / final HEAD: `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`
+- Exact reviewed delta: `5f872ed2ce268c6c3c92e2236c22207c8e01da9e..49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`
+- Failing Scenario IDs / Commands / Evidence: N/A.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 46 | Complete current-ticket comparison against `origin/personal` | `CR-031` and Round-36 scope dispositions | `CR-032` | Fail | No | Runtime/product implementation was materially scoped; three durable descriptions remained stale. |
+| 47 | Exact three-path CR-032 correction at `49c27b2fe` | `CR-032` | None | Pass | Yes | Current provider/vault/Delete/test-runtime documentation is aligned without executable behavior changes. |
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 46 | `CR-032` | Medium / Local Fix | Resolved | Exact diff changes only `settings.md`, `llm_management.md`, and `tests/setup.ts`; current terminology and command/reload descriptions correlate with production source; scoped stale-term scan is empty. | No runtime, schema, UI behavior, command, scenario, compatibility, or historical evidence path changed. |
+| 44–45 | `CR-031` | High / Local Fix | Remains resolved | `llm_management.md` now accurately describes provider-targeted custom synchronization and intrinsic failure propagation. | Documentation no longer reintroduces the superseded full-refresh completion model. |
+| 43 / architecture Round 36 | Complete scope reset | Scope gate | Remains resolved | This delta changes no restoration/removal/runtime path. Round-46 complete inventory remains authoritative. | All 18 base restorations and three file removals remain closed. |
+
+## Review Scope
+
+- Changed implementation and behavior reviewed: documentation/comment correction only; no executable behavior changed.
+- Exact changed paths:
+  1. `autobyteus-web/docs/settings.md`
+  2. `autobyteus-server-ts/docs/modules/llm_management.md`
+  3. `autobyteus-ts/tests/setup.ts`
+- Explicit exclusions: the complete runtime source audit was not repeated; its Round-46 result is carried forward because the commit contains no runtime/source/schema/UI-command/test-behavior change. API/E2E execution remains downstream.
+
+## Upstream Behavior And Production-Path Basis Confirmation
+
+- Approved requirements basis understood: yes.
+- Design-spec behavior map verified against the corrected descriptions: yes.
+- Behavior-basis status: `Confirmed`.
+- Changed or newly discovered behavior: none.
+- Remaining material ambiguity: none.
+
+| Behavior ID | Current Status | Current Implementation/Documentation Alignment | Contradicting Evidence |
+| --- | --- | --- | --- |
+| `BEH-001`, `BEH-004`, `REQ-001`, `REQ-006` | Confirmed | Web documentation now states one provider-owned `apiKeyConfigured` fact, credential-independent subordinate model lists, ordinary Save/create-or-overwrite only, specialized Gemini Save/Use, and entity-owned custom Delete. | None. |
+| `BEH-002` | Confirmed | Web and server documentation use one-application-database encrypted-vault terminology rather than Local Store terminology. | None. |
+| `BEH-008`, `CR-MP-031` | Confirmed | Server documentation now states targeted custom-provider reload/synchronization, independence from unrelated AutoByteus remote discovery, and propagation of intrinsic vault/record/sync failures. | None. |
+| `BEH-011` | Confirmed | Core test setup comment now states credential-free defaults and explicit test-support ownership without naming removed manifest/Store paths. | None. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved | Pass | No design/runtime delta; Round-46 assessment remains intact. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Corrected text matches provider, vault, Gemini, migration, and scope contracts. | None. |
+| Data-flow spine inventory clarity and preservation | Pass | Documentation now describes the existing Settings and custom Delete spines accurately. | None. |
+| Ownership boundary preservation and clarity | Pass | Provider Settings, vault, custom lifecycle, and test-support ownership are named correctly. | None. |
+| Off-spine concern clarity | Pass | Documentation distinguishes subordinate model lists and targeted synchronization from credential authority. | None. |
+| Existing capability/subsystem reuse check | Pass | No new helper or executable boundary exists. | None. |
+| Reusable owned structures check | Pass | Current `providerSettings`, vault, and targeted reload names reference existing owners. | None. |
+| Shared-structure/data-model tightness check | Pass | One configured fact and specialized Gemini behavior are documented without parallel status DTOs. | None. |
+| Repeated coordination ownership check | Pass | No duplicated coordinator or policy was introduced. | None. |
+| Empty indirection check | Pass | No source or documentation wrapper was added. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Each edit stays in its existing documentation/test-setup responsibility. | None. |
+| Ownership-driven dependency check | Pass | No dependency changed; descriptions match current ownership direction. | None. |
+| Authoritative Boundary Rule check | Pass | No source change; corrected docs do not instruct callers to bypass owners. | None. |
+| File placement check | Pass | Web Settings, server LLM management, and core test setup documentation remain in their owning locations. | None. |
+| Flat-vs-over-split layout judgment | Pass | Three in-place edits are more proportionate than a new documentation layer. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Current read/save/Gemini/custom Delete boundaries are stated precisely. | None. |
+| Naming quality and responsibility alignment | Pass | Obsolete Store/manifest/full-refresh names are removed. | None. |
+| No unjustified duplication | Pass | The correction cross-links the existing secret-management document rather than duplicating internals. | None. |
+| Patch-on-patch complexity control | Pass | Direct text correction only; no compatibility wording or transitional dual description. | None. |
+| Dead/obsolete cleanup completeness | Pass | Scoped stale-term scan is empty and the exact three CR-032 locations are current. | None. |
+| Relevant test scenarios/assertions are clear and aligned | Pass | No test behavior changed; the setup comment now describes ownership truthfully. | None. |
+| Test fixtures/helpers remain reusable and coherent | Pass | No fixture/helper change. | None. |
+| No stale, duplicated, or compatibility-only tests remain | Pass | The stale setup comment is removed; negative removal-schema assertions remain correctly preserved elsewhere. | None. |
+| API/E2E readiness | Pass | Source package is clean; current Gemini presentation HEAD can proceed through API/E2E. | None. |
+
+## Source File Size And Structure Audit
+
+Not applicable to this delta. The commit changes two Markdown files and one comment in a test setup file; no implementation-source file changed. The complete Round-46 source-size assessment remains authoritative.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed runtime scope | Pass | No runtime source changed. |
+| No legacy old-behavior retention in the changed product package | Pass | Exact CR-032 obsolete descriptions are removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No code changed; scoped stale-text scan is empty. |
+| Approved persisted-data transition decision is followed | Pass | Documentation continues to describe the current vault and migration; mechanics are unchanged. |
+| No version-specific dual reads/writes or request-time fallback | Pass | No runtime delta. |
+| Approved transition mechanics match reviewed design | Pass | No migration delta. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None. The three Round-46 items are resolved.
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes — resolved`.
+- Why: the correction makes durable product/test-source descriptions match already-reviewed behavior.
+- Files changed: the exact three authorized CR-032 paths only.
+
+## Material Premise Validation
+
+None. This bounded re-review depends only on direct approved behavior, current source, and the exact documentation/comment delta.
+
+## Independent Validation
+
+- HEAD equals reviewed commit `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`.
+- Exact commit inventory: three paths, `32` insertions / `24` deletions.
+- `git diff --check 5f872ed2c..49c27b2fe`: passed.
+- Scoped stale-term scan for Local Store, removed live-E2E manifest wording, metadata Store, full LLM catalog refresh, removed generic lifecycle/instruction protocol, and built-in Remove wording: zero matches.
+- Required current-contract scan confirmed `apiKeyConfigured`, credential-independent model lists, Save/create-or-overwrite, no standalone removal, targeted custom-provider synchronization, unrelated-discovery independence, credential-free defaults, and test-support ownership.
+- Production correlation confirmed `LlmProviderService.deleteCustomProvider` calls `reloadLlmModelsForProvider`, while GraphQL retains provider Settings, Boolean ordinary Save, custom Delete, and specialized Gemini commands.
+- No executable test was rerun because the exact commit contains no executable behavior change; prior current-HEAD source/UI checks remain applicable.
+
+## Review Scorecard
+
+- Overall score: `9.69/10`
+- Overall score: `96.9/100`
+- Score calculation note: simple average across the ten mandatory categories. All categories are above the clean-pass threshold.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.7 | The complete retained spines remain clear, and durable descriptions now match them. | Large cumulative package still benefits from the scope manifest. | Keep the manifest current for later behavior deltas. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | Runtime boundaries remain intact and docs now name them correctly. | `LlmProviderService` remains broad but coherent. | Split only for a future independent subject. |
+| 3 | API / Interface / Query / Command Clarity | 9.8 | Provider read/save, Gemini, custom Delete, and importer command shapes are accurately documented. | No material current weakness. | Preserve. |
+| 4 | Separation of Concerns and File Placement | 9.6 | The scope reset and focused Gemini components remain proportionate; correction stays in owning documents. | Several central implementation files retain previously assessed change pressure. | Avoid adjacent responsibility growth. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | One provider fact, generated query shape, semantic consumers, and typed target remain tight. | Aggregate provider/catalog ownership still spans capabilities by reviewed design. | Preserve exact-ID grouping. |
+| 6 | Naming Quality and Local Readability | 9.7 | Obsolete Store/manifest/full-refresh terms are gone from the affected durable paths. | No material current weakness. | Preserve current terminology. |
+| 7 | API/E2E Readiness | 9.6 | Source review is clean and current UI-focused checks/build are green. | Latest presentation still needs downstream realistic execution. | Proceed to API/E2E. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.7 | No runtime delta; complete Round-46 trace remains valid and `CR-031` is accurately documented. | Downstream assembled evidence is still required for the latest HEAD. | Execute affected API/E2E. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | Runtime and durable descriptions contain no current legacy/compatibility authority. | Historical workflow evidence remains intentionally historical. | Do not treat evidence history as runtime authority. |
+| 10 | Cleanup Completeness | 9.8 | Exact scope restorations/removals remain closed and the last three stale descriptions are corrected. | No material current weakness. | Preserve. |
+
+## Findings
+
+No open implementation-source findings.
+
+`CR-032` is resolved by the exact three-path documentation/comment correction. No new finding was identified.
+
+## Classification
+
+Not applicable — review passed.
+
+## Recommended Recipient
+
+`api_e2e_engineer`
+
+## Residual Risks
+
+- API/E2E should validate the latest compact Gemini Settings presentation and preserve the complete narrowed scope.
+- The 402 ticket/workflow paths remain historical evidence, not product behavior; future audits should continue separating them from the 290 non-ticket paths.
+- Preserve the Round-46 scope boundary, `CR-031` targeted custom synchronization, no ordinary/Gemini standalone removal, and exact baseline launcher/session behavior.
+- Preserve `EXT-ANTHROPIC-AGENT-SDK-AUTH` as delivery/release recheck only; Claude remains `auto|cli|api-key`.
+- `LOCAL_HARDENED` remains limited to local vault/file-root/value-safe custody; inherited environments are continuity rather than isolation evidence, Codex is excluded, and `STRONG_AGENT_ISOLATION` remains deferred.
+- Preserve exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker, explicit importer target/source immutability, one DB plus adjacent key, no automatic `.env` credential migration, and `DASHSCOPE_API_KEY` as the sole Qwen mapping.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review — bounded CR-032 re-review`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.69/10` (`96.9/100`); every category `>=9.6`.
+- Failure Origin: N/A; `CR-032` resolved.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: commit `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254` passes source review. The complete branch is materially clean/scoped against `origin/personal`; proceed through API/E2E for the current Gemini presentation HEAD, not directly to delivery.

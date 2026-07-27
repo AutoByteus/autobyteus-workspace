@@ -10,10 +10,10 @@
 - Implementation Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md
 - Code Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md
 - Coverage Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md
-- Current Execution Round: 21
-- Trigger: Round-45 CR-031 source-review Pass at final HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`; recheck `SCSP-E2E-PACKAGED-EXISTING-USER-001` first, then execute the affected custom-provider, provider, restart, Docker, browser, package, repository-Prisma, and external-runtime matrix.
-- Prior Round Reviewed: Rounds 1–20. Their evidence remains cumulative context; Round 20 remains a truthful historical Fail but does not authorize the final result after CR-031.
-- Latest Authoritative Round: Round 21 (the final section of this report governs where it differs from earlier rounds).
+- Current Execution Round: 22
+- Trigger: Round-47 CR-032 source-review Pass at final HEAD `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`; validate current compact Gemini Settings presentation plus proportionate provider/vault integration without reopening byte-identical backend/package/provider/Docker boundaries.
+- Prior Round Reviewed: Rounds 1–21. Round 21 remains the directly executed backend/package/provider baseline; Round 22 is authoritative for the superseding UI presentation.
+- Latest Authoritative Round: Round 22 (the final section of this report governs where it differs from earlier rounds).
 
 ## Round History
 
@@ -39,7 +39,8 @@
 | 18 | user-requested correct-worktree live terminal/team validation | actual browser terminal and Classroom Simulation Team | None | **Pass** | No | Correct worktree checkpoint; user directly observed exact GPT-5.6-Luna team execution. Superseded only as final implementation identity. |
 | 19 | Round-35 final source-review Pass | Claude harness reconciliation, restored environments, final browser/provider/restart/Docker/Prisma matrix | None | **Pass** | No | Historical final result at HEAD `3244a7c6`; superseded by the Round-36 scope reset. |
 | 20 | Round-36 scope-reset source-review Pass | no-public-removal Settings/Gemini, restart, Docker, packaged existing-user/custom Delete, PTY, Claude/Codex, configured providers | `SCSP-E2E-PACKAGED-EXISTING-USER-001` | **Fail** | No | Migration/reopen passed, but custom-provider Delete destructively committed while GraphQL returned unrelated `AUTOBYTEUS_LLM_DISCOVERY_FAILED`. |
-| 21 | Round-45 CR-031 source-review Pass | `SCSP-E2E-PACKAGED-EXISTING-USER-001`, targeted custom-provider Delete, affected cumulative matrix | None | **Pass** | **Yes** | Exact packaged failure now passes; actual browser Save/Delete, configured providers, restart, unchanged Docker, external Codex/Claude, and repository-Prisma integration all pass or report exact unavailable capability. |
+| 21 | Round-45 CR-031 source-review Pass | `SCSP-E2E-PACKAGED-EXISTING-USER-001`, targeted custom-provider Delete, affected cumulative matrix | None | **Pass** | No | Exact packaged failure now passes; actual browser Save/Delete, configured providers, restart, unchanged Docker, external Codex/Claude, and repository-Prisma integration all pass or report exact unavailable capability. |
+| 22 | Round-47 CR-032 source-review Pass | compact Gemini presentation, provider/vault Save-and-use, retained critical coverage applicability | None | **Pass** | **Yes** | Focused 39 tests, exact built server plus actual browser compact/expanded/persisted journey, production web build, isolated cleanup, and byte-identical retained backend/provider/Docker/package evidence pass. |
 
 ## Investigation And Execution Basis
 
@@ -2677,3 +2678,105 @@ remains deferred. Exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0,
 unchanged Docker topology, explicit importer target and source immutability, one
 database plus adjacent key, no automatic `.env` credential migration, and
 DASHSCOPE-only Qwen mapping remain authoritative.
+
+## Round 22 Compact Gemini Settings Presentation — Authoritative Pass
+
+### Entry Point And Scope
+
+- Exact final HEAD: `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`
+- Source review: Round 47 **Pass**, 96.9%, no open implementation-source finding.
+- Execution scope: compact/expanded Gemini Settings presentation, explicit
+  Save-and-use, provider/vault persistence, focused assembled API behavior,
+  production web build, retained critical evidence applicability, safety, and
+  cleanup.
+- Broader-validation decision: **Required and completed** because the material
+  runtime delta is user-visible and browser-equivalent.
+
+### Repository And Browser Evidence
+
+| Scenario / command | Result | Evidence |
+| --- | --- | --- |
+| four focused web Gemini/provider files | **Pass:** 25/25 | `359-round22-focused-gemini-provider-vault.log` |
+| three server Gemini/provider/vault/metadata files | **Pass:** 14/14 | `359` |
+| exact server production build plus isolated supported test stack | **Pass** | `360-round22-browser-runtime.log` |
+| compact Gemini panel | **Pass:** three options, value-free statuses, no initial editor/input/removal control | `361`, `364` |
+| expanded Vertex Express editor | **Pass:** one focused password editor; visibility toggle; Save and Save-and-use gating | `362`, `364` |
+| assembled Save-and-use plus reload | **Pass:** Vertex Express Configured/Active, editor cleared, value absent, persisted after reload | `363`, `364` |
+| Nuxt production build | **Pass:** 15 prerendered routes | `365-round22-web-production-build.log` |
+| task-owned browser/runtime/DB/key cleanup | **Pass; user stack untouched** | `366-round22-browser-cleanup.log` |
+| retained critical evidence applicability | **Pass:** backend/core/harness/Docker/package/lock byte delta none | `367-round22-retained-critical-evidence-applicability.log` |
+| final value-safety scan | **Pass:** seven text artifacts plus both reports; zero raw/base64 canary or structural-secret matches | `368-round22-final-evidence-scan.log` |
+| final identity/diff/inventory check | **Pass:** exact HEAD; zero dirty API/E2E test paths | `369-round22-final-package-check.log` |
+
+The browser was the actual `open_tab` surface. It was not replaced by Playwright,
+CDP, a mocked component, or direct GraphQL. The browser interacted with Nuxt on
+`127.0.0.1:33122` and the exact built server on `127.0.0.1:63122`, using the
+project-supported `test-runtime-bootstrap.mjs`, an isolated task database and
+adjacent key, and a synthetic task-only credential. The user's running stack on
+3000/8000 was identified, preserved, not reused, and not stopped.
+
+### Retained Critical Coverage And External Outcomes
+
+The only current product runtime delta after the committed Round-21 package is
+Gemini presentation/localization. Backend/core/live-E2E harness, Docker,
+package/lock, external runtime, and provider implementation paths are
+byte-identical. Therefore the following direct Round-21 results remain current:
+
+- real providers: 27 passed / 5 exact skips (`337`);
+- unchanged clean Docker build/lifecycle/cleanup (`338`–`340`);
+- exact current package plus existing-user migration/reopen/Delete (`334`–`335`);
+- external Codex and Claude CLI 4/4 each (`341`);
+- repository Prisma 1.0.8 integration/policy 34/34 (`347`).
+
+Truthful unavailable outcomes are unchanged and not counted as passes: Gemini AI
+Studio and Serper were not configured; AutoByteus remote LLM/audio/image
+capabilities returned their exact discovery-unavailable codes.
+
+### Durable Coverage Delta
+
+- API/E2E-owned durable test/support changes in Round 22: **None**.
+- The implementation-owned update to
+  `autobyteus-web/components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts`
+  was included in source review and passed 6/6 in the focused run.
+- The six cumulative Round-21 API/E2E durable paths remain byte-identical and
+  previously reviewed.
+
+### Cleanup, Safety, And Residual Risk
+
+- Task ports 33122/63122 were free after execution.
+- Task runtime root, application database, adjacent key, and temporary launcher
+  were removed.
+- The user's ports 3000/8000 remained listening and untouched.
+- No real credential value, vault row, database content, or root-key bytes were
+  inspected or displayed. The synthetic browser value was absent from visible
+  text and final evidence.
+- Residual risk remains limited to unchanged external capability availability
+  and platform variants outside this macOS browser-equivalent presentation
+  change.
+
+### Confidence Scorecard And Outcome
+
+| Category | Final score | Basis |
+| --- | ---: | --- |
+| requirement and acceptance-criteria proof | 99% | every affected compact/expanded/action/value-free presentation requirement directly proven |
+| changed-boundary execution directness | 100% | exact current UI, built server, real browser, real mutation, and reload |
+| cross-boundary integration realism and mock gap | 99% | actual browser -> Nuxt -> GraphQL -> one-DB/key vault plus focused API tests |
+| environment/configuration/identity/fixture fidelity | 99% | exact HEAD, project-supported runtime, isolated owned ports/data, user stack preserved |
+| failure/edge/lifecycle/recovery evidence | 97% | disabled/gating, one-editor, visibility, cleared write-only input, reload persistence, cleanup |
+| user-surface/browser/desktop-shell confidence | 100% | actual browser and production web build; change is renderer-equivalent, not shell-specific |
+| durable regression coverage quality and relevance | 97% | focused implementation spec and existing API regressions pass; no API/E2E delta required |
+
+- Overall confidence: **98.7%** (simple average).
+- Applicable category below 90%: **None**.
+- Critical missing/failing acceptance criterion: **None**.
+- Final API/E2E outcome: **Pass**.
+- Next recipient: `code_reviewer` for the required proportional durable-test
+  gate, expected to be `Not Applicable` for API/E2E-owned test changes.
+
+`EXT-ANTHROPIC-AGENT-SDK-AUTH` remains a delivery/release recheck only, not
+legal clearance or an authentication redesign. Claude remains
+`auto|cli|api-key`; `LOCAL_HARDENED` remains limited with Codex excluded;
+`STRONG_AGENT_ISOLATION` remains deferred. Exact unpatched
+`repository_prisma@1.0.8` with Prisma 5.22.0, unchanged Docker, explicit importer
+target/source immutability, one DB plus adjacent key, no automatic `.env`
+credential migration, and DASHSCOPE-only Qwen mapping remain authoritative.

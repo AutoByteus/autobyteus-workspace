@@ -1,0 +1,20 @@
+=== ROUND22 FINAL PACKAGE CHECK ===
+2026-07-27T20:41:45Z
+HEAD=49c27b2fe3aeb8b8299759c6ae64f7ffddc09254
+EXPECTED_HEAD=49c27b2fe3aeb8b8299759c6ae64f7ffddc09254
+GIT_DIFF_CHECK=PASS
+API_E2E_OWNED_TEST_PATH_STATUS
+API_E2E_OWNED_TEST_DIRTY_COUNT=0
+INTENTIONALLY_ABSENT_PATHS
+test-config/live-e2e.json=ABSENT
+test-support/live-e2e/live-e2e-manifest.ts=ABSENT
+test-support/live-e2e/run-test-import.mjs=ABSENT
+CANONICAL_REPORT_META
+tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md:- Current Investigation Round: 22
+tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md:- Latest Authoritative Investigation: Round 22 (the Round-22 final update governs where it differs from earlier rounds).
+tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md:- Current Execution Round: 22
+tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md:- Latest Authoritative Round: Round 22 (the final section of this report governs where it differs from earlier rounds).
+tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md:## Round 22 Compact Gemini Presentation Coverage Investigation
+tickets/in-progress/secure-centralized-secret-provisioning/execution-coverage-report.md:## Round 22 Compact Gemini Settings Presentation — Authoritative Pass
+ROUND22_EVIDENCE_COUNT=11
+RESULT=PASS

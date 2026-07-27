@@ -1,102 +1,104 @@
-# Secure Centralized Secret Provisioning — Round 17 Candidate Notes
+# Secure Centralized Secret Provisioning — Round 21 Verification Candidate Notes
 
-> **Blocked candidate — do not release or use for renewed verification.**
-> The user's 2026-07-27 packaged Electron check exposed a confirmed Terminal
-> bridge regression: the sanitized child environment drops
-> `ELECTRON_RUN_AS_NODE`, so the packaged Electron executable relaunches
-> application mode instead of the Node-mode PTY bridge. A reviewed correction
-> and new packaged candidate are required.
+> **Local verification candidate; not a released build.** Repository
+> finalization, push, merge, tag, publication, deployment, and worktree cleanup
+> remain on hold until the user explicitly verifies this exact candidate.
 
-## Candidate
+## Candidate Identity
 
+- Ticket worktree:
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - Branch: `codex/secure-centralized-secret-provisioning`
-- Final reviewed implementation HEAD:
-  `dd1d37f90d00331d427bad1b36e4401a3a733038`
-- Local validated-state checkpoint:
-  `3877b39bdcad2e8c88bb9f86d190308aaf034829`
-- Base checked: `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`
-- Architecture review: Pass
-- Implementation source review: Round 41 Pass, 9.62/10
-- API/E2E: Round 17 Pass, 98.9%; every applicable category >=98%
-- Proportional durable-test review: Round 9 Pass; no unresolved findings
+- Final reviewed implementation/test authority:
+  `ec0df6b1a9d216366e08262cd96f5280686b04d0`
+- Reviewed-package safety checkpoint:
+  `c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a`
+- Exact source HEAD used for this fresh package:
+  `4bf6e7d18229336cd690497370f1a66dedaafc4a`
+- Tracked base checked:
+  `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`
+- Integration status: ahead 54, behind 0; merge-base equals the tracked base.
+- API/E2E: Round 21 `Pass`, 98.9% confidence; no missing or failing
+  critical acceptance criterion.
+- Proportional durable-test review: Round 11 `Pass`; no unresolved finding.
 
-## Existing-User Startup Correction
+## Narrow Approved Scope
 
-- The supported previous application stored custom OpenAI-compatible providers
-  in plaintext schema v1. The candidate now performs one bounded startup
-  transition after database migration and vault initialization.
-- A complete valid one- or multi-provider v1 set migrates all-or-nothing into
-  encrypted vault entries plus secret-free v2 metadata, preserving provider IDs
-  and names.
-- The exact aged zero-byte lock left by the supported old writer is recoverable;
-  a live positive-PID lock owner remains protected.
-- Invalid, duplicated, unsafe, or colliding v1 data is not partially imported.
-  The plaintext v1 file is deleted, built-in Settings remains available, and the
-  user re-adds providers through **New Provider**.
-- If safe deletion fails, startup and built-ins remain available while custom
-  provider creation stays unavailable until the filesystem issue is corrected
-  and the app restarts.
-- There is no runtime v1 reader, compatibility fallback, backup/quarantine,
-  partial migration, alternate source, or automatic `.env` import/update.
+The candidate centralizes supported application-owned credentials in an
+application-local encrypted vault while preserving the explicit assurance and
+consumer boundaries:
 
-## Secure Credential And Settings Behavior
+- one application database plus its adjacent key;
+- file-root and value-safe local custody;
+- explicit subject/provider consumer mapping;
+- point-of-use resolution without putting secret values into metadata,
+  GraphQL responses, logs, or ticket evidence;
+- ordinary provider and Gemini Settings use save/overwrite behavior;
+- existing custom-provider Delete remains provider lifecycle and removes its
+  linked credential;
+- explicit importer target authority and source immutability;
+- no automatic `.env` credential import or update;
+- `DASHSCOPE_API_KEY` is the sole Qwen mapping;
+- exact unpatched `repository_prisma@1.0.8` with Prisma `5.22.0`;
+- unchanged Docker service topology.
 
-- Provider and integration credentials are encrypted inside the current SQLite
-  application database, protected by the adjacent
-  `<database-path>.secret.key`. Database and key are one backup/restore/reset
-  pair.
-- Settings -> API Key Management receives each provider once, with one
-  authoritative configured state and its LLM/audio/image/video model sections.
-- Provider Settings remain write-only: save/remove returns completion, then the
-  UI refetches canonical value-free state. Secret values are never returned.
-- Gemini options remain independent with one explicit active mode.
-- The sole importer is `pnpm secrets:import -- --source <absolute>
-  --database-url <absolute-file-url>`; that explicit URL is the sole target
-  authority.
+Claude remains exactly `auto|cli|api-key`, default `cli`. Only explicit
+`api-key` resolves `agentRuntime/claude_agent_sdk/apiKey` and replaces
+`ANTHROPIC_API_KEY` for that launch. Inherited Electron, terminal, Claude, and
+Codex environments preserve continuity; they are not process-isolation proof.
+`LOCAL_HARDENED` covers local vault/file-root/value-safe custody, Codex remains
+excluded, and `STRONG_AGENT_ISOLATION` remains deferred.
 
-## Preserved Boundaries
+## Scope Reset From The Earlier Candidate
 
-- Claude modes remain exactly `cli` and `managed-secret`; external Codex remains
-  unchanged.
-- Claims remain `LOCAL_HARDENED` with Codex excluded;
-  `STRONG_AGENT_ISOLATION` remains deferred.
-- Exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0 remains.
-- Docker topology, source/template immutability, no automatic `.env`
-  import/update, and `DASHSCOPE_API_KEY` as the sole Qwen mapping remain.
+The user correctly identified changes outside the credential-custody ticket.
+The reviewed Round 21 state addresses that concern:
 
-## Validation Highlights
+- all 18 paths listed in `scope-audit.md` were restored exactly to
+  `origin/personal`;
+- unrelated Electron launcher, isolated-PTY environment, Claude MCP/session,
+  and built-in runtime-default changes were removed;
+- redundant standalone ordinary-provider/Gemini credential-removal source and
+  UI were removed;
+- provider/Gemini public mutation surfaces and restart behavior were reconciled
+  to the restored contract;
+- the bounded custom-provider Delete correction no longer reports failure after
+  successful deletion merely because unrelated AutoByteus remote discovery is
+  unavailable.
 
-- Actual built-server v1 migration/reset/restart E2E passed 3/3 in authoritative
-  API/E2E reruns and again in the delivery integrated-state check.
-- The actual packaged macOS Electron executable was launched six times across
-  three isolated existing-user profiles. REST health, preload IPC, assembled
-  GraphQL, Settings renderer, migration/reconfiguration, and restart passed.
-- Configured OpenAI LLM/agent/audio/image, DeepSeek LLM/agent, Vertex Express,
-  native Anthropic, managed-secret Claude, Codex, and Claude CLI paths passed.
-- Docker, browser Settings, repository-Prisma, Electron AppData/runtime, cleanup,
-  and value-safety scans passed.
-- Delivery reverified the current DMG/ZIP hashes and container integrity.
+The earlier packaged-terminal failure remains historical evidence for the
+superseded candidate. The fresh candidate retains the base runtime environment
+behavior and passes both the native terminal verifier and an actual packaged
+Electron Node-mode `IsolatedPtySession` marker probe.
 
-## Exact Limitations
+## Fresh macOS arm64 Artifacts
 
-- Gemini AI Studio and Serper were not configured; no pass is claimed.
-- Configured AutoByteus remote LLM/audio/image discovery returned the recorded
-  stable discovery-failure codes; no alternate endpoint or pass was invented.
-- The local macOS candidate is ad-hoc/unsigned because no Apple signing identity
-  was configured. It is for local user verification, not publication.
-- The installed application and candidate share identity and fixed port 29695;
-  they cannot run side by side.
-- `EXT-ANTHROPIC-AGENT-SDK-AUTH` remains an external release recheck and is not
-  legal clearance.
+- App:
+  `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG:
+  `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg`
+- ZIP:
+  `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip`
+- DMG SHA-256:
+  `70ef790c788fc25e2f4d738224f913c27b0e217a80cb73fe2085f669474d3dd2`
+- ZIP SHA-256:
+  `411347e28fe919dcb35feb0ea90d9d8565d8775a99c6e0158483b9b6fff8db37`
 
-## Compatibility And Data Transition
+Build `1.4.26` was produced from the secure-ticket worktree with the README
+no-sign command. DMG verification, ZIP integrity, packaged-server isolated
+startup, native `node-pty` spawn, and packaged Electron isolated PTY execution
+all passed. The app is ad-hoc/unsigned and is suitable only as a local
+verification candidate, not as a distributable release.
 
-Normal additive Prisma migration creates the encrypted vault. The supported
-custom-provider v1 file is the sole bounded automatic credential transition and
-follows the outcomes above. Other plaintext sources remain non-authoritative;
-operators use Settings or the explicit importer and remain responsible for
-source cleanup/rotation.
+## Truthful Limitations
 
-The application DB and adjacent key must be backed up, restored, moved, and
-reset together. Electron **Reset Server Data** removes the entire server data
-root, including both.
+- Gemini AI Studio and Serper were not configured in the canonical provider
+  run and remain truthful skips.
+- AutoByteus remote discovery remained unavailable under its exact codes; no
+  unavailable capability is claimed as passed.
+- Inherited child environments are continuity behavior, not strong isolation.
+- The official Anthropic authentication review is a delivery/release risk
+  recheck, not legal clearance.
+- Delivery did not attach to, inspect, stop, or replace the user's installed
+  AutoByteus application or its retained project test database/key/config.
+- A real user GUI verification of this exact fresh candidate is still required.

@@ -9,8 +9,10 @@
 - Bootstrap base reference: `origin/personal`
 - Integrated base reference used for docs sync:
   `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`.
-- Local reviewed-package safety checkpoint and current integrated state:
+- Local reviewed-package safety checkpoint:
   `c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a`.
+- Delivery-docs checkpoint and exact fresh-package source HEAD:
+  `4bf6e7d18229336cd690497370f1a66dedaafc4a`.
 - Integration method: already current after a 2026-07-27 fetch; the checkpointed
   ticket branch was 53 commits ahead and 0 behind, and its merge-base equaled
   the tracked base.
@@ -77,7 +79,9 @@ These are long-lived operator and maintainer contracts, not ticket-only detail.
 - Result: `Pass`.
 - Current candidate scope and long-lived docs agree with the Round 21 integrated
   state.
-- Next action: build and integrity-check a fresh local macOS verification
-  candidate, then request renewed explicit user verification.
+- A fresh local macOS verification candidate was built from exact HEAD
+  `4bf6e7d18229336cd690497370f1a66dedaafc4a` and passed artifact, packaged
+  server, native terminal, and packaged Electron PTY checks (`354`–`355`).
+- Next action: request renewed explicit user verification of that candidate.
 - Ticket archive, branch push, merge, tag, release, deployment, and worktree
   cleanup remain prohibited until the user explicitly verifies that candidate.

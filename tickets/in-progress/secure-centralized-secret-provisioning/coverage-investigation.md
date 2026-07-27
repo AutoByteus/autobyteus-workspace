@@ -9,14 +9,14 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md`
-- Current Investigation Round: 21
-- Trigger: Round-45 CR-031 source-review Pass at final HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`; recheck the Round-20 packaged existing-user failure first, then execute the affected custom-provider, provider, restart, Docker, browser, package, and external-runtime matrix.
-- Prior Investigation Reviewed: Rounds 1–20. Their evidence remains cumulative historical context; Round 20 is a truthful superseded Fail whose exact failing scenario is rechecked first in Round 21.
-- Latest Authoritative Investigation: Round 21 (the Round-21 final update governs where it differs from earlier rounds).
+- Current Investigation Round: 22
+- Trigger: Round-47 CR-032 source-review Pass at final HEAD `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`; validate the compact Gemini Settings presentation and affected provider/vault behavior proportionately while preserving current critical package/provider/Docker evidence.
+- Prior Investigation Reviewed: Rounds 1–21. Round 21 is the current backend/package/provider baseline; Round 22 revalidates the superseding presentation-only runtime delta.
+- Latest Authoritative Investigation: Round 22 (the Round-22 final update governs where it differs from earlier rounds).
 
 ## Current Requirement And Design Basis
 
-The current basis is the reviewed one-application-database encrypted-vault package at final HEAD `ec0df6b1a9d216366e08262cd96f5280686b04d0`. Critical proof covers: one application database plus one adjacent root key; value-free Settings/GraphQL lifecycle; explicit-target/source-immutable operator import; custom-provider-v1 migration/reset; exact provider-owned JIT resolution; configured real LLM/agent/audio/image paths; metadata provenance; restart/reopen and unchanged Docker persistence; actual browser Settings/terminal behavior; exact `repository_prisma@1.0.8` with Prisma 5.22.0; and restored concrete child-environment continuity.
+The current basis is the reviewed one-application-database encrypted-vault package at final HEAD `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`. Critical proof covers: one application database plus one adjacent root key; value-free Settings/GraphQL lifecycle; explicit-target/source-immutable operator import; custom-provider-v1 migration/reset; exact provider-owned JIT resolution; configured real LLM/agent/audio/image paths; metadata provenance; restart/reopen and unchanged Docker persistence; actual browser Settings/terminal behavior; exact `repository_prisma@1.0.8` with Prisma 5.22.0; and restored concrete child-environment continuity.
 
 Claude authentication is exactly `auto|cli|api-key`, default `cli`. `auto` and `cli` perform zero managed-vault lookup. Explicit `api-key` performs one subject-scoped `agentRuntime/claude_agent_sdk/apiKey` lookup immediately before SDK query launch and overrides only `ANTHROPIC_API_KEY`. The removed `managed-secret` service/name is not a compatibility authority.
 
@@ -2072,3 +2072,57 @@ The final value-safety scanner and package inventory also passed with zero raw/b
 Broader validation was **Required and completed**. The current API/E2E outcome
 is **Pass**. The canonical execution report contains the final confidence
 scorecard and full command/evidence inventory.
+
+## Round 22 Compact Gemini Presentation Coverage Investigation
+
+### Reviewed Entry Point And Delta Classification
+
+- Final reviewed HEAD: `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`.
+- Source review: Round 47 **Pass**, 96.9%, no open implementation-source finding.
+- Runtime delta after the committed Round-21 reviewed package
+  `c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a`: four Gemini presentation
+  components plus two localization files. The remaining new focused spec is
+  implementation-owned test coverage. Backend/core/live-harness/Docker/package/
+  lock paths are byte-identical (`367`).
+- CR-032 itself changes only docs and a test-setup comment.
+
+### Existing Coverage Validity And Proportionate Plan
+
+| Boundary | Decision | Evidence |
+| --- | --- | --- |
+| compact/expanded Gemini Settings | **Broader browser validation required** | actual DOM, focus, labels, one-editor rule, hidden credential input, visibility control, screenshots |
+| explicit Save-and-use and configured/active state | **Affected integration rerun required** | isolated real built backend, task DB/key, actual browser mutation and reload |
+| independent options / no standalone removal | **Focused durable coverage still valid; rerun** | Gemini component/store/runtime plus assembled GraphQL/service tests |
+| metadata provenance | **Adjacent backend E2E rerun** | assembled provenance GraphQL |
+| configured real providers / truthful unavailable states | **Retain Round-21 direct evidence** | no backend/core/live-harness byte delta; `337` remains the exact 27-pass/5-skip baseline |
+| package, Docker, restart, external Codex/Claude, repository Prisma | **Retain Round-21 direct evidence** | no affected source/package/lock/Docker delta; re-execution would not increase presentation confidence |
+
+No API/E2E-owned durable test change is required. The six cumulative Round-21
+API/E2E paths are byte-identical and already proportionally reviewed; the new
+Gemini component spec is implementation-owned and part of the reviewed source
+package.
+
+### Completed Evidence And Decision
+
+Focused presentation/provider/vault coverage passed 39/39 across seven files.
+The server production build passed while starting the isolated browser stack;
+the Nuxt production build passed and prerendered 15 routes.
+
+The actual browser rendered the compact three-option panel with no editor or
+credential input in the initial DOM. Expanding Vertex Express produced exactly
+one focused password editor; visibility changed text/password type without
+value output. The production Save-and-use action persisted a synthetic task-only
+credential in the isolated one-DB/key vault and selected Vertex Express. The
+compact configured/active state survived a page reload with zero credential
+inputs and no visible value. No standalone Gemini removal control appeared.
+
+The user's independently running same-worktree `pnpm dev:test` stack on ports
+3000/8000 was preserved and not reused. The same project-supported runtime
+bootstrap and Nuxt command ran on task-owned ports 63122/33122 with an isolated
+DB/key/runtime root, which were fully removed afterward.
+
+Final value-safety and identity/inventory checks passed with zero raw/base64 canary or structural-secret matches and zero dirty API/E2E test paths (`368`–`369`).
+
+Broader validation was **Required and completed**. Result: **Pass**. Retained
+critical provider/package/Docker outcomes and exact unavailable-capability
+statements remain applicable because the governing paths are byte-identical.
