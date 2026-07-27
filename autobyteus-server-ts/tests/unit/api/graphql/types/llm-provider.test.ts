@@ -16,10 +16,8 @@ const mockLlmProviderService = vi.hoisted(() => ({
   getGeminiConfigurationStatus: vi.fn(),
   saveGeminiOptionConfiguration: vi.fn(),
   activateGeminiOption: vi.fn(),
-  removeGeminiOptionConfiguration: vi.fn(),
   listProvidersWithModels: vi.fn(),
   setProviderApiKey: vi.fn(),
-  removeProviderApiKey: vi.fn(),
   probeCustomProvider: vi.fn(),
   createCustomProvider: vi.fn(),
   deleteCustomProvider: vi.fn(),
@@ -137,23 +135,18 @@ describe('LlmProviderResolver', () => {
     );
   });
 
-  it('uses exact mode commands for activate and remove', async () => {
+  it('uses the exact command for explicit mode activation', async () => {
     const status = setupStatus({ activeMode: 'VERTEX_EXPRESS', vertexExpressStatus: 'CONFIGURED' });
     mockLlmProviderService.activateGeminiOption.mockResolvedValue(status);
-    mockLlmProviderService.removeGeminiOptionConfiguration.mockResolvedValue(setupStatus());
     const resolver = new LlmProviderResolver();
     await resolver.useGeminiMode('VERTEX_EXPRESS' as any);
-    await resolver.removeGeminiConfiguration('VERTEX_EXPRESS' as any);
     expect(mockLlmProviderService.activateGeminiOption).toHaveBeenCalledWith('VERTEX_EXPRESS');
-    expect(mockLlmProviderService.removeGeminiOptionConfiguration).toHaveBeenCalledWith('VERTEX_EXPRESS');
   });
 
-  it('returns only Boolean command completion for ordinary save and remove', async () => {
+  it('returns only Boolean command completion for ordinary save', async () => {
     const resolver = new LlmProviderResolver();
     await expect(resolver.saveProviderApiKey('OPENAI', 'synthetic-key')).resolves.toBe(true);
-    await expect(resolver.removeProviderApiKey('OPENAI')).resolves.toBe(true);
     expect(mockLlmProviderService.setProviderApiKey).toHaveBeenCalledWith('OPENAI', 'synthetic-key');
-    expect(mockLlmProviderService.removeProviderApiKey).toHaveBeenCalledWith('OPENAI');
   });
 
   it('keeps custom command contracts tight', async () => {

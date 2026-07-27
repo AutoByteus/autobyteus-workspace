@@ -141,18 +141,6 @@
             ? $t('settings.components.settings.ProviderAPIKeyManager.saving')
             : $t('settings.components.settings.ProviderAPIKeyManager.save_option') }}
         </button>
-        <button
-          v-if="configured"
-          type="button"
-          class="flex items-center rounded-lg border border-red-200 bg-white px-3.5 py-2 text-xs font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="actionsDisabled"
-          :data-testid="`gemini-remove-${option}`"
-          @click="requestRemoval"
-        >
-          {{ removing
-            ? $t('settings.components.settings.ProviderAPIKeyManager.removing')
-            : $t('settings.components.settings.ProviderAPIKeyManager.remove_option') }}
-        </button>
       </div>
     </div>
   </section>
@@ -178,7 +166,6 @@ const props = defineProps<{
   vertexLocation: string | null
   saving: boolean
   activating: boolean
-  removing: boolean
   disabled: boolean
 }>()
 
@@ -187,7 +174,6 @@ const emit = defineEmits<{
   (event: 'save', input: GeminiOptionSaveInput): void
   (event: 'save-and-activate', input: GeminiOptionSaveInput): void
   (event: 'activate', option: GeminiConfigurationOption): void
-  (event: 'remove', option: GeminiConfigurationOption): void
 }>()
 
 const { t } = useLocalization()
@@ -197,7 +183,7 @@ const vertexProject = ref('')
 const vertexLocation = ref('')
 const showApiKey = ref(false)
 const firstField = ref<HTMLInputElement | null>(null)
-const actionsDisabled = computed(() => props.disabled || props.saving || props.activating || props.removing)
+const actionsDisabled = computed(() => props.disabled || props.saving || props.activating)
 
 watch(
   () => props.refreshSnapshot,
@@ -254,13 +240,5 @@ const buildInput = (): GeminiOptionSaveInput => {
 
 const submit = () => emit('save', buildInput())
 const submitAndActivate = () => emit('save-and-activate', buildInput())
-
-const requestRemoval = () => {
-  if (props.active && !globalThis.confirm(t(
-    'settings.components.settings.ProviderAPIKeyManager.gemini_active_remove_confirmation',
-    { option: optionLabel.value },
-  ))) return
-  emit('remove', props.option)
-}
 
 </script>

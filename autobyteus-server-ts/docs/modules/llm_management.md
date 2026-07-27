@@ -73,7 +73,7 @@ reuse the existing non-null `ModelDetail` contract and use `[]` when the
 provider has no models in that capability. The web consumes this grouped
 collection directly and maintains no four-array merge or second credential map.
 
-After a save/remove command returns Boolean completion, the client refetches
+After a save command returns Boolean completion, the client refetches
 `providerSettings` for authoritative state. Secret values are never returned.
 
 ### Other Queries
@@ -92,7 +92,6 @@ They are not API-key Settings credential authorities.
 ### Mutations
 
 - `saveProviderApiKey(providerId, apiKey)` -> Boolean
-- `removeProviderApiKey(providerId)` -> Boolean
 - `probeCustomProvider(input)` -> discovered `{ id, name }` models only
 - `createCustomProvider(input)` -> assigned provider ID only
 - `deleteCustomProvider(providerId)` -> Boolean
@@ -100,7 +99,6 @@ They are not API-key Settings credential authorities.
 - `saveGeminiVertexExpress(apiKey, activateAfterSave)`
 - `saveGeminiVertexProject(project, location, activateAfterSave)`
 - `useGeminiMode(mode)`
-- `removeGeminiConfiguration(mode)`
 - `reloadLlmProviderModels(providerId, runtimeKind?)`
 - `reloadLlmModels(runtimeKind?)`
 
@@ -143,8 +141,8 @@ selection guidance; missing descriptions remain valid name-only options.
 
 - Built-in provider IDs are stable enum-backed values such as `OPENAI`,
   `ANTHROPIC`, `GEMINI`, `LMSTUDIO`, and `OLLAMA`.
-- Secret writes/removals remain write-only through
-  `saveProviderApiKey(...)` / `removeProviderApiKey(...)`.
+- Secret writes remain write-only through `saveProviderApiKey(...)`; ordinary
+  built-in provider Settings exposes no standalone credential-removal action.
 - Readback exposes only provider-owned `apiKeyConfigured`; raw secret values are
   never returned.
 - Gemini keeps three exact construction modes while projecting into the same

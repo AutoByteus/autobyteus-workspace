@@ -21,13 +21,11 @@
       :vertex-location="geminiSetup.vertexProject?.location ?? null"
       :saving="saving"
       :activating="activating"
-      :removing="removing"
       :disabled="Boolean(disabled) || optionUnavailable(option)"
       @toggle-expanded="toggleExpanded(option)"
       @save="emit('save', $event)"
       @save-and-activate="emit('save-and-activate', $event)"
       @activate="emit('activate', $event)"
-      @remove="emit('remove', $event)"
     />
   </div>
 </template>
@@ -50,7 +48,6 @@ const props = defineProps<{
   geminiSetup: GeminiSetupConfigState
   saving: boolean
   activating: boolean
-  removing: boolean
   disabled?: boolean
 }>()
 
@@ -58,7 +55,6 @@ const emit = defineEmits<{
   (event: 'save', input: GeminiOptionSaveInput): void
   (event: 'save-and-activate', input: GeminiOptionSaveInput): void
   (event: 'activate', option: GeminiConfigurationOption): void
-  (event: 'remove', option: GeminiConfigurationOption): void
 }>()
 
 const { t } = useLocalization()

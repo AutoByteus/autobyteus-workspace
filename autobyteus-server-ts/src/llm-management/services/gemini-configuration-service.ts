@@ -105,27 +105,6 @@ export class GeminiConfigurationService {
     return this.getSetupStatus();
   }
 
-  async removeOptionConfiguration(
-    option: GeminiConfigurationOption,
-  ): Promise<GeminiSetupStatus> {
-    const wasActive = readConfiguredMode() === option;
-    if (wasActive) appConfigProvider.config.delete('GEMINI_SETUP_MODE');
-    try {
-      if (option === 'AI_STUDIO') {
-        await this.management().removeForConsumer(this.consumer('geminiAiStudioApiKey'));
-      } else if (option === 'VERTEX_EXPRESS') {
-        await this.management().removeForConsumer(this.consumer('geminiVertexExpressApiKey'));
-      } else {
-        appConfigProvider.config.delete('VERTEX_AI_PROJECT');
-        appConfigProvider.config.delete('VERTEX_AI_LOCATION');
-      }
-    } catch (error) {
-      if (!wasActive) throw error;
-      return this.getSetupStatus();
-    }
-    return this.getSetupStatus();
-  }
-
   private toRuntimeSelection(status: {
     activeMode: GeminiConfigurationOption | null;
     aiStudioStatus: GeminiConfigurationState;

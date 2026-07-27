@@ -37,9 +37,8 @@ export class LinuxServerManager extends BaseServerManager {
     }
 
     const env = {
-      PATH: loginShellPath ?? '/usr/local/bin:/usr/bin:/bin',
-      HOME: this.appDataDir,
-      TMPDIR: path.join(this.appDataDir, 'tmp'),
+      ...process.env,
+      ...(loginShellPath ? { PATH: loginShellPath } : {}),
       ELECTRON_RUN_AS_NODE: '1',
       PORT: this.serverPort.toString(),
       SERVER_PORT: this.serverPort.toString(),

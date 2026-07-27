@@ -243,16 +243,6 @@ export class LlmProviderService {
     await this.modelCatalogService.reloadLlmModels(RuntimeKind.AUTOBYTEUS);
   }
 
-  async removeProviderApiKey(providerId: string): Promise<void> {
-    const normalizedProviderId = this.requireBuiltInProviderId(providerId);
-    await this.secretVaultRuntime.requireService().removeForConsumer(
-      this.builtInConsumer(normalizedProviderId),
-    );
-    if (normalizedProviderId === LLMProvider.AUTOBYTEUS) {
-      await this.modelCatalogService.clearAutobyteusRemoteModels();
-    }
-  }
-
   async setProviderApiKey(providerId: string, apiKey: string): Promise<void> {
     const normalizedProviderId = this.requireBuiltInProviderId(providerId);
     await this.secretVaultRuntime.requireService().saveForConsumer({
@@ -288,14 +278,6 @@ export class LlmProviderService {
 
   async activateGeminiOption(option: GeminiConfigurationOption): Promise<GeminiSetupStatus> {
     const result = await this.geminiConfigurationService.activateOption(option);
-    this.modelCatalogService.invalidateGeminiMetadata();
-    return result;
-  }
-
-  async removeGeminiOptionConfiguration(
-    option: GeminiConfigurationOption,
-  ): Promise<GeminiSetupStatus> {
-    const result = await this.geminiConfigurationService.removeOptionConfiguration(option);
     this.modelCatalogService.invalidateGeminiMetadata();
     return result;
   }

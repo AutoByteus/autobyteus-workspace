@@ -35,29 +35,13 @@ describe("BuiltInAgentBootstrapper", () => {
   let previousFeaturedSetting: string | undefined;
   let previousSkillImproverSetting: string | undefined;
   let previousAgentPackageRoots: string | undefined;
-  let previousOperationalEnvironment: Record<string, string | undefined>;
-
-  const operationalEnvironmentKeys = [
-    "APP_ENV",
-    "AUTOBYTEUS_MEMORY_DIR",
-    "AUTOBYTEUS_SERVER_HOST",
-    "DATABASE_URL",
-    "DB_TYPE",
-    "LOG_LEVEL",
-  ] as const;
 
   beforeEach(async () => {
     previousFeaturedSetting = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     previousSkillImproverSetting = process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
     previousAgentPackageRoots = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
-    previousOperationalEnvironment = Object.fromEntries(
-      operationalEnvironmentKeys.map((key) => [key, process.env[key]]),
-    );
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     delete process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID];
-    for (const key of operationalEnvironmentKeys) {
-      delete process.env[key];
-    }
     process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
     appConfigProvider.resetForTests();
     tempDataDir = await createTempDataDir();
@@ -81,14 +65,6 @@ describe("BuiltInAgentBootstrapper", () => {
     } else {
       process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = previousAgentPackageRoots;
     }
-    for (const key of operationalEnvironmentKeys) {
-      const previousValue = previousOperationalEnvironment[key];
-      if (previousValue === undefined) {
-        delete process.env[key];
-      } else {
-        process.env[key] = previousValue;
-      }
-    }
     await fs.rm(tempDataDir, { recursive: true, force: true });
   });
 
@@ -111,14 +87,6 @@ describe("BuiltInAgentBootstrapper", () => {
     "retrospective-skill-improver",
   );
   const dailyAssistantAgentDir = (): string => path.join(tempDataDir, "agents", "daily-assistant");
-
-  const initializeAppConfig = async (contents: string): Promise<string> => {
-    const configPath = path.join(tempDataDir, ".env");
-    await fs.writeFile(configPath, contents, "utf-8");
-    appConfigProvider.resetForTests();
-    appConfigProvider.initialize({ appDataDir: tempDataDir }).initialize();
-    return configPath;
-  };
 
   const resultFor = <T extends { builtInAgents: Array<{ agentDefinitionId: string }> }>(
     result: T,
@@ -149,7 +117,7 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedRuntimeDefault: false,
+      initializedSetting: false,
     });
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       agentDefinitionId: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
@@ -159,7 +127,7 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedRuntimeDefault: true,
+      initializedSetting: true,
     });
 
     await expect(
@@ -179,7 +147,6 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
       RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     );
-    expect(process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID]).toBeUndefined();
 
     await expect(services.agentDefinitionService.getFreshAgentDefinitionById(
       MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
@@ -212,91 +179,28 @@ describe("BuiltInAgentBootstrapper", () => {
     ).resolves.toBeNull();
   });
 
-  it("uses a runtime default without mutating application configuration on repeated startup", async () => {
-    const originalConfig = [
-      "# operator-owned application configuration",
-      "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695",
-      "APP_ENV=test",
-      "",
-    ].join("\n");
-    const configPath = await initializeAppConfig(originalConfig);
+  it("preserves existing built-in settings and leaves featured settings untouched", async () => {
     const services = createServices();
-
-    const firstResult = await bootstrapBuiltInAgents(services);
-    const secondResult = await bootstrapBuiltInAgents(services);
-
-    expect(resultFor(firstResult, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
-      initializedRuntimeDefault: true,
-    });
-    expect(resultFor(secondResult, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
-      initializedRuntimeDefault: false,
-    });
-    expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
-      RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+    services.serverSettingsService.updateSetting(
+      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      "custom-retrospective-skill-improver",
     );
-    expect(
-      services.serverSettingsService.getAvailableSettings().find(
-        (setting) => setting.key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      ),
-    ).toMatchObject({
-      value: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      isEditable: true,
-      isDeletable: false,
-    });
-    await expect(fs.readFile(configPath, "utf-8")).resolves.toBe(originalConfig);
-    expect(process.env[AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID]).toBeUndefined();
-  });
-
-  it("preserves an operator-selected built-in setting and application configuration bytes", async () => {
-    const originalConfig = [
-      "# operator-selected runtime setting",
-      "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695",
-      `${AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID}=custom-retrospective-skill-improver`,
-      "",
-    ].join("\n");
-    const configPath = await initializeAppConfig(originalConfig);
-    const services = createServices();
 
     const result = await bootstrapBuiltInAgents(services);
 
     expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
       resolved: true,
-      initializedRuntimeDefault: false,
+      initializedSetting: false,
     });
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       resolved: true,
-      initializedRuntimeDefault: true,
+      initializedSetting: false,
     });
     expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
       "custom-retrospective-skill-improver",
     );
     expect(services.serverSettingsService.getFeaturedCatalogItemsSettingValue()).toBeNull();
-    await expect(fs.readFile(configPath, "utf-8")).resolves.toBe(originalConfig);
     await expect(fs.stat(dailyAssistantAgentDir())).rejects.toMatchObject({ code: "ENOENT" });
-  });
-
-  it("persists an explicit Settings update after the runtime default is initialized", async () => {
-    const originalConfig = [
-      "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695",
-      "APP_ENV=test",
-      "",
-    ].join("\n");
-    const configPath = await initializeAppConfig(originalConfig);
-    const services = createServices();
-    await bootstrapBuiltInAgents(services);
-
-    const [ok] = services.serverSettingsService.updateSetting(
-      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      "custom-retrospective-skill-improver",
-    );
-
-    expect(ok).toBe(true);
-    expect(services.serverSettingsService.getSkillImprovementDefaultImproverAgentDefinitionId()).toBe(
-      "custom-retrospective-skill-improver",
-    );
-    await expect(fs.readFile(configPath, "utf-8")).resolves.toBe(
-      `${originalConfig}${AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID}=custom-retrospective-skill-improver`,
-    );
   });
 
   it("overwrites stale built-in files for both registry ids and preserves standalone local agents", async () => {
@@ -342,14 +246,14 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedRuntimeDefault: false,
+      initializedSetting: false,
     });
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       syncedAgentMd: true,
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedRuntimeDefault: true,
+      initializedSetting: true,
     });
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
       await readTemplate("memory-compactor", "agent.md"),
@@ -437,7 +341,7 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedRuntimeDefault: false,
+      initializedSetting: false,
     });
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
       await readTemplate("memory-compactor", "agent.md"),
@@ -477,7 +381,7 @@ describe("BuiltInAgentBootstrapper", () => {
       syncedAgentConfig: true,
       syncedSkills: true,
       resolved: true,
-      initializedRuntimeDefault: false,
+      initializedSetting: false,
     });
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
       await readTemplate("memory-compactor", "agent.md"),

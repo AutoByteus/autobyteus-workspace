@@ -20,9 +20,9 @@ type AgentDefinitionLookup = {
   refreshCache?: () => Promise<void>;
 };
 
-type BuiltInAgentRuntimeSettings = Pick<
+type BuiltInAgentSettingsPersistence = Pick<
   ServerSettingsService,
-  "initializeRuntimeDefault"
+  "getSettingValue" | "updateSetting"
 >;
 
 type Logger = {
@@ -39,7 +39,7 @@ export type BuiltInAgentBootstrapResult = {
   syncedAgentConfig: boolean;
   syncedSkills: boolean;
   resolved: boolean;
-  initializedRuntimeDefault: boolean;
+  initializedSetting: boolean;
 };
 
 export type BuiltInAgentsBootstrapResult = {
@@ -51,7 +51,7 @@ export type BuiltInAgentsBootstrapResult = {
 export type BuiltInAgentBootstrapperOptions = {
   agentsDir?: string;
   agentDefinitionService?: AgentDefinitionLookup;
-  serverSettingsService?: BuiltInAgentRuntimeSettings;
+  serverSettingsService?: BuiltInAgentSettingsPersistence;
   logger?: Logger;
 };
 
@@ -64,7 +64,7 @@ export class BuiltInAgentBootstrapper {
   private readonly agentsDir: string | null;
   private readonly agentDefinitions: readonly BuiltInAgentDefinition[];
   private readonly agentDefinitionService: AgentDefinitionLookup | null;
-  private readonly serverSettingsService: BuiltInAgentRuntimeSettings | null;
+  private readonly serverSettingsService: BuiltInAgentSettingsPersistence | null;
   private readonly logger: Logger;
 
   constructor(options: BuiltInAgentBootstrapperOptions = {}) {
@@ -117,8 +117,8 @@ export class BuiltInAgentBootstrapper {
     ]);
 
     const resolved = (await this.resolveBuiltInDefinition(definition)) !== null;
-    const initializedRuntimeDefault = resolved
-      ? this.initializeRuntimeDefaultIfNeeded(definition)
+    const initializedSetting = resolved
+      ? await this.initializeSettingDefaultIfNeeded(definition)
       : false;
 
     return {
@@ -130,7 +130,7 @@ export class BuiltInAgentBootstrapper {
       syncedAgentConfig,
       syncedSkills,
       resolved,
-      initializedRuntimeDefault,
+      initializedSetting,
     };
   }
 
@@ -142,7 +142,7 @@ export class BuiltInAgentBootstrapper {
     return this.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 
-  private getServerSettingsService(): BuiltInAgentRuntimeSettings {
+  private getServerSettingsService(): BuiltInAgentSettingsPersistence {
     return this.serverSettingsService ?? getServerSettingsService();
   }
 
@@ -203,20 +203,27 @@ export class BuiltInAgentBootstrapper {
     }
   }
 
-  private initializeRuntimeDefaultIfNeeded(
+  private async initializeSettingDefaultIfNeeded(
     definition: BuiltInAgentDefinition,
-  ): boolean {
+  ): Promise<boolean> {
     const settingDefault = definition.settingDefault;
     if (!settingDefault) {
       return false;
     }
 
     const settings = this.getServerSettingsService();
-    const initialized = settings.initializeRuntimeDefault(settingDefault.key, definition.id);
-    if (initialized) {
-      this.logger.info(`Initialized runtime default for '${settingDefault.key}'.`);
+    const currentValue = settings.getSettingValue(settingDefault.key);
+    if (currentValue) {
+      return false;
     }
-    return initialized;
+
+    const [ok, message] = settings.updateSetting(settingDefault.key, definition.id);
+    if (!ok) {
+      throw new Error(`Failed to initialize built-in agent setting '${settingDefault.key}': ${message}`);
+    }
+
+    this.logger.info(`Initialized '${settingDefault.key}' with '${definition.id}'.`);
+    return true;
   }
 
   private async refreshDefinitionCache(): Promise<void> {

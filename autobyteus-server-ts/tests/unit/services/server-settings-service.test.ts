@@ -22,7 +22,6 @@ vi.mock("../../../src/agent-tools/media/register-media-tools.js", () => ({
 }));
 
 import {
-  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
@@ -105,89 +104,6 @@ describe("ServerSettingsService", () => {
       isEditable: false,
       isDeletable: false,
     });
-  });
-
-  it("exposes an initialized runtime default without persisting it", () => {
-    mockConfig.getConfigData.mockReturnValue({});
-    mockConfig.get.mockReturnValue(undefined);
-    const service = new ServerSettingsService();
-
-    expect(
-      service.initializeRuntimeDefault(
-        AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-        "retrospective-skill-improver",
-      ),
-    ).toBe(true);
-    expect(
-      service.initializeRuntimeDefault(
-        AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-        "replacement-default",
-      ),
-    ).toBe(false);
-    expect(
-      service.getSettingValue(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID),
-    ).toBe("retrospective-skill-improver");
-    expect(
-      service.getAvailableSettings().find(
-        (setting) => setting.key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      ),
-    ).toMatchObject({
-      value: "retrospective-skill-improver",
-      isEditable: true,
-      isDeletable: false,
-    });
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it("keeps configured values authoritative over runtime defaults", () => {
-    mockConfig.getConfigData.mockReturnValue({
-      [AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID]: "operator-selection",
-    });
-    mockConfig.get.mockImplementation((key: string) =>
-      key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID
-        ? "operator-selection"
-        : undefined,
-    );
-    const service = new ServerSettingsService();
-
-    expect(
-      service.initializeRuntimeDefault(
-        AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-        "retrospective-skill-improver",
-      ),
-    ).toBe(true);
-    expect(
-      service.getSettingValue(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID),
-    ).toBe("operator-selection");
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it("lets an explicit Settings update supersede an initialized runtime default", () => {
-    const configured: Record<string, string> = {};
-    mockConfig.getConfigData.mockImplementation(() => ({ ...configured }));
-    mockConfig.get.mockImplementation((key: string) => configured[key]);
-    mockConfig.set.mockImplementation((key: string, value: string) => {
-      configured[key] = value;
-    });
-    const service = new ServerSettingsService();
-    service.initializeRuntimeDefault(
-      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      "retrospective-skill-improver",
-    );
-
-    const [ok] = service.updateSetting(
-      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      "operator-selection",
-    );
-
-    expect(ok).toBe(true);
-    expect(mockConfig.set).toHaveBeenCalledWith(
-      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      "operator-selection",
-    );
-    expect(
-      service.getSettingValue(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID),
-    ).toBe("operator-selection");
   });
 
   it("exposes compaction predefined settings with typed descriptions", () => {

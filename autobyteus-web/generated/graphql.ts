@@ -1200,8 +1200,6 @@ export type Mutation = {
   reloadToolSchema: ReloadToolSchemaResult;
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
-  removeGeminiConfiguration: GeminiSetupStateObject;
-  removeProviderApiKey: Scalars['Boolean']['output'];
   removeSkillSource: Array<SkillSource>;
   removeWorkspace: RemoveWorkspaceResultInfo;
   renameFileOrFolder: Scalars['String']['output'];
@@ -1457,16 +1455,6 @@ export type MutationRemoveAgentPackageArgs = {
 
 export type MutationRemoveApplicationPackageArgs = {
   packageId: Scalars['String']['input'];
-};
-
-
-export type MutationRemoveGeminiConfigurationArgs = {
-  mode: GeminiSetupMode;
-};
-
-
-export type MutationRemoveProviderApiKeyArgs = {
-  providerId: Scalars['String']['input'];
 };
 
 
@@ -3069,13 +3057,6 @@ export type SaveProviderApiKeyMutationVariables = Exact<{
 
 export type SaveProviderApiKeyMutation = { __typename?: 'Mutation', saveProviderApiKey: boolean };
 
-export type RemoveProviderApiKeyMutationVariables = Exact<{
-  providerId: Scalars['String']['input'];
-}>;
-
-
-export type RemoveProviderApiKeyMutation = { __typename?: 'Mutation', removeProviderApiKey: boolean };
-
 export type ReloadLlmModelsMutationVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -3143,13 +3124,6 @@ export type UseGeminiModeMutationVariables = Exact<{
 
 
 export type UseGeminiModeMutation = { __typename?: 'Mutation', useGeminiMode: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
-
-export type RemoveGeminiConfigurationMutationVariables = Exact<{
-  mode: GeminiSetupMode;
-}>;
-
-
-export type RemoveGeminiConfigurationMutation = { __typename?: 'Mutation', removeGeminiConfiguration: { __typename?: 'GeminiSetupStateObject', activeMode?: GeminiSetupMode | null, aiStudioConfigured?: boolean | null, vertexExpressConfigured?: boolean | null, vertexProject?: { __typename?: 'GeminiVertexProjectObject', project: string, location: string } | null } };
 
 export type ConfigureMcpServerMutationVariables = Exact<{
   input: McpServerInput;
@@ -5512,33 +5486,6 @@ export function useSaveProviderApiKeyMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>(SaveProviderApiKeyDocument, options);
 }
 export type SaveProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SaveProviderApiKeyMutation, SaveProviderApiKeyMutationVariables>;
-export const RemoveProviderApiKeyDocument = gql`
-    mutation RemoveProviderApiKey($providerId: String!) {
-  removeProviderApiKey(providerId: $providerId)
-}
-    `;
-
-/**
- * __useRemoveProviderApiKeyMutation__
- *
- * To run a mutation, you first call `useRemoveProviderApiKeyMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveProviderApiKeyMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRemoveProviderApiKeyMutation({
- *   variables: {
- *     providerId: // value for 'providerId'
- *   },
- * });
- */
-export function useRemoveProviderApiKeyMutation(options: VueApolloComposable.UseMutationOptions<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables>(RemoveProviderApiKeyDocument, options);
-}
-export type RemoveProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveProviderApiKeyMutation, RemoveProviderApiKeyMutationVariables>;
 export const ReloadLlmModelsDocument = gql`
     mutation ReloadLLMModels($runtimeKind: String) {
   reloadLlmModels(runtimeKind: $runtimeKind)
@@ -5828,41 +5775,6 @@ export function useUseGeminiModeMutation(options: VueApolloComposable.UseMutatio
   return VueApolloComposable.useMutation<UseGeminiModeMutation, UseGeminiModeMutationVariables>(UseGeminiModeDocument, options);
 }
 export type UseGeminiModeMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UseGeminiModeMutation, UseGeminiModeMutationVariables>;
-export const RemoveGeminiConfigurationDocument = gql`
-    mutation RemoveGeminiConfiguration($mode: GeminiSetupMode!) {
-  removeGeminiConfiguration(mode: $mode) {
-    activeMode
-    aiStudioConfigured
-    vertexExpressConfigured
-    vertexProject {
-      project
-      location
-    }
-  }
-}
-    `;
-
-/**
- * __useRemoveGeminiConfigurationMutation__
- *
- * To run a mutation, you first call `useRemoveGeminiConfigurationMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveGeminiConfigurationMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useRemoveGeminiConfigurationMutation({
- *   variables: {
- *     mode: // value for 'mode'
- *   },
- * });
- */
-export function useRemoveGeminiConfigurationMutation(options: VueApolloComposable.UseMutationOptions<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables>(RemoveGeminiConfigurationDocument, options);
-}
-export type RemoveGeminiConfigurationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveGeminiConfigurationMutation, RemoveGeminiConfigurationMutationVariables>;
 export const ConfigureMcpServerDocument = gql`
     mutation ConfigureMcpServer($input: McpServerInput!) {
   configureMcpServer(input: $input) {

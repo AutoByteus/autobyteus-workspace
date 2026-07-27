@@ -87,7 +87,7 @@ afterEach(async () => {
 });
 
 describe('server restart one-database secret-vault lifecycle', () => {
-  it('materializes the immutable template, migrates, initializes one adjacent key, reopens value-free, and removes', async () => {
+  it('materializes the immutable template, migrates, initializes one adjacent key, and reopens value-free', async () => {
     const suffix = `${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const runtimeRoot = path.join(testRuntimeRoot, `restart-${suffix}`);
     const database = resolveTestDatabaseLocation(`file:./db/restart-${suffix}.db`);
@@ -160,17 +160,6 @@ describe('server restart one-database secret-vault lifecycle', () => {
     expect(digest(database.rootKeyPath)).toBe(firstKeyHash);
     expect(fs.statSync(database.rootKeyPath).mtimeMs).toBe(firstKeyMtime);
 
-    const removed = await executeGraphql<{ removeProviderApiKey: boolean }>(
-      secondServer.serverUrl,
-      `
-        mutation Remove($providerId: String!) {
-          removeProviderApiKey(providerId: $providerId)
-        }
-      `,
-      { providerId: 'AUTOBYTEUS' },
-    );
-    expect(removed.removeProviderApiKey).toBe(true);
-    expect((await autoByteusStatus(secondServer.serverUrl)).storageState).toBe('MISSING');
     await secondServer.stop();
     runningServers.delete(secondServer);
 

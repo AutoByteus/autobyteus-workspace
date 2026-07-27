@@ -11,7 +11,6 @@ import memoryMessages from './memory';
 import serverMessages from './server.generated';
 import generatedSettingsMessages from './settings.generated';
 import settingsMessages from './settings';
-import providerApiKeyMessages from './providerApiKey';
 import memorySyncSettingsMessages from './memorySyncSettings';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
@@ -37,7 +36,6 @@ const zhCnMessages: TranslationCatalog = {
   ...serverMessages,
   ...generatedSettingsMessages,
   ...settingsMessages,
-  ...providerApiKeyMessages,
   ...memorySyncSettingsMessages,
   ...generatedShellMessages,
   ...shellMessages,

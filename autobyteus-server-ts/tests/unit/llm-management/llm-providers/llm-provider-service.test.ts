@@ -24,7 +24,6 @@ describe('LlmProviderService', () => {
     listVideoModels: vi.fn(),
     reloadLlmModels: vi.fn(),
     reloadLlmModelsForProvider: vi.fn(),
-    clearAutobyteusRemoteModels: vi.fn(),
     invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement: vi.fn(),
     invalidateGeminiMetadata: vi.fn(),
   };
@@ -42,7 +41,6 @@ describe('LlmProviderService', () => {
     getSetupStatus: vi.fn(),
     saveOptionConfiguration: vi.fn(),
     activateOption: vi.fn(),
-    removeOptionConfiguration: vi.fn(),
   };
 
   const openAiProvider = {
@@ -264,12 +262,10 @@ describe('LlmProviderService', () => {
       .rejects.toThrow("Deleting built-in providers is not supported. Received 'OPENAI'.");
   });
 
-  it('invalidates AutoByteus discovery after save and clears it after remove', async () => {
+  it('invalidates AutoByteus discovery after save', async () => {
     await createService().setProviderApiKey('AUTOBYTEUS', 'synthetic-key');
-    await createService().removeProviderApiKey('AUTOBYTEUS');
     expect(modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement)
       .toHaveBeenCalledOnce();
-    expect(modelCatalogService.clearAutobyteusRemoteModels).toHaveBeenCalledOnce();
   });
 
   it('returns the actual Gemini state and invalidates optional metadata after commands', async () => {
@@ -280,13 +276,11 @@ describe('LlmProviderService', () => {
     };
     geminiConfigurationService.saveOptionConfiguration.mockResolvedValue(configured);
     geminiConfigurationService.activateOption.mockResolvedValue(configured);
-    geminiConfigurationService.removeOptionConfiguration.mockResolvedValue(configured);
     const service = createService();
     await expect(service.saveGeminiOptionConfiguration(
       { option: 'AI_STUDIO', apiKey: 'synthetic-key' }, true,
     )).resolves.toBe(configured);
     await service.activateGeminiOption('AI_STUDIO');
-    await service.removeGeminiOptionConfiguration('AI_STUDIO');
-    expect(modelCatalogService.invalidateGeminiMetadata).toHaveBeenCalledTimes(3);
+    expect(modelCatalogService.invalidateGeminiMetadata).toHaveBeenCalledTimes(2);
   });
 });

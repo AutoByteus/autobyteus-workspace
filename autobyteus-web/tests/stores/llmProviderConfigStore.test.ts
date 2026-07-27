@@ -161,16 +161,6 @@ describe('llmProviderConfig provider Settings store', () => {
     expect(store.providerSettingsGroups[0]?.provider.apiKeyConfigured).toBe(true)
   })
 
-  it('refetches exact missing state after Boolean remove completion', async () => {
-    const mutate = vi.fn().mockResolvedValue({ data: { removeProviderApiKey: true } })
-    const query = vi.fn().mockResolvedValue({ data: { providerSettings: [openAiGroup(false)] } })
-    vi.mocked(getApolloClient).mockReturnValue({ mutate, query } as any)
-    const store = useLLMProviderConfigStore()
-
-    await store.removeLLMProviderApiKey('OPENAI')
-    expect(store.providerSettingsGroups[0]?.provider.apiKeyConfigured).toBe(false)
-  })
-
   it('uses tight custom probe/create/delete contracts', async () => {
     const mutate = vi.fn()
       .mockResolvedValueOnce({ data: { probeCustomProvider: { discoveredModels: [{ id: 'm', name: 'M' }] } } })

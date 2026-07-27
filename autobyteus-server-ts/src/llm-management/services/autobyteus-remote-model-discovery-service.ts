@@ -47,8 +47,6 @@ export class AutobyteusRemoteModelDiscoveryService {
   private readonly generationsByKind = new Map<AutobyteusRemoteModelKind, number>();
   private readonly inFlightByKind = new Map<AutobyteusRemoteModelKind, InFlightDiscovery>();
   private readonly syncTailsByKind = new Map<AutobyteusRemoteModelKind, Promise<void>>();
-  private clearInFlight: Promise<void> | null = null;
-  private clearToken: symbol | null = null;
 
   constructor(
     private readonly managementProvider: () => SecretManagementService = () =>
@@ -61,7 +59,6 @@ export class AutobyteusRemoteModelDiscoveryService {
   ) {}
 
   async ensureDiscovered(kind: AutobyteusRemoteModelKind): Promise<number> {
-    if (this.clearInFlight) await this.clearInFlight;
     const hosts = this.hostsProvider();
     const hostsKey = hosts.join(',');
     if (this.completedHostsByKind.get(kind) === hostsKey) {
@@ -71,37 +68,12 @@ export class AutobyteusRemoteModelDiscoveryService {
   }
 
   async refresh(kind: AutobyteusRemoteModelKind): Promise<number> {
-    if (this.clearInFlight) await this.clearInFlight;
     const hosts = this.hostsProvider();
     return this.run(kind, hosts, hosts.join(','));
   }
 
-  clearAllWithoutLookup(): Promise<void> {
-    if (this.clearInFlight) return this.clearInFlight;
-
-    const token = Symbol('authoritative-clear');
-    const operation = this.performAuthoritativeClear().finally(() => {
-      if (this.clearToken === token) {
-        this.clearInFlight = null;
-        this.clearToken = null;
-      }
-    });
-    this.clearToken = token;
-    this.clearInFlight = operation;
-    return operation;
-  }
-
   invalidateAfterCredentialReplacement(): void {
     this.invalidateDiscoveryLifecycle();
-  }
-
-  private async performAuthoritativeClear(): Promise<void> {
-    const hostsKey = this.hostsProvider().join(',');
-    const generations = this.invalidateDiscoveryLifecycle();
-
-    for (const { kind, generation } of generations) {
-      await this.publish(kind, generation, hostsKey, () => this.clear(kind));
-    }
   }
 
   private run(kind: AutobyteusRemoteModelKind, hosts: string[], hostsKey: string): Promise<number> {
@@ -210,17 +182,13 @@ export class AutobyteusRemoteModelDiscoveryService {
     return generation;
   }
 
-  private invalidateDiscoveryLifecycle(): Array<{
-    kind: AutobyteusRemoteModelKind;
-    generation: number;
-  }> {
-    return REMOTE_MODEL_KINDS.map((kind) => {
-      const generation = this.advanceGeneration(kind);
+  private invalidateDiscoveryLifecycle(): void {
+    for (const kind of REMOTE_MODEL_KINDS) {
+      this.advanceGeneration(kind);
       this.inFlightByKind.delete(kind);
       this.completedHostsByKind.delete(kind);
       this.modelCountsByKind.delete(kind);
-      return { kind, generation };
-    });
+    }
   }
 
   private isCurrentGeneration(kind: AutobyteusRemoteModelKind, generation: number): boolean {

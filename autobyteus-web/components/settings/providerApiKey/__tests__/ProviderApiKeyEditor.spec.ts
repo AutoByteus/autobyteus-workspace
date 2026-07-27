@@ -8,7 +8,6 @@ const mountComponent = (configured = false, resetVersion = 0) =>
     props: {
       configured,
       saving: false,
-      removing: false,
       resetVersion,
     },
     global: {
@@ -18,8 +17,6 @@ const mountComponent = (configured = false, resetVersion = 0) =>
           'settings.components.settings.ProviderAPIKeyManager.enter_api_key': 'Enter API key...',
           'settings.components.settings.ProviderAPIKeyManager.saving': 'Saving...',
           'settings.components.settings.ProviderAPIKeyManager.save_key': 'Save Key',
-          'settings.components.settings.ProviderAPIKeyManager.remove_key': 'Remove Key',
-          'settings.components.settings.ProviderAPIKeyManager.removing': 'Removing...',
         }[key] ?? key),
       },
     },
@@ -44,30 +41,5 @@ describe('ProviderApiKeyEditor', () => {
 
     await wrapper.setProps({ resetVersion: 1 })
     expect((wrapper.get('input[placeholder="Enter new key to update..."]').element as HTMLInputElement).value).toBe('')
-  })
-
-  it('offers configured providers an idempotent remove action', async () => {
-    const wrapper = mountComponent(true)
-
-    await wrapper.findAll('button').find((button) => button.text().includes('Remove Key'))!.trigger('click')
-
-    expect(wrapper.emitted('remove')).toEqual([[]])
-  })
-
-  it('blocks input, reveal, save, and duplicate remove actions while removal is pending', async () => {
-    const wrapper = mountComponent(true)
-    await wrapper.get('input').setValue('replacement-key')
-    await wrapper.setProps({ removing: true })
-
-    expect(wrapper.get('input').attributes('disabled')).toBeDefined()
-    const buttons = wrapper.findAll('button')
-    expect(buttons).toHaveLength(3)
-    for (const button of buttons) expect(button.attributes('disabled')).toBeDefined()
-    expect(buttons.at(2)?.text()).toContain('Removing...')
-
-    await buttons.at(1)!.trigger('click')
-    await buttons.at(2)!.trigger('click')
-    expect(wrapper.emitted('save')).toBeUndefined()
-    expect(wrapper.emitted('remove')).toBeUndefined()
   })
 })

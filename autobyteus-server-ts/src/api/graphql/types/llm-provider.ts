@@ -310,14 +310,6 @@ export class LlmProviderResolver {
     return true;
   }
 
-  @Mutation(() => Boolean)
-  async removeProviderApiKey(
-    @Arg('providerId', () => String) providerId: string,
-  ): Promise<boolean> {
-    await this.llmProviderService.removeProviderApiKey(providerId);
-    return true;
-  }
-
   @Mutation(() => CustomProviderProbeResultObject)
   async probeCustomProvider(
     @Arg('input', () => CustomProviderInputObject) input: CustomProviderInputObject,
@@ -379,15 +371,6 @@ export class LlmProviderResolver {
     @Arg('mode', () => GeminiSetupModeGraphql) mode: GeminiSetupModeGraphql,
   ): Promise<GeminiSetupStateObject> {
     return mapGeminiSetup(await this.llmProviderService.activateGeminiOption(
-      mode as GeminiConfigurationOption,
-    ));
-  }
-
-  @Mutation(() => GeminiSetupStateObject)
-  async removeGeminiConfiguration(
-    @Arg('mode', () => GeminiSetupModeGraphql) mode: GeminiSetupModeGraphql,
-  ): Promise<GeminiSetupStateObject> {
-    return mapGeminiSetup(await this.llmProviderService.removeGeminiOptionConfiguration(
       mode as GeminiConfigurationOption,
     ));
   }

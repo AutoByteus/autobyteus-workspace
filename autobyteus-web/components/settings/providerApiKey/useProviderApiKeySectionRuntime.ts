@@ -9,7 +9,6 @@ import {
   type ProviderSettingsGroup,
 } from '~/stores/llmProviderConfig'
 import { createGeminiConfigurationActions } from './providerApiKeyGeminiActions'
-import { createProviderApiKeyRemoval } from './providerApiKeyRemoval'
 
 export interface ProviderSummary {
   id: string
@@ -48,7 +47,6 @@ export function useProviderApiKeySectionRuntime() {
   const loading = ref(import.meta.env.MODE !== 'test')
   const saving = ref(false)
   const activating = ref(false)
-  const removing = ref(false)
   const notification = ref<ProviderSectionNotification | null>(null)
   const selectedProviderId = ref('')
   const providerEditorResetVersion = ref(0)
@@ -230,17 +228,15 @@ export function useProviderApiKeySectionRuntime() {
   const geminiActions = createGeminiConfigurationActions({
     saving,
     activating,
-    removing,
     saveOption: (input, activateAfterSave) =>
       store.saveGeminiConfigurationOption(input, activateAfterSave),
     activateOption: (option) => store.activateGeminiConfigurationOption(option),
-    removeOption: (option) => store.removeGeminiConfigurationOption(option),
     translate: t,
     notify: showNotification,
   })
 
   const saveProviderApiKey = async (providerId: string, apiKey: string) => {
-    if (saving.value || removing.value || !providerId || !apiKey.trim()) return false
+    if (saving.value || !providerId || !apiKey.trim()) return false
     saving.value = true
     const providerLabel = allProvidersWithModels.value.find(({ id }) => id === providerId)?.label ?? providerId
     try {
@@ -262,17 +258,6 @@ export function useProviderApiKeySectionRuntime() {
       saving.value = false
     }
   }
-
-  const removeProviderApiKey = createProviderApiKeyRemoval({
-    saving,
-    removing,
-    removeCredential: (providerId) => store.removeLLMProviderApiKey(providerId),
-    resetEditor: () => { providerEditorResetVersion.value += 1 },
-    getProviderLabel: (providerId) =>
-      allProvidersWithModels.value.find(({ id }) => id === providerId)?.label ?? providerId,
-    notify: showNotification,
-    translate: t,
-  })
 
   const probeCustomProviderDraft = async () => {
     if (!canProbeCustomProvider.value) return
@@ -338,7 +323,6 @@ export function useProviderApiKeySectionRuntime() {
     loading,
     saving,
     activating,
-    removing,
     notification,
     selectedProviderId,
     selectedProviderSummary,
@@ -374,7 +358,6 @@ export function useProviderApiKeySectionRuntime() {
     reloadSelectedProvider,
     ...geminiActions,
     saveProviderApiKey,
-    removeProviderApiKey,
     updateCustomProviderDraft,
     probeCustomProviderDraft,
     saveCustomProviderDraft,

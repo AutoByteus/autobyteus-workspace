@@ -52,11 +52,7 @@ export class WindowsServerManager extends BaseServerManager {
     const publicServerUrl = INTERNAL_SERVER_BASE_URL
 
     const env = {
-      PATH: process.env.PATH ?? '',
-      PATHEXT: process.env.PATHEXT ?? '.EXE;.CMD;.BAT',
-      SystemRoot: process.env.SystemRoot ?? 'C:\\Windows',
-      USERPROFILE: this.appDataDir,
-      TEMP: path.join(this.appDataDir, 'tmp'),
+      ...process.env,
       ELECTRON_RUN_AS_NODE: '1',
       PORT: this.serverPort.toString(),
       SERVER_PORT: this.serverPort.toString(),

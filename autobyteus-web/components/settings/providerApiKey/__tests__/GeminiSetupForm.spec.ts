@@ -18,15 +18,12 @@ const translations: Record<string, string> = {
   'settings.components.settings.ProviderAPIKeyManager.vertex_location_e_g_us_central1': 'Vertex location',
   'settings.components.settings.ProviderAPIKeyManager.saving': 'Saving...',
   'settings.components.settings.ProviderAPIKeyManager.activating': 'Activating...',
-  'settings.components.settings.ProviderAPIKeyManager.removing': 'Removing...',
   'settings.components.settings.ProviderAPIKeyManager.save_option': 'Save option',
   'settings.components.settings.ProviderAPIKeyManager.save_and_use_mode': 'Save and use this mode',
   'settings.components.settings.ProviderAPIKeyManager.use_this_mode': 'Use this mode',
-  'settings.components.settings.ProviderAPIKeyManager.remove_option': 'Remove option',
   'settings.components.settings.ProviderAPIKeyManager.configure_option': 'Configure',
   'settings.components.settings.ProviderAPIKeyManager.collapse': 'Collapse',
   'settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility': 'Toggle key visibility',
-  'settings.components.settings.ProviderAPIKeyManager.gemini_active_remove_confirmation': 'Remove active {{option}}?',
 }
 
 const translate = (key: string, params?: Record<string, unknown>) =>
@@ -51,7 +48,6 @@ const mountComponent = (props: Record<string, unknown> = {}) =>
       geminiSetup: setup(),
       saving: false,
       activating: false,
-      removing: false,
       disabled: false,
       ...props,
     },
@@ -109,19 +105,6 @@ describe('GeminiSetupForm', () => {
     expect(wrapper.emitted('activate')).toEqual([['VERTEX_PROJECT']])
   })
 
-  it('requires confirmation before removing the active option', async () => {
-    const confirm = vi.spyOn(globalThis, 'confirm').mockReturnValueOnce(false).mockReturnValueOnce(true)
-    const wrapper = mountComponent()
-    await expand(wrapper, 'VERTEX_EXPRESS')
-
-    await wrapper.get('[data-testid="gemini-remove-VERTEX_EXPRESS"]').trigger('click')
-    expect(wrapper.emitted('remove')).toBeUndefined()
-    await wrapper.get('[data-testid="gemini-remove-VERTEX_EXPRESS"]').trigger('click')
-    expect(wrapper.emitted('remove')).toEqual([['VERTEX_EXPRESS']])
-    expect(confirm).toHaveBeenCalledTimes(2)
-    confirm.mockRestore()
-  })
-
   it('disables every conflicting option action while an operation is pending', async () => {
     const wrapper = mountComponent()
     await expand(wrapper, 'AI_STUDIO')
@@ -129,7 +112,6 @@ describe('GeminiSetupForm', () => {
     await wrapper.setProps({ saving: true })
 
     expect(wrapper.get('[data-testid="gemini-save-AI_STUDIO"]').attributes('disabled')).toBeDefined()
-    expect(wrapper.get('[data-testid="gemini-remove-AI_STUDIO"]').attributes('disabled')).toBeDefined()
     expect(wrapper.get('[data-testid="gemini-toggle-VERTEX_PROJECT"]').attributes('disabled')).toBeDefined()
     expect(wrapper.get('[data-testid="gemini-activate-VERTEX_PROJECT"]').attributes('disabled')).toBeDefined()
   })

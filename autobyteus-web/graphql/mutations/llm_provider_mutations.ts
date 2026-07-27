@@ -6,12 +6,6 @@ export const SAVE_PROVIDER_API_KEY = gql`
   }
 `
 
-export const REMOVE_PROVIDER_API_KEY = gql`
-  mutation RemoveProviderApiKey($providerId: String!) {
-    removeProviderApiKey(providerId: $providerId)
-  }
-`
-
 export const RELOAD_LLM_MODELS = gql`
   mutation ReloadLLMModels($runtimeKind: String) {
     reloadLlmModels(runtimeKind: $runtimeKind)
@@ -88,17 +82,6 @@ export const SAVE_GEMINI_VERTEX_PROJECT = gql`
 export const USE_GEMINI_MODE = gql`
   mutation UseGeminiMode($mode: GeminiSetupMode!) {
     useGeminiMode(mode: $mode) {
-      activeMode
-      aiStudioConfigured
-      vertexExpressConfigured
-      vertexProject { project location }
-    }
-  }
-`
-
-export const REMOVE_GEMINI_CONFIGURATION = gql`
-  mutation RemoveGeminiConfiguration($mode: GeminiSetupMode!) {
-    removeGeminiConfiguration(mode: $mode) {
       activeMode
       aiStudioConfigured
       vertexExpressConfigured

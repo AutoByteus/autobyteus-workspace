@@ -13,14 +13,10 @@ const translations: Record<string, string> = {
   'settings.components.settings.ProviderAPIKeyManager.models_reloaded_for_provider': 'Reloaded {{provider}}',
   'settings.components.settings.ProviderAPIKeyManager.failed_to_reload_models_for_provider': 'Failed {{provider}}',
   'settings.components.settings.ProviderAPIKeyManager.gemini_option_saved': '{{option}} saved',
-  'settings.components.settings.ProviderAPIKeyManager.gemini_option_removed': '{{option}} removed',
   'settings.components.settings.ProviderAPIKeyManager.gemini_mode_activated': '{{option}} activated',
   'settings.components.settings.ProviderAPIKeyManager.gemini_activation_partial': '{{option}} saved but inactive',
-  'settings.components.settings.ProviderAPIKeyManager.gemini_removal_partial': '{{option}} inactive but not removed',
   'settings.components.settings.ProviderAPIKeyManager.api_key_saved_successfully': '{{provider}} saved',
   'settings.components.settings.ProviderAPIKeyManager.failed_to_save_api_key': '{{provider}} save failed',
-  'settings.components.settings.ProviderAPIKeyManager.api_key_removed_successfully': '{{provider}} removed',
-  'settings.components.settings.ProviderAPIKeyManager.failed_to_remove_api_key': '{{provider}} remove failed',
   'settings.components.settings.ProviderAPIKeyManager.custom_provider_saved_successfully': 'Custom saved',
   'settings.components.settings.ProviderAPIKeyManager.failed_to_save_custom_provider': 'Custom failed',
   'settings.components.settings.ProviderAPIKeyManager.custom_provider_deleted_successfully': '{{provider}} deleted',
@@ -89,13 +85,11 @@ const mountRuntime = (groups = [group('OPENAI', true, [1, 1, 1, 0])]) => {
   store.reloadModels = vi.fn().mockResolvedValue(true)
   store.reloadModelsForProvider = vi.fn().mockResolvedValue(true)
   store.setLLMProviderApiKey = vi.fn().mockResolvedValue(true)
-  store.removeLLMProviderApiKey = vi.fn().mockResolvedValue(true)
   store.probeCustomProvider = vi.fn().mockResolvedValue({ discoveredModels: [{ id: 'm', name: 'M' }] })
   store.createCustomProvider = vi.fn().mockResolvedValue('provider_gateway')
   store.deleteCustomProvider = vi.fn().mockResolvedValue(true)
   store.saveGeminiConfigurationOption = vi.fn()
   store.activateGeminiConfigurationOption = vi.fn()
-  store.removeGeminiConfigurationOption = vi.fn()
   const wrapper = mount(RuntimeHarness, { global: { plugins: [pinia] } })
   return { wrapper, store }
 }
@@ -124,13 +118,11 @@ describe('useProviderApiKeySectionRuntime', () => {
     expect((wrapper.vm as any).selectedProviderConfigured).toBe(false)
   })
 
-  it('saves and removes through exact provider commands', async () => {
+  it('saves through the exact provider command', async () => {
     const { wrapper, store } = mountRuntime()
     await (wrapper.vm as any).initialize()
     await expect((wrapper.vm as any).saveProviderApiKey('OPENAI', 'synthetic-key')).resolves.toBe(true)
-    await expect((wrapper.vm as any).removeProviderApiKey('OPENAI')).resolves.toBe(true)
     expect(store.setLLMProviderApiKey).toHaveBeenCalledWith('OPENAI', 'synthetic-key')
-    expect(store.removeLLMProviderApiKey).toHaveBeenCalledWith('OPENAI')
   })
 
   it('pins Settings reload commands to the AutoByteus runtime', async () => {

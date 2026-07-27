@@ -5,8 +5,6 @@ import {
   PROBE_CUSTOM_PROVIDER,
   RELOAD_LLM_MODELS,
   RELOAD_LLM_PROVIDER_MODELS,
-  REMOVE_GEMINI_CONFIGURATION,
-  REMOVE_PROVIDER_API_KEY,
   SAVE_GEMINI_AI_STUDIO,
   SAVE_GEMINI_VERTEX_EXPRESS,
   SAVE_GEMINI_VERTEX_PROJECT,
@@ -260,16 +258,6 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       return true
     },
 
-    async removeLLMProviderApiKey(providerId: string) {
-      const { data, errors } = await getApolloClient().mutate({
-        mutation: REMOVE_PROVIDER_API_KEY,
-        variables: { providerId },
-      })
-      requireMutationSuccess(data, errors, 'removeProviderApiKey')
-      await this.fetchProviderSettings(true)
-      return true
-    },
-
     async probeCustomProvider(input: CustomLlmProviderDraftInput) {
       const { data, errors } = await getApolloClient().mutate({
         mutation: PROBE_CUSTOM_PROVIDER,
@@ -339,10 +327,6 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
 
     async activateGeminiConfigurationOption(option: GeminiConfigurationOption) {
       return this.runGeminiMutation(USE_GEMINI_MODE, 'useGeminiMode', { mode: option })
-    },
-
-    async removeGeminiConfigurationOption(option: GeminiConfigurationOption) {
-      return this.runGeminiMutation(REMOVE_GEMINI_CONFIGURATION, 'removeGeminiConfiguration', { mode: option })
     },
 
     async runGeminiMutation(mutation: unknown, key: string, variables: Record<string, unknown>) {

@@ -26,7 +26,7 @@ const provider = (overrides: Record<string, unknown> = {}) => ({
 })
 
 const createRuntime = (overrides: Record<string, any> = {}) => ({
-  loading: ref(false), saving: ref(false), activating: ref(false), removing: ref(false),
+  loading: ref(false), saving: ref(false), activating: ref(false),
   notification: ref(null), providerEditorResetVersion: ref(0),
   isLoadingModels: ref(false), isReloadingModels: ref(false),
   geminiSetup: ref({
@@ -49,8 +49,7 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   initialize: vi.fn().mockResolvedValue(undefined), selectProvider: vi.fn(), reloadAllModels: vi.fn(),
   reloadSelectedProvider: vi.fn(), saveGeminiConfigurationOption: vi.fn(),
   saveAndActivateGeminiConfigurationOption: vi.fn(), activateGeminiConfigurationOption: vi.fn(),
-  removeGeminiConfigurationOption: vi.fn(), saveProviderApiKey: vi.fn(),
-  removeProviderApiKey: vi.fn(), updateCustomProviderDraft: vi.fn(),
+  saveProviderApiKey: vi.fn(), updateCustomProviderDraft: vi.fn(),
   probeCustomProviderDraft: vi.fn(), saveCustomProviderDraft: vi.fn(), deleteCustomProvider: vi.fn(),
   ...overrides,
 })
@@ -62,12 +61,12 @@ const mountComponent = async (overrides: Record<string, any> = {}) => {
       mocks: { $t: (key: string) => translations[key] ?? key },
       stubs: {
         GeminiSetupForm: {
-          name: 'GeminiSetupForm', props: ['geminiSetup', 'saving', 'activating', 'removing'],
-          emits: ['save', 'save-and-activate', 'activate', 'remove'],
+          name: 'GeminiSetupForm', props: ['geminiSetup', 'saving', 'activating'],
+          emits: ['save', 'save-and-activate', 'activate'],
           template: '<button data-testid="gemini-form" @click="$emit(\'save\', { option: \'AI_STUDIO\', apiKey: \'synthetic-key\' })">Gemini</button>',
         },
         ProviderApiKeyEditor: {
-          name: 'ProviderApiKeyEditor', props: ['configured', 'saving', 'removing', 'resetVersion'],
+          name: 'ProviderApiKeyEditor', props: ['configured', 'saving', 'resetVersion'],
           template: '<div data-testid="api-key-editor">editor</div>',
         },
         CustomProviderEditor: { template: '<div data-testid="custom-editor">custom</div>' },
@@ -92,11 +91,6 @@ describe('ProviderAPIKeyManager', () => {
     expect(wrapper.text()).toContain('API Key Management')
     expect(wrapper.text()).toContain('gpt-4.1')
     expect(wrapper.find('[data-testid="api-key-editor"]').exists()).toBe(true)
-  })
-
-  it('propagates provider command pending state', async () => {
-    const wrapper = await mountComponent({ removing: ref(true) })
-    expect(wrapper.getComponent({ name: 'ProviderApiKeyEditor' }).props('removing')).toBe(true)
   })
 
   it('renders the draft custom-provider path without credential-status gating', async () => {

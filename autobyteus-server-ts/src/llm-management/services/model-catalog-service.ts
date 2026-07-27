@@ -151,11 +151,6 @@ export class ModelCatalogService {
     }
   }
 
-  async clearAutobyteusRemoteModels(): Promise<void> {
-    await this.remoteDiscoveryService.clearAllWithoutLookup();
-    this.invalidateAutobyteusRemoteModelCaches();
-  }
-
   invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement(): void {
     this.remoteDiscoveryService.invalidateAfterCredentialReplacement();
     this.invalidateAutobyteusRemoteModelCaches();

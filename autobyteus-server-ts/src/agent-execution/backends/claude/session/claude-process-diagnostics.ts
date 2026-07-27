@@ -20,7 +20,7 @@ const toDiagnosticText = (value: unknown): string => {
   return String(value);
 };
 
-export const redactClaudeDiagnosticText = (value: string): string => {
+const redactDiagnosticText = (value: string): string => {
   let redacted = value;
   for (const [pattern, replacement] of SECRET_REDACTIONS) {
     redacted = redacted.replace(pattern, replacement);
@@ -44,13 +44,13 @@ const resolveErrorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : String(error);
 
 export const formatClaudeRuntimeError = (error: unknown): string =>
-  redactClaudeDiagnosticText(error instanceof Error ? error.message : String(error));
+  error instanceof Error ? error.stack ?? error.message : String(error);
 
 export class ClaudeProcessDiagnostics {
   private buffer = "";
 
   append(value: unknown): void {
-    const next = redactClaudeDiagnosticText(toDiagnosticText(value));
+    const next = toDiagnosticText(value);
     if (!next) {
       return;
     }
@@ -58,9 +58,9 @@ export class ClaudeProcessDiagnostics {
   }
 
   summarize(): string | null {
-    const redactedBuffer = redactClaudeDiagnosticText(this.buffer);
+    const redactedBuffer = redactDiagnosticText(this.buffer);
     const summary = normalizeDiagnosticSummary(redactedBuffer);
-    return summary ? redactClaudeDiagnosticText(summary) : null;
+    return summary ? redactDiagnosticText(summary) : null;
   }
 }
 
@@ -72,7 +72,7 @@ export const enrichClaudeRuntimeErrorWithDiagnostics = (
   if (!summary) {
     return error;
   }
-  const originalMessage = redactClaudeDiagnosticText(resolveErrorMessage(error));
+  const originalMessage = resolveErrorMessage(error);
   if (originalMessage.includes(summary)) {
     return error;
   }

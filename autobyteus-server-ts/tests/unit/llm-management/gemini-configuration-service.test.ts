@@ -11,9 +11,6 @@ const vaultHarness = vi.hoisted(() => {
     saveForConsumer: vi.fn(async ({ consumer, value }) => {
       configured.set(consumer.credentialSlot, value.revealToTrustedConsumer());
     }),
-    removeForConsumer: vi.fn(async (consumer) => {
-      configured.delete(consumer.credentialSlot);
-    }),
     getStatusForConsumer: vi.fn(async (consumer) =>
       configured.has(consumer.credentialSlot) ? 'CONFIGURED' : 'MISSING'),
   };
@@ -24,7 +21,6 @@ vi.mock('../../../src/secret-management/secret-vault-runtime.js', () => ({
     getHealth: vaultHarness.getHealth,
     requireService: () => ({
       saveForConsumer: vaultHarness.saveForConsumer,
-      removeForConsumer: vaultHarness.removeForConsumer,
       getStatusForConsumer: vaultHarness.getStatusForConsumer,
     }),
   }),
@@ -124,24 +120,6 @@ describe('GeminiConfigurationService explicit mode commands', () => {
     expect(vaultHarness.configured.get('geminiAiStudioApiKey')).toBe('synthetic-replacement');
   });
 
-  it('clears an active mode before removing only the addressed option with no fallback', async () => {
-    await service.saveOptionConfiguration({
-      option: 'AI_STUDIO',
-      apiKey: 'synthetic-ai-studio',
-    }, false);
-    await service.saveOptionConfiguration({
-      option: 'VERTEX_EXPRESS',
-      apiKey: 'synthetic-vertex-express',
-    }, true);
-
-    await expect(service.removeOptionConfiguration('VERTEX_EXPRESS')).resolves.toMatchObject({
-      vertexExpressStatus: 'MISSING',
-      activeMode: null,
-    });
-    expect(vaultHarness.configured.has('geminiAiStudioApiKey')).toBe(true);
-    expect(await service.resolveActiveRuntime()).toEqual({ kind: 'unconfigured' });
-  });
-
   it('rejects activating an incomplete option without persisting a selector', async () => {
     await expect(service.activateOption('VERTEX_PROJECT'))
       .rejects.toThrow('GEMINI_SELECTED_OPTION_NOT_CONFIGURED');
@@ -164,18 +142,4 @@ describe('GeminiConfigurationService explicit mode commands', () => {
     });
   });
 
-  it('clears active mode and returns a retryable partial result when removal fails', async () => {
-    await service.saveOptionConfiguration({
-      option: 'VERTEX_EXPRESS',
-      apiKey: 'synthetic-vertex-express',
-    }, true);
-    vaultHarness.removeForConsumer.mockRejectedValueOnce(
-      new Error('SYNTHETIC_REMOVE_FAILURE'),
-    );
-
-    await expect(service.removeOptionConfiguration('VERTEX_EXPRESS')).resolves.toMatchObject({
-      vertexExpressStatus: 'CONFIGURED',
-      activeMode: null,
-    });
-  });
 });

@@ -77,34 +77,6 @@ describe('AutobyteusRemoteModelDiscoveryService', () => {
     expect(ports.syncImage).toHaveBeenCalledTimes(1);
   });
 
-  it('clears every gateway runtime subset after explicit credential removal without lookup', async () => {
-    const service = createService(['https://gateway.example.invalid']);
-
-    await service.clearAllWithoutLookup();
-    expect(resolveForUse).not.toHaveBeenCalled();
-    expect(ports.syncLlm).toHaveBeenCalledWith(LLMRuntime.AUTOBYTEUS, []);
-    expect(ports.syncAudio).toHaveBeenCalledWith(MultimediaRuntime.AUTOBYTEUS, []);
-    expect(ports.syncImage).toHaveBeenCalledWith(MultimediaRuntime.AUTOBYTEUS, []);
-  });
-
-  it('fences an older in-flight discovery after authoritative credential removal', async () => {
-    const deferredModels = createDeferred<Array<{ runtime: LLMRuntime }>>();
-    ports.discoverLlm.mockReturnValueOnce(deferredModels.promise);
-    const service = createService(['https://gateway.example.invalid']);
-
-    const pendingDiscovery = service.ensureDiscovered('llm');
-    await vi.waitFor(() => expect(ports.discoverLlm).toHaveBeenCalledTimes(1));
-
-    await service.clearAllWithoutLookup();
-    deferredModels.resolve([{ runtime: LLMRuntime.AUTOBYTEUS }]);
-
-    await expect(pendingDiscovery).resolves.toBe(0);
-    await expect(service.ensureDiscovered('llm')).resolves.toBe(0);
-    expect(resolveForUse).toHaveBeenCalledTimes(1);
-    expect(ports.syncLlm).toHaveBeenCalledTimes(1);
-    expect(ports.syncLlm).toHaveBeenLastCalledWith(LLMRuntime.AUTOBYTEUS, []);
-  });
-
   it('does not reuse or publish an in-flight discovery for a replaced host configuration', async () => {
     const firstModels = createDeferred<Array<{ runtime: LLMRuntime }>>();
     const secondModels = createDeferred<Array<{ runtime: LLMRuntime }>>();

@@ -88,20 +88,16 @@
                   :gemini-setup="geminiSetup"
                   :saving="saving"
                   :activating="activating"
-                  :removing="removing"
                   @save="saveGeminiConfigurationOption"
                   @save-and-activate="saveAndActivateGeminiConfigurationOption"
                   @activate="activateGeminiConfigurationOption"
-                  @remove="removeGeminiConfigurationOption"
                 />
                 <ProviderApiKeyEditor
                   v-else-if="selectedProviderId"
                   :configured="selectedProviderConfigured"
                   :saving="saving"
-                  :removing="removing"
                   :reset-version="providerEditorResetVersion"
                   @save="saveProviderApiKey(selectedProviderId, $event)"
-                  @remove="removeProviderApiKey(selectedProviderId)"
                 />
               </template>
             </ProviderModelBrowser>
@@ -134,7 +130,6 @@ const {
   loading,
   saving,
   activating,
-  removing,
   notification,
   providerEditorResetVersion,
   isLoadingModels,
@@ -168,9 +163,7 @@ const {
   saveGeminiConfigurationOption,
   saveAndActivateGeminiConfigurationOption,
   activateGeminiConfigurationOption,
-  removeGeminiConfigurationOption,
   saveProviderApiKey,
-  removeProviderApiKey,
   updateCustomProviderDraft,
   probeCustomProviderDraft,
   saveCustomProviderDraft,

@@ -13,7 +13,6 @@ export type ClaudeAgentToolsMcpSessionServiceLike = Pick<
 
 type LiveClaudeAgentToolsMcpDescriptor = {
   descriptor: AgentToolMcpDescriptor;
-  session: AgentToolMcpSession;
 };
 
 export class ClaudeAgentToolsMcpSessionState {
@@ -47,13 +46,8 @@ export class ClaudeAgentToolsMcpSessionState {
     });
     this.liveDescriptor = {
       descriptor: result.descriptor,
-      session: result.session,
     };
     return result.descriptor.enabledTools.length > 0 ? result.descriptor : null;
-  }
-
-  getSession(): AgentToolMcpSession | null {
-    return this.liveDescriptor?.session ?? null;
   }
 }
 

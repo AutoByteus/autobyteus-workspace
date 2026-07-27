@@ -13,7 +13,7 @@ const logger = rootLogger.child('server.app-data')
 export class AppDataService {
   private appDataDir: string
   private firstRun: boolean
-  private readonly requiredDataDirs = ['db', 'logs', 'download', 'tmp'] as const
+  private requiredDataDirs = ['db', 'logs', 'download']
 
   constructor(baseDataPath: string) {
     this.appDataDir = path.join(baseDataPath, 'server-data')
@@ -163,7 +163,8 @@ export class AppDataService {
       errors.push(`Required Prisma schema not found: ${prismaSchema}`)
     }
 
-    for (const dir of this.requiredDataDirs) {
+    const requiredDataDirs = ['logs', 'db', 'download']
+    for (const dir of requiredDataDirs) {
       const dirPath = path.join(this.appDataDir, dir)
       if (!fs.existsSync(dirPath)) {
         errors.push(`Required data directory not found: ${dirPath}`)
@@ -227,11 +228,7 @@ export class AppDataService {
   async resetAppDataDir(): Promise<void> {
     try {
       if (fs.existsSync(this.appDataDir)) {
-        const entries = await fs.promises.readdir(this.appDataDir)
-        for (const entry of entries) {
-          const entryPath = path.join(this.appDataDir, entry)
-          await this.removeDirWithRetries(entryPath)
-        }
+        await this.removeDirWithRetries(this.appDataDir)
       }
       this.firstRun = true
       this.initialize()

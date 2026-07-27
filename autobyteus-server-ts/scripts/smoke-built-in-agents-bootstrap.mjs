@@ -52,7 +52,7 @@ const {
 
 const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-built-in-agents-smoke-"));
 const agentsDir = path.join(tempRoot, "agents");
-const runtimeDefaultsByKey = new Map();
+const settingsByKey = new Map();
 
 const fakeAgentDefinitionService = {
   async getFreshAgentDefinitionById(definitionId) {
@@ -65,15 +65,15 @@ const fakeAgentDefinitionService = {
 };
 
 const fakeServerSettingsService = {
-  initializeRuntimeDefault(key, value) {
-    if (key !== AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID) {
-      throw new Error(`unexpected setting key ${key}`);
+  getSettingValue(key) {
+    return settingsByKey.get(key) ?? null;
+  },
+  updateSetting(key, value) {
+    if (key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID) {
+      settingsByKey.set(key, value);
+      return [true, "ok"];
     }
-    if (runtimeDefaultsByKey.has(key)) {
-      return false;
-    }
-    runtimeDefaultsByKey.set(key, value);
-    return true;
+    return [false, `unexpected setting key ${key}`];
   },
 };
 
@@ -107,10 +107,8 @@ try {
   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
   assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentMd, true);
   assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentConfig, true);
-  assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).initializedRuntimeDefault, false);
   assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentMd, true);
   assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
-  assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).initializedRuntimeDefault, true);
 
   const compactorAgentDir = path.join(agentsDir, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
   const [compactorAgentMd, compactorAgentConfig, compactorDistAgentMd, compactorDistAgentConfig] =
@@ -136,7 +134,7 @@ try {
   assert.equal(skillImproverAgentMd, skillImproverDistAgentMd);
   assert.equal(skillImproverAgentConfig, skillImproverDistAgentConfig);
   assert.match(skillImproverAgentMd, /Retrospective Skill Improver/);
-  assert.equal(runtimeDefaultsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
+  assert.equal(settingsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const standaloneAgentMd = await fs.readFile(path.join(standaloneAgentDir, "agent.md"), "utf8");
   const standaloneAgentConfig = await fs.readFile(path.join(standaloneAgentDir, "agent-config.json"), "utf8");
   assert.equal(standaloneAgentMd, "standalone local agent");

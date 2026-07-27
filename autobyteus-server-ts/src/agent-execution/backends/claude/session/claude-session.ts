@@ -418,8 +418,7 @@ export class ClaudeSession {
       agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
     });
     const mcpServers = await buildClaudeSessionMcpServerConfig({
-      agentToolsMcpSession: this.agentToolsMcpSessionState.getSession(),
-      sdkClient: this.dependencies.sdkClient,
+      agentToolsMcpDescriptor,
     });
     const processDiagnostics = new ClaudeProcessDiagnostics();
     let query: ClaudeActiveTurnExecution["query"] = null;

@@ -65,7 +65,6 @@ export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPR
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
-  private runtimeDefaults = new Map<string, string>();
 
   constructor() {
     this.initializeSettings();
@@ -219,7 +218,7 @@ export class ServerSettingsService {
     }
 
     for (const key of this.settingsInfo.keys()) {
-      const value = this.getEffectiveSettingValue(key);
+      const value = appConfigProvider.config.get(key);
       if (typeof value === "string" && value.trim().length > 0) {
         visibleKeys.add(key);
       }
@@ -247,7 +246,7 @@ export class ServerSettingsService {
     }> = [];
 
     for (const key of this.getVisibleSettingKeys(configData)) {
-      const value = this.getEffectiveSettingValue(key) ?? configData[key];
+      const value = appConfigProvider.config.get(key) ?? configData[key];
       if (value === undefined) {
         continue;
       }
@@ -393,26 +392,8 @@ export class ServerSettingsService {
     );
   }
 
-  initializeRuntimeDefault(key: string, value: string): boolean {
-    if (!this.settingsInfo.has(key)) {
-      throw new Error(`Cannot initialize an unregistered server setting runtime default: '${key}'.`);
-    }
-
-    const normalizedValue = value.trim();
-    if (!normalizedValue) {
-      throw new Error(`Cannot initialize an empty server setting runtime default: '${key}'.`);
-    }
-
-    if (this.runtimeDefaults.has(key)) {
-      return false;
-    }
-
-    this.runtimeDefaults.set(key, normalizedValue);
-    return true;
-  }
-
   getSettingValue(key: string): string | null {
-    const rawValue = this.getEffectiveSettingValue(key);
+    const rawValue = appConfigProvider.config.get(key);
     if (typeof rawValue !== "string") {
       return null;
     }
@@ -434,13 +415,6 @@ export class ServerSettingsService {
     return this.getSettingValue(FEATURED_CATALOG_ITEMS_SETTING_KEY);
   }
 
-  private getEffectiveSettingValue(key: string): string | undefined {
-    const configuredValue = appConfigProvider.config.get(key);
-    if (typeof configuredValue === "string" && configuredValue.trim().length > 0) {
-      return configuredValue;
-    }
-    return this.runtimeDefaults.get(key) ?? configuredValue;
-  }
 }
 
 let cachedServerSettingsService: ServerSettingsService | null = null;

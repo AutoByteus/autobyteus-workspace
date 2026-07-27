@@ -88,7 +88,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     if (runtimeRoot && database) await removeOwnedTestRuntime(runtimeRoot, database);
   });
 
-  it('saves, replaces, and idempotently removes a provider key without value readback', async () => {
+  it('saves and replaces a provider key without value readback', async () => {
     expect((await provider('AUTOBYTEUS'))?.provider.apiKeyConfigured).toBe(false);
     const mutation = `
       mutation Save($providerId: String!, $apiKey: String!) {
@@ -112,15 +112,7 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
     expect(JSON.stringify(second)).not.toContain(secondCanary);
     expect((await provider('AUTOBYTEUS'))?.provider.apiKeyConfigured).toBe(true);
 
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      const removed = await execute<{ removeProviderApiKey: boolean }>(`
-        mutation Remove($providerId: String!) {
-          removeProviderApiKey(providerId: $providerId)
-        }
-      `, { providerId: 'AUTOBYTEUS' });
-      expect(removed.removeProviderApiKey).toBe(true);
-    }
-    expect((await provider('AUTOBYTEUS'))?.provider.apiKeyConfigured).toBe(false);
+    expect((await provider('AUTOBYTEUS'))?.provider.apiKeyConfigured).toBe(true);
     const evidence = server.output() + fs.readFileSync(server.runtimeEnvironmentPath, 'utf8');
     expect(evidence).not.toContain(firstCanary);
     expect(evidence).not.toContain(secondCanary);
@@ -218,31 +210,10 @@ describe('provider and Gemini one-vault GraphQL E2E', () => {
       activeMode: 'VERTEX_EXPRESS',
     });
 
-    const remove = async (mode: string) =>
-      await execute<{ removeGeminiConfiguration: Record<string, unknown> }>(`
-        mutation Remove($mode: GeminiSetupMode!) {
-          removeGeminiConfiguration(mode: $mode) {
-            activeMode aiStudioConfigured vertexExpressConfigured
-            vertexProject { project location }
-          }
-        }
-      `, { mode });
-    expect((await remove('AI_STUDIO')).removeGeminiConfiguration).toMatchObject({
-      aiStudioConfigured: false,
-      activeMode: 'VERTEX_EXPRESS',
-    });
-    expect((await remove('VERTEX_EXPRESS')).removeGeminiConfiguration).toMatchObject({
-      vertexExpressConfigured: false,
-      activeMode: null,
-    });
-    expect((await remove('VERTEX_EXPRESS')).removeGeminiConfiguration).toMatchObject({
-      vertexExpressConfigured: false,
-      activeMode: null,
-    });
     expect((await geminiStatus()).getGeminiSetupConfig).toMatchObject({
-      activeMode: null,
-      aiStudioConfigured: false,
-      vertexExpressConfigured: false,
+      activeMode: 'VERTEX_EXPRESS',
+      aiStudioConfigured: true,
+      vertexExpressConfigured: true,
       vertexProject: {
         project: 'synthetic-project',
         location: 'europe-west1',
