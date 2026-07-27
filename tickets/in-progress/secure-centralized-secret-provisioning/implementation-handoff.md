@@ -22,6 +22,8 @@
 - CR-030 source/test commit: `3dbe351ee78fbc39f1a1d1f1d2dfc59400fd6672`
 - Round-35 environment-preservation rework starting HEAD: `3877b39bdcad2e8c88bb9f86d190308aaf034829`
 - Round-35 environment-preservation source/test commit: `a0b99dd3ba3ff0ede6e36ec13d149bcbd5a23bc4`
+- Round-36 exhaustive scope-reset starting HEAD: `3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f`
+- Round-36 exhaustive scope-reset source/test commit: `7fa54b18da3c3950983ccab367d338b93dfd8a17`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -41,12 +43,19 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/custom-provider-v1-migration-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/scope-audit.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md` (historical-link tombstone only)
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Historical downstream reports/evidence were preserved without reset and are not treated as target authority.
 
 ## What Changed
 
+- Applied the Round-36 exhaustive `scope-audit.md` cleanup against the audited `3244a7c6...` source state. All 18 `RESTORE_BASE` paths are byte-identical to `origin/personal`, all three `REMOVE_FILE` paths are absent, and all 31 `PARTIAL_CLEANUP` paths were inspected and reconciled hunk-by-hunk without resetting retained work.
+- Restored exact `origin/personal` behavior for Electron server-manager environment inheritance, Electron AppData/reset lifecycle, isolated PTY environment inheritance, Claude HTTP MCP/session/options/tools/diagnostics behavior, and persistent built-in-agent defaults.
+- Preserved only the reviewed Claude credential delta: explicit `api-key` performs one subject-scoped Anthropic vault resolution immediately before SDK launch and overrides only `ANTHROPIC_API_KEY`; `auto` and `cli` preserve base behavior and perform zero vault lookups.
+- Removed the standalone ordinary-provider key-removal mutation/service/store/component/helper/localization/test surface. Ordinary provider Settings now supports only Save/create-or-overwrite plus the value-free configured read.
+- Removed the standalone Gemini configuration-removal mutation/service/store/component/localization/test surface. Gemini retains option Save/overwrite, first-time Save-and-use, and Use-this-mode only.
+- Retained custom-provider Delete as the provider-entity lifecycle and limited production `removeForConsumer` callers to that exact lifecycle; no ordinary-provider, Gemini, resolver, or importer deletion surface remains.
 - Restored full AppConfig `dotenv` parsing and process-environment projection while retaining the typed application-database/Gemini settings, managed-credential `set()`/`delete()` rejection, byte-preserving non-secret writes, and removal of the old LLM-key getter/setter.
 - Removed the ticket-created shared production child-environment filter and restored every affected terminal, shell, MCP, watcher/search, worker, and messaging launcher to its exact `origin/personal` environment construction/inheritance. Separately approved file-root, bridge, and redaction behavior remains.
 - Kept Codex source byte-equivalent to `origin/personal`. Restored Claude `auto|cli|api-key` with default `cli`, inherited environment, caller options, setting sources, tools/MCP, stderr, and account behavior. `auto`/`cli` perform zero vault lookups; explicit `api-key` performs one subject-scoped Anthropic resolution immediately before the SDK query and overrides only `ANTHROPIC_API_KEY`.
@@ -60,7 +69,7 @@
 - Gave API-key Settings its own fixed AutoByteus runtime and cache identity. Codex/Claude catalog selection may continue to change the ordinary model-catalog runtime without redirecting, invalidating, or being overwritten by Settings initialization, reloads, or provider/Gemini/custom post-command refetches.
 - Removed the hand-maintained `ProviderSettingsModel`/`ProviderSettingsGroup` response contract. Store state now derives the exact group shape from generated `GetProviderSettingsQuery`; the provider summary remains an explicit UI projection.
 - Removed `CredentialStatusObject`, the separate provider-status query/map, the four-array Settings merge, the cross-provider fallback, and the conflicting repeated Apollo entities. Existing credential-independent catalog queries remain unchanged for non-Settings consumers.
-- Tightened ordinary provider commands to Boolean completion followed by a canonical network-only grouped refetch; tightened custom provider Probe/Create/Delete to the reviewed input/result shapes; and tightened Gemini operations to specialized state-returning commands without generic operation/outcome/stage/instruction DTOs.
+- Tightened the ordinary provider Save command to Boolean completion followed by a canonical network-only grouped refetch; tightened custom provider Probe/Create/Delete to the reviewed input/result shapes; and tightened Gemini Save/Use operations to specialized state-returning commands without generic operation/outcome/stage/instruction DTOs.
 - Replaced the separate Local Store database/configuration/access-mode subsystem with two Prisma-managed secret tables in the one application SQLite database selected by canonical `DATABASE_URL`.
 - Added a database-adjacent 32-byte owner-only root-key sidecar, staged first initialization, metadata verifier, HKDF-SHA-256 per-entry derivation, and AES-256-GCM encryption with ID/domain/version-bound AAD.
 - Replaced the crash-persistent initialization sentinel with application-SQLite transaction-scoped exclusion. SQLite now releases initialization ownership automatically when a process terminates; key-only interrupted initialization resumes, while live initializers serialize before key inspection and publish one key/domain pair.
@@ -74,7 +83,7 @@
 - Tightened the strict importer target entrypoint to reject a decoded U+0000 before constructing `ApplicationDatabaseLocation`, before service/source/target access, and before any target text can reach output. The value-free CLI failure remains `IMPORT_OPTIONS_INVALID`.
 - Removed importer AppConfig/ambient/profile/test-wrapper target authority. Preview remains owned solely by `SecretVaultInspectionService`, opens an existing DB read-only/query-only, and never migrates, initializes, writes, repairs, or changes permissions.
 - Removed the old default/e2e target resolver, separate Store CLI/setup command, second-backend interfaces, reset/provisioning machinery, and related obsolete unit coverage without compatibility adapters.
-- Updated GraphQL/value-free status projections, the concise Gemini Settings UI, generated web types, localized strings, Electron reset behavior, and focused tests.
+- Updated GraphQL/value-free status projections, the concise Gemini Settings UI, generated web types, localized strings, and focused tests while restoring Electron reset behavior exactly to `origin/personal`.
 - Kept Docker source/topology unchanged; kept external Codex unchanged; restored all three Claude modes; retained exact unpatched `repository_prisma@1.0.8` with Prisma 5.22.0.
 
 ## Reviewed Behavior Implementation Trace
@@ -84,7 +93,7 @@
 | `BEH-001` | One provider-centric API-key Settings read while catalogs remain credential-independent. | `LlmProviderService.listProviderSettings()` -> GraphQL `providerSettings` -> web `providerSettingsGroups` -> Settings runtime. | Implemented: one exact provider row owns `apiKeyConfigured`; LLM/audio/image/video catalogs are subordinate exact-ID lists, while existing catalog queries remain supported for other consumers. Settings owns a separate fixed AutoByteus runtime/cache identity, so Codex/Claude catalog selection cannot redirect its grouped read or post-command refetch. |
 | `BEH-002` | One application DB selected only by canonical `DATABASE_URL`. | `application-database-location.ts`, `app-config.ts`, Prisma schema/migration, `server-runtime.ts`. | Implemented; no second Store URL/config/access mode remains. |
 | `BEH-003` | DB-paired root key, interruption-safe initialization, non-mutating restart verification, and authenticated per-entry encryption. | `secret-vault-bootstrap.ts`, `secret-root-key-file.ts`, `secret-vault-crypto.ts`, Prisma repository. | Implemented with transaction-lifetime exclusion, key-only recovery, live-initializer serialization, byte-stable established verification, owner/identity checks, verifier, fresh nonces, and value-free closed states. |
-| `BEH-004` | Write-only provider Settings lifecycle and one value-free configured fact. | `SecretManagementService`, `llm-provider-service.ts`, GraphQL provider group, web Settings store/runtime. | Implemented; ordinary Save/Remove returns completion then refetches the grouped read, and no value-read or duplicate credential-status API exists. |
+| `BEH-004` | Write-only ordinary-provider Save/create-or-overwrite and one value-free configured fact. | `SecretManagementService`, `llm-provider-service.ts`, GraphQL provider group, web Settings store/runtime. | Implemented; ordinary Save returns completion then refetches the grouped read. No ordinary-provider deletion mutation/action, value-read, or duplicate credential-status API exists. Custom-provider Delete remains entity-scoped. |
 | `BEH-005` | Provider-owned lazy point-of-use resolution. | Core `ProviderApiKeyResolver`, LLM/media factories and concrete clients, server resolver adapters. | Implemented; no model auth descriptor, construction target/context, environment fallback, or server service locator in core. |
 | `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, specialized GraphQL/web Gemini files. | Implemented with specialized state-returning commands, no generic operation protocol, no priority authority, and no fallback. |
 | `BEH-007` | Curated catalog continuity and bounded live metadata. | Existing metadata provisioning/resolver/provider owners plus updated status tests. | Preserved: AI Studio live/fallback; Vertex/no-selection curated-only and zero metadata secret/HTTP. |
@@ -114,6 +123,7 @@
 - Core point-of-use clients: `autobyteus-ts/src/{llm,multimedia,secrets,utils}`
 - Web Gemini/Settings: `GeminiSetupForm.vue`, `GeminiConfigurationOptionCard.vue`, runtime/store/GraphQL/localization files
 - Electron lifecycle: `autobyteus-web/electron/server/services/AppDataService.ts`
+- Exhaustive scope manifest: `tickets/in-progress/secure-centralized-secret-provisioning/scope-audit.md`
 
 ## Important Assumptions
 
@@ -126,7 +136,7 @@
 
 ## Known Risks
 
-- API/E2E has not yet rerun the real browser provider-status journey against the provider-centric read, nor reconciled the tracked `.env.test`/test-runtime bootstrap, explicit-URL importer journey, restart/reopen, Docker, configured-provider, or packaged Electron matrix. These remain downstream coverage work after source review.
+- API/E2E has not yet rerun the real browser provider-status journey against the provider-centric read and narrowed Save-only ordinary-provider surface, nor reconciled the tracked `.env.test`/test-runtime bootstrap, explicit-URL importer journey, restart/reopen, Docker, configured-provider, or packaged Electron matrix. These remain downstream coverage work after source review.
 - The downstream-owned live-E2E Claude scenario/harness still names and imports the superseded ticket-created authentication service. API/E2E must reconcile that durable scenario to explicit `api-key` mode and the restored `ClaudeSdkClient` resolver seam before execution; implementation engineering did not rewrite or execute API/E2E-owned coverage.
 - API/E2E has not yet run the required existing-user packaged Electron custom-provider-v1 upgrade/reset journeys. Those checks must prove successful preservation, forced delete-and-reconfigure, general Settings availability, current Create with a new ID after reset, restart finalization, and value-free evidence.
 - Repository-wide Nuxt typecheck is not green at baseline. The 8 GiB CR-028/CR-029 run completed with 5,196 diagnostics across unrelated/generated/test paths and no diagnostics in the five changed files; focused tests plus the production web build are green. Existing generated Apollo optional-import and Electron-test typing diagnostics remain part of that baseline.
@@ -148,11 +158,11 @@
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`; v1 schema knowledge is isolated to the approved one-time migration and is absent from normal provider runtime.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup, old construction/authentication paths, duplicate provider credential-status DTO/query/map/fallback, generic Gemini operation DTOs, and the runtime v1-specific reconfiguration branch.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup, old construction/authentication paths, duplicate provider credential-status DTO/query/map/fallback, generic Gemini operation DTOs, standalone ordinary-provider/Gemini deletion surfaces, and the runtime v1-specific reconfiguration branch.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; provider Settings response types are derived from generated `GetProviderSettingsQuery` rather than maintained in parallel.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. The new migration owner is 216 effective non-empty lines and its file-identity/staging owner is 145; all changed production files remain below 500 effective non-empty lines and bounded existing-file deltas stay below 220 added lines.
-- Notes: production scans found no old Store selector/config/access mode, model construction target/context, managed-provider ambient credential fallback, generic secret API, custom-provider update command, runtime v1 reader, backup/quarantine/recovery scanner, alternate migration source, shared production environment filter, or ticket-created Claude authentication subsystem.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes` for implementation owners. The largest reconciled implementation owner is the restored 496-effective-line Claude session; every implementation delta is below 220 changed lines. The two existing localization data registries remain 596 effective lines but were reduced by six obsolete entries each and were not expanded or redesigned.
+- Notes: production scans found no old Store selector/config/access mode, model construction target/context, managed-provider ambient credential fallback, generic secret API, custom-provider update command, runtime v1 reader, backup/quarantine/recovery scanner, alternate migration source, shared production environment filter, ticket-created Claude authentication subsystem, standalone ordinary-provider removal, or standalone Gemini removal.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -172,6 +182,18 @@
 
 ## Local Implementation Checks Run
 
+- Round-36 focused server suite: 8 files / 112 tests passed for persistent built-in defaults, Server Settings, provider/Gemini GraphQL and service behavior, AutoByteus discovery invalidation, and restored Claude session/client behavior.
+- Round-36 focused web suite: 5 files / 27 tests passed for the API Key Manager, exact-base provider editor, Gemini Save/Use-only states, Settings runtime, and provider store.
+- Round-36 exact restoration check: 18/18 `RESTORE_BASE` paths matched `origin/personal` byte-for-byte; 3/3 `REMOVE_FILE` paths were absent.
+- Round-36 residue checks: no `removeProviderApiKey`, `removeGeminiConfiguration`, removal-helper/localization module, runtime-default API/map, or removal-only AutoByteus clear method remains. Production `removeForConsumer` references are limited to the custom-provider entity lifecycle and `SecretManagementService`.
+- Round-36 `pnpm -C autobyteus-ts build`: passed, including runtime dependency verification.
+- Round-36 `pnpm -C autobyteus-server-ts build`: passed, including shared/core builds, Prisma 5.22.0 generation, server TypeScript, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` built-module smoke.
+- Round-36 `pnpm -C autobyteus-web transpile-electron`: passed.
+- Round-36 focused Electron suite: 2 files / 14 tests passed for exact-base server manager and AppData/reset behavior.
+- Round-36 web boundary/localization guards: `guard:web-boundary`, `guard:localization-boundary`, and `audit:localization-literals` all passed; the audit reported zero unresolved findings.
+- Round-36 `pnpm -C autobyteus-web build`: passed; only the existing large-chunk warning remains.
+- Round-36 `git diff --check`, exact-base byte comparisons, obsolete-symbol scans, and changed-source size audit passed.
+- The two durable provider/restart E2E files were structurally reconciled to remove obsolete deletion operations, but implementation engineering did not execute or claim API/E2E coverage.
 - Round-35 focused server suite: 4 files / 54 tests passed for AppConfig full projection/write rejection, legacy-source non-authority/current-v2 runtime, Claude selector/environment/vault timing, and preserved Claude session behavior.
 - Round-35 focused core launcher suite: 6 files / 29 tests passed for stdio MCP and terminal/shell/PTY environment behavior; focused messaging supervisor suite: 1 file / 3 tests passed.
 - Round-35 structural checks: Codex client is byte-identical to `origin/personal`; all ten affected concrete launcher files are exact to `origin/personal`; removed-filter/auth-policy residue scans and `git diff --check` passed.
@@ -213,13 +235,13 @@
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: Settings -> API Key Management -> provider selection, configured state, key actions, and subordinate LLM/audio/image/video model sections; preserved Gemini option configuration.
+- Affected surfaces / journeys: Settings -> API Key Management -> provider selection, configured state, Save/create-or-overwrite, and subordinate LLM/audio/image/video model sections; Gemini option Save/overwrite, first-time Save-and-use, and Use-this-mode.
 - Approved UI/UX, interaction, requirement, or design references: BEH-001/004/006/008, REQ-001, the round-32 provider-centric design, and `gemini-setup-ui-ux-spec.md`.
 - Existing design system, shared components, and adjacent product surfaces reviewed: provider sidebar rows/counts, status badges, key editor controls, capability headings, spacing, and the established Settings layout.
-- Project development / preview instructions and rendered surface used: the production Nuxt static build served locally; Playwright loaded the actual `/settings` page with a synthetic value-free GraphQL response matching the reviewed `providerSettings`/Gemini contracts.
-- States, layouts, viewports, and interactions inspected: 1440x1000 configured OpenAI selected among OpenAI/Anthropic/New Provider; one Configured badge; Save/Remove controls; one LLM, one audio, and one image model rendered from the same provider group.
-- Visual or interaction issues found and corrected: the clean-cut state/runtime wiring and component test expectations were reconciled; final provider identity, count, status, controls, and capability sections were aligned and visually clean with no overflow or duplicate status. CR-028/CR-029 changes only the backing runtime/cache identity and generated type ownership; it introduces no visual/layout delta, while focused interaction tests cover the affected reload path.
-- Supporting evidence and remaining unverified states or limitations: direct rendered inspection passed and no screenshot was added to the repository. The response was synthetic and value-free; real GraphQL persistence/browser execution remains downstream API/E2E work.
+- Project development / preview instructions and rendered surface used: Vue Test Utils rendered the affected components through the project Nuxt test harness; the production Nuxt static build also completed.
+- States, layouts, viewports, and interactions inspected: ordinary provider missing/configured/save states and Gemini option configure/use/pending states. Component assertions prove no ordinary-provider or Gemini removal control/event remains.
+- Visual or interaction issues found and corrected: obsolete remove buttons, pending flags, events, action handlers, confirmation helpers, and localized labels were removed together. Existing layout and styling were otherwise left unchanged.
+- Supporting evidence and remaining unverified states or limitations: component rendering/interaction tests passed, but no live browser was started because the worktree's configured downstream E2E state had to remain untouched. Real GraphQL persistence and browser interaction remain downstream API/E2E work; no live-render claim is made.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -228,12 +250,12 @@
 - Reconcile the round-28 `.env.test` and shared test-runtime bootstrap without changing the normal built server’s `<data-dir>/.env` contract; prove tracked template byte identity and removal of separate Store/scenario-manifest behavior.
 - Run a pre-feature DB migration and verify ordinary application records plus the two new tables; run fresh create/save/replace/remove/restart/tamper/missing-key/wrong-key/unsupported-version cases.
 - Prove `pnpm secrets:import` is the sole command; invalid/missing/duplicate/relative URLs fail before target access; parent/AppConfig/source/cwd cannot redirect it; preview is byte-for-byte non-mutating for absent, pre-feature, ready, and every closed state; then confirm migration/bootstrap/atomic create-skip-replace against only the exact URL-selected DB.
-- Rerun `SCSP-E2E-BROWSER-REAL-STATUS-001` first: configured OpenAI plus OpenAI audio/image rows must show one Configured/Remove state, exact provider-ID isolation, and no Apollo overwrite; then cover missing/unavailable states without credential-dependent catalog disappearance.
-- Run Gemini save, first-time save-and-use, use-mode, active removal, partial-stage retry, restart, exact SDK constructor, selected-slot-only, metadata provenance, and no-fallback journeys.
+- Rerun `SCSP-E2E-BROWSER-REAL-STATUS-001` first: configured OpenAI plus OpenAI audio/image rows must show one Configured state and Save/create-or-overwrite control with no standalone Remove action, exact provider-ID isolation, and no Apollo overwrite; then cover missing/unavailable states without credential-dependent catalog disappearance.
+- Run Gemini option save/overwrite, first-time save-and-use, use-mode, partial-stage retry, restart, exact SDK constructor, selected-slot-only, metadata provenance, no-fallback, and absence of a standalone removal action.
 - Exercise custom provider probe/create/list/use/idempotent delete and partial-failure retry; verify no update mutation exists.
 - Re-run AutoByteus replacement/discovery races, all three Claude modes (including zero-lookup `auto`/`cli` and one-lookup explicit `api-key`), external Codex continuity, restored child inheritance plus separately approved file-root/redaction checks, and real OpenAI/Anthropic/Gemini/media/search capabilities where configured.
 - Run unchanged Docker same-volume DB/key restart/removal and the isolated full packaged Electron lifecycle without making a child-environment or process-isolation claim.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. CR-027, the bounded CR-028/CR-029 corrections, the reviewed Round-33 custom-provider-v1 migrate-or-delete implementation, and the Round-35 environment-preservation correction are complete at implementation scope, but the cumulative package must pass implementation-source re-review first. Only then may `api_e2e_engineer` run the existing-user upgrade/reset scenarios, rerun the real browser provider-status scenario, verify restored production child/Claude/Codex behavior, and continue the broader configured-provider/importer/restart/Docker/Electron matrix before proportional test-code review.
+Yes. The Round-36 exhaustive scope reset and redundant-deletion cleanup are complete at implementation scope, on top of the retained provider-centric Settings, vault, importer, Gemini, and custom-provider transition. The cumulative package must pass implementation-source re-review first. Only then may `api_e2e_engineer` rerun the real browser provider-status/Save-only journey, existing-user upgrade/reset scenarios, restored production child/Claude/Codex behavior, and the broader configured-provider/importer/restart/Docker/Electron matrix before proportional test-code review.
