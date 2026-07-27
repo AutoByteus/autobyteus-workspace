@@ -16,6 +16,8 @@
 - CR-027 source/test commit: `658824c9eef48934672a6e069012935cbff9b5e9`
 - CR-028/CR-029 rework starting HEAD: `f14d3a766044f38f9af0105062093eac1de60849`
 - CR-028/CR-029 source/test commit: `c31651ca4b1b0e3012567fc3ccb3b11137e67584`
+- Round-33 custom-provider-v1 migration starting HEAD: `53dd05ecaac6e3196497597cceba0799f8093aba`
+- Round-33 custom-provider-v1 migration source/test commit: `76afaec8684e3e8ee86dfe8b50c3591bd7abc00a`
 - Branch: `codex/secure-centralized-secret-provisioning`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
 - The exact final handoff-artifact commit/HEAD follows the source commit and is supplied in the code-review delivery message; a Git commit cannot truthfully contain its own hash.
@@ -34,12 +36,17 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/custom-provider-v1-migration-contract.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md` (historical-link tombstone only)
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
 - Historical downstream reports/evidence were preserved without reset and are not treated as target authority.
 
 ## What Changed
 
+- Added the sole approved automatic credential transition for the fixed application-owned `llm/custom-llm-providers.json` v1 file. The existing non-critical app-data-migration lifecycle now validates the full historical set after Prisma/vault initialization, stages owner-only secret-free v2 metadata, creates every missing encrypted credential in one create-only transaction, fsyncs the stage, and atomically publishes v2 before provider consumers.
+- Added an opaque same-process migration receipt. Publication failure can compensate only exact unchanged rows inserted by that repository instance; collisions, changed rows, pre-existing entries, and interruption-created rows are never compared by plaintext, overwritten, or deleted.
+- Implemented the approved delete-and-reconfigure outcome for invalid/unsafe/colliding/failed v1 migration. Successful deletion records `SUCCEEDED_WITH_WARNINGS`; failed deletion records `FAILED`, keeps the v1 file physically untouched, omits custom rows, preserves built-in Settings/catalogs, and blocks only current custom creation until filesystem repair and restart.
+- Kept normal custom-provider runtime strictly v2-only and added bounded stale custom runtime/catalog containment. There is no v1 compatibility reader, hidden recovery copy/scanner, `.env` migration, ambient fallback, or post-creation update surface.
 - Replaced the API-key Settings screen's repeated LLM/audio/image/video provider/status projection with one `providerSettings(runtimeKind)` read. Each exact provider now appears once with one `apiKeyConfigured` fact and four required subordinate model lists.
 - Gave API-key Settings its own fixed AutoByteus runtime and cache identity. Codex/Claude catalog selection may continue to change the ordinary model-catalog runtime without redirecting, invalidating, or being overwritten by Settings initialization, reloads, or provider/Gemini/custom post-command refetches.
 - Removed the hand-maintained `ProviderSettingsModel`/`ProviderSettingsGroup` response contract. Store state now derives the exact group shape from generated `GetProviderSettingsQuery`; the provider summary remains an explicit UI projection.
@@ -72,9 +79,9 @@
 | `BEH-005` | Provider-owned lazy point-of-use resolution. | Core `ProviderApiKeyResolver`, LLM/media factories and concrete clients, server resolver adapters. | Implemented; no model auth descriptor, construction target/context, environment fallback, or server service locator in core. |
 | `BEH-006` | Independent Gemini options plus explicit active mode and exact SDK options. | `gemini-configuration-service.ts`, `gemini-runtime-resolver-adapter.ts`, `gemini-helper.ts`, specialized GraphQL/web Gemini files. | Implemented with specialized state-returning commands, no generic operation protocol, no priority authority, and no fallback. |
 | `BEH-007` | Curated catalog continuity and bounded live metadata. | Existing metadata provisioning/resolver/provider owners plus updated status tests. | Preserved: AI Studio live/fallback; Vertex/no-selection curated-only and zero metadata secret/HTTP. |
-| `BEH-008` | Custom provider create/probe/list/use/delete with split metadata/credential custody. | `llm-provider-service.ts`, tight GraphQL commands, custom store/runtime sync, deterministic custom consumer mapping. | Implemented; input is exactly name/base URL/transient key, Probe returns only discovered `{id,name}`, Create returns ID, Delete returns completion, and no update surface exists. |
+| `BEH-008` | Preserve a valid fixed-path custom-provider-v1 set through one all-or-nothing migration, otherwise delete it for normal frontend reconfiguration while keeping the application available; retain current create/probe/list/use/delete only. | Startup -> Prisma migration -> vault initialization -> `AppDataMigrationRunner` -> `CustomProviderV1AppDataMigration` -> fixed-path file owner -> `SecretManagementService` create-missing batch / exact compensation -> atomic v2 publish; current `CustomLlmProviderStore` and `LlmProviderService` remain v2-only. | Implemented. Valid sets preserve provider IDs/name/base URL and publish only complete secret-free v2 after one encrypted batch. Invalid/collision/stage/DB/publish/interruption cases never publish partial v2 or touch current entries; reset deletes v1 or reports stable `FAILED` if deletion is unavailable. Built-ins remain readable, stale custom rows are contained, and Create remains strict. No backup/recovery/runtime-v1/update path exists. |
 | `BEH-009` | Explicit importer targets one URL-selected application DB; read-only advisory preview; authoritative atomic execute. | `RawImportCliRequest` -> `ApplicationDatabaseLocation.fromAbsoluteFileUrl()` -> exact `ImportRequest`; source reader/import service, positive alias registry, `SecretVaultInspectionService`, vault batch save. | Implemented; the raw URL exists only at the CLI boundary, the same immutable target is used throughout, and AppConfig/ambient/profile/test-wrapper authority is absent. Malformed URLs, including decoded-NUL paths, fail value-free before service/source/target access. Recognize-first, empty-as-absent, DASHSCOPE-only Qwen, no-overwrite/TTY/source immutability remain. |
-| `BEH-010` | No automatic legacy migration or runtime authority. | AppConfig non-secret projection, current custom-provider v2 parser, removal of migration/compatibility paths. | Implemented; legacy credential values remain untouched and excluded from authority. |
+| `BEH-010` | No automatic arbitrary legacy-source/`.env` migration or runtime authority; the fixed application-owned custom-provider-v1 file is the sole bounded exception owned by `BEH-008`. | AppConfig non-secret projection plus the isolated fixed-path app-data migration and current v2-only custom store. | Implemented; `.env` credential values remain untouched and excluded from authority. Historical custom-provider schema knowledge exists only in the migration boundary. |
 | `BEH-011` | Normal server reads only ordinary `<data-dir>/.env`; test selection is application DB selection. | AppConfig/runtime contract and removal of separate E2E Store setup command. | Production boundary implemented. Test-runtime `.env.test` bootstrap/scenario reconciliation remains API/E2E-owned downstream work. |
 | `BEH-012` | Exactly Claude `cli` and `managed-secret` modes. | `claude-runtime-authentication-service.ts` and existing governed launch path. | Preserved; CLI is zero lookup, managed mode is exact-child delivery with no fallback. |
 | `BEH-013` | External Codex account/home behavior unchanged. | Existing Codex App Server client. | Preserved; no Codex vault consumer or synthetic home. |
@@ -91,6 +98,7 @@
 - Runtime/catalog/resolver: `secret-vault-runtime.ts`, `provider-credential-catalog.ts`, `secret-management-provider-api-key-resolver.ts`
 - Importer/inspection: `application-database-location.ts`, `secret-management/provisioning/local-environment-*`, `secret-vault-inspection-service.ts`, import CLI, root `secrets:import` package command
 - Provider-centric Settings/API: `llm-provider-service.ts`, GraphQL `llm-provider.ts`, `llmProviderConfig.ts`, `llmProviderConfigSupport.ts`, `useProviderApiKeySectionRuntime.ts`
+- Fixed custom-provider transition: `app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts`, `custom-provider-v1-migration-file.ts`, registry, secret service/repository create-only batch, custom store/runtime containment
 - Gemini/server provider behavior: `gemini-configuration-service.ts`, specialized GraphQL Gemini types, `GeminiSetupForm.vue`
 - Core point-of-use clients: `autobyteus-ts/src/{llm,multimedia,secrets,utils}`
 - Web Gemini/Settings: `GeminiSetupForm.vue`, `GeminiConfigurationOptionCard.vue`, runtime/store/GraphQL/localization files
@@ -103,10 +111,12 @@
 - Preview is advisory. Confirmed import runs normal migration/bootstrap and transactionally rechecks vault health and entry existence before applying create/skip/replace.
 - JavaScript cannot guarantee erasure of every engine-created string copy; the implementation limits lifetime, fills owned buffers, and never intentionally serializes values.
 - Configured Gemini options and the explicit active mode are distinct; no save implies activation unless the user chooses the combined first-time action.
+- The only eligible automatic credential-bearing source is the application-owned fixed path `<app-data-dir>/llm/custom-llm-providers.json`; arbitrary files and environment sources remain outside this migration.
 
 ## Known Risks
 
 - API/E2E has not yet rerun the real browser provider-status journey against the provider-centric read, nor reconciled the tracked `.env.test`/test-runtime bootstrap, explicit-URL importer journey, restart/reopen, Docker, configured-provider, or packaged Electron matrix. These remain downstream coverage work after source review.
+- API/E2E has not yet run the required existing-user packaged Electron custom-provider-v1 upgrade/reset journeys. Those checks must prove successful preservation, forced delete-and-reconfigure, general Settings availability, current Create with a new ID after reset, restart finalization, and value-free evidence.
 - Repository-wide Nuxt typecheck is not green at baseline. The 8 GiB CR-028/CR-029 run completed with 5,196 diagnostics across unrelated/generated/test paths and no diagnostics in the five changed files; focused tests plus the production web build are green. Existing generated Apollo optional-import and Electron-test typing diagnostics remain part of that baseline.
 - The root key and application DB are an inseparable backup/restore pair; losing either established component intentionally produces a closed recovery condition.
 - SQLite transaction-scoped initialization exclusion depends on the selected database remaining reachable for the bounded 10-second transaction. A contender that cannot acquire/complete within that bound fails value-free and may retry; it cannot bypass a live initializer.
@@ -115,30 +125,30 @@
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: clean-state security refactor plus provider-centric Settings/API correction while preserving supported product behavior.
-- Reviewed root-cause classification: boundary/ownership duplication, duplicated provider/status coordination, loose shared authentication structures, and compatibility pressure.
+- Reviewed change posture: clean-state security refactor plus provider-centric Settings/API correction and one bounded persisted-data migration for the supported fixed custom-provider-v1 source.
+- Reviewed root-cause classification: boundary/ownership duplication, duplicated provider/status coordination, loose shared authentication structures, and a migration-required fixed historical schema isolated from current runtime.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; no new requirement/design gap was found.
-- Evidence / notes: one canonical database location, one repository, one root-key owner, one runtime service, narrow preview inspector, provider-owned resolver, and one provider-centric Settings projection are reflected in source and focused checks.
+- Evidence / notes: one canonical database location, one repository, one root-key owner, one runtime service, narrow preview inspector, provider-owned resolver, one provider-centric Settings projection, and one app-data-migration-only v1 owner are reflected in source and focused checks.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
-- Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup, old construction/authentication paths, duplicate provider credential-status DTO/query/map/fallback, and generic Gemini operation DTOs.
+- Legacy old-behavior retained in scope: `No`; v1 schema knowledge is isolated to the approved one-time migration and is absent from normal provider runtime.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for separate Store DB/config/access mode/reset/provisioning/E2E setup, old construction/authentication paths, duplicate provider credential-status DTO/query/map/fallback, generic Gemini operation DTOs, and the runtime v1-specific reconfiguration branch.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; provider Settings response types are derived from generated `GetProviderSettingsQuery` rather than maintained in parallel.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. CR-028/CR-029 production files remain below 500 effective non-empty lines: the Settings runtime is 359, the web store is 336, and the support file is 88. Each bounded delta is below 220 added lines.
-- Notes: production scans found no old Store selector/config/access mode, model construction target/context, provider-secret environment lookup, generic secret API, or custom-provider update command.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. The new migration owner is 216 effective non-empty lines and its file-identity/staging owner is 145; all changed production files remain below 500 effective non-empty lines and bounded existing-file deltas stay below 220 added lines.
+- Notes: production scans found no old Store selector/config/access mode, model construction target/context, provider-secret environment lookup, generic secret API, custom-provider update command, runtime v1 reader, backup/quarantine/recovery scanner, or alternate migration source.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: ordinary application SQLite data is `Directly Usable — No Migration` beyond normal Prisma migration; superseded separate Local Store/test state and legacy plaintext credential authority are `Discard or Rebuild`.
-- Design-spec decision reference: BEH-002–003, BEH-009–011, REQ-002–005, REQ-011–013, persisted-data decision table.
+- Approved decision: ordinary application SQLite data is `Directly Usable — No Migration` beyond normal Prisma migration; superseded separate Local Store/test state and arbitrary legacy environment credential authority are `Discard or Rebuild`; the fixed application-owned custom-provider-v1 file is `Migration Required`.
+- Design-spec decision reference: BEH-002–003, BEH-008–011; REQ-002–005, REQ-011–013; AC-008; DS-UC007D/DS-L007; persisted-data decision table; `custom-provider-v1-migration-contract.md`.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
-- Direct-use evidence or discard/rebuild result, when applicable: the normal Prisma migration adds only `secret_entries` and `secret_encryption_metadata`; no reader/mover targets the superseded Store or legacy plaintext values.
-- Migration implementation and focused checks, only when `Migration Required`: Prisma client generation, reset/application of the new migration in focused server tests, and production build passed.
+- Direct-use evidence or discard/rebuild result, when applicable: the normal Prisma migration adds only `secret_entries` and `secret_encryption_metadata`; no reader/mover targets the superseded Store or arbitrary legacy plaintext values. Failed fixed-v1 preservation deletes only the canonical eligible source and returns to current missing/v2 semantics.
+- Migration implementation and focused checks, only when `Migration Required`: the existing app-data-migration registry runs `CustomProviderV1AppDataMigration` first after Prisma/vault initialization. Focused tests cover missing/v2 no-op, multi-provider preservation, fixed-path locking, terminated-lock recovery, invalid/duplicate/unsafe reset, collision/interruption, database/stage/publish failure, exact conditional compensation, deletion failure, v2-only runtime, and Settings containment. Typecheck and production build passed.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
@@ -150,6 +160,10 @@
 
 ## Local Implementation Checks Run
 
+- Round-33 focused custom-provider migration/vault/provider/legacy/runner suite: 6 files / 75 tests passed. It proves all-or-nothing create-missing persistence, exact unchanged-row compensation, fixed-path lock serialization and dead-owner recovery, complete v2 publication, collision/interruption handling, database/stage/publish/reset failures, v2-only runtime, and built-in Settings containment.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`: passed after the Round-33 delta.
+- `pnpm -C autobyteus-server-ts build`: passed after the Round-33 delta, including shared/core builds, Prisma 5.22.0 generation, server TypeScript, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` built-module smoke.
+- Round-33 `git diff --check`, v1-runtime/error-residue scans, migration API caller scans, dependency-preservation checks, and changed-source effective-size checks passed.
 - Server focused unit suite: 16 files / 188 tests passed, including vault lifecycle/inspection/importer/AppConfig/Gemini/provider/custom compensation/Claude/Prisma policy.
 - CR-023 focused rerun: 3 files / 17 tests passed. It proves stale/terminated key-only recovery, live-initializer serialization before key inspection, one key/domain pair, and established-domain missing-key fail-closed behavior.
 - CR-024 focused rerun: 3 files / 18 tests passed. It additionally proves established restart preserves metadata values, root-key bytes/stat, main DB and WAL/SHM/journal bytes/stat/absence, and an independent observer's `PRAGMA data_version`.
@@ -189,6 +203,8 @@
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- Run packaged existing-user custom-provider-v1 upgrade with one and multiple synthetic providers. Prove startup migration records `SUCCEEDED`, preserves exact ID/name/base URL, exposes only secret-free v2, resolves encrypted credentials at point of use, and survives restart without reprocessing.
+- Force invalid, collision, DB/stage/publish, interruption, and canonical-file deletion-failure paths. Prove no partial v2/current-secret overwrite, exact same-process compensation only, `SUCCEEDED_WITH_WARNINGS` or `FAILED` as specified, built-in provider Settings availability, custom omission/runtime clearing, and normal New Provider create/list/use/delete with a new ID after successful reset.
 - Reconcile the round-28 `.env.test` and shared test-runtime bootstrap without changing the normal built server’s `<data-dir>/.env` contract; prove tracked template byte identity and removal of separate Store/scenario-manifest behavior.
 - Run a pre-feature DB migration and verify ordinary application records plus the two new tables; run fresh create/save/replace/remove/restart/tamper/missing-key/wrong-key/unsupported-version cases.
 - Prove `pnpm secrets:import` is the sole command; invalid/missing/duplicate/relative URLs fail before target access; parent/AppConfig/source/cwd cannot redirect it; preview is byte-for-byte non-mutating for absent, pre-feature, ready, and every closed state; then confirm migration/bootstrap/atomic create-skip-replace against only the exact URL-selected DB.
@@ -200,4 +216,4 @@
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. CR-027 plus the bounded CR-028/CR-029 source/test corrections and implementation-scoped checks are complete, but the cumulative package must pass implementation-source re-review first. Only then may `api_e2e_engineer` rerun the real browser provider-status scenario and continue the broader configured-provider/importer/restart/Docker/Electron matrix before proportional test-code review.
+Yes. CR-027, the bounded CR-028/CR-029 corrections, and the reviewed Round-33 custom-provider-v1 migrate-or-delete implementation are complete at implementation scope, but the cumulative package must pass implementation-source re-review first. Only then may `api_e2e_engineer` run the existing-user upgrade/reset scenarios, rerun the real browser provider-status scenario, and continue the broader configured-provider/importer/restart/Docker/Electron matrix before proportional test-code review.
