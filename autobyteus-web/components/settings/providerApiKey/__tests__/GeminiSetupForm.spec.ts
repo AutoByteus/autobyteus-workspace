@@ -7,6 +7,9 @@ const translations: Record<string, string> = {
   'settings.components.settings.ProviderAPIKeyManager.ai_studio': 'AI Studio',
   'settings.components.settings.ProviderAPIKeyManager.vertex_express': 'Vertex Express',
   'settings.components.settings.ProviderAPIKeyManager.vertex_project': 'Vertex Project',
+  'settings.components.settings.ProviderAPIKeyManager.ai_studio_description': 'Gemini Developer API key',
+  'settings.components.settings.ProviderAPIKeyManager.vertex_express_description': 'Vertex AI Express API key',
+  'settings.components.settings.ProviderAPIKeyManager.vertex_project_description': 'Google Cloud project and location',
   'settings.components.settings.ProviderAPIKeyManager.configured': 'Configured',
   'settings.components.settings.ProviderAPIKeyManager.not_configured': 'Not Configured',
   'settings.components.settings.ProviderAPIKeyManager.active': 'Active',
@@ -14,8 +17,9 @@ const translations: Record<string, string> = {
   'settings.components.settings.ProviderAPIKeyManager.not_selected': 'Not selected',
   'settings.components.settings.ProviderAPIKeyManager.enter_gemini_api_key': 'Enter Gemini API key...',
   'settings.components.settings.ProviderAPIKeyManager.enter_vertex_api_key': 'Enter Vertex API key...',
-  'settings.components.settings.ProviderAPIKeyManager.vertex_project_id': 'Vertex project id',
-  'settings.components.settings.ProviderAPIKeyManager.vertex_location_e_g_us_central1': 'Vertex location',
+  'settings.components.settings.ProviderAPIKeyManager.vertex_project_id': 'Project ID',
+  'settings.components.settings.ProviderAPIKeyManager.vertex_location': 'Location',
+  'settings.components.settings.ProviderAPIKeyManager.vertex_location_e_g_us_central1': 'e.g. us-central1',
   'settings.components.settings.ProviderAPIKeyManager.saving': 'Saving...',
   'settings.components.settings.ProviderAPIKeyManager.activating': 'Activating...',
   'settings.components.settings.ProviderAPIKeyManager.save_option': 'Save option',
@@ -64,12 +68,21 @@ describe('GeminiSetupForm', () => {
   it('renders all independent options with exactly one explicit active mode', () => {
     const wrapper = mountComponent()
 
+    expect(wrapper.get('[data-testid="gemini-connection-header"]').text()).toContain('Active mode')
     expect(wrapper.find('[data-testid="gemini-option-AI_STUDIO"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="gemini-option-VERTEX_EXPRESS"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="gemini-option-VERTEX_PROJECT"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="gemini-option-AI_STUDIO"]').attributes('data-active')).toBe('false')
+    expect(wrapper.get('[data-testid="gemini-option-VERTEX_EXPRESS"]').attributes('data-active')).toBe('true')
     expect(wrapper.find('[data-testid="gemini-option-active-VERTEX_EXPRESS"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="gemini-option-active-AI_STUDIO"]').exists()).toBe(false)
     expect(wrapper.get('[data-testid="gemini-active-mode"]').text()).toContain('Vertex Express')
+    expect(wrapper.get('[data-testid="gemini-option-status-AI_STUDIO"]').attributes('title')).toBe('Configured')
+    expect(wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]').attributes('aria-label')).toBe('Use this mode: AI Studio')
+    expect(wrapper.get('[data-testid="gemini-toggle-VERTEX_PROJECT"]').attributes('aria-label')).toBe('Configure: Vertex Project')
+    expect(wrapper.get('[data-testid="gemini-option-description-AI_STUDIO"]').text()).toBe('Gemini Developer API key')
+    expect(wrapper.get('[data-testid="gemini-option-description-VERTEX_EXPRESS"]').text()).toBe('Vertex AI Express API key')
+    expect(wrapper.get('[data-testid="gemini-option-description-VERTEX_PROJECT"]').text()).toBe('Google Cloud project and location')
   })
 
   it('expands only one editor, focuses it, and emits only the addressed save input', async () => {

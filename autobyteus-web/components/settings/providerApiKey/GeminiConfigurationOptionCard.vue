@@ -1,153 +1,174 @@
 <template>
   <section
-    class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-sm"
+    class="relative px-4 py-3 transition-colors"
+    :class="[
+      active ? 'bg-blue-50/60' : 'bg-white',
+      disabled ? 'opacity-70' : '',
+    ]"
     :data-testid="`gemini-option-${option}`"
+    :data-active="active ? 'true' : 'false'"
+    :aria-labelledby="`gemini-option-heading-${option}`"
+    :aria-describedby="`gemini-option-description-${option}`"
   >
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <h4 class="text-sm font-semibold text-gray-800">{{ optionLabel }}</h4>
-      <div class="flex flex-wrap items-center justify-end gap-1.5">
-        <span
-          class="rounded-full px-2 py-0.5 text-[11px] font-medium"
-          :class="configured
-            ? 'bg-emerald-50 text-emerald-700'
-            : 'bg-gray-100 text-gray-600'"
-          :data-testid="`gemini-option-status-${option}`"
-        >
-          {{ configured
-            ? $t('settings.components.settings.ProviderAPIKeyManager.configured')
-            : $t('settings.components.settings.ProviderAPIKeyManager.not_configured') }}
-        </span>
-        <span
-          v-if="active"
-          class="rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700"
-          :data-testid="`gemini-option-active-${option}`"
-        >
-          {{ $t('settings.components.settings.ProviderAPIKeyManager.active') }}
-        </span>
-        <button
-          v-if="configured && !active"
-          type="button"
-          class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="actionsDisabled"
-          :data-testid="`gemini-activate-${option}`"
-          @click="emit('activate', option)"
-        >
-          {{ activating
-            ? $t('settings.components.settings.ProviderAPIKeyManager.activating')
-            : $t('settings.components.settings.ProviderAPIKeyManager.use_this_mode') }}
-        </button>
-        <button
-          type="button"
-          class="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="actionsDisabled"
-          :aria-expanded="expanded"
-          :data-testid="`gemini-toggle-${option}`"
-          @click="emit('toggle-expanded')"
-        >
-          {{ expanded
-            ? $t('settings.components.settings.ProviderAPIKeyManager.collapse')
-            : $t('settings.components.settings.ProviderAPIKeyManager.configure_option') }}
-        </button>
+    <span
+      v-if="active"
+      class="absolute inset-y-0 left-0 w-1 bg-blue-600"
+      aria-hidden="true"
+    ></span>
+
+    <div class="gemini-option-summary flex flex-col gap-3">
+      <h4
+        :id="`gemini-option-heading-${option}`"
+        class="min-w-0 truncate text-sm font-semibold text-gray-900"
+      >
+        {{ optionLabel }}
+      </h4>
+      <span
+        :id="`gemini-option-description-${option}`"
+        class="sr-only"
+        :data-testid="`gemini-option-description-${option}`"
+      >
+        {{ optionDescription }}
+      </span>
+
+      <div class="gemini-option-actions flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-1.5">
+          <span
+            v-if="configured"
+            class="inline-flex h-5 w-5 items-center justify-center"
+            :data-testid="`gemini-option-status-${option}`"
+            :title="$t('settings.components.settings.ProviderAPIKeyManager.configured')"
+          >
+            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
+            <span class="sr-only">
+              {{ $t('settings.components.settings.ProviderAPIKeyManager.configured') }}
+            </span>
+          </span>
+          <span
+            v-else
+            class="text-xs font-medium text-gray-500"
+            :data-testid="`gemini-option-status-${option}`"
+          >
+            {{ $t('settings.components.settings.ProviderAPIKeyManager.not_configured') }}
+          </span>
+          <span
+            v-if="active"
+            class="inline-flex h-11 w-11 items-center justify-center"
+            :data-testid="`gemini-option-active-${option}`"
+            :title="$t('settings.components.settings.ProviderAPIKeyManager.active')"
+          >
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-600"
+              aria-hidden="true"
+            >
+              <span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>
+            </span>
+            <span class="sr-only">
+              {{ $t('settings.components.settings.ProviderAPIKeyManager.active') }}
+            </span>
+          </span>
+        </div>
+
+        <div class="ml-auto flex items-center gap-2">
+          <button
+            v-if="configured && !active"
+            type="button"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-blue-700 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            :disabled="actionsDisabled"
+            :data-testid="`gemini-activate-${option}`"
+            :title="$t('settings.components.settings.ProviderAPIKeyManager.use_this_mode')"
+            :aria-label="`${$t('settings.components.settings.ProviderAPIKeyManager.use_this_mode')}: ${optionLabel}`"
+            @click="emit('activate', option)"
+          >
+            <span
+              v-if="activating"
+              class="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
+              aria-hidden="true"
+            ></span>
+            <span
+              v-else
+              class="h-5 w-5 rounded-full border-2 border-current"
+              aria-hidden="true"
+            ></span>
+          </button>
+          <button
+            type="button"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            :disabled="actionsDisabled"
+            :aria-expanded="expanded"
+            :aria-controls="`gemini-option-editor-${option}`"
+            :aria-label="`${expanded
+              ? $t('settings.components.settings.ProviderAPIKeyManager.collapse')
+              : $t('settings.components.settings.ProviderAPIKeyManager.configure_option')}: ${optionLabel}`"
+            :title="expanded
+              ? $t('settings.components.settings.ProviderAPIKeyManager.collapse')
+              : $t('settings.components.settings.ProviderAPIKeyManager.configure_option')"
+            :data-testid="`gemini-toggle-${option}`"
+            @click="emit('toggle-expanded')"
+          >
+            <svg
+              v-if="expanded"
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+            </svg>
+            <svg
+              v-else
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.862 4.487ZM19.5 7.125V18.75A2.25 2.25 0 0 1 17.25 21H5.25A2.25 2.25 0 0 1 3 18.75V6.75A2.25 2.25 0 0 1 5.25 4.5h11.625"
+              />
+            </svg>
+            <span class="sr-only">
+              {{ expanded
+                ? $t('settings.components.settings.ProviderAPIKeyManager.collapse')
+                : $t('settings.components.settings.ProviderAPIKeyManager.configure_option') }}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <div v-if="expanded" class="mt-3 border-t border-gray-100 pt-3">
-      <div v-if="option === 'AI_STUDIO'" class="relative">
-        <input
-          ref="firstField"
-          v-model="geminiApiKey"
-          :disabled="actionsDisabled"
-          :type="showApiKey ? 'text' : 'password'"
-          class="w-full rounded-lg border border-gray-300 p-2.5 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50"
-          :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.enter_gemini_api_key')"
-          data-testid="gemini-ai-studio-key"
-        />
-        <button
-          class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
-          type="button"
-          :disabled="actionsDisabled"
-          :aria-label="$t('settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility')"
-          @click="showApiKey = !showApiKey"
-        >
-          <span v-if="showApiKey" class="i-heroicons-eye-slash-20-solid h-4 w-4"></span>
-          <span v-else class="i-heroicons-eye-20-solid h-4 w-4"></span>
-        </button>
-      </div>
+    <GeminiConfigurationOptionEditor
+      v-if="expanded"
+      :option="option"
+      :active-mode="activeMode"
+      :refresh-snapshot="refreshSnapshot"
+      :initial-project="vertexProject"
+      :initial-location="vertexLocation"
+      :saving="saving"
+      :activating="activating"
+      :disabled="disabled"
+      @save="emit('save', $event)"
+      @save-and-activate="emit('save-and-activate', $event)"
+    />
 
-      <div v-else-if="option === 'VERTEX_EXPRESS'" class="relative">
-        <input
-          ref="firstField"
-          v-model="vertexApiKey"
-          :disabled="actionsDisabled"
-          :type="showApiKey ? 'text' : 'password'"
-          class="w-full rounded-lg border border-gray-300 p-2.5 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50"
-          :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.enter_vertex_api_key')"
-          data-testid="gemini-vertex-express-key"
-        />
-        <button
-          class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
-          type="button"
-          :disabled="actionsDisabled"
-          :aria-label="$t('settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility')"
-          @click="showApiKey = !showApiKey"
-        >
-          <span v-if="showApiKey" class="i-heroicons-eye-slash-20-solid h-4 w-4"></span>
-          <span v-else class="i-heroicons-eye-20-solid h-4 w-4"></span>
-        </button>
-      </div>
-
-      <div v-else class="grid grid-cols-1 gap-2 md:grid-cols-2">
-        <input
-          ref="firstField"
-          v-model="vertexProject"
-          :disabled="actionsDisabled"
-          type="text"
-          class="w-full rounded-lg border border-gray-300 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50"
-          :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.vertex_project_id')"
-          data-testid="gemini-vertex-project"
-        />
-        <input
-          v-model="vertexLocation"
-          :disabled="actionsDisabled"
-          type="text"
-          class="w-full rounded-lg border border-gray-300 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-50"
-          :placeholder="$t('settings.components.settings.ProviderAPIKeyManager.vertex_location_e_g_us_central1')"
-          data-testid="gemini-vertex-location"
-        />
-      </div>
-
-      <div class="mt-3 flex flex-wrap gap-2">
-        <button
-          v-if="canSave && activeMode === null"
-          type="button"
-          class="flex items-center rounded-lg bg-blue-600 px-3.5 py-2 text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="actionsDisabled"
-          :data-testid="`gemini-save-and-activate-${option}`"
-          @click="submitAndActivate"
-        >
-          {{ saving
-            ? $t('settings.components.settings.ProviderAPIKeyManager.saving')
-            : $t('settings.components.settings.ProviderAPIKeyManager.save_and_use_mode') }}
-        </button>
-        <button
-          v-if="canSave"
-          type="button"
-          class="flex items-center rounded-lg border border-blue-200 bg-white px-3.5 py-2 text-xs font-medium text-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="actionsDisabled"
-          :data-testid="`gemini-save-${option}`"
-          @click="submit"
-        >
-          {{ saving
-            ? $t('settings.components.settings.ProviderAPIKeyManager.saving')
-            : $t('settings.components.settings.ProviderAPIKeyManager.save_option') }}
-        </button>
-      </div>
-    </div>
+    <p class="sr-only" role="status" aria-live="polite">
+      {{ saving
+        ? $t('settings.components.settings.ProviderAPIKeyManager.saving')
+        : activating
+          ? $t('settings.components.settings.ProviderAPIKeyManager.activating')
+          : '' }}
+    </p>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed } from 'vue'
+import GeminiConfigurationOptionEditor from './GeminiConfigurationOptionEditor.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type {
   GeminiConfigurationOption,
@@ -177,39 +198,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useLocalization()
-const geminiApiKey = ref('')
-const vertexApiKey = ref('')
-const vertexProject = ref('')
-const vertexLocation = ref('')
-const showApiKey = ref(false)
-const firstField = ref<HTMLInputElement | null>(null)
 const actionsDisabled = computed(() => props.disabled || props.saving || props.activating)
-
-watch(
-  () => props.refreshSnapshot,
-  () => {
-    vertexProject.value = props.vertexProject ?? ''
-    vertexLocation.value = props.vertexLocation ?? ''
-    geminiApiKey.value = ''
-    vertexApiKey.value = ''
-    showApiKey.value = false
-  },
-  { immediate: true },
-)
-
-watch(
-  () => props.expanded,
-  async (expanded) => {
-    if (!expanded) {
-      geminiApiKey.value = ''
-      vertexApiKey.value = ''
-      showApiKey.value = false
-      return
-    }
-    await nextTick()
-    firstField.value?.focus()
-  },
-)
 
 const optionLabel = computed(() => {
   if (props.option === 'AI_STUDIO') {
@@ -221,24 +210,30 @@ const optionLabel = computed(() => {
   return t('settings.components.settings.ProviderAPIKeyManager.vertex_project')
 })
 
-const canSave = computed(() => {
-  if (props.option === 'AI_STUDIO') return Boolean(geminiApiKey.value.trim())
-  if (props.option === 'VERTEX_EXPRESS') return Boolean(vertexApiKey.value.trim())
-  return Boolean(vertexProject.value.trim() && vertexLocation.value.trim())
+const optionDescription = computed(() => {
+  if (props.option === 'AI_STUDIO') {
+    return t('settings.components.settings.ProviderAPIKeyManager.ai_studio_description')
+  }
+  if (props.option === 'VERTEX_EXPRESS') {
+    return t('settings.components.settings.ProviderAPIKeyManager.vertex_express_description')
+  }
+  return t('settings.components.settings.ProviderAPIKeyManager.vertex_project_description')
 })
 
-const buildInput = (): GeminiOptionSaveInput => {
-  const input: GeminiOptionSaveInput = { option: props.option }
-  if (props.option === 'AI_STUDIO') input.apiKey = geminiApiKey.value
-  if (props.option === 'VERTEX_EXPRESS') input.apiKey = vertexApiKey.value
-  if (props.option === 'VERTEX_PROJECT') {
-    input.project = vertexProject.value
-    input.location = vertexLocation.value
+</script>
+
+<style scoped>
+@container (min-width: 400px) {
+  .gemini-option-summary {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
-  return input
+
+  .gemini-option-actions {
+    flex-shrink: 0;
+    justify-content: flex-end;
+  }
 }
 
-const submit = () => emit('save', buildInput())
-const submitAndActivate = () => emit('save-and-activate', buildInput())
-
-</script>
+</style>
