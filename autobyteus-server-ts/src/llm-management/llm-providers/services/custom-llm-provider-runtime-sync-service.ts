@@ -51,6 +51,13 @@ export class CustomLlmProviderRuntimeSyncService {
     return this.syncPromise;
   }
 
+  async clearUnavailableProviders(): Promise<void> {
+    await this.syncPromise?.catch(() => undefined);
+    await LLMFactory.syncOpenAICompatibleEndpointModels([]);
+    this.hasEverSynced = true;
+    this.lastStatusesByProviderId.clear();
+  }
+
   getStatus(providerId: string): CustomProviderReloadStatus {
     return this.lastStatusesByProviderId.get(providerId) ?? buildNeverLoadedStatus(providerId);
   }

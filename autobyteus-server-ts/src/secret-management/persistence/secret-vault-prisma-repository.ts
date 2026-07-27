@@ -27,6 +27,29 @@ export type SecretVaultBatchResult = {
   replacedCount: number;
 };
 
+export class CustomProviderMigrationBatchReceipt {
+  readonly #opaque = true;
+
+  release(): void {
+    const state = migrationReceiptRecords.get(this);
+    if (!state) return;
+    migrationReceiptRecords.delete(this);
+    for (const record of state.records) {
+      record.nonce.fill(0);
+      record.ciphertext.fill(0);
+      record.authenticationTag.fill(0);
+    }
+  }
+}
+
+const migrationReceiptRecords = new WeakMap<
+  CustomProviderMigrationBatchReceipt,
+  {
+    owner: object;
+    records: EncryptedSecretEntryRecord[];
+  }
+>();
+
 type VaultTransactionClient = Pick<
   Prisma.TransactionClient,
   "secretEntry" | "secretEncryptionMetadata"
@@ -167,6 +190,58 @@ export class SecretVaultPrismaRepository {
     }, { maxWait: 2_000, timeout: 5_000 });
   }
 
+  async createMissingBatchForCustomProviderMigration(
+    records: ReadonlyArray<EncryptedSecretEntryRecord>,
+    expectedMetadata: Pick<
+      SecretVaultMetadataRecord,
+      "encryptionDomainId" | "encryptionFormatVersion"
+    >,
+  ): Promise<CustomProviderMigrationBatchReceipt> {
+    await this.prisma.$transaction(async (transaction) => {
+      await this.assertDomainInTransaction(transaction, expectedMetadata);
+      for (const record of records) {
+        if (await this.hasEntryInTransaction(transaction, record.secretId)) {
+          throw new Error("CUSTOM_PROVIDER_MIGRATION_TARGET_NOT_MISSING");
+        }
+      }
+      for (const record of records) {
+        await transaction.secretEntry.create({ data: this.toWriteData(record) });
+      }
+    }, { maxWait: 2_000, timeout: 5_000 });
+
+    const receipt = new CustomProviderMigrationBatchReceipt();
+    migrationReceiptRecords.set(receipt, {
+      owner: this,
+      records: records.map((record) => this.cloneEncryptedRecord(record)),
+    });
+    return receipt;
+  }
+
+  async compensateUnpublishedCustomProviderBatch(
+    receipt: CustomProviderMigrationBatchReceipt,
+  ): Promise<void> {
+    const state = migrationReceiptRecords.get(receipt);
+    if (!state || state.owner !== this) {
+      throw new Error("CUSTOM_PROVIDER_MIGRATION_RECEIPT_INVALID");
+    }
+
+    await this.prisma.$transaction(async (transaction) => {
+      for (const expected of state.records) {
+        const current = await transaction.secretEntry.findUnique({
+          where: { secretId: String(expected.secretId) },
+        });
+        if (!current || !this.encryptedRecordMatches(current, expected)) {
+          continue;
+        }
+        await transaction.secretEntry.delete({
+          where: { secretId: String(expected.secretId) },
+        });
+      }
+    }, { maxWait: 2_000, timeout: 5_000 });
+
+    receipt.release();
+  }
+
   private async assertDomainInTransaction(
     transaction: VaultTransactionClient,
     expected: Pick<SecretVaultMetadataRecord, "encryptionDomainId" | "encryptionFormatVersion">,
@@ -211,4 +286,25 @@ export class SecretVaultPrismaRepository {
       authenticationTag: Buffer.from(record.authenticationTag),
     };
   }
+
+  private cloneEncryptedRecord(
+    record: EncryptedSecretEntryRecord,
+  ): EncryptedSecretEntryRecord {
+    return {
+      secretId: record.secretId,
+      nonce: Buffer.from(record.nonce),
+      ciphertext: Buffer.from(record.ciphertext),
+      authenticationTag: Buffer.from(record.authenticationTag),
+    };
+  }
+
+  private encryptedRecordMatches(
+    current: SecretEntry,
+    expected: EncryptedSecretEntryRecord,
+  ): boolean {
+    return Buffer.from(current.nonce).equals(expected.nonce)
+      && Buffer.from(current.ciphertext).equals(expected.ciphertext)
+      && Buffer.from(current.authenticationTag).equals(expected.authenticationTag);
+  }
+
 }

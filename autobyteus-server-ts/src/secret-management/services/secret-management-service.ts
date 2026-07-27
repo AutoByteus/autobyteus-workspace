@@ -17,6 +17,7 @@ import {
   type SecretVaultHealth,
 } from "../domain/secret-vault-types.js";
 import type {
+  CustomProviderMigrationBatchReceipt,
   EncryptedSecretEntryRecord,
   SecretVaultBatchResult,
   SecretVaultMetadataRecord,
@@ -24,7 +25,14 @@ import type {
 } from "../persistence/secret-vault-prisma-repository.js";
 
 export type SecretOperationEvent = {
-  operation: "SAVE" | "REMOVE" | "STATUS" | "RESOLVE" | "SAVE_BATCH";
+  operation:
+    | "SAVE"
+    | "REMOVE"
+    | "STATUS"
+    | "RESOLVE"
+    | "SAVE_BATCH"
+    | "CREATE_MISSING_BATCH"
+    | "COMPENSATE_UNPUBLISHED_BATCH";
   outcome: "SUCCEEDED" | "FAILED";
   correlationId: string;
 };
@@ -76,13 +84,7 @@ export class SecretManagementService {
     overwrite: boolean,
   ): Promise<SecretVaultBatchResult> {
     this.requireReady();
-    const ids = new Set<string>();
-    for (const entry of entries) {
-      if (!this.catalog.isKnownSecretId(entry.secretId) || ids.has(String(entry.secretId))) {
-        throw new SecretVaultError("ACCESS_DENIED", false, "SECRET_CONSUMER_NOT_AUTHORIZED");
-      }
-      ids.add(String(entry.secretId));
-    }
+    this.authorizeBatch(entries);
     const encrypted = entries.map((entry) => this.encrypt(entry.secretId, entry.input));
     try {
       return await this.withEvent(
@@ -95,6 +97,39 @@ export class SecretManagementService {
     } finally {
       for (const record of encrypted) this.clearEncrypted(record);
     }
+  }
+
+  async createMissingBatchForCustomProviderMigration(
+    entries: ReadonlyArray<{ secretId: SecretId; input: SecretValue }>,
+  ): Promise<CustomProviderMigrationBatchReceipt> {
+    this.requireReady();
+    this.authorizeCustomProviderMigrationBatch(entries);
+    const encrypted = entries.map((entry) => this.encrypt(entry.secretId, entry.input));
+    try {
+      return await this.withEvent(
+        "CREATE_MISSING_BATCH",
+        () => this.repository.createMissingBatchForCustomProviderMigration(
+          encrypted,
+          {
+            encryptionDomainId: (this.metadata as SecretVaultMetadataRecord).encryptionDomainId,
+            encryptionFormatVersion:
+              (this.metadata as SecretVaultMetadataRecord).encryptionFormatVersion,
+          },
+        ),
+      );
+    } finally {
+      for (const record of encrypted) this.clearEncrypted(record);
+    }
+  }
+
+  async compensateUnpublishedCustomProviderBatch(
+    receipt: CustomProviderMigrationBatchReceipt,
+  ): Promise<void> {
+    this.requireReady();
+    await this.withEvent(
+      "COMPENSATE_UNPUBLISHED_BATCH",
+      () => this.repository.compensateUnpublishedCustomProviderBatch(receipt),
+    );
   }
 
   async resolveForUse(consumer: SecretConsumerIdentity): Promise<SecretValue> {
@@ -147,6 +182,34 @@ export class SecretManagementService {
         "SECRET_CONSUMER_NOT_AUTHORIZED",
         { cause },
       );
+    }
+  }
+
+  private authorizeBatch(
+    entries: ReadonlyArray<{ secretId: SecretId }>,
+  ): void {
+    const ids = new Set<string>();
+    for (const entry of entries) {
+      if (!this.catalog.isKnownSecretId(entry.secretId) || ids.has(String(entry.secretId))) {
+        throw new SecretVaultError("ACCESS_DENIED", false, "SECRET_CONSUMER_NOT_AUTHORIZED");
+      }
+      ids.add(String(entry.secretId));
+    }
+  }
+
+  private authorizeCustomProviderMigrationBatch(
+    entries: ReadonlyArray<{ secretId: SecretId }>,
+  ): void {
+    const ids = new Set<string>();
+    for (const entry of entries) {
+      const id = String(entry.secretId);
+      if (
+        !/^provider\.openai-compatible\.provider_[a-z0-9_-]+\.api-key$/.test(id)
+        || ids.has(id)
+      ) {
+        throw new SecretVaultError("ACCESS_DENIED", false, "SECRET_CONSUMER_NOT_AUTHORIZED");
+      }
+      ids.add(id);
     }
   }
 

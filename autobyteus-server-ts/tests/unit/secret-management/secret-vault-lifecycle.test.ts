@@ -7,7 +7,10 @@ import { SecretValue } from 'autobyteus-ts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { SecretVaultBootstrap } from '../../../src/secret-management/bootstrap/secret-vault-bootstrap.js';
-import { secretId } from '../../../src/secret-management/domain/secret-id.js';
+import {
+  customProviderSecretId,
+  secretId,
+} from '../../../src/secret-management/domain/secret-id.js';
 import { SecretVaultPrismaRepository } from '../../../src/secret-management/persistence/secret-vault-prisma-repository.js';
 import { SecretRootKeyFile } from '../../../src/secret-management/root-key/secret-root-key-file.js';
 import { SecretManagementService } from '../../../src/secret-management/services/secret-management-service.js';
@@ -188,6 +191,111 @@ describe('one-database secret vault lifecycle', () => {
       code: 'ACCESS_DENIED',
       instructionCode: 'SECRET_CONSUMER_NOT_AUTHORIZED',
     });
+  });
+
+  it('creates migration credentials only when every target is missing', async () => {
+    const existing = {
+      kind: 'llm',
+      providerId: 'provider_existing',
+      credentialSlot: 'apiKey',
+    } as const;
+    await service.saveForConsumer({
+      consumer: existing,
+      value: SecretValue.fromString('synthetic-existing'),
+    });
+
+    await expect(service.createMissingBatchForCustomProviderMigration([
+      {
+        secretId: customProviderSecretId('provider_existing'),
+        input: SecretValue.fromString('synthetic-must-not-replace'),
+      },
+      {
+        secretId: customProviderSecretId('provider_new'),
+        input: SecretValue.fromString('synthetic-must-not-create'),
+      },
+    ])).rejects.toThrow('CUSTOM_PROVIDER_MIGRATION_TARGET_NOT_MISSING');
+
+    await expect(service.resolveForUse(existing).then((value) =>
+      value.revealToTrustedConsumer())).resolves.toBe('synthetic-existing');
+    await expect(service.getStatusForConsumer({
+      kind: 'llm',
+      providerId: 'provider_new',
+      credentialSlot: 'apiKey',
+    })).resolves.toBe('MISSING');
+  });
+
+  it('keeps the migration batch restricted to custom-provider secret IDs', async () => {
+    await expect(service.createMissingBatchForCustomProviderMigration([{
+      secretId: secretId('provider.openai.api-key'),
+      input: SecretValue.fromString('synthetic-not-custom'),
+    }])).rejects.toMatchObject({
+      code: 'ACCESS_DENIED',
+      instructionCode: 'SECRET_CONSUMER_NOT_AUTHORIZED',
+    });
+  });
+
+  it('rolls back every create-only migration row when one insert fails', async () => {
+    const database = new DatabaseSync(databasePath);
+    database.exec(`
+      CREATE TRIGGER reject_custom_beta
+      BEFORE INSERT ON secret_entries
+      WHEN NEW.secret_id = 'provider.openai-compatible.provider_beta.api-key'
+      BEGIN
+        SELECT RAISE(ABORT, 'synthetic rejected migration write');
+      END;
+    `);
+    database.close();
+
+    await expect(service.createMissingBatchForCustomProviderMigration([
+      {
+        secretId: customProviderSecretId('provider_alpha'),
+        input: SecretValue.fromString('synthetic-alpha'),
+      },
+      {
+        secretId: customProviderSecretId('provider_beta'),
+        input: SecretValue.fromString('synthetic-beta'),
+      },
+    ])).rejects.toThrow();
+
+    for (const providerId of ['provider_alpha', 'provider_beta']) {
+      await expect(service.getStatusForConsumer({
+        kind: 'llm',
+        providerId,
+        credentialSlot: 'apiKey',
+      })).resolves.toBe('MISSING');
+    }
+  });
+
+  it('compensates only unchanged rows from the same opaque migration receipt', async () => {
+    const receipt = await service.createMissingBatchForCustomProviderMigration([
+      {
+        secretId: customProviderSecretId('provider_changed'),
+        input: SecretValue.fromString('synthetic-original-changed'),
+      },
+      {
+        secretId: customProviderSecretId('provider_unchanged'),
+        input: SecretValue.fromString('synthetic-original-unchanged'),
+      },
+    ]);
+    const changed = {
+      kind: 'llm',
+      providerId: 'provider_changed',
+      credentialSlot: 'apiKey',
+    } as const;
+    await service.saveForConsumer({
+      consumer: changed,
+      value: SecretValue.fromString('synthetic-current'),
+    });
+
+    await service.compensateUnpublishedCustomProviderBatch(receipt);
+
+    await expect(service.resolveForUse(changed).then((value) =>
+      value.revealToTrustedConsumer())).resolves.toBe('synthetic-current');
+    await expect(service.getStatusForConsumer({
+      kind: 'llm',
+      providerId: 'provider_unchanged',
+      credentialSlot: 'apiKey',
+    })).resolves.toBe('MISSING');
   });
 
   it.skipIf(process.platform === 'win32')(

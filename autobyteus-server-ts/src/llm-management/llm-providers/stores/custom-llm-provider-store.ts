@@ -21,11 +21,7 @@ const sortProviders = (providers: CustomLlmProviderRecord[]): CustomLlmProviderR
     });
 
 export class CustomLlmProviderStoreError extends Error {
-  constructor(
-    readonly code:
-      | 'CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED'
-      | 'CUSTOM_PROVIDER_CONFIG_INVALID',
-  ) {
+  constructor(readonly code: 'CUSTOM_PROVIDER_CONFIG_INVALID') {
     super(code);
     this.name = 'CustomLlmProviderStoreError';
   }
@@ -36,9 +32,6 @@ export class CustomLlmProviderStoreError extends Error {
 }
 
 const parseCurrentConfig = (value: unknown): CustomLlmProviderConfigFile => {
-  if (value && typeof value === 'object' && (value as { version?: unknown }).version === 1) {
-    throw new CustomLlmProviderStoreError('CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED');
-  }
   try {
     return parseCustomLlmProviderConfigFile(value);
   } catch {

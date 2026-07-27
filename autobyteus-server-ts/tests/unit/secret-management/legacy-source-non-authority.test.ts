@@ -279,7 +279,7 @@ describe('legacy source non-authority', () => {
     );
   });
 
-  it('leaves custom-provider v1 byte-for-byte unchanged and returns stable value-free reconfiguration guidance', async () => {
+  it('keeps the current provider store v2-only without interpreting custom-provider v1', async () => {
     const providerDirectory = path.join(root, 'llm');
     const providerPath = path.join(providerDirectory, 'custom-llm-providers.json');
     await fs.mkdir(providerDirectory, { recursive: true });
@@ -299,7 +299,7 @@ describe('legacy source non-authority', () => {
     const error = await new CustomLlmProviderStore().listProviders().catch((caught) => caught);
 
     expect(error).toBeInstanceOf(CustomLlmProviderStoreError);
-    expect(error.toJSON()).toEqual({ code: 'CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED' });
+    expect(error.toJSON()).toEqual({ code: 'CUSTOM_PROVIDER_CONFIG_INVALID' });
     expect(JSON.stringify(error)).not.toContain('synthetic-legacy-provider-value');
     expect(await fs.readFile(providerPath)).toEqual(source);
     await expect(fs.stat(path.join(root, 'migrations'))).rejects.toMatchObject({ code: 'ENOENT' });

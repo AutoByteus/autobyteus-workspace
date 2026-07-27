@@ -18,6 +18,15 @@ const ensureParentDir = async (filePath: string): Promise<void> => {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
 };
 
+const isLiveProcess = (pid: number): boolean => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code !== "ESRCH";
+  }
+};
+
 const getTempPath = (filePath: string): string =>
   `${filePath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
 
@@ -31,13 +40,24 @@ const acquireCrossProcessLock = async (
   while (true) {
     try {
       const handle = await fs.open(lockPath, "wx");
+      try {
+        await handle.writeFile(`${process.pid}\n`, "utf8");
+        await handle.sync();
+      } catch (error) {
+        await handle.close().catch(() => undefined);
+        await fs.unlink(lockPath).catch(() => undefined);
+        throw error;
+      }
       return async () => {
-        await handle.close();
-        await fs.unlink(lockPath).catch((error) => {
-          if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-            throw error;
-          }
-        });
+        try {
+          await handle.close();
+        } finally {
+          await fs.unlink(lockPath).catch((error) => {
+            if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+              throw error;
+            }
+          });
+        }
       };
     } catch (error) {
       const code = (error as NodeJS.ErrnoException).code;
@@ -52,7 +72,14 @@ const acquireCrossProcessLock = async (
 
       try {
         const stat = await fs.stat(lockPath);
-        if (now - stat.mtimeMs > STALE_LOCK_MS) {
+        const ownerText = await fs.readFile(lockPath, "utf8").catch(() => "");
+        const ownerPid = Number(ownerText.trim());
+        const deadOwner = Number.isSafeInteger(ownerPid)
+          && ownerPid > 0
+          && !isLiveProcess(ownerPid);
+        const ownerMissingAndStale = !Number.isSafeInteger(ownerPid)
+          && now - stat.mtimeMs > STALE_LOCK_MS;
+        if (deadOwner || ownerMissingAndStale) {
           await fs.unlink(lockPath).catch((unlinkError) => {
             if ((unlinkError as NodeJS.ErrnoException).code !== "ENOENT") {
               throw unlinkError;
@@ -72,7 +99,10 @@ const acquireCrossProcessLock = async (
   }
 };
 
-const withPathLock = async <T>(filePath: string, operation: () => Promise<T>): Promise<T> => {
+export const withFilePathLock = async <T>(
+  filePath: string,
+  operation: () => Promise<T>,
+): Promise<T> => {
   const previous = lockByPath.get(filePath) ?? Promise.resolve();
 
   let release!: () => void;
@@ -80,7 +110,8 @@ const withPathLock = async <T>(filePath: string, operation: () => Promise<T>): P
     release = resolve;
   });
 
-  lockByPath.set(filePath, previous.then(() => marker));
+  const current = previous.then(() => marker);
+  lockByPath.set(filePath, current);
 
   await previous;
   let releaseCrossProcessLock: (() => Promise<void>) | null = null;
@@ -88,12 +119,15 @@ const withPathLock = async <T>(filePath: string, operation: () => Promise<T>): P
     releaseCrossProcessLock = await acquireCrossProcessLock(filePath);
     return await operation();
   } finally {
-    if (releaseCrossProcessLock) {
-      await releaseCrossProcessLock();
-    }
-    release();
-    if (lockByPath.get(filePath) === marker) {
-      lockByPath.delete(filePath);
+    try {
+      if (releaseCrossProcessLock) {
+        await releaseCrossProcessLock();
+      }
+    } finally {
+      release();
+      if (lockByPath.get(filePath) === current) {
+        lockByPath.delete(filePath);
+      }
     }
   }
 };
@@ -133,7 +167,7 @@ export const readJsonFile = async <T>(filePath: string, fallback: T): Promise<T>
 };
 
 export const writeJsonArrayFile = async <T>(filePath: string, rows: T[]): Promise<void> => {
-  await withPathLock(filePath, async () => {
+  await withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
     const tempPath = getTempPath(filePath);
     await fs.writeFile(tempPath, encodeJson(rows), "utf-8");
@@ -142,7 +176,7 @@ export const writeJsonArrayFile = async <T>(filePath: string, rows: T[]): Promis
 };
 
 export const writeJsonFile = async <T>(filePath: string, value: T): Promise<void> => {
-  await withPathLock(filePath, async () => {
+  await withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
     const tempPath = getTempPath(filePath);
     await fs.writeFile(tempPath, encodeJson(value), "utf-8");
@@ -151,7 +185,7 @@ export const writeJsonFile = async <T>(filePath: string, value: T): Promise<void
 };
 
 export const writeRawFile = async (filePath: string, content: string): Promise<void> => {
-  await withPathLock(filePath, async () => {
+  await withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
     const tempPath = getTempPath(filePath);
     await fs.writeFile(tempPath, content, "utf-8");
@@ -163,7 +197,7 @@ export const updateJsonArrayFile = async <T>(
   filePath: string,
   updater: (rows: T[]) => Promise<T[]> | T[],
 ): Promise<T[]> =>
-  withPathLock(filePath, async () => {
+  withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
     const existing = await readJsonArrayFile<T>(filePath);
     const nextRows = await updater(existing);
@@ -178,7 +212,7 @@ export const updateJsonFile = async <T>(
   fallback: T,
   updater: (value: T) => Promise<T> | T,
 ): Promise<T> =>
-  withPathLock(filePath, async () => {
+  withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
     const existing = await readJsonFile<T>(filePath, fallback);
     const nextValue = await updater(existing);
@@ -189,7 +223,7 @@ export const updateJsonFile = async <T>(
   });
 
 export const appendJsonlFile = async <T>(filePath: string, row: T): Promise<void> => {
-  await withPathLock(filePath, async () => {
+  await withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
     await fs.appendFile(filePath, `${JSON.stringify(row)}\n`, "utf-8");
   });

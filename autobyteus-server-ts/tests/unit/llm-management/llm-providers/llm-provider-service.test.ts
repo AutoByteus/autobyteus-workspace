@@ -13,7 +13,10 @@ describe('LlmProviderService', () => {
     createProvider: vi.fn(),
     deleteProvider: vi.fn(),
   };
-  const customProviderRuntimeSyncService = { getStatus: vi.fn() };
+  const customProviderRuntimeSyncService = {
+    getStatus: vi.fn(),
+    clearUnavailableProviders: vi.fn(),
+  };
   const modelCatalogService = {
     listLlmModels: vi.fn(),
     listAudioModels: vi.fn(),
@@ -89,6 +92,7 @@ describe('LlmProviderService', () => {
       modelCount: 1,
       preservedPreviousModels: false,
     });
+    customProviderRuntimeSyncService.clearUnavailableProviders.mockResolvedValue(undefined);
     modelCatalogService.listLlmModels.mockResolvedValue([]);
     modelCatalogService.listAudioModels.mockResolvedValue([]);
     modelCatalogService.listImageModels.mockResolvedValue([]);
@@ -161,6 +165,35 @@ describe('LlmProviderService', () => {
     }]);
     await expect(createService().listProviderSettings('autobyteus'))
       .rejects.toThrow('PROVIDER_SETTINGS_ORPHAN_MODEL');
+  });
+
+  it('contains unreadable custom state and clears stale custom runtime rows before catalogs', async () => {
+    customProviderStore.listProviders.mockRejectedValue(
+      new Error('CUSTOM_PROVIDER_CONFIG_INVALID'),
+    );
+    modelCatalogService.listLlmModels.mockResolvedValue([{
+      provider_id: 'provider_stale',
+      name: 'Stale',
+      modelIdentifier: 'stale',
+    }]);
+    customProviderRuntimeSyncService.clearUnavailableProviders.mockRejectedValue(
+      new Error('synthetic runtime clear failure'),
+    );
+
+    await expect(createService().listProviderSettings('autobyteus')).resolves.toEqual([
+      expect.objectContaining({ provider: expect.objectContaining({ id: 'GEMINI' }) }),
+      expect.objectContaining({ provider: expect.objectContaining({ id: 'OPENAI' }) }),
+    ]);
+    expect(customProviderRuntimeSyncService.clearUnavailableProviders).toHaveBeenCalledOnce();
+    expect(
+      customProviderRuntimeSyncService.clearUnavailableProviders.mock.invocationCallOrder[0],
+    ).toBeLessThan(modelCatalogService.listLlmModels.mock.invocationCallOrder[0]!);
+    await expect(createService().createCustomProvider({
+      name: 'Blocked Until Restart',
+      baseUrl: 'https://blocked.synthetic.invalid/v1',
+      apiKey: 'synthetic-key',
+    })).rejects.toThrow('CUSTOM_PROVIDER_CONFIG_INVALID');
+    expect(discovery.probeEndpoint).not.toHaveBeenCalled();
   });
 
   it('keeps provider catalogs credential-independent when custody is unavailable', async () => {

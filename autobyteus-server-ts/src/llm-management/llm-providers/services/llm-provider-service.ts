@@ -96,10 +96,13 @@ export class LlmProviderService {
     runtimeKind?: string | null,
     mapModel?: (model: ModelInfo) => TModel,
   ): Promise<LlmProviderWithModels<TModel>[]> {
-    const [modelsInfo, customProviders] = await Promise.all([
-      this.modelCatalogService.listLlmModels(runtimeKind).catch(() => []),
-      this.listCustomProviders(runtimeKind).catch(() => []),
-    ]);
+    const customProviders = await this.listCustomProvidersForRead(runtimeKind);
+    const customProviderIds = new Set(customProviders.map((provider) => provider.id));
+    const modelsInfo = this.omitStaleCustomModels(
+      await this.modelCatalogService.listLlmModels(runtimeKind).catch(() => []),
+      (model) => model.provider_id,
+      customProviderIds,
+    );
     const providerById = new Map<string, LlmProviderRecord>([
       ...this.builtInCatalog.listProviders().map((provider) => [provider.id, provider] as const),
       ...customProviders.map((provider) => [provider.id, provider] as const),
@@ -135,13 +138,34 @@ export class LlmProviderService {
   }
 
   async listProviderSettings(runtimeKind?: string | null): Promise<ProviderSettings[]> {
-    const [customProviders, llmModels, audioModels, imageModels, videoModels] = await Promise.all([
-      this.listCustomProviders(runtimeKind),
+    const customProviders = await this.listCustomProvidersForRead(runtimeKind);
+    const [allLlmModels, allAudioModels, allImageModels, allVideoModels] = await Promise.all([
       this.modelCatalogService.listLlmModels(runtimeKind),
       this.modelCatalogService.listAudioModels(runtimeKind),
       this.modelCatalogService.listImageModels(runtimeKind),
       this.modelCatalogService.listVideoModels(runtimeKind),
     ]);
+    const customProviderIds = new Set(customProviders.map((provider) => provider.id));
+    const llmModels = this.omitStaleCustomModels(
+      allLlmModels,
+      (model) => model.provider_id,
+      customProviderIds,
+    );
+    const audioModels = this.omitStaleCustomModels(
+      allAudioModels,
+      (model) => String(model.provider),
+      customProviderIds,
+    );
+    const imageModels = this.omitStaleCustomModels(
+      allImageModels,
+      (model) => String(model.provider),
+      customProviderIds,
+    );
+    const videoModels = this.omitStaleCustomModels(
+      allVideoModels,
+      (model) => String(model.provider),
+      customProviderIds,
+    );
     const providers = sortProvidersByName([
       ...this.builtInCatalog.listProviders(),
       ...customProviders,
@@ -285,6 +309,28 @@ export class LlmProviderService {
         provider.providerType,
         provider.baseUrl,
       ));
+  }
+
+  private async listCustomProvidersForRead(
+    runtimeKind?: string | null,
+  ): Promise<LlmProviderRecord[]> {
+    try {
+      return await this.listCustomProviders(runtimeKind);
+    } catch {
+      await this.customProviderRuntimeSyncService.clearUnavailableProviders().catch(() => undefined);
+      return [];
+    }
+  }
+
+  private omitStaleCustomModels<T>(
+    models: T[],
+    providerIdFor: (model: T) => string,
+    currentCustomProviderIds: ReadonlySet<string>,
+  ): T[] {
+    return models.filter((model) => {
+      const providerId = providerIdFor(model);
+      return !providerId.startsWith('provider_') || currentCustomProviderIds.has(providerId);
+    });
   }
 
   private mapCustomProvider(
