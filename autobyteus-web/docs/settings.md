@@ -7,27 +7,29 @@ This document outlines the end-to-end architecture of how Agent and Agent Team e
 ## Provider Credential Settings
 
 Settings -> API Key Management is a write-only credential surface backed by the
-server's centralized secret-management subsystem:
+server's centralized encrypted vault:
 
-- provider reads expose backend health, lifecycle, and `MISSING` / `CONFIGURED`
-  status but never return stored credential values;
-- saving replaces the selected credential and clears the editor after success;
-- configured built-in providers expose an explicit Remove action, and save and
-  remove operations cannot overlap;
-- backend `LOCKED`, `UNAVAILABLE`, `CORRUPT`, or `INCOMPATIBLE` state remains
-  visible as value-free status and blocks writes; and
-- an `EXTERNALLY_MANAGED` lifecycle shows its instruction code and does not
-  pretend the frontend can write the deployment-owned backend.
+- `providerSettings` returns each provider once with one provider-owned
+  `apiKeyConfigured` fact and credential-independent subordinate LLM, audio,
+  image, and video model lists;
+- stored credential values are never returned;
+- ordinary built-in providers support Save/create-or-overwrite and value-free
+  configured status, with no standalone credential-removal action;
+- Gemini uses its specialized three-option Settings flow for Save/overwrite,
+  first-time Save-and-use, and Use-this-mode; and
+- successful commands refetch the provider-centered Settings read so the UI
+  reflects authoritative provider and catalog state.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
 the custom-provider JSON file. The credential is stored separately, and deleting
-the custom provider removes both its credential and metadata. AutoByteus gateway
-models retain their downstream display provider while credential status and
-write/remove operations remain owned by the `AUTOBYTEUS` gateway provider.
+the custom provider through the provider-entity lifecycle removes both its
+credential and metadata. AutoByteus gateway models retain their downstream
+display provider while credential configuration remains owned by the
+`AUTOBYTEUS` gateway provider.
 
-See `autobyteus-server-ts/docs/modules/secret_management.md` for Local Store,
-migration, runtime provisioning, Claude authentication, and real-E2E operator
+See `autobyteus-server-ts/docs/modules/secret_management.md` for encrypted-vault,
+migration, runtime resolution, Claude authentication, and real-E2E operator
 contracts.
 
 ## Server Settings: Working-Context Compaction

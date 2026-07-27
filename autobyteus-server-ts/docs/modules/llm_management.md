@@ -176,7 +176,7 @@ Gemini metadata intentionally remains distinct from LLM/media SDK mode:
   response without the matching record retains curated values and reports
   `CURATED_FALLBACK`.
 - **Vertex Express** is `CURATED_ONLY`. Model-list metadata performs no Gemini
-  metadata Store lookup and no metadata HTTP request, so its API key is never
+  metadata vault lookup and no metadata HTTP request, so its API key is never
   sent to the Gemini Developer API endpoint.
 - **Vertex Project** is also `CURATED_ONLY` and performs no metadata credential
   lookup or metadata HTTP request.
@@ -269,11 +269,15 @@ provider migration. Migration outcomes and APIs remain value-free.
 2. `SecretManagementService.removeForConsumer(...)` removes the credential.
 3. `CustomLlmProviderStore.deleteProvider(...)` removes metadata from
    `custom-llm-providers.json`.
-4. The server refreshes the authoritative LLM catalog, and the client refetches
-   `providerSettings` so the provider and models disappear.
+4. The server uses the targeted custom-provider reload/synchronization boundary
+   so the deleted provider disappears from runtime/catalog state without
+   invoking unrelated AutoByteus remote discovery. The client then refetches
+   `providerSettings`.
 
 Delete is idempotent at the owning service boundary. Failures use GraphQL
-errors rather than a second status protocol.
+errors rather than a second status protocol. Vault removal, provider-record
+deletion, and targeted custom-provider synchronization failures remain visible;
+the targeted path does not globally swallow intrinsic failures.
 
 ## Runtime Sync and Status
 
@@ -313,8 +317,10 @@ the whole custom-provider slice when one endpoint is broken.
   - other built-ins: return current model count without a special reload path
 - `deleteCustomProvider(providerId)`
   - removes the saved custom-provider record first
-  - then runs a full LLM catalog refresh so deleted-provider models are removed
-    from the authoritative catalog and fresh-process startup state
+  - then reloads only the targeted custom-provider boundary so deleted-provider
+    models are removed from authoritative runtime/catalog state
+  - does not depend on or suppress failures from unrelated AutoByteus remote
+    discovery
 
 Custom providers are available only for `runtimeKind = AUTOBYTEUS`. Other
 runtime kinds keep their own model catalogs and do not project custom provider
