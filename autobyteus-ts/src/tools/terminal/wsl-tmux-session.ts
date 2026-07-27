@@ -5,7 +5,6 @@ import {
   selectWslDistro,
   windowsPathToWsl
 } from './wsl-utils.js';
-import { buildAgentChildEnvironment } from './agent-child-environment.js';
 
 const DEFAULT_COLS = 80;
 const DEFAULT_ROWS = 24;
@@ -71,9 +70,10 @@ export class WslTmuxSession {
       name: 'xterm-256color',
       cols: DEFAULT_COLS,
       rows: DEFAULT_ROWS,
-      env: buildAgentChildEnvironment(process.env, {
+      env: {
+        ...process.env,
         TERM: 'xterm-256color'
-      })
+      }
     });
 
     this.alive = true;

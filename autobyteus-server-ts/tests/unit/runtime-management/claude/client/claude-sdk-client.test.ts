@@ -1,9 +1,10 @@
-import os from "node:os";
-import path from "node:path";
-import { describe, expect, it, vi } from "vitest";
-import { ClaudeSdkClient, type ClaudeSdkCanUseTool } from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
-import { ClaudeRuntimeAuthenticationError } from "../../../../../src/runtime-management/claude/client/claude-runtime-authentication-service.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SecretValue } from "autobyteus-ts";
+import { ClaudeSdkClient, type ClaudeSdkCanUseTool } from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import {
+  buildClaudeSdkSpawnEnvironment,
+  resolveClaudeSdkAuthMode,
+} from "../../../../../src/runtime-management/claude/client/claude-sdk-auth-environment.js";
 
 const createMockQuery = () => {
   const query = {
@@ -17,50 +18,119 @@ const createMockQuery = () => {
 };
 
 describe("ClaudeSdkClient", () => {
-  it("preserves distinct value-free managed-secret setup failures", () => {
-    const client = new ClaudeSdkClient();
-    const failure = new ClaudeRuntimeAuthenticationError("CLAUDE_RUNTIME_SECRET_STORE_LOCKED");
-    expect(client.normalizeProviderFailure(null, failure)).toBe(failure);
+  beforeEach(() => {
+    vi.stubEnv("CLAUDE_AGENT_SDK_AUTH_MODE", "cli");
   });
 
-  it("applies exact managed-secret child environment, settings, tools, MCP, and stderr policy", async () => {
-    const rawValue = "synthetic-managed-claude-key";
-    const client = new ClaudeSdkClient({
-      prepareForLaunch: vi.fn(async () => ({
-        kind: "managedApiKey" as const,
-        apiKey: SecretValue.fromString(rawValue),
-      })),
-    });
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("preserves the auto, cli, and api-key selector with cli as the default", () => {
+    expect(resolveClaudeSdkAuthMode({})).toBe("cli");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "auto" })).toBe("auto");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli" })).toBe("cli");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "api-key" })).toBe("api-key");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "unsupported-mode" })).toBe("cli");
+  });
+
+  it.each(["auto", "cli"] as const)(
+    "does not resolve a vault key for %s and preserves caller-supplied launch environment",
+    async (mode) => {
+      const resolveApiKey = vi.fn();
+      const queryFn = vi.fn(async () => createMockQuery());
+      const client = new ClaudeSdkClient(resolveApiKey);
+      client.setCachedModuleForTesting({ query: queryFn });
+      const env = {
+        CLAUDE_AGENT_SDK_AUTH_MODE: mode,
+        HOME: "/synthetic/home",
+        PATH: "/synthetic/bin",
+        ANTHROPIC_API_KEY: "synthetic-inherited-value",
+        CALLER_ADDITION: "preserved",
+      };
+
+      await client.startQueryTurn({
+        prompt: `${mode} turn`,
+        model: "haiku",
+        workingDirectory: "/tmp/claude-original-mode",
+        env,
+      });
+
+      expect(resolveApiKey).not.toHaveBeenCalled();
+      const call = queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string> } };
+      expect(call.options.env).toEqual(env);
+    },
+  );
+
+  it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY", async () => {
+    const resolveApiKey = vi.fn(async () => SecretValue.fromString("synthetic-vault-key"));
     const queryFn = vi.fn(async () => createMockQuery());
-    const stderr = vi.fn();
-    const mcpServer = { type: "sdk", name: "autobyteus-agent-tools" };
+    const client = new ClaudeSdkClient(resolveApiKey);
     client.setCachedModuleForTesting({ query: queryFn });
+    const env = {
+      CLAUDE_AGENT_SDK_AUTH_MODE: "api-key",
+      HOME: "/synthetic/home",
+      PATH: "/synthetic/bin",
+      ANTHROPIC_API_KEY: "synthetic-ambient-key",
+      CLAUDE_CODE_API_KEY: "synthetic-caller-owned-value",
+      CALLER_ADDITION: "preserved",
+    };
 
     await client.startQueryTurn({
-      prompt: "managed turn",
+      prompt: "api-key turn",
       model: "haiku",
-      workingDirectory: "/tmp/claude-managed-policy",
-      mcpServers: { autobyteus_agent_tools: mcpServer },
-      allowedTools: ["Bash", "mcp__autobyteus_agent_tools__read_file"],
-      stderr,
+      workingDirectory: "/tmp/claude-api-key-mode",
+      env,
+      mcpServers: { demo: { transport: "mock" } },
+      allowedTools: ["Bash"],
     });
 
+    expect(resolveApiKey).toHaveBeenCalledOnce();
     const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    expect(call.options.env).toEqual({
+      ...env,
+      ANTHROPIC_API_KEY: "synthetic-vault-key",
+    });
     expect(call.options).toEqual(expect.objectContaining({
-      tools: [],
-      strictMcpConfig: true,
-      settingSources: [],
-      mcpServers: { autobyteus_agent_tools: mcpServer },
-      allowedTools: ["mcp__autobyteus_agent_tools__read_file"],
+      mcpServers: { demo: { transport: "mock" } },
+      allowedTools: ["Bash"],
+      settingSources: ["user", "project", "local"],
     }));
-    expect(call.options.env).toEqual(expect.objectContaining({ ANTHROPIC_API_KEY: rawValue }));
-    expect(Object.keys(call.options.env as object).sort()).toEqual([
-      "ANTHROPIC_API_KEY", "CLAUDE_CONFIG_DIR", "HOME", "LANG", "PATH", "TMPDIR",
-    ]);
-    (call.options.stderr as (data: string) => void)(
-      `${rawValue} ${Buffer.from(rawValue).toString("base64")}`,
-    );
-    expect(stderr).toHaveBeenCalledWith("[redacted] [redacted]");
+    expect(call.options).not.toHaveProperty("tools");
+  });
+
+  it("fails value-free before SDK launch when explicit api-key resolution fails", async () => {
+    const resolveApiKey = vi.fn(async () => {
+      throw new Error("synthetic-secret-bearing-cause");
+    });
+    const queryFn = vi.fn(async () => createMockQuery());
+    const client = new ClaudeSdkClient(resolveApiKey);
+    client.setCachedModuleForTesting({ query: queryFn });
+
+    await expect(client.startQueryTurn({
+      prompt: "api-key turn",
+      model: "haiku",
+      workingDirectory: "/tmp/claude-api-key-failure",
+      env: { CLAUDE_AGENT_SDK_AUTH_MODE: "api-key" },
+    })).rejects.toThrow("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE");
+    expect(resolveApiKey).toHaveBeenCalledOnce();
+    expect(queryFn).not.toHaveBeenCalled();
+  });
+
+  it("keeps original cli process-environment filtering separate from vault resolution", () => {
+    const env = {
+      CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
+      CLAUDE_CODE_OAUTH_TOKEN: "synthetic-oauth",
+      ANTHROPIC_API_KEY: "synthetic-api-key",
+      CLAUDE_CODE_API_KEY: "synthetic-code-key",
+      KEEP_ME: "preserved",
+    };
+
+    expect(buildClaudeSdkSpawnEnvironment(env)).toEqual({
+      CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
+      CLAUDE_CODE_OAUTH_TOKEN: "synthetic-oauth",
+      KEEP_ME: "preserved",
+    });
   });
 
   it("passes stable query options for project skills, resume, MCP, and send_message_to tooling", async () => {
@@ -119,12 +189,6 @@ describe("ClaudeSdkClient", () => {
       options?: Record<string, unknown>;
     };
     expect(firstCall.options).not.toHaveProperty("tools");
-    expect(firstCall.options).not.toHaveProperty("strictMcpConfig");
-    expect(firstCall.options?.env).toEqual(expect.objectContaining({
-      HOME: os.homedir(),
-      CLAUDE_CONFIG_DIR: path.join(os.homedir(), ".claude"),
-    }));
-    expect(firstCall.options?.env).not.toHaveProperty("ANTHROPIC_API_KEY");
   });
 
   it("loads user, project, and local Claude Code settings for normal turns", async () => {
@@ -195,12 +259,9 @@ describe("ClaudeSdkClient", () => {
     expect(queryFn).toHaveBeenCalledWith({
       prompt: "diagnostic turn",
       options: expect.objectContaining({
-        stderr: expect.any(Function),
+        stderr,
       }),
     });
-    const call = queryFn.mock.calls[0]?.[0] as { options?: { stderr?: (data: string) => void } };
-    call.options?.stderr?.("value-free diagnostic");
-    expect(stderr).toHaveBeenCalledWith("value-free diagnostic");
   });
 
   it("uses user settings-source policy for model discovery", async () => {

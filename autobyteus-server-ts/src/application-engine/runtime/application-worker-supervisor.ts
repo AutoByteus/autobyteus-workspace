@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { buildAgentChildEnvironment } from "autobyteus-ts/tools/terminal/agent-child-environment.js";
 
 type WorkerExitListener = (event: {
   code: number | null;
@@ -60,7 +59,10 @@ export class ApplicationWorkerSupervisor {
     const args = useStripTypes ? ["--experimental-strip-types", entryPath] : [entryPath];
     const child = spawn(process.execPath, args, {
       cwd: input.cwd,
-      env: buildAgentChildEnvironment(input.env),
+      env: {
+        ...process.env,
+        ...input.env,
+      },
       stdio: ["pipe", "pipe", "pipe"],
     });
 

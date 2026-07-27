@@ -1,5 +1,4 @@
 import { fork, type ChildProcess } from "node:child_process";
-import { buildAgentChildEnvironment } from "autobyteus-ts/tools/terminal/agent-child-environment.js";
 import path from "node:path";
 import type {
   RawWatchEvent,
@@ -99,7 +98,7 @@ export class WatcherRuntimeClient {
 
     const child = fork(this.entrypointPath, [], {
       cwd: path.dirname(this.entrypointPath),
-      env: buildAgentChildEnvironment(),
+      env: process.env,
       execArgv: [],
       stdio: ["ignore", "pipe", "pipe", "ipc"],
     });

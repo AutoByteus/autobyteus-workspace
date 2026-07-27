@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import dotenv from "dotenv";
 import {
   listExistingAbsoluteDirectoryPaths,
   listExistingDirectoryPaths,
@@ -9,14 +10,9 @@ import {
   parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
-import { parseNonSecretEnvironment } from "./non-secret-environment-projection.js";
 import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
 import { ApplicationDatabaseLocation } from "./application-database-location.js";
-import {
-  assignmentName,
-  linesWithEndings,
-  splitLineEnding,
-} from "./environment-assignment-lines.js";
+import { assignmentName, linesWithEndings, splitLineEnding } from "./environment-assignment-lines.js";
 
 const forbiddenGenericSettingNames = new Set<string>([
   ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
@@ -27,6 +23,7 @@ const forbiddenGenericSettingNames = new Set<string>([
   "CLAUDE_CODE_API_KEY",
   "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
 ]);
+
 export class AppConfigError extends Error {
   constructor(message: string) {
     super(message);
@@ -144,7 +141,7 @@ export class AppConfig {
         throw new Error("Config file path not set");
       }
       const contents = fs.readFileSync(this.configFile, "utf-8");
-      this.configData = parseNonSecretEnvironment(contents, forbiddenGenericSettingNames);
+      this.configData = dotenv.parse(contents);
     } catch (error) {
       const message = `Failed to parse configuration file: ${String(error)}`;
       console.error(`ERROR: ${message}`);
@@ -242,10 +239,15 @@ export class AppConfig {
 
   private loadEnvironmentInternal(): void {
     const envPath = this.getConfigFilePath();
-    console.info(`Loading non-secret configuration from: ${envPath}`);
-    if (!fs.existsSync(envPath)) throw new Error("Configuration file does not exist");
+    console.info(`Loading environment from: ${envPath}`);
+    const result = dotenv.config({ path: envPath });
+    if (result.error) {
+      const message = `Failed to load environment variables from ${envPath}`;
+      console.error(`ERROR: ${message}`);
+      throw new Error(message);
+    }
     process.env.LOG_LEVEL ??= "INFO";
-    console.info("Non-secret configuration parsed without process-wide injection");
+    console.info("Environment variables loaded successfully");
   }
 
   private initializeBaseUrl(): void {
@@ -487,7 +489,6 @@ export class AppConfig {
   }
 
   get(key: string, defaultValue?: string): string | undefined {
-    if (forbiddenGenericSettingNames.has(key)) return undefined;
     if (key === "DATABASE_URL" && this.operationalDatabaseLocation) {
       return this.operationalDatabaseLocation.databaseUrl;
     }

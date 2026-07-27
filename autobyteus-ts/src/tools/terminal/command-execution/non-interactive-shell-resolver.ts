@@ -7,7 +7,6 @@ import {
   windowsPathToWsl
 } from '../wsl-utils.js';
 import { HOST_PROCESS_TARGET, type ProcessExecutionTarget } from './process-identity.js';
-import { buildAgentChildEnvironment } from '../agent-child-environment.js';
 
 export type ShellInvocationKind = 'posix' | 'windows-wsl';
 
@@ -85,7 +84,7 @@ export class NonInteractiveShellResolver {
         executable: bash,
         args: ['--noprofile', '--norc', '-lc', command],
         cwd,
-        env: buildAgentChildEnvironment(env),
+        env: { ...env },
         kind: 'posix',
         processTarget: HOST_PROCESS_TARGET
       };
@@ -96,7 +95,7 @@ export class NonInteractiveShellResolver {
       executable: shell,
       args: ['-c', command],
       cwd,
-      env: buildAgentChildEnvironment(env),
+      env: { ...env },
       kind: 'posix',
       processTarget: HOST_PROCESS_TARGET
     };
@@ -116,7 +115,7 @@ export class NonInteractiveShellResolver {
     return {
       executable: wslExe,
       args: ['-d', distro, '--cd', wslCwd, '--exec', 'bash', '--noprofile', '--norc', '-lc', markedCommand],
-      env: buildAgentChildEnvironment(this.options.env ?? process.env),
+      env: { ...(this.options.env ?? process.env) },
       kind: 'windows-wsl',
       processTarget: { kind: 'wsl', wslExecutable: wslExe, distro },
       shellIdentityMarker: marker

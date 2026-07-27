@@ -8,7 +8,6 @@ import type {
   ManagedMessagingRuntimeLaunchConfig,
   ManagedMessagingRuntimeSnapshot,
 } from "./types.js";
-import { buildAgentChildEnvironment } from "autobyteus-ts/tools/terminal/agent-child-environment.js";
 
 type ProcessExitListener = (event: {
   code: number | null;
@@ -68,11 +67,12 @@ export class MessagingGatewayProcessSupervisor {
       [path.join(launchConfig.installDir, "dist", "index.js")],
       {
         cwd: launchConfig.installDir,
-        env: buildAgentChildEnvironment(process.env, {
+        env: {
+          ...process.env,
           ...launchConfig.env,
           GATEWAY_HOST: launchConfig.bindHost,
           GATEWAY_PORT: String(bindPort),
-        }),
+        },
         stdio: ["ignore", "pipe", "pipe"],
       },
     );

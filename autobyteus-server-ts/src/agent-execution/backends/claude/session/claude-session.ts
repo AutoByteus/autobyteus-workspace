@@ -502,8 +502,7 @@ export class ClaudeSession {
         }
       }
     } catch (error) {
-      const redacted = enrichClaudeRuntimeErrorWithDiagnostics(error, processDiagnostics);
-      throw this.dependencies.sdkClient.normalizeProviderFailure(query, redacted);
+      throw enrichClaudeRuntimeErrorWithDiagnostics(error, processDiagnostics);
     } finally {
       if (activeTurn) {
         if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
