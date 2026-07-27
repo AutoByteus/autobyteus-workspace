@@ -240,7 +240,10 @@ export class LlmProviderService {
       this.customConsumer(provider?.id ?? normalizedProviderId),
     );
     if (provider) await this.customProviderStore.deleteProvider(provider.id);
-    await this.modelCatalogService.reloadLlmModels(RuntimeKind.AUTOBYTEUS);
+    await this.modelCatalogService.reloadLlmModelsForProvider(
+      provider?.id ?? normalizedProviderId,
+      RuntimeKind.AUTOBYTEUS,
+    );
   }
 
   async setProviderApiKey(providerId: string, apiKey: string): Promise<void> {

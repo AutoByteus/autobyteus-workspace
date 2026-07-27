@@ -262,6 +262,61 @@ describe('LlmProviderService', () => {
       .rejects.toThrow("Deleting built-in providers is not supported. Received 'OPENAI'.");
   });
 
+  it('deletes a present custom provider through targeted custom runtime synchronization only', async () => {
+    customProviderStore.getProviderById.mockResolvedValue({
+      id: 'provider_gateway',
+      name: 'Internal Gateway',
+      providerType: LLMProvider.OPENAI_COMPATIBLE,
+      baseUrl: 'https://gateway.example.com/v1',
+    });
+    modelCatalogService.reloadLlmModels.mockRejectedValue(
+      new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED'),
+    );
+    modelCatalogService.reloadLlmModelsForProvider.mockResolvedValue(0);
+
+    await expect(
+      createService().deleteCustomProvider('provider_gateway'),
+    ).resolves.toBeUndefined();
+
+    expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
+      kind: 'llm',
+      providerId: 'provider_gateway',
+      credentialSlot: 'apiKey',
+    });
+    expect(customProviderStore.deleteProvider).toHaveBeenCalledWith('provider_gateway');
+    expect(modelCatalogService.reloadLlmModelsForProvider).toHaveBeenCalledWith(
+      'provider_gateway',
+      'autobyteus',
+    );
+    expect(modelCatalogService.reloadLlmModels).not.toHaveBeenCalled();
+    expect(
+      secretManagement.removeForConsumer.mock.invocationCallOrder[0],
+    ).toBeLessThan(customProviderStore.deleteProvider.mock.invocationCallOrder[0]!);
+    expect(
+      customProviderStore.deleteProvider.mock.invocationCallOrder[0],
+    ).toBeLessThan(modelCatalogService.reloadLlmModelsForProvider.mock.invocationCallOrder[0]!);
+  });
+
+  it('does not hide an intrinsic custom runtime synchronization failure after deletion', async () => {
+    customProviderStore.getProviderById.mockResolvedValue({
+      id: 'provider_gateway',
+      name: 'Internal Gateway',
+      providerType: LLMProvider.OPENAI_COMPATIBLE,
+      baseUrl: 'https://gateway.example.com/v1',
+    });
+    modelCatalogService.reloadLlmModelsForProvider.mockRejectedValue(
+      new Error('CUSTOM_PROVIDER_RUNTIME_SYNC_FAILED'),
+    );
+
+    await expect(
+      createService().deleteCustomProvider('provider_gateway'),
+    ).rejects.toThrow('CUSTOM_PROVIDER_RUNTIME_SYNC_FAILED');
+
+    expect(secretManagement.removeForConsumer).toHaveBeenCalledOnce();
+    expect(customProviderStore.deleteProvider).toHaveBeenCalledOnce();
+    expect(modelCatalogService.reloadLlmModels).not.toHaveBeenCalled();
+  });
+
   it('invalidates AutoByteus discovery after save', async () => {
     await createService().setProviderApiKey('AUTOBYTEUS', 'synthetic-key');
     expect(modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement)

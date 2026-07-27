@@ -41,4 +41,21 @@ describe('AutobyteusLlmModelProvider targeted reload', () => {
     await expect(provider.refreshModelsForProvider(LLMProvider.AUTOBYTEUS)).resolves.toBe(3);
     expect(remoteDiscovery.refresh).toHaveBeenCalledWith('llm');
   });
+
+  it('removes a deleted custom provider through custom synchronization without remote discovery', async () => {
+    const customSyncService = {
+      ensureSyncedForCatalogRead: vi.fn(),
+      syncSavedProviders: vi.fn().mockResolvedValue({ models: [], statuses: [] }),
+    };
+    const remoteDiscovery = {
+      refresh: vi.fn().mockRejectedValue(new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED')),
+      ensureDiscovered: vi.fn().mockRejectedValue(new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED')),
+    };
+    const provider = new AutobyteusLlmModelProvider(customSyncService as any, remoteDiscovery as any);
+
+    await expect(provider.refreshModelsForProvider('provider_gateway')).resolves.toBe(0);
+    expect(customSyncService.syncSavedProviders).toHaveBeenCalledOnce();
+    expect(remoteDiscovery.refresh).not.toHaveBeenCalled();
+    expect(remoteDiscovery.ensureDiscovered).not.toHaveBeenCalled();
+  });
 });
