@@ -1,0 +1,203 @@
+=== source schema probe ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/.tmp/token-statistics-schema-contract.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:97243) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/.tmp/token-statistics-schema-contract.test.ts > token statistics schema contract probe > exposes every approved token field as numeric SafeInt while keeping usageReportCount Int
+approved SafeInt decorator fields: 21
+runtime schema SafeInt field appearances including inherited run-summary fields: 32
+schema written to: /tmp/token-statistics-int-overflow-api-e2e.graphql
+
+ ✓ tests/.tmp/token-statistics-schema-contract.test.ts (1 test) 58ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  09:45:08
+   Duration  6.12s (transform 4.00s, setup 11ms, import 5.55s, tests 58ms, environment 0ms)
+
+=== generated file hash before ===
+25eef9e471c6a2778459f6be8ced595f8732aee7bc893ef0cca1a9ad6376eff3  autobyteus-web/generated/graphql.ts
+=== matching-schema codegen ===
+
+> autobyteus@1.4.26 codegen /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-web
+> graphql-codegen --require dotenv/config --config codegen.ts
+
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to ./generated/graphql.ts
+[STARTED] Load GraphQL schemas
+[SUCCESS] Load GraphQL schemas
+[STARTED] Load GraphQL documents
+[SUCCESS] Load GraphQL documents
+[STARTED] Generate
+[SUCCESS] Generate
+[SUCCESS] Generate to ./generated/graphql.ts
+[SUCCESS] Generate outputs
+=== generated file hash after ===
+3589feca7ae57b5f198f9bc39afa8d9e5802973498948ac98e3c2e4ea8941f50  autobyteus-web/generated/graphql.ts
+=== generated scalar and token-field inventory ===
+{
+  "safeScalar": true,
+  "anySafeScalar": false,
+  "safeOutputRefs": 32,
+  "decoratorCount": 21,
+  "reportCountInt": true
+}
+=== deterministic regeneration check ===
+3589feca7ae57b5f198f9bc39afa8d9e5802973498948ac98e3c2e4ea8941f50  autobyteus-web/generated/graphql.ts
+
+> autobyteus@1.4.26 codegen /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-web
+> graphql-codegen --require dotenv/config --config codegen.ts
+
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to ./generated/graphql.ts
+[STARTED] Load GraphQL schemas
+[FAILED] Failed to load schema from /tmp/token-statistics-int-overflow-api-e2e.graphql:
+[FAILED]
+[FAILED]       Unable to find any GraphQL type definitions for the following pointers:
+[FAILED]
+[FAILED]         - /tmp/token-statistics-int-overflow-api-e2e.graphql
+[FAILED]
+[FAILED] NoTypeDefinitionsFound:
+[FAILED]       Unable to find any GraphQL type definitions for the following pointers:
+[FAILED]
+[FAILED]         - /tmp/token-statistics-int-overflow-api-e2e.graphql
+[FAILED]
+[FAILED]     at prepareResult (/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/@graphql-tools+load@8.1.8_graphql@16.12.0/node_modules/@graphql-tools/load/cjs/load-typedefs.js:82:15)
+[FAILED]     at loadTypedefs (/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/@graphql-tools+load@8.1.8_graphql@16.12.0/node_modules/@graphql-tools/load/cjs/load-typedefs.js:42:20)
+[FAILED]     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[FAILED]     at async loadSchema (/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/@graphql-tools+load@8.1.8_graphql@16.12.0/node_modules/@graphql-tools/load/cjs/schema.js:16:21)
+[FAILED]     at async loadSchema (/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/@graphql-codegen+cli@5.0.7_@fastify+websocket@10.0.1_@parcel+watcher@2.5.6_@types+node@_e9805e8663de75ae241a4b2edcfe613e/node_modules/@graphql-codegen/cli/cjs/load.js:39:24)
+[FAILED]     at async /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/@graphql-codegen+cli@5.0.7_@fastify+websocket@10.0.1_@parcel+watcher@2.5.6_@types+node@_e9805e8663de75ae241a4b2edcfe613e/node_modules/@graphql-codegen/cli/cjs/codegen.js:191:69
+[FAILED]     at async /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/@graphql-codegen+cli@5.0.7_@fastify+websocket@10.0.1_@parcel+watcher@2.5.6_@types+node@_e9805e8663de75ae241a4b2edcfe613e/node_modules/@graphql-codegen/cli/cjs/codegen.js:190:56
+[FAILED]     at async /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/@graphql-codegen+cli@5.0.7_@fastify+websocket@10.0.1_@parcel+watcher@2.5.6_@types+node@_e9805e8663de75ae241a4b2edcfe613e/node_modules/@graphql-codegen/cli/cjs/codegen.js:67:17
+[FAILED]     at async Task.run (/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/listr2@4.0.5/node_modules/listr2/dist/index.cjs:979:11)
+[FAILED]     at async /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/node_modules/.pnpm/p-map@4.0.0/node_modules/p-map/index.js:57:22
+[FAILED]
+[FAILED] GraphQL Code Generator supports:
+[FAILED]
+[FAILED] - ES Modules and CommonJS exports (export as default or named export "schema")
+[FAILED] - Introspection JSON File
+[FAILED] - URL of GraphQL endpoint
+[FAILED] - Multiple files with type definitions (glob expression)
+[FAILED] - String in config file
+[FAILED]
+[FAILED] Try to use one of above options and run codegen again.
+[FAILED]
+[SUCCESS] Generate outputs
+ ELIFECYCLE  Command failed with exit code 1.
+3589feca7ae57b5f198f9bc39afa8d9e5802973498948ac98e3c2e4ea8941f50  autobyteus-web/generated/graphql.ts
+second regeneration byte-identical to first regeneration
+=== corrected deterministic regeneration check ===
+3589feca7ae57b5f198f9bc39afa8d9e5802973498948ac98e3c2e4ea8941f50  autobyteus-web/generated/graphql.ts
+
+> autobyteus@1.4.26 codegen /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-web
+> graphql-codegen --require dotenv/config --config codegen.ts
+
+[STARTED] Parse Configuration
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to ./generated/graphql.ts
+[STARTED] Load GraphQL schemas
+[SUCCESS] Load GraphQL schemas
+[STARTED] Load GraphQL documents
+[SUCCESS] Load GraphQL documents
+[STARTED] Generate
+[SUCCESS] Generate
+[SUCCESS] Generate to ./generated/graphql.ts
+[SUCCESS] Generate outputs
+3589feca7ae57b5f198f9bc39afa8d9e5802973498948ac98e3c2e4ea8941f50  autobyteus-web/generated/graphql.ts
+repeat regeneration byte-identical
+=== reviewed implementation candidate parity ===
+3589feca7ae57b5f198f9bc39afa8d9e5802973498948ac98e3c2e4ea8941f50  /tmp/token-statistics-int-overflow-implementation/graphql.generated.before.ts
+3589feca7ae57b5f198f9bc39afa8d9e5802973498948ac98e3c2e4ea8941f50  autobyteus-web/generated/graphql.ts
+current generated artifact matches implementation-stage reviewed/reproducible backup byte-for-byte

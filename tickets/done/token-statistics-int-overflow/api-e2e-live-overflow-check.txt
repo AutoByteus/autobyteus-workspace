@@ -1,0 +1,41 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
+[dotenv@17.3.1] injecting env (4) from tests/.tmp/live-e2e-runtime/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:59864
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:59864
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/memory
+============================================================
+AppConfig initialization completed successfully
+{"LIVE_OVERFLOW_ASSERTIONS_PASS":true,"runId":"api-e2e-live-safe-int-6500cc8a-1502-4ceb-9c7d-226e42d42569","taskRow":{"rowId":"agent:api-e2e-live-safe-int-6500cc8a-1502-4ceb-9c7d-226e42d42569","rowKind":"AGENT_RUN","aggregate":{"grossInputTokens":3136827911,"standardInputTokens":3136827911,"outputTokens":30,"totalTokens":3136827941,"usageReportCount":2}},"modelRow":{"runtimeKind":"api-e2e-live-safe-int-runtime","llmModel":"api-e2e-live-safe-int-model-6500cc8a-1502-4ceb-9c7d-226e42d42569","inputTokens":3136827911,"promptTokens":3136827911,"outputTokens":30,"aggregate":{"grossInputTokens":3136827911,"standardInputTokens":3136827911,"outputTokens":30,"totalTokens":3136827941,"usageReportCount":2}},"runSummary":{"grossInputTokens":3136827911,"standardInputTokens":3136827911,"outputTokens":30,"totalTokens":3136827941,"usageReportCount":2},"expected":{"inputTokens":3136827911,"outputTokens":30,"totalTokens":3136827941,"usageReportCount":2}}
+{"CLEANUP":"deleted token_usage_ledger_events","runId":"api-e2e-live-safe-int-6500cc8a-1502-4ceb-9c7d-226e42d42569"}

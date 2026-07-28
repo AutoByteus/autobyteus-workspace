@@ -1,5 +1,5 @@
 import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
-import { GraphQLJSON } from "graphql-scalars";
+import { GraphQLJSON, GraphQLSafeInt } from "graphql-scalars";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
 import type {
   TokenUsageCostSummaryAggregate,
@@ -50,37 +50,37 @@ export class TokenUsageUnitPricesGraphql {
 
 @ObjectType()
 export class TokenUsageCostSummaryAggregateGraphql {
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   grossInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   standardInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   cacheMissInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   cacheReadInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   cacheCreationInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   cacheCreation5mInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   cacheCreation1hInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   outputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   reasoningOutputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   billableOutputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   totalTokens!: number;
 
   @Field(() => Float, { nullable: true })
@@ -179,10 +179,10 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
   @Field(() => String, { nullable: true })
   workspaceId?: string | null;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => GraphQLSafeInt, { nullable: true })
   latestPromptTokens?: number | null;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => GraphQLSafeInt, { nullable: true })
   effectiveContextWindowTokens?: number | null;
 
   @Field(() => Float, { nullable: true })
@@ -269,16 +269,16 @@ export class UsageStatistics {
   @Field(() => String)
   llmModel!: string;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   inputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   promptTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   cacheReadInputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   cacheCreationInputTokens!: number;
 
   @Field(() => Float, { nullable: true })
@@ -287,16 +287,16 @@ export class UsageStatistics {
   @Field(() => String)
   cacheState!: string;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   outputTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   assistantTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   thinkingTokens!: number;
 
-  @Field(() => Int)
+  @Field(() => GraphQLSafeInt)
   reasoningTokens!: number;
 
   @Field(() => Float, { nullable: true })

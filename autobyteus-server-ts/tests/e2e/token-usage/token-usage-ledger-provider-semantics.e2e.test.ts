@@ -1,11 +1,14 @@
 import 'reflect-metadata';
 import { createRequire } from 'node:module';
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
 import { PrismaClient } from '@prisma/client';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
+import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
@@ -96,8 +99,23 @@ const buildEvent = (input: {
 describe('token usage ledger GraphQL provider semantics', () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let appDataDir: string;
 
   beforeAll(async () => {
+    appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-token-usage-graphql-'));
+    fs.writeFileSync(
+      path.join(appDataDir, '.env'),
+      [
+        'AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000',
+        'APP_ENV=test',
+        'DB_TYPE=sqlite',
+        `DATABASE_URL=${process.env.DATABASE_URL ?? ''}`,
+      ].join('\n') + '\n',
+      'utf8',
+    );
+    appConfigProvider.resetForTests();
+    const config = appConfigProvider.initialize({ appDataDir });
+    config.initialize();
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve('type-graphql'));
@@ -112,6 +130,8 @@ describe('token usage ledger GraphQL provider semantics', () => {
       await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
+    appConfigProvider.resetForTests();
+    fs.rmSync(appDataDir, { recursive: true, force: true });
     await prisma.$disconnect();
   });
 
@@ -315,6 +335,125 @@ describe('token usage ledger GraphQL provider semantics', () => {
       estimatedApiTotalCost: 0.004,
       apiCostStatus: 'partial_price_missing',
       missingPriceDimensions: ['input_token_semantic', 'standard_input_tokens'],
+    });
+  });
+
+  it('serializes safe-integer token aggregates above the GraphQL Int range', async () => {
+    const suffix = randomUUID();
+    const runId = `graphql-safe-int-${suffix}`;
+    const start = '2026-06-25T11:00:00.000Z';
+    const end = '2026-06-25T11:10:00.000Z';
+    const firstEventInputTokens = 1_500_000_000;
+    const secondEventInputTokens = 1_636_827_911;
+    const expectedInputTokens = firstEventInputTokens + secondEventInputTokens;
+    const expectedOutputTokens = 30;
+    const expectedTotalTokens = expectedInputTokens + expectedOutputTokens;
+
+    await store.appendTokenUsageEvent(buildEvent({
+      runId,
+      observedAt: '2026-06-25T11:01:00.000Z',
+      grossInputTokens: firstEventInputTokens,
+      outputTokens: 10,
+      totalCost: null,
+      status: 'price_missing',
+      model: `safe-int-${suffix}`,
+      runtimeKind: 'safe-int-runtime',
+    }));
+    await store.appendTokenUsageEvent(buildEvent({
+      runId,
+      observedAt: '2026-06-25T11:02:00.000Z',
+      grossInputTokens: secondEventInputTokens,
+      outputTokens: 20,
+      totalCost: null,
+      status: 'price_missing',
+      model: `safe-int-${suffix}`,
+      runtimeKind: 'safe-int-runtime',
+    }));
+
+    const query = `
+      query SafeIntegerTokenUsage($runId: String!, $start: DateTime!, $end: DateTime!) {
+        tokenUsageTaskStatisticsInPeriod(startTime: $start, endTime: $end) {
+          rows {
+            rowId
+            rowKind
+            aggregate {
+              grossInputTokens
+              standardInputTokens
+              outputTokens
+              totalTokens
+              usageReportCount
+            }
+          }
+        }
+        usageStatisticsInPeriod(startTime: $start, endTime: $end) {
+          runtimeKind
+          llmModel
+          inputTokens
+          promptTokens
+          outputTokens
+          aggregate {
+            grossInputTokens
+            standardInputTokens
+            outputTokens
+            totalTokens
+            usageReportCount
+          }
+        }
+        getAgentRunTokenUsageSummary(runId: $runId) {
+          grossInputTokens
+          standardInputTokens
+          outputTokens
+          totalTokens
+          usageReportCount
+        }
+      }
+    `;
+
+    const result = await execGraphql<{
+      tokenUsageTaskStatisticsInPeriod: { rows: Array<Record<string, unknown>> };
+      usageStatisticsInPeriod: Array<Record<string, unknown>>;
+      getAgentRunTokenUsageSummary: Record<string, unknown>;
+    }>(query, {
+      runId,
+      start: new Date(start),
+      end: new Date(end),
+    });
+
+    expect(result.tokenUsageTaskStatisticsInPeriod.rows).toEqual([
+      expect.objectContaining({
+        rowId: `agent:${runId}`,
+        rowKind: 'AGENT_RUN',
+        aggregate: expect.objectContaining({
+          grossInputTokens: expectedInputTokens,
+          standardInputTokens: expectedInputTokens,
+          outputTokens: expectedOutputTokens,
+          totalTokens: expectedTotalTokens,
+          usageReportCount: 2,
+        }),
+      }),
+    ]);
+    expect(result.usageStatisticsInPeriod).toEqual([
+      expect.objectContaining({
+        runtimeKind: 'safe-int-runtime',
+        llmModel: `safe-int-${suffix}`,
+        inputTokens: expectedInputTokens,
+        promptTokens: expectedInputTokens,
+        outputTokens: expectedOutputTokens,
+        aggregate: expect.objectContaining({
+          grossInputTokens: expectedInputTokens,
+          standardInputTokens: expectedInputTokens,
+          outputTokens: expectedOutputTokens,
+          totalTokens: expectedTotalTokens,
+          usageReportCount: 2,
+        }),
+      }),
+    ]);
+    expect(result.getAgentRunTokenUsageSummary).toMatchObject({
+      grossInputTokens: expectedInputTokens,
+      standardInputTokens: expectedInputTokens,
+      outputTokens: expectedOutputTokens,
+      totalTokens: expectedTotalTokens,
+      usageReportCount: 2,
     });
   });
 

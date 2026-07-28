@@ -10,7 +10,15 @@ const config: CodegenConfig = {
         "typescript",
         "typescript-operations",
         "typescript-vue-apollo"
-      ]
+      ],
+      config: {
+        scalars: {
+          SafeInt: {
+            input: "number",
+            output: "number"
+          }
+        }
+      }
     }
   }
 };
