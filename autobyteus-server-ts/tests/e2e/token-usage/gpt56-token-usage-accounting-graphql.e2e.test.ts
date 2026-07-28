@@ -20,6 +20,7 @@ import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost
 import { TokenUsageComponentBasisResolver } from "../../../src/token-usage/projections/token-usage-component-basis-resolver.js";
 import { TokenUsageSnapshotDeltaNormalizer } from "../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js";
 import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
+import { initializeTestAppConfig, type TestAppConfigHandle } from "../../setup/initialize-test-app-config.js";
 
 type UnitPrice = {
   status: string;
@@ -57,8 +58,10 @@ const createdRunIds = new Set<string>();
 describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let appConfig: TestAppConfigHandle;
 
   beforeAll(async () => {
+    appConfig = initializeTestAppConfig();
     LLMFactory.resetForTests();
     (LLMFactory as unknown as { initialized: boolean }).initialized = true;
     const gpt56Sol = supportedModelDefinitions.find((definition) => definition.name === "gpt-5.6-sol");
@@ -78,6 +81,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
       await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
+    appConfig.cleanup();
     await prisma.$disconnect();
   });
 

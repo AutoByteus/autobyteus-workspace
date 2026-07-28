@@ -10,6 +10,7 @@ import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/dom
 import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import type { TokenUsageExecutionAddress } from '../../../src/token-usage/domain/execution-address.js';
+import { initializeTestAppConfig, type TestAppConfigHandle } from '../../setup/initialize-test-app-config.js';
 
 const prisma = new PrismaClient();
 const store = new TokenUsageLedgerStore();
@@ -137,8 +138,10 @@ const buildEvent = (input: {
 describe('token usage ledger GraphQL projections', () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let appConfig: TestAppConfigHandle;
 
   beforeAll(async () => {
+    appConfig = initializeTestAppConfig();
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve('type-graphql'));
@@ -154,6 +157,7 @@ describe('token usage ledger GraphQL projections', () => {
     }
     createdRunIds.clear();
     createdTeamRunIds.clear();
+    appConfig.cleanup();
     await prisma.$disconnect();
   });
 

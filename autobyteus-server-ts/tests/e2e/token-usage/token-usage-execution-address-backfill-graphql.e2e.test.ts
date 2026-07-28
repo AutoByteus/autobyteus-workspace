@@ -13,6 +13,7 @@ import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-dat
 import { AppDataMigrationRecordRepository } from "../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js";
 import { TokenUsageExecutionAddressBackfillMigration } from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js";
 import type { TokenUsageExecutionAddress } from "../../../src/token-usage/domain/execution-address.js";
+import { initializeTestAppConfig, type TestAppConfigHandle } from "../../setup/initialize-test-app-config.js";
 
 const MIGRATION_ID = "20260703_token_usage_execution_address_backfill";
 
@@ -254,8 +255,10 @@ const findTopRow = (rows: TaskRow[], predicate: (row: TaskRow) => boolean): Task
 describe("token usage execution-address backfill GraphQL integration", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let appConfig: TestAppConfigHandle;
 
   beforeAll(async () => {
+    appConfig = initializeTestAppConfig();
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -270,6 +273,7 @@ describe("token usage execution-address backfill GraphQL integration", () => {
     }
     await prisma.$executeRawUnsafe(`DELETE FROM "app_data_migration_records" WHERE "migration_id" = ?`, MIGRATION_ID);
     if (tempRoot) await fs.rm(tempRoot, { recursive: true, force: true });
+    appConfig.cleanup();
     await prisma.$disconnect();
   });
 

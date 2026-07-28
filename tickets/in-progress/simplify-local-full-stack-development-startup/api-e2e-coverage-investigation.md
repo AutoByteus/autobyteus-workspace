@@ -11,12 +11,22 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-revision-record.md`
-- API/E2E Revision Record (created after the first completed result): `API-REV-001 pending`
-- Current API/E2E Revision ID: `API-REV-001 pending`
-- Current Investigation Round: `1`
-- Trigger: Implementation-source review passed at commit `6280e70721dcb11e50d9cc22cb43a20580ee5e66`; downstream coverage and realistic execution requested.
-- Prior Investigation Reviewed: None; this is the initial API/E2E investigation.
-- Latest Authoritative Investigation: This file after repository execution and broader-validation decisions.
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: `3`
+- Trigger: `code_reviewer` focused failure-origin review classified CR-002..CR-005 as stale test fixtures/setup and requested bounded API/E2E-owned repair followed by an exact root rerun.
+- Prior Investigation Reviewed: Round 2 and `API-REV-002`; the prior root command-scope failure and its eight fixture/setup failures were rechecked.
+- Latest Authoritative Investigation: This file after Round 3 durable fixture/setup repairs, focused checks, exact root E2E execution, and retained live full-stack validation.
+
+
+
+## Round 2 Historical State (API-REV-002)
+
+The prior `DEV-007` command-forwarding failure is resolved in implementation revision `IR-002` / commit `0f836c992`; the exact root command now logs `vitest --run tests/e2e` and collected only `tests/e2e` files. The command completed with `8 failed`, `39 passed`, `14 skipped` files (`16 failed`, `148 passed`, `49 skipped` tests). The failures are in pre-existing product E2E areas (model fixture, media factory API, Claude interrupt timing, and token-usage `DATABASE_URL` initialization); no launcher/development source or durable test file is involved. They require focused failure-origin classification before a clean API/E2E pass can be declared.
+
+The fixed-port full-stack path subsequently ran cleanly when the unrelated listeners were absent. Exact root `pnpm dev` built the server, started the real backend and Nuxt dev server, emitted `DEV_SERVER_READY` / `DEV_WEB_READY`, returned backend `/rest/health` 200 and frontend `/` 200, and stopped cleanly on SIGINT with no listeners or child processes left. A second run from `/tmp` using `pnpm --dir <repo> dev` reused the same development root; backend DB inode/hash and adjacent vault-key inode/hash remained identical across the stop/restart, and hostile parent values did not appear in runtime routing/data paths.
+
+Round 2 evidence: `evidence/06-root-test-e2e-rerun.log`, `evidence/07-pnpm-dev-live.log`, `evidence/07-backend-health.json`, `evidence/07-frontend-headers.txt`, `evidence/07-development-before-stop.txt`, `evidence/08-pnpm-dev-alternate-cwd.log`, `evidence/08-live-checks.txt`, and `evidence/09-final-isolation.txt`. The earlier occupied-port and lifecycle evidence remains valid and preserved.
 
 ## Current Requirement And Design Basis
 
@@ -221,3 +231,95 @@ None by API/E2E; obsolete wrappers were already removed as implementation scope 
 - Reroute Required Before Validation Execution: `No`
 - Recommended Recipient If Reroute Required: `code_reviewer` for any execution failure-origin classification, not automatic implementation rework.
 - Notes: The initial direct launcher setup is known to be occupied. All evidence must distinguish implementation behavior from environment contention, preserve unrelated processes, and avoid any production/test credential-bearing files.
+
+
+## Round 2 Repository And Broader Validation Update
+
+| Order | Command / Mode | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `pnpm test:e2e` after IR-002 | `Fail` — correct E2E-only collection, but 8 files / 16 tests failed | `evidence/06-root-test-e2e-rerun.log` |
+| 2 | Exact root `pnpm dev` with ports available | `Pass` — real build, backend/frontend readiness, HTTP 200, clean SIGINT stop | `evidence/07-pnpm-dev-live.log`, `07-backend-health.json`, `07-frontend-headers.txt` |
+| 3 | Stop/restart persistence | `Pass` — same development DB and vault-key inode/hash; tracked templates unchanged | `evidence/07-development-before-stop.txt`, `08-live-checks.txt` |
+| 4 | `pnpm --dir <repo> dev` from `/tmp` with hostile parent variables | `Pass` — same canonical root/readiness, hostile values ignored, clean stop | `evidence/08-pnpm-dev-alternate-cwd.log`, `08-live-checks.txt` |
+| 5 | Final isolation scan | `Pass` — no fixed-port listeners/launcher children; template hashes and production-root metadata unchanged; no symlinks under runtime | `evidence/09-final-isolation.txt` |
+
+### Round 2 Confidence
+
+- Requirement and acceptance proof: `85%` — launcher requirements are directly exercised; deterministic E2E command scope is fixed but its existing suite has 16 failures.
+- Changed-boundary execution directness: `95%` — exact root and alternate-cwd commands exercised against real backend/Nuxt processes.
+- Cross-boundary integration realism/mock gap: `90%` — real backend health and Nuxt HTTP readiness passed; browser DOM was not needed for this launcher-only change.
+- Environment/configuration/fixture fidelity: `95%` — hostile env, canonical paths, restart identity, tracked templates, and production metadata verified.
+- Failure/edge/lifecycle/recovery: `95%` — exact occupied-port fail closed, real startup failure harness, signals, repeat stop, cleanup, and restart passed.
+- User-surface/browser/desktop-shell confidence: `85%` — frontend HTTP passed; no browser binary and no Electron behavior changed.
+- Durable regression quality/relevance: `90%` — focused launcher tests and existing E2E inventory remain relevant; no durable test changed.
+- Overall Round 2 confidence: `91%` simple average. A failing critical suite prevents `Pass` regardless of this score.
+
+### Round 2 Decision
+
+- Proceed to API/E2E execution: `No` pending focused failure-origin review of the 8 failing E2E files.
+- Durable coverage changes: `No`.
+- Broader validation: real full-stack `Pass`; exact test command `Fail` due product E2E failures.
+- Recommended recipient: `code_reviewer` for focused failure-origin classification.
+- Browser decision: `Not Required`; no UI/renderer source changed, and direct Nuxt HTTP readiness passed.
+
+## Round 3 Current State (API-REV-003)
+
+The focused failure-origin review in the current `code-review-report.md` classified all eight Round 2 failures as API/E2E-owned stale fixtures or direct-test setup defects, not implementation-source defects. The bounded repairs were made only in durable E2E test code and test setup:
+
+- `agent-package-private-skills.e2e.test.ts` now supplies the factory's current top-level `createLLM` option rather than the stale `llmFactory` option.
+- `server-owned-media-tools.e2e.test.ts` mocks the current `requiresGeminiRuntimeResolver` method on image, audio, and video factories.
+- `claude-agent-websocket-interrupt-resume.e2e.test.ts` supplies `postMessageToConversationTarget` on the team fake and models the production AbortController interruption lifecycle; assertions now observe abort settlement rather than requiring an immediate query close.
+- The five token-usage GraphQL/startup files now initialize AppConfig with an isolated temporary SQLite URL before using `createConfiguredPrismaClient`; the legacy-path test uses the dynamically reset provider and a temporary `.env` after `vi.resetModules()`.
+- New shared test helper: `autobyteus-server-ts/tests/setup/initialize-test-app-config.ts`. No production source or launcher implementation changed.
+
+Focused checks passed before the broad run: runtime fixtures `3` files / `13` passed / `1` skipped; token-usage files `6` files / `11` passed. Source-only TypeScript validation `pnpm exec tsc -p tsconfig.build.json --noEmit` passed. The repository-wide `pnpm typecheck` remains a tooling baseline failure because `tsconfig.json` includes `tests` under `rootDir: src`, producing existing TS6059 errors; this is retained as evidence in `evidence/11-typecheck.log` and is not a failure of the changed fixture code.
+
+The exact root command now passes after the fixture/setup repairs:
+
+```text
+pnpm test:e2e
+  -> pnpm --filter autobyteus-server-ts test --run tests/e2e
+  -> vitest --run tests/e2e
+Test Files 47 passed | 14 skipped (61)
+Tests      164 passed | 49 skipped (213)
+Duration   138.87s
+exit       0
+```
+
+The log contains no `tests/unit` or `tests/integration` collection. The previously failing eight files all pass in the broad run. The required broader runtime validation remains valid from Round 2: real root `pnpm dev`, fixed-port backend/frontend readiness, backend/frontend HTTP 200, alternate-cwd restart, DB/key persistence, hostile environment/path/template/symlink isolation, occupied-port fail-closed behavior, child failure propagation, signal/repeat-stop, and owned cleanup all passed. No listeners or launcher children remain, and development runtime state was removed after evidence capture.
+
+Round 3 evidence: `evidence/10-fixture-runtime-focused.log`, `evidence/10-token-gpt-focused.log`, `evidence/10-token-ledger-focused.log`, `evidence/10-token-unit-prices-focused.log`, `evidence/10-token-backfill-focused.log`, `evidence/10-token-legacy-focused.log`, `evidence/11-typecheck.log`, `evidence/12-root-test-e2e-fixed-fixtures.log`, `evidence/13-build-typecheck.log`, plus retained `evidence/04`–`evidence/09`.
+
+### Round 3 Coverage Decisions
+
+| Area | Decision | Basis / Evidence |
+| --- | --- | --- |
+| CR-002 model fixture | `Needs Update`, completed | Current factory option is top-level `createLLM`; focused and root suite pass. |
+| CR-003 media mock | `Needs Update`, completed | Current service calls `requiresGeminiRuntimeResolver` for each media factory; focused and root suite pass. |
+| CR-004 Claude team/interrupt fake | `Needs Update`, completed | Fake now implements the current team-manager method and AbortController lifecycle; focused and root suite pass. Live Claude-provider test remains skipped because provider/binary credentials are not configured. |
+| CR-005 token-usage setup | `Needs Update`, completed | Direct tests now initialize AppConfig in isolated temp SQLite state; focused and root suite pass. |
+| Launcher lifecycle coverage | `Still Valid` | Existing launcher tests and temporary real-child harness remain requirement-aligned; exact live startup and cleanup already passed. |
+| Browser/Electron | `Out Of Scope` for this ticket | No UI/renderer or shell source changed; direct Nuxt HTTP readiness passed; no browser binary is installed and Electron was not touched. |
+
+### Round 3 Confidence
+
+- Requirement and acceptance-criteria proof: `98%` — exact root E2E now passes and every material launcher scenario has direct live or focused evidence; provider-gated tests are explicitly skipped.
+- Changed-boundary execution directness: `98%` — exact root `pnpm dev` and alternate-cwd commands exercised the real launcher, built backend, Nuxt process, fixed endpoints, and stop path.
+- Cross-boundary integration realism and mock gap: `96%` — real backend health and Nuxt HTTP readiness passed; repaired mocks model current contracts and the broad suite passed.
+- Environment/configuration/identity/fixture fidelity: `98%` — hostile env/path/template/symlink matrix, isolated AppConfig/SQLite fixtures, persistent DB/key identity, and final isolation passed.
+- Failure/edge/lifecycle/recovery evidence: `97%` — occupied-port fail-closed, child failure, signals, repeat stop, owned cleanup, restart, and exact E2E recovery after fixture repair passed.
+- User-surface/browser/desktop-shell confidence: `92%` — frontend HTTP readiness passed and no UI/shell source changed; no browser DOM or Electron shell run.
+- Durable regression coverage quality/relevance: `95%` — focused durable fixture repairs are narrow and requirement-aligned; exact root suite passes; no launcher-specific fixed-port test was added because shared fixed ports are unsuitable for durable CI coverage.
+- Overall Round 3 confidence: `96%` simple average, `(98+98+96+98+97+92+95)/7 = 96.3%`, rounded.
+- Every critical acceptance criterion directly proven: `Yes` for the changed launcher scope; provider-gated and browser/Electron scenarios are explicitly outside the changed boundary.
+- Any applicable category below `90%`: `No`.
+- Default clean-confidence target of `95%` met: `Yes`.
+
+### Round 3 Decision
+
+- Proceed to API/E2E execution: `Yes`; exact root deterministic E2E and required broader launcher validation pass.
+- Result: `Pass`.
+- Durable coverage changes: `Yes`; the eight existing E2E files were updated and one shared test setup helper was added. No production source changed.
+- Proportional test-code review: required from `code_reviewer` for the changed durable test/setup files.
+- Broader validation: `Required` and completed; direct live HTTP was used instead of browser/Electron because the changed boundary is process startup/routing and no browser engine is installed.
+- Next recipient: `code_reviewer` for the separate proportional test-code review, not failure-origin review.

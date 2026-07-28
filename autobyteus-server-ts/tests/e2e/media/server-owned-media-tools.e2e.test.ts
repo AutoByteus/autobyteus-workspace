@@ -13,6 +13,7 @@ const mockConfig = vi.hoisted(() => ({
 
 const mockImageClientFactory = vi.hoisted(() => ({
   ensureInitialized: vi.fn(),
+  requiresGeminiRuntimeResolver: vi.fn(),
   listModels: vi.fn(),
   describeConstructionTarget: vi.fn(),
   createImageClient: vi.fn(),
@@ -21,6 +22,7 @@ const mockImageClientFactory = vi.hoisted(() => ({
 
 const mockAudioClientFactory = vi.hoisted(() => ({
   ensureInitialized: vi.fn(),
+  requiresGeminiRuntimeResolver: vi.fn(),
   listModels: vi.fn(),
   describeConstructionTarget: vi.fn(),
   createAudioClient: vi.fn(),
@@ -29,6 +31,7 @@ const mockAudioClientFactory = vi.hoisted(() => ({
 
 const mockVideoClientFactory = vi.hoisted(() => ({
   ensureInitialized: vi.fn(),
+  requiresGeminiRuntimeResolver: vi.fn(),
   listModels: vi.fn(),
   describeConstructionTarget: vi.fn(),
   createVideoClient: vi.fn(),
@@ -188,6 +191,7 @@ const createVideoSchema = (): ParameterSchema =>
 const configureMediaFactories = (): void => {
   mockConfig.get.mockImplementation((key: string) => configValues[key]);
   mockImageClientFactory.ensureInitialized.mockImplementation(() => undefined);
+  mockImageClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockImageClientFactory.describeConstructionTarget.mockImplementation(() => ({
     credentialProviderId: 'SYNTHETIC',
     authenticationRequirement: { kind: 'none' },
@@ -213,6 +217,7 @@ const configureMediaFactories = (): void => {
     },
   ]);
   mockAudioClientFactory.ensureInitialized.mockImplementation(() => undefined);
+  mockAudioClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockAudioClientFactory.describeConstructionTarget.mockImplementation(() => ({
     credentialProviderId: 'SYNTHETIC',
     authenticationRequirement: { kind: 'none' },
@@ -226,6 +231,7 @@ const configureMediaFactories = (): void => {
     },
   ]);
   mockVideoClientFactory.ensureInitialized.mockImplementation(() => undefined);
+  mockVideoClientFactory.requiresGeminiRuntimeResolver.mockReturnValue(false);
   mockVideoClientFactory.describeConstructionTarget.mockImplementation(() => ({
     credentialProviderId: 'SYNTHETIC',
     authenticationRequirement: { kind: 'none' },

@@ -8,6 +8,9 @@ The canonical review authority remains `/Users/normy/autobyteus_org/autobyteus-w
 | --- | --- | --- | --- | --- | --- |
 | `CRR-001` | `implementation_engineer` implementation handoff; initial source-review round | None | `Initial Baseline` | `SR-001`; `IR-001`; API/E2E `N/A` | `Pass — route to api_e2e_engineer` |
 | `CRR-002` | `api_e2e_engineer` API/E2E round `API-REV-001`; focused failure-origin review round 2 | `CR-001` | `Local Fix` | `SR-001`; `IR-001`; `API-REV-001` | `Fail — route to implementation_engineer` |
+| `CRR-003` | `implementation_engineer` `IR-002` Local Fix; implementation source re-review round 3 | `CR-001` resolved | `Re-review Pass` | `SR-001`; `IR-002`; `CRR-002`; `API-REV-001` | `Pass — route to api_e2e_engineer` |
+| `CRR-004` | `api_e2e_engineer` API/E2E round `API-REV-002`; focused failure-origin review round 4 | `CR-002`–`CR-005`; `CR-001` remains resolved | `Baseline/test setup; no implementation route` | `SR-001`; `IR-002`; `CRR-003`; `API-REV-002` | `Failure-origin classified — route to api_e2e_engineer; no proportional test review` |
+| `CRR-005` | `api_e2e_engineer` API/E2E round `API-REV-003`; first proportional durable test-code review | None | `Proportional test-review baseline` | `SR-001`; `IR-002`; `CRR-004`; `API-REV-003` | `Pass — route to delivery_engineer` |
 
 ## Revision Entries
 
@@ -43,3 +46,46 @@ The canonical review authority remains `/Users/normy/autobyteus_org/autobyteus-w
 - **Required rework and routing:** Correct only the root E2E argument wiring while preserving existing test preparation and ownership; no alias or test-suite redesign. Route to `implementation_engineer`, then require implementation source review and API/E2E again.
 - **Supporting evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/03-root-test-e2e.log` plus current root `package.json`.
 - **Other API/E2E results:** Launcher unit tests, build, lifecycle/path harness, occupied-port fail-closed, signal cleanup, and unrelated-process preservation passed or were correctly blocked; none changes the `CR-001` classification. No durable API/E2E test code changed, so proportional test-code review is not applicable.
+
+### CRR-003 — Implementation source re-review after IR-002
+
+- **Triggering role, report path, and round:** `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-handoff.md`; implementation revision `IR-002`, source re-review round 3.
+- **Triggering finding IDs:** `CR-001`, `DEV-007`, `REQ-009`, `AC-008`.
+- **Classification:** `Re-review Pass`.
+- **Prior authoritative result:** `CRR-002` focused failure-origin review — `Fail`, Local Fix to `implementation_engineer`.
+- **Current authoritative result:** `Pass`; `CR-001` resolved in source.
+- **Related solution revision ID:** `SR-001`.
+- **Related implementation revision ID:** `IR-002`.
+- **Related API/E2E revision ID:** `API-REV-001` (triggering failure; fresh execution pending).
+- **Resolution evidence:** Root `package.json` now uses `pnpm --filter autobyteus-server-ts test --run tests/e2e`. Reviewer ran `pnpm --filter autobyteus-server-ts test --run tests/e2e --help`; it passed, preserved `pretest` preparation, and printed effective `vitest --run tests/e2e`. Package JSON parsing and `git diff --check` also passed.
+- **Review result:** The bounded command-packaging fix is ownership-correct, has no compatibility alias or test/runtime-owner change, and resolves the prior malformed argument expansion. No new source findings were identified.
+- **Routing decision:** Send the cumulative package to `api_e2e_engineer` for the exact root `pnpm test:e2e` run, deterministic E2E-only collection evidence, and remaining coverage work. No proportional test-code review is applicable unless durable tests change after a successful API/E2E result.
+- **Remaining limitations:** This source re-review does not claim full deterministic E2E execution, clean fixed-port full-stack startup, browser validation, or restart persistence.
+
+### CRR-004 — Focused failure-origin review after API/E2E `API-REV-002`
+
+- **Triggering role, report path, and round:** `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`; API/E2E revision `API-REV-002`, focused failure-origin review round 4.
+- **Triggering finding IDs:** `DEV-007` / `REQ-009` / `AC-008`; eight failing unchanged E2E files and sixteen tests.
+- **Classification:** Failure-origin classified as baseline/test setup; no implementation-owned route. `CR-002` and `CR-003` are bounded stale fixture/mock Local Fixes for `api_e2e_engineer`; `CR-004` is a stale team fake plus Unclear single-agent fake-SDK timeout evidence; `CR-005` is a direct-test AppConfig setup defect. `CR-001` remains resolved.
+- **Prior authoritative result:** `CRR-003` implementation source re-review — `Pass`; route to API/E2E.
+- **Current authoritative result:** Failure-origin classified — no ticket implementation route. This is not a source-review `Pass`, because the API/E2E command exited `1`; it is also not an implementation `Fail`, because no ticket-owned source path reaches the reported failures.
+- **Execution evidence:** Exact root `pnpm test:e2e` selected only `tests/e2e` and produced 61 files (`39` passed, `8` failed, `14` skipped), 213 tests (`148` passed, `16` failed, `49` skipped), exit `1`; evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/06-root-test-e2e-rerun.log`.
+- **Failure-origin evidence:** The agent fixture passes `llmFactory` although the current factory seam is `createLLM`, the media mock omits `requiresGeminiRuntimeResolver`, the team fake omits `postMessageToConversationTarget` required by `TeamManager`/called by `MixedTeamRunBackend`, and direct token tests set only process env while `createConfiguredPrismaClient` requires initialized `AppConfig`. All affected test files and relevant product sources are unchanged from the recorded base.
+- **Routing decision:** Send the cumulative failure package back to `api_e2e_engineer` for bounded fixture/mock/setup repair or clean-process/instrumented rerun under the exact conditions in Round 4. Do not send implementation rework to `implementation_engineer`. No proportional test-code review applies unless durable test files are changed; if they are changed after a successful execution, use the separate proportional review path.
+- **Remaining limitations:** The three single-agent Claude timeouts remain Unclear after the confirmed team-fake mismatch. A valid fake-SDK rerun with first-failure lifecycle evidence is required before any source attribution. No browser or desktop validation is relevant to these unchanged server-side failure paths.
+
+### CRR-005 — First proportional API/E2E durable test-code review
+
+- **Triggering role, report path, and round:** `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`; API/E2E revision `API-REV-003`, proportional test-code review round 1.
+- **Triggering finding IDs:** None — first proportional test-review baseline after successful API/E2E execution. Prior `CR-002`–`CR-005` were failure-origin classifications and are resolved by the reviewed test changes.
+- **Classification:** Proportional test-review baseline; `Pass`.
+- **Prior authoritative result:** `CRR-004` focused failure-origin review — no implementation route; API/E2E-owned fixture/setup issues.
+- **Current authoritative result:** `Pass`; no unresolved test-review findings.
+- **Related solution revision ID:** `SR-001`.
+- **Related implementation revision ID:** `IR-002`.
+- **Related API/E2E revision ID:** `API-REV-003`.
+- **Review artifact:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-test-review-report.md`.
+- **Changed durable test scope:** Eight updated E2E files covering private-skill runtime configuration, server-owned media, Claude WebSocket interruption/resume, and token-usage GraphQL/migration paths, plus the added shared `tests/setup/initialize-test-app-config.ts` helper. No production source, launcher source, or package command changed.
+- **Review evidence:** Diffs show current `createLLM`, media resolver, team-manager, AbortController, and isolated AppConfig contracts. API-REV-003 records focused runtime/token passes, source-only build typecheck pass, exact root E2E pass (`47` files passed / `14` skipped; `164` tests passed / `49` skipped; exit `0`), and broader launcher/live validation pass.
+- **Review result:** Scenario grouping, approved-behavior assertions, fixture/helper reuse, isolation/determinism, file coherence, stale-test cleanup, and coverage/evidence alignment all pass. The repository-wide `pnpm typecheck` TS6059 tooling mismatch is pre-existing and unrelated to changed tests.
+- **Routing decision:** Send the cumulative passed package, including the separate proportional report and this revision record, to `delivery_engineer`. No test rework is required. The residual provider-gated live Claude, browser/Electron, and Windows process-semantic limits are non-blocking and outside the changed test boundary.

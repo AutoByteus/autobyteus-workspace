@@ -2,24 +2,24 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Entry Point: `Focused API/E2E Failure-Origin Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/requirements.md`
 - Supplemental Task Artifacts Reviewed As Context:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/development-startup-contract.md`
-- Current Review Round: `2`
-- Trigger: `api_e2e_engineer` reported `DEV-007` / `REQ-009` / `AC-008` failure in API/E2E round `API-REV-001`.
-- Prior Review Round Reviewed: Round `1` (`Pass` — implementation-source review)
-- Latest Authoritative Round: `2`
+- Current Review Round: `4`
+- Trigger: `api_e2e_engineer` API/E2E revision `API-REV-002`; exact root E2E execution failed after the `CR-001` command fix.
+- Prior Review Round Reviewed: Round `3` (`Pass` — implementation source re-review after `IR-002`)
+- Latest Authoritative Round: `4`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/design-spec.md`
 - Design Review Report Reviewed As Context: `N/A — the design spec contains the completed design-health and implementation-readiness checks; no separate report was supplied.`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-handoff.md`
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`
-- Failing Scenario IDs: `DEV-007` / `REQ-009` / `AC-008`
-- Exact Failing Commands / Execution Mode: `pnpm test:e2e` from the assigned worktree; root package-script expansion into the server Vitest command; stopped with SIGINT after wrong-suite scope was proven, shell exit 130.
-- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/03-root-test-e2e.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/package.json`
-- Full-review comparison basis: base `153f3409cd90207f9219cbe20242606271b36104` through implementation commit `6280e70721dcb11e50d9cc22cb43a20580ee5e66`.
+- Failing Scenario IDs: `DEV-007` / `REQ-009` / `AC-008`; eight unchanged E2E files and sixteen tests failed in API/E2E `API-REV-002`.
+- Exact Failing Commands / Execution Mode: From this worktree, exact root `pnpm test:e2e`; status `1`; 61 files (`39` passed, `8` failed, `14` skipped) and 213 tests (`148` passed, `16` failed, `49` skipped). The effective command was confirmed as `vitest --run tests/e2e`; the prior malformed forwarding is not current evidence.
+- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/06-root-test-e2e-rerun.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/package.json`
+- Full-review comparison basis: base `153f3409cd90207f9219cbe20242606271b36104` through current implementation commit `0f836c992` (Round 3 re-review focused on the IR-002 delta and prior CR-001 resolution).
 
 ## Round History
 
@@ -27,16 +27,19 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Initial implementation handoff from `implementation_engineer` | `N/A` | None | **Pass** | **Yes** | Full source and structural review completed; route to API/E2E. |
 | 2 | API/E2E `API-REV-001` failure-origin report for `DEV-007` | Round 1 had no findings | `CR-001` | **Fail — Local Fix** | **Yes** | Root `test:e2e` forwards an extra `--`, producing `vitest -- --run tests/e2e`; unit/integration scope ran instead of deterministic E2E-only scope. |
+| 3 | `implementation_engineer` `IR-002` bounded command-packaging fix | `CR-001` rechecked | None; `CR-001` resolved | **Pass** | **Yes** | Current script yields `vitest --run tests/e2e` while preserving server `pretest`; full root E2E execution remains API/E2E-owned. |
+| 4 | API/E2E `API-REV-002` exact root E2E failure | `CR-001` remains resolved | `CR-002`–`CR-005` failure-origin classifications | **Fail — baseline/test setup; no ticket implementation route** | **Yes** | The exact E2E-only scope is now proven, but eight unchanged files fail for fixture/API mismatch, stale team fake, and missing direct-test AppConfig initialization. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | None | N/A | No prior findings existed to recheck. | Round 1 report recorded a clean source-review pass. | The Round 2 issue is new runtime evidence, not an unresolved prior finding. |
+| 1 | None | N/A | No prior findings existed to recheck. | Round 1 report recorded a clean source-review pass. | The Round 2 issue was new runtime evidence. |
+| 2 | `CR-001` | High | **Resolved** | Current root `package.json` uses `pnpm --filter autobyteus-server-ts test --run tests/e2e`; reviewer help probe showed `vitest --run tests/e2e` and active `pretest` preparation. | Exact root `pnpm test:e2e` execution is still required downstream; this re-review does not claim it. |
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: focused failure-origin analysis of root deterministic E2E command ownership (`DEV-007` / `REQ-009` / `AC-008`), using the smallest relevant implementation path: root `package.json` and the server package's existing `test` script, plus the exact Vitest output.
+- Changed implementation and behavior reviewed: focused API/E2E failure-origin package from `API-REV-002`; the prior implementation-owned Local Fix `IR-002` and resolved `CR-001` were rechecked only as needed to exclude the command boundary.
 - Files / areas reviewed:
   - `scripts/development/development-runtime.mjs`
   - `scripts/development/run-dev.mjs`
@@ -46,29 +49,30 @@
   - removed `test-support/live-e2e/run-test-{dev,server,web}.mjs`
   - relevant README and secret-management documentation changes
   - existing server CLI/AppConfig, server readiness route, and Nuxt endpoint configuration needed to verify the production path
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/03-root-test-e2e.log`
-  - API/E2E coverage/execution reports and revision record for `API-REV-001`
-- Explicit exclusions: this is not a repeat of the full implementation audit or a review of the unrelated launcher lifecycle. No durable API/E2E test code changed. Full-stack fixed-port startup, browser validation, and delivery remain downstream; their blocked/setup evidence is not reclassified here.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/06-root-test-e2e-rerun.log`
+  - API/E2E coverage/execution reports and revision record for `API-REV-002`
+  - current `IR-002` implementation handoff and revision record
+- Explicit exclusions: no durable API/E2E test code changed; this failure-origin review does not repeat the full implementation scorecard, prescribe fixes for unchanged product subsystems, or claim browser validation/delivery integration. The exact launcher live checks passed in the API/E2E package; remaining test-fixture validity and clean reruns remain with `api_e2e_engineer`.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: `Yes`. The approved target is one root-owned `pnpm dev` command for the real built backend plus Nuxt frontend, persistent repository-local development state, deterministic assertions under `pnpm test:e2e`, and clean removal of the misleading manual `*:test` command surface.
 - Design-spec behavior map verified against the implementation: `Yes`. `BEH-001`–`BEH-006` and `DS-001`–`DS-005` were traced through the actual root script, new launcher/materializer, existing server CLI/AppConfig/runtime, existing Nuxt config, and the removed test wrappers.
 - Design review report and round confirmed: `N/A` as noted in review meta; the design spec itself records `Implementation Ready` and the shared-principles checks.
-- Behavior-basis status: `Contradicted` for `BEH-003` as implemented; the approved behavior remains valid and the failure is implementation-owned.
-- Changed or newly discovered behavior, if any: The approved root `test:e2e` command does not currently select only `tests/e2e` at runtime because the root pnpm argument wiring inserts an extra `--` before Vitest's `--run` option.
+- Behavior-basis status: `Confirmed` after the `IR-002` source correction; the exact root execution now verifies E2E-only selection but fails in unchanged suite paths, as classified in Round 4.
+- Changed or newly discovered behavior, if any: `None`; prior `BEH-003` contradiction is resolved in the reviewed source.
 - Remaining material ambiguity, if any: `None`
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
 | `BEH-001` | `Confirmed` | Root `package.json` maps `dev` to the existing server build and `scripts/development/run-dev.mjs`; the supervisor starts `dist/app.js` and the existing Nuxt `pnpm dev` entrypoint, and emits readiness only after both endpoints pass. The old root manual scripts and wrappers are deleted. | None. |
 | `BEH-002` | `Confirmed` | `development-runtime.mjs:7-16,273-325` derives the fixed module-relative `.autobyteus/development/server-data` root, canonical DB/runtime paths, and bounded logs/memory/temp directories; the supervisor passes that root as `--data-dir`. Existing AppConfig, Prisma, and vault owners therefore remain authoritative for the selected development DB/key. | None. |
-| `BEH-003` | `Contradicted` | Supported trigger: developer runs root `pnpm test:e2e`. Current path is root `package.json` -> `pnpm --filter autobyteus-server-ts test -- --run tests/e2e` -> server `test: vitest` -> actual `vitest -- --run tests/e2e`. The evidence shows `tests/unit/**` and `tests/integration/**` executing before SIGINT, so the command does not own deterministic E2E-only scope. | `evidence/03-root-test-e2e.log` records the exact expanded command and wrong-scope test output. The approved contract requires only deterministic `tests/e2e` assertions. |
+| `BEH-003` | `Confirmed` | Corrected path is root `package.json` -> `pnpm --filter autobyteus-server-ts test --run tests/e2e` -> server `test: vitest` -> effective `vitest --run tests/e2e`; API/E2E `API-REV-002` confirms only `tests/e2e` files were collected. | The suite itself still has eight failing unchanged files; that is classified in Round 4 and does not reopen the command-boundary finding. |
 | `BEH-004` | `Confirmed` | `development-runtime.mjs:139-196` strictly validates the four-key tracked template; `:252-270` removes/replaces the seven launcher-owned backend keys and pins frontend routing/WebSocket variables; `:273-309` materializes only the canonical runtime file and verifies template bytes. | None. |
 | `BEH-005` | `Confirmed` | `run-dev.mjs:30-56` preflights both fixed ports; `:72-112` requires backend marker plus `/rest/health` and exact frontend HTTP success; `:234-311` supervises child failure, signals, bounded owned cleanup, and deliberate shutdown. | None. |
 | `BEH-006` | `Confirmed` | The tracked development template contains only the four approved non-secret assignments. The launcher writes no credentials and leaves Settings/importer/vault behavior untouched; docs point operators to existing Settings or the explicit absolute development DB importer target. | None. |
 
-## Failure-Origin Review — Round 2
+## Failure-Origin Review — Round 2 Historical Record
 
 - **Approved scenario validity:** Confirmed. `DEV-007` is the supported developer invocation of root `pnpm test:e2e`; `REQ-009`, `REQ-010`, and `AC-008` explicitly require deterministic E2E assertions with test-owned state. The scenario is not stale or synthetic.
 - **Independent initiating trigger:** A developer invokes the root package command. This is the approved operational trigger, independent of the failing test output.
@@ -87,6 +91,107 @@
 - **Resolution evidence required:** updated root script and implementation revision entry; exact command expansion showing `vitest run tests/e2e` (or an equivalent effective invocation), with no `tests/unit/**` or `tests/integration/**` collected by the root command.
 
 The unrelated occupied-port and lifecycle results remain valid evidence for the separate launcher scenarios and are not part of `CR-001`.
+
+## Implementation Re-Review — Round 3
+
+- **Prior finding rechecked:** `CR-001` is resolved in the current implementation. The only implementation delta after the failure is the root `package.json` change from `test -- --run tests/e2e` to `test --run tests/e2e`.
+- **Effective command evidence:** Reviewer ran `pnpm --filter autobyteus-server-ts test --run tests/e2e --help`. It passed, executed the existing `pretest` preparation, and printed the effective test command `vitest --run tests/e2e`. The root script now contains the same corrected forwarding and no other command/test/runtime owner changed.
+- **Scope judgment:** The fix is bounded, ownership-correct, and proportionate. It removes the malformed separator rather than adding a new wrapper, alias, fallback, or test-specific path.
+- **Validation boundary:** This source re-review does not claim that the exact root `pnpm test:e2e` run passed; API/E2E must execute that command and capture collection evidence.
+
+### Current Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-002 changes only the command boundary identified by CR-001; the approved design ownership remains unchanged. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Corrected root command now targets deterministic `tests/e2e` while retaining server pretest/test-owned setup. | API/E2E exact-root confirmation. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Root command -> server test script -> Vitest `run tests/e2e` now follows DS-002 without altering development DS-001. | None. |
+| Ownership boundary preservation and clarity | Pass | Root package remains the command boundary; server package retains test preparation and Vitest configuration; no test internals moved. | None. |
+| Off-spine concern clarity | Pass | No new off-spine concern or coordination layer was added. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing server `test` script, `pretest`, Vitest config, Prisma setup, and E2E files are reused unchanged. | None. |
+| Reusable owned structures check | Pass | No shared structure changed. | None. |
+| Shared-structure/data-model tightness check | Pass | No data model or persisted state shape changed. | None. |
+| Repeated coordination ownership check | Pass | No repeated test lifecycle policy was introduced; the root delegates to the existing server owner. | None. |
+| Empty indirection check | Pass | The root script remains a thin, meaningful delegation boundary. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The one-line package-script correction addresses the exact packaging defect without broadening source scope. | None. |
+| Ownership-driven dependency check | Pass | Dependency direction remains root command -> server test owner -> existing Vitest setup. | None. |
+| Authoritative Boundary Rule check | Pass | No caller bypasses the server test boundary or reaches into setup internals. | None. |
+| File placement check | Pass | The fix is in root `package.json`, the owning command registry. | None. |
+| Flat-vs-over-split layout judgment | Pass | No new file or structural layer was introduced. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `test:e2e` now passes an unambiguous `--run tests/e2e` invocation. | API/E2E must confirm actual collection. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Existing command names remain truthful; no alias or compatibility name was added. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No test or wrapper duplication added. | None. |
+| Patch-on-patch complexity control | Pass | The rework is a one-line clean correction, not a patch-on-patch workaround. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete path was reintroduced. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The command now selects the approved E2E path at the effective Vitest invocation; assertion validity remains API/E2E-owned. | Exact root execution. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No durable test code changed. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No test files changed or added. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Package parse, effective command help, preserved pretest preparation, and diff check pass; full root E2E remains explicitly unclaimed. | Route to `api_e2e_engineer`. |
+
+### Current Source / Packaging Audit
+
+| Source / Packaging File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `package.json` | N/A — command metadata, not implementation-source code | N/A | N/A — one script line changed | Pass — root command registry owns this delegation | Pass | Pass | None. |
+
+### Current Legacy / Compatibility Check
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No compatibility mechanism introduced by IR-002 | Pass | The malformed forwarding is removed; no alias/fallback/wrapper was added. |
+| No legacy old-behavior retention introduced by IR-002 | Pass | The corrected command directly implements the approved current target. |
+| Approved persisted-data transition remains followed | Pass | No persisted data or migration behavior changed. |
+
+### Current Review Scorecard
+
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93`
+- Score calculation note: Round 3 re-review confirms the prior score remains appropriate; the corrected one-line command packaging change introduces no new structural weakness. Full-stack/API/E2E runtime proof remains downstream and is reflected in the readiness category.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The corrected command restores the deterministic test spine to `tests/e2e`. | Exact root execution has not yet been rerun after the fix. | API/E2E should capture final E2E-only collection. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Root delegates to the server test owner without bypassing setup. | None material. | None. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | `test --run tests/e2e` is unambiguous and proven by the help expansion. | Full command-result evidence is pending. | Preserve exact root command in execution evidence. |
+| `4` | `Separation of Concerns and File Placement` | 9.3 | The fix stays in the command registry and does not alter test implementation. | None material. | None. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | No shared structure or data model changed. | None material. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Existing command naming and delegation remain clear. | None material. | None. |
+| `7` | `API/E2E Readiness` | 9.2 | Effective command help and pretest preparation pass; source review does not substitute for the required exact run. | Full E2E result and collection evidence remain pending. | Run exact `pnpm test:e2e`. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | The runtime command defect is corrected without changing other behavior. | Deterministic E2E execution and full-stack runtime remain unobserved. | API/E2E must validate both. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | No compatibility path was added. | None material. | None. |
+| `10` | `Cleanup Completeness` | 9.7 | No obsolete paths or test artifacts were reintroduced. | None material. | None. |
+
+## Failure-Origin Review — Round 4
+
+- **Current API/E2E result:** `Fail`, but the failure is now in the selected E2E suite rather than the root command boundary: 61 files (`39` passed, `8` failed, `14` skipped), 213 tests (`148` passed, `16` failed, `49` skipped), exit `1`.
+- **Approved scenario validity:** Confirmed. `DEV-007` is the supported root `pnpm test:e2e` invocation and `AC-008` requires deterministic E2E assertions with test-owned state. The current run collected only `tests/e2e`; `CR-001` is resolved.
+- **Independent trigger and reachability:** The supported operational trigger is a developer invoking root `pnpm test:e2e`. The current failure consequences occur in unchanged direct E2E fixtures/configuration or existing runtime behavior; neither the launcher nor its package command is on the failing execution paths. A failing test alone is not used to attribute a product-source defect.
+- **Changed-scope check:** All eight failing test files are unchanged between base `153f3409cd90207f9219cbe20242606271b36104` and implementation commit `0f836c992`. No backend model/media/Claude/token-usage source changed in this ticket; the implementation delta after Round 2 is only root command argument forwarding.
+- **Review boundary:** This is a focused failure-origin review, not a second full implementation audit and not a proportional test-code review. No durable API/E2E test code changed in `API-REV-002`.
+
+### Failure Classification Matrix
+
+| Finding | Failing scenario/file(s) | Classification and evidence | Route | Exact rerun condition |
+| --- | --- | --- | --- | --- |
+| `CR-002` | `DEV-007`; `tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts` (1 test) | **Local Fix — stale test fixture.** The test hardcodes `llmModelIdentifier: "runtime-e2e-model"` and passes an option named `llmFactory` at lines 321–326, while `AutoByteusAgentRunBackendFactory` consumes `createLLM`; the real `LLMFactory.createLLM` therefore runs and reports the missing model. This is a test-construction/API mismatch, not a launcher-path defect. | `api_e2e_engineer` | Repair the fixture to use the current factory seam or register a deterministic model in the test-owned setup, then rerun this file in a clean Vitest worker and the exact root command. The assertion should reach captured runtime config without external model discovery. |
+| `CR-003` | `DEV-007`; `tests/e2e/media/server-owned-media-tools.e2e.test.ts` (2 tests) | **Local Fix — stale test mock.** The hoisted `ImageClientFactory` mock defines `ensureInitialized`, `listModels`, `describeConstructionTarget`, `createImageClient`, and `syncRuntimeModels`, but no `requiresGeminiRuntimeResolver`; current unchanged `media-generation-service.ts:85` calls that method. The TypeError is consequently produced by the test double's incomplete API, not by the development launcher or a reachable changed product path. | `api_e2e_engineer` | Extend the test mock to implement the current factory contract (with deterministic return behavior), then rerun the media file in a clean worker and the exact root command. |
+| `CR-004` | `DEV-007`; `tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts` (4 tests) | **Baseline test-harness issue; partial classification remains Unclear for single-agent timeouts.** The team case is confirmed stale: `fakeTeamManager` omits the required `postMessageToConversationTarget`, while unchanged `MixedTeamRunBackend` calls it, matching the logged TypeError. The three single-agent interrupt/provider-session timeouts use only the test's fake SDK and do not independently establish a production runtime failure; current evidence does not justify attributing them to the ticket implementation. | `api_e2e_engineer` for bounded harness repair/instrumented rerun; no `implementation_engineer` route | Add the missing team fake method and rerun all four cases with the fake SDK in clean workers. If single-agent timeouts persist after valid harness setup, capture the first failed lifecycle event and only then reassess source attribution against a supported runtime trigger. |
+| `CR-005` | `DEV-007`; five token-usage files (9 tests total): `gpt56-token-usage-accounting-graphql.e2e.test.ts`, `token-usage-execution-address-backfill-graphql.e2e.test.ts`, `token-usage-ledger-graphql.e2e.test.ts`, `token-usage-legacy-path-columns-drop-startup.e2e.test.ts`, `token-usage-unit-prices-graphql.e2e.test.ts` | **Local Fix — direct-test environment/setup defect.** `tests/setup/prisma-env.ts` sets `process.env.DATABASE_URL`, but `createConfiguredPrismaClient` reads `appConfigProvider.config.getOperationalDatabaseUrl()`, which requires `AppConfig.initialize()`. These direct GraphQL/ledger tests do not initialize that provider before using the store; the stack stops at `AppConfigError: DATABASE_URL is not configured`. The real `app.ts` bootstrap does initialize AppConfig, and no launcher code participates in these in-process tests. | `api_e2e_engineer` | Initialize a test-owned AppConfig with the clean SQLite URL (or execute through the server bootstrap) before these direct tests, then rerun each token file in a clean process and the exact root command. Do not use hostile or production database values. |
+
+### Current Finding / Routing Verdict
+
+- `CR-001` remains **resolved**; the exact root command now selects only `tests/e2e`.
+- `CR-002`–`CR-005` do **not** establish an implementation defect in this ticket. No bounded implementation rework is routed to `implementation_engineer`.
+- The bounded next owner is `api_e2e_engineer` for test fixture/mock/setup repair or isolation evidence. If durable tests change, API/E2E execution must be followed by a separate proportional test-code review; if no durable tests change, that review remains `Not Applicable`.
+- This result is not a source-review `Pass`: the API/E2E package remains execution-failed until the owner makes a validity decision or supplies the exact clean rerun evidence above. It is also not an implementation `Fail`; no ticket-owned source defect was confirmed.
+
+### Material-Premise Gate — Round 4
+
+| Premise | Status | Basis |
+| --- | --- | --- |
+| Root command reaches deterministic E2E-only scope | Confirmed | `API-REV-002` and `evidence/06-root-test-e2e-rerun.log` show `vitest --run tests/e2e` and no unit/integration collection. |
+| Failing files are in the ticket's changed source path | Rejected | All eight failing test paths are unchanged from the recorded base; ticket implementation changes are launcher/package command files only. |
+| Fixture/configuration failures prove production-source defects | Rejected | The model/media/team failures are directly explained by incomplete test doubles/seams; token failures stop at missing direct-test AppConfig initialization; the remaining Claude timeouts lack an independent product-supported trigger. |
 
 ## Structural / Design Checks — Round 1 Historical Record
 
@@ -198,10 +303,10 @@ No blocking implementation-source findings in Round 1.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail — Local Fix`
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Material-Premise Gate: `Pass`
-- Score Summary: `N/A` for focused failure-origin review; Round 1 historical source-review score remains `9.4/10` (`94/100`).
-- Failure Origin: `Implementation defect` in root `test:e2e` argument wiring; bounded Round 1 review gap in not validating the effective pnpm/Vitest expansion.
-- Recommended Recipient: `implementation_engineer`
-- Notes: `CR-001` is confirmed by exact runtime evidence. Correct the root command, then return through implementation source review and API/E2E execution. No durable test-code review is applicable to this failed run.
+- Review Decision: `Failure-origin classified — no ticket implementation route`
+- Review Entry Point: `Focused API/E2E Failure-Origin Review`
+- Material-Premise Gate: `Pass` for the classification boundary; no unsupported source attribution accepted.
+- Score Summary: `N/A` for Round 4; the Round 3 implementation scorecard remains historical (`9.3/10`).
+- Failure Origin: `CR-001` resolved. Current E2E failures classify as `CR-002` stale model fixture, `CR-003` stale media mock, `CR-004` stale/insufficient Claude test harness with single-agent timeout still Unclear, and `CR-005` missing direct-test AppConfig initialization.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: No confirmed implementation-owned issue is routed to `implementation_engineer`. API/E2E must repair or explicitly classify the bounded fixture/setup gaps and rerun under the exact conditions in Round 4; no proportional test-code review applies unless durable tests change.

@@ -1,0 +1,66 @@
+--- development tree before stop ---
+.autobyteus/development/server-data
+.autobyteus/development/server-data/.env
+.autobyteus/development/server-data/agent-teams
+.autobyteus/development/server-data/agents
+.autobyteus/development/server-data/agents/autobyteus-memory-compactor
+.autobyteus/development/server-data/agents/autobyteus-memory-compactor/agent-config.json
+.autobyteus/development/server-data/agents/autobyteus-memory-compactor/agent.md
+.autobyteus/development/server-data/agents/autobyteus-retrospective-skill-improver
+.autobyteus/development/server-data/agents/autobyteus-retrospective-skill-improver/agent-config.json
+.autobyteus/development/server-data/agents/autobyteus-retrospective-skill-improver/agent.md
+.autobyteus/development/server-data/agents/autobyteus-retrospective-skill-improver/skills
+.autobyteus/development/server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver
+.autobyteus/development/server-data/application-packages
+.autobyteus/development/server-data/application-packages/platform
+.autobyteus/development/server-data/application-packages/platform/applications
+.autobyteus/development/server-data/application-packages/platform/applications/.gitkeep
+.autobyteus/development/server-data/db
+.autobyteus/development/server-data/db/development.db
+.autobyteus/development/server-data/db/development.db.secret.key
+.autobyteus/development/server-data/download
+.autobyteus/development/server-data/extensions
+.autobyteus/development/server-data/extensions/messaging-gateway
+.autobyteus/development/server-data/extensions/messaging-gateway/config
+.autobyteus/development/server-data/extensions/messaging-gateway/state
+.autobyteus/development/server-data/external-channel
+.autobyteus/development/server-data/external-channel/gateway-callback-outbox.json
+.autobyteus/development/server-data/llm
+.autobyteus/development/server-data/logs
+.autobyteus/development/server-data/logs/app-data-migrations
+.autobyteus/development/server-data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-07-28T10-48-07-071Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260521_run_history_index_v2-2026-07-28T10-48-07-121Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-07-28T10-48-07-106Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-07-28T10-48-07-089Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-07-28T10-48-07-092Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-07-28T10-48-07-073Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260703_drop_token_usage_legacy_path_columns-2026-07-28T10-48-07-086Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260703_token_usage_execution_address_backfill-2026-07-28T10-48-07-077Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-07-28T10-48-07-069Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-07-28T10-48-07-091Z.log
+.autobyteus/development/server-data/logs/app-data-migrations/20260727_custom_provider_v1_secret_migration-2026-07-28T10-48-07-065Z.log
+.autobyteus/development/server-data/logs/server.log
+.autobyteus/development/server-data/memory
+.autobyteus/development/server-data/memory/run_history_index.json
+.autobyteus/development/server-data/memory/team_run_history_index.json
+.autobyteus/development/server-data/skills
+.autobyteus/development/server-data/temp_workspace
+--- development metadata/hashes before stop ---
+path=.autobyteus/development/server-data/.env mode=-rw------- inode=308921563 size=740 mtime=1785235684
+f36a2a09c2524935b9ad7558207c1e9c66f375d7  .autobyteus/development/server-data/.env
+path=.autobyteus/development/server-data/db/development.db mode=-rw-r--r-- inode=308921588 size=212992 mtime=1785235687
+d7cecabc3220bd02f2c7e2fc3e62ad3a0c07c707  .autobyteus/development/server-data/db/development.db
+path=.autobyteus/development/server-data/db/development.db.secret.key mode=-rw------- inode=308921595 size=32 mtime=1785235687
+4e0ec4888dc459d311139311c088269e1f6895e0  .autobyteus/development/server-data/db/development.db.secret.key
+--- tracked template hashes during live start ---
+8a977b42415ae91eb8c083b1f20c1f5fc0e58491  autobyteus-server-ts/.env.development
+650d7eefdd9bdc74953431573fb1ec46a534fdb1  autobyteus-server-ts/.env.test
+fc471834f7047148cad1c3330342f77024ae698a  autobyteus-server-ts/.env.example
+--- runtime env ---
+APP_ENV=development
+DB_TYPE=sqlite
+DATABASE_URL=<canonical-development-url>
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000
+AUTOBYTEUS_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data/logs
+AUTOBYTEUS_MEMORY_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data/memory
+AUTOBYTEUS_TEMP_WORKSPACE_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data/temp_workspace

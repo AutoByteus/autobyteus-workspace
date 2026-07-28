@@ -8,6 +8,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { PrismaClient } from "@prisma/client";
 import type { TokenUsageExecutionAddress } from "../../../src/token-usage/domain/execution-address.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
 const TOKEN_USAGE_MIGRATION_SQL_FILES = [
   "20260517090000_add_app_data_migration_records/migration.sql",
@@ -121,6 +122,7 @@ const taskStatsQuery = `
 let prisma: PrismaClient;
 let tempRoot: string | null = null;
 let runtime: RuntimeModules;
+let isolatedAppConfigProvider: typeof appConfigProvider | null = null;
 let schema: GraphQLSchema;
 let graphql: typeof graphqlFn;
 const createdUsageEventIds = new Set<string>();
@@ -165,6 +167,19 @@ const initializeIsolatedRuntime = async (): Promise<void> => {
   process.env.AUTOBYTEUS_LOG_DIR = logsDir;
   process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
 
+  await fs.writeFile(
+    path.join(tempRoot, ".env"),
+    [
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+      "APP_ENV=test",
+      "DB_TYPE=sqlite",
+      `DATABASE_URL=${databaseUrl}`,
+      `AUTOBYTEUS_MEMORY_DIR=${memoryDir}`,
+      `AUTOBYTEUS_LOG_DIR=${logsDir}`,
+    ].join("\n") + "\n",
+    "utf8",
+  );
+
   prisma = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
   for (const relativePath of TOKEN_USAGE_MIGRATION_SQL_FILES) {
     const sql = await fs.readFile(path.join(process.cwd(), "prisma", "migrations", relativePath), "utf-8");
@@ -172,6 +187,12 @@ const initializeIsolatedRuntime = async (): Promise<void> => {
   }
 
   vi.resetModules();
+  const appConfigModule = await import("../../../src/config/app-config-provider.js");
+  isolatedAppConfigProvider = appConfigModule.appConfigProvider;
+  isolatedAppConfigProvider.resetForTests();
+  const config = isolatedAppConfigProvider.initialize({ appDataDir: tempRoot });
+  config.initialize();
+
   const [
     registryModule,
     runnerModule,
@@ -360,6 +381,8 @@ describe("token usage legacy path column drop startup E2E", () => {
       await prisma?.$disconnect();
     } finally {
       restoreOriginalEnv();
+      isolatedAppConfigProvider?.resetForTests();
+      appConfigProvider.resetForTests();
       vi.resetModules();
       if (tempRoot) await fs.rm(tempRoot, { recursive: true, force: true });
     }

@@ -56,6 +56,8 @@ const LIVE_CLAUDE_STEP_TIMEOUT_MS = Number(
 );
 
 class ControlledClaudeQuery implements ClaudeSdkQueryLike {
+  abortObserved = false;
+
   readonly interrupt = vi.fn(async () => {
     this.release();
   });
@@ -66,6 +68,11 @@ class ControlledClaudeQuery implements ClaudeSdkQueryLike {
 
   private readonly released: Promise<void>;
   private releaseWaiter!: () => void;
+  private abortSignal: AbortSignal | null = null;
+  private readonly releaseOnAbort = (): void => {
+    this.abortObserved = true;
+    this.release();
+  };
 
   constructor(
     private readonly chunks: unknown[],
@@ -83,6 +90,19 @@ class ControlledClaudeQuery implements ClaudeSdkQueryLike {
     if (this.stayPendingAfterChunks) {
       await this.released;
     }
+  }
+
+  attachAbortSignal(signal: AbortSignal | undefined): void {
+    if (!signal) {
+      return;
+    }
+    this.abortSignal?.removeEventListener("abort", this.releaseOnAbort);
+    this.abortSignal = signal;
+    if (signal.aborted) {
+      this.releaseOnAbort();
+      return;
+    }
+    signal.addEventListener("abort", this.releaseOnAbort, { once: true });
   }
 
   private release(): void {
@@ -163,6 +183,8 @@ const createFakeSdkClient = (
       if (!query) {
         throw new Error("No fake Claude SDK query queued for test.");
       }
+      const abortController = call.options?.abortController as AbortController | undefined;
+      query.attachAbortSignal(abortController?.signal);
       return query;
     }),
   });
@@ -189,6 +211,8 @@ const createMemoryCheckingFakeSdkClient = (input: {
         if (prompt.includes(input.marker)) {
           providerMemory.set(input.providerSessionId, input.marker);
         }
+        const abortController = call.options?.abortController as AbortController | undefined;
+        firstQuery.attachAbortSignal(abortController?.signal);
         return firstQuery;
       }
 
@@ -554,6 +578,22 @@ const createClaudeTeamWebSocketHarness = async (input: {
         memberName: input.memberName,
       };
     },
+    postMessageToConversationTarget: async (message, address) => {
+      const [segment, ...remainingSegments] = address.segments;
+      expect(remainingSegments).toHaveLength(0);
+      expect(segment?.kind).toBe("member");
+      const targetRouteKey = segment?.kind === "member"
+        ? segment.memberRouteKey ?? segment.memberPath?.join("/")
+        : null;
+      expect(targetRouteKey).toBe(input.memberName);
+      const result = await agentRun.postUserMessage(message);
+      memberContext.platformAgentRunId = agentRun.getPlatformAgentRunId() ?? memberContext.platformAgentRunId;
+      return {
+        ...result,
+        memberRunId: input.memberRunId,
+        memberName: input.memberName,
+      };
+    },
     deliverInterAgentMessage: async () => ({ accepted: true }),
     approveToolInvocation: async () => ({ accepted: true }),
     interruptMember: async (targetMemberRouteKey, targetMemberRunId) => {
@@ -663,7 +703,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
       await waitForCondition(
         () =>
-          firstQuery.close.mock.calls.length === 1 &&
+          firstQuery.abortObserved &&
           harness.runContext.runtimeContext.activeTurnId === null,
         "memory test INTERRUPT_GENERATION interrupt settlement",
       );
@@ -714,7 +754,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
       await waitForCondition(
         () =>
-          firstQuery.close.mock.calls.length === 1 &&
+          firstQuery.abortObserved &&
           harness.runContext.runtimeContext.activeTurnId === null,
         "INTERRUPT_GENERATION interrupt settlement",
       );
@@ -777,7 +817,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       );
       await waitForCondition(
         () =>
-          firstQuery.close.mock.calls.length === 1 &&
+          firstQuery.abortObserved &&
           harness.runContext.runtimeContext.activeTurnId === null,
         "team INTERRUPT_GENERATION interrupt settlement",
       );
@@ -824,7 +864,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
       await waitForCondition(
         () =>
-          firstQuery.close.mock.calls.length === 1 &&
+          firstQuery.abortObserved &&
           harness.runContext.runtimeContext.activeTurnId === null,
         "placeholder INTERRUPT_GENERATION interrupt settlement",
       );

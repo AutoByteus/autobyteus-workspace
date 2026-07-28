@@ -10,6 +10,8 @@ The canonical coverage investigation and execution report remain authoritative:
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | `API-REV-001` | `code_reviewer`; implementation-source review passed; first API/E2E round | `SR-001`, `IR-001`, `CRR-001` | `N/A` | `Fail / 76%` |
+| `API-REV-002` | `code_reviewer`; IR-002 source re-review passed; second API/E2E round | `IR-002`, `CRR-003`, `API-REV-001` | `Fail / 76%` | `Fail / 91%` |
+| `API-REV-003` | `code_reviewer`; focused failure-origin review CR-002..CR-005; third API/E2E round | `CRR-004`, `API-REV-002` | `Fail / 91%` | `Pass / 96%` |
 
 ## Revision Entries
 
@@ -33,3 +35,54 @@ None. This is the initial API/E2E result; prior result/confidence are `N/A`.
 - New or remaining failure IDs: `DEV-007` root E2E command scope; fixed-port clean start/restart remain blocked setup evidence, not implementation classification.
 - Recommended recipient: `code_reviewer` for focused failure-origin review; likely bounded implementation command fix only if reviewer confirms.
 - Remaining risks, blocked evidence, or untested scope: exact clean fixed-port startup/readiness, live Nuxt/backend HTTP, development DB/key stop/restart, deterministic E2E-only rerun after command correction, browser/Electron.
+
+
+### API-REV-002 — Command-forwarding resolution and real full-stack validation
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md`; API/E2E round 2 after IR-002.
+- Triggering finding or scenario IDs: Prior `DEV-007` / `REQ-009` / `AC-008` resolved; current failures are `DEV-007` E2E assertion failures across 8 files / 16 tests.
+- Related solution, implementation, or code-review revision IDs: `SR-001`, `IR-002`, `CRR-003`, `API-REV-001`.
+- Why this revision was recorded: Confirms the root command now forwards `--run tests/e2e` correctly, captures the complete exact root E2E result, and adds direct real full-stack readiness, stop/restart persistence, alternate-cwd, hostile-env, and cleanup evidence.
+- Coverage decisions or durable test paths changed: No durable API/E2E test changed. Existing launcher tests and prior lifecycle harness remain valid.
+- Scenarios added, changed, removed, or rechecked: Rechecked `DEV-001`–`DEV-009`; `DEV-007` command-scope issue resolved; exact E2E suite now fails in 8 product test files. Real `pnpm dev` and `pnpm --dir <repo> dev` startup/restart scenarios now directly pass.
+- Commands, environment, fixture, or broader-validation delta: `pnpm test:e2e` produced `vitest --run tests/e2e`, 61 files (`39 passed`, `8 failed`, `14 skipped`) and 213 tests (`148 passed`, `16 failed`, `49 skipped`), exit 1. Root `pnpm dev` and alternate-cwd `pnpm --dir <repo> dev` both built, reported readiness, served backend/frontend HTTP 200, reused DB/key, and stopped cleanly.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `DEV-007` / `REQ-009` / `AC-008`: extra separator caused `vitest -- --run tests/e2e` and unit/integration leakage | `Local Fix` likely implementation-owned package wiring | Resolved by IR-002; exact rerun logs effective `vitest --run tests/e2e` and only `tests/e2e/**` files | `evidence/06-root-test-e2e-rerun.log`, CRR-003 |
+
+- Canonical artifacts and sections updated: coverage investigation Round 2 update, execution coverage report, this revision record.
+- Prior result and confidence: `Fail / 76%`; prior command-scope failure.
+- Current result and confidence: `Fail / 91%`; command scope fixed, launcher/full-stack scenarios pass, product E2E suite has 16 failed tests.
+- New or remaining failure IDs: 8 failed E2E files: `agent-package-private-skills`, `server-owned-media-tools`, `claude-agent-websocket-interrupt-resume`, `gpt56-token-usage-accounting`, `token-usage-execution-address-backfill`, `token-usage-ledger`, `token-usage-legacy-path-columns-drop-startup`, `token-usage-unit-prices`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review. No proportional test-code review applies because no durable test changed.
+- Remaining risks, blocked evidence, or untested scope: failure-origin classification for the 16 product E2E failures; no browser/Electron/Windows validation; provider credentials intentionally not configured.
+
+
+### API-REV-003 — Durable fixture/setup repairs and passing exact root E2E rerun
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md`; API/E2E execution round 3.
+- Triggering finding or scenario IDs: `CR-002` stale model factory option, `CR-003` stale media factory mocks, `CR-004` stale Claude team/interrupt fakes, `CR-005` direct-test AppConfig setup; `DEV-007` exact root E2E rerun.
+- Related solution, implementation, or code-review revision IDs: `CRR-004`, `API-REV-002`.
+- Why this revision was recorded: The focused failure-origin report assigned all Round 2 failures to API/E2E-owned fixture/setup validity. This revision records the bounded durable repairs, focused proof, exact root command result, and final lifecycle/live evidence state.
+- Coverage decisions or durable test paths changed: Updated eight existing E2E files and added `autobyteus-server-ts/tests/setup/initialize-test-app-config.ts`. The changes align test doubles with current production contracts and isolate direct token-usage AppConfig/SQLite setup. No production source or launcher implementation changed.
+- Scenarios added, changed, removed, or rechecked: Repaired and rechecked the eight Round 2 failing files; all focused groups pass. Rechecked `DEV-001`–`DEV-009`; exact root E2E now passes while prior occupied-port and lifecycle evidence remains preserved.
+- Commands, environment, fixture, or broader-validation delta: Focused runtime group passed `13/13` runnable tests with `1` skip; focused token files passed `11/11`; source-only `tsc -p tsconfig.build.json --noEmit` passed; repository `pnpm typecheck` still emits baseline TS6059 due tests under `rootDir: src`; exact root `pnpm test:e2e` exited `0`, collecting `61` files (`47` passed, `14` skipped) and `213` tests (`164` passed, `49` skipped`).
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `CR-002` / agent private skills model lookup | Stale test fixture | Uses current top-level `createLLM`; focused and root suite pass. | `evidence/10-fixture-runtime-focused.log`, `12-root-test-e2e-fixed-fixtures.log` |
+| `CR-003` / server-owned media tools | Stale hoisted media mocks | Mocks current resolver method on image/audio/video factories; focused and root suite pass. | `evidence/10-fixture-runtime-focused.log`, `12-root-test-e2e-fixed-fixtures.log` |
+| `CR-004` / Claude team and interrupt harness | Stale fake contract and stale close timing | Adds `postMessageToConversationTarget`; fake observes AbortController and tests abort settlement; focused and root suite pass. Provider-gated live test remains skipped. | `evidence/10-fixture-runtime-focused.log`, `12-root-test-e2e-fixed-fixtures.log` |
+| `CR-005` / token-usage AppConfig errors | Direct-test setup defect | Initializes AppConfig with isolated temporary SQLite state, including dynamic provider after module reset; all focused and root tests pass. | `evidence/10-token-*.log`, `12-root-test-e2e-fixed-fixtures.log` |
+
+- Canonical artifacts and sections updated: coverage investigation Round 3, execution coverage report Round 3, this revision record.
+- Prior result and confidence: `Fail / 91%`; Round 2 exact root E2E had 8 files / 16 failed tests.
+- Current result and confidence: `Pass / 96%`; exact root E2E and required launcher/live validation pass.
+- New or remaining failure IDs: none in the changed launcher scope. Provider-gated live Claude tests, browser/Electron shell, and Windows process semantics remain explicitly untested.
+- Recommended recipient: `code_reviewer` for separate proportional durable test-code review. No implementation rework is requested.
+- Cleanup and integrity: launcher children/listeners stopped; `.autobyteus/development/` removed after evidence capture; unrelated occupied-port processes untouched; `git diff --check` passed.

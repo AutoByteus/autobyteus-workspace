@@ -1,0 +1,9 @@
+backend_health_status=0
+frontend_http_status=0
+--- after restart metadata/hashes ---
+path=.autobyteus/development/server-data/.env mode=-rw------- inode=308928550 size=740 mtime=1785235759
+f36a2a09c2524935b9ad7558207c1e9c66f375d7  .autobyteus/development/server-data/.env
+path=.autobyteus/development/server-data/db/development.db mode=-rw-r--r-- inode=308921588 size=212992 mtime=1785235687
+d7cecabc3220bd02f2c7e2fc3e62ad3a0c07c707  .autobyteus/development/server-data/db/development.db
+path=.autobyteus/development/server-data/db/development.db.secret.key mode=-rw------- inode=308921595 size=32 mtime=1785235687
+4e0ec4888dc459d311139311c088269e1f6895e0  .autobyteus/development/server-data/db/development.db.secret.key
