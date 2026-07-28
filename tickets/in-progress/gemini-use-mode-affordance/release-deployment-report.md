@@ -3,7 +3,7 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `gemini-use-mode-affordance`
-- Current delivery scope: current SR-002/IR-003 handoff after API-REV-003.
+- Current delivery scope: current SR-003/IR-005 handoff after F-001 resolution and API-REV-004.
 - Release/publication/deployment authorization: not requested and not in scope.
 - Current status: `Ready for explicit user verification; finalization hold`.
 
@@ -12,8 +12,8 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
-- Notes: Current plain-check candidate is ready for user inspection; intentionally running dev:test services must remain available until explicit completion.
+- Current delivery revision ID: `DR-005`
+- Notes: Current localized Activate/Activating candidate is ready for user inspection; intentionally running dev:test services must remain available until explicit completion.
 
 ## Initial Delivery Integration Refresh
 
@@ -21,12 +21,12 @@
 - Latest tracked remote base reference checked: `origin/personal` at `153f3409c` after the latest `git fetch origin personal`.
 - Base advanced since the prior delivery refresh: `No`.
 - New base commits integrated into the ticket branch in this round: `No`; branch was already current.
-- Local checkpoint commit result: `Completed` — current validation package checkpoint `96545fc3a`.
+- Local checkpoint commit result: `Completed` — current validation package checkpoint `8a0afd278`.
 - Integration method: `Already current`.
 - Integration result: `Completed`; no conflicts and no additional merge required.
 - Post-integration executable checks rerun: `No`.
-- Post-integration verification result: `Passed` based on current API-REV-003 execution; no base-driven rerun was necessary.
-- No-rerun rationale: The latest fetch showed `origin/personal` unchanged at `153f3409c`; API-REV-003 validated the current candidate through focused Vitest, provider/manager tests, guards, and Chrome desktop/768px/pending execution.
+- Post-integration verification result: `Passed` based on current API-REV-004 execution; no base-driven rerun was necessary.
+- No-rerun rationale: The latest fetch showed `origin/personal` unchanged at `153f3409c`; API-REV-004 validated the current candidate through focused Vitest, provider/manager tests, guards, and Chrome English/Simplified Chinese desktop/768px/pending execution.
 - Delivery edits started only after integrated state was current: `Yes`.
 - Handoff state current with latest tracked remote base: `Yes`.
 - Blocker: Explicit user verification is the only delivery hold.
@@ -45,7 +45,7 @@
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/docs-sync-report.md`
 - Docs sync result: `No impact`.
 - Docs updated: `None`.
-- No-impact rationale: Existing Settings documentation covers the Gemini setup journey, Use-this-mode activation, and configured/active states. The current plain check glyph and visible Active badge do not alter durable API, persistence, navigation, or provider behavior.
+- No-impact rationale: Existing Settings documentation covers the Gemini setup journey, activation, and configured/active states. The current localized labels and pending presentation do not alter durable API, persistence, navigation, or provider behavior.
 
 ## Ticket State Transition
 
@@ -121,14 +121,15 @@
 ## Verification Checks
 
 - `git fetch origin personal`: `Pass`; tracked base unchanged at `153f3409c`.
-- Source review CRR-005: `Pass`; no unresolved findings.
-- API/E2E API-REV-003: `Pass`; 95% confidence, all critical acceptance criteria directly proven.
-- Proportional test-code review CRR-006: `Not Applicable`; no durable API/E2E test changed and no findings.
+- Source review CRR-008: `Pass`; F-001 resolved with no unresolved findings.
+- API/E2E API-REV-004: `Pass`; 95% confidence, all critical acceptance criteria directly proven.
+- Proportional test-code review CRR-009: `Not Applicable`; no durable API/E2E test changed and no findings.
 - Focused Gemini Vitest: `Pass`; 1 file / 7 tests.
 - Provider/manager suite: `Pass`; 6 files / 26 tests.
 - Guards: `Pass`; localization/web boundaries and audit.
-- Chrome: `Pass`; actual heroicons:check SVG/path, exact 44×44 desktop/768px geometry, Active/no action, pending state, hover/focus, and unavailable gating.
+- Chrome: `Pass`; English/Simplified Chinese Activate, Active, Activating/pending, ARIA/title, hover/focus, 768px wrapping, gating, and no page errors.
 - 320px whole-shell note: existing surrounding ProviderModelBrowser off-canvas condition; not a scoped failure.
+- Runtime cleanup: transient activation restored to Vertex Express active; browser contexts and held requests cleaned up.
 
 ## Rollback Criteria
 
@@ -138,4 +139,4 @@
 
 ## Final Status
 
-`Ready for explicit user verification — current plain-check candidate integrated/current, API/E2E passed, docs sync no-impact, dev:test retained, not archived or finalized.`
+`Ready for explicit user verification — current localized Activate/Activating candidate integrated/current, API/E2E passed, docs sync no-impact, dev:test retained, not archived or finalized.`

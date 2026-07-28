@@ -43,3 +43,14 @@ Current authoritative validation: API-REV-003 Pass / 95%; CRR-006 Not Applicable
 Current contract: fixed 44x44 icon-only heroicons:check activation action plus visible Active badge/state.
 Project inspection environment: pnpm dev:test intentionally remains running on 127.0.0.1:3000 and 127.0.0.1:8000; do not stop before explicit user completion.
 Delivery action: update canonical handoff, docs-sync, release/deployment, and delivery revision artifacts; keep ticket in-progress and do not archive/finalize.
+
+Revision-004 delivery refresh — 2026-07-28
+
+Fetch: git fetch origin personal — passed; origin/personal unchanged at 153f3409cd90207f9219cbe20242606271b36104.
+No additional base integration required: branch already contains the latest tracked base and no new remote commits appeared.
+Upstream checkpoint: 8a0afd278 chore(ticket): checkpoint localized Gemini validation.
+Current authoritative validation: API-REV-004 Pass / 95%; CRR-009 Not Applicable with no findings.
+Current contract: localized visible Activate action, visible Active state, and localized Activating pending label/spinner/disabled behavior in English and Simplified Chinese.
+Runtime cleanup: transient activation was restored to Vertex Express active; browser contexts and held requests were cleaned up.
+Project inspection environment: pnpm dev:test intentionally remains running on 127.0.0.1:3000 and 127.0.0.1:8000; do not stop before explicit user completion.
+Delivery action: update canonical handoff, docs-sync, release/deployment, and delivery revision artifacts; keep ticket in-progress and do not archive/finalize.
