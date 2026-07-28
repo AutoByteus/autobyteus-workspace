@@ -3,9 +3,9 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `token-statistics-int-overflow`
-- Current delivery scope: completed repository finalization and cleanup after the successful integrated-state/docs handoff.
+- Current delivery scope: completed repository finalization/cleanup plus the later user-requested local-main Electron build.
 - Release/publication/deployment authorization: explicitly declined; the user requested finalization with no release.
-- Current status: `Complete — finalized without release`.
+- Current status: `Complete — finalized and locally built without release`.
 
 ## Handoff Summary
 
@@ -82,6 +82,24 @@
 - Release notes handoff result: `Not required`
 - Blocker (if applicable): `N/A`
 
+## Post-Finalization Local Personal Refresh And Electron Build
+
+- User request: update the local main repository's `personal` branch and build Electron from that state.
+- Refresh command: `git fetch origin personal --prune`
+- Local `personal` revision: `5d979a5d5208157a25927b256932a25a5bed385b`
+- `origin/personal` revision: `5d979a5d5208157a25927b256932a25a5bed385b`
+- Divergence after refresh: `0 ahead / 0 behind`
+- Token-statistics finalization audit contained: `Yes` — `153f3409c` is an ancestor.
+- Electron build command: documented local unsigned macOS `pnpm build:electron:mac` flow with `AUTOBYTEUS_BUILD_FLAVOR=personal`, signing identity discovery disabled, and timestamping disabled.
+- Electron build result: `Pass`
+- Artifact validation result: `Pass`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/electron-test-build-report.md`
+- Local app: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Local DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg`
+- Local ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip`
+- Release/publication/deployment impact: `None`; these are unsigned local verification artifacts.
+- Unrelated work preservation: pre-existing `application-agent-streaming` and `.article-work` changes remained unstaged and untouched.
+
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow`
@@ -106,7 +124,7 @@
 ## Deployment Steps
 
 - None executed.
-- The currently installed Electron `1.4.26` package predates the fix. A future source launch, rebuilt package, or authorized release must include both backend `SafeInt` and frontend codegen/rendering changes.
+- A fresh local Electron package containing the backend `SafeInt` and frontend exact-rendering changes was built, but it was not installed, released, published, or deployed.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -129,6 +147,9 @@
 - Cleanup audit: `Pass`; the dedicated ticket worktree and both local/remote ticket branches were removed and worktrees pruned.
 - Unrelated-work preservation: `Pass`; the dirty checked-out `personal` worktree was not reset, stashed, cleaned, staged, or otherwise modified by this finalization.
 - Finalization package validation: `Pass`; see `delivery-evidence/finalization-package-validation.txt`.
+- Latest-local-personal refresh: `Pass`; local and remote `personal` matched at `5d979a5d5`.
+- Electron build: `Pass`; full log in `delivery-evidence/local-main-electron-build/electron-build.log`.
+- Electron artifact validation: `Pass`; DMG/ZIP integrity, checksums, packaged token contract, app architecture/version, helper permissions, and updater metadata verified in `delivery-evidence/local-main-electron-build/electron-artifact-validation.log`.
 
 ## Rollback Criteria
 
@@ -138,4 +159,4 @@
 
 ## Final Status
 
-`Complete — ticket archived, merged and pushed to origin/personal, dedicated ticket resources cleaned up, and no release performed by explicit user instruction.`
+`Complete — ticket finalized, latest local personal confirmed, unsigned macOS ARM64 Electron package built and validated, and no release performed.`
