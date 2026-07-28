@@ -1,0 +1,66 @@
+DESKTOP_RESULT {
+  "buttonText": "Activate",
+  "aria": "Use this mode: AI Studio",
+  "title": "Use this mode",
+  "disabled": false,
+  "box": {
+    "x": 1222.515625,
+    "y": 257,
+    "width": 79.484375,
+    "height": 44,
+    "right": 1302
+  },
+  "activeText": "ActiveActive",
+  "activeVisible": true,
+  "activeActionCount": 0,
+  "unavailableActionCount": 0,
+  "cardWidth": 780,
+  "horizontalOverflow": false,
+  "hoverBackground": "rgba(239, 246, 255, 0.008)",
+  "focus": {
+    "focused": true,
+    "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(59, 130, 246) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+  }
+}
+NARROW_RESULT {
+  "buttonText": "Activate",
+  "buttonBox": {
+    "x": 606,
+    "y": 358,
+    "width": 79.484375,
+    "height": 44,
+    "right": 685.484375
+  },
+  "cardBox": {
+    "width": 108,
+    "height": 128
+  },
+  "withinViewport": true,
+  "horizontalOverflow": false
+}
+PENDING_REQUEST_OBSERVED {"operationName":"UseGeminiMode","variables":{"mode":"AI_STUDIO"},"query":"mutation UseGeminiMode($mode: GeminiSetupMode!) {\n  useGeminiMode(mode: $mode) {\n    activeMode\n    aiStudioConfigured\n    vertexExpressConfigured\n    vertexPro
+PENDING_RESULT {
+  "buttonText": "Activating...",
+  "aria": "Use this mode: AI Studio",
+  "disabled": true,
+  "spinnerVisible": true,
+  "idleActivateVisible": false,
+  "box": {
+    "width": 125.6875,
+    "height": 44
+  },
+  "horizontalOverflow": false
+}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="gemini-activate-AI_STUDIO"]') to be visible[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/[eval1]:75:63 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.1

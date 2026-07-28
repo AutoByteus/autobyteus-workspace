@@ -10,6 +10,9 @@
 | CRR-004 | `api-e2e-test-review-report.md` | Successful API/E2E proportional test-code review; API-REV-002 | Not Applicable | Not Applicable | None |
 | CRR-005 | `code-review-report.md` | Implementation Review; SR-002/IR-003 rework commit `35cc293c2` | Pass (superseded contract) | Pass | None |
 | CRR-006 | `api-e2e-test-review-report.md` | Successful API/E2E proportional test-code review; API-REV-003 | Not Applicable | Not Applicable | None |
+| CRR-007 | `code-review-report.md` | Implementation Review; SR-003/IR-004 rework commit `e8aa1b011` | Pass (superseded contract) | Fail | F-001 |
+| CRR-008 | `code-review-report.md` | Implementation Review; F-001/IR-005 fix commit `67d047d3f` | Fail | Pass | F-001 resolved |
+| CRR-009 | `api-e2e-test-review-report.md` | Successful API/E2E proportional test-code review; API-REV-004 | Not Applicable | Not Applicable | None |
 
 ## Revision Entries
 
@@ -138,6 +141,72 @@ None. CRR-003 had no implementation findings. Its historical Pass applies only t
 #### Prior Finding Resolution
 
 None. CRR-004 had no findings and remains Not Applicable.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; this review has no implementation scorecard. Result is Not Applicable by rule.
+- Recommended recipient: delivery_engineer
+- Remaining risks or uncertainty: The 320px full Settings-shell off-canvas observation is an existing surrounding ProviderModelBrowser layout condition, not a changed test path or test-review issue. Keep pnpm dev:test running for user inspection until explicit completion.
+
+
+### CRR-007 — Activate/Active source review with pending-state finding
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/code-review-report.md
+- Review entry point and round: Implementation Review, round 4
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/implementation-handoff.md; SR-003; IR-004; F-001
+- Relevant solution revision IDs: SR-003
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: N/A
+- Prior authoritative result: Pass for the plain-check contract (CRR-005), superseded by SR-003.
+- Current authoritative result: Fail
+- What changed in the review result and why: Re-reviewed the localized visible Activate action, Active badge, and catalog additions. Those paths align with SR-003. The current pending branch still renders only the spinner, while the approved design/UI/UX pending state specifies spinner plus visible localized Activating text. The focused test likewise omits the required visible Activating assertion. This is a reachable, bounded implementation/test mismatch.
+- New or remaining finding IDs: F-001
+- Material score or classification changes: 9.1/10 (91/100); API/E2E readiness and runtime fidelity are below clean-pass target because F-001 blocks sign-off.
+- Recommended recipient: implementation_engineer
+- Remaining risks or uncertainty: The unrelated zhCnGlossaryConsistency failure remains a baseline signal; it is not the cause of F-001. After fixing F-001, source review and fresh API/E2E are required.
+
+#### Prior Finding Resolution
+
+None. CRR-005 had no implementation findings; its historical Pass applied only to the superseded plain-check contract.
+
+
+### CRR-008 — F-001 pending-label fix source review
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/code-review-report.md
+- Review entry point and round: Implementation Review, round 5
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/implementation-handoff.md; F-001; IR-005; commit 67d047d3f
+- Relevant solution revision IDs: SR-003
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: N/A; prior API-REV-003 is not reused.
+- Prior authoritative result: Fail with F-001 (CRR-007).
+- Current authoritative result: Pass
+- What changed in the review result and why: The pending activation button now retains spinner/disabled/live-announcement behavior and renders the existing localized Activating text visibly. The focused test asserts visible Activating and absence of idle Activate. Re-review confirms F-001 is resolved without changing activation ownership, event payload, or state/API behavior.
+- New or remaining finding IDs: None
+- Material score or classification changes: Updated from 9.1/10 Fail to 9.8/10 Pass; all mandatory categories meet the clean-pass threshold.
+- Recommended recipient: api_e2e_engineer
+- Remaining risks or uncertainty: Fresh API/E2E validation is required for the current Activate/Activating/Active contract, narrow wrapping, focus/hover, and locale behavior.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-001 | Open | Resolved | IR-005; commit 67d047d3f | Current component visibly renders activating localization beside spinner; focused test passes and asserts Activating visible/Activate absent. |
+
+
+### CRR-009 — Current localized Activate/Activating API/E2E proportional test-code review
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/api-e2e-test-review-report.md
+- Review entry point and round: Successful API/E2E proportional test-code review, round 4
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/api-e2e-execution-coverage-report.md; API-REV-004; scenarios API-GEMINI-401–API-GEMINI-406
+- Relevant solution revision IDs: SR-003
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-004
+- Prior authoritative result: Not Applicable for proportional test-code review (CRR-006; no durable API/E2E test changes)
+- Current authoritative result: Not Applicable
+- What changed in the review result and why: Fresh API/E2E validation passed at 95% confidence for current English and Simplified Chinese Activate/Activating/Active behavior, but no durable API/E2E test file was added, updated, or removed. The implementation-owned component test was rerun only as evidence; temporary browser probes, held requests, logs, and screenshots are not durable test code.
+
+#### Prior Finding Resolution
+
+None. CRR-006 had no findings and remains Not Applicable.
 
 - New or remaining finding IDs: None
 - Material score or classification changes: None; this review has no implementation scorecard. Result is Not Applicable by rule.
