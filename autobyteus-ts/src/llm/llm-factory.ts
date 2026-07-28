@@ -6,7 +6,6 @@ import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
 import { applyRawLlmConfigOverrides, type RawLlmConfigOverrides } from './utils/llm-config-overrides.js';
 import { OllamaModelProvider } from './ollama-provider.js';
 import { LMStudioModelProvider } from './lmstudio-provider.js';
-import { AutobyteusModelProvider } from './autobyteus-provider.js';
 import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
 import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
 import type { CustomLlmProviderRecord } from './custom-llm-provider-config.js';
@@ -15,9 +14,13 @@ import {
 } from './openai-compatible-endpoint-model.js';
 import {
   OpenAICompatibleEndpointModelProvider,
+  type OpenAICompatibleEndpointDiscoveryResult,
   type OpenAICompatibleEndpointReloadReport,
 } from './openai-compatible-endpoint-provider.js';
+import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 
+export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
 
 export type PricingStatus = 'trusted' | 'missing' | 'placeholder';
 
@@ -79,8 +82,6 @@ export type ModelPricingLookupInput = {
   modelProvider?: LLMProvider | string | null;
 };
 
-export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
-
 const buildSupportedModels = async (): Promise<LLMModel[]> => {
   const metadataResolver = new ModelMetadataResolver();
 
@@ -137,10 +138,14 @@ export class LLMFactory {
   }
 
   static async reinitialize(): Promise<void> {
-    LLMFactory.initialized = false;
+    await LLMFactory.ensureInitialized();
+    const retainedGatewayModels = Array.from(LLMFactory.modelsByIdentifier.values())
+      .filter((model) => model.runtime === LLMRuntime.AUTOBYTEUS);
     LLMFactory.modelsByProvider.clear();
     LLMFactory.modelsByIdentifier.clear();
-    await LLMFactory.ensureInitialized();
+    await LLMFactory.initializeRegistry();
+    for (const model of retainedGatewayModels) LLMFactory.registerModel(model);
+    LLMFactory.initialized = true;
   }
 
   static resetForTests(): void {
@@ -159,7 +164,6 @@ export class LLMFactory {
 
     await OllamaModelProvider.discoverAndRegister();
     await LMStudioModelProvider.discoverAndRegister();
-    await AutobyteusModelProvider.discoverAndRegister();
   }
 
   private static replaceProviderModels(provider: LLMProvider, models: LLMModel[]): void {
@@ -195,12 +199,12 @@ export class LLMFactory {
   }
 
   static async syncOpenAICompatibleEndpointModels(
-    savedEndpoints: CustomLlmProviderRecord[],
+    discoveryResults: OpenAICompatibleEndpointDiscoveryResult[],
   ): Promise<OpenAICompatibleEndpointReloadReport> {
     await LLMFactory.ensureInitialized();
 
     const report = await LLMFactory.openAICompatibleEndpointProvider.reloadSavedEndpoints(
-      savedEndpoints,
+      discoveryResults,
       LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint,
     );
 
@@ -226,7 +230,36 @@ export class LLMFactory {
     return config;
   }
 
-  static async createLLM(modelIdentifier: string, configInput?: LLMFactoryConfigInput): Promise<BaseLLM> {
+  static async syncRuntimeModels(runtime: LLMRuntime, models: LLMModel[]): Promise<number> {
+    await LLMFactory.ensureInitialized();
+    if (models.some((model) => model.runtime !== runtime)) {
+      throw new Error('LLM_RUNTIME_MODEL_SYNC_INVALID');
+    }
+    for (const current of Array.from(LLMFactory.modelsByIdentifier.values())) {
+      if (current.runtime !== runtime) continue;
+      LLMFactory.modelsByIdentifier.delete(current.modelIdentifier);
+      const providerModels = LLMFactory.modelsByProvider.get(current.provider);
+      if (!providerModels) continue;
+      LLMFactory.modelsByProvider.set(
+        current.provider,
+        providerModels.filter((model) => model !== current),
+      );
+    }
+    for (const model of models) LLMFactory.registerModel(model);
+    return models.length;
+  }
+
+  static async requiresGeminiRuntimeResolver(modelIdentifier: string): Promise<boolean> {
+    await LLMFactory.ensureInitialized();
+    return LLMFactory.modelsByIdentifier.get(modelIdentifier)?.provider === LLMProvider.GEMINI;
+  }
+
+  static async createLLM(
+    modelIdentifier: string,
+    configInput: LLMFactoryConfigInput | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
+  ): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();
 
     const model = LLMFactory.modelsByIdentifier.get(modelIdentifier);
@@ -236,7 +269,12 @@ export class LLMFactory {
         throw new Error(`Model '${model.modelIdentifier}' does not have an LLM class registered yet.`);
       }
       const config = LLMFactory.composeEffectiveConfig(model, configInput);
-      return new LLMClass(model, config);
+      if (model.provider === LLMProvider.GEMINI) {
+        if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+        return new LLMClass(model, config, apiKeyResolver, geminiRuntimeResolver);
+      }
+      if (geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_NOT_ALLOWED');
+      return new LLMClass(model, config, apiKeyResolver);
     }
 
     const foundByName = Array.from(LLMFactory.modelsByIdentifier.values()).filter(
@@ -478,7 +516,6 @@ export class LLMFactory {
 
     const providerHandlers: Partial<Record<LLMProvider, { getModels: () => Promise<LLMModel[]> }>> = {
       [LLMProvider.LMSTUDIO]: LMStudioModelProvider,
-      [LLMProvider.AUTOBYTEUS]: AutobyteusModelProvider,
       [LLMProvider.OLLAMA]: OllamaModelProvider,
     };
 

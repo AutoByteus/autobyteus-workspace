@@ -6,6 +6,7 @@ import { OpenAIImageClient } from '../../../../../src/multimedia/image/api/opena
 import { ImageModel } from '../../../../../src/multimedia/image/image-model.js';
 import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
+import { providerApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const mockGenerate = vi.hoisted(() => vi.fn());
 const mockEdit = vi.hoisted(() => vi.fn());
@@ -41,14 +42,17 @@ const buildClient = (
     provider: MultimediaProvider.OPENAI,
     clientClass: OpenAIImageClient
   });
-  return new OpenAIImageClient(model, config);
+  return new OpenAIImageClient(
+    model,
+    config,
+    providerApiKeyResolver('synthetic-openai-key'),
+  );
 };
 
 describe('OpenAIImageClient', () => {
   let tempDir: string;
 
   beforeEach(() => {
-    process.env.OPENAI_API_KEY = 'test-openai-key';
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'openai-image-client-unit-'));
     mockGenerate.mockReset();
     mockEdit.mockReset();

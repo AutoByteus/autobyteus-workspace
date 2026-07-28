@@ -1,5 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { SecretValue } from "autobyteus-ts";
 import { ClaudeSdkClient, type ClaudeSdkCanUseTool } from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import {
+  buildClaudeSdkSpawnEnvironment,
+  resolveClaudeSdkAuthMode,
+} from "../../../../../src/runtime-management/claude/client/claude-sdk-auth-environment.js";
 
 const createMockQuery = () => {
   const query = {
@@ -13,6 +18,121 @@ const createMockQuery = () => {
 };
 
 describe("ClaudeSdkClient", () => {
+  beforeEach(() => {
+    vi.stubEnv("CLAUDE_AGENT_SDK_AUTH_MODE", "cli");
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("preserves the auto, cli, and api-key selector with cli as the default", () => {
+    expect(resolveClaudeSdkAuthMode({})).toBe("cli");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "auto" })).toBe("auto");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli" })).toBe("cli");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "api-key" })).toBe("api-key");
+    expect(resolveClaudeSdkAuthMode({ CLAUDE_AGENT_SDK_AUTH_MODE: "unsupported-mode" })).toBe("cli");
+  });
+
+  it.each(["auto", "cli"] as const)(
+    "does not resolve a vault key for %s and preserves caller-supplied launch environment",
+    async (mode) => {
+      const resolveApiKey = vi.fn();
+      const queryFn = vi.fn(async () => createMockQuery());
+      const client = new ClaudeSdkClient(resolveApiKey);
+      client.setCachedModuleForTesting({ query: queryFn });
+      const env = {
+        CLAUDE_AGENT_SDK_AUTH_MODE: mode,
+        HOME: "/synthetic/home",
+        PATH: "/synthetic/bin",
+        ANTHROPIC_API_KEY: "synthetic-inherited-value",
+        CALLER_ADDITION: "preserved",
+      };
+
+      await client.startQueryTurn({
+        prompt: `${mode} turn`,
+        model: "haiku",
+        workingDirectory: "/tmp/claude-original-mode",
+        env,
+      });
+
+      expect(resolveApiKey).not.toHaveBeenCalled();
+      const call = queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string> } };
+      expect(call.options.env).toEqual(env);
+    },
+  );
+
+  it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY", async () => {
+    const resolveApiKey = vi.fn(async () => SecretValue.fromString("synthetic-vault-key"));
+    const queryFn = vi.fn(async () => createMockQuery());
+    const client = new ClaudeSdkClient(resolveApiKey);
+    client.setCachedModuleForTesting({ query: queryFn });
+    const env = {
+      CLAUDE_AGENT_SDK_AUTH_MODE: "api-key",
+      HOME: "/synthetic/home",
+      PATH: "/synthetic/bin",
+      ANTHROPIC_API_KEY: "synthetic-ambient-key",
+      CLAUDE_CODE_API_KEY: "synthetic-caller-owned-value",
+      CALLER_ADDITION: "preserved",
+    };
+
+    await client.startQueryTurn({
+      prompt: "api-key turn",
+      model: "haiku",
+      workingDirectory: "/tmp/claude-api-key-mode",
+      env,
+      mcpServers: { demo: { transport: "mock" } },
+      allowedTools: ["Bash"],
+    });
+
+    expect(resolveApiKey).toHaveBeenCalledOnce();
+    const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
+    expect(call.options.env).toEqual({
+      ...env,
+      ANTHROPIC_API_KEY: "synthetic-vault-key",
+    });
+    expect(call.options).toEqual(expect.objectContaining({
+      mcpServers: { demo: { transport: "mock" } },
+      allowedTools: ["Bash"],
+      settingSources: ["user", "project", "local"],
+    }));
+    expect(call.options).not.toHaveProperty("tools");
+  });
+
+  it("fails value-free before SDK launch when explicit api-key resolution fails", async () => {
+    const resolveApiKey = vi.fn(async () => {
+      throw new Error("synthetic-secret-bearing-cause");
+    });
+    const queryFn = vi.fn(async () => createMockQuery());
+    const client = new ClaudeSdkClient(resolveApiKey);
+    client.setCachedModuleForTesting({ query: queryFn });
+
+    await expect(client.startQueryTurn({
+      prompt: "api-key turn",
+      model: "haiku",
+      workingDirectory: "/tmp/claude-api-key-failure",
+      env: { CLAUDE_AGENT_SDK_AUTH_MODE: "api-key" },
+    })).rejects.toThrow("CLAUDE_RUNTIME_API_KEY_UNAVAILABLE");
+    expect(resolveApiKey).toHaveBeenCalledOnce();
+    expect(queryFn).not.toHaveBeenCalled();
+  });
+
+  it("keeps original cli process-environment filtering separate from vault resolution", () => {
+    const env = {
+      CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
+      CLAUDE_CODE_OAUTH_TOKEN: "synthetic-oauth",
+      ANTHROPIC_API_KEY: "synthetic-api-key",
+      CLAUDE_CODE_API_KEY: "synthetic-code-key",
+      KEEP_ME: "preserved",
+    };
+
+    expect(buildClaudeSdkSpawnEnvironment(env)).toEqual({
+      CLAUDE_AGENT_SDK_AUTH_MODE: "cli",
+      CLAUDE_CODE_OAUTH_TOKEN: "synthetic-oauth",
+      KEEP_ME: "preserved",
+    });
+  });
+
   it("passes stable query options for project skills, resume, MCP, and send_message_to tooling", async () => {
     const client = new ClaudeSdkClient();
     const queryMock = createMockQuery();

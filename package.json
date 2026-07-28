@@ -2,6 +2,12 @@
   "name": "autobyteus-workspace",
   "private": true,
   "scripts": {
+    "secrets:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
+    "server:test": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-test-server.mjs",
+    "web:test": "node test-support/live-e2e/run-test-web.mjs",
+    "dev:test": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-test-dev.mjs",
+    "test:e2e:real:preflight": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs --preflight",
+    "test:e2e:real": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs",
     "verify:android-profile": "bash scripts/verify-android-profile.sh",
     "android:bootstrap": "bash scripts/android-bootstrap-termux.sh",
     "android:bootstrap:check": "bash scripts/android-bootstrap-termux.sh --check-only",
@@ -27,10 +33,7 @@
       "protobufjs",
       "sharp",
       "vue-demi"
-    ],
-    "patchedDependencies": {
-      "repository_prisma@1.0.6": "patches/repository_prisma@1.0.6.patch"
-    }
+    ]
   },
   "license": "Apache-2.0"
 }

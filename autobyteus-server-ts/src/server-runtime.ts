@@ -45,6 +45,9 @@ import { getManagedMessagingGatewayService } from "./managed-capabilities/messag
 import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
 import { stopMemorySyncWorker } from "./memory-sync/source/memory-sync-worker.js";
 import type { ServerOptions } from "./app.js";
+import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
+import { registerProvisionedSearchTool } from "./agent-tools/search/register-search-tool.js";
+import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
 
 const logger = createServerLogger("server.runtime");
 
@@ -53,6 +56,7 @@ export type BuildAppOptions = {
 };
 
 export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstance> {
+  registerProvisionedSearchTool();
   const loggingConfig = options?.loggingConfig ?? getLoggingConfigFromEnv(process.env);
   const app = fastify({
     logger: getFastifyLoggerOptions(loggingConfig),
@@ -88,6 +92,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
     await stopChannelRunOutputDeliveryRuntime();
     await stopGatewayCallbackDeliveryRuntime();
     await getManagedMessagingGatewayService().close();
+    await getSecretVaultRuntime().close();
   });
 
   return app;
@@ -132,11 +137,25 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    runMigrations();
+    const config = appConfigProvider.config;
+    runMigrations({
+      appRoot: config.getAppRootDir(),
+      databaseUrl: config.getOperationalDatabaseUrl(),
+    });
   } catch (error) {
     logger.error(`Failed to run database migrations: ${String(error)}`);
     process.exit(1);
   }
+
+  const databaseLocation = appConfigProvider.config.getOperationalDatabaseLocation();
+  configureFileToolDeniedPaths([
+    databaseLocation.databasePath,
+    databaseLocation.rootKeyPath,
+    `${databaseLocation.databasePath}-wal`,
+    `${databaseLocation.databasePath}-shm`,
+    `${databaseLocation.databasePath}-journal`,
+  ]);
+  await getSecretVaultRuntime().initialize(databaseLocation);
 
   try {
     await getAppDataMigrationRunner().runPending();

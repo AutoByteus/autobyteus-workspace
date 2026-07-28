@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
-import { LMStudioLLM } from '../../../../src/llm/api/lmstudio-llm.js';
+import { LMStudioLLM as ProductionLMStudioLLM } from '../../../../src/llm/api/lmstudio-llm.js';
 import { OpenAIChatRenderer } from '../../../../src/llm/prompt-renderers/openai-chat-renderer.js';
 import { LMStudioTextToolHistoryRenderer } from '../../../../src/llm/prompt-renderers/lmstudio-text-tool-history-renderer.js';
 import {
@@ -15,6 +15,7 @@ import {
   createLocalLongRunningFetch,
   LOCAL_PROVIDER_SDK_TIMEOUT_MS,
 } from '../../../../src/llm/transport/local-long-running-fetch.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 const mockOpenAIConstructor = vi.hoisted(
@@ -35,13 +36,18 @@ vi.mock('openai', () => ({
   OpenAI: mockOpenAIConstructor,
 }));
 
+class LMStudioLLM extends ProductionLMStudioLLM {
+  constructor(model: LLMModel, config = new LLMConfig()) {
+    super(model, config, providerApiKeyResolver('synthetic-lmstudio-key'));
+  }
+}
+
 describe('LMStudioLLM', () => {
   const originalToolCallFormat = process.env.AUTOBYTEUS_STREAM_PARSER;
 
   beforeEach(() => {
     mockCreate.mockReset();
     mockOpenAIConstructor.mockClear();
-    process.env.LMSTUDIO_API_KEY = 'lmstudio-test-key';
     process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
   });
 
@@ -53,7 +59,7 @@ describe('LMStudioLLM', () => {
     }
   });
 
-  it('injects the long-running local fetch and 24h SDK timeout into the OpenAI client', () => {
+  it('injects the long-running local fetch and 24h SDK timeout into the OpenAI client', async () => {
     const model = new LLMModel({
       name: 'gemma-4-31b-it',
       value: 'gemma-4-31b-it',
@@ -65,8 +71,12 @@ describe('LMStudioLLM', () => {
     const llm = new LMStudioLLM(model, new LLMConfig());
 
     expect(llm).toBeDefined();
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'ok' } }],
+    });
+    await llm.sendMessages([]);
     expect(mockOpenAIConstructor).toHaveBeenCalledWith({
-      apiKey: 'lmstudio-test-key',
+      apiKey: 'synthetic-lmstudio-key',
       baseURL: 'http://127.0.0.1:1234/v1',
       fetch: createLocalLongRunningFetch(),
       timeout: LOCAL_PROVIDER_SDK_TIMEOUT_MS,

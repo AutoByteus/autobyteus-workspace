@@ -1,0 +1,59 @@
+SCENARIO=SCSP-E2E-DOCKER-001
+IMPLEMENTATION_HEAD=53dd05ecaac6e3196497597cceba0799f8093aba
+PROJECT=scsp-round16
+CONTAINER_BEFORE=3d5493143d93dd4ec68ad3099d704b9bbd90c35440b2d7c299ce0044e064000f
+DATA_VOLUME_BEFORE=scsp-round16_autobyteus-server-data
+IMAGE_ID=sha256:65c9c13e6ea606594731cde881d7962add6465e23a703feca9863e43fb3a9298
+DOCKER_VAULT_HEALTH=READY
+DOCKER_INITIAL_STATUS=MISSING
+DOCKER_SAVE_STATUS=CONFIGURED
+DOCKER_SAVE_VALUE_EXPOSED=false
+DATA_ARTIFACTS_METADATA_START
+/home/autobyteus/data/.env mode=644 size=95
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent-config.json mode=644 size=311
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent.md mode=644 size=1933
+/home/autobyteus/data/agents/autobyteus-retrospective-skill-improver/agent-config.json mode=644 size=390
+/home/autobyteus/data/agents/autobyteus-retrospective-skill-improver/agent.md mode=644 size=1520
+/home/autobyteus/data/db/production.db mode=644 size=212992
+/home/autobyteus/data/db/production.db.secret.key mode=600 size=32
+/home/autobyteus/data/external-channel/gateway-callback-outbox.json mode=644 size=36
+/home/autobyteus/data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-07-27T06-47-26-377Z.log mode=644 size=203
+/home/autobyteus/data/logs/app-data-migrations/20260521_run_history_index_v2-2026-07-27T06-47-26-505Z.log mode=644 size=196
+/home/autobyteus/data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-07-27T06-47-26-488Z.log mode=644 size=195
+/home/autobyteus/data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-07-27T06-47-26-448Z.log mode=644 size=195
+/home/autobyteus/data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-07-27T06-47-26-473Z.log mode=644 size=213
+/home/autobyteus/data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-07-27T06-47-26-388Z.log mode=644 size=221
+/home/autobyteus/data/logs/app-data-migrations/20260703_drop_token_usage_legacy_path_columns-2026-07-27T06-47-26-435Z.log mode=644 size=984
+/home/autobyteus/data/logs/app-data-migrations/20260703_token_usage_execution_address_backfill-2026-07-27T06-47-26-404Z.log mode=644 size=1222
+/home/autobyteus/data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-07-27T06-47-26-365Z.log mode=644 size=213
+/home/autobyteus/data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-07-27T06-47-26-461Z.log mode=644 size=197
+/home/autobyteus/data/logs/server.log mode=644 size=7757
+/home/autobyteus/data/memory/run_history_index.json mode=644 size=3
+/home/autobyteus/data/memory/team_run_history_index.json mode=644 size=3
+DATA_ARTIFACTS_METADATA_END
+APPLICATION_DATABASE_COUNT=1
+ROOT_KEY_COUNT=1
+SECOND_STORE_ARTIFACT_COUNT=0
+APPLICATION_ENV_SHA256_BEFORE=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+APPLICATION_DB_KEY_SHA256_BEFORE=410e659896f23342238c44fff5c21b9170430707addc89948eaf91b23f45f7cb
+ Container scsp-round16-autobyteus-server-1  Restarting
+ Container scsp-round16-autobyteus-server-1  Started
+DOCKER_REOPEN_STATUS=CONFIGURED
+DOCKER_REMOVE_STATUS=MISSING
+DOCKER_FINAL_VAULT_HEALTH=READY
+DOCKER_REOPEN_VALUE_EXPOSED=false
+CONTAINER_AFTER=3d5493143d93dd4ec68ad3099d704b9bbd90c35440b2d7c299ce0044e064000f
+DATA_VOLUME_AFTER=scsp-round16_autobyteus-server-data
+APPLICATION_ENV_SHA256_AFTER=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+APPLICATION_DB_KEY_SHA256_AFTER=410e659896f23342238c44fff5c21b9170430707addc89948eaf91b23f45f7cb
+APPLICATION_DATABASE_COUNT_AFTER=1
+ROOT_KEY_COUNT_AFTER=1
+SECOND_STORE_ARTIFACT_COUNT_AFTER=0
+SYNTHETIC_CANARY_LOG_MATCHES=0
+SANITIZED_RUNTIME_SIGNALS_START
+Database migrations completed successfully.
+[2026-07-27T06:47:26.669Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+Database migrations completed successfully.
+[2026-07-27T06:48:27.355Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+SANITIZED_RUNTIME_SIGNALS_END
+SCSP-E2E-DOCKER-001=PASS

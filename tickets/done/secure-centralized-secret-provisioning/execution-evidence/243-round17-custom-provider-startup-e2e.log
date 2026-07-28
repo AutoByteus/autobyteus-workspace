@@ -1,0 +1,157 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+ ❯ tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts (3 tests | 3 failed) 8785ms
+     × migrates 'one' valid provider set all-or-nothing and reopens after restart 2835ms
+     × migrates 'multiple' valid provider set all-or-nothing and reopens after restart 2058ms
+     × resets an invalid v1 file without blocking Settings and supports current reconfiguration 3892ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts > custom-provider v1 actual-server startup migration > migrates 'one' valid provider set all-or-nothing and reopens after restart
+AssertionError: expected { provider: { …(4) }, …(1) } to match object { provider: { …(4) } }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "provider": {
+      "apiKeyConfigured": true,
+      "id": "provider_v1_one_0",
+      "name": "V1 one 0",
+-     "status": "READY",
++     "status": "ERROR",
+    },
+  }
+
+ ❯ tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts:234:19
+    232|         ({ provider: candidate }) => candidate.id === provider.id,
+    233|       );
+    234|       expect(row).toMatchObject({
+       |                   ^
+    235|         provider: {
+    236|           id: provider.id,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts > custom-provider v1 actual-server startup migration > migrates 'multiple' valid provider set all-or-nothing and reopens after restart
+AssertionError: expected { provider: { …(4) }, …(1) } to match object { provider: { …(4) } }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "provider": {
+      "apiKeyConfigured": true,
+      "id": "provider_v1_multiple_0",
+      "name": "V1 multiple 0",
+-     "status": "READY",
++     "status": "ERROR",
+    },
+  }
+
+ ❯ tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts:234:19
+    232|         ({ provider: candidate }) => candidate.id === provider.id,
+    233|       );
+    234|       expect(row).toMatchObject({
+       |                   ^
+    235|         provider: {
+    236|           id: provider.id,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts > custom-provider v1 actual-server startup migration > resets an invalid v1 file without blocking Settings and supports current reconfiguration
+AssertionError: expected { …(4) } to match object { apiKeyConfigured: true, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "apiKeyConfigured": true,
+-   "status": "READY",
++   "status": "ERROR",
+  }
+
+ ❯ tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts:395:18
+    393|     expect((await providerSettings(second.serverUrl)).providerSettings…
+    394|       ({ provider }) => provider.id === created.createCustomProvider,
+    395|     )?.provider).toMatchObject({
+       |                  ^
+    396|       apiKeyConfigured: true,
+    397|       status: 'READY',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  12:01:31
+   Duration  9.41s (transform 31ms, setup 12ms, import 47ms, tests 8.79s, environment 0ms)
+

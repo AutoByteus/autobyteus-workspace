@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
+import { DeepSeekLLM as ProductionDeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 
@@ -25,14 +26,16 @@ const buildModel = () =>
     provider: LLMProvider.DEEPSEEK
   });
 
+class DeepSeekLLM extends ProductionDeepSeekLLM {
+  constructor(model: LLMModel, config = new LLMConfig()) {
+    super(model, config, providerApiKeyResolver('synthetic-deepseek-key'));
+  }
+}
+
 const userMessages = [new Message(MessageRole.USER, { content: 'Hello, DeepSeek.' })];
 
 describe('DeepSeekLLM request normalization', () => {
-  let originalApiKey: string | undefined;
-
   beforeEach(() => {
-    originalApiKey = process.env.DEEPSEEK_API_KEY;
-    process.env.DEEPSEEK_API_KEY = 'deepseek-test-key';
     mockCreate.mockReset();
     mockCreate.mockResolvedValue({
       choices: [{ message: { role: 'assistant', content: 'ok' } }],
@@ -42,14 +45,6 @@ describe('DeepSeekLLM request normalization', () => {
         total_tokens: 2
       }
     });
-  });
-
-  afterEach(() => {
-    if (originalApiKey === undefined) {
-      delete process.env.DEEPSEEK_API_KEY;
-    } else {
-      process.env.DEEPSEEK_API_KEY = originalApiKey;
-    }
   });
 
   it('maps flat thinking_type to root thinking.type without leaking raw thinking fields', async () => {

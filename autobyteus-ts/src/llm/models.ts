@@ -4,6 +4,9 @@ import { LLMConfig } from './utils/llm-config.js';
 import { ParameterSchema } from '../utils/parameter-schema.js';
 import { BaseLLM } from './base.js';
 import { getLlmProviderDisplayName } from './provider-display-names.js';
+import type { ModelMetadataProvenance } from './metadata/model-metadata-resolver.js';
+import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 
 export interface LLMModelOptions {
   name: string;
@@ -11,7 +14,12 @@ export interface LLMModelOptions {
   provider: LLMProvider;
   providerId?: string;
   providerName?: string;
-  llmClass?: new (model: LLMModel, config: LLMConfig) => BaseLLM;
+  llmClass?: new (
+    model: LLMModel,
+    config: LLMConfig,
+    apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
+  ) => BaseLLM;
   canonicalName: string;
   defaultConfig?: LLMConfig;
   maxContextTokens?: number | null;
@@ -42,6 +50,7 @@ export interface ModelInfo {
   active_context_tokens: number | null;
   max_input_tokens: number | null;
   max_output_tokens: number | null;
+  metadata_provenance?: ModelMetadataProvenance;
 }
 
 export class LLMModel {
@@ -51,7 +60,12 @@ export class LLMModel {
   public provider: LLMProvider;
   public providerId: string;
   public providerName: string;
-  public llmClass?: new (model: LLMModel, config: LLMConfig) => BaseLLM;
+  public llmClass?: new (
+    model: LLMModel,
+    config: LLMConfig,
+    apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
+  ) => BaseLLM;
   public defaultConfig: LLMConfig;
   public maxContextTokens: number | null;
   public activeContextTokens: number | null;
@@ -72,6 +86,7 @@ export class LLMModel {
     this.provider = options.provider;
     this.providerId = options.providerId?.trim() || String(this.provider);
     this.providerName = options.providerName?.trim() || getLlmProviderDisplayName(this.provider);
+    const runtime = options.runtime || LLMRuntime.API;
     this.llmClass = options.llmClass;
     this.defaultConfig = options.defaultConfig || new LLMConfig();
     this.maxContextTokens = options.maxContextTokens ?? this.defaultConfig.tokenLimit ?? null;
@@ -80,7 +95,7 @@ export class LLMModel {
     this.maxOutputTokens = options.maxOutputTokens ?? null;
     this.defaultCompactionRatio = options.defaultCompactionRatio ?? 0.8;
     this.defaultSafetyMarginTokens = options.defaultSafetyMarginTokens ?? 256;
-    this.runtime = options.runtime || LLMRuntime.API;
+    this.runtime = runtime;
     this.hostUrl = options.hostUrl;
     this.configSchema = options.configSchema;
     this.modelIdentifierOverride = options.modelIdentifierOverride?.trim() || undefined;

@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { GlmLLM } from '../../../../src/llm/api/glm-llm.js';
+import { GlmLLM as ProductionGlmLLM } from '../../../../src/llm/api/glm-llm.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+import { LLMModel } from '../../../../src/llm/models.js';
+import { LLMProvider } from '../../../../src/llm/providers.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 
@@ -15,10 +18,22 @@ vi.mock('openai', () => {
   return { OpenAI };
 });
 
+const buildModel = () => new LLMModel({
+  name: 'glm-5.2',
+  value: 'glm-5.2',
+  canonicalName: 'glm-5.2',
+  provider: LLMProvider.GLM,
+});
+
+class GlmLLM extends ProductionGlmLLM {
+  constructor(model = buildModel(), config = new LLMConfig()) {
+    super(model, config, providerApiKeyResolver('synthetic-glm-key'));
+  }
+}
+
 describe('GlmLLM', () => {
   beforeEach(() => {
     mockCreate.mockReset();
-    process.env.GLM_API_KEY = 'glm-test-key';
     mockCreate.mockResolvedValue({
       choices: [{ message: { role: 'assistant', content: 'ok' } }],
       usage: {

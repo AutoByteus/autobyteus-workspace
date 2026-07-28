@@ -2,25 +2,22 @@ import { BaseTool } from './base-tool.js';
 import { ToolConfig } from './tool-config.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 import { ToolCategory } from './tool-category.js';
-import { SearchClientFactory } from './search/factory.js';
-import { SearchClient } from './search/client.js';
+import type { SearchClient } from './search/client.js';
+
+export interface SearchExecutor {
+  search(query: string, numResults: number): Promise<string>;
+}
 
 export class Search extends BaseTool<unknown, Record<string, unknown>, string> {
   static CATEGORY = ToolCategory.WEB;
-  private searchClient: SearchClient;
+  private searchClient: SearchExecutor;
 
-  constructor(config?: ToolConfig) {
+  constructor(config?: ToolConfig, executor?: SearchExecutor) {
     super(config);
-    try {
-      const factory = new SearchClientFactory();
-      this.searchClient = factory.createSearchClient();
-    } catch (error) {
-      console.error('Failed to initialize search_web tool:', error);
-      throw new Error(
-        'Could not initialize Search tool. Please check your search provider configuration. ' +
-        `Error: ${error instanceof Error ? error.message : String(error)}`
-      );
+    if (!executor) {
+      throw new Error('Search requires an injected server-owned SearchExecutor.');
     }
+    this.searchClient = executor;
   }
 
   static getName(): string {

@@ -1,9 +1,10 @@
-import { LLMFactory } from 'autobyteus-ts';
+import { LLMFactory, OpenAICompatibleEndpointDiscovery } from 'autobyteus-ts';
 import type {
   OpenAICompatibleEndpointReloadReport,
   OpenAICompatibleEndpointReloadStatus,
 } from 'autobyteus-ts';
 import type { CustomProviderReloadStatus } from '../domain/models.js';
+import { getSecretVaultRuntime } from '../../../secret-management/secret-vault-runtime.js';
 import {
   getCustomLlmProviderStore,
   type CustomLlmProviderStore,
@@ -50,13 +51,34 @@ export class CustomLlmProviderRuntimeSyncService {
     return this.syncPromise;
   }
 
+  async clearUnavailableProviders(): Promise<void> {
+    await this.syncPromise?.catch(() => undefined);
+    await LLMFactory.syncOpenAICompatibleEndpointModels([]);
+    this.hasEverSynced = true;
+    this.lastStatusesByProviderId.clear();
+  }
+
   getStatus(providerId: string): CustomProviderReloadStatus {
     return this.lastStatusesByProviderId.get(providerId) ?? buildNeverLoadedStatus(providerId);
   }
 
   private async performSync(): Promise<OpenAICompatibleEndpointReloadReport> {
     const savedProviders = await this.customProviderStore.listProviders();
-    const report = await LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders);
+    const discoveryResults = await Promise.all(savedProviders.map(async (endpoint) => {
+      try {
+        const apiKey = await getSecretVaultRuntime()
+          .requireService()
+          .resolveForUse({ kind: 'llmMetadata', providerId: endpoint.id, credentialSlot: 'apiKey' });
+        const discoveredModels = await OpenAICompatibleEndpointDiscovery.probeEndpoint({
+          baseUrl: endpoint.baseUrl,
+          apiKey: apiKey.revealToTrustedConsumer(),
+        });
+        return { endpoint, discoveredModels };
+      } catch {
+        return { endpoint, errorMessage: 'CUSTOM_PROVIDER_DISCOVERY_UNAVAILABLE' };
+      }
+    }));
+    const report = await LLMFactory.syncOpenAICompatibleEndpointModels(discoveryResults);
     this.hasEverSynced = true;
     this.lastStatusesByProviderId = new Map(
       report.statuses.map((status) => {

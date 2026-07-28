@@ -1,0 +1,619 @@
+ROUND=21
+HEAD=ec0df6b1a9d216366e08262cd96f5280686b04d0
+COMMAND_1=focused CR-031 production tests
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/unit/llm-management/llm-providers/llm-provider-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/llm-management/llm-providers/llm-provider-service.test.ts (13 tests) 16ms
+stdout | tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts > AutobyteusLlmModelProvider targeted reload > returns the current static Anthropic count without dynamic discovery reload
+Provider ANTHROPIC does not support targeted reload. Returning current models without refresh.
+
+stdout | tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts > AutobyteusLlmModelProvider targeted reload > removes a deleted custom provider through custom synchronization without remote discovery
+Reloaded 0 models for custom provider provider_gateway.
+
+ ✓ tests/unit/llm-management/providers/autobyteus-llm-model-provider.test.ts (3 tests) 5ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  20:09:17
+   Duration  3.94s (transform 1.70s, setup 12ms, import 3.35s, tests 21ms, environment 0ms)
+
+COMMAND_2=affected cumulative Round-20 API/E2E files
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+ ✓ tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts (3 tests) 10532ms
+     ✓ migrates 'one' valid provider set all-or-nothing and reopens after restart  4184ms
+     ✓ migrates 'multiple' valid provider set all-or-nothing and reopens after restart  3177ms
+     ✓ resets an invalid v1 file without blocking Settings and supports current reconfiguration  3170ms
+stdout | tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 3190ms
+     ✓ materializes the immutable template, migrates, initializes one adjacent key, and reopens value-free  3190ms
+(node:83527) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "current-db-import-83527-1785175777894-63fecf0598cca.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/db/current-db-import-83527-1785175777894-63fecf0598cca.db"
+
+18 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+stdout | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts > explicit target database importer lifecycle > ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 1719ms
+     ✓ ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database  1718ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (5 tests) 1696ms
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:83549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6/.env
+[dotenv@17.3.1] injecting env (1) from tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-83549-1785175784744-dcdfe231f8ca6/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+Successfully fetched 26 models from LLMFactory.
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+LLM models cache populated with 26 items.
+
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (4 tests) 1544ms
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in the requested cwd and releases it on websocket close
+Created terminal session real-pty-cwd using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-e2e-pBoPwv/workspace with spaces
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in the requested cwd and releases it on websocket close
+Terminal WebSocket connected: real-pty-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in the requested cwd and releases it on websocket close
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-e2e-pBoPwv/workspace with spaces
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Closed PTY session real-pty-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Terminal WebSocket disconnected: real-pty-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Created terminal session real-pty-server-home-default using backend IsolatedPtySession for target /Users/normy
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Terminal WebSocket connected: real-pty-server-home-default
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > opens a real PTY in server home when cwd and rootPath are omitted
+Terminal websocket attached for cwd /Users/normy
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > rejects unavailable cwd before creating a PTY session
+Closed PTY session real-pty-server-home-default
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > rejects unavailable cwd before creating a PTY session
+Terminal WebSocket disconnected: real-pty-server-home-default
+
+stderr | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > rejects unavailable cwd before creating a PTY session
+Terminal connection rejected: Error: ENOENT: no such file or directory, stat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-e2e-ikij87/missing'
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > rejects unavailable cwd before creating a PTY session
+Terminal WebSocket disconnected: invalid-cwd
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session early-close-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-3
+Closed PTY session early-close-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session early-close-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: early-close-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session early-close-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session early-close-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: early-close-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-0
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-1
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-2
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-3
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-4
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-5
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-5
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-5
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-6
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Closed PTY session churn-6
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal session startup aborted: churn-6
+
+stdout | tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts > Terminal websocket lifecycle e2e > does not retain PTYs across close-before-connect and repeated open/close churn
+Terminal WebSocket disconnected: churn-7
+
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 848ms
+     ✓ does not retain PTYs across close-before-connect and repeated open/close churn  573ms
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:83590) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-NuI2pa
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-NuI2pa/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Initialized server settings service with 19 predefined settings
+Added new custom server setting: CUSTOM_SETTING_1785175789103_flkh93
+Server setting 'CUSTOM_SETTING_1785175789103_flkh93' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Server setting 'CUSTOM_SETTING_1785175789103_flkh93' deleted
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists featured catalog items through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-H15R2i
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-H15R2i/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists featured catalog items through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > rejects duplicate featured catalog items through GraphQL without replacing the saved value
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-3sb9Kh
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-3sb9Kh/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > rejects duplicate featured catalog items through GraphQL without replacing the saved value
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Mf7ZZp
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Mf7ZZp/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Sz6sH1
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Sz6sH1/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-uze2pW
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-uze2pW/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > lists effective Codex sandbox values with predefined metadata even when not persisted
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-PdFDrf
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-PdFDrf/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > lists effective stream parser values with predefined metadata even when not persisted
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-2KZntj
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-2KZntj/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > exposes the production compaction strategy catalog and effective default without persisting it
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-LZDm2f
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-LZDm2f/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists a registered global compaction strategy and selects it for an existing runtime's next operation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-sXi9OT
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-sXi9OT/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists a registered global compaction strategy and selects it for an existing runtime's next operation
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated
+
+ ✓ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (10 tests) 85ms
+
+ Test Files  7 passed (7)
+      Tests  28 passed (28)
+   Start at  20:09:21
+   Duration  27.66s (transform 3.54s, setup 29ms, import 7.04s, tests 19.61s, environment 0ms)
+

@@ -32,6 +32,7 @@ import { ManagedMessagingGatewayResolver } from './types/managed-messaging-gatew
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
 import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
+import { SecretStorageResolver } from './types/secret-storage.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -68,6 +69,7 @@ export async function buildGraphqlSchema() {
       ManagedMessagingGatewayResolver,
       AppDataMigrationResolver,
       SkillImprovementResolver,
+      SecretStorageResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

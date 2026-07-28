@@ -18,15 +18,15 @@ export interface ServerSetting {
   isDeletable: boolean
 }
 
-export type SearchProvider = 'serper' | 'serpapi' | 'google_cse' | 'vertex_ai_search'
+export type SearchProvider = 'serper' | 'serpapi' | 'vertex_ai_search'
 
 export interface SearchConfigState {
   provider: SearchProvider | ''
-  serperApiKeyConfigured: boolean
-  serpapiApiKeyConfigured: boolean
-  googleCseApiKeyConfigured: boolean
-  googleCseId: string | null
-  vertexAiSearchApiKeyConfigured: boolean
+  vaultHealth: 'READY' | 'LOCKED' | 'UNAVAILABLE' | 'CORRUPT' | 'INCOMPATIBLE'
+  instructionCode: string | null
+  serperStorageState: 'MISSING' | 'CONFIGURED' | null
+  serpapiStorageState: 'MISSING' | 'CONFIGURED' | null
+  vertexAiSearchStorageState: 'MISSING' | 'CONFIGURED' | null
   vertexAiSearchServingConfig: string | null
 }
 
@@ -34,19 +34,17 @@ export interface SetSearchConfigInput {
   provider: SearchProvider
   serperApiKey?: string | null
   serpapiApiKey?: string | null
-  googleCseApiKey?: string | null
-  googleCseId?: string | null
   vertexAiSearchApiKey?: string | null
   vertexAiSearchServingConfig?: string | null
 }
 
 const defaultSearchConfig = (): SearchConfigState => ({
   provider: '',
-  serperApiKeyConfigured: false,
-  serpapiApiKeyConfigured: false,
-  googleCseApiKeyConfigured: false,
-  googleCseId: null,
-  vertexAiSearchApiKeyConfigured: false,
+  vaultHealth: 'UNAVAILABLE',
+  instructionCode: 'SECRET_VAULT_UNAVAILABLE',
+  serperStorageState: null,
+  serpapiStorageState: null,
+  vertexAiSearchStorageState: null,
   vertexAiSearchServingConfig: null,
 })
 
@@ -319,8 +317,6 @@ export const useServerSettingsStore = defineStore('serverSettings', {
             provider: input.provider,
             serperApiKey: input.serperApiKey ?? null,
             serpapiApiKey: input.serpapiApiKey ?? null,
-            googleCseApiKey: input.googleCseApiKey ?? null,
-            googleCseId: input.googleCseId ?? null,
             vertexAiSearchApiKey: input.vertexAiSearchApiKey ?? null,
             vertexAiSearchServingConfig: input.vertexAiSearchServingConfig ?? null,
           },

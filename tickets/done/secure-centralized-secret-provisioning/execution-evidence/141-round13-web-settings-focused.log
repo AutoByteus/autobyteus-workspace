@@ -1,0 +1,39 @@
+
+> autobyteus@1.4.26 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts components/settings/__tests__/ProviderAPIKeyManager.spec.ts stores/__tests__/llmProviderConfigStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web
+
+stderr | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts (7 tests) 36ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts (11 tests) 49ms
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts (5 tests) 60ms
+
+ Test Files  3 passed (3)
+      Tests  23 passed (23)
+   Start at  14:23:30
+   Duration  5.20s (transform 2.83s, setup 13.32s, collect 312ms, tests 144ms, environment 649ms, prepare 395ms)
+

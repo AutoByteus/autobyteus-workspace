@@ -1,0 +1,22 @@
+ Container scsp-round11-autobyteus-server-1  Stopping
+ Container scsp-round11-autobyteus-server-1  Stopped
+ Container scsp-round11-autobyteus-server-1  Removing
+ Container scsp-round11-autobyteus-server-1  Removed
+ Volume scsp-round11_autobyteus-server-workspace  Removing
+ Volume scsp-round11_autobyteus-server-chromium-profile  Removing
+ Volume scsp-round11_autobyteus-server-data  Removing
+ Volume scsp-round11_autobyteus-server-root-home  Removing
+ Network scsp-round11_default  Removing
+ Volume scsp-round11_autobyteus-server-data  Removed
+ Volume scsp-round11_autobyteus-server-chromium-profile  Removed
+ Volume scsp-round11_autobyteus-server-workspace  Removed
+ Volume scsp-round11_autobyteus-server-root-home  Removed
+ Network scsp-round11_default  Removed
+[2026-07-22 23:24:00] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/docker/.runtime/scsp-round11.env
+OWNED_CONTAINERS=0
+OWNED_VOLUMES=0
+OWNED_NETWORKS=0
+RUNTIME_ENV=ABSENT
+TEMP_SCRIPT=ABSENT
+TRACKED_DOCKER_DIFF=NONE
+CLEANUP=PASS

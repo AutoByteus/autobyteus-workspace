@@ -66,8 +66,9 @@ const provider = (id: string, name: string) => ({
   name,
   providerType: 'OPENAI' as any,
   isCustom: false,
-  apiKeyConfigured: true,
+  baseUrl: null,
   status: 'READY' as const,
+  statusMessage: null,
 })
 
 const model = (modelIdentifier: string, providerId: string, providerName: string) => ({

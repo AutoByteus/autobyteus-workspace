@@ -25,6 +25,7 @@
       <div>
         <select
           v-model="selectedSearchProvider"
+          :disabled="!canWriteSecrets"
           class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
           data-testid="search-provider-select"
           @blur="markSearchFormTouched"
@@ -40,54 +41,35 @@
         <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.serper_api_key') }}</label>
         <input
           v-model="searchForm.serperApiKey"
+          :disabled="!canWriteSecrets"
           type="password"
           class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
           :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_serper_api_key')"
           data-testid="search-serper-api-key"
           @blur="markSearchFormTouched"
         >
-        <p v-if="store.searchConfig.serperApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_serper_api_key_is_already') }}</p>
+        <p v-if="store.searchConfig.serperStorageState === 'CONFIGURED'" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_serper_api_key_is_already') }}</p>
       </div>
 
       <div v-if="selectedSearchProvider === 'serpapi'" class="space-y-2">
         <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.serpapi_api_key') }}</label>
         <input
           v-model="searchForm.serpapiApiKey"
+          :disabled="!canWriteSecrets"
           type="password"
           class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
           :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_serpapi_api_key')"
           data-testid="search-serpapi-api-key"
           @blur="markSearchFormTouched"
         >
-        <p v-if="store.searchConfig.serpapiApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_serpapi_api_key_is_already') }}</p>
-      </div>
-
-      <div v-if="selectedSearchProvider === 'google_cse'" class="space-y-2">
-        <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.google_cse_api_key') }}</label>
-        <input
-          v-model="searchForm.googleCseApiKey"
-          type="password"
-          class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-          :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_google_cse_api_key')"
-          data-testid="search-google-cse-api-key"
-          @blur="markSearchFormTouched"
-        >
-        <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.google_cse_id') }}</label>
-        <input
-          v-model="searchForm.googleCseId"
-          type="text"
-          class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-          :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_google_cse_id')"
-          data-testid="search-google-cse-id"
-          @blur="markSearchFormTouched"
-        >
-        <p v-if="store.searchConfig.googleCseApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_google_cse_api_key_is') }}</p>
+        <p v-if="store.searchConfig.serpapiStorageState === 'CONFIGURED'" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_serpapi_api_key_is_already') }}</p>
       </div>
 
       <div v-if="selectedSearchProvider === 'vertex_ai_search'" class="space-y-2">
         <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.vertex_ai_search_api_key') }}</label>
         <input
           v-model="searchForm.vertexAiSearchApiKey"
+          :disabled="!canWriteSecrets"
           type="password"
           class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
           :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_vertex_ai_search_api_key')"
@@ -97,14 +79,19 @@
         <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.serving_config_path') }}</label>
         <input
           v-model="searchForm.vertexAiSearchServingConfig"
+          :disabled="!canWriteSecrets"
           type="text"
           class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
           :placeholder="$t('settings.components.settings.ServerSettingsManager.projects_locations_collections_engines_servingco')"
           data-testid="search-vertex-serving-config"
           @blur="markSearchFormTouched"
         >
-        <p v-if="store.searchConfig.vertexAiSearchApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_vertex_ai_search_api_key') }}</p>
+        <p v-if="store.searchConfig.vertexAiSearchStorageState === 'CONFIGURED'" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_vertex_ai_search_api_key') }}</p>
       </div>
+
+      <p v-if="!canWriteSecrets" class="text-sm text-amber-700" role="status">
+        Secret changes are unavailable: {{ store.searchConfig.instructionCode || store.searchConfig.vaultHealth }}.
+      </p>
 
       <p v-if="displayedSearchConfigValidationError" class="text-sm text-red-600">
         {{ displayedSearchConfigValidationError }}
@@ -124,7 +111,6 @@ const emit = defineEmits<{ notify: [payload: NotificationPayload] }>()
 const searchProviderOptions: Array<{ value: SearchProvider; label: string }> = [
   { value: 'serper', label: 'Serper' },
   { value: 'serpapi', label: 'SerpApi' },
-  { value: 'google_cse', label: 'Google CSE' },
   { value: 'vertex_ai_search', label: 'Vertex AI Search' },
 ]
 
@@ -136,8 +122,6 @@ const selectedSearchProvider = ref<SearchProvider | ''>('')
 const searchForm = reactive({
   serperApiKey: '',
   serpapiApiKey: '',
-  googleCseApiKey: '',
-  googleCseId: '',
   vertexAiSearchApiKey: '',
   vertexAiSearchServingConfig: '',
 })
@@ -146,16 +130,13 @@ const searchConfigValidationError = computed(() => {
   const provider = selectedSearchProvider.value
   if (!provider) return 'Please select a search provider.'
 
-  const hasSerperKey = Boolean(searchForm.serperApiKey.trim()) || store.searchConfig.serperApiKeyConfigured
-  const hasSerpapiKey = Boolean(searchForm.serpapiApiKey.trim()) || store.searchConfig.serpapiApiKeyConfigured
-  const hasGoogleApiKey = Boolean(searchForm.googleCseApiKey.trim()) || store.searchConfig.googleCseApiKeyConfigured
-  const hasGoogleId = Boolean(searchForm.googleCseId.trim())
-  const hasVertexApiKey = Boolean(searchForm.vertexAiSearchApiKey.trim()) || store.searchConfig.vertexAiSearchApiKeyConfigured
+  const hasSerperKey = Boolean(searchForm.serperApiKey.trim()) || store.searchConfig.serperStorageState === 'CONFIGURED'
+  const hasSerpapiKey = Boolean(searchForm.serpapiApiKey.trim()) || store.searchConfig.serpapiStorageState === 'CONFIGURED'
+  const hasVertexApiKey = Boolean(searchForm.vertexAiSearchApiKey.trim()) || store.searchConfig.vertexAiSearchStorageState === 'CONFIGURED'
   const hasVertexServingConfig = Boolean(searchForm.vertexAiSearchServingConfig.trim())
 
   if (provider === 'serper' && !hasSerperKey) return 'Serper API key is required.'
   if (provider === 'serpapi' && !hasSerpapiKey) return 'SerpApi API key is required.'
-  if (provider === 'google_cse' && (!hasGoogleApiKey || !hasGoogleId)) return 'Google CSE API key and Google CSE ID are required.'
   if (provider === 'vertex_ai_search' && (!hasVertexApiKey || !hasVertexServingConfig)) {
     return 'Vertex AI Search API key and serving config path are required.'
   }
@@ -168,12 +149,16 @@ const hasSearchConfigChanges = computed(() => {
   if (!selectedSearchProvider.value) return false
   if (selectedSearchProvider.value !== existingProvider) return true
   if (searchForm.serperApiKey.trim() || searchForm.serpapiApiKey.trim()) return true
-  if (searchForm.googleCseApiKey.trim() || searchForm.vertexAiSearchApiKey.trim()) return true
-  if (searchForm.googleCseId.trim() !== (store.searchConfig.googleCseId ?? '')) return true
+  if (searchForm.vertexAiSearchApiKey.trim()) return true
   return searchForm.vertexAiSearchServingConfig.trim() !== (store.searchConfig.vertexAiSearchServingConfig ?? '')
 })
 
+const canWriteSecrets = computed(() =>
+  store.searchConfig.vaultHealth === 'READY',
+)
+
 const canSaveSearchConfig = computed(() =>
+  canWriteSecrets.value &&
   Boolean(selectedSearchProvider.value) &&
   !searchConfigValidationError.value &&
   hasSearchConfigChanges.value,
@@ -199,8 +184,6 @@ const applySearchConfigToForm = () => {
   selectedSearchProvider.value = store.searchConfig.provider
   searchForm.serperApiKey = ''
   searchForm.serpapiApiKey = ''
-  searchForm.googleCseApiKey = ''
-  searchForm.googleCseId = store.searchConfig.googleCseId ?? ''
   searchForm.vertexAiSearchApiKey = ''
   searchForm.vertexAiSearchServingConfig = store.searchConfig.vertexAiSearchServingConfig ?? ''
   isSearchFormTouched.value = false
@@ -226,8 +209,6 @@ const saveSearchConfig = async () => {
       provider: selectedSearchProvider.value,
       serperApiKey: searchForm.serperApiKey.trim() || null,
       serpapiApiKey: searchForm.serpapiApiKey.trim() || null,
-      googleCseApiKey: searchForm.googleCseApiKey.trim() || null,
-      googleCseId: searchForm.googleCseId.trim() || null,
       vertexAiSearchApiKey: searchForm.vertexAiSearchApiKey.trim() || null,
       vertexAiSearchServingConfig: searchForm.vertexAiSearchServingConfig.trim() || null,
     })

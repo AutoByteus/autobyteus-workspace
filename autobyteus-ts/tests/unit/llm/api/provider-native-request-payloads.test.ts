@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
-import { GeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
-import { MistralLLM } from '../../../../src/llm/api/mistral-llm.js';
-import { OllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
-import { OpenAIResponsesLLM } from '../../../../src/llm/api/openai-responses-llm.js';
+import { AnthropicLLM as ProductionAnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
+import { GeminiLLM as ProductionGeminiLLM } from '../../../../src/llm/api/gemini-llm.js';
+import { MistralLLM as ProductionMistralLLM } from '../../../../src/llm/api/mistral-llm.js';
+import { OllamaLLM as ProductionOllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
+import { OpenAIResponsesLLM as ProductionOpenAIResponsesLLM } from '../../../../src/llm/api/openai-responses-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -17,6 +17,12 @@ import {
   ToolResultPayload,
   type ToolCallSpec
 } from '../../../../src/llm/utils/messages.js';
+import {
+  providerApiKeyResolver,
+  geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
+  missingProviderApiKeyResolver,
+} from '../../provider-api-key-resolver-test-helpers.js';
 
 const originalEnv = { ...process.env };
 
@@ -40,6 +46,53 @@ const model = (
     provider,
     ...extra
   });
+
+class GeminiLLM extends ProductionGeminiLLM {
+  constructor(inputModel = model(LLMProvider.GEMINI, 'gemini-2.5-pro'), config = new LLMConfig()) {
+    super(
+      inputModel,
+      config,
+      geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+      geminiRuntimeResolver(),
+    );
+  }
+}
+
+class OllamaLLM extends ProductionOllamaLLM {
+  constructor(inputModel: LLMModel, config = new LLMConfig()) {
+    super(inputModel, config, missingProviderApiKeyResolver());
+  }
+}
+
+class AnthropicLLM extends ProductionAnthropicLLM {
+  constructor(inputModel: LLMModel, config = new LLMConfig()) {
+    super(inputModel, config, providerApiKeyResolver('synthetic-anthropic-key'));
+  }
+}
+
+class MistralLLM extends ProductionMistralLLM {
+  constructor(inputModel: LLMModel, config = new LLMConfig()) {
+    super(inputModel, config, providerApiKeyResolver('synthetic-mistral-key'));
+  }
+}
+
+class OpenAIResponsesLLM extends ProductionOpenAIResponsesLLM {
+  constructor(
+    inputModel: LLMModel,
+    _legacyAlias: string,
+    baseUrl: string,
+    config = new LLMConfig(),
+    _legacyApiKeyDefault?: string,
+  ) {
+    super(
+      inputModel,
+      baseUrl,
+      config,
+      providerApiKeyResolver('synthetic-openai-key'),
+      inputModel.provider,
+    );
+  }
+}
 
 const callA: ToolCallSpec = {
   id: 'call_a',
@@ -281,13 +334,6 @@ describe('provider-native API request payloads', () => {
     process.env = {
       ...originalEnv,
       AUTOBYTEUS_STREAM_PARSER: 'api_tool_call',
-      VERTEX_AI_API_KEY: '',
-      VERTEX_AI_PROJECT: '',
-      VERTEX_AI_LOCATION: '',
-      GEMINI_API_KEY: 'test-gemini-key',
-      ANTHROPIC_API_KEY: 'test-anthropic-key',
-      MISTRAL_API_KEY: 'test-mistral-key',
-      OPENAI_API_KEY: 'test-openai-key'
     };
   });
 
@@ -298,8 +344,8 @@ describe('provider-native API request payloads', () => {
   it('captures Gemini generateContent payload with native calls, ordered function responses, preserved thinking metadata, and no synthetic aggregate user text', async () => {
     let captured: any;
     const llm = new GeminiLLM(undefined, commonConfig());
-    (llm as any).client = {
-      models: {
+    (llm as any).clientPromise = Promise.resolve({
+      client: { models: {
         generateContent: async (params: any) => {
           captured = params;
           return {
@@ -312,8 +358,9 @@ describe('provider-native API request payloads', () => {
             }
           };
         }
-      }
-    };
+      }},
+      runtimeInfo: { runtime: 'api_key', project: null, location: null },
+    });
 
     await llm.sendMessages(messagesFor('gemini'), null, { tools: geminiTools });
 
@@ -355,8 +402,8 @@ describe('provider-native API request payloads', () => {
 
     let captured: any;
     const llm = new GeminiLLM(undefined, commonConfig());
-    (llm as any).client = {
-      models: {
+    (llm as any).clientPromise = Promise.resolve({
+      client: { models: {
         generateContent: async (params: any) => {
           captured = params;
           return {
@@ -369,8 +416,9 @@ describe('provider-native API request payloads', () => {
             }
           };
         }
-      }
-    };
+      }},
+      runtimeInfo: { runtime: 'api_key', project: null, location: null },
+    });
 
     try {
       await llm.sendMessages([
@@ -433,7 +481,7 @@ describe('provider-native API request payloads', () => {
   it('captures Anthropic messages payload with strict assistant tool_use followed by result-block-first user tool_result blocks and no synthetic aggregate user text', async () => {
     let captured: any;
     const llm = new AnthropicLLM(model(LLMProvider.ANTHROPIC, 'claude-sonnet-4-5'), commonConfig());
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       messages: {
         create: async (params: any) => {
           captured = params;
@@ -443,7 +491,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages(messagesFor('anthropic'), null, { tools: commonTools });
 
@@ -470,7 +518,7 @@ describe('provider-native API request payloads', () => {
   it('captures Mistral chat payload with native tool_calls, ordered role=tool results, and no synthetic aggregate user text', async () => {
     let captured: any;
     const llm = new MistralLLM(model(LLMProvider.MISTRAL, 'mistral-large-2512'), commonConfig());
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       chat: {
         complete: async (params: any) => {
           captured = params;
@@ -480,7 +528,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages(messagesFor('mistral'), null, {
       logicalConversationId: 'agent-1',
@@ -523,7 +571,7 @@ describe('provider-native API request payloads', () => {
       openAIConfig,
       'test-openai-key'
     );
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       responses: {
         create: async (params: any) => {
           captured = params;
@@ -533,7 +581,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages(messagesFor('openai_responses'), null, {
       tools: commonTools,
@@ -586,7 +634,7 @@ describe('provider-native API request payloads', () => {
       openAIConfig,
       'test-openai-key'
     );
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       responses: {
         create: async (params: any) => {
           captured = params;
@@ -596,7 +644,7 @@ describe('provider-native API request payloads', () => {
           };
         }
       }
-    };
+    });
 
     await llm.sendMessages([new Message(MessageRole.USER, 'Hello')]);
 
@@ -619,7 +667,7 @@ describe('provider-native API request payloads', () => {
       openAIConfig,
       'test-openai-key'
     );
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       responses: {
         create: async (params: any) => {
           captured = params;
@@ -635,7 +683,7 @@ describe('provider-native API request payloads', () => {
           return stream();
         }
       }
-    };
+    });
 
     for await (const _chunk of llm.streamMessages(messagesFor('openai_responses'), null, {
       tools: commonTools,

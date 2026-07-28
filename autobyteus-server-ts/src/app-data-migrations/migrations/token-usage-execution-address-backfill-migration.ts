@@ -1,7 +1,8 @@
 import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
+import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
 import { TASK_DELEGATION_RECORDS_FILE_NAME } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
 import { normalizeTaskDelegationRecordsFile } from "../../agent-team-execution/task-delegation/records/task-delegation-records-normalizer.js";
 import {
@@ -344,14 +345,21 @@ const statusFromSummary = (summary: AppDataMigrationSummary): AppDataMigrationEx
 };
 
 export class PrismaTokenUsageExecutionAddressBackfillDatabase implements TokenUsageExecutionAddressBackfillDatabase {
+  private prisma: PrismaClient | null;
   private readonly ownsClient: boolean;
 
-  constructor(private readonly prisma: PrismaClient = new PrismaClient()) {
-    this.ownsClient = arguments.length === 0;
+  constructor(prisma?: PrismaClient) {
+    this.prisma = prisma ?? null;
+    this.ownsClient = prisma === undefined;
+  }
+
+  private get client(): PrismaClient {
+    this.prisma ??= createConfiguredPrismaClient();
+    return this.prisma;
   }
 
   async listTokenUsageLedgerRows(): Promise<RawTokenUsageLedgerBackfillRow[]> {
-    return await this.prisma.$queryRaw<RawTokenUsageLedgerBackfillRow[]>`
+    return await this.client.$queryRaw<RawTokenUsageLedgerBackfillRow[]>`
       SELECT
         "id",
         "usage_event_id",
@@ -371,7 +379,7 @@ export class PrismaTokenUsageExecutionAddressBackfillDatabase implements TokenUs
     rootTeamRunId: string;
     executionAddressJson: string;
   }): Promise<void> {
-    await this.prisma.$executeRaw`
+    await this.client.$executeRaw`
       UPDATE "token_usage_ledger_events"
       SET
         "root_team_run_id" = ${input.rootTeamRunId},
@@ -381,7 +389,7 @@ export class PrismaTokenUsageExecutionAddressBackfillDatabase implements TokenUs
   }
 
   async disconnect(): Promise<void> {
-    if (this.ownsClient) await this.prisma.$disconnect();
+    if (this.ownsClient && this.prisma) await this.prisma.$disconnect();
   }
 }
 

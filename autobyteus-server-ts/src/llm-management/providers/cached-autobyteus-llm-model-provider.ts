@@ -54,4 +54,8 @@ export class CachedAutobyteusLlmModelProvider {
     logger.info(`LLM models cache refreshed with ${this.cache.length} items after provider reload.`);
     return count;
   }
+
+  invalidate(): void {
+    this.cache = null;
+  }
 }

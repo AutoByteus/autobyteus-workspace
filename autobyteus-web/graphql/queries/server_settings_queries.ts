@@ -18,11 +18,11 @@ export const GET_SEARCH_CONFIG = gql`
   query GetSearchConfig {
     getSearchConfig {
       provider
-      serperApiKeyConfigured
-      serpapiApiKeyConfigured
-      googleCseApiKeyConfigured
-      googleCseId
-      vertexAiSearchApiKeyConfigured
+      vaultHealth
+      instructionCode
+      serperStorageState
+      serpapiStorageState
+      vertexAiSearchStorageState
       vertexAiSearchServingConfig
     }
   }

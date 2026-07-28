@@ -1,20 +1,24 @@
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import axios from 'axios';
 import { VertexAISearchStrategy } from '../../../../src/tools/search/vertex-ai-search-strategy.js';
 
-const apiKey = process.env.VERTEX_AI_SEARCH_API_KEY;
-const servingConfig = process.env.VERTEX_AI_SEARCH_SERVING_CONFIG;
-const runIntegration = apiKey && servingConfig ? describe : describe.skip;
+const servingConfig =
+  'projects/p/locations/global/collections/default_collection/engines/e/servingConfigs/default_search';
 
-runIntegration('VertexAISearchStrategy (integration)', () => {
-  it('performs a live search against Vertex AI Search', async () => {
-    const strategy = new VertexAISearchStrategy();
-    const output = await strategy.search('OpenAI', 3);
+describe('VertexAISearchStrategy (integration)', () => {
+  afterEach(() => vi.restoreAllMocks());
 
-    expect(typeof output).toBe('string');
-    expect(output.length).toBeGreaterThan(0);
-    expect(
-      output.startsWith('Search Results:') ||
-      output === 'No relevant information found for the query via Vertex AI Search.'
-    ).toBe(true);
-  }, 30000);
+  it('sends explicitly provisioned authentication to the configured serving path', async () => {
+    const postSpy = vi.spyOn(axios, 'post').mockResolvedValue({ status: 200, data: { results: [] } } as any);
+    const strategy = new VertexAISearchStrategy('synthetic-test-key', servingConfig);
+
+    await expect(strategy.search('OpenAI', 3)).resolves.toBe(
+      'No relevant information found for the query via Vertex AI Search.',
+    );
+    expect(postSpy).toHaveBeenCalledWith(
+      `https://discoveryengine.googleapis.com/v1alpha/${servingConfig}:searchLite`,
+      { query: 'OpenAI', pageSize: 3 },
+      expect.objectContaining({ params: { key: 'synthetic-test-key' } }),
+    );
+  });
 });

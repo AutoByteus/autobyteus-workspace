@@ -1,0 +1,775 @@
+ROUND=19
+HEAD=3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f
+COMMAND_1=core concrete launcher and separately approved file-root/value-safe suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-ts
+
+ ✓ tests/unit/tools/file/workspace-path-utils.test.ts (3 tests) 7ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts (4 tests) 8ms
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > inserts text after an exact anchor
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > replaces a unique exact block
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > returns a helpful multiple match error
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > requires exactly one anchor mode
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > resolves relative paths from the workspace root
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > returns a helpful missing anchor error
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > registers definition with expected schema
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a unified diff patch in an existing file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > resolves relative paths from the workspace root
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > rejects relative paths when no workspace root is configured
+Successfully registered tool definition: 'replace_in_file'
+
+ ✓ tests/unit/tools/file/replace-in-file.test.ts (5 tests) 12ms
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > rejects relative paths when no workspace root is configured
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a git diff style patch with file headers
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/insert-in-file.test.ts (6 tests) 14ms
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises PatchApplicationError when patch fails
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > retries with whitespace tolerance
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises error when file is missing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > resolves relative paths from the workspace root
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects relative paths when no workspace root is configured
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > read then patch flow
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/edit-file.test.ts (9 tests) 21ms
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts (2 tests) 4ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (1 test) 2ms
+ ✓ tests/unit/secrets/secret-value.test.ts (1 test) 1ms
+ ✓ tests/unit/tools/terminal/wsl-tmux-session.test.ts (3 tests) 207ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts (5 tests) 548ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts (7 tests) 1264ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (12 tests) 1274ms
+     ✓ starting twice throws  306ms
+     ✓ close is idempotent  304ms
+     ✓ returns queued data on read  302ms
+
+ Test Files  12 passed (12)
+      Tests  58 passed (58)
+   Start at  17:35:37
+   Duration  1.53s (transform 907ms, setup 95ms, import 1.09s, tests 3.36s, environment 1ms)
+
+COMMAND_2=server concrete child/value-safe/AppConfig suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+ ✓ tests/unit/managed-capabilities/messaging-gateway/messaging-gateway-process-supervisor.test.ts (3 tests) 291ms
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > reports availability based on rg presence
+Found system ripgrep at: /opt/homebrew/bin/rg
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > finds matching files
+Found system ripgrep at: /opt/homebrew/bin/rg
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > returns absolute paths
+Found system ripgrep at: /opt/homebrew/bin/rg
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > RipgrepSearchStrategy > respects max results
+Found system ripgrep at: /opt/homebrew/bin/rg
+
+stderr | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > FuzzysortSearchStrategy > returns empty list for empty index
+File index is empty, cannot perform search
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > uses the first available strategy
+Strategy Object not available, skipping
+[Search] Trying strategy: Object for query 'test'
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > uses the first available strategy
+[Search] Object completed in 0.05ms, found 1 results (total: 0.10ms)
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+[Search] Trying strategy: Object for query 'test'
+
+stderr | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+Strategy Object failed: Error: Search failed, trying next
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+[Search] Trying strategy: Object for query 'test'
+
+stdout | tests/unit/file-explorer/search-strategy/search-strategies.test.ts > CompositeSearchStrategy > falls back when a strategy fails
+[Search] Object completed in 0.05ms, found 1 results (total: 0.40ms)
+
+ ✓ tests/unit/file-explorer/search-strategy/search-strategies.test.ts (11 tests) 42ms
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-PFt6Kq' with ignore strategies: 
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-PFt6Kq
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > logical stop returns after requesting child stop without waiting for child stopped
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-PFt6Kq
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-WZ7C0v' with ignore strategies: 
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-WZ7C0v
+
+stdout | tests/unit/file-explorer/file-system-watcher-runtime.test.ts > FileSystemWatcher runtime boundary > ignores raw events whose watcher generation is stale
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/watcher-runtime-unit-WZ7C0v
+
+ ✓ tests/unit/file-explorer/file-system-watcher-runtime.test.ts (2 tests) 58ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:30159) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects sending a new turn while another turn is already active
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+Claude runtime turn failed for run 'run-1': Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+Claude runtime turn failed for run 'run-1': CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (18 tests) 47ms
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8Deg3n
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8Deg3n/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8Deg3n/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8Deg3n/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' environment variable is not set. This variable is mandatory and must be provided by the environment that launches the server (e.g., Docker Compose, Electron app, or a developer's .env file) to ensure correct URL generation for clients. The server cannot start without it.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > initializes base URL and sqlite db path when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tjRXi2/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > preserves an explicit DATABASE_URL when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-E7fb7m/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > delivers and projects a persisted SQLite DATABASE_URL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tY0zM5/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-twXwMT
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-twXwMT/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-twXwMT/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-twXwMT/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+ERROR: Failed to initialize SQLite path: AppConfigError: DATABASE_URL must be a non-empty SQLite file URL.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_LOG_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk/custom-logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-osqzHk/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if getBaseUrl is called before initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets custom app data dir when valid
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ax9db8
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ax9db8/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > accepts an initial app data dir in the constructor
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ZWqs4C
+AppConfig instance created.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > clears stale AUTOBYTEUS_MEMORY_DIR when switching to a custom app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PECFQs/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir after initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-CjV2Zv/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir for non-existent path
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Skill path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Agent package root path must be absolute and will be ignored: relative-source
+Agent package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Application package root path must be absolute and will be ignored: relative-root
+Application package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > exposes md-centric agent/team path helpers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-v5i4Y0/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets and gets config values and updates the env file
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-9u1D0M
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-9u1D0M/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > creates temp workspace directory under the app data dir by default
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VnkUfF
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VnkUfF/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_TEMP_WORKSPACE_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-5s5Mbf
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-5s5Mbf/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-HxVWD4
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-HxVWD4/.env
+loadEnvironment() is deprecated. Use initialize() instead.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Failed to load environment: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-HxVWD4/.env
+
+ ✓ tests/unit/config/app-config.test.ts (20 tests) 36ms
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lists available settings excluding API keys
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > sorts settings by key
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > includes predefined settings from effective runtime values even when not persisted in config data
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes an initialized runtime default without persisting it
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps configured values authoritative over runtime defaults
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lets an explicit Settings update supersede an initialized runtime default
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes compaction predefined settings with typed descriptions
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes Codex sandbox mode as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes media default model settings as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes stream parser as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > updates settings successfully
+Initialized server settings service with 19 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes a registered working-context compaction strategy before persistence
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects an unknown working-context compaction strategy before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value read-only
+Initialized server settings service with 19 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value workspace-write
+Initialized server settings service with 19 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value danger-full-access
+Initialized server settings service with 19 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined Codex sandbox values before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value xml
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value json
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value sentinel
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value api_tool_call
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined stream parser values before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > saves api_tool_call as the canonical stream parser provider-native value
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > preserves custom setting values without predefined normalization
+Initialized server settings service with 19 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists dynamic media model identifiers without static allowed-value validation
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes featured catalog items as predefined editable metadata
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes valid featured catalog settings before persistence
+Initialized server settings service with 19 predefined settings
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects duplicate featured catalog identities before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid featured catalog JSON before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL
+Initialized server settings service with 19 predefined settings
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas after successful unrelated setting updates
+Initialized server settings service with 19 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when an update fails before persistence
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Initialized server settings service with 19 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Error updating server setting 'DEFAULT_IMAGE_GENERATION_MODEL'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Initialized server settings service with 19 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Error updating server setting 'CUSTOM_SETTING'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects updating system-managed settings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > accepts any setting key
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > deletes custom settings successfully
+Initialized server settings service with 19 predefined settings
+Server setting 'CUSTOM_SETTING' deleted
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects deleting predefined settings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when deleting missing settings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads the typed applications capability setting as true, false, or null
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists the typed applications capability setting as normalized strings
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy undefined as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "" as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "   " as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " structured-json " as structured-json without persisting
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " removed-strategy " as removed-strategy without persisting
+Initialized server settings service with 19 predefined settings
+
+ ✓ tests/unit/services/server-settings-service.test.ts (48 tests) 21ms
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > preserves full dotenv projection while rejecting generic managed-credential writes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z/.env
+[dotenv@17.3.1] injecting env (5) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-4tOQ6z/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > keeps the current provider store v2-only without interpreting custom-provider v1
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-KdE8To
+
+ ✓ tests/unit/secret-management/legacy-source-non-authority.test.ts (2 tests) 13ms
+ ✓ tests/unit/remote-access/redact-sensitive-url.test.ts (5 tests) 2ms
+
+ Test Files  8 passed (8)
+      Tests  109 passed (109)
+   Start at  17:35:39
+   Duration  6.45s (transform 3.21s, setup 33ms, import 4.81s, tests 511ms, environment 1ms)
+
+ROUND19_ENV_FILE_ROOT_VALUE_SAFE=PASS

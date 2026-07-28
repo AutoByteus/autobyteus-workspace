@@ -1,0 +1,20 @@
+ROUND=20
+COMMAND=DOCKER_CONFIG=<owned> ./autobyteus-server-ts/docker/docker-start.sh down -p scsp-round20 --volumes --delete-state
+ Container scsp-round20-autobyteus-server-1  Stopping
+ Container scsp-round20-autobyteus-server-1  Stopped
+ Container scsp-round20-autobyteus-server-1  Removing
+ Container scsp-round20-autobyteus-server-1  Removed
+ Volume scsp-round20_autobyteus-server-chromium-profile  Removing
+ Volume scsp-round20_autobyteus-server-workspace  Removing
+ Volume scsp-round20_autobyteus-server-data  Removing
+ Network scsp-round20_default  Removing
+ Volume scsp-round20_autobyteus-server-root-home  Removing
+ Volume scsp-round20_autobyteus-server-chromium-profile  Removed
+ Volume scsp-round20_autobyteus-server-workspace  Removed
+ Volume scsp-round20_autobyteus-server-data  Removed
+ Volume scsp-round20_autobyteus-server-root-home  Removed
+ Network scsp-round20_default  Removed
+[2026-07-27 19:32:25] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/docker/.runtime/scsp-round20.env
+CONTAINERS_REMAINING=0
+VOLUMES_REMAINING=0
+RUNTIME_ENV_REMAINS=no

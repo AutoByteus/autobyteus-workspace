@@ -1,0 +1,32 @@
+restart_command=docker compose ... restart autobyteus-server
+database_url_injected=false
+ Container scsp-round3-autobyteus-server-1  Restarting
+ Container scsp-round3-autobyteus-server-1  Started
+{
+  "phase": "post-restart-readiness",
+  "httpStatus": 200,
+  "status": {
+    "backendHealth": "READY",
+    "storageState": "CONFIGURED",
+    "lifecycle": "WRITABLE",
+    "instructionCode": null
+  }
+}
+{
+  "phase": "post-restart-container-identity",
+  "containerId": "7bec5da74c3e",
+  "dataVolume": "scsp-round3_autobyteus-server-data",
+  "dataMountType": "volume",
+  "dataMountDestination": "/home/autobyteus/data",
+  "running": true
+}
+{
+  "phase": "post-restart-structural-scan",
+  "persistedConfigHasSqliteUrl": true,
+  "persistedConfigValueFree": true,
+  "migrationSuccessCount": 2,
+  "listenCount": 2,
+  "canaryHitCount": 0,
+  "p1012HitCount": 0,
+  "missingDatabaseUrlHitCount": 0
+}

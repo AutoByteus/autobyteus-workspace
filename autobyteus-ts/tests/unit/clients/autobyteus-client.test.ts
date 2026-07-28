@@ -34,7 +34,7 @@ describe('AutobyteusClient', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
-    process.env = { ...originalEnv, AUTOBYTEUS_API_KEY: 'test-key' };
+    process.env = { ...originalEnv };
     createMock.mockImplementation((config: any) => ({ config, get: vi.fn(), post: vi.fn() }));
     getMock.mockReset();
     headMock.mockReset();
@@ -51,15 +51,14 @@ describe('AutobyteusClient', () => {
   });
 
   it('throws when API key is missing', () => {
-    delete process.env.AUTOBYTEUS_API_KEY;
-    expect(() => new AutobyteusClient('https://example.com')).toThrow();
+    expect(() => new AutobyteusClient('https://example.com', '')).toThrow();
   });
 
   it('uses explicit server URL and disables TLS verification when no cert is provided', () => {
     process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = 'https://env-host-1,https://env-host-2';
     delete process.env.AUTOBYTEUS_SSL_CERT_FILE;
 
-    const client = new AutobyteusClient('https://override-host');
+    const client = new AutobyteusClient('https://override-host', 'synthetic-test-key');
     expect(client.serverUrl).toBe('https://override-host');
     expect(createMock).toHaveBeenCalledTimes(2);
 
@@ -71,7 +70,7 @@ describe('AutobyteusClient', () => {
     process.env.AUTOBYTEUS_LLM_SERVER_HOSTS = 'https://first-host,https://second-host';
     delete process.env.AUTOBYTEUS_SSL_CERT_FILE;
 
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     expect(client.serverUrl).toBe('https://first-host');
   });
 
@@ -81,14 +80,14 @@ describe('AutobyteusClient', () => {
     await fs.writeFile(certPath, 'dummy-cert');
     process.env.AUTOBYTEUS_SSL_CERT_FILE = certPath;
 
-    new AutobyteusClient();
+    new AutobyteusClient(undefined, 'synthetic-test-key');
     const asyncConfig = createMock.mock.calls[0][0];
     expect(asyncConfig.httpsAgent.options.ca.toString()).toBe('dummy-cert');
     expect(asyncConfig.httpsAgent.options.rejectUnauthorized).not.toBe(false);
   });
 
   it('enter/exit returns instance and closes', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const closeSpy = vi.spyOn(client, 'close').mockResolvedValue();
 
     const entered = await client.enter();
@@ -99,7 +98,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('normalizes media to data URIs for sendMessage', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
     (client.asyncClient.post as any) = postMock;
     headMock.mockResolvedValue({ headers: { 'content-length': '1024' } });
@@ -155,7 +154,7 @@ describe('AutobyteusClient', () => {
     process.env.AUTOBYTEUS_INLINE_VIDEO_MAX_BYTES = '4';
 
     try {
-      const client = new AutobyteusClient();
+      const client = new AutobyteusClient(AutobyteusClient.DEFAULT_SERVER_URL, 'synthetic-test-key');
       const postMock = vi.fn().mockImplementation(async (url: string) => {
         if (url.endsWith('/media/stage')) {
           return { data: { media_uri: 'media://videos/staged.mp4' } };
@@ -203,7 +202,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('passes existing media URIs through without staging or data URI conversion', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
     (client.asyncClient.post as any) = postMock;
 
@@ -232,7 +231,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('stages remote media when size cannot be proven below threshold', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     getMock.mockResolvedValue({
       data: Readable.from(['audio-bytes']),
       headers: { 'content-type': 'audio/mpeg' }
@@ -274,7 +273,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('forwards AbortSignal to sendMessage Axios request', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
     (client.asyncClient.post as any) = postMock;
     const controller = new AbortController();
@@ -302,7 +301,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('normalizes media to data URIs for streamMessage', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const stream = Readable.from(['data: {"content":"ok","is_complete":true}\n']);
     const postMock = vi.fn().mockResolvedValue({ data: stream });
     (client.asyncClient.post as any) = postMock;
@@ -332,7 +331,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('serializes generation_config for streamMessage', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const stream = Readable.from(['data: {"content":"ok","is_complete":true}\n']);
     const postMock = vi.fn().mockResolvedValue({ data: stream });
     (client.asyncClient.post as any) = postMock;
@@ -365,7 +364,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('forwards AbortSignal to streamMessage Axios request', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const stream = Readable.from(['data: {"content":"ok","is_complete":true}\n']);
     const postMock = vi.fn().mockResolvedValue({ data: stream });
     (client.asyncClient.post as any) = postMock;
@@ -396,7 +395,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('surfaces parseable stream error chunks without relabeling them as invalid format', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const stream = Readable.from(['data: {"error":"upload still in progress timeout"}\n']);
     const postMock = vi.fn().mockResolvedValue({ data: stream });
     (client.asyncClient.post as any) = postMock;
@@ -431,7 +430,7 @@ describe('AutobyteusClient', () => {
   });
 
   it('posts rendered tool transcript content without structured tool payload fields', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
     (client.asyncClient.post as any) = postMock;
 
@@ -482,7 +481,7 @@ tool_error: null`,
   });
 
   it('normalizes media to data URIs for generateImage including mask', async () => {
-    const client = new AutobyteusClient();
+    const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const postMock = vi.fn().mockResolvedValue({ data: { image_urls: ['http://server/image.png'] } });
     (client.asyncClient.post as any) = postMock;
 

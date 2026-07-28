@@ -4,26 +4,40 @@ import { BaseAudioClient } from '../base-audio-client.js';
 import type { AudioModel } from '../audio-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
+import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import { MultimediaProvider } from '../../providers.js';
 
 export class AutobyteusAudioClient extends BaseAudioClient {
-  private autobyteusClient: AutobyteusClient;
+  private clientPromise: Promise<AutobyteusClient> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
   sessionId: string;
 
-  constructor(model: AudioModel, config: MultimediaConfig) {
+  constructor(model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, config);
     if (!model.hostUrl) {
       throw new Error('AutobyteusAudioClient requires a hostUrl in its AudioModel.');
     }
 
-    this.autobyteusClient = new AutobyteusClient(model.hostUrl);
+    this.apiKeyResolver = apiKeyResolver;
     this.sessionId = crypto.randomUUID();
+  }
+
+  private getClient(): Promise<AutobyteusClient> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<AutobyteusClient> {
+    const secret = await this.apiKeyResolver.resolve(MultimediaProvider.AUTOBYTEUS);
+    return new AutobyteusClient(this.model.hostUrl!, secret.revealToTrustedConsumer());
   }
 
   async generateSpeech(
     prompt: string,
     generationConfig?: Record<string, unknown>
   ): Promise<SpeechGenerationResponse> {
-    const responseData = await this.autobyteusClient.generateSpeech(
+    const client = await this.getClient();
+    const responseData = await client.generateSpeech(
       this.model.name,
       prompt,
       generationConfig ?? null,
@@ -41,16 +55,18 @@ export class AutobyteusAudioClient extends BaseAudioClient {
   }
 
   async cleanup(): Promise<void> {
-    if (!this.autobyteusClient) {
+    if (!this.clientPromise) {
       return;
     }
 
     try {
-      await this.autobyteusClient.cleanupAudioSession(this.sessionId);
+      const client = await this.clientPromise;
+      await client.cleanupAudioSession(this.sessionId);
     } catch (error) {
       console.error(`Failed to cleanup remote audio session '${this.sessionId}': ${String(error)}`);
     } finally {
-      await this.autobyteusClient.close();
+      const client = await this.clientPromise;
+      await client.close();
     }
   }
 }

@@ -60,6 +60,7 @@ type ServerSettingValueValidation = {
 };
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
+const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;
 export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
@@ -208,17 +209,16 @@ export class ServerSettingsService {
   }
 
   private getVisibleSettingKeys(configData: Record<string, string>): string[] {
-    const config = appConfigProvider.config;
     const visibleKeys = new Set<string>();
 
     for (const key of Object.keys(configData)) {
-      if (!key.toUpperCase().endsWith("_API_KEY")) {
+      if (!SENSITIVE_SETTING_NAME.test(key)) {
         visibleKeys.add(key);
       }
     }
 
     for (const key of this.settingsInfo.keys()) {
-      const value = config.get(key);
+      const value = appConfigProvider.config.get(key);
       if (typeof value === "string" && value.trim().length > 0) {
         visibleKeys.add(key);
       }
@@ -246,7 +246,7 @@ export class ServerSettingsService {
     }> = [];
 
     for (const key of this.getVisibleSettingKeys(configData)) {
-      const value = config.get(key) ?? configData[key];
+      const value = appConfigProvider.config.get(key) ?? configData[key];
       if (value === undefined) {
         continue;
       }
@@ -265,6 +265,9 @@ export class ServerSettingsService {
 
   updateSetting(key: string, value: string): [boolean, string] {
     try {
+      if (SENSITIVE_SETTING_NAME.test(key)) {
+        return [false, "Sensitive settings must use their write-only credential editor."];
+      }
       const metadata = this.settingsInfo.get(key);
       if (metadata && !metadata.isEditable) {
         return [false, `Server setting '${key}' is managed by the system and cannot be updated here.`];
@@ -291,11 +294,11 @@ export class ServerSettingsService {
         logger.info(`Added new custom server setting: ${key}`);
       }
 
-      logger.info(`Server setting '${key}' updated to '${normalizedValueOrError}'`);
+      logger.info(`Server setting '${key}' updated`);
       return [true, `Server setting '${key}' has been updated successfully.`];
     } catch (error) {
-      logger.error(`Error updating server setting '${key}': ${String(error)}`);
-      return [false, `Error updating server setting: ${String(error)}`];
+      logger.error(`Error updating server setting '${key}'`);
+      return [false, "Error updating server setting: SERVER_SETTING_UPDATE_REJECTED"];
     }
   }
 
@@ -411,6 +414,7 @@ export class ServerSettingsService {
   getFeaturedCatalogItemsSettingValue(): string | null {
     return this.getSettingValue(FEATURED_CATALOG_ITEMS_SETTING_KEY);
   }
+
 }
 
 let cachedServerSettingsService: ServerSettingsService | null = null;

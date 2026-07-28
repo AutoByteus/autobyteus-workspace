@@ -15,8 +15,7 @@
           {{ $t('settings.components.settings.ProviderAPIKeyManager.custom_provider_probe_stale') }}
         </p>
 
-        <div class="flex items-center justify-between text-sm text-gray-700">
-          <span>{{ probeResult.name }}</span>
+        <div class="flex items-center justify-end text-sm text-gray-700">
           <span class="text-xs rounded-full bg-blue-50 text-blue-700 px-2 py-1 border border-blue-100">
             {{ $t('settings.components.settings.ProviderAPIKeyManager.models_count', { count: probeResult.discoveredModels.length }) }}
           </span>

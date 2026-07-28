@@ -1,0 +1,45 @@
+SECURE_CENTRALIZED_SECRET_PROVISIONING_DELIVERY_ROUND13_ELECTRON_ARTIFACT_INTEGRITY
+2026-07-26T13:46:17Z
+HEAD=eac929a1f1e411a72d232d961578a700bed12829
+BASE=d6983612c5a77fb94d9266df85a9d03fe2d1c68b
+DMG=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg
+ZIP=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip
+0cd713caa5dddcbb063b45591b7a5eb040f1efa5b436c3de5a50ead0270a99c8  /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg
+cc850a2e8092bc9f7d1ecf170aca92b963d6a91881e06b332fdd47b1f85aece6  /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip
+--- hdiutil verify ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $E18FCCA3
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $4CF54A92
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $5A9EC7E7
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $5F00C306
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $5A9EC7E7
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $D2383AE9
+Die überprüfte CRC32-Prüfsumme ist $A6D576F3
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg" is VALID
+--- zip integrity ---
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip.
+--- bundle identity ---
+com.autobyteus.app
+1.4.26
+1.4.26
+--- codesign assessment (informational; local candidate is unsigned/ad-hoc unless configured) ---
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+DELIVERY_ROUND13_ELECTRON_ARTIFACT_INTEGRITY=PASS

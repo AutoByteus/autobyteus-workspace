@@ -8,14 +8,10 @@ export class VertexAISearchStrategy extends SearchStrategy {
   private apiKey: string;
   private servingConfigPath: string;
 
-  constructor() {
+  constructor(apiKey: string, servingConfig: string) {
     super();
-    const apiKey = process.env.VERTEX_AI_SEARCH_API_KEY;
-    const servingConfig = process.env.VERTEX_AI_SEARCH_SERVING_CONFIG;
     if (!apiKey || !servingConfig) {
-      throw new Error(
-        "VertexAISearchStrategy requires both 'VERTEX_AI_SEARCH_API_KEY' and 'VERTEX_AI_SEARCH_SERVING_CONFIG' environment variables to be set."
-      );
+      throw new Error('VertexAISearchStrategy requires explicit API-key authentication and serving configuration.');
     }
 
     const normalizedPath = VertexAISearchStrategy.normalizeServingConfigPath(servingConfig);

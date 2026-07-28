@@ -1,0 +1,37 @@
+SCENARIO=SCSP-E2E-DOCKER-001
+IMPLEMENTATION_HEAD=eac929a1f1e411a72d232d961578a700bed12829
+PROJECT=scsp-round13
+BACKEND_PORT=65243
+CONTAINER_BEFORE=0a100760684f78f12615cd3e1211d65d34fea055b595dd4462602c02b599bf30
+DATA_VOLUME_BEFORE=scsp-round13_autobyteus-server-data
+IMAGE_ID=sha256:7901479a06e59bdda9ce8461ac7c33423780648cbae4b3df59171eba5ba87a71
+DOCKER_INITIAL_STATUS=MISSING
+DOCKER_SAVE_STATUS=CONFIGURED
+DOCKER_VAULT_HEALTH=READY
+DOCKER_SAVE_VALUE_EXPOSED=false
+DATA_ARTIFACTS_AFTER_SAVE_START
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent-config.json mode=644 size=311
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent.md mode=644 size=1933
+/home/autobyteus/data/agents/autobyteus-retrospective-skill-improver/agent-config.json mode=644 size=390
+/home/autobyteus/data/agents/autobyteus-retrospective-skill-improver/agent.md mode=644 size=1520
+/home/autobyteus/data/db/production.db mode=644 size=212992
+/home/autobyteus/data/db/production.db.secret.key mode=600 size=32
+/home/autobyteus/data/.env mode=644 size=95
+/home/autobyteus/data/external-channel/gateway-callback-outbox.json mode=644 size=36
+/home/autobyteus/data/logs/app-data-migrations/20260517_team_run_metadata_member_tree-2026-07-26T12-38-21-087Z.log mode=644 size=203
+/home/autobyteus/data/logs/app-data-migrations/20260521_run_history_index_v2-2026-07-26T12-38-21-209Z.log mode=644 size=196
+/home/autobyteus/data/logs/app-data-migrations/20260521_team_run_history_index_v2-2026-07-26T12-38-21-192Z.log mode=644 size=195
+/home/autobyteus/data/logs/app-data-migrations/20260617_raw_trace_rotation_layout-2026-07-26T12-38-21-153Z.log mode=644 size=195
+/home/autobyteus/data/logs/app-data-migrations/20260623_remove_self_evolution_run_metadata-2026-07-26T12-38-21-177Z.log mode=644 size=213
+/home/autobyteus/data/logs/app-data-migrations/20260701_team_communication_projection_addresses-2026-07-26T12-38-21-099Z.log mode=644 size=221
+/home/autobyteus/data/logs/app-data-migrations/20260703_drop_token_usage_legacy_path_columns-2026-07-26T12-38-21-142Z.log mode=644 size=984
+/home/autobyteus/data/logs/app-data-migrations/20260703_token_usage_execution_address_backfill-2026-07-26T12-38-21-112Z.log mode=644 size=1222
+/home/autobyteus/data/logs/app-data-migrations/20260706_remove_global_skill_discovery_mode-2026-07-26T12-38-21-060Z.log mode=644 size=213
+/home/autobyteus/data/logs/app-data-migrations/20260707_raw_trace_active_file_name-2026-07-26T12-38-21-164Z.log mode=644 size=197
+/home/autobyteus/data/logs/server.log mode=644 size=6673
+/home/autobyteus/data/memory/run_history_index.json mode=644 size=3
+/home/autobyteus/data/memory/team_run_history_index.json mode=644 size=3
+DATA_ARTIFACTS_AFTER_SAVE_END
+SECOND_STORE_ARTIFACT_COUNT=0
+ROOT_KEY_COUNT=1
+APPLICATION_DATABASE_COUNT=1

@@ -2,7 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { appConfigProvider } from "../config/app-config-provider.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -242,30 +241,30 @@ export function resolvePrismaEnginePair(
 }
 
 export function buildPrismaCommandEnv(
-  appRoot: string,
-  baseEnv: NodeJS.ProcessEnv = process.env,
-  cacheRoot: string = path.join(os.homedir(), ".cache", "prisma", "master"),
+  input: {
+    appRoot: string;
+    databaseUrl: string;
+    baseEnv?: NodeJS.ProcessEnv;
+    cacheRoot?: string;
+  },
 ): NodeJS.ProcessEnv {
-  const pair = resolvePrismaEnginePair(appRoot, baseEnv, cacheRoot);
+  const baseEnv = input.baseEnv ?? process.env;
+  const cacheRoot = input.cacheRoot ?? path.join(os.homedir(), ".cache", "prisma", "master");
+  const pair = resolvePrismaEnginePair(input.appRoot, baseEnv, cacheRoot);
   return pair
     ? {
         ...baseEnv,
+        DATABASE_URL: input.databaseUrl,
         PRISMA_QUERY_ENGINE_LIBRARY: pair.queryEngineLibrary,
         PRISMA_SCHEMA_ENGINE_BINARY: pair.schemaEngineBinary,
       }
-    : { ...baseEnv };
+    : { ...baseEnv, DATABASE_URL: input.databaseUrl };
 }
 
-function runPrismaCommand(appRoot: string, args: string[]): void {
+function runPrismaCommand(appRoot: string, databaseUrl: string, args: string[]): void {
   const { command, argsPrefix } = getPrismaCommand(appRoot);
   const enginePair = resolvePrismaEnginePair(appRoot, process.env);
-  const prismaEnv = enginePair
-    ? {
-        ...process.env,
-        PRISMA_QUERY_ENGINE_LIBRARY: enginePair.queryEngineLibrary,
-        PRISMA_SCHEMA_ENGINE_BINARY: enginePair.schemaEngineBinary,
-      }
-    : { ...process.env };
+  const prismaEnv = buildPrismaCommandEnv({ appRoot, databaseUrl });
   if (enginePair) {
     logger.info(
       `Using Prisma engine overrides from ${enginePair.source}: ${enginePair.sourcePath} ` +
@@ -281,9 +280,11 @@ function runPrismaCommand(appRoot: string, args: string[]): void {
   });
 }
 
-export function runMigrations(): void {
-  const config = appConfigProvider.config;
-  const appRoot = config.getAppRootDir();
+export function runMigrations(input: {
+  appRoot: string;
+  databaseUrl: string;
+}): void {
+  const appRoot = input.appRoot;
   const schemaPath = path.join(appRoot, "prisma", "schema.prisma");
 
   if (!fs.existsSync(schemaPath)) {
@@ -293,7 +294,7 @@ export function runMigrations(): void {
 
   try {
     logger.info("Running Prisma migrations...");
-    runPrismaCommand(appRoot, ["migrate", "deploy", "--schema", schemaPath]);
+    runPrismaCommand(appRoot, input.databaseUrl, ["migrate", "deploy", "--schema", schemaPath]);
     logger.info("Database migrations completed successfully.");
   } catch (error) {
     const message = String(error);
@@ -302,7 +303,7 @@ export function runMigrations(): void {
         "Prisma reported a non-empty schema without migration history. " +
           `Marking baseline migration ${BASELINE_MIGRATION} as applied.`,
       );
-      runPrismaCommand(appRoot, [
+      runPrismaCommand(appRoot, input.databaseUrl, [
         "migrate",
         "resolve",
         "--applied",
@@ -310,7 +311,7 @@ export function runMigrations(): void {
         "--schema",
         schemaPath,
       ]);
-      runPrismaCommand(appRoot, ["migrate", "deploy", "--schema", schemaPath]);
+      runPrismaCommand(appRoot, input.databaseUrl, ["migrate", "deploy", "--schema", schemaPath]);
       logger.info("Baseline migration resolved; database migrations completed.");
       return;
     }

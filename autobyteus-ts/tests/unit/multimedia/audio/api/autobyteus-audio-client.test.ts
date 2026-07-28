@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { AutobyteusAudioClient } from '../../../../../src/multimedia/audio/api/autobyteus-audio-client.js';
+import { AutobyteusAudioClient as ProductionAutobyteusAudioClient } from '../../../../../src/multimedia/audio/api/autobyteus-audio-client.js';
 import { AudioModel } from '../../../../../src/multimedia/audio/audio-model.js';
 import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
 import { MultimediaRuntime } from '../../../../../src/multimedia/runtimes.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
 import { SpeechGenerationResponse } from '../../../../../src/multimedia/utils/response-types.js';
+import { providerApiKeyResolver } from '../../../provider-api-key-resolver-test-helpers.js';
 
 const { generateSpeechMock, cleanupAudioSessionMock, closeMock, MockAutobyteusClient } = vi.hoisted(() => {
   const generateSpeechMock = vi.fn();
@@ -28,6 +29,12 @@ const { generateSpeechMock, cleanupAudioSessionMock, closeMock, MockAutobyteusCl
 vi.mock('../../../../../src/clients/autobyteus-client.js', () => ({
   AutobyteusClient: MockAutobyteusClient
 }));
+
+class AutobyteusAudioClient extends ProductionAutobyteusAudioClient {
+  constructor(model: AudioModel, config = new MultimediaConfig()) {
+    super(model, config, providerApiKeyResolver('synthetic-autobyteus-key'));
+  }
+}
 
 describe('AutobyteusAudioClient', () => {
   beforeEach(() => {
@@ -84,6 +91,8 @@ describe('AutobyteusAudioClient', () => {
     const model = buildModel();
     const config = new MultimediaConfig({});
     const client = new AutobyteusAudioClient(model, config);
+    generateSpeechMock.mockResolvedValue({ audio_urls: ['file.wav'] });
+    await client.generateSpeech('initialize');
 
     await client.cleanup();
 

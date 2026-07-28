@@ -1,0 +1,93 @@
+BROWSER_TEST_SERVER_READY http://127.0.0.1:18180
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Background task 'Memory Sync Worker' completed successfully.
+Pre-loaded 2 agent definitions into cache.
+[2026-07-26T12:24:18.886Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'load_skill'
+Loaded tool group: Skills Tools
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-07-26T12:24:18.897Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Pre-loaded 0 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://localhost:1234
+Finished LM Studio discovery. Total models registered: 14
+Successfully fetched 40 models from LLMFactory.
+LLM models cache populated with 40 items.
+Pre-loaded 40 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Successfully fetched 7 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5
+Image models by runtime: api=7
+Image models cache populated with 7 items.
+Pre-loaded 7 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Populating Video models cache for the first time...
+Fetching list of available Video models from VideoClientFactory...
+Successfully fetched 1 video models from VideoClientFactory.
+Video models by provider: GEMINI=1
+Video models by runtime: api=1
+Video models cache populated with 1 items.

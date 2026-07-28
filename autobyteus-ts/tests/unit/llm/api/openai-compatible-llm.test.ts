@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { DeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
-import { OpenAICompatibleLLM } from '../../../../src/llm/api/openai-compatible-llm.js';
+import { DeepSeekLLM as ProductionDeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
+import { OpenAICompatibleLLM as ProductionOpenAICompatibleLLM } from '../../../../src/llm/api/openai-compatible-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages.js';
+import { providerApiKeyResolver, missingProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 const mockOpenAIConstructor = vi.hoisted(
@@ -32,14 +33,41 @@ async function* createStream(parts: any[]) {
   }
 }
 
+class OpenAICompatibleLLM extends ProductionOpenAICompatibleLLM {
+  constructor(model: LLMModel, _legacyAlias: string, baseUrl: string, config = new LLMConfig()) {
+    super(
+      model,
+      baseUrl,
+      config,
+      providerApiKeyResolver('synthetic-openai-compatible-key'),
+      model.provider,
+    );
+  }
+}
+
+const buildDeepSeekModel = () => new LLMModel({
+  name: 'deepseek-v4-flash',
+  value: 'deepseek-v4-flash',
+  canonicalName: 'deepseek-v4-flash',
+  provider: LLMProvider.DEEPSEEK,
+});
+
+class DeepSeekLLM extends ProductionDeepSeekLLM {
+  constructor() {
+    super(
+      buildDeepSeekModel(),
+      new LLMConfig(),
+      providerApiKeyResolver('synthetic-deepseek-key'),
+    );
+  }
+}
+
 describe('OpenAICompatibleLLM', () => {
   let llm: OpenAICompatibleLLM;
   
   beforeEach(() => {
     mockCreate.mockReset();
     mockOpenAIConstructor.mockClear();
-    process.env.TEST_API_KEY = 'sk-test';
-    process.env.DEEPSEEK_API_KEY = 'sk-deepseek-test';
     const model = new LLMModel({
       name: 'gpt-4o',
       value: 'gpt-4o',
@@ -54,17 +82,20 @@ describe('OpenAICompatibleLLM', () => {
     );
   });
 
-  it('should initialize with API key', () => {
-    // Construction successful if no error thrown
+  it('constructs without resolving and initializes with the provider key on first use', async () => {
     expect(llm).toBeDefined();
+    expect(mockOpenAIConstructor).not.toHaveBeenCalled();
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'hello' } }],
+    });
+    await llm.sendMessages([]);
     expect(mockOpenAIConstructor).toHaveBeenCalledWith({
-      apiKey: 'sk-test',
+      apiKey: 'synthetic-openai-compatible-key',
       baseURL: 'https://api.openai.com/v1',
     });
   });
 
-  it('should throw if API key missing', () => {
-    delete process.env.MISSING_KEY;
+  it('fails at first use if the required provider key is missing', async () => {
     const model = new LLMModel({
       name: 'gpt-4o',
       value: 'gpt-4o',
@@ -72,13 +103,14 @@ describe('OpenAICompatibleLLM', () => {
       provider: LLMProvider.OPENAI
     });
     
-    expect(() => {
-      new OpenAICompatibleLLM(
-        model,
-        'MISSING_KEY',
-        'url'
-      );
-    }).toThrow(/environment variable is not set/);
+    const missing = new ProductionOpenAICompatibleLLM(
+      model,
+      'https://example.test/v1',
+      new LLMConfig(),
+      missingProviderApiKeyResolver(),
+      LLMProvider.OPENAI,
+    );
+    await expect(missing.sendMessages([])).rejects.toThrow('SYNTHETIC_API_KEY_MISSING');
   });
 
   it('maps reasoning_content on sync responses into CompleteResponse.reasoning', async () => {
@@ -325,12 +357,16 @@ describe('OpenAICompatibleLLM', () => {
     expect(chunks.at(-1)?.is_complete).toBe(true);
   });
 
-  it('keeps default client timeout/fetch behavior for non-LM-Studio providers', () => {
+  it('keeps default client timeout/fetch behavior for non-LM-Studio providers', async () => {
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'ok' } }],
+    });
+    await llm.sendMessages([]);
     expect(mockOpenAIConstructor).toHaveBeenCalledTimes(1);
     const [clientOptions] = mockOpenAIConstructor.mock.calls.at(0) ?? [];
 
     expect(clientOptions).toEqual({
-      apiKey: 'sk-test',
+      apiKey: 'synthetic-openai-compatible-key',
       baseURL: 'https://api.openai.com/v1',
     });
     expect(clientOptions).not.toHaveProperty('timeout');

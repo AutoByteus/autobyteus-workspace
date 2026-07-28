@@ -1,0 +1,24 @@
+# Secure Centralized Secret Provisioning — Delivery Round 22 Runtime Preservation and Packaged Electron PTY
+started_utc=2026-07-28T03:58:28Z
+source_head=dae24b9c67b29c52454dd163d5a53c9478cbe308
+app=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+isolated_pty_session_module=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/tools/terminal/isolated-pty-session.js
+
+## Existing user runtime (read-only observation)
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 78779 normy   27u  IPv4 0x47038ae9158ec2e6      0t0  TCP *:29695 (LISTEN)
+candidate_full_gui_launch=NOT_RUN
+reason=user_owned_installed_app_currently_owns_fixed_port_29695
+user_runtime_action=NONE
+user_persistent_state_action=NONE
+
+## Current signed packaged Electron Node-mode IsolatedPtySession
+SCSP_ROUND22_SIGNED_PACKAGED_PTY_OK
+packaged_electron_pty_e2e=PASS
+
+## Post-probe user runtime (read-only observation)
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 78779 normy   27u  IPv4 0x47038ae9158ec2e6      0t0  TCP *:29695 (LISTEN)
+user_runtime_still_listening=PASS
+finished_utc=2026-07-28T03:58:28Z
+overall=PASS_WITH_GUI_LAUNCH_DEFERRED_TO_USER

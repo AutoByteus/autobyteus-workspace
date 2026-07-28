@@ -1,0 +1,15 @@
+ROUND=22
+HEAD=49c27b2fe3aeb8b8299759c6ae64f7ffddc09254
+TASK_PORT_33122=FREE
+TASK_PORT_63122=FREE
+USER_PORT_3000=STILL_LISTENING_UNTOUCHED
+USER_PORT_8000=STILL_LISTENING_UNTOUCHED
+TASK_PATH_ABSENT:autobyteus-server-ts/tests/.tmp/round22-browser-runtime=True
+TASK_PATH_ABSENT:autobyteus-server-ts/db/round22-browser.db=True
+TASK_PATH_ABSENT:autobyteus-server-ts/db/round22-browser.db.secret.key=True
+TASK_PATH_ABSENT:autobyteus-server-ts/db/round22-browser.db-journal=True
+TASK_PATH_ABSENT:autobyteus-server-ts/db/round22-browser.db-wal=True
+TASK_PATH_ABSENT:autobyteus-server-ts/db/round22-browser.db-shm=True
+TASK_PATH_ABSENT:/tmp/scsp-round22-browser-stack.mjs=True
+USER_STACK_STOPPED_OR_MODIFIED=NO
+ROUND22_BROWSER_CLEANUP=PASS

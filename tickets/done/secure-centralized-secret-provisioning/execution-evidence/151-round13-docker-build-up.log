@@ -1,0 +1,126 @@
+SCENARIO=SCSP-E2E-DOCKER-001
+IMPLEMENTATION_HEAD=eac929a1f1e411a72d232d961578a700bed12829
+PROJECT=scsp-round13
+DATABASE_URL_PARENT=SET
+DOCKER_CLIENT=29.0.1
+DOCKER_SERVER=29.0.1
+
+BASE_PYTHON_IMAGE_ID=NOT_PRESENT_BEFORE_BUILD
+DERIVED_IMAGE_ID_BEFORE=sha256:e628590efdb04a73a288033e33d2a5c42189b625a9337091d95db47ab5092c96
+[2026-07-26 14:34:36] Picking unique ports for new project: scsp-round13
+[2026-07-26 14:34:37] Building variant: latest
+#0 building with "multi-platform-builder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 4.12kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.2s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#4 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 DONE 0.5s
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 0.6s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.0s
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#10 resolve docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37 0.0s done
+#10 DONE 0.0s
+
+#11 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+#11 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029 0.0s done
+#11 DONE 0.0s
+
+#12 [runtime  2/23] WORKDIR /app
+#12 CACHED
+
+#13 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#13 0.384 Get:1 http://ports.ubuntu.com/ubuntu-ports jammy InRelease [270 kB]
+#13 0.407 Get:2 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#13 0.414 Get:3 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease [18.1 kB]
+#13 0.475 Get:4 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu jammy InRelease [24.3 kB]
+#13 0.504 Get:5 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [11.3 kB]
+#13 0.564 Get:6 http://ports.ubuntu.com/ubuntu-ports jammy-updates InRelease [128 kB]
+#13 ...
+
+#14 [internal] load build context
+#14 transferring context: 14.34MB 0.6s done
+#14 DONE 0.6s
+
+#15 [builder  2/20] WORKDIR /app
+#15 CACHED
+
+#16 [builder  3/20] RUN corepack enable
+#16 CACHED
+
+#13 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#13 0.598 Get:7 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy/main arm64 Packages [43.4 kB]
+#13 0.606 Get:8 http://ports.ubuntu.com/ubuntu-ports jammy-backports InRelease [127 kB]
+#13 0.648 Get:9 http://ports.ubuntu.com/ubuntu-ports jammy-security InRelease [129 kB]
+#13 0.665 Get:10 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu jammy/main arm64 Packages [59.3 kB]
+#13 ...
+
+#17 [builder  4/20] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#17 DONE 0.1s
+
+#18 [builder  5/20] COPY patches ./patches
+#18 DONE 0.0s
+
+#19 [builder  6/20] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#19 DONE 0.0s
+
+#20 [builder  7/20] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#20 DONE 0.0s
+
+#21 [builder  8/20] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#21 DONE 0.0s
+
+#22 [builder  9/20] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#22 DONE 0.0s
+
+#13 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#13 0.796 Get:11 http://ports.ubuntu.com/ubuntu-ports jammy/multiverse arm64 Packages [224 kB]
+#13 0.848 Get:12 http://ports.ubuntu.com/ubuntu-ports jammy/restricted arm64 Packages [24.2 kB]
+#13 0.851 Get:13 http://ports.ubuntu.com/ubuntu-ports jammy/main arm64 Packages [1,758 kB]
+#13 ...
+
+#23 [builder 10/20] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#23 DONE 0.0s
+
+#24 [builder 11/20] COPY autobyteus-web/package.json ./autobyteus-web/
+#24 DONE 0.0s
+
+#13 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#13 0.991 Get:14 http://ports.ubuntu.com/ubuntu-ports jammy/universe arm64 Packages [17.2 MB]
+#13 2.918 Get:15 http://ports.ubuntu.com/ubuntu-ports jammy-updates/restricted arm64 Packages [7,807 kB]
+#13 3.500 Get:16 http://ports.ubuntu.com/ubuntu-ports jammy-updates/main arm64 Packages [4,292 kB]
+#13 3.914 Get:17 http://ports.ubuntu.com/ubuntu-ports jammy-updates/universe arm64 Packages [1,687 kB]
+#13 3.972 Get:18 http://ports.ubuntu.com/ubuntu-ports jammy-updates/multiverse arm64 Packages [69.7 kB]
+#13 3.982 Get:19 http://ports.ubuntu.com/ubuntu-ports jammy-backports/universe arm64 Packages [33.7 kB]
+#13 3.982 Get:20 http://ports.ubuntu.com/ubuntu-ports jammy-backports/main arm64 Packages [82.4 kB]
+#13 3.988 Get:21 http://ports.ubuntu.com/ubuntu-ports jammy-security/multiverse arm64 Packages [62.9 kB]
+#13 3.994 Get:22 http://ports.ubuntu.com/ubuntu-ports jammy-security/restricted arm64 Packages [7,492 kB]

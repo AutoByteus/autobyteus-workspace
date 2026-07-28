@@ -1,0 +1,11 @@
+ROUND=19_RETRY
+HEAD=3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f
+COMMAND=./autobyteus-server-ts/docker/docker-start.sh up -p scsp-round19 --build-local
+[2026-07-27 17:44:45] Building variant: latest
+#0 building with "multi-platform-builder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 4.12kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1

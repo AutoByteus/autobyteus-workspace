@@ -7,11 +7,16 @@ import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { Message } from '../utils/messages.js';
 import { createGeminiTokenUsageObservation } from './gemini-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
-import { initializeGeminiClientWithRuntime } from '../../utils/gemini-helper.js';
+import {
+  initializeGeminiClientWithRuntime,
+  type GeminiRuntimeInfo,
+} from '../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../utils/gemini-model-mapping.js';
 import { convertGeminiToolCalls } from '../converters/gemini-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { createGeminiPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 const THINKING_LEVEL_BUDGETS: Record<string, number> = {
   minimal: 0,
@@ -41,27 +46,27 @@ const splitGeminiParts = (parts: Array<Record<string, unknown>> = []): { content
 };
 
 export class GeminiLLM extends BaseLLM {
-  private client: GoogleGenAI;
-  private runtimeInfo: { runtime: string; project: string | null; location: string | null } | null = null;
+  private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly runtimeResolver: GeminiRuntimeResolver;
   private _renderer: BasePromptRenderer;
 
-  constructor(model?: LLMModel, llmConfig?: LLMConfig) {
-    const effectiveModel =
-      model ??
-      new LLMModel({
-        name: 'gemini-3-flash-preview',
-        value: 'gemini-3-flash-preview',
-        canonicalName: 'gemini-3-flash-preview',
-        provider: LLMProvider.GEMINI
-      });
-
-    const config = llmConfig ?? new LLMConfig();
-    super(effectiveModel, config);
-
-    const init = initializeGeminiClientWithRuntime();
-    this.client = init.client;
-    this.runtimeInfo = init.runtimeInfo;
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
+    super(model, config);
+    this.apiKeyResolver = apiKeyResolver;
+    if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+    this.runtimeResolver = runtimeResolver;
     this._renderer = createGeminiPromptRendererForToolFormat();
+  }
+
+  private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    const selection = await this.runtimeResolver();
+    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 
   private buildGenerationConfig(tools?: Array<Record<string, unknown>>): Record<string, unknown> {
@@ -147,10 +152,11 @@ export class GeminiLLM extends BaseLLM {
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     const history = await this._renderer.render(messages);
+    const { client, runtimeInfo } = await this.getClient();
     const runtimeAdjustedModel = resolveModelForRuntime(
       this.model.value,
       'llm',
-      this.runtimeInfo?.runtime ?? null
+      runtimeInfo.runtime
     );
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
@@ -159,7 +165,7 @@ export class GeminiLLM extends BaseLLM {
       (config as any).abortSignal = options.signal;
     }
 
-    const response = await this.client.models.generateContent({
+    const response = await client.models.generateContent({
       model: runtimeAdjustedModel,
       contents: history,
       config
@@ -184,10 +190,11 @@ export class GeminiLLM extends BaseLLM {
 
   protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
     const history = await this._renderer.render(messages);
+    const { client, runtimeInfo } = await this.getClient();
     const runtimeAdjustedModel = resolveModelForRuntime(
       this.model.value,
       'llm',
-      this.runtimeInfo?.runtime ?? null
+      runtimeInfo.runtime
     );
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
@@ -196,7 +203,7 @@ export class GeminiLLM extends BaseLLM {
       (config as any).abortSignal = options.signal;
     }
 
-    const stream = await this.client.models.generateContentStream({
+    const stream = await client.models.generateContentStream({
       model: runtimeAdjustedModel,
       contents: history,
       config

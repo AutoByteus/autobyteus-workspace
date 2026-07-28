@@ -250,7 +250,7 @@ unvalidated renderer URL path.
 | `read-log-file`        | Read last 500 lines of log       |
 | `read-local-text-file` | Securely read local file content |
 | `open-external-link`   | Open URL in system browser       |
-| `reset-server-data`    | Clear server data directory      |
+| `reset-server-data`    | Destructively clear the entire server app-data directory, including the application DB and derived vault key |
 | `get-platform`         | Return OS platform string        |
 
 ### App Lifecycle
@@ -639,7 +639,18 @@ At runtime, the server:
 
 1. Runs on a fixed port (`29695`)
 2. Stores data in `~/.autobyteus/server-data/`
-3. Provides endpoints: `/graphql`, `/rest`, `/transcribe`
+3. Runs the normal Prisma/vault/app-data startup sequence before provider
+   consumers
+4. Provides endpoints: `/graphql`, `/rest`, `/transcribe`
+
+An existing supported version-1 custom-provider file is handled during that
+startup sequence. A complete valid set is migrated atomically to secret-free v2
+metadata plus encrypted vault entries. Invalid or colliding v1 content follows
+the delete-and-reconfigure path; built-in Settings remains available. If the
+legacy file cannot be deleted safely, custom-provider creation remains
+unavailable until the filesystem issue is corrected and the app restarts.
+There is no runtime v1 reader, backup/quarantine copy, partial migration, or
+automatic `.env` import.
 
 For one-time migration of an existing SQLite DB into `server-data`, use:
 
@@ -661,6 +672,11 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 - `getLoginShellPath()` - Inherits PATH from user's login shell
 - Essential for macOS/Linux where GUI apps have minimal PATH
 - Supports both bash and zsh
+- Embedded-server and terminal launchers preserve their established inherited
+  environment/runtime-discriminator behavior. That continuity is required for
+  account-backed tools and packaged Node-mode helpers; it is not a
+  child-process isolation boundary. Secret Management's `LOCAL_HARDENED` claim
+  is limited to vault/file-root/value-safe custody.
 
 ### Logger (`logger.ts`)
 

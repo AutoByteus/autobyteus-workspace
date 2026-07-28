@@ -6,20 +6,19 @@ export const customLlmProviderRecordSchema = z.object({
   name: z.string().trim().min(1),
   providerType: z.literal(LLMProvider.OPENAI_COMPATIBLE),
   baseUrl: z.string().trim().min(1),
-  apiKey: z.string().trim().min(1),
 });
 
 export type CustomLlmProviderRecord = z.infer<typeof customLlmProviderRecordSchema>;
 
 export const customLlmProviderConfigFileSchema = z.object({
-  version: z.literal(1),
+  version: z.literal(2),
   providers: z.array(customLlmProviderRecordSchema),
 });
 
 export type CustomLlmProviderConfigFile = z.infer<typeof customLlmProviderConfigFileSchema>;
 
 export const DEFAULT_CUSTOM_LLM_PROVIDER_CONFIG_FILE: CustomLlmProviderConfigFile = {
-  version: 1,
+  version: 2,
   providers: [],
 };
 

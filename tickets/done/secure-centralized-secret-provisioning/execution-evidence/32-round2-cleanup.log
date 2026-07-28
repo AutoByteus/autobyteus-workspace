@@ -1,0 +1,7 @@
+Docker cleanup after build failure
+[2026-07-21 19:16:11] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/docker/.runtime/scsp-round2.env
+
+Remaining project resources:
+runtime state absent=true
+manual owned temp absent=True
+manual port closed=True

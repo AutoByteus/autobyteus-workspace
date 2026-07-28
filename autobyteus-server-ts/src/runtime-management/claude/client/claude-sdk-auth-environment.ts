@@ -31,11 +31,15 @@ export const resolveClaudeSdkAuthMode = (
 
 export const buildClaudeSdkSpawnEnvironment = (
   env: NodeJS.ProcessEnv = process.env,
+  apiKeyOverride?: string,
 ): Record<string, string | undefined> => {
   const resolvedMode = resolveClaudeSdkAuthMode(env);
   const resolvedEnv: Record<string, string | undefined> = { ...env };
 
   if (resolvedMode === "api-key") {
+    if (apiKeyOverride !== undefined) {
+      resolvedEnv.ANTHROPIC_API_KEY = apiKeyOverride;
+    }
     return resolvedEnv;
   }
 

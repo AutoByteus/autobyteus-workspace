@@ -1,0 +1,64 @@
+# Round 22 delivery integrated-state check
+started_utc=2026-07-27T20:47:39Z
+head=57863a7005d13a0f5b68fa330b7f9c3ce5ce1dd7
+reviewed_head=49c27b2fe3aeb8b8299759c6ae64f7ffddc09254
+base=d6983612c5a77fb94d9266df85a9d03fe2d1c68b
+merge_base=d6983612c5a77fb94d9266df85a9d03fe2d1c68b
+behind=0
+ahead=58
+product_paths_changed_after_reviewed_head=0
+user_runtime_before:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 28414 normy   26u  IPv4 0x1823c1198681c143      0t0  TCP *:29695 (LISTEN)
+## focused exact-current Gemini presentation suite
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web
+
+stderr | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/llmProviderConfigStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/stores/llmProviderConfigStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/llmProviderConfigStore.test.ts (7 tests) 10ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts (4 tests) 23ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts (8 tests) 29ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts (6 tests) 46ms
+
+ Test Files  4 passed (4)
+      Tests  25 passed (25)
+   Start at  22:47:41
+   Duration  5.77s (transform 3.13s, setup 19.84s, collect 333ms, tests 108ms, environment 853ms, prepare 628ms)
+
+git_diff_check=PASS
+user_runtime_after:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 28414 normy   26u  IPv4 0x1823c1198681c143      0t0  TCP *:29695 (LISTEN)
+user_runtime_action=NONE
+user_persistent_project_test_state_action=NONE
+result=PASS
+finished_utc=2026-07-27T20:47:52Z

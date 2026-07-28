@@ -23,15 +23,11 @@ const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, '');
 
 export class KimiModelMetadataProvider implements ProviderModelMetadataProvider {
   constructor(
-    private readonly apiKey: string | null = process.env.KIMI_API_KEY ?? null,
-    private readonly baseUrl: string = process.env.KIMI_API_BASE_URL ?? 'https://api.moonshot.ai/v1'
+    private readonly apiKey: string,
+    private readonly baseUrl: string = 'https://api.moonshot.ai/v1'
   ) {}
 
   async loadMetadata(): Promise<Map<string, PartialResolvedModelMetadata>> {
-    if (!this.apiKey) {
-      return new Map();
-    }
-
     const response = await fetch(`${trimTrailingSlash(this.baseUrl)}/models`, {
       headers: {
         Authorization: `Bearer ${this.apiKey}`

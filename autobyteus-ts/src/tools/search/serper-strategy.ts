@@ -5,11 +5,10 @@ export class SerperSearchStrategy extends SearchStrategy {
   static API_URL = 'https://google.serper.dev/search';
   private apiKey: string;
 
-  constructor() {
+  constructor(apiKey: string) {
     super();
-    const apiKey = process.env.SERPER_API_KEY;
     if (!apiKey) {
-      throw new Error("SerperSearchStrategy requires the 'SERPER_API_KEY' environment variable to be set.");
+      throw new Error('SerperSearchStrategy requires explicit API-key authentication.');
     }
     this.apiKey = apiKey;
   }

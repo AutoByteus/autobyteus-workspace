@@ -1,0 +1,240 @@
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] CachedVideoModelProvider initialized.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] VideoModelService initialized.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-07-27T07:31:23.196Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-07-27T07:31:23.197Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-07-27T07:31:23.197Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-07-27T07:31:23.197Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-07-27T07:31:23.197Z] [INFO] [electron.embedded-server.stdout] Loading agent tool definitions...
+[2026-07-27T07:31:23.206Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-07-27T07:31:23.206Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-07-27T07:31:23.206Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-07-27T07:31:23.206Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-07-27T07:31:23.206Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Customizations' completed successfully.
+[2026-07-27T07:31:23.209Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-07-27T07:31:23.209Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 53 agent definitions into cache.
+[2026-07-27T07:31:23.210Z] [INFO] [electron.embedded-server.stdout] [2026-07-27T07:31:23.210Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-07-27T07:31:23.210Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-07-27T07:31:23.210Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-07-27T07:31:23.210Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-07-27T07:31:23.210Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-07-27T07:31:23.210Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Media Tools
+[2026-07-27T07:31:23.210Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Background task 'Workspaces' completed successfully.
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_available_skills'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_skill_content'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'load_skill'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Skills Tools
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-07-27T07:31:23.211Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Browser Tools
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_task_result'
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'review_task_result'
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Task Delegation Tools
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Published Artifact Tools
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Loaded tool group: Agent Communication Tools
+[2026-07-27T07:31:23.213Z] [INFO] [electron.embedded-server.stdout] Background task 'Agent Tools' completed successfully.
+[2026-07-27T07:31:23.218Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:31:23.218Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 3 items.
+[2026-07-27T07:31:23.218Z] [INFO] [electron.embedded-server.stdout] Found 3 total MCP server configs.
+[2026-07-27T07:31:23.218Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-07-27T07:31:23.262Z] [INFO] [electron.embedded-server.stdout] Registered 6 image models from Autobyteus host https://localhost:51739.
+[2026-07-27T07:31:23.262Z] [INFO] [electron.embedded-server.stdout] Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+[2026-07-27T07:31:23.262Z] [INFO] [electron.embedded-server.stdout] Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=179
+[2026-07-27T07:31:23.262Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-27T07:31:23.264Z] [INFO] [electron.embedded-server.stdout] Registered 4 audio models from Autobyteus host https://localhost:51739.
+[2026-07-27T07:31:23.264Z] [INFO] [electron.embedded-server.stdout] Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+[2026-07-27T07:31:23.264Z] [INFO] [electron.embedded-server.stdout] Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=168
+[2026-07-27T07:31:23.264Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/2026-07-18-hackathon.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_company_operation.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_mcps.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_private_mcps.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-agents.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-com-workspace.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-investor-applications.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-manga-videos.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-marketing-workspace.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-private-agents.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-social-media.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-tutorial-videos.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/browser_docker.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/model-eval-analysis.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/repository_prisma.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/church.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/church/2026-05-25-roma-fuqi-church.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/church/bible_children_manga_book.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/normy_job_search.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/normy_projects/german_online_practice.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon.
+[2026-07-27T07:31:23.268Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/reonic_hackerthon/enpal-smart-energy-companion.
+[2026-07-27T07:31:23.272Z] [ERROR] [electron.embedded-server.stderr] Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+[2026-07-27T07:31:23.273Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-27T07:31:23.274Z] [ERROR] [electron.embedded-server.stderr] Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+[2026-07-27T07:31:23.274Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-27T07:31:23.287Z] [INFO] [electron.embedded-server.stdout] [2026-07-27T07:31:23.287Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 29 items.
+[2026-07-27T07:31:23.287Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 29 agent team definitions into cache.
+[2026-07-27T07:31:23.288Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 MCP server configs into cache.
+[2026-07-27T07:31:23.288Z] [INFO] [electron.embedded-server.stdout] Populating LLM models cache for the first time...
+[2026-07-27T07:31:23.288Z] [INFO] [electron.embedded-server.stdout] Fetching list of available LLM models from LLMFactory...
+[2026-07-27T07:31:23.330Z] [INFO] [electron.embedded-server.stdout] Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+[2026-07-27T07:31:23.330Z] [INFO] [electron.embedded-server.stdout] Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+[2026-07-27T07:31:23.330Z] [INFO] [electron.embedded-server.stdout] Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=58
+[2026-07-27T07:31:23.330Z] [INFO] [electron.embedded-server.stdout] Finished Autobyteus image model discovery. Total models registered: 12
+[2026-07-27T07:31:23.346Z] [INFO] [electron.embedded-server.stdout] Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+[2026-07-27T07:31:23.346Z] [INFO] [electron.embedded-server.stdout] Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+[2026-07-27T07:31:23.346Z] [INFO] [electron.embedded-server.stdout] Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=72
+[2026-07-27T07:31:23.346Z] [INFO] [electron.embedded-server.stdout] Finished Autobyteus audio model discovery. Total models registered: 8
+[2026-07-27T07:31:23.382Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:31:23.384Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:31:23.384Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /Users/normy/.autobyteus/server-data/media
+[2026-07-27T07:31:23.542Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:31:23.543Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:31:23.545Z] [ERROR] [electron.embedded-server.stderr] [07/27/26 09:31:23] INFO     Processing request of type            server.py:551
+[2026-07-27T07:31:23.545Z] [ERROR] [electron.embedded-server.stderr]                              ListToolsRequest
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_get_media_duration'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_convert_audio_properties'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_convert_video_properties'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_change_aspect_ratio'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_convert_audio_format'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_audio_bitrate'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_audio_sample_rate'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_audio_channels'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_convert_video_format'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_resolution'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_codec'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_bitrate'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_frame_rate'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_audio_track_codec'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_audio_track_bitrate'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_audio_track_sample_rate'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_set_video_audio_track_channels'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_trim_video'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_concatenate_videos'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_concatenate_audios'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_change_video_speed'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_remove_silence'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_extract_audio_from_video'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_replace_audio_track'
+[2026-07-27T07:31:23.610Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_add_subtitles'
+[2026-07-27T07:31:23.611Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_add_text_overlay'
+[2026-07-27T07:31:23.611Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_add_image_overlay'
+[2026-07-27T07:31:23.611Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_create_video_from_image_and_audio'
+[2026-07-27T07:31:23.611Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_extract_frame_from_video'
+[2026-07-27T07:31:23.611Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_add_b_roll'
+[2026-07-27T07:31:23.611Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_add_basic_transitions'
+[2026-07-27T07:31:23.611Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'video_editing_health_check'
+[2026-07-27T07:31:23.636Z] [INFO] [electron.embedded-server.stdout] Discovering Ollama models from host: http://127.0.0.1:11434
+[2026-07-27T07:31:23.638Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+[2026-07-27T07:31:23.638Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://127.0.0.1:1234
+[2026-07-27T07:31:23.647Z] [INFO] [electron.embedded-server.stdout] Finished LM Studio discovery. Total models registered: 14
+[2026-07-27T07:31:23.647Z] [INFO] [electron.embedded-server.stdout] Discovering Autobyteus models from host: https://localhost:51739
+[2026-07-27T07:31:23.648Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-27T07:31:23.941Z] [ERROR] [electron.embedded-server.stderr] Processing request of type ListToolsRequest
+[2026-07-27T07:31:24.002Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'speak'
+[2026-07-27T07:31:25.460Z] [INFO] [electron.embedded-server.stderr] INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+[2026-07-27T07:31:25.494Z] [INFO] [electron.embedded-server.stdout] Discovering Autobyteus models from host: https://localhost:51740
+[2026-07-27T07:31:25.494Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-27T07:31:25.496Z] [ERROR] [electron.embedded-server.stderr] Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+[2026-07-27T07:31:25.496Z] [WARN] [electron.embedded-server.stderr] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-07-27T07:31:25.496Z] [INFO] [electron.embedded-server.stdout] Discovering Autobyteus models from host: https://192.168.2.142:51739
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_health_check'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_list_audio_models'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_list_image_models'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_list_video_models'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_generate_image'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_generate_video'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_find_target_coordinates'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_edit_image'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'remote_generate_speech'
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-07-27T07:31:25.742Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-07-27T07:31:26.965Z] [INFO] [electron.embedded-server.stdout] Finished Autobyteus discovery. Total models registered: 74
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 122 models from LLMFactory.
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] LLM models cache populated with 122 items.
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 122 LLM models into cache.
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Populating Image models cache for the first time...
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Image models from ImageClientFactory...
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Awaiting Autobyteus image model discovery before listing models...
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 19 image models from ImageClientFactory.
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Image models by provider: OPENAI=2, GEMINI=5, AUTOBYTEUS=12
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Image models by runtime: api=7, autobyteus=12
+[2026-07-27T07:31:27.673Z] [INFO] [electron.embedded-server.stdout] Image models cache populated with 19 items.
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 19 image models into cache.
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Populating Audio models cache for the first time...
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Fetching list of available Audio models from AudioClientFactory...
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Awaiting Autobyteus audio model discovery before listing models...
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Successfully fetched 12 audio models from AudioClientFactory.
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Audio models by provider: OPENAI=1, GEMINI=3, AUTOBYTEUS=8
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Audio models by runtime: api=4, autobyteus=8
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Audio models cache populated with 12 items.
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 12 audio models into cache.
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-07-27T07:31:27.674Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-07-27T07:31:28.013Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:31:28.014Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:31:28.806Z] [INFO] [electron] [updater] Checking for update
+[2026-07-27T07:31:29.893Z] [INFO] [electron] [updater] Update for version 1.4.26 is not available (latest version: 1.4.26, downgrade is disallowed).
+[2026-07-27T07:32:32.158Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+[2026-07-27T07:32:32.159Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+[2026-07-27T07:32:32.160Z] [INFO] [electron.embedded-server.stdout] Successfully restored mixed team run 'software_engineering_team_989c6d9e84364c9e83495418f7d3df40'.
+[2026-07-27T07:32:32.182Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:32:32.185Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:32:32.193Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run software_engineering_team_989c6d9e84364c9e83495418f7d3df40
+[2026-07-27T07:32:32.193Z] [INFO] [electron.embedded-server.stdout] Created agent session 413d58c6-87ed-492b-8b9c-e9af8a8f8747 for run software_engineering_team_989c6d9e84364c9e83495418f7d3df40
+[2026-07-27T07:32:32.194Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=413d58c6-87ed-492b-8b9c-e9af8a8f8747, run=software_engineering_team_989c6d9e84364c9e83495418f7d3df40
+[2026-07-27T07:32:32.739Z] [ERROR] [electron.embedded-server.stderr] Failed to resume Codex thread '019fa27b-c0bd-78b2-aaa7-31be5a93b4d7', starting a new thread: Error: Codex app server RPC error -32600: no rollout found for thread id 019fa27b-c0bd-78b2-aaa7-31be5a93b4d7
+[2026-07-27T07:32:33.230Z] [INFO] [electron.embedded-server.stdout] Successfully restored codex_app_server agent run 'delivery_engineer_51cb37030306421ca68b85383ae677b3'.
+[2026-07-27T07:33:17.525Z] [INFO] [electron.embedded-server.stdout] Successfully restored codex_app_server agent run 'api_e2e_engineer_c396385283694154b8f0b370ef2e6329'.
+[2026-07-27T07:33:17.697Z] [INFO] [electron.embedded-server.stdout] [team-communication] projection inserted teamRunId=software_engineering_team_989c6d9e84364c9e83495418f7d3df40 messageId=teammsg_z5kvDXD86lbFzy7qCsztwgsQCHirvtPX referenceCount=15 projectionPath=/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_989c6d9e84364c9e83495418f7d3df40/team_communication_messages.json
+[2026-07-27T07:34:21.417Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:34:21.420Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:35:20.628Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:35:20.629Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:40:37.838Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:40:37.839Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:43:00.147Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-07-27T07:43:00.152Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-07-27T07:44:03.500Z] [INFO] [electron] Received start-shutdown signal from renderer. Quitting app.
+[2026-07-27T07:44:03.511Z] [INFO] [electron.server.base-server-manager] Stopping server...
+[2026-07-27T07:44:03.511Z] [INFO] [electron.server.base-server-manager] Sending SIGTERM signal for graceful shutdown
+[2026-07-27T07:44:03.519Z] [INFO] [electron.embedded-server.stdout] [2026-07-27T07:44:03.512Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-07-27T07:44:03.519Z] [INFO] [electron.embedded-server.stdout] Closed agent session 413d58c6-87ed-492b-8b9c-e9af8a8f8747
+[2026-07-27T07:44:03.519Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket disconnected: 413d58c6-87ed-492b-8b9c-e9af8a8f8747

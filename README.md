@@ -303,6 +303,56 @@ pnpm --filter autobyteus-server-ts build
 pnpm --filter autobyteus-message-gateway build
 ```
 
+## Live API/E2E development
+
+Start the real built backend and Nuxt frontend together from the workspace
+root:
+
+```bash
+pnpm dev:test
+```
+
+The command validates the committed non-secret
+`autobyteus-server-ts/.env.test` template, automatically materializes
+`autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env`, and then starts:
+
+- Backend: `http://127.0.0.1:8000`
+- Frontend: `http://127.0.0.1:3000`
+
+Open the frontend URL in a browser for web-equivalent desktop journeys. Press
+`Ctrl+C` in the owning terminal to stop both processes.
+
+This starts the actual built server, not a mock. The server reads the generated
+runtime `.env` because the runner passes its directory as `--data-dir`;
+developers do not create that file manually. The template selects the
+project-local SQLite test application database under
+`autobyteus-server-ts/db/`. Managed provider credentials remain encrypted in
+that database's vault and must not be placed in `.env.test` or the generated
+runtime `.env`.
+
+To run the two processes in separate terminals:
+
+```bash
+pnpm server:test
+```
+
+```bash
+pnpm web:test
+```
+
+To inspect or execute code-owned real-provider capabilities against the same
+test runtime:
+
+```bash
+pnpm test:e2e:real:preflight
+pnpm test:e2e:real
+```
+
+Preflight and execution report unconfigured or unavailable external
+capabilities explicitly; they must not be represented as passed. See
+[`autobyteus-server-ts/README.md`](autobyteus-server-ts/README.md#start-the-real-backend-and-frontend-for-live-apie2e-testing)
+for the detailed runtime behavior.
+
 ## Testing (Codex Runtime)
 
 For Codex-related tickets, run backend tests with Codex live transport enabled.

@@ -1,205 +1,175 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ModelMetadataResolver } from '../../../../src/llm/metadata/model-metadata-resolver.js';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  ModelMetadataProvenance,
+  ModelMetadataResolver,
+  type PartialResolvedModelMetadata,
+  type ProviderModelMetadataProvider,
+} from '../../../../src/llm/metadata/model-metadata-resolver.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 
-const mockFetch = vi.hoisted(() => vi.fn());
+const lookup = (provider: LLMProvider, modelId: string) => ({
+  provider,
+  name: modelId,
+  value: modelId,
+  canonicalName: modelId,
+});
 
-const ENV_KEYS = ['ANTHROPIC_API_KEY', 'KIMI_API_KEY', 'MISTRAL_API_KEY', 'GEMINI_API_KEY', 'VERTEX_AI_API_KEY'] as const;
+const resolverWith = (
+  provider: LLMProvider,
+  entries: Array<[string, PartialResolvedModelMetadata]>,
+) => {
+  const loadMetadata = vi.fn().mockResolvedValue(new Map(entries));
+  return {
+    resolver: new ModelMetadataResolver({
+      [provider]: {
+        kind: 'LIVE_WITH_CURATED_FALLBACK',
+        provider: { loadMetadata },
+      },
+    }),
+    loadMetadata,
+  };
+};
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+});
 
 describe('ModelMetadataResolver', () => {
-  const originalEnv = new Map<string, string | undefined>();
+  it('returns curated-only provenance for providers without a live strategy', async () => {
+    const metadata = await new ModelMetadataResolver().resolve(lookup(LLMProvider.OPENAI, 'gpt-5.5'));
 
-  beforeEach(() => {
-    for (const key of ENV_KEYS) {
-      originalEnv.set(key, process.env[key]);
-      delete process.env[key];
-    }
-    mockFetch.mockReset();
-    vi.stubGlobal('fetch', mockFetch);
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    for (const key of ENV_KEYS) {
-      const value = originalEnv.get(key);
-      if (value === undefined) {
-        delete process.env[key];
-      } else {
-        process.env[key] = value;
-      }
-    }
-  });
-
-  it('returns curated metadata for docs-only providers without performing live requests', async () => {
-    const resolver = new ModelMetadataResolver();
-
-    const metadata = await resolver.resolve({
-      provider: LLMProvider.OPENAI,
-      name: 'gpt-5.5',
-      value: 'gpt-5.5',
-      canonicalName: 'gpt-5.5'
+    expect(metadata).toMatchObject({
+      maxContextTokens: 1_050_000,
+      maxOutputTokens: 128_000,
+      provenance: ModelMetadataProvenance.CURATED_ONLY,
     });
-
-    expect(metadata.maxContextTokens).toBe(1050000);
-    expect(metadata.maxOutputTokens).toBe(128000);
-    expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it('returns the official GPT-5.6 limits for every canonical model without live requests', async () => {
+  it('returns the official GPT-5.6 limits with curated-only provenance', async () => {
     const resolver = new ModelMetadataResolver();
-
     for (const modelId of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna']) {
-      const metadata = await resolver.resolve({
-        provider: LLMProvider.OPENAI,
-        name: modelId,
-        value: modelId,
-        canonicalName: modelId,
-      });
-
-      expect(metadata).toMatchObject({
-        maxContextTokens: 1050000,
-        maxOutputTokens: 128000,
+      await expect(resolver.resolve(lookup(LLMProvider.OPENAI, modelId))).resolves.toMatchObject({
+        maxContextTokens: 1_050_000,
+        maxOutputTokens: 128_000,
+        provenance: ModelMetadataProvenance.CURATED_ONLY,
       });
     }
-    expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it('prefers live Anthropic metadata when available and falls back to curated values for missing models', async () => {
-    process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        data: [{ id: 'claude-sonnet-4-6', max_input_tokens: 1200000, max_tokens: 64000 }]
-      })
-    });
+  it('marks a matching live record LIVE, falls back per model, and caches one provider load', async () => {
+    const { resolver, loadMetadata } = resolverWith(LLMProvider.ANTHROPIC, [[
+      'claude-sonnet-4-6',
+      { maxContextTokens: 1_200_000, maxInputTokens: 1_200_000, maxOutputTokens: 64_000 },
+    ]]);
 
-    const resolver = new ModelMetadataResolver();
+    const liveMetadata = await resolver.resolve(lookup(LLMProvider.ANTHROPIC, 'claude-sonnet-4-6'));
+    const curatedFallback = await resolver.resolve(lookup(LLMProvider.ANTHROPIC, 'claude-opus-4-7'));
 
-    const liveMetadata = await resolver.resolve({
-      provider: LLMProvider.ANTHROPIC,
-      name: 'claude-sonnet-4.6',
-      value: 'claude-sonnet-4-6',
-      canonicalName: 'claude-sonnet-4.6'
+    expect(liveMetadata).toMatchObject({
+      maxContextTokens: 1_200_000,
+      maxInputTokens: 1_200_000,
+      maxOutputTokens: 64_000,
+      provenance: ModelMetadataProvenance.LIVE,
     });
-    const curatedFallback = await resolver.resolve({
-      provider: LLMProvider.ANTHROPIC,
-      name: 'claude-opus-4.7',
-      value: 'claude-opus-4-7',
-      canonicalName: 'claude-opus-4.7'
+    expect(curatedFallback).toMatchObject({
+      maxContextTokens: 1_000_000,
+      maxOutputTokens: 128_000,
+      provenance: ModelMetadataProvenance.CURATED_FALLBACK,
     });
-
-    expect(liveMetadata.maxContextTokens).toBe(1200000);
-    expect(liveMetadata.maxInputTokens).toBe(1200000);
-    expect(liveMetadata.maxOutputTokens).toBe(64000);
-    expect(curatedFallback.maxContextTokens).toBe(1000000);
-    expect(curatedFallback.maxOutputTokens).toBe(128000);
-    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(loadMetadata).toHaveBeenCalledTimes(1);
   });
 
-  it('prefers live Kimi metadata when available and falls back to curated values for missing retained models', async () => {
-    process.env.KIMI_API_KEY = 'test-kimi-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        data: [{ id: 'kimi-k2.6', context_length: 262144 }]
-      })
+  it('returns CURATED_FALLBACK when a live-capable strategy has no configured provider', async () => {
+    const resolver = new ModelMetadataResolver({
+      [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_CURATED_FALLBACK', provider: null },
     });
 
-    const resolver = new ModelMetadataResolver();
-
-    const liveMetadata = await resolver.resolve({
-      provider: LLMProvider.KIMI,
-      name: 'kimi-k2.6',
-      value: 'kimi-k2.6',
-      canonicalName: 'kimi-k2.6'
-    });
-    const curatedFallback = await resolver.resolve({
-      provider: LLMProvider.KIMI,
-      name: 'kimi-k2.7-code',
-      value: 'kimi-k2.7-code',
-      canonicalName: 'kimi-k2.7-code'
-    });
-
-    expect(liveMetadata.maxContextTokens).toBe(262144);
-    expect(curatedFallback.maxContextTokens).toBe(256000);
-    expect(mockFetch).toHaveBeenCalledTimes(1);
+    await expect(resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview')))
+      .resolves.toMatchObject({
+        maxContextTokens: 1_048_576,
+        provenance: ModelMetadataProvenance.CURATED_FALLBACK,
+      });
   });
 
-  it('returns curated metadata for DeepSeek V4 models without live requests', async () => {
-    const resolver = new ModelMetadataResolver();
-
-    const flashMetadata = await resolver.resolve({
-      provider: LLMProvider.DEEPSEEK,
-      name: 'deepseek-v4-flash',
-      value: 'deepseek-v4-flash',
-      canonicalName: 'deepseek-v4-flash'
-    });
-    const proMetadata = await resolver.resolve({
-      provider: LLMProvider.DEEPSEEK,
-      name: 'deepseek-v4-pro',
-      value: 'deepseek-v4-pro',
-      canonicalName: 'deepseek-v4-pro'
+  it('contains a failed live provider and returns CURATED_FALLBACK', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const provider: ProviderModelMetadataProvider = {
+      loadMetadata: vi.fn().mockRejectedValue(new Error('synthetic metadata failure')),
+    };
+    const resolver = new ModelMetadataResolver({
+      [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_CURATED_FALLBACK', provider },
     });
 
-    expect(flashMetadata.maxContextTokens).toBe(1000000);
-    expect(flashMetadata.maxOutputTokens).toBe(384000);
-    expect(proMetadata.maxContextTokens).toBe(1000000);
-    expect(proMetadata.maxOutputTokens).toBe(384000);
-    expect(mockFetch).not.toHaveBeenCalled();
+    await expect(resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview')))
+      .resolves.toMatchObject({
+        maxContextTokens: 1_048_576,
+        provenance: ModelMetadataProvenance.CURATED_FALLBACK,
+      });
   });
 
-  it('parses Mistral model-list metadata from the official models endpoint', async () => {
-    process.env.MISTRAL_API_KEY = 'test-mistral-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ([
-        {
-          id: 'mistral-large-2512',
-          max_context_length: 320000
-        }
-      ])
+  it('contains a timed-out live provider and returns CURATED_FALLBACK', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const provider: ProviderModelMetadataProvider = {
+      loadMetadata: vi.fn(() => new Promise(() => undefined)),
+    };
+    const resolver = new ModelMetadataResolver(
+      { [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_CURATED_FALLBACK', provider } },
+      { providerLoadTimeoutMs: 10 },
+    );
+
+    const pending = resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'));
+    await vi.advanceTimersByTimeAsync(11);
+
+    await expect(pending).resolves.toMatchObject({
+      maxContextTokens: 1_048_576,
+      provenance: ModelMetadataProvenance.CURATED_FALLBACK,
     });
-
-    const resolver = new ModelMetadataResolver();
-
-    const metadata = await resolver.resolve({
-      provider: LLMProvider.MISTRAL,
-      name: 'mistral-large-3',
-      value: 'mistral-large-2512',
-      canonicalName: 'mistral-large-3'
-    });
-
-    expect(metadata.maxContextTokens).toBe(320000);
-    expect(metadata.maxOutputTokens).toBeNull();
   });
 
-  it('parses Gemini model limits from the official model list endpoint', async () => {
-    process.env.GEMINI_API_KEY = 'test-gemini-key';
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        models: [
-          {
-            name: 'models/gemini-3-flash-preview',
-            baseModelId: 'gemini-3-flash-preview',
-            inputTokenLimit: 1048576,
-            outputTokenLimit: 65536
-          }
-        ]
-      })
-    });
+  it('returns CURATED_FALLBACK when live metadata has no matching record', async () => {
+    const { resolver } = resolverWith(LLMProvider.GEMINI, [[
+      'gemini-unrelated-model',
+      { maxContextTokens: 2_000_000 },
+    ]]);
 
+    await expect(resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview')))
+      .resolves.toMatchObject({
+        maxContextTokens: 1_048_576,
+        provenance: ModelMetadataProvenance.CURATED_FALLBACK,
+      });
+  });
+
+  it('preserves live-over-curated merging for Kimi and Mistral', async () => {
+    const kimi = resolverWith(LLMProvider.KIMI, [[
+      'kimi-k2.6',
+      { maxContextTokens: 262_144 },
+    ]]).resolver;
+    const mistral = resolverWith(LLMProvider.MISTRAL, [[
+      'mistral-large-2512',
+      { maxContextTokens: 320_000 },
+    ]]).resolver;
+
+    await expect(kimi.resolve(lookup(LLMProvider.KIMI, 'kimi-k2.6'))).resolves.toMatchObject({
+      maxContextTokens: 262_144,
+      provenance: ModelMetadataProvenance.LIVE,
+    });
+    await expect(mistral.resolve(lookup(LLMProvider.MISTRAL, 'mistral-large-2512')))
+      .resolves.toMatchObject({
+        maxContextTokens: 320_000,
+        provenance: ModelMetadataProvenance.LIVE,
+      });
+  });
+
+  it('returns curated-only metadata for DeepSeek models without any provider load', async () => {
     const resolver = new ModelMetadataResolver();
-
-    const metadata = await resolver.resolve({
-      provider: LLMProvider.GEMINI,
-      name: 'gemini-3-flash-preview',
-      value: 'gemini-3-flash-preview',
-      canonicalName: 'gemini-3-flash-preview'
-    });
-
-    expect(metadata.maxContextTokens).toBe(1048576);
-    expect(metadata.maxInputTokens).toBe(1048576);
-    expect(metadata.maxOutputTokens).toBe(65536);
+    for (const modelId of ['deepseek-v4-flash', 'deepseek-v4-pro']) {
+      await expect(resolver.resolve(lookup(LLMProvider.DEEPSEEK, modelId))).resolves.toMatchObject({
+        maxContextTokens: 1_000_000,
+        maxOutputTokens: 384_000,
+        provenance: ModelMetadataProvenance.CURATED_ONLY,
+      });
+    }
   });
 });

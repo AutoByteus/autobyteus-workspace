@@ -125,3 +125,23 @@ model AppDataMigrationRecord {
 
   @@map("app_data_migration_records")
 }
+
+model SecretEntry {
+  secretId           String @id @map("secret_id")
+  nonce              Bytes
+  ciphertext         Bytes
+  authenticationTag  Bytes  @map("authentication_tag")
+
+  @@map("secret_entries")
+}
+
+model SecretEncryptionMetadata {
+  singletonId               Int   @id @map("singleton_id")
+  encryptionDomainId        Bytes @unique @map("encryption_domain_id")
+  encryptionFormatVersion   Int   @map("encryption_format_version")
+  verifierNonce             Bytes @map("verifier_nonce")
+  verifierCiphertext        Bytes @map("verifier_ciphertext")
+  verifierAuthenticationTag Bytes @map("verifier_authentication_tag")
+
+  @@map("secret_encryption_metadata")
+}

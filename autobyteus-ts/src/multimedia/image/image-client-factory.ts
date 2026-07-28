@@ -6,7 +6,9 @@ import { BaseImageClient } from './base-image-client.js';
 import { OpenAIImageClient } from './api/openai-image-client.js';
 import { GeminiImageClient } from './api/gemini-image-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { AutobyteusImageModelProvider } from './autobyteus-image-provider.js';
+import { MultimediaRuntime } from '../runtimes.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 export class ImageClientFactory extends Singleton {
   protected static instance?: ImageClientFactory;
@@ -30,10 +32,13 @@ export class ImageClientFactory extends Singleton {
   }
 
   static reinitialize(): void {
-    ImageClientFactory.initialized = false;
-    ImageClientFactory.modelsByIdentifier.clear();
-    AutobyteusImageModelProvider.resetDiscovery();
     ImageClientFactory.ensureInitialized();
+    const retainedGatewayModels = Array.from(ImageClientFactory.modelsByIdentifier.values())
+      .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
+    ImageClientFactory.modelsByIdentifier.clear();
+    ImageClientFactory.initializeRegistry();
+    for (const model of retainedGatewayModels) ImageClientFactory.registerModel(model);
+    ImageClientFactory.initialized = true;
   }
 
   private static initializeRegistry(): void {
@@ -175,7 +180,6 @@ export class ImageClientFactory extends Singleton {
       ImageClientFactory.registerModel(model);
     }
 
-    void AutobyteusImageModelProvider.ensureDiscovered();
   }
 
   static registerModel(model: ImageModel): void {
@@ -183,7 +187,7 @@ export class ImageClientFactory extends Singleton {
     ImageClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
-  static createImageClient(modelIdentifier: string, configOverride?: MultimediaConfig | null): BaseImageClient {
+  private static requireModel(modelIdentifier: string): ImageModel {
     ImageClientFactory.ensureInitialized();
     const model = ImageClientFactory.modelsByIdentifier.get(modelIdentifier);
     if (!model) {
@@ -193,7 +197,33 @@ export class ImageClientFactory extends Singleton {
         )}`
       );
     }
-    return model.createClient(configOverride ?? undefined);
+    return model;
+  }
+
+
+  static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
+    const model = ImageClientFactory.requireModel(modelIdentifier);
+    return model.runtime === MultimediaRuntime.API
+      && model.provider === MultimediaProvider.GEMINI;
+  }
+
+  static createImageClient(
+    modelIdentifier: string,
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
+  ): BaseImageClient {
+    return ImageClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);
+  }
+
+  static syncRuntimeModels(runtime: MultimediaRuntime, models: ImageModel[]): number {
+    ImageClientFactory.ensureInitialized();
+    if (models.some((model) => model.runtime !== runtime)) throw new Error('IMAGE_RUNTIME_MODEL_SYNC_INVALID');
+    for (const [identifier, model] of ImageClientFactory.modelsByIdentifier) {
+      if (model.runtime === runtime) ImageClientFactory.modelsByIdentifier.delete(identifier);
+    }
+    for (const model of models) ImageClientFactory.registerModel(model);
+    return models.length;
   }
 
   static listModels(): ImageModel[] {

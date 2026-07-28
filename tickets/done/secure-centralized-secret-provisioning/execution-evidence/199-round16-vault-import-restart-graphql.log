@@ -1,0 +1,1143 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test | 1 failed) 1602ms
+     × materializes the immutable template, migrates, initializes one adjacent key, reopens value-free, and removes 1602ms
+(node:95342) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "current-db-import-95342-1785134234464-50e4fd7cd0b08.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/db/current-db-import-95342-1785134234464-50e4fd7cd0b08.db"
+
+18 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+stdout | tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts > explicit target database importer lifecycle > ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 1862ms
+     ✓ ignores every implicit redirect, previews read-only, imports transactionally, and reopens the explicit database  1861ms
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:95354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad/.env
+Loading non-secret configuration from: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/metadata-provenance-95354-1785134240142-9d54d67d374ad/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+Successfully fetched 26 models from LLMFactory.
+
+stdout | tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts > assembled Gemini metadata provenance GraphQL E2E > projects LIVE only for a matching AI Studio Developer API record
+LLM models cache populated with 26 items.
+
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (4 tests) 2129ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (4 tests) 1730ms
+(node:95382) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/secret-management/secret-vault-lifecycle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/secret-management/secret-vault-lifecycle.test.ts (9 tests) 302ms
+ ✓ tests/unit/logging/prisma-query-log-policy.test.ts (11 tests) 692ms
+(node:95398) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/secret-management/secret-vault-inspection-service.test.ts (4 tests) 112ms
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'tab' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eudiXl/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'line feed' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-54T9EN/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'vertical tab' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lhHhPg/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'form feed' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-DNce7f/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'carriage return' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-pEGxgl/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'space' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-78R6GS/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'no-break space' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GNcLCN/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'ogham space mark' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-akwjyI/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2000' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-SBfIPH/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2001' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-sZGjzg/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2002' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-NkvhQU/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2003' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-HJXEPm/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2004' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-jrSx31/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2005' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-GDEDkG/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2006' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-F42fVE/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2007' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-CrpMXQ/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2008' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-hDKxeU/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+2009' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-ZG5Rkw/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'U+200A' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-vjkCvD/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'line separator' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nnALKi/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'paragraph separator' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-bMOhnC/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'narrow no-break space' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-MiQVRo/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'medium mathematical space' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-f2wkr0/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'ideographic space' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-eHKMxR/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes mapped assignments with dotenv-accepted leading 'UTF-8 BOM' before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-nfjnxL/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > excludes the mapped dotenv colon-assignment form before parsing or retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-lb82RB/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > masks a complete dotenv multiline quoted assignment after newline and Unicode whitespace
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-VbhpjO/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > masks the complete dotenv colon-newline unquoted assignment
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-EYjkcF/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > leaves canonical application bytes and parent aliases unchanged while projecting approved non-secret settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-xWRGaz/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/secret-management/legacy-source-non-authority.test.ts > legacy source non-authority > leaves custom-provider v1 byte-for-byte unchanged and returns stable value-free reconfiguration guidance
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/legacy-source-non-authority-RrUgD2
+
+ ✓ tests/unit/secret-management/legacy-source-non-authority.test.ts (31 tests) 68ms
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-EqVCN9
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-EqVCN9/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-EqVCN9/.env
+Non-secret configuration parsed without process-wide injection
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' environment variable is not set. This variable is mandatory and must be provided by the environment that launches the server (e.g., Docker Compose, Electron app, or a developer's .env file) to ensure correct URL generation for clients. The server cannot start without it.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > initializes base URL and sqlite db path when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tTkSI3/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > preserves an explicit DATABASE_URL when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-qydjSe/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > delivers a persisted SQLite DATABASE_URL without injecting it into the parent process
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fSrYT0/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Kw0lD7
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Kw0lD7/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Kw0lD7/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+ERROR: Failed to initialize SQLite path: AppConfigError: DATABASE_URL must be a non-empty SQLite file URL.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_LOG_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7/custom-logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7K4Yc7/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if getBaseUrl is called before initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets custom app data dir when valid
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-5oIZfJ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-5oIZfJ/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > accepts an initial app data dir in the constructor
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-R7qHrr
+AppConfig instance created.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > clears stale AUTOBYTEUS_MEMORY_DIR when switching to a custom app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ldElTB/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir after initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-JCvCYA/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir for non-existent path
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Skill path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Agent package root path must be absolute and will be ignored: relative-source
+Agent package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Application package root path must be absolute and will be ignored: relative-root
+Application package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > exposes md-centric agent/team path helpers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m/.env
+Loading non-secret configuration from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m/.env
+Non-secret configuration parsed without process-wide injection
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-fRBT6m/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets and gets config values and updates the env file
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-6i7Jli
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-6i7Jli/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > creates temp workspace directory under the app data dir by default
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-M38avL
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-M38avL/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_TEMP_WORKSPACE_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-02G02A
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-02G02A/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-fyO4DF
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-fyO4DF/.env
+loadEnvironment() is deprecated. Use initialize() instead.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Failed to load environment: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-fyO4DF/.env
+
+ ✓ tests/unit/config/app-config.test.ts (20 tests) 35ms
+ ✓ tests/unit/secret-management/local-environment-source-reader.test.ts (18 tests) 33ms
+(node:95403) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/secret-management/local-environment-secret-import-service.test.ts (6 tests) 29ms
+(node:95404) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/secret-management/import-local-environment-secrets-cli.test.ts (25 tests) 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts > server restart one-database secret-vault lifecycle > materializes the immutable template, migrates, initializes one adjacent key, reopens value-free, and removes
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ credentialStatus tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts:30:3
+ ❯ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts:98:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 11 passed (12)
+      Tests  1 failed | 133 passed (134)
+   Start at  08:37:10
+   Duration  17.27s (transform 3.82s, setup 49ms, import 7.15s, tests 8.60s, environment 1ms)
+

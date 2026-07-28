@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
+import { AnthropicLLM as ProductionAnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+import { providerApiKeyResolver, missingProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 // Mock Anthropic Client
 const mockCreate = vi.hoisted(() => vi.fn());
@@ -23,6 +24,12 @@ const buildModel = (name: string, value = name): LLMModel =>
     canonicalName: name,
     provider: LLMProvider.ANTHROPIC
   });
+
+class AnthropicLLM extends ProductionAnthropicLLM {
+  constructor(model: LLMModel, config = new LLMConfig()) {
+    super(model, config, providerApiKeyResolver('synthetic-anthropic-key'));
+  }
+}
 
 const currentAdaptiveModels = [
   ['claude-opus-4.8', 'claude-opus-4-8'],
@@ -60,7 +67,6 @@ describe('AnthropicLLM', () => {
       content: [{ type: 'text', text: 'ok' }],
       usage: { input_tokens: 1, output_tokens: 1 }
     });
-    process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
     const model = buildModel('claude-3-opus');
     
     llm = new AnthropicLLM(model);
@@ -70,10 +76,16 @@ describe('AnthropicLLM', () => {
     expect(llm).toBeDefined();
   });
   
-  it('should throw if API key missing', () => {
-    delete process.env.ANTHROPIC_API_KEY;
+  it('fails at first use if the required provider key is missing', async () => {
     const model = buildModel('claude');
-    expect(() => new AnthropicLLM(model)).toThrow(/environment variable is not set/);
+    const missing = new ProductionAnthropicLLM(
+      model,
+      new LLMConfig(),
+      missingProviderApiKeyResolver(),
+    );
+    await expect(missing.sendMessages(userMessages)).rejects.toThrow(
+      'SYNTHETIC_API_KEY_MISSING',
+    );
   });
 
   it('omits Opus 4.7 fallback temperature and filters internal thinking fields when thinking is disabled', async () => {

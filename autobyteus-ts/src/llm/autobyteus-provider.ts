@@ -1,4 +1,5 @@
 import { AutobyteusClient } from '../clients/autobyteus-client.js';
+import type { AutobyteusDiscoveryAuthentication } from '../clients/autobyteus-discovery-authentication.js';
 import { LLMConfig } from './utils/llm-config.js';
 import { LLMModel } from './models.js';
 import { LLMProvider } from './providers.js';
@@ -89,15 +90,6 @@ const jsonSchemaToParameterSchema = (schemaData: Record<string, unknown>): Param
 export class AutobyteusModelProvider {
   static readonly DEFAULT_SERVER_URL = 'https://localhost:8000';
 
-  static getHosts(): string[] {
-    const hostsStr = process.env.AUTOBYTEUS_LLM_SERVER_HOSTS;
-    if (hostsStr) {
-      return hostsStr.split(',').map((host) => host.trim()).filter(Boolean);
-    }
-
-    return [];
-  }
-
   static isValidUrl(url: string): boolean {
     try {
       const parsed = new URL(url);
@@ -107,14 +99,14 @@ export class AutobyteusModelProvider {
     }
   }
 
-  static async getModels(): Promise<LLMModel[]> {
-    const hosts = AutobyteusModelProvider.getHosts();
-    if (!hosts.length) {
-      console.info('No Autobyteus LLM server hosts configured. Skipping discovery.');
-      return [];
-    }
+  static async getModels(
+    hosts: string[],
+    authentication: AutobyteusDiscoveryAuthentication,
+  ): Promise<LLMModel[]> {
+    if (!hosts.length) return [];
 
     const allModels: LLMModel[] = [];
+    let authoritativeResponses = 0;
 
     for (const hostUrl of hosts) {
       if (!AutobyteusModelProvider.isValidUrl(hostUrl)) {
@@ -126,12 +118,16 @@ export class AutobyteusModelProvider {
       let client: AutobyteusClient | null = null;
 
       try {
-        client = new AutobyteusClient(hostUrl);
+        client = new AutobyteusClient(
+          hostUrl,
+          authentication.apiKey.revealToTrustedConsumer(),
+        );
         const response = await client.getAvailableLlmModelsSync();
 
         if (!AutobyteusModelProvider.validateServerResponse(response)) {
           continue;
         }
+        authoritativeResponses += 1;
 
         const responseRecord = response as ServerResponse;
         const models = Array.isArray(responseRecord.models)
@@ -186,8 +182,8 @@ export class AutobyteusModelProvider {
             );
           }
         }
-      } catch (error: any) {
-        console.warn(`Could not connect or fetch models from Autobyteus server at ${hostUrl}: ${error?.message ?? error}`);
+      } catch {
+        console.warn('AUTOBYTEUS_LLM_DISCOVERY_REMOTE_FAILED');
       } finally {
         if (client) {
           await client.close();
@@ -195,33 +191,8 @@ export class AutobyteusModelProvider {
       }
     }
 
+    if (authoritativeResponses === 0) throw new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED');
     return allModels;
-  }
-
-  static async discoverAndRegister(): Promise<number> {
-    try {
-      const { LLMFactory } = await import('./llm-factory.js');
-      const discoveredModels = await AutobyteusModelProvider.getModels();
-      let registeredCount = 0;
-
-      for (const model of discoveredModels) {
-        try {
-          LLMFactory.registerModel(model);
-          registeredCount += 1;
-        } catch (error: any) {
-          console.warn(`Failed to register Autobyteus model '${model.name}': ${error?.message ?? error}`);
-        }
-      }
-
-      if (registeredCount > 0) {
-        console.info(`Finished Autobyteus discovery. Total models registered: ${registeredCount}`);
-      }
-
-      return registeredCount;
-    } catch (error: any) {
-      console.error(`Unexpected error during Autobyteus model discovery: ${error?.message ?? error}`);
-      return 0;
-    }
   }
 
   private static validateServerResponse(response: unknown): boolean {

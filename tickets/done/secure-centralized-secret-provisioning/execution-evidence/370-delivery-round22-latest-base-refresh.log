@@ -1,0 +1,17 @@
+# Round 22 delivery latest-base refresh
+started_utc=2026-07-27T20:47:05Z
+branch=codex/secure-centralized-secret-provisioning
+pre_fetch_head=57863a7005d13a0f5b68fa330b7f9c3ce5ce1dd7
+pre_fetch_origin_personal=d6983612c5a77fb94d9266df85a9d03fe2d1c68b
+?? tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/370-delivery-round22-latest-base-refresh.log
+## fetch
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+post_fetch_origin_personal=d6983612c5a77fb94d9266df85a9d03fe2d1c68b
+merge_base=d6983612c5a77fb94d9266df85a9d03fe2d1c68b
+behind=0
+ahead=58
+integration_method=already-current
+new_base_commits_integrated=0
+result=PASS
+finished_utc=2026-07-27T20:47:07Z

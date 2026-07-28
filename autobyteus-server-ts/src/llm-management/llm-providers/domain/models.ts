@@ -18,9 +18,21 @@ export type LlmProviderWithModels<TModel> = {
   models: TModel[];
 };
 
+export type ProviderSettingsGroup<
+  TLlmModel,
+  TAudioModel,
+  TImageModel,
+  TVideoModel,
+> = {
+  provider: LlmProviderRecord;
+  llmModels: TLlmModel[];
+  audioModels: TAudioModel[];
+  imageModels: TImageModel[];
+  videoModels: TVideoModel[];
+};
+
 export type CustomLlmProviderDraftInput = {
   name: string;
-  providerType: string;
   baseUrl: string;
   apiKey: string;
 };
@@ -31,9 +43,6 @@ export type CustomLlmProviderProbeModel = {
 };
 
 export type CustomLlmProviderProbeResult = {
-  name: string;
-  providerType: LLMProvider;
-  baseUrl: string;
   discoveredModels: CustomLlmProviderProbeModel[];
 };
 

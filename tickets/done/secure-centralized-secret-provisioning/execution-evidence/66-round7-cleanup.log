@@ -1,0 +1,22 @@
+Round 7 owned-resource cleanup
+ Container scsp-round7-autobyteus-server-1  Stopping
+ Container scsp-round7-autobyteus-server-1  Stopped
+ Container scsp-round7-autobyteus-server-1  Removing
+ Container scsp-round7-autobyteus-server-1  Removed
+ Volume scsp-round7_autobyteus-server-root-home  Removing
+ Volume scsp-round7_autobyteus-server-data  Removing
+ Volume scsp-round7_autobyteus-server-chromium-profile  Removing
+ Network scsp-round7_default  Removing
+ Volume scsp-round7_autobyteus-server-workspace  Removing
+ Volume scsp-round7_autobyteus-server-root-home  Removed
+ Volume scsp-round7_autobyteus-server-chromium-profile  Removed
+ Volume scsp-round7_autobyteus-server-data  Removed
+ Volume scsp-round7_autobyteus-server-workspace  Removed
+ Network scsp-round7_default  Removed
+[2026-07-22 15:23:37] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/docker/.runtime/scsp-round7.env
+Remaining scsp-round7 containers: 0
+Remaining scsp-round7 networks: 0
+Remaining scsp-round7 volumes: 0
+Runtime state file: absent
+Temporary lifecycle script: absent
+Local image alias: retained because the shared tag pre-existed and ownership outside this run is not exclusive

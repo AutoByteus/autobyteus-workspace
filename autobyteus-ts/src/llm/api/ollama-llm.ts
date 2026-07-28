@@ -9,17 +9,18 @@ import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js'
 import { createOllamaPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import { convertOllamaToolCalls } from '../converters/ollama-tool-call-converter.js';
 import { createLocalLongRunningFetch } from '../transport/local-long-running-fetch.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
 export class OllamaLLM extends BaseLLM {
   private client: Ollama;
   private _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, llmConfig: LLMConfig) {
+  constructor(model: LLMModel, config: LLMConfig, _apiKeyResolver: ProviderApiKeyResolver) {
     if (!model.hostUrl) {
       throw new Error('OllamaLLM requires a hostUrl to be set on the LLMModel.');
     }
 
-    super(model, llmConfig);
+    super(model, config);
     this.client = new Ollama({
       host: model.hostUrl,
       fetch: createLocalLongRunningFetch(),

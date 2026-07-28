@@ -1,0 +1,53 @@
+HEAD:
+3068d0fad00a6adba302199c857b01d2ede7ebc5
+
+Docker packaging diff base..HEAD:
+
+Prisma factory production call sites:
+autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts:1:import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
+autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts:8:const prisma = createConfiguredPrismaClient();
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts:5:import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts:350:  constructor(private readonly prisma: PrismaClient = createConfiguredPrismaClient()) {
+autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts:3:import { createConfiguredPrismaClient } from "../../../config/prisma-client-factory.js";
+autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts:7:const prisma = createConfiguredPrismaClient();
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.ts:2:import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
+autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.ts:117:  constructor(private readonly prisma: PrismaClient = createConfiguredPrismaClient()) {
+autobyteus-server-ts/src/config/prisma-client-factory.ts:4:export const createConfiguredPrismaClient = (): PrismaClient =>
+autobyteus-server-ts/src/config/prisma-client-factory.ts:5:  new PrismaClient({
+
+Smoke imports:
+38:const { bootstrapBuiltInAgents } = await import(
+44:} = await import(
+49:} = await import(
+
+Factory:
+import { PrismaClient } from "@prisma/client";
+import { appConfigProvider } from "./app-config-provider.js";
+
+export const createConfiguredPrismaClient = (): PrismaClient =>
+  new PrismaClient({
+    datasources: {
+      db: { url: appConfigProvider.config.getOperationalDatabaseUrl() },
+    },
+  });
+
+Config operational URL:
+276-  getAppDataDir(): string {
+277-    return this.dataDir;
+278-  }
+279-
+280:  getOperationalDatabaseUrl(): string {
+281-    if (this.get("DB_TYPE", "sqlite") !== "sqlite") {
+282-      throw new AppConfigError("Only the SQLite DATABASE_URL operational configuration is supported.");
+283-    }
+284-    const databaseUrl = this.get("DATABASE_URL");
+285-    if (typeof databaseUrl !== "string") {
+286-      throw new AppConfigError("DATABASE_URL is not configured.");
+287-    }
+288-    return this.validateSqliteDatabaseUrl(databaseUrl);
+289-  }
+290-
+291-  getConfigFilePath(): string {
+292-    const configPath = path.join(this.dataDir, ".env");
+
+Diff check:

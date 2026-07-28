@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import type { SecretValue } from "autobyteus-ts";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import {
   asObject,
@@ -7,7 +8,11 @@ import {
   MODEL_DISCOVERY_PROBE_PROMPT,
   type ClaudeSdkPermissionMode,
 } from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
-import { buildClaudeSdkSpawnEnvironment } from "./claude-sdk-auth-environment.js";
+import { getSecretVaultRuntime } from "../../../secret-management/secret-vault-runtime.js";
+import {
+  buildClaudeSdkSpawnEnvironment,
+  resolveClaudeSdkAuthMode,
+} from "./claude-sdk-auth-environment.js";
 import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
 import {
   normalizeModelDescriptors,
@@ -48,6 +53,7 @@ export type ClaudeSdkCanUseTool = (
 ) => Promise<Record<string, unknown>>;
 
 export type ClaudeSdkStderrCallback = (data: string) => void;
+type ClaudeApiKeyResolver = () => Promise<SecretValue>;
 
 export type ClaudeSdkStartQueryTurnOptions = {
   prompt: string;
@@ -86,6 +92,14 @@ const allowToolUseWithoutPrompt: ClaudeSdkCanUseTool = async (
 });
 
 const CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS = ["AskUserQuestion"] as const;
+const CLAUDE_API_KEY_UNAVAILABLE = "CLAUDE_RUNTIME_API_KEY_UNAVAILABLE";
+
+const resolveClaudeApiKeyFromVault: ClaudeApiKeyResolver = () =>
+  getSecretVaultRuntime().requireService().resolveForUse({
+    kind: "agentRuntime",
+    runtimeKind: "claude_agent_sdk",
+    credentialSlot: "apiKey",
+  });
 
 const canScopeProcessCwd = (workingDirectory: string | null): workingDirectory is string => {
   const targetWorkingDirectory = workingDirectory?.trim();
@@ -189,15 +203,25 @@ const closeQueryControl = async (controlLike: Record<string, unknown> | null): P
 export class ClaudeSdkClient {
   private cachedSdkModule: ClaudeSdkModuleLike | null = null;
 
+  constructor(
+    private readonly resolveClaudeApiKey: ClaudeApiKeyResolver = resolveClaudeApiKeyFromVault,
+  ) {}
+
   setCachedModuleForTesting(module: unknown): void {
     this.cachedSdkModule = (module as ClaudeSdkModuleLike | null) ?? null;
   }
 
   async listModels(): Promise<ModelInfo[]> {
     const sdk = await this.loadModuleSafe();
+    let spawnEnvironment: Record<string, string | undefined>;
+    try {
+      spawnEnvironment = await this.resolveSpawnEnvironment();
+    } catch {
+      return [];
+    }
     const supportedRows = await this.tryGetSupportedModelsFromQueryControl(
       sdk,
-      buildClaudeSdkSpawnEnvironment(),
+      spawnEnvironment,
     );
     if (supportedRows.length > 0) {
       return supportedRows.map((row) => toModelInfo(row));
@@ -232,7 +256,8 @@ export class ClaudeSdkClient {
       throw new Error("Claude SDK query API is unavailable.");
     }
 
-    const queryOptions = this.buildQueryOptions(options);
+    const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
+    const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
     return this.createSdkQuery(options.workingDirectory, () =>
       queryFn({
         prompt: options.prompt,
@@ -355,9 +380,11 @@ export class ClaudeSdkClient {
     return null;
   }
 
-  private buildQueryOptions(options: ClaudeSdkStartQueryTurnOptions): Record<string, unknown> {
+  private buildQueryOptions(
+    options: ClaudeSdkStartQueryTurnOptions,
+    spawnEnvironment: Record<string, string | undefined>,
+  ): Record<string, unknown> {
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
-    const sdkSpawnEnvironment = options.env ?? buildClaudeSdkSpawnEnvironment();
     const settingSources = getClaudeRuntimeSettingSources();
     const allowedTools = new Set<string>();
     for (const toolName of options.allowedTools ?? []) {
@@ -372,7 +399,7 @@ export class ClaudeSdkClient {
       pathToClaudeCodeExecutable,
       permissionMode: options.permissionMode ?? "default",
       ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
-      env: sdkSpawnEnvironment,
+      env: spawnEnvironment,
       disallowedTools: [...CLAUDE_BUILT_IN_TOOLS_DISALLOWED_BY_AUTOBYTEUS],
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionId ? { resume: options.sessionId } : {}),
@@ -386,6 +413,25 @@ export class ClaudeSdkClient {
           ? { canUseTool: allowToolUseWithoutPrompt }
           : {}),
     };
+  }
+
+  private async resolveSpawnEnvironment(
+    explicitEnvironment?: Record<string, string | undefined>,
+  ): Promise<Record<string, string | undefined>> {
+    const effectiveEnvironment = explicitEnvironment ?? process.env;
+    if (resolveClaudeSdkAuthMode(effectiveEnvironment) !== "api-key") {
+      return explicitEnvironment ?? buildClaudeSdkSpawnEnvironment(effectiveEnvironment);
+    }
+
+    try {
+      const apiKey = await this.resolveClaudeApiKey();
+      return buildClaudeSdkSpawnEnvironment(
+        effectiveEnvironment,
+        apiKey.revealToTrustedConsumer(),
+      );
+    } catch {
+      throw new Error(CLAUDE_API_KEY_UNAVAILABLE);
+    }
   }
 
   private async createSdkQuery(

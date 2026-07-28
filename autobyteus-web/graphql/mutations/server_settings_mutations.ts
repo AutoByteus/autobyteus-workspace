@@ -17,8 +17,6 @@ export const SET_SEARCH_CONFIG = gql`
     $provider: String!
     $serperApiKey: String
     $serpapiApiKey: String
-    $googleCseApiKey: String
-    $googleCseId: String
     $vertexAiSearchApiKey: String
     $vertexAiSearchServingConfig: String
   ) {
@@ -26,8 +24,6 @@ export const SET_SEARCH_CONFIG = gql`
       provider: $provider
       serperApiKey: $serperApiKey
       serpapiApiKey: $serpapiApiKey
-      googleCseApiKey: $googleCseApiKey
-      googleCseId: $googleCseId
       vertexAiSearchApiKey: $vertexAiSearchApiKey
       vertexAiSearchServingConfig: $vertexAiSearchServingConfig
     )

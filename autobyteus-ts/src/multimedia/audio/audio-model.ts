@@ -3,10 +3,12 @@ import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseAudioClient } from './base-audio-client.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type AudioClientConstructor = new (model: AudioModel, config: MultimediaConfig) => BaseAudioClient;
+type AudioClientConstructor = new (model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseAudioClient;
 
 export interface AudioModelOptions {
   name: string;
@@ -68,7 +70,11 @@ export class AudioModel {
     return this.name;
   }
 
-  createClient(configOverride?: MultimediaConfig | null): BaseAudioClient {
+  createClient(
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
+  ): BaseAudioClient {
     let configToUse = this.defaultConfig;
     if (configOverride) {
       const cloned = new MultimediaConfig({ ...this.defaultConfig.params });
@@ -76,7 +82,15 @@ export class AudioModel {
       configToUse = cloned;
     }
 
-    return new this.clientClass(this, configToUse);
+    if (
+      this.runtime === MultimediaRuntime.API
+      && this.provider === MultimediaProvider.GEMINI
+    ) {
+      if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+      return new this.clientClass(this, configToUse, apiKeyResolver, geminiRuntimeResolver);
+    }
+    if (geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_NOT_ALLOWED');
+    return new this.clientClass(this, configToUse, apiKeyResolver);
   }
 
   toString(): string {

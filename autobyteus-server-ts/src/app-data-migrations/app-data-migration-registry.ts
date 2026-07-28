@@ -10,12 +10,14 @@ import { TeamCommunicationProjectionAddressMigration } from "./migrations/team-c
 import { TokenUsageExecutionAddressBackfillMigration } from "./migrations/token-usage-execution-address-backfill-migration.js";
 import { TokenUsageLegacyPathColumnsDropMigration } from "./migrations/token-usage-legacy-path-columns-drop-migration.js";
 import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
+import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
 
   constructor(definitions?: AppDataMigrationDefinition[]) {
     this.definitions = definitions ?? [
+      new CustomProviderV1AppDataMigration(),
       new RemoveGlobalSkillDiscoveryModeMigration(
         appConfigProvider.config.getMemoryDir(),
         appConfigProvider.config.getAppDataDir(),

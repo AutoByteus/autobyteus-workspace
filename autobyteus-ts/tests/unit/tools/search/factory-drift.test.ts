@@ -2,67 +2,45 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { SearchClientFactory } from '../../../../src/tools/search/factory.js';
 import { SerperSearchStrategy } from '../../../../src/tools/search/serper-strategy.js';
 import { SerpApiSearchStrategy } from '../../../../src/tools/search/serpapi-strategy.js';
-
-const originalEnv = { ...process.env };
+import { SearchProvider } from '../../../../src/tools/search/providers.js';
+import { SecretValue } from '../../../../src/secrets/secret-value.js';
 
 const resetFactory = () => {
   (SearchClientFactory as any).instance = undefined;
 };
 
-const clearSearchEnv = () => {
-  process.env.DEFAULT_SEARCH_PROVIDER = '';
-  process.env.SERPER_API_KEY = '';
-  process.env.SERPAPI_API_KEY = '';
-  process.env.VERTEX_AI_SEARCH_API_KEY = '';
-  process.env.VERTEX_AI_SEARCH_SERVING_CONFIG = '';
-};
+describe('SearchClientFactory explicit provisioning', () => {
+  beforeEach(resetFactory);
+  afterEach(resetFactory);
 
-describe('SearchClientFactory (Config Drift)', () => {
-  beforeEach(() => {
-    process.env = { ...originalEnv };
-    clearSearchEnv();
-    resetFactory();
-  });
-
-  afterEach(() => {
-    process.env = { ...originalEnv };
-    resetFactory();
-  });
-
-  it('correctly picks up API key changes after fix', () => {
-    process.env.DEFAULT_SEARCH_PROVIDER = 'serpapi';
-    process.env.SERPAPI_API_KEY = 'old-key';
-
+  it('uses each explicitly supplied key without retaining the prior credential', () => {
     const factory = new SearchClientFactory();
-    const firstClient = factory.createSearchClient();
-    expect((firstClient as any).strategy.apiKey).toBe('old-key');
+    const firstClient = factory.createSearchClient({
+      provider: SearchProvider.SERPAPI,
+      apiKey: SecretValue.fromString('synthetic-old-key'),
+    });
+    const secondClient = factory.createSearchClient({
+      provider: SearchProvider.SERPAPI,
+      apiKey: SecretValue.fromString('synthetic-new-key'),
+    });
 
-    // Update API key in environment
-    process.env.SERPAPI_API_KEY = 'new-key';
-
-    const secondClient = factory.createSearchClient();
-
-    // After fix, it should return a new client (or at least a client with the new key)
-    // Actually, it returns a NEW client instance now.
     expect(secondClient).not.toBe(firstClient);
-    expect((secondClient as any).strategy.apiKey).toBe('new-key');
+    expect((firstClient as any).strategy.apiKey).toBe('synthetic-old-key');
+    expect((secondClient as any).strategy.apiKey).toBe('synthetic-new-key');
   });
 
-  it('correctly picks up provider changes after fix', () => {
-    process.env.SERPER_API_KEY = 'serper-key';
-    process.env.SERPAPI_API_KEY = 'serpapi-key';
-    process.env.DEFAULT_SEARCH_PROVIDER = 'serper';
-
+  it('uses the explicitly selected provider rather than ambient configuration', () => {
     const factory = new SearchClientFactory();
-    const firstClient = factory.createSearchClient();
+    const firstClient = factory.createSearchClient({
+      provider: SearchProvider.SERPER,
+      apiKey: SecretValue.fromString('synthetic-serper-key'),
+    });
+    const secondClient = factory.createSearchClient({
+      provider: SearchProvider.SERPAPI,
+      apiKey: SecretValue.fromString('synthetic-serpapi-key'),
+    });
+
     expect((firstClient as any).strategy).toBeInstanceOf(SerperSearchStrategy);
-
-    // Update provider in environment
-    process.env.DEFAULT_SEARCH_PROVIDER = 'serpapi';
-
-    const secondClient = factory.createSearchClient();
-
-    // After fix, it should pick up the new provider
     expect((secondClient as any).strategy).toBeInstanceOf(SerpApiSearchStrategy);
   });
 });

@@ -4,6 +4,10 @@ import { GeminiVideoClient } from '../../../../../src/multimedia/video/api/gemin
 import { VideoModel } from '../../../../../src/multimedia/video/video-model.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
 import { MultimediaProvider } from '../../../../../src/multimedia/providers.js';
+import {
+  geminiProviderApiKeyResolver,
+  geminiRuntimeResolver,
+} from '../../../provider-api-key-resolver-test-helpers.js';
 
 const { createMock, filesGetMock, filesDownloadMock, loadMediaReferenceMock } = vi.hoisted(() => ({
   createMock: vi.fn(),
@@ -13,6 +17,7 @@ const { createMock, filesGetMock, filesDownloadMock, loadMediaReferenceMock } = 
 }));
 
 vi.mock('../../../../../src/utils/gemini-helper.js', () => ({
+  selectGeminiRuntimeForResolver: async () => ({ kind: 'aiStudio' }),
   initializeGeminiClientWithRuntime: () => ({
     client: {
       interactions: { create: createMock },
@@ -42,7 +47,12 @@ const buildClient = (config = new MultimediaConfig({
     provider: MultimediaProvider.GEMINI,
     clientClass: GeminiVideoClient
   });
-  return new GeminiVideoClient(model, config);
+  return new GeminiVideoClient(
+    model,
+    config,
+    geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
+    geminiRuntimeResolver(),
+  );
 };
 
 describe('GeminiVideoClient', () => {

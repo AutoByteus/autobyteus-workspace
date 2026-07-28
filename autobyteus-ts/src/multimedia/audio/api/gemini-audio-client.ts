@@ -6,11 +6,15 @@ import crypto from 'node:crypto';
 import { GoogleGenAI } from '@google/genai';
 import { BaseAudioClient } from '../base-audio-client.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
-import { initializeGeminiClientWithRuntime } from '../../../utils/gemini-helper.js';
+import {
+  initializeGeminiClientWithRuntime,
+} from '../../../utils/gemini-helper.js';
 import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { AudioModel } from '../audio-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../../utils/gemini-runtime.js';
 
 const AUDIO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_audio');
 
@@ -104,18 +108,30 @@ async function saveAudioBytes(audioBytes: Uint8Array, extension?: string | null)
 }
 
 export class GeminiAudioClient extends BaseAudioClient {
-  private client: GoogleGenAI;
-  private runtimeInfo: GeminiRuntimeInfo | null;
+  private clientPromise: Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
+  private readonly runtimeResolver: GeminiRuntimeResolver;
 
-  constructor(model: AudioModel, config: MultimediaConfig) {
+  constructor(model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
     super(model, config);
-    const { client, runtimeInfo } = initializeGeminiClientWithRuntime();
-    this.client = client;
-    this.runtimeInfo = runtimeInfo;
+    this.apiKeyResolver = apiKeyResolver;
+    if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+    this.runtimeResolver = runtimeResolver;
+  }
+
+  private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+    const selection = await this.runtimeResolver();
+    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
   }
 
   async generateSpeech(prompt: string, generationConfig?: Record<string, unknown>): Promise<SpeechGenerationResponse> {
     try {
+      const { client, runtimeInfo } = await this.getClient();
       const finalConfig = { ...(this.config.toDict?.() ?? {}) } as Record<string, unknown>;
       if (generationConfig) {
         Object.assign(finalConfig, generationConfig);
@@ -177,10 +193,10 @@ export class GeminiAudioClient extends BaseAudioClient {
       const runtimeAdjustedModel = resolveModelForRuntime(
         this.model.value,
         'tts',
-        this.runtimeInfo?.runtime
+        runtimeInfo.runtime
       );
 
-      const response = await this.client.models.generateContent({
+      const response = await client.models.generateContent({
         model: runtimeAdjustedModel,
         contents: finalPrompt,
         config: {

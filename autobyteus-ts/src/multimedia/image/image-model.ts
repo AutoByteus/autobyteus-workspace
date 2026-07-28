@@ -3,10 +3,12 @@ import { MultimediaRuntime } from '../runtimes.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
 import { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { BaseImageClient } from './base-image-client.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type ImageClientConstructor = new (model: ImageModel, config: MultimediaConfig) => BaseImageClient;
+type ImageClientConstructor = new (model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseImageClient;
 
 export interface ImageModelOptions {
   name: string;
@@ -71,7 +73,11 @@ export class ImageModel {
     return this.name;
   }
 
-  createClient(configOverride?: MultimediaConfig | null): BaseImageClient {
+  createClient(
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
+  ): BaseImageClient {
     let configToUse = this.defaultConfig;
     if (configOverride) {
       const cloned = new MultimediaConfig({ ...this.defaultConfig.params });
@@ -79,7 +85,15 @@ export class ImageModel {
       configToUse = cloned;
     }
 
-    return new this.clientClass(this, configToUse);
+    if (
+      this.runtime === MultimediaRuntime.API
+      && this.provider === MultimediaProvider.GEMINI
+    ) {
+      if (!geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
+      return new this.clientClass(this, configToUse, apiKeyResolver, geminiRuntimeResolver);
+    }
+    if (geminiRuntimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_NOT_ALLOWED');
+    return new this.clientClass(this, configToUse, apiKeyResolver);
   }
 
   toString(): string {

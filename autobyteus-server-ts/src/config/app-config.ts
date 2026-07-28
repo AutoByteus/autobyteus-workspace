@@ -10,6 +10,19 @@ import {
   parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
+import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
+import { ApplicationDatabaseLocation } from "./application-database-location.js";
+import { assignmentName, linesWithEndings, splitLineEnding } from "./environment-assignment-lines.js";
+
+const forbiddenGenericSettingNames = new Set<string>([
+  ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
+  "QWEN_API_KEY",
+  "ZHIPU_API_KEY",
+  "OLLAMA_API_KEY",
+  "GOOGLE_CSE_API_KEY",
+  "CLAUDE_CODE_API_KEY",
+  "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
+]);
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -28,9 +41,7 @@ const logger = {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export type AppConfigOptions = {
-  appDataDir?: string | null;
-};
+export type AppConfigOptions = { appDataDir?: string | null };
 
 export class AppConfig {
   private isWindows: boolean;
@@ -38,6 +49,7 @@ export class AppConfig {
   private dataDir: string;
   private configFile: string | null = null;
   private configData: Record<string, string> = {};
+  private operationalDatabaseLocation: ApplicationDatabaseLocation | null = null;
   private initialized = false;
   private baseUrl: string | null = null;
 
@@ -178,15 +190,28 @@ export class AppConfig {
   private initSqlitePath(): void {
     const configuredDatabaseUrl = this.get("DATABASE_URL");
     if (typeof configuredDatabaseUrl === "string" && configuredDatabaseUrl.trim().length > 0) {
+      this.setOperationalDatabaseLocation(configuredDatabaseUrl);
       return;
     }
     const dbPath = this.getSqlitePath();
     const expectedUrl = this.toPrismaSqliteUrl(dbPath);
-    this.set("DATABASE_URL", expectedUrl);
+    this.setOperationalDatabaseLocation(expectedUrl);
   }
 
   private toPrismaSqliteUrl(filePath: string): string {
     return `file:${filePath.replace(/\\/g, "/")}`;
+  }
+
+  private setOperationalDatabaseLocation(databaseUrl: string): void {
+    try {
+      this.operationalDatabaseLocation = ApplicationDatabaseLocation.fromConfiguredFileUrl(
+        databaseUrl,
+        this.getAppRootDir(),
+      );
+      this.configData.DATABASE_URL = this.operationalDatabaseLocation.databaseUrl;
+    } catch {
+      throw new AppConfigError("DATABASE_URL must be a non-empty SQLite file URL.");
+    }
   }
 
   private getSqlitePath(): string {
@@ -207,7 +232,7 @@ export class AppConfig {
   private initMemoryPath(): void {
     const memoryDir = this.getMemoryDir();
     if (!this.get("AUTOBYTEUS_MEMORY_DIR")) {
-      this.set("AUTOBYTEUS_MEMORY_DIR", memoryDir);
+      this.setRuntimeValue("AUTOBYTEUS_MEMORY_DIR", memoryDir);
     }
     process.env.AUTOBYTEUS_MEMORY_DIR ??= memoryDir;
   }
@@ -267,6 +292,20 @@ export class AppConfig {
 
   getAppDataDir(): string {
     return this.dataDir;
+  }
+
+  getOperationalDatabaseUrl(): string {
+    return this.getOperationalDatabaseLocation().databaseUrl;
+  }
+
+  getOperationalDatabaseLocation(): ApplicationDatabaseLocation {
+    if (this.get("DB_TYPE", "sqlite") !== "sqlite") {
+      throw new AppConfigError("Only the SQLite DATABASE_URL operational configuration is supported.");
+    }
+    if (!this.operationalDatabaseLocation) {
+      throw new AppConfigError("DATABASE_URL is not configured.");
+    }
+    return this.operationalDatabaseLocation;
   }
 
   getConfigFilePath(): string {
@@ -435,7 +474,6 @@ export class AppConfig {
     }
 
     this.dataDir = customPath;
-    // Rebind the runtime memory root immediately so lower layers do not fall back to process.cwd()/memory.
     const memoryDir = this.getMemoryDir();
     this.configData.AUTOBYTEUS_MEMORY_DIR = memoryDir;
     process.env.AUTOBYTEUS_MEMORY_DIR = memoryDir;
@@ -451,6 +489,9 @@ export class AppConfig {
   }
 
   get(key: string, defaultValue?: string): string | undefined {
+    if (key === "DATABASE_URL" && this.operationalDatabaseLocation) {
+      return this.operationalDatabaseLocation.databaseUrl;
+    }
     return process.env[key] ?? this.configData[key] ?? defaultValue;
   }
 
@@ -459,6 +500,9 @@ export class AppConfig {
   }
 
   set(key: string, value: string): void {
+    if (forbiddenGenericSettingNames.has(key)) {
+      throw new AppConfigError("Sensitive values must be written through a subject-specific secret service.");
+    }
     this.configData[key] = value;
     process.env[key] = value;
 
@@ -475,6 +519,9 @@ export class AppConfig {
   }
 
   delete(key: string): void {
+    if (forbiddenGenericSettingNames.has(key)) {
+      throw new AppConfigError("Sensitive values must be removed through a subject-specific secret service.");
+    }
     delete this.configData[key];
     delete process.env[key];
 
@@ -490,53 +537,41 @@ export class AppConfig {
     }
   }
 
-  setLlmApiKey(provider: string, apiKey: string): void {
-    this.set(`${provider.toUpperCase()}_API_KEY`, apiKey);
-  }
-
-  getLlmApiKey(provider: string): string | undefined {
-    return this.get(`${provider.toUpperCase()}_API_KEY`);
-  }
-
   isInitialized(): boolean {
     return this.initialized;
   }
 
+  private setRuntimeValue(key: string, value: string): void {
+    this.configData[key] = value;
+    process.env[key] = value;
+  }
+
   private updateEnvFile(configFile: string, key: string, value: string): void {
     const content = fs.readFileSync(configFile, "utf-8");
-    const lines = content.split(/\r?\n/);
     let found = false;
-
-    const updatedLines = lines.map((line) => {
-      if (!line || line.trim().startsWith("#")) {
-        return line;
-      }
-      const [currentKey] = line.split("=");
-      if (currentKey === key) {
+    const updated = linesWithEndings(content).map((line) => {
+      const { body, ending } = splitLineEnding(line);
+      if (assignmentName(body) === key) {
         found = true;
-        return `${key}=${value}`;
+        return `${key}=${value}${ending}`;
       }
       return line;
-    });
+    }).join("");
 
-    if (!found) {
-      updatedLines.push(`${key}=${value}`);
-    }
+    const preferredEnding = content.includes("\r\n") ? "\r\n" : "\n";
+    const withNewValue = found
+      ? updated
+      : `${content}${content.length > 0 && !/[\r\n]$/.test(content) ? preferredEnding : ""}${key}=${value}`;
 
-    fs.writeFileSync(configFile, updatedLines.filter((line) => line !== undefined).join("\n"));
+    fs.writeFileSync(configFile, withNewValue);
   }
 
   private removeKeyFromEnvFile(configFile: string, key: string): void {
     const content = fs.readFileSync(configFile, "utf-8");
-    const lines = content.split(/\r?\n/);
-    const filteredLines = lines.filter((line) => {
-      if (!line || line.trim().startsWith("#")) {
-        return true;
-      }
-      const [currentKey] = line.split("=");
-      return currentKey !== key;
-    });
-
-    fs.writeFileSync(configFile, filteredLines.join("\n"));
+    const filtered = linesWithEndings(content).filter((line) => {
+      const { body } = splitLineEnding(line);
+      return assignmentName(body) !== key;
+    }).join("");
+    fs.writeFileSync(configFile, filtered);
   }
 }

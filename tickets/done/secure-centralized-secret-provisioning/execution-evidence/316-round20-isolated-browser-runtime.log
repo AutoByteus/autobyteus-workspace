@@ -1,0 +1,118 @@
+ROUND20_BROWSER_STACK BACKEND=http://127.0.0.1:58120 FRONTEND=http://127.0.0.1:33120 RUNTIME=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/round20-browser-runtime DATABASE=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/db/round20-browser.db
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://localhost:1234
+Finished LM Studio discovery. Total models registered: 14
+Successfully fetched 40 models from LLMFactory.
+LLM models cache populated with 40 items.
+Pre-loaded 40 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Successfully fetched 7 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=5
+Image models by runtime: api=7
+Image models cache populated with 7 items.
+Pre-loaded 7 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+> autobyteus@1.4.26 dev /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 33120
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:33120/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 39ms
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), {
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x2)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x3)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x4)
+
+✔ Vite server built in 614ms
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x5)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/manifest.js?v=5b44cab8:12:22
+  10 |    }
+  11 |    if (false) {
+  12 |      manifest = import("#app-manifest");
+     |                        ^
+  13 |    } else {
+  14 |      manifest = $fetch(buildAssetsURL(builds/meta/${useRuntimeConfig().app.buildId}.json), { (x6)
+
+[nitro] ✔ Nuxt Nitro server built in 557ms
+ℹ Vite client warmed up in 1ms
+Populating Video models cache for the first time...
+Fetching list of available Video models from VideoClientFactory...
+Successfully fetched 1 video models from VideoClientFactory.
+Video models by provider: GEMINI=1
+Video models by runtime: api=1
+Video models cache populated with 1 items.
+Failed to resolve model metadata for provider GEMINI: Gemini Developer API metadata request failed with status 400
+Failed to resolve model metadata for provider GEMINI: Gemini Developer API metadata request failed with status 400
+Created terminal session befe2384-3372-4722-a181-7cb7bd117ef4 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: befe2384-3372-4722-a181-7cb7bd117ef4
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session befe2384-3372-4722-a181-7cb7bd117ef4
+Terminal WebSocket disconnected: befe2384-3372-4722-a181-7cb7bd117ef4

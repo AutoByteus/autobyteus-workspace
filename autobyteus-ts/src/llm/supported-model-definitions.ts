@@ -1,4 +1,5 @@
-import type { LLMModelOptions } from './models.js';
+import type { SupportedModelDefinition } from './supported-model-definition.js';
+export type { SupportedModelDefinition } from './supported-model-definition.js';
 import { LLMConfig, TokenPricingConfig, type TokenPricingConfigInput } from './utils/llm-config.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 
@@ -14,11 +15,6 @@ import { QwenLLM } from './api/qwen-llm.js';
 import { GlmLLM } from './api/glm-llm.js';
 import { MinimaxLLM } from './api/minimax-llm.js';
 import { LLMProvider } from './providers.js';
-
-export type SupportedModelDefinition = Omit<
-  LLMModelOptions,
-  'maxContextTokens' | 'activeContextTokens' | 'maxInputTokens' | 'maxOutputTokens' | 'runtime' | 'hostUrl'
->;
 
 const pricing = (input: number, output: number, options: Omit<TokenPricingConfigInput, 'inputTokenPricing' | 'outputTokenPricing'> = {}) =>
   new TokenPricingConfig({
@@ -188,6 +184,7 @@ const grokReasoningSchema = new ParameterSchema([
     enumValues: ['low', 'medium', 'high']
   })
 ]);
+
 
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
   ...([

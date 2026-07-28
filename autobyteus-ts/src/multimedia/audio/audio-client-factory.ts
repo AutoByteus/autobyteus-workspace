@@ -6,7 +6,9 @@ import { BaseAudioClient } from './base-audio-client.js';
 import { GeminiAudioClient } from './api/gemini-audio-client.js';
 import { OpenAIAudioClient } from './api/openai-audio-client.js';
 import { MultimediaConfig } from '../utils/multimedia-config.js';
-import { AutobyteusAudioModelProvider } from './autobyteus-audio-provider.js';
+import { MultimediaRuntime } from '../runtimes.js';
+import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 const GEMINI_VOICE_DETAILS: Record<string, { gender: string; description: string }> = {
   Zephyr: { gender: 'female', description: 'Bright, Higher pitch' },
@@ -82,10 +84,13 @@ export class AudioClientFactory extends Singleton {
   }
 
   static reinitialize(): void {
-    AudioClientFactory.initialized = false;
-    AudioClientFactory.modelsByIdentifier.clear();
-    AutobyteusAudioModelProvider.resetDiscovery();
     AudioClientFactory.ensureInitialized();
+    const retainedGatewayModels = Array.from(AudioClientFactory.modelsByIdentifier.values())
+      .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
+    AudioClientFactory.modelsByIdentifier.clear();
+    AudioClientFactory.initializeRegistry();
+    for (const model of retainedGatewayModels) AudioClientFactory.registerModel(model);
+    AudioClientFactory.initialized = true;
   }
 
   private static initializeRegistry(): void {
@@ -185,7 +190,6 @@ export class AudioClientFactory extends Singleton {
       AudioClientFactory.registerModel(model);
     }
 
-    void AutobyteusAudioModelProvider.ensureDiscovered();
   }
 
   static registerModel(model: AudioModel): void {
@@ -193,7 +197,7 @@ export class AudioClientFactory extends Singleton {
     AudioClientFactory.modelsByIdentifier.set(identifier, model);
   }
 
-  static createAudioClient(modelIdentifier: string, configOverride?: MultimediaConfig | null): BaseAudioClient {
+  private static requireModel(modelIdentifier: string): AudioModel {
     AudioClientFactory.ensureInitialized();
     const model = AudioClientFactory.modelsByIdentifier.get(modelIdentifier);
     if (!model) {
@@ -203,7 +207,33 @@ export class AudioClientFactory extends Singleton {
         )}`
       );
     }
-    return model.createClient(configOverride ?? undefined);
+    return model;
+  }
+
+
+  static requiresGeminiRuntimeResolver(modelIdentifier: string): boolean {
+    const model = AudioClientFactory.requireModel(modelIdentifier);
+    return model.runtime === MultimediaRuntime.API
+      && model.provider === MultimediaProvider.GEMINI;
+  }
+
+  static createAudioClient(
+    modelIdentifier: string,
+    configOverride: MultimediaConfig | null | undefined,
+    apiKeyResolver: ProviderApiKeyResolver,
+    geminiRuntimeResolver?: GeminiRuntimeResolver,
+  ): BaseAudioClient {
+    return AudioClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);
+  }
+
+  static syncRuntimeModels(runtime: MultimediaRuntime, models: AudioModel[]): number {
+    AudioClientFactory.ensureInitialized();
+    if (models.some((model) => model.runtime !== runtime)) throw new Error('AUDIO_RUNTIME_MODEL_SYNC_INVALID');
+    for (const [identifier, model] of AudioClientFactory.modelsByIdentifier) {
+      if (model.runtime === runtime) AudioClientFactory.modelsByIdentifier.delete(identifier);
+    }
+    for (const model of models) AudioClientFactory.registerModel(model);
+    return models.length;
   }
 
   static listModels(): AudioModel[] {

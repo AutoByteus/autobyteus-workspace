@@ -1,0 +1,19 @@
+SCENARIO=SCSP-E2E-DOCKER-001
+HEAD=dd1d37f90d00331d427bad1b36e4401a3a733038
+PROJECT=scsp-round17
+DOCKER_INITIAL_STATUS=MISSING
+DOCKER_SAVE_STATUS=CONFIGURED
+APPLICATION_DATABASE_COUNT=1
+ROOT_KEY_COUNT=1
+ Container scsp-round17-autobyteus-server-1  Restarting
+ Container scsp-round17-autobyteus-server-1  Started
+DOCKER_REOPEN_STATUS=CONFIGURED
+DOCKER_REMOVE_STATUS=MISSING
+SYNTHETIC_CANARY_LOG_MATCHES=0
+SANITIZED_RUNTIME_SIGNALS_START
+Database migrations completed successfully.
+[2026-07-27T10:24:04.782Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+Database migrations completed successfully.
+[2026-07-27T10:25:07.080Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+SANITIZED_RUNTIME_SIGNALS_END
+SCSP-E2E-DOCKER-001=PASS

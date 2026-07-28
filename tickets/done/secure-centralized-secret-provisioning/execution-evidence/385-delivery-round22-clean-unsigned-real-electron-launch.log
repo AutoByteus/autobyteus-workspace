@@ -1,0 +1,50 @@
+# Delivery Round 22 — Clean No-Sign Real Electron Launch
+started_utc=2026-07-28T04:42:40Z
+source_head=dae24b9c67b29c52454dd163d5a53c9478cbe308
+app=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+manual_signing=NONE
+
+## Stop conflicting installed runtime for requested candidate launch
+conflicting_listener_pid=91005
+conflicting_listener_command=/Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+conflicting_installed_main_pid=90395
+prelaunch_port=FREE
+
+## Launch exact clean worktree app
+launch_local_time=2026-07-28 06:42:41
+open_command=PASS
+main_pid=93424
+backend_pid=94094
+renderer_pid=93486
+health_response={"status":"ok","message":"Server is running"}
+main=PASS
+backend=PASS
+renderer=PASS
+health=PASS
+93424     1 00:08 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+93486 93424 00:02 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1784694198602163 --launch-time-ticks=519568670751 --shared-files --field-trial-handle=1718379636,r,1755854615941208208,3420382091921153514,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,844728677429322162,12756224252255816138,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=64
+94094 93424 00:02 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+
+## Application log fatal renderer indicators since launch
+application_log_fatal_renderer_indicators=0
+
+## macOS renderer crash delta
+new_renderer_crash_reports=0
+dyld_renderer_crash_delta=PASS
+finished_utc=2026-07-28T04:42:51Z
+left_running_for_user=YES
+overall=PASS_PENDING_VISIBLE_WINDOW_CAPTURE
+
+## Visible window capture
+window_id=79719
+screenshot=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/385-delivery-round22-clean-unsigned-rendered-window.png
+window_visual_result=PASS_NONBLANK_FULL_APPLICATION_UI
+
+## Final live recheck
+93486 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer) --type=renderer --user-data-dir=/Users/normy/Library/Application Support/autobyteus --standard-schemes=local-file --cors-schemes=local-file --fetch-schemes=local-file --streaming-schemes=local-file --app-path=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar --enable-sandbox --lang=de --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=4 --time-ticks-at-unix-epoch=-1784694198602163 --launch-time-ticks=519568670751 --shared-files --field-trial-handle=1718379636,r,1755854615941208208,3420382091921153514,262144 --enable-features=PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=DropInputEventsWhilePaintHolding,LocalNetworkAccessChecks,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version --pseudonymization-salt-handle=1935764596,r,844728677429322162,12756224252255816138,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=64
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 94094 normy   26u  IPv4 0x332aa68bfe548c38      0t0  TCP *:29695 (LISTEN)
+{"status":"ok","message":"Server is running"}
+new_renderer_crash_reports_final=0
+overall=PASS
+left_running_for_user=YES

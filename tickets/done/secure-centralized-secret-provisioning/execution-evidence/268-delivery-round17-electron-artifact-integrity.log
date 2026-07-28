@@ -1,0 +1,30 @@
+SCENARIO=SCSP-DELIVERY-ROUND17-ELECTRON-ARTIFACT-INTEGRITY
+DATE=2026-07-27
+CHECKPOINT_HEAD=3877b39bdcad2e8c88bb9f86d190308aaf034829
+REVIEWED_IMPLEMENTATION_HEAD=dd1d37f90d00331d427bad1b36e4401a3a733038
+bb220cc8f73af78d795fbab6c1cd0a46534a21bca3ac3854d2faf9feca449fde  /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg
+4274a30f44984804a57aa2b76b55366bb9f0ad37dc7c361bf8d36cf2e6d1afa8  /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $9127C403
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $E49A1179
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $179774AE
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $D02F2E6E
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $179774AE
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $F14ED0ED
+Die überprüfte CRC32-Prüfsumme ist $D3AEB449
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg" is VALID
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip.
+BUNDLE_ID=com.autobyteus.app
+SHORT_VERSION=1.4.26
+BUNDLE_VERSION=1.4.26
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+RESULT=PASS

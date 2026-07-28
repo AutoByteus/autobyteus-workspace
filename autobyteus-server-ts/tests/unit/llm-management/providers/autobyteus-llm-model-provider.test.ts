@@ -21,7 +21,8 @@ describe('AutobyteusLlmModelProvider targeted reload', () => {
       ensureSyncedForCatalogRead: vi.fn(),
       syncSavedProviders: vi.fn(),
     };
-    const provider = new AutobyteusLlmModelProvider(customSyncService as any);
+    const remoteDiscovery = { refresh: vi.fn(), ensureDiscovered: vi.fn() };
+    const provider = new AutobyteusLlmModelProvider(customSyncService as any, remoteDiscovery as any);
 
     const count = await provider.refreshModelsForProvider(LLMProvider.ANTHROPIC);
 
@@ -29,5 +30,32 @@ describe('AutobyteusLlmModelProvider targeted reload', () => {
     expect(listModelsByProvider).toHaveBeenCalledWith(LLMProvider.ANTHROPIC);
     expect(reloadModels).not.toHaveBeenCalled();
     expect(customSyncService.syncSavedProviders).not.toHaveBeenCalled();
+    expect(remoteDiscovery.refresh).not.toHaveBeenCalled();
+  });
+
+  it('routes targeted AutoByteus reload through managed remote discovery', async () => {
+    const customSyncService = { ensureSyncedForCatalogRead: vi.fn(), syncSavedProviders: vi.fn() };
+    const remoteDiscovery = { refresh: vi.fn().mockResolvedValue(3), ensureDiscovered: vi.fn() };
+    const provider = new AutobyteusLlmModelProvider(customSyncService as any, remoteDiscovery as any);
+
+    await expect(provider.refreshModelsForProvider(LLMProvider.AUTOBYTEUS)).resolves.toBe(3);
+    expect(remoteDiscovery.refresh).toHaveBeenCalledWith('llm');
+  });
+
+  it('removes a deleted custom provider through custom synchronization without remote discovery', async () => {
+    const customSyncService = {
+      ensureSyncedForCatalogRead: vi.fn(),
+      syncSavedProviders: vi.fn().mockResolvedValue({ models: [], statuses: [] }),
+    };
+    const remoteDiscovery = {
+      refresh: vi.fn().mockRejectedValue(new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED')),
+      ensureDiscovered: vi.fn().mockRejectedValue(new Error('AUTOBYTEUS_LLM_DISCOVERY_FAILED')),
+    };
+    const provider = new AutobyteusLlmModelProvider(customSyncService as any, remoteDiscovery as any);
+
+    await expect(provider.refreshModelsForProvider('provider_gateway')).resolves.toBe(0);
+    expect(customSyncService.syncSavedProviders).toHaveBeenCalledOnce();
+    expect(remoteDiscovery.refresh).not.toHaveBeenCalled();
+    expect(remoteDiscovery.ensureDiscovered).not.toHaveBeenCalled();
   });
 });

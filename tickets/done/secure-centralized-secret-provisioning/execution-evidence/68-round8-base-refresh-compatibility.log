@@ -1,0 +1,33 @@
+Round 8 Docker base refresh and compatibility preflight
+HEAD: 977948fe68695374afbcd5e9516693d64533230e
+Docker-source diff from reviewed base: none
+Uncommitted Docker-source diff: none
+Pre-build derived image ID: sha256:b190db0deca36000ba8f5fe38eba9253be12fb8a30f23e8ea4c77e8140c3e7ba
+
+Refresh command: docker pull autobyteus/chrome-vnc:latest
+latest: Pulling from autobyteus/chrome-vnc
+Digest: sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+Status: Image is up to date for autobyteus/chrome-vnc:latest
+docker.io/autobyteus/chrome-vnc:latest
+
+Refresh command: docker pull autobyteus/chrome-vnc:zh
+zh: Pulling from autobyteus/chrome-vnc
+Digest: sha256:24ca92cb4a274be088901f679ae9bb31317d2b73c3ab954d2fc8f631e6713071
+Status: Image is up to date for autobyteus/chrome-vnc:zh
+docker.io/autobyteus/chrome-vnc:zh
+
+Refreshed local identities:
+latest id=sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029 repoDigests=["autobyteus/chrome-vnc@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029"]
+zh id=sha256:24ca92cb4a274be088901f679ae9bb31317d2b73c3ab954d2fc8f631e6713071 repoDigests=["autobyteus/chrome-vnc@sha256:24ca92cb4a274be088901f679ae9bb31317d2b73c3ab954d2fc8f631e6713071"]
+
+Compatibility probe latest:
+Python 3.13.14
+4.3.0
+BASE_RUNTIME_COMPATIBILITY_OK
+
+Compatibility probe zh:
+Python 3.13.14
+4.3.0
+BASE_RUNTIME_COMPATIBILITY_OK
+
+Result: PASS

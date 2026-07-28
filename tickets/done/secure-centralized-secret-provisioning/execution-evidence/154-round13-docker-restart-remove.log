@@ -1,0 +1,30 @@
+SCENARIO=SCSP-E2E-DOCKER-001
+PROJECT=scsp-round13
+APPLICATION_ENV_SHA256_BEFORE=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+APPLICATION_DB_KEY_SHA256_BEFORE=b4ce8a2ac75ccb5d153ddd1f5ba4f522c2f5c2e39b56ad7536cc13f35fa4c2f9
+ Container scsp-round13-autobyteus-server-1  Restarting
+ Container scsp-round13-autobyteus-server-1  Started
+DOCKER_REOPEN_STATUS=CONFIGURED
+DOCKER_REMOVE_STATUS=MISSING
+DOCKER_REOPEN_VALUE_EXPOSED=false
+CONTAINER_AFTER=0a100760684f78f12615cd3e1211d65d34fea055b595dd4462602c02b599bf30
+DATA_VOLUME_AFTER=scsp-round13_autobyteus-server-data
+APPLICATION_ENV_SHA256_AFTER=c3196f8accc24be5316486555dfbc9e62bed653b28a7d1c1affbbb8c37cd67fb
+APPLICATION_DB_KEY_SHA256_AFTER=b4ce8a2ac75ccb5d153ddd1f5ba4f522c2f5c2e39b56ad7536cc13f35fa4c2f9
+SECOND_STORE_ARTIFACT_COUNT_AFTER=0
+ROOT_KEY_COUNT_AFTER=0
+APPLICATION_DATABASE_COUNT_AFTER=0
+  File "<string>", line 1
+    import sys; print(sys.stdin.read().count(\"[REDACTED_SYNTHETIC_CANARY]\"))
+                                                                               ^
+SyntaxError: unexpected character after line continuation character
+SYNTHETIC_CANARY_LOG_MATCHES=
+SANITIZED_RUNTIME_SIGNALS_START
+Applying migration `20260726090000_add_secret_vault`
+  └─ 20260726090000_add_secret_vault/
+Database migrations completed successfully.
+[2026-07-26T12:38:21.355Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+Database migrations completed successfully.
+[2026-07-26T12:39:28.181Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+SANITIZED_RUNTIME_SIGNALS_END
+SCSP-E2E-DOCKER-001=PASS

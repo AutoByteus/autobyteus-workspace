@@ -1,0 +1,211 @@
+ROUND=19
+HEAD=3244a7c6fc2eb4472ad25c3e0607182f35ad7f4f
+SCENARIO=SCSP-E2E-DOCKER-001
+PORT=58633
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+DOCKER_SERVER_NOT_READY
+sCode":404,"elapsedMs":0.30116701126098633,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:26,865 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167546865,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-18","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.3895000219345093,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:27,900 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167547899,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-19","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.4337080121040344,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:28,941 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167548940,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1a","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.7338339686393738,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:29,988 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167549987,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1b","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.782584011554718,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:31,039 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167551039,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1c","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.7227080464363098,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:32,073 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167552072,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1d","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.2748749852180481,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:33,101 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167553101,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1e","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.32579201459884644,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:34,131 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167554131,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1f","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.33695799112319946,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:35,160 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167555160,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1g","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.31133395433425903,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:35,945 DEBG 'dbus' stderr output:
+autobyteus-server-1  | Xlib:  extension "DPMS" missing on display ":99".
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:36,196 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167556195,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1h","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":1.3458750247955322,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:37,227 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167557227,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1i","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.7883750200271606,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:38,266 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167558265,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1j","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.6368330121040344,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:39,299 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167559299,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1k","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.4199589490890503,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:40,338 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167560337,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1l","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.7246249914169312,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:41,386 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167561385,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1m","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.6959590315818787,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:42,433 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167562433,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1n","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.6420829892158508,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:43,476 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167563475,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1o","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.7143750190734863,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:44,521 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167564520,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1p","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.9255840182304382,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:45,550 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167565550,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1q","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.37429100275039673,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:46,601 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167566601,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1r","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.3626669645309448,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:47,628 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167567628,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1s","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.8377079963684082,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:48,659 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167568659,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1t","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.3186250329017639,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:49,690 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167569690,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1u","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.38883399963378906,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:50,717 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167570717,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1v","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.39408397674560547,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:50,935 DEBG 'dbus' stderr output:
+autobyteus-server-1  | Xlib:  extension "DPMS" missing on display ":99".
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:51,744 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167571744,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1w","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.2597920298576355,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:52,770 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167572770,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1x","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.28895801305770874,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:53,795 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167573794,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1y","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.2790840268135071,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:54,820 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167574820,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-1z","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.2559170126914978,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:55,848 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167575848,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-20","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.39004194736480713,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:56,883 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167576883,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-21","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.4048750400543213,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:57,920 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167577919,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-22","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.6052089929580688,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:52:58,956 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167578956,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-23","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.6100829839706421,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:53:00,009 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167580008,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-24","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.7145000100135803,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:53:01,037 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167581037,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-25","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.2251250147819519,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:53:02,072 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167582072,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-26","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.42783403396606445,"msg":"http request completed"}
+autobyteus-server-1  | 
+autobyteus-server-1  | 2026-07-27 15:53:03,099 DEBG 'autobyteus_server' stdout output:
+autobyteus-server-1  | {"level":40,"time":1785167583098,"pid":42,"hostname":"4c35bda4f93e","reqId":"req-27","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.33983302116394043,"msg":"http request completed"}
+autobyteus-server-1  | 

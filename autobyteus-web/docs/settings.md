@@ -4,6 +4,40 @@
 
 This document outlines the end-to-end architecture of how Agent and Agent Team executions are managed in the frontend. The architecture has evolved to offload complex parsing to the backend. The frontend now acts as a **Renderer** of structured events rather than a parser of raw text.
 
+## Provider Credential Settings
+
+Settings -> API Key Management is a write-only credential surface backed by the
+server's centralized encrypted vault:
+
+- `providerSettings` returns each provider once with one provider-owned
+  `apiKeyConfigured` fact and credential-independent subordinate LLM, audio,
+  image, and video model lists;
+- stored credential values are never returned;
+- ordinary built-in providers support Save/create-or-overwrite and value-free
+  configured status, with no standalone credential-removal action;
+- Gemini uses its specialized three-option Settings flow for Save/overwrite,
+  first-time Save-and-use, and Use-this-mode;
+- Gemini initially renders three compact option rows. Configure expands and
+  focuses exactly one editor at a time. Key inputs remain write-only password
+  fields, the visibility control affects only the transient typed value, and a
+  successful save clears that input;
+- configured and active state are value-free badges derived from the
+  authoritative setup state and remain accurate after a Settings reload; and
+- successful commands refetch the provider-centered Settings read so the UI
+  reflects authoritative provider and catalog state.
+
+Custom OpenAI-compatible provider drafts still accept an API key for the probe
+and create transaction, but only non-secret provider metadata is persisted in
+the custom-provider JSON file. The credential is stored separately, and deleting
+the custom provider through the provider-entity lifecycle removes both its
+credential and metadata. AutoByteus gateway models retain their downstream
+display provider while credential configuration remains owned by the
+`AUTOBYTEUS` gateway provider.
+
+See `autobyteus-server-ts/docs/modules/secret_management.md` for encrypted-vault,
+migration, runtime resolution, Claude authentication, and real-E2E operator
+contracts.
+
 ## Server Settings: Working-Context Compaction
 
 Settings -> Server Settings -> Basics contains the global Compaction card. Its

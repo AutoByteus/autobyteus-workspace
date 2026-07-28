@@ -1,0 +1,65 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/serverSettingsStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/stores/llmProviderConfigStore.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/llmProviderConfigStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/stores/serverSettingsStore.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/stores/llmProviderConfigStore.test.ts (9 tests) 11ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts (4 tests) 16ms
+stderr | tests/stores/serverSettingsStore.test.ts > serverSettings store > fails deterministically when the bound backend is not ready
+Failed to fetch server settings: Error: backend readiness timed out
+    at ensureBoundBackendReady (/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/stores/serverSettings.ts:147:11)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.fetchServerSettings (/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/stores/serverSettings.ts:194:40)
+
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts (8 tests) 44ms
+ ✓ components/settings/__tests__/WebSearchConfigurationCard.spec.ts (7 tests) 79ms
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts (5 tests) 45ms
+ ✓ tests/stores/serverSettingsStore.test.ts (11 tests) 170ms
+
+ Test Files  6 passed (6)
+      Tests  44 passed (44)
+   Start at  18:19:46
+   Duration  5.91s (transform 3.32s, setup 29.59s, collect 793ms, tests 364ms, environment 1.36s, prepare 1.15s)
+

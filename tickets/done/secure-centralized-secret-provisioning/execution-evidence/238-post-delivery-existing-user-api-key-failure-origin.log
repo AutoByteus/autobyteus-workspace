@@ -1,0 +1,16 @@
+SCENARIO_ID=SCSP-E2E-ELECTRON-UPGRADE-001
+EXECUTION_DATE=2026-07-27
+ARTIFACT=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+EXISTING_USER_DATA_ROOT=/Users/normy/.autobyteus/server-data
+SECRET_VALUES_READ=NO
+DATABASE_ROWS_READ=NO
+ROOT_KEY_READ=NO
+CUSTOM_PROVIDER_FILE_CONTENT_READ=NO
+OBSERVED_GRAPHQL_ERROR=CUSTOM_PROVIDER_LEGACY_RECONFIGURATION_REQUIRED
+OBSERVED_COUNT_IN_RECENT_FAILED_RUNS=6
+SOURCE_THROW_CONDITION=custom provider configuration object has version 1
+SOURCE_PROPAGATION=listProviderSettings awaits listCustomProviders with other provider settings; rejection fails assembled query
+CLEAN_ISOLATED_CONTROL=PASS (current default custom-provider configuration; packaged renderer and IPC healthy)
+PRELIMINARY_CLASSIFICATION=implementation/design boundary requiring focused review
+EXPECTED=existing-user API Keys page remains usable or presents a bounded custom-provider reconfiguration state without failing unrelated provider status
+OBSERVED=legacy custom-provider configuration error fails the assembled provider-settings GraphQL request and the API Keys page

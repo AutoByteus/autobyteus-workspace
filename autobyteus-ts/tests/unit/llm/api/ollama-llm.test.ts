@@ -3,8 +3,9 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { OllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
+import { OllamaLLM as ProductionOllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
 import { createLocalLongRunningFetch } from '../../../../src/llm/transport/local-long-running-fetch.js';
+import { missingProviderApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const mockChat = vi.hoisted(() => vi.fn());
 const mockAbort = vi.hoisted(() => vi.fn());
@@ -19,6 +20,12 @@ const mockOllamaConstructor = vi.hoisted(
 vi.mock('ollama', () => ({
   Ollama: mockOllamaConstructor,
 }));
+
+class OllamaLLM extends ProductionOllamaLLM {
+  constructor(model: LLMModel, config = new LLMConfig()) {
+    super(model, config, missingProviderApiKeyResolver());
+  }
+}
 
 async function* createStream(parts: any[]) {
   for (const part of parts) {

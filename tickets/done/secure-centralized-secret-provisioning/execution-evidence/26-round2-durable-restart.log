@@ -1,0 +1,45 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Error: SQLite database error
+database is locked
+   0: sql_schema_connector::sql_migration_persistence::initialize
+           with namespaces=None
+             at schema-engine/connectors/sql-schema-connector/src/sql_migration_persistence.rs:14
+   1: schema_core::state::ApplyMigrations
+             at schema-engine/core/src/state.rs:226
+
+No test files found, exiting with code 1
+
+filter: tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts
+include: tests/**/*.test.ts
+exclude:  tests/unit/prompt-engineering/**/*.test.ts, tests/unit/agent-tools/prompt-engineering/**/*.test.ts, tests/integration/prompt-engineering/**/*.test.ts
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/node_modules/prisma/build/index.js migrate reset --force --skip-generate
+ ❯ genericNodeError node:internal/errors:983:15
+ ❯ wrappedFn node:internal/errors:537:14
+ ❯ checkExecSyncError node:child_process:916:11
+ ❯ execFileSync node:child_process:952:15
+ ❯ [as setup] tests/setup/prisma-global-setup.ts:12:3
+     10|   const databaseUrl = getTestDatabaseUrl();
+     11|   const prismaCli = path.join(process.cwd(), "node_modules", "prisma",…
+     12|   execFileSync(process.execPath, [prismaCli, "migrate", "reset", "--fo…
+       |   ^
+     13|     stdio: "inherit",
+     14|     env: {
+ ❯ TestProject._initializeGlobalSetup ../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:10030:50
+ ❯ Vitest.initializeGlobalSetup ../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:12730:35
+ ❯ ../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:12593:6
+ ❯ ../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:12622:11
+ ❯ ../node_modules/.pnpm/vitest@4.0.18_@types+node@25.3.0_happy-dom@15.11.7_jiti@2.6.1_jsdom@25.0.1_terser@5.46.0_yaml@2.8.2/node_modules/vitest/dist/chunks/cli-api.B7PN_QUv.js:12506:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: 1, signal: null, output: [ null, null, null ], pid: 38618, stdout: null, stderr: null }
+
+
+

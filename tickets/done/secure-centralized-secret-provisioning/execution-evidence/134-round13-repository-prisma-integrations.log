@@ -1,0 +1,407 @@
+ROUND=13
+IMPLEMENTATION_HEAD=eac929a1f1e411a72d232d961578a700bed12829
+DATABASE_URL_PARENT=SET
+PRISMA_LOG_QUERIES_PARENT=UNSET
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/integration/token-usage/providers/token-usage-store.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > summarizes a cached gross-input agent run using component deltas
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+
+stdout | tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > summarizes team and member usage from enriched identity fields
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts (7 tests | 7 failed) 29ms
+     × summarizes a cached gross-input agent run using component deltas 21ms
+     × sums reasoning tokens and refuses to aggregate costs across mixed currencies 2ms
+     × persists runtime-native cache, reasoning, and current-prompt fields as first-class ledger data 1ms
+     × summarizes Anthropic additive input with cache-write subtype details 1ms
+     × summarizes team and member usage from enriched identity fields 1ms
+     × keeps custom endpoint missing price and local no-bill statuses explicit 1ms
+     × classifies historical unknown-semantic rows as partial instead of reusing legacy cache math 1ms
+stdout | tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageLedgerRepository > appends and lists ledger events by run id
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-server-ts
+AppConfig instance created.
+
+ ❯ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts (4 tests | 4 failed) 11ms
+     × appends and lists ledger events by run id 8ms
+     × round-trips raw usage, semantic component, pricing, missing-dimension, and context fields 1ms
+     × returns the existing event on duplicate idempotency key 1ms
+     × finds the latest cumulative snapshot for a run and series 1ms
+stdout | tests/integration/token-usage/providers/statistics-provider.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24625) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/token-usage/providers/statistics-provider.integration.test.ts (7 tests) 19ms
+stdout | tests/unit/config/prisma-import-lifecycle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24629) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/config/prisma-import-lifecycle.test.ts (5 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > summarizes a cached gross-input agent run using component deltas
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ TokenUsageLedgerStore.appendTokenUsageEvent src/token-usage/providers/token-usage-ledger-store.ts:36:28
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:133:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > sums reasoning tokens and refuses to aggregate costs across mixed currencies
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ TokenUsageLedgerStore.appendTokenUsageEvent src/token-usage/providers/token-usage-ledger-store.ts:36:28
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:180:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > persists runtime-native cache, reasoning, and current-prompt fields as first-class ledger data
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ TokenUsageLedgerStore.appendTokenUsageEvent src/token-usage/providers/token-usage-ledger-store.ts:36:28
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:220:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > summarizes Anthropic additive input with cache-write subtype details
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ TokenUsageLedgerStore.appendTokenUsageEvent src/token-usage/providers/token-usage-ledger-store.ts:36:28
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:281:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > summarizes team and member usage from enriched identity fields
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ TokenUsageLedgerStore.appendTokenUsageEvent src/token-usage/providers/token-usage-ledger-store.ts:36:28
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:337:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > keeps custom endpoint missing price and local no-bill statuses explicit
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ TokenUsageLedgerStore.appendTokenUsageEvent src/token-usage/providers/token-usage-ledger-store.ts:36:28
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:361:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  tests/integration/token-usage/providers/token-usage-store.integration.test.ts > TokenUsageLedgerStore > classifies historical unknown-semantic rows as partial instead of reusing legacy cache math
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ TokenUsageLedgerStore.appendTokenUsageEvent src/token-usage/providers/token-usage-ledger-store.ts:36:28
+ ❯ tests/integration/token-usage/providers/token-usage-store.integration.test.ts:414:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageLedgerRepository > appends and lists ledger events by run id
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts:71:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageLedgerRepository > round-trips raw usage, semantic component, pricing, missing-dimension, and context fields
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts:144:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageLedgerRepository > returns the existing event on duplicate idempotency key
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts:184:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts > SqlTokenUsageLedgerRepository > finds the latest cumulative snapshot for a run and series
+AppConfigError: DATABASE_URL is not configured.
+ ❯ AppConfig.getOperationalDatabaseLocation src/config/app-config.ts:307:13
+    305|     }
+    306|     if (!this.operationalDatabaseLocation) {
+    307|       throw new AppConfigError("DATABASE_URL is not configured.");
+       |             ^
+    308|     }
+    309|     return this.operationalDatabaseLocation;
+ ❯ AppConfig.getOperationalDatabaseUrl src/config/app-config.ts:299:17
+ ❯ createConfiguredPrismaClient src/config/prisma-client-factory.ts:5:42
+ ❯ TokenUsagePrismaClientOwner.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:233:21
+ ❯ SqlTokenUsageLedgerRepository.get client [as client] src/token-usage/repositories/sql/token-usage-ledger-repository.ts:248:60
+ ❯ SqlTokenUsageLedgerRepository.appendUsageEvent src/token-usage/repositories/sql/token-usage-ledger-repository.ts:253:34
+ ❯ tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts:197:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  2 failed | 2 passed (4)
+      Tests  11 failed | 12 passed (23)
+   Start at  14:17:16
+   Duration  6.18s (transform 2.63s, setup 18ms, import 5.34s, tests 62ms, environment 0ms)
+
+node:internal/modules/cjs/loader:1433
+  throw err;
+  ^
+
+Error: Cannot find module 'repository_prisma/package.json'
+Require stack:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/[stdin]
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at [stdin]:3:32
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [stdin]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_stdin:53:5 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/[stdin]'
+  ]
+}
+
+Node.js v22.23.1

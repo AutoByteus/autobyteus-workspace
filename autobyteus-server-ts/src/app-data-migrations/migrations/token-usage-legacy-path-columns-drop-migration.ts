@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
+import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -111,14 +112,21 @@ const assertFinalSchema = (columns: readonly string[]): void => {
 };
 
 export class PrismaTokenUsageLegacyPathColumnsDropDatabase implements TokenUsageLegacyPathColumnsDropDatabase {
+  private prisma: PrismaClient | null;
   private readonly ownsClient: boolean;
 
-  constructor(private readonly prisma: PrismaClient = new PrismaClient()) {
-    this.ownsClient = arguments.length === 0;
+  constructor(prisma?: PrismaClient) {
+    this.prisma = prisma ?? null;
+    this.ownsClient = prisma === undefined;
+  }
+
+  private get client(): PrismaClient {
+    this.prisma ??= createConfiguredPrismaClient();
+    return this.prisma;
   }
 
   async getAppDataMigrationStatus(migrationId: string): Promise<AppDataMigrationStatus | null> {
-    const rows = await this.prisma.$queryRaw<MigrationStatusRow[]>`
+    const rows = await this.client.$queryRaw<MigrationStatusRow[]>`
       SELECT "status"
       FROM "app_data_migration_records"
       WHERE "migration_id" = ${migrationId}
@@ -128,27 +136,27 @@ export class PrismaTokenUsageLegacyPathColumnsDropDatabase implements TokenUsage
   }
 
   async listTokenUsageLedgerColumns(): Promise<string[]> {
-    const rows = await this.prisma.$queryRawUnsafe<TableColumn[]>(
+    const rows = await this.client.$queryRawUnsafe<TableColumn[]>(
       `PRAGMA table_info("${TOKEN_USAGE_LEDGER_TABLE}")`,
     );
     return rows.map((row) => row.name).filter((name) => typeof name === "string" && name.trim().length > 0);
   }
 
   async countTokenUsageLedgerRows(): Promise<number> {
-    const rows = await this.prisma.$queryRawUnsafe<CountRow[]>(
+    const rows = await this.client.$queryRawUnsafe<CountRow[]>(
       `SELECT COUNT(*) AS count FROM "${TOKEN_USAGE_LEDGER_TABLE}"`,
     );
     return Number(rows[0]?.count ?? 0);
   }
 
   async dropTokenUsageLedgerColumn(column: LegacyPathColumn): Promise<void> {
-    await this.prisma.$executeRawUnsafe(
+    await this.client.$executeRawUnsafe(
       `ALTER TABLE "${TOKEN_USAGE_LEDGER_TABLE}" DROP COLUMN "${column}"`,
     );
   }
 
   async disconnect(): Promise<void> {
-    if (this.ownsClient) await this.prisma.$disconnect();
+    if (this.ownsClient && this.prisma) await this.prisma.$disconnect();
   }
 }
 

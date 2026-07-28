@@ -1,9 +1,11 @@
-import { AudioClientFactory } from "autobyteus-ts/multimedia/audio/audio-client-factory.js";
-import { ImageClientFactory } from "autobyteus-ts/multimedia/image/image-client-factory.js";
-import { VideoClientFactory } from "autobyteus-ts/multimedia/video/video-client-factory.js";
 import type { SpeechGenerationResponse } from "autobyteus-ts/multimedia/utils/response-types.js";
 import type { ImageGenerationResponse } from "autobyteus-ts/multimedia/utils/response-types.js";
 import type { VideoGenerationResponse } from "autobyteus-ts/multimedia/utils/response-types.js";
+import {
+  AudioClientFactory,
+  ImageClientFactory,
+  VideoClientFactory,
+} from "autobyteus-ts";
 import type {
   EditImageInput,
   GenerateImageInput,
@@ -14,6 +16,8 @@ import type {
 } from "./media-tool-contract.js";
 import { getMediaModelResolver, type MediaModelResolver } from "./media-tool-model-resolver.js";
 import { getMediaPathResolver, type MediaPathResolver } from "./media-tool-path-resolver.js";
+import { createGeminiRuntimeResolver } from '../../llm-management/services/gemini-runtime-resolver-adapter.js';
+import { createMediaProviderApiKeyResolver } from "../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
 
 type ImageClientLike = {
   generateImage(
@@ -50,9 +54,9 @@ type VideoClientLike = {
 type MediaGenerationServiceDependencies = {
   modelResolver?: MediaModelResolver;
   pathResolver?: MediaPathResolver;
-  createImageClient?: (modelIdentifier: string) => ImageClientLike;
-  createAudioClient?: (modelIdentifier: string) => AudioClientLike;
-  createVideoClient?: (modelIdentifier: string) => VideoClientLike;
+  createImageClient?: (modelIdentifier: string) => Promise<ImageClientLike>;
+  createAudioClient?: (modelIdentifier: string) => Promise<AudioClientLike>;
+  createVideoClient?: (modelIdentifier: string) => Promise<VideoClientLike>;
 };
 
 const firstUrlOrThrow = (urls: string[] | null | undefined, operation: string): string => {
@@ -66,19 +70,40 @@ const firstUrlOrThrow = (urls: string[] | null | undefined, operation: string): 
 export class MediaGenerationService {
   private readonly modelResolver: MediaModelResolver;
   private readonly pathResolver: MediaPathResolver;
-  private readonly createImageClient: (modelIdentifier: string) => ImageClientLike;
-  private readonly createAudioClient: (modelIdentifier: string) => AudioClientLike;
-  private readonly createVideoClient: (modelIdentifier: string) => VideoClientLike;
+  private readonly createImageClient: (modelIdentifier: string) => Promise<ImageClientLike>;
+  private readonly createAudioClient: (modelIdentifier: string) => Promise<AudioClientLike>;
+  private readonly createVideoClient: (modelIdentifier: string) => Promise<VideoClientLike>;
 
   constructor(dependencies: MediaGenerationServiceDependencies = {}) {
     this.modelResolver = dependencies.modelResolver ?? getMediaModelResolver();
     this.pathResolver = dependencies.pathResolver ?? getMediaPathResolver();
     this.createImageClient = dependencies.createImageClient ??
-      ((modelIdentifier) => ImageClientFactory.createImageClient(modelIdentifier));
+      ((modelIdentifier) => Promise.resolve(ImageClientFactory.createImageClient(
+        modelIdentifier,
+        undefined,
+        createMediaProviderApiKeyResolver("image"),
+        ImageClientFactory.requiresGeminiRuntimeResolver(modelIdentifier)
+          ? createGeminiRuntimeResolver()
+          : undefined,
+      )));
     this.createAudioClient = dependencies.createAudioClient ??
-      ((modelIdentifier) => AudioClientFactory.createAudioClient(modelIdentifier));
+      ((modelIdentifier) => Promise.resolve(AudioClientFactory.createAudioClient(
+        modelIdentifier,
+        undefined,
+        createMediaProviderApiKeyResolver("audio"),
+        AudioClientFactory.requiresGeminiRuntimeResolver(modelIdentifier)
+          ? createGeminiRuntimeResolver()
+          : undefined,
+      )));
     this.createVideoClient = dependencies.createVideoClient ??
-      ((modelIdentifier) => VideoClientFactory.createVideoClient(modelIdentifier));
+      ((modelIdentifier) => Promise.resolve(VideoClientFactory.createVideoClient(
+        modelIdentifier,
+        undefined,
+        createMediaProviderApiKeyResolver("video"),
+        VideoClientFactory.requiresGeminiRuntimeResolver(modelIdentifier)
+          ? createGeminiRuntimeResolver()
+          : undefined,
+      )));
   }
 
   async generateImage(
@@ -88,7 +113,7 @@ export class MediaGenerationService {
     const resolvedModel = this.modelResolver.resolve("image_generation");
     const outputPath = this.pathResolver.resolveOutputFilePath(input.output_file_path, context);
     const inputImages = this.pathResolver.resolveInputImageReferences(input.input_images, context);
-    const client = this.createImageClient(resolvedModel.modelIdentifier);
+    const client = await this.createImageClient(resolvedModel.modelIdentifier);
 
     try {
       const response = await client.generateImage(
@@ -116,7 +141,7 @@ export class MediaGenerationService {
     const maskImage = input.mask_image
       ? this.pathResolver.resolveInputImageReference(input.mask_image, context)
       : null;
-    const client = this.createImageClient(resolvedModel.modelIdentifier);
+    const client = await this.createImageClient(resolvedModel.modelIdentifier);
 
     try {
       const response = await client.editImage(
@@ -141,7 +166,7 @@ export class MediaGenerationService {
   ): Promise<MediaToolResult> {
     const resolvedModel = this.modelResolver.resolve("speech_generation");
     const outputPath = this.pathResolver.resolveOutputFilePath(input.output_file_path, context);
-    const client = this.createAudioClient(resolvedModel.modelIdentifier);
+    const client = await this.createAudioClient(resolvedModel.modelIdentifier);
 
     try {
       const response = await client.generateSpeech(
@@ -165,7 +190,7 @@ export class MediaGenerationService {
     const resolvedModel = this.modelResolver.resolve("video_generation");
     const outputPath = this.pathResolver.resolveOutputFilePath(input.output_file_path, context);
     const inputImages = this.pathResolver.resolveInputImageReferences(input.input_images, context);
-    const client = this.createVideoClient(resolvedModel.modelIdentifier);
+    const client = await this.createVideoClient(resolvedModel.modelIdentifier);
 
     try {
       const response = await client.generateVideo(

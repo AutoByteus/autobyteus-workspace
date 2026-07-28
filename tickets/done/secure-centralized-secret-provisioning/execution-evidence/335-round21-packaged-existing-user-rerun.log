@@ -1,0 +1,23 @@
+ROUND=21
+HEAD=ec0df6b1a9d216366e08262cd96f5280686b04d0
+SCENARIO=SCSP-E2E-PACKAGED-EXISTING-USER-001
+(node:82462) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FIRST_MIGRATION={"migrationId":"20260727_custom_provider_v1_secret_migration","status":"SUCCEEDED","attempts":1,"summary":{"scannedCount":1,"migratedCount":1,"skippedCount":0,"failedCount":0,"details":[{"itemId":"custom-provider-v1","status":"MIGRATED","message":"CUSTOM_PROVIDER_V1_MIGRATED"}]}}
+FIRST_PROVIDER={"provider":{"id":"provider_packaged_round21","apiKeyConfigured":true,"status":"READY"},"llmModels":[{"modelIdentifier":"openai-compatible:provider_packaged_round21:packaged-round21-model"}]}
+FIRST_CUSTOM_MODEL_COUNT=1
+CURRENT_FILE_VERSION=2
+CURRENT_FILE_PLAINTEXT_FIELD_ABSENT=true
+DATABASE_CANARY_SCAN_CLEAN=true
+SECRET_ENTRY_COUNT_BEFORE_DELETE=1
+REOPENED_MIGRATION={"migrationId":"20260727_custom_provider_v1_secret_migration","status":"SUCCEEDED","attempts":1,"summary":{"scannedCount":1,"migratedCount":1,"skippedCount":0,"failedCount":0,"details":[{"itemId":"custom-provider-v1","status":"MIGRATED","message":"CUSTOM_PROVIDER_V1_MIGRATED"}]}}
+REOPENED_PROVIDER={"provider":{"id":"provider_packaged_round21","apiKeyConfigured":true,"status":"READY"},"llmModels":[{"modelIdentifier":"openai-compatible:provider_packaged_round21:packaged-round21-model"}]}
+DELETE_RESULT={"deleteCustomProvider":true}
+PROVIDER_ABSENT_AFTER_DELETE=true
+CUSTOM_RUNTIME_CATALOG_MODEL_COUNT_AFTER_DELETE=0
+CUSTOM_FILE_PROVIDER_ABSENT_AFTER_DELETE=true
+SECRET_ENTRY_COUNT_AFTER_DELETE=0
+AUTOBYTEUS_REMOTE_DISCOVERY_UNAVAILABLE_OBSERVED=true
+PACKAGED_LOG_CANARY_SCAN_CLEAN=true
+SCSP-E2E-PACKAGED-EXISTING-USER-001=PASS
+PACKAGED_EXISTING_USER_CLEANUP=PASS

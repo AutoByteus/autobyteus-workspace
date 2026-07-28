@@ -52,4 +52,8 @@ export class CachedImageModelProvider {
     }
     return this.cache.length;
   }
+
+  invalidate(): void {
+    this.cache = null;
+  }
 }

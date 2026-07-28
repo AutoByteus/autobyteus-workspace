@@ -2,6 +2,7 @@ import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AppConfig, AppConfigError } from "../../../src/config/app-config.js";
 
@@ -66,9 +67,14 @@ describe("AppConfig", () => {
 
     expect(config.getBaseUrl()).toBe("http://localhost:8000");
     const expectedDbPath = path.resolve(configDir, "db", "test.db");
-    const expectedDatabaseUrl = `file:${expectedDbPath.replace(/\\/g, "/")}`;
+    const expectedDatabaseUrl = pathToFileURL(expectedDbPath).href;
     expect(config.get("DATABASE_URL")).toBe(expectedDatabaseUrl);
-    expect(process.env.DATABASE_URL).toBe(expectedDatabaseUrl);
+    expect(config.getOperationalDatabaseLocation()).toEqual({
+      databaseUrl: expectedDatabaseUrl,
+      databasePath: expectedDbPath,
+      rootKeyPath: `${expectedDbPath}.secret.key`,
+    });
+    expect(process.env.DATABASE_URL).toBeUndefined();
     expect(fs.existsSync(path.join(configDir, "logs"))).toBe(true);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
@@ -85,8 +91,48 @@ describe("AppConfig", () => {
 
     config.initialize();
 
-    expect(config.get("DATABASE_URL")).toBe(explicitDatabaseUrl);
+    expect(config.get("DATABASE_URL")).toBe(pathToFileURL("/tmp/explicit-autobyteus-test.db").href);
     expect(process.env.DATABASE_URL).toBe(explicitDatabaseUrl);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("delivers and projects a persisted SQLite DATABASE_URL", async () => {
+    const explicitDatabaseUrl = "file:/tmp/persisted-autobyteus-test.db";
+    const configDir = await createTempConfigDir(
+      [
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/",
+        "APP_ENV=test",
+        "DB_TYPE=sqlite",
+        `DATABASE_URL=${explicitDatabaseUrl}`,
+        "",
+      ].join("\n"),
+    );
+    const config = new AppConfig({ appDataDir: configDir });
+
+    config.initialize();
+
+    expect(config.getOperationalDatabaseUrl())
+      .toBe(pathToFileURL("/tmp/persisted-autobyteus-test.db").href);
+    expect(process.env.DATABASE_URL).toBe(explicitDatabaseUrl);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("rejects a persisted non-SQLite DATABASE_URL", async () => {
+    const configDir = await createTempConfigDir(
+      [
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/",
+        "APP_ENV=test",
+        "DB_TYPE=sqlite",
+        "DATABASE_URL=postgresql://localhost/autobyteus",
+        "",
+      ].join("\n"),
+    );
+    const config = new AppConfig({ appDataDir: configDir });
+
+    expect(() => config.initialize()).toThrow(AppConfigError);
+    expect(process.env.DATABASE_URL).toBe("postgresql://localhost/autobyteus");
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });

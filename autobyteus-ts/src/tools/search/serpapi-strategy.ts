@@ -5,11 +5,10 @@ export class SerpApiSearchStrategy extends SearchStrategy {
   static API_URL = 'https://serpapi.com/search.json';
   private apiKey: string;
 
-  constructor() {
+  constructor(apiKey: string) {
     super();
-    const apiKey = process.env.SERPAPI_API_KEY;
     if (!apiKey) {
-      throw new Error("SerpApiSearchStrategy requires the 'SERPAPI_API_KEY' environment variable to be set.");
+      throw new Error('SerpApiSearchStrategy requires explicit API-key authentication.');
     }
     this.apiKey = apiKey;
   }

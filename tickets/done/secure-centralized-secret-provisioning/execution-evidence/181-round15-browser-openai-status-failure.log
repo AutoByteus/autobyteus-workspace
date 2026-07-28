@@ -1,0 +1,17 @@
+SCENARIO=SCSP-E2E-BROWSER-REAL-STATUS-001
+IMPLEMENTATION_HEAD=36fc5af434e8321965854a1235f2f36aa154bd38
+BACKEND=http://127.0.0.1:8000
+FRONTEND=http://127.0.0.1:3000/settings
+EXECUTION_MODE=Chrome browser against pnpm dev:test after approved explicit import into project test application DB
+BROWSER_DOM_OPENAI_STATUS=Not Configured
+BROWSER_DOM_OPENAI_REMOVE_VISIBLE=false
+BROWSER_DOM_PASSWORD_INPUT_EMPTY=true
+BROWSER_PAGE_ERRORS=0
+GRAPHQL_HTTP_STATUS=200
+LLM_OPENAI={"OPENAI":{"vaultHealth":"READY","storageState":"CONFIGURED","instructionCode":null}}
+AUDIO_OPENAI={"OPENAI":null}
+IMAGE_OPENAI={"OPENAI":null}
+GRAPHQL_ERRORS=[]
+EXPECTED=Browser Settings reports OpenAI Configured and exposes Remove Key when the assembled LLM catalog and exact credential-status API both report READY/CONFIGURED.
+OBSERVED=Browser Settings reports OpenAI Not Configured and Save Key, while direct GraphQL reports the OpenAI LLM credential READY/CONFIGURED; audio/image rows omit credentialStatus.
+PRELIMINARY_ORIGIN=implementation-owned frontend/Apollo normalized provider-state collision or assembled state projection; realistic browser path exposes disagreement not covered by focused source tests.

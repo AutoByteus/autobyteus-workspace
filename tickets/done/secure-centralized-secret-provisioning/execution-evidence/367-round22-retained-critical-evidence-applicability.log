@@ -1,0 +1,26 @@
+ROUND=22
+HEAD=49c27b2fe3aeb8b8299759c6ae64f7ffddc09254
+ROUND21_REVIEWED_PACKAGE_COMMIT=c265d1a96da2a92846ec8a2629cc2abdb1a8bc8a
+CURRENT_RUNTIME_COMMIT_RANGE=c265d1a96..49c27b2fe
+COMMIT_INVENTORY
+4bf6e7d18 docs(secret): sync round 21 delivery contract
+b5657ae28 refactor(web): compact Gemini setup controls
+5f872ed2c docs: record Gemini UI implementation evidence
+49c27b2fe docs: align credential settings contracts
+BACKEND_CORE_LIVE_HARNESS_DOCKER_PACKAGE_LOCK_DIFF
+BYTE_DIFF=NONE
+CURRENT_PRODUCT_UI_DIFF
+M	autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionCard.vue
+A	autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionEditor.vue
+A	autobyteus-web/components/settings/providerApiKey/GeminiKeyVisibilityButton.vue
+M	autobyteus-web/components/settings/providerApiKey/GeminiSetupForm.vue
+M	autobyteus-web/components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+M	autobyteus-web/localization/messages/en/settings.ts
+M	autobyteus-web/localization/messages/zh-CN/settings.ts
+EXPECTED_UI_AND_FOCUSED_TEST_PATH_COUNT=7
+ACTUAL_UI_RUNTIME_PATH_COUNT=7
+ROUND21_REAL_PROVIDER_EVIDENCE=337:27 passed / 5 exact skips
+ROUND21_DOCKER_EVIDENCE=338-340:clean image and lifecycle pass
+ROUND21_PACKAGE_EVIDENCE=334-335:current package and existing-user lifecycle pass
+TRUTHFUL_UNAVAILABLE_RETAINED=AI Studio and Serper unconfigured; AutoByteus remote LLM/audio/image discovery unavailable with exact codes
+RESULT=PASS

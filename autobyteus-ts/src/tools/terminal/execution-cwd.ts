@@ -2,6 +2,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { statSync } from 'node:fs';
 import type { AgentContextLike } from './background-process-context.js';
+import { resolveAbsolutePath } from '../file/workspace-path-utils.js';
 
 function ensureDirectoryExists(directoryPath: string): void {
   let stats;
@@ -38,15 +39,15 @@ export function resolveExecutionCwd(
   const normalizedCwd = cwd.trim();
   const hasWorkspaceRoot =
     workspaceRootPath && typeof workspaceRootPath === 'string' && workspaceRootPath.trim().length > 0;
-  if (!path.isAbsolute(normalizedCwd) && !hasWorkspaceRoot) {
+  if (!hasWorkspaceRoot) {
     throw new Error(
-      "Parameter 'cwd' for terminal tool must be absolute when no workspace root is configured. Configure a workspace or pass an absolute path."
+      "Parameter 'cwd' requires an authorized workspace root."
     );
   }
-
-  const resolved = path.isAbsolute(normalizedCwd)
-    ? path.resolve(normalizedCwd)
-    : path.resolve(path.resolve(workspaceRootPath as string), normalizedCwd);
+  const resolved = resolveAbsolutePath({
+    agentId: context?.agentId ?? 'unknown',
+    workspaceRootPath: workspaceRootPath as string,
+  }, normalizedCwd);
   ensureDirectoryExists(resolved);
   return resolved;
 }

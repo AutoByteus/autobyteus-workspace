@@ -4,19 +4,32 @@ import { BaseImageClient } from '../base-image-client.js';
 import { ImageGenerationResponse } from '../../utils/response-types.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import { MultimediaProvider } from '../../providers.js';
 
 export class AutobyteusImageClient extends BaseImageClient {
-  private autobyteusClient: AutobyteusClient;
+  private clientPromise: Promise<AutobyteusClient> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
   sessionId: string;
 
-  constructor(model: ImageModel, config: MultimediaConfig) {
+  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, config);
     if (!model.hostUrl) {
       throw new Error('AutobyteusImageClient requires a hostUrl in its ImageModel.');
     }
 
-    this.autobyteusClient = new AutobyteusClient(model.hostUrl);
+    this.apiKeyResolver = apiKeyResolver;
     this.sessionId = crypto.randomUUID();
+  }
+
+  private getClient(): Promise<AutobyteusClient> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
+  }
+
+  private async initializeClient(): Promise<AutobyteusClient> {
+    const secret = await this.apiKeyResolver.resolve(MultimediaProvider.AUTOBYTEUS);
+    return new AutobyteusClient(this.model.hostUrl!, secret.revealToTrustedConsumer());
   }
 
   async generateImage(
@@ -42,7 +55,8 @@ export class AutobyteusImageClient extends BaseImageClient {
     maskUrl: string | null,
     generationConfig: Record<string, unknown> | null
   ): Promise<ImageGenerationResponse> {
-    const responseData = await this.autobyteusClient.generateImage(
+    const client = await this.getClient();
+    const responseData = await client.generateImage(
       this.model.name,
       prompt,
       inputImageUrls ?? [],
@@ -62,16 +76,18 @@ export class AutobyteusImageClient extends BaseImageClient {
   }
 
   async cleanup(): Promise<void> {
-    if (!this.autobyteusClient) {
+    if (!this.clientPromise) {
       return;
     }
 
     try {
-      await this.autobyteusClient.cleanupImageSession(this.sessionId);
+      const client = await this.clientPromise;
+      await client.cleanupImageSession(this.sessionId);
     } catch (error) {
       console.error(`Failed to cleanup remote image session '${this.sessionId}': ${String(error)}`);
     } finally {
-      await this.autobyteusClient.close();
+      const client = await this.clientPromise;
+      await client.close();
     }
   }
 }

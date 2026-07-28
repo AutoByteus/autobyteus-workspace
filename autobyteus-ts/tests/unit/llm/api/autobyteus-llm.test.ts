@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AutobyteusLLM } from '../../../../src/llm/api/autobyteus-llm.js';
+import { AutobyteusLLM as ProductionAutobyteusLLM } from '../../../../src/llm/api/autobyteus-llm.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+import { providerApiKeyResolver } from '../../provider-api-key-resolver-test-helpers.js';
 
 const buildModel = () =>
   new LLMModel({
@@ -14,11 +15,17 @@ const buildModel = () =>
     hostUrl: 'https://rpa.example.test'
   });
 
+class AutobyteusLLM extends ProductionAutobyteusLLM {
+  constructor(model: LLMModel, config = new LLMConfig()) {
+    super(model, config, providerApiKeyResolver('synthetic-autobyteus-key'));
+  }
+}
+
 describe('AutobyteusLLM', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
-    process.env = { ...originalEnv, AUTOBYTEUS_API_KEY: 'test-key' };
+    process.env = { ...originalEnv };
     vi.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
@@ -33,10 +40,10 @@ describe('AutobyteusLLM', () => {
       response: 'ok',
       token_usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
     });
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       sendMessage,
       cleanup: vi.fn()
-    };
+    });
 
     const response = await llm.sendMessages(
       [
@@ -76,10 +83,10 @@ describe('AutobyteusLLM', () => {
       }
     }));
     const sendMessage = vi.fn().mockResolvedValue({ response: 'ok' });
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       sendMessage,
       cleanup: vi.fn()
-    };
+    });
 
     await llm.sendMessages(
       [new Message(MessageRole.USER, 'hello')],
@@ -106,10 +113,10 @@ describe('AutobyteusLLM', () => {
     const streamMessage = vi.fn(async function* () {
       yield { content: 'ok', is_complete: true };
     });
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       streamMessage,
       cleanup: vi.fn()
-    };
+    });
 
     for await (const _chunk of llm.streamMessages(
       [new Message(MessageRole.USER, 'hello')],
@@ -132,10 +139,10 @@ describe('AutobyteusLLM', () => {
   it('passes send-message cancellation signal through to the client', async () => {
     const llm = new AutobyteusLLM(buildModel(), new LLMConfig());
     const sendMessage = vi.fn().mockResolvedValue({ response: 'ok' });
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       sendMessage,
       cleanup: vi.fn()
-    };
+    });
     const controller = new AbortController();
 
     await llm.sendMessages(
@@ -155,10 +162,10 @@ describe('AutobyteusLLM', () => {
     const streamMessage = vi.fn(async function* () {
       yield { content: 'ok', is_complete: true };
     });
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       streamMessage,
       cleanup: vi.fn()
-    };
+    });
     const controller = new AbortController();
 
     const chunks: string[] = [];
@@ -185,10 +192,10 @@ describe('AutobyteusLLM', () => {
     const llm = new AutobyteusLLM(buildModel(), new LLMConfig());
     const sendMessage = vi.fn().mockResolvedValue({ response: 'should not be called' });
     const cleanup = vi.fn().mockResolvedValue({});
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       sendMessage,
       cleanup
-    };
+    });
 
     await expect(llm.sendMessages(
       [new Message(MessageRole.USER, 'hello')],
@@ -206,10 +213,10 @@ describe('AutobyteusLLM', () => {
     const streamMessage = vi.fn(async function* () {
       yield { content: 'should not be called', is_complete: true };
     });
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       streamMessage,
       cleanup: vi.fn()
-    };
+    });
 
     const stream = llm.streamMessages(
       [new Message(MessageRole.USER, 'hello')],
@@ -227,10 +234,10 @@ describe('AutobyteusLLM', () => {
     const llm = new AutobyteusLLM(buildModel(), new LLMConfig());
     const sendMessage = vi.fn().mockResolvedValue({ response: 'ok' });
     const cleanup = vi.fn().mockResolvedValue({});
-    (llm as any).client = {
+    (llm as any).clientPromise = Promise.resolve( {
       sendMessage,
       cleanup
-    };
+    });
 
     const messages = [new Message(MessageRole.USER, 'hello')];
 

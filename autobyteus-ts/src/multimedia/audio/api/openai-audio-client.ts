@@ -8,6 +8,8 @@ import { BaseAudioClient } from '../base-audio-client.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
 import type { AudioModel } from '../audio-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
+import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import { MultimediaProvider } from '../../providers.js';
 
 const AUDIO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_audio');
 
@@ -20,20 +22,29 @@ async function saveAudioBytes(audioBytes: Uint8Array, fileExtension?: string | n
 }
 
   export class OpenAIAudioClient extends BaseAudioClient {
-  private client: OpenAI;
+  private clientPromise: Promise<OpenAI> | null = null;
+  private readonly apiKeyResolver: ProviderApiKeyResolver;
 
-  constructor(model: AudioModel, config: MultimediaConfig) {
+  constructor(model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
     super(model, config);
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is not set.');
-    }
+    this.apiKeyResolver = apiKeyResolver;
+  }
 
+  private async initializeClient(): Promise<OpenAI> {
+    const secret = await this.apiKeyResolver.resolve(MultimediaProvider.OPENAI);
     try {
-      this.client = new OpenAI({ apiKey, baseURL: 'https://api.openai.com/v1' });
+      return new OpenAI({
+        apiKey: secret.revealToTrustedConsumer(),
+        baseURL: 'https://api.openai.com/v1',
+      });
     } catch (error) {
       throw new Error(`Failed to configure OpenAI client: ${error instanceof Error ? error.message : String(error)}`);
     }
+  }
+
+  private getClient(): Promise<OpenAI> {
+    this.clientPromise ??= this.initializeClient();
+    return this.clientPromise;
   }
 
   async generateSpeech(prompt: string, generationConfig?: Record<string, unknown>): Promise<SpeechGenerationResponse> {
@@ -63,7 +74,8 @@ async function saveAudioBytes(audioBytes: Uint8Array, fileExtension?: string | n
         request.response_format = responseFormat;
       }
 
-      const response = await this.client.audio.speech.create(
+      const client = await this.getClient();
+      const response = await client.audio.speech.create(
         request as unknown as OpenAI.Audio.SpeechCreateParams
       );
       const arrayBuffer = await response.arrayBuffer();

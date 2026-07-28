@@ -1,0 +1,24 @@
+Scenario: SCSP-E2E-DOCKER-001 runtime start
+HEAD: 977948fe68695374afbcd5e9516693d64533230e
+Mode: reviewed docker-start helper, existing clean locally built autobyteus-server:latest, --no-build
+Environment: parent DATABASE_URL and known credential aliases unset; no database URL injected
+[2026-07-22 15:19:47] Starting instance: scsp-round7 (variant=latest)
+ Network scsp-round7_default  Creating
+ Network scsp-round7_default  Created
+ Volume scsp-round7_autobyteus-server-chromium-profile  Creating
+ Volume scsp-round7_autobyteus-server-chromium-profile  Created
+ Volume scsp-round7_autobyteus-server-workspace  Creating
+ Volume scsp-round7_autobyteus-server-workspace  Created
+ Volume scsp-round7_autobyteus-server-data  Creating
+ Volume scsp-round7_autobyteus-server-data  Created
+ Volume scsp-round7_autobyteus-server-root-home  Creating
+ Volume scsp-round7_autobyteus-server-root-home  Created
+ Container scsp-round7-autobyteus-server-1  Creating
+ Container scsp-round7-autobyteus-server-1  Created
+ Container scsp-round7-autobyteus-server-1  Starting
+ Container scsp-round7-autobyteus-server-1  Started
+[2026-07-22 15:19:48] Instance scsp-round7 is up.
+Endpoints:
+  Backend: http://localhost:62258
+  GraphQL: http://localhost:62258/graphql
+  noVNC:   http://localhost:62260

@@ -20,7 +20,6 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
   readonly endpointId: string;
   readonly endpointDisplayName: string;
   readonly endpointBaseUrl: string;
-  readonly endpointApiKey: string;
 
   constructor(input: OpenAICompatibleEndpointModelInput) {
     const { endpoint, discoveredModel } = input;
@@ -43,6 +42,5 @@ export class OpenAICompatibleEndpointModel extends LLMModel {
     this.endpointId = endpoint.id;
     this.endpointDisplayName = endpoint.name;
     this.endpointBaseUrl = endpoint.baseUrl;
-    this.endpointApiKey = endpoint.apiKey;
   }
 }
