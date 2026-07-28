@@ -10,29 +10,29 @@
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/implementation-revision-record.md`
 - Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/code-review-report.md`
 - Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/code-review-revision-record.md`
-- Triggering rework finding: `F-001` from `CRR-007`, against `SR-003`
+- Triggering rework finding: `SR-004`, against the color ambiguity observed in the rendered Activate/Active comparison
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/implementation-revision-record.md`
-- Current implementation revision ID: `IR-005`
-- Related solution revision ID: `SR-003`
-- Related code review revision IDs: `CRR-007`
+- Current implementation revision ID: `IR-006`
+- Related solution revision ID: `SR-004`
+- Related code review revision IDs: `N/A`; fresh source review required
 - Related API/E2E revision IDs: `N/A`
-- Triggering finding IDs: `F-001`; approved pending state required visible Activating text
+- Triggering finding IDs: `SR-004`; Activate and Active required visually distinct color treatments
 
-The current implementation uses a visible localized `Activate` text button for configured, non-active Gemini rows and a visible blue `Active` badge on the active row. While activation is pending, the same button remains disabled and shows the existing spinner plus visible localized `Activating` text. The superseded plain-check icon-only contract is removed. The existing configured dot, edit/configure control, active row styling, title/ARIA label, test IDs, activation event payload, live announcement, and state/API/persistence behavior remain unchanged.
+The current implementation uses a visible localized `Activate` text button for configured, non-active Gemini rows with a neutral outlined treatment and a visible blue `Active` badge on the active row. While activation is pending, the same neutral button remains disabled and shows the existing spinner plus visible localized `Activating` text. The superseded plain-check icon-only contract is removed. The existing configured dot, edit/configure control, active row styling, title/ARIA label, test IDs, activation event payload, live announcement, and state/API/persistence behavior remain unchanged.
 
 ## Approved Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` / `UC-001` | Use visible localized `Activate` action text; preserve metadata and semantics. | `GeminiConfigurationOptionCard.vue`: `configured && !active` button with localized `activate_mode` text. | Implemented. Text action expands beyond 44px while retaining minimum 44px height; no icon carries activation meaning. |
+| `BEH-001` / `UC-001` | Use visible localized `Activate` action text with a neutral outlined treatment; preserve metadata and semantics. | `GeminiConfigurationOptionCard.vue`: `configured && !active` button with localized `activate_mode` text and gray border/neutral colors. | Implemented. Text action expands beyond 44px while retaining minimum 44px height; no icon carries activation meaning. |
 | `BEH-001` / `UC-002` | Preserve activation event and exact option payload. | Same button `@click="emit('activate', option)"`; parent path unchanged. | Implemented; existing event test remains. |
-| `BEH-002` | Preserve pending spinner, disabled behavior, focus ring, hover treatment, hit area, and visible pending status. | Same `activating`/`actionsDisabled` paths in `GeminiConfigurationOptionCard.vue`; focused assertions in `GeminiSetupForm.spec.ts`. | Implemented. Pending button remains disabled, shows spinner plus visible localized `Activating`, and omits `Activate`. |
+| `BEH-002` | Preserve pending spinner, disabled behavior, focus ring, hover treatment, hit area, and visible pending status using the neutral variant. | Same `activating`/`actionsDisabled` paths in `GeminiConfigurationOptionCard.vue`; focused assertions in `GeminiSetupForm.spec.ts`. | Implemented. Pending button remains disabled, shows spinner plus visible localized `Activating`, and omits `Activate`. |
 | `BEH-003` / `UC-003` | Replace radio-like active marker with visible `Active` text/badge; omit activation action. | Existing `active` branch and `v-if="configured && !active"` guard in `GeminiConfigurationOptionCard.vue`. | Implemented. Existing `data-testid`, title, active row background/left accent, and screen-reader status remain. |
-| `BEH-006` | Separate action and state through visible `Activate` versus `Active` text; retain configured dot and edit control. | Card status/action cluster in `GeminiConfigurationOptionCard.vue`. | Implemented; live screenshot shows distinct `Activate` action and `Active` state. |
+| `BEH-006` | Separate action and state through visible `Activate` versus `Active` text and distinct neutral/blue treatments; retain configured dot and edit control. | Card status/action cluster in `GeminiConfigurationOptionCard.vue`. | Implemented; Activate uses gray outlined styling while Active retains the blue badge. |
 | `BEH-004` / `AC-002` | Durable coverage for visible activation/state/pending text and preserved interaction. | `GeminiSetupForm.spec.ts`; English/Chinese settings catalogs. | Added visible `Activating...` pending assertion while retaining visible Activate, Active, activation, and unavailable assertions; no Iconify mock remains. |
 
 ## Key Files Or Areas
@@ -93,7 +93,7 @@ No API, store, persistence, GraphQL, backend, Electron, or other-provider produc
 
 ## Local Implementation Checks Run
 
-- `pnpm test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run` — **passed**, 1 file / 7 tests; pending assertion now requires visible `Activating...` and absence of `Activate`.
+- `pnpm test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run` — **passed**, 1 file / 7 tests; assertions cover visible `Activating...`, absence of idle `Activate` while pending, and the neutral Activate classes.
 - `pnpm guard:localization-boundary` — **passed**.
 - `pnpm guard:web-boundary` — **passed**.
 - `pnpm audit:localization-literals` — **passed** with zero unresolved findings.
@@ -110,15 +110,15 @@ These are implementation-scoped checks, not API/E2E sign-off.
 - Existing design system, shared components, and adjacent product surfaces reviewed: Existing Gemini card layout/classes, configured status dot, edit/configure control, active row blue styling, localization keys, and 44px action sizing.
 - Project development / preview instructions and rendered surface used: `open_tab` at `http://127.0.0.1:3000/settings`.
 - States, layouts, viewports, and interactions inspected: Live configured non-active row with visible `Activate`, active row with visible `Active` badge, configured/not-configured rows, active row background/left accent, edit controls, and approximately 930px viewport. DOM inspection confirmed visible action/state separation, title/ARIA metadata, and no activation button on the active row; focused pending DOM coverage confirms visible `Activating...` beside the spinner.
-- Visual or interaction issues found and corrected: Removed checkmark ambiguity. The live render now separates the visible `Activate` action from the visible `Active` state while retaining the compact configured dot and edit icon.
-- Supporting evidence and remaining unverified states or limitations: Screenshot `/Users/normy/.autobyteus/browser-artifacts/526f15-1785227978715.png`; narrow-width wrap, hover/focus, and pending browser visuals remain for downstream validation.
+- Visual or interaction issues found and corrected: Removed checkmark ambiguity, then separated the remaining blue-on-blue action/state treatment. Activate now uses a neutral outlined button (`border-gray-300 bg-white text-gray-700`, gray hover) while Active retains the blue badge.
+- Supporting evidence and remaining unverified states or limitations: Prior action/state screenshot `/Users/normy/.autobyteus/browser-artifacts/526f15-1785231690937.png`; refreshed SR-004 screenshot `/Users/normy/.autobyteus/browser-artifacts/8a0e34-1785233322746.png` shows the neutral outlined Activate treatment in the live Settings surface. Narrow-width wrap, hover/focus, and pending browser visuals remain for downstream validation.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Verify every configured non-active Gemini row visibly contains localized `Activate` (`启用` in Simplified Chinese), with title `Use this mode`, `aria-label="Use this mode: <option>"`, same test ID, and same click payload.
 - Verify active rows visibly contain `Active`, retain the existing active test ID/title and active row styling, and expose no activation button.
 - Verify the activating state shows the existing spinner plus visible localized `Activating` text, remains disabled, and omits `Activate`.
-- Verify the text button remains readable/wraps without clipping at narrow card widths; verify keyboard focus/hover treatment.
+- Verify the neutral outlined text button remains readable/wraps without clipping at narrow card widths; verify keyboard focus/hover treatment and contrast.
 - Verify unavailable/not-configured options do not gain an activation action.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required

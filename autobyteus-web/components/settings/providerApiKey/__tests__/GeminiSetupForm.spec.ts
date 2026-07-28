@@ -79,8 +79,17 @@ describe('GeminiSetupForm', () => {
     expect(wrapper.find('[data-testid="gemini-option-active-AI_STUDIO"]').exists()).toBe(false)
     expect(wrapper.get('[data-testid="gemini-active-mode"]').text()).toContain('Vertex Express')
     expect(wrapper.get('[data-testid="gemini-option-status-AI_STUDIO"]').attributes('title')).toBe('Configured')
-    expect(wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]').attributes('aria-label')).toBe('Use this mode: AI Studio')
-    expect(wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]').text()).toContain('Activate')
+    const activateButton = wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]')
+    expect(activateButton.attributes('aria-label')).toBe('Use this mode: AI Studio')
+    expect(activateButton.text()).toContain('Activate')
+    expect(activateButton.classes()).toEqual(expect.arrayContaining([
+      'border',
+      'border-gray-300',
+      'bg-white',
+      'text-gray-700',
+      'hover:bg-gray-50',
+      'hover:text-gray-900',
+    ]))
     expect(wrapper.get('[data-testid="gemini-option-active-VERTEX_EXPRESS"]').text()).toContain('Active')
     expect(wrapper.get('[data-testid="gemini-toggle-VERTEX_PROJECT"]').attributes('aria-label')).toBe('Configure: Vertex Project')
     expect(wrapper.get('[data-testid="gemini-option-description-AI_STUDIO"]').text()).toBe('Gemini Developer API key')
