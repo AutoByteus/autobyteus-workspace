@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Initial delivery round after API/E2E Pass and proportional test review Not Applicable | N/A | Ready for explicit user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
+| DR-002 | Pre-verification latest-base refresh | `Ready for explicit user verification` | Latest tracked remote base integrated without conflicts; focused Gemini suite rerun passed; handoff remains ready for explicit user verification. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-003 | Revised SR-001/IR-002 validation and CRR-004 handoff | `Ready for explicit user verification` | Revised API-REV-002 validation passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 
 ## Revision Entries
