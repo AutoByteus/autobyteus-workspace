@@ -85,11 +85,12 @@
               class="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
               aria-hidden="true"
             ></span>
-            <span
+            <Icon
               v-else
-              class="h-5 w-5 rounded-full border-2 border-current"
+              icon="heroicons:check-circle"
+              class="h-5 w-5"
               aria-hidden="true"
-            ></span>
+            />
           </button>
           <button
             type="button"
@@ -168,6 +169,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { Icon } from '@iconify/vue'
 import GeminiConfigurationOptionEditor from './GeminiConfigurationOptionEditor.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type {
