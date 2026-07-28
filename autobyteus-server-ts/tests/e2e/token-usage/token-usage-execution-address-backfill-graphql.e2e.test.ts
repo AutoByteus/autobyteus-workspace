@@ -8,10 +8,14 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { PrismaClient } from "@prisma/client";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import { AppDataMigrationRecordRepository } from "../../../src/app-data-migrations/repositories/app-data-migration-record-repository.js";
-import { TokenUsageExecutionAddressBackfillMigration } from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js";
+import {
+  PrismaTokenUsageExecutionAddressBackfillDatabase,
+  TokenUsageExecutionAddressBackfillMigration,
+} from "../../../src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.js";
 import type { TokenUsageExecutionAddress } from "../../../src/token-usage/domain/execution-address.js";
 
 const MIGRATION_ID = "20260703_token_usage_execution_address_backfill";
@@ -256,6 +260,20 @@ describe("token usage execution-address backfill GraphQL integration", () => {
   let graphql: typeof graphqlFn;
 
   beforeAll(async () => {
+    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "token-usage-backfill-e2e-"));
+    await fs.writeFile(
+      path.join(tempRoot, ".env"),
+      [
+        "APP_ENV=test",
+        "DB_TYPE=sqlite",
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+        `DATABASE_URL=${process.env.DATABASE_URL ?? ""}`,
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+    appConfigProvider.resetForTests();
+    appConfigProvider.initialize({ appDataDir: tempRoot }).initialize();
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -269,6 +287,7 @@ describe("token usage execution-address backfill GraphQL integration", () => {
       await prisma.tokenUsageLedgerEvent.deleteMany({ where: { usageEventId: { in: [...createdUsageEventIds] } } });
     }
     await prisma.$executeRawUnsafe(`DELETE FROM "app_data_migration_records" WHERE "migration_id" = ?`, MIGRATION_ID);
+    appConfigProvider.resetForTests();
     if (tempRoot) await fs.rm(tempRoot, { recursive: true, force: true });
     await prisma.$disconnect();
   });
@@ -287,9 +306,8 @@ describe("token usage execution-address backfill GraphQL integration", () => {
     const conflictTaskTeamRunId = `studentstudygroup-conflict-${suffix}`;
     const start = new Date("2044-07-03T10:00:00.000Z");
     const end = new Date("2044-07-03T10:30:00.000Z");
-    tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "token-usage-backfill-e2e-"));
-    const memoryDir = path.join(tempRoot, "memory");
-    const logsDir = path.join(tempRoot, "logs");
+    const memoryDir = path.join(tempRoot!, "memory");
+    const logsDir = path.join(tempRoot!, "logs");
 
     await prisma.$executeRawUnsafe(`DELETE FROM "app_data_migration_records" WHERE "migration_id" = ?`, MIGRATION_ID);
     await writeTaskRecordsFile({
@@ -411,9 +429,12 @@ describe("token usage execution-address backfill GraphQL integration", () => {
 
     const runner = new AppDataMigrationRunner(
       new AppDataMigrationRegistry([
-        new TokenUsageExecutionAddressBackfillMigration(memoryDir),
+        new TokenUsageExecutionAddressBackfillMigration(
+          memoryDir,
+          new PrismaTokenUsageExecutionAddressBackfillDatabase(prisma),
+        ),
       ]),
-      new AppDataMigrationRecordRepository(),
+      new AppDataMigrationRecordRepository(prisma),
       { logsDir },
     );
     const [migrationResult] = await runner.runPending();

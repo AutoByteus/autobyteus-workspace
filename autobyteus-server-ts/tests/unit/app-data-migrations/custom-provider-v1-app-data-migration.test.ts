@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import { PrismaClient } from '@prisma/client';
 import { SecretValue } from 'autobyteus-ts';
+import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppDataMigrationRegistry } from '../../../src/app-data-migrations/app-data-migration-registry.js';
 import {
@@ -50,10 +50,10 @@ describe('CustomProviderV1AppDataMigration', () => {
   let directory: string;
   let providerDirectory: string;
   let providerPath: string;
-  let prisma: PrismaClient;
   let service: SecretManagementService;
 
   beforeEach(async () => {
+    await shutdownPrisma();
     directory = await fs.mkdtemp(path.join(os.tmpdir(), 'custom-provider-v1-migration-'));
     if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
     providerDirectory = path.join(directory, 'llm');
@@ -65,8 +65,8 @@ describe('CustomProviderV1AppDataMigration', () => {
     const database = new DatabaseSync(location.databasePath);
     database.exec(TABLES);
     database.close();
-    prisma = new PrismaClient({ datasources: { db: { url: location.databaseUrl } } });
-    const repository = new SecretVaultRepository(prisma);
+    await initializePrisma({ datasourceUrl: location.databaseUrl });
+    const repository = new SecretVaultRepository();
     const bootstrap = await new SecretVaultBootstrap(location, repository).initializeOrVerify();
     service = new SecretManagementService(
       repository,
@@ -78,8 +78,8 @@ describe('CustomProviderV1AppDataMigration', () => {
 
   afterEach(async () => {
     vi.restoreAllMocks();
-    service.close();
-    await prisma.$disconnect();
+    service?.close();
+    await shutdownPrisma();
     await fs.rm(directory, { recursive: true, force: true });
   });
 

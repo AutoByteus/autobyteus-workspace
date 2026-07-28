@@ -196,8 +196,8 @@ describe('repository_prisma installed package policy', () => {
     return JSON.parse(output) as ProbeResult;
   };
 
-  it('installs exact unpatched 1.0.8 entrypoints without dotenv acquisition code', () => {
-    expect(manifest.version).toBe('1.0.8');
+  it('installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code', () => {
+    expect(manifest.version).toBe('1.0.9');
     expect(manifest.dependencies).not.toHaveProperty('dotenv');
     for (const entrypoint of Object.values(entrypoints)) {
       expect(path.isAbsolute(entrypoint)).toBe(true);

@@ -8,106 +8,107 @@
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/repository-prisma-architecture-analysis.md`; published prerequisite handoff/release evidence under `/Users/normy/autobyteus_org/repository_prisma/tickets/done/transaction-options/`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`, `IR-003`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: implementation-source handoff at commit `ce23a4f56e102eda2d2e0d6fbdb089355834c369`
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: new implementation-source review after user-directed `SR-002`/`USER-NAMING-001`, implementation `IR-003`, commit `e4b596edfdf8c45082e40d1331a5c5927d13d625`; also revalidate retained `IR-002` resolution of `CR-001`
+- Prior Review Round Reviewed: round `1`, `CRR-001`, `Fail — Local Fix`
+- Latest Authoritative Round: `2`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
 - Relevant API/E2E Revision IDs: `N/A`
-- Failing Scenario IDs: `N/A` — implementation review preceded API/E2E
+- Failing Scenario IDs: `N/A` — implementation review precedes API/E2E
 - Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: source paths and focused built-module probe recorded below
+- Failure Evidence Paths: `N/A`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: shared repository-prisma server/import lifecycle; token persistence scheduling and model repository adoption; vault model repositories, coordinator, transaction options, runtime ownership; dependency/lock resolution; durable documentation.
-- Files / areas reviewed: all production-source changes from recorded base `153f3409cd90207f9219cbe20242606271b36104` to `ce23a4f56e102eda2d2e0d6fbdb089355834c369`; related active-agent event producers and repository-prisma 1.0.9 lifecycle source needed to trace shutdown reachability; package/lock/schema/migration/test-diff guards.
-- Explicit exclusions: API/E2E test maintenance and execution, confidence scoring, real-SQLite/browser/live validation, delivery documentation synchronization, release, and deployment. No durable test file changed in the implementation round.
+- Changed implementation and behavior reviewed: the complete repository-prisma adoption implementation at current HEAD; `IR-002` durable stopped-pipeline correction; `SR-002`/`IR-003` domain-subject naming correction for the vault coordinator and two model repositories; naming-only test-reference edits; affected durable documentation.
+- Files / areas reviewed: production and structural delta from recorded base `153f3409cd90207f9219cbe20242606271b36104` through current HEAD; focused diffs `ce23a4f56..bf7de3425` and `bf7de3425..e4b596edf`; related active-event and installed repository-prisma lifecycle paths required to revalidate `MP-001`; package/lock/schema/migration/naming/bypass/build-output guards.
+- Explicit exclusions: API/E2E-owned durable lifecycle-seam updates and execution, confidence scoring, real-SQLite regression breadth, browser/live validation, delivery documentation synchronization, release, and deployment. The two test files touched by `IR-003` were reviewed only for the claimed naming-only delta.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `REQ-001`–`REQ-010`, `AC-001`–`AC-012`, with particular review attention to `REQ-002`/`AC-002` and the no-post-shutdown-token-reopen invariant.
-- Design-spec behavior map verified against the implementation: startup, repository, vault, importer, and dependency paths map cleanly; the default pipeline's post-drain reset contradicts the mapped shutdown/quiescence path.
-- Relevant design-spec material-premise decisions verified: `MP-001`–`MP-005`; `MP-001` is directly exercised by finding `CR-001`.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: the changed default-pipeline stop function clears its cached closed processor and pipeline, so the ordinary getter can recreate a fresh persistence processor while shutdown is still underway.
-- Remaining material ambiguity, if any: `None`; the approved shutdown invariant and the reachable signal/active-run production path are explicit.
+- Approved requirements basis understood: `REQ-001`–`REQ-010`, `AC-001`–`AC-012`, including the `SR-002` requirement that secret repositories use domain-subject identities with no old-name alias.
+- Design-spec behavior map verified against the implementation: `BEH-001`–`BEH-006` and `DS-001`–`DS-012` map to current production source. The prior `DS-002`/`DS-004` contradiction is resolved by the retained accepting/quiescent pipeline state.
+- Relevant design-spec material-premise decisions verified: `MP-001`–`MP-005`. The reachable `MP-001` signal/active-event path now reaches a retained stopped composition and cannot create an ordinary late persistence owner.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: `None`; `SR-002` changes repository identity only and `IR-002` implements the already-approved shutdown invariant.
+- Remaining material ambiguity, if any: `None`
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | `Contradicted` | `startConfiguredServer` correctly performs migrations then exact-target `initializePrisma`; `onClose` orders token stop, vault close, and `shutdownPrisma` through nested finalizers. | `stopDefaultAgentRunEventPipeline()` clears both caches after drain, while supported active backend callbacks can still call `getDefaultAgentRunEventPipeline()` and recreate an open processor before/after shared-client shutdown. See `CR-001` and `MP-001`. |
-| `BEH-002` | `Contradicted` | Normal token writes/reads use `TokenUsageLedgerStore` and a `TokenUsageLedgerEvent` BaseRepository with preserved mapping, ordering, and `P2002` recovery; each accepted task is tracked through append settlement. | A supported token event overlapping graceful shutdown can be accepted by a newly recreated processor outside the completed drain, so persistence/failure isolation is not preserved for that lifecycle state. See `CR-001`. |
-| `BEH-003` | `Confirmed` | `SecretVaultRuntime` owns service/key lifecycle only; the coordinator composes model-specific entry and metadata repositories; bootstrap/service boundaries retain their established contracts. |  |
-| `BEH-004` | `Confirmed` | The coordinator alone invokes `runInTransaction` with `2s/10s` initialization and `2s/5s` mutation/compensation options; model repositories use ALS-backed inherited delegates and receive no transaction argument. |  |
-| `BEH-005` | `Confirmed` | Preview remains read-only inspection; execution performs migrations, exact immutable-target initialization, runtime use, and nested runtime/library cleanup on success and failure. |  |
-| `BEH-006` | `Confirmed` | Server manifest and lock resolve published `repository_prisma@1.0.9` normally against Prisma 5.22, with no link/patch/vendor/fallback or stale server resolution. |  |
+| `BEH-001` | `Confirmed` | Server startup performs migrations then exact-target `initializePrisma`; onClose quiesces/drains token work, closes the vault, and shuts down Prisma through nested finalizers. Stop retains the authoritative quiescent pipeline; stop-before-first-get builds no token transformer/processor. |  |
+| `BEH-002` | `Confirmed` | Token enrichment/persistence uses tracked accepted tasks and a BaseRepository-backed ledger. `IR-002` synchronously quiesces enrichment and closes/drains persistence before returning; ordinary late getters reuse the stopped composition, while only the explicit test reset can restart it. |  |
+| `BEH-003` | `Confirmed` | `SecretVaultRuntime` constructs domain-named `SecretVaultRepository`; bootstrap/service depend on that coordinator; it composes `SecretEntryRepository` and `SecretEncryptionMetadataRepository`. No raw client or provider-named compatibility surface remains. |  |
+| `BEH-004` | `Confirmed` | `SecretVaultRepository` alone invokes `runInTransaction` with `2s/10s` initialization and `2s/5s` mutation/compensation options; model repositories resolve ALS-backed delegates without transaction arguments. |  |
+| `BEH-005` | `Confirmed` | Import preview remains read-only/lifecycle-free; execution migrates, initializes exactly the immutable target, uses the runtime, and closes runtime/library on success and failure. |  |
+| `BEH-006` | `Confirmed` | Server manifest and lock resolve published `repository_prisma@1.0.9` against Prisma 5.22, with no link/patch/vendor/fallback or stale server resolution. |  |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Fail` | The approved refactor/ownership assessment is evidence-backed and mostly preserved, but its shared-client shutdown missing invariant is not fully preserved after default-pipeline reset. | Resolve `CR-001`. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The architecture supplement is evidence/context with approval `N/A`; implementation follows its direct-use, model-owner, exact-target, and no-migration conclusions. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Fail` | `DS-001`, `DS-003`, and `DS-005`–`DS-012` are preserved. `DS-002`/`DS-004` stop being closed after cache reset because a late supported event can create new scheduled work. | Keep the token-persistence boundary quiescent throughout shared shutdown; resolve `CR-001`. |
-| Ownership boundary preservation and clarity | `Fail` | Repository/client/transaction ownership is substantially improved, but the default pipeline relinquishes its stopped owner and permits a fresh owner to appear during the same close lifecycle. | Resolve `CR-001`. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | `Pass` | Mapping, crypto/root-key, preview inspection, app-data migrations, and pending-task internals remain with their documented owners. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | `Pass` | Uses repository-prisma lifecycle/BaseRepository/ALS and extends existing token/vault/import composition rather than introducing competing infrastructure. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | `Pass` | Vault persistence value shapes are centralized; transaction options are coordinator-owned constants; model-specific mapping is not duplicated. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | `Pass` | Two narrow model repositories plus one cross-model coordinator replace the prior direct-client aggregate without creating a broad shared base. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | `Pass` | Normal server/import composition own lifecycle; vault coordinator owns transaction policy; default pipeline owns its processor graph. | None beyond `CR-001`'s lifecycle-state correction. |
-| Empty indirection check (no pass-through-only boundary) | `Pass` | Model repositories own CRUD/mapping and coordinator owns cross-model rules; retained store/service/runtime boundaries have established responsibilities. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | New repository/type files split by model and contract; coordinator, service, runtime, and composition responsibilities remain distinct. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | `Pass` | Services/bootstrap do not depend on raw Prisma clients or transaction delegates; dependencies flow through coordinator/model repositories and repository-prisma. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | `Pass` | Secret callers use the coordinator rather than its model repositories; token callers use store/pipeline rather than the underlying delegate/lifecycle. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | `Pass` | Model repositories and DTOs live under secret persistence; token scheduling/repository and server composition changes remain in their existing owned areas. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | `Pass` | The two-model vault split is proportionate and the folder remains shallow/readable. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | `Pass` | Lifecycle calls take an explicit target, model repository methods are subject-specific, and coordinator operations retain explicit domain/receipt identities. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | `Pass` | Names distinguish metadata, entries, coordinator, lifecycle, and persistence scheduling without generic helper terminology. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Common DTOs and option constants are centralized; no parallel client/transaction path remains. | None. |
-| Patch-on-patch complexity control | `Pass` | The implementation replaces old ownership directly rather than layering adapters, toggles, retries, or compatibility branches. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Custom token client owner, injected-client seam, vault raw client, transaction delegate types/parameters, and direct model delegates were removed. Structural scans found no runtime remnants in the affected subsystems. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | No durable test changed in this implementation-owned stage; the handoff enumerates exact downstream lifecycle, real-SQLite, token, vault, importer, logging, and package scenarios. | API/E2E must add/update durable evidence after source re-review passes. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Not applicable to an implementation diff with no durable test changes; existing fork/nonparallel lifecycle constraints are explicitly handed downstream. | API/E2E owns fixture rebind updates. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | No test file is in the changed scope. Existing dependency/version and removed-constructor assertions require downstream validity review, as already declared. | API/E2E owns existing-test validity. |
-| API/E2E readiness for the next workflow stage | `Fail` | Source, package, and production build checks are otherwise ready, but the reachable shutdown lifecycle defect would make downstream pass evidence non-authoritative. | Implementation rework and source re-review are required before API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | The approved boundary/ownership refactor is implemented; `SR-002` corrects naming-to-responsibility; `IR-002` preserves the shared-client shutdown invariant. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The evidence/context-only architecture supplement is aligned to the domain names and direct-use architecture. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | `DS-001`–`DS-012` remain traceable. `DS-002`/`DS-004` now remain closed through normal shutdown because ordinary getters cannot restart token persistence. | None. |
+| Ownership boundary preservation and clarity | `Pass` | Composition roots own lifecycle, token pipeline owns quiesce/drain, domain-named vault coordinator owns cross-model policy, and one-model repositories own CRUD/mapping. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | `Pass` | Mapping, crypto/root-key, preview inspection, migration infrastructure, and pending-task internals remain with their documented owners. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | `Pass` | Uses repository-prisma lifecycle/BaseRepository/ALS and extends existing token/vault/import owners rather than introducing competing infrastructure. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | `Pass` | Vault persistence value shapes and transaction options are centralized; model mappings remain model-owned. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | `Pass` | Two narrow model repositories and one coordinator create meaningful specialization without a broad shared base or duplicate shape. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | `Pass` | Lifecycle, token stop, and vault transaction policies each have one clear owner. | None. |
+| Empty indirection check (no pass-through-only boundary) | `Pass` | Model repositories map/query subjects; `SecretVaultRepository` owns real transactions, domain checks, counts, receipts, and compensation. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Current files divide composition, scheduling, model CRUD, cross-model coordination, security, and inspection cleanly. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | `Pass` | Services/bootstrap use the vault coordinator and persistence DTOs, not raw clients/model repositories; dependencies flow downward without cycles. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | `Pass` | Secret callers depend only on `SecretVaultRepository`; token callers depend on store/pipeline rather than delegate/lifecycle internals. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | `Pass` | Domain-named vault/model repository files sit under secret persistence; no rejected provider-named file remains. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | `Pass` | The three repository subjects and one DTO file are proportionate and remain shallow/readable. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | `Pass` | Lifecycle target, model APIs, coordinator operations, and opaque receipt/domain identities are explicit. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | `Pass` | `SecretVaultRepository`, `SecretEntryRepository`, and `SecretEncryptionMetadataRepository` express domain ownership; Prisma appears only as the internal mechanism/model type. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | No aliases, re-export shims, duplicate provider-named files, or parallel client/transaction paths exist. | None. |
+| Patch-on-patch complexity control | `Pass` | `IR-002` adds one explicit two-state lifecycle and test-only reset; `IR-003` is a direct rename, not an adapter layer. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Old secret provider-named files/classes and earlier custom client/transaction paths are absent from production source and clean build output. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | `IR-003` changes only imported file/class identities in two existing suites; assertions/scenarios are unchanged. Handoff clearly assigns their pre-existing lifecycle-seam conversion to API/E2E. | API/E2E must update and execute the lifecycle seams next. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | Naming replacements preserve existing fixture structure; global lifecycle rebinding constraints and next-stage owner are explicit. | API/E2E owns fixture conversion. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | No old-name import, alias-based compatibility test, or duplicate suite remains. The constructor-injection seam is known pending test maintenance, not retained production compatibility. | API/E2E owns existing-test validity and updates. |
+| API/E2E readiness for the next workflow stage | `Pass` | Current source/build/metadata/structure pass; no unresolved source finding remains. The explicit downstream test work is ready to begin. | Route cumulative package to `api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `src/agent-execution/events/default-agent-run-event-pipeline.ts` | 34 | Pass | N/A | Default composition owner is correct; stop/reset lifecycle is incomplete. | Pass | `Local Fix` (`CR-001`) | Resolve `CR-001`. |
-| `src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts` | 60 | Pass | N/A | Cohesive scheduling/drain owner; accepted-task tracking and idempotent close are clear. | Pass | Accept | None. |
-| `src/secret-management/bootstrap/secret-vault-bootstrap.ts` | 167 | Pass | N/A | Only persistence-type import ownership changed; bootstrap remains cohesive. | Pass | Accept | None. |
-| `src/secret-management/persistence/secret-encryption-metadata-prisma-repository.ts` | 59 | Pass | N/A | One-model mapping/CRUD owner. | Pass | Accept | None. |
-| `src/secret-management/persistence/secret-entry-prisma-repository.ts` | 63 | Pass | N/A | One-model mapping/CRUD owner. | Pass | Accept | None. |
+| `src/agent-execution/events/default-agent-run-event-pipeline.ts` | 46 | Pass | N/A | Cohesive default-composition and accepting/quiescent lifecycle owner. | Pass | Accept | None. |
+| `src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.ts` | 51 | Pass | N/A | Cohesive enrichment owner with a narrow synchronous quiesce gate. | Pass | Accept | None. |
+| `src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts` | 60 | Pass | N/A | Cohesive scheduling/accepted-task drain owner. | Pass | Accept | None. |
+| `src/secret-management/bootstrap/secret-vault-bootstrap.ts` | 167 | Pass | N/A | Bootstrap remains cohesive; only coordinator identity/import changed. | Pass | Accept | None. |
+| `src/secret-management/persistence/secret-encryption-metadata-repository.ts` | 59 | Pass | N/A | One-model metadata mapping/CRUD owner. | Pass | Accept | None. |
+| `src/secret-management/persistence/secret-entry-repository.ts` | 63 | Pass | N/A | One-model entry mapping/CRUD owner. | Pass | Accept | None. |
 | `src/secret-management/persistence/secret-vault-persistence-types.ts` | 23 | Pass | N/A | Tight pure persistence value shapes only. | Pass | Accept | None. |
-| `src/secret-management/persistence/secret-vault-prisma-repository.ts` | 172 | Pass | N/A | Cohesive cross-model/transaction/receipt coordinator; reduced from the prior direct-client aggregate. | Pass | Accept | None. |
-| `src/secret-management/provisioning/local-environment-secret-import-service.ts` | 198 | Pass | N/A | Existing importer composition remains cohesive; lifecycle added only to execution factory. | Pass | Accept | None. |
-| `src/secret-management/secret-vault-runtime.ts` | 43 | Pass | N/A | Service/key lifecycle only; DB lifecycle removed. | Pass | Accept | None. |
-| `src/secret-management/services/secret-management-service.ts` | 257 | Pass | Reviewed | Existing cohesive security/domain service; delta only retightens type imports and adds no responsibility pressure. | Pass | Accept | None. |
-| `src/server-runtime.ts` | 239 | Pass | Reviewed | Process composition is the correct lifecycle owner; the added startup/close sequencing is scope-appropriate. | Pass | Accept | Correct the collaborating default-pipeline boundary under `CR-001`; no size-driven split required. |
-| `src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | 294 | Pass | Reviewed | Large pre-existing model mapping remains one model subject; the delta removes client ownership and shortens the file. | Pass | Accept | None. |
+| `src/secret-management/persistence/secret-vault-repository.ts` | 172 | Pass | N/A | Cohesive cross-model/transaction/receipt coordinator with domain-accurate identity. | Pass | Accept | None. |
+| `src/secret-management/provisioning/local-environment-secret-import-service.ts` | 198 | Pass | N/A | Existing importer composition remains cohesive; lifecycle is execution-only. | Pass | Accept | None. |
+| `src/secret-management/secret-vault-runtime.ts` | 43 | Pass | N/A | Service/key lifecycle only; constructs domain-named coordinator. | Pass | Accept | None. |
+| `src/secret-management/services/secret-management-service.ts` | 257 | Pass | Reviewed | Existing cohesive security/domain service; delta only retightens repository identity/import. | Pass | Accept | None. |
+| `src/server-runtime.ts` | 239 | Pass | Reviewed | Process composition is the correct lifecycle owner; no new size pressure in later revisions. | Pass | Accept | None. |
+| `src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | 294 | Pass | Reviewed | Large pre-existing one-model mapping; implementation removes client ownership and shortens the concern. | Pass | Accept | None. |
 
-No changed implementation source file exceeds 500 effective non-empty lines. Each file above 220 lines was reviewed for actual delta pressure; none warrants a size-driven structural finding.
+No changed implementation source file exceeds 500 effective non-empty lines. Each file above 220 lines was reviewed for actual delta pressure; none warrants a size-driven structural finding. Test files are excluded from source-size thresholds.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | No dual path, fallback, adapter, or version gate was added. |
-| No legacy old-behavior retention in changed scope | `Pass` | Old client owners and explicit transaction propagation were removed rather than retained alongside the new path. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Affected runtime scans found no custom/injected raw-client or direct-delegate remnants. |
-| Design-spec persisted-data transition decision is followed without unnecessary migration work | `Pass` | Schema/migration diff is empty; mappings and persisted representation remain unchanged. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | Server resolves one normal 1.0.9 dependency path and one current data representation. |
-| Implementation transition mechanics match the design spec, including migration safety only when required | `Pass` | Directly usable/no-migration decision is followed; normal schema migrations and importer target migration remain their established owners. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | No old-name alias, re-export, dual repository path, fallback, adapter, or version gate exists. |
+| No legacy old-behavior retention in changed scope | `Pass` | Old client owners, explicit transaction propagation, and provider-named identities were removed directly. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Source/docs/tests/clean-dist scans find no rejected class/file identities; runtime bypass scans pass. |
+| Design-spec persisted-data transition decision is followed without unnecessary migration work | `Pass` | Schema/migration diff is empty; persisted representation and mapping remain unchanged. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | One current data representation and one normal 1.0.9 server dependency path remain. |
+| Implementation transition mechanics match the design spec, including migration safety only when required | `Pass` | Directly usable/no-migration decision and clean naming cutover are followed. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -116,8 +117,8 @@ None.
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: lifecycle, persistence ownership, transaction handling, importer composition, and dependency version are durable architectural/user-maintainer facts.
-- Files or areas likely affected: implementation already updates `autobyteus-server-ts/README.md`, `docs/ARCHITECTURE.md`, `docs/design/startup_initialization_and_lazy_services.md`, `docs/modules/secret_management.md`, and `docs/modules/token_usage.md`; delivery should revalidate them after the source fix.
+- Why: lifecycle, repository ownership/naming, transaction handling, importer composition, and dependency version are durable architecture facts.
+- Files or areas likely affected: implementation updates `autobyteus-server-ts/README.md`, `docs/ARCHITECTURE.md`, `docs/design/startup_initialization_and_lazy_services.md`, `docs/modules/secret_management.md`, and `docs/modules/token_usage.md`; delivery should perform final integrated-state documentation validation.
 
 ## Material Premise Validation (Only When Needed)
 
@@ -131,74 +132,56 @@ None.
 | `MP-004` | `Confirmed` |  |
 | `MP-005` | `Confirmed` |  |
 
-Detailed new or reclassified premise records: `None`. Finding `CR-001` applies the already-approved reachable lifecycle premise `MP-001` and records its concrete current production witness below.
+Detailed new or reclassified premise records: `None`. The earlier `CR-001` resolution was revalidated against unchanged reachable premise `MP-001`.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `8.9`
-- Overall score (`/100`): `89.1`
-- Score calculation note: simple average of the ten category scores; the category gates and finding determine the review decision.
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `94.9`
+- Score calculation note: simple average of the ten category scores; every category meets the clean-pass threshold.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `8.0` | Startup, repository, vault, importer, and return spines are clear and mostly faithfully implemented. | `DS-002`/`DS-004` are reopened after the stated stop/drain boundary on reachable `MP-001`. | Preserve quiescence from stop through shared shutdown and reject/absorb late token scheduling. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `8.5` | Raw client/transaction ownership is substantially corrected and the authoritative boundary rule passes. | Default pipeline ownership is relinquished while supported event producers can still request it, permitting a fresh persistence owner during close. | Make the stopped lifecycle authoritative until an explicitly owned restart/reset. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.2` | Exact-target lifecycle, model-specific APIs, coordinator transactions, and importer boundaries are explicit. | The stop/get lifecycle contract is not explicit enough to prevent recreation. | Clarify and enforce the stopped/default-pipeline contract in source. |
-| `4` | `Separation of Concerns and File Placement` | `9.5` | Composition, scheduling, model CRUD, coordination, security, and inspection are cleanly separated and well placed. | Minor drag only from the lifecycle-state correction needed in default composition. | Correct locally without moving unrelated concerns. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | DTOs and transaction options are tight and centrally owned; model specialization is meaningful. | No material structural weakness beyond the pipeline lifecycle gap. | Keep the fix within existing owned structures. |
-| `6` | `Naming Quality and Local Readability` | `9.4` | Names and local flows are direct, domain-specific, and readable. | Current `stop...` name promises a stronger durable state than the cache-reset implementation provides. | Align lifecycle behavior with the API name/contract. |
-| `7` | `API/E2E Readiness` | `8.0` | Production typecheck, metadata, structural, schema, and diff guards pass. | A reachable implementation defect blocks authoritative API/E2E sign-off. | Fix, re-review source, then exercise concurrent/late shutdown token events and real SQLite lifecycle. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | `7.8` | Normal-path repository and vault behavior appears faithful. | Graceful shutdown can accept a new token append outside the completed drain and race/lazily rebind after `shutdownPrisma`, violating `REQ-002`/`AC-002`. | Resolve `CR-001` and prove the post-stop invariant. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.8` | Clean cutover; no legacy runtime or data compatibility machinery. | No material weakness observed. | Maintain the clean single path during rework. |
-| `10` | `Cleanup Completeness` | `9.5` | Obsolete client owners, injection seams, direct delegates, and transaction propagation were removed; package and docs are consistent. | API/E2E still owns durable test seam updates, outside this source review. | Keep source cleanup intact and let API/E2E update tests after source pass. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | `9.4` | All mapped startup/shutdown, token, vault, importer, return, and package spines are explicit and preserved. | Real-system execution evidence remains downstream. | API/E2E should validate the mapped spines against SQLite and shutdown concurrency. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.5` | Lifecycle, pipeline, coordinator, and model ownership are singular and authoritative; the boundary rule passes. | Global lifecycle fixture discipline still requires downstream work. | Keep test rebinding at explicit composition boundaries. |
+| `3` | `API / Interface / Query / Command Clarity` | `9.4` | Exact-target lifecycle, domain-named repositories, optioned coordinator operations, and receipts have clear identities. | Test reset is necessarily process-global/test-only. | API/E2E should use it only after drain and explicit repository shutdown. |
+| `4` | `Separation of Concerns and File Placement` | `9.5` | Composition, token scheduling, model CRUD, coordination, security, and inspection are cleanly separated and placed. | No material source weakness observed. | Preserve this layout during test maintenance. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | DTOs/options are tight, model specialization is meaningful, and no broad base or parallel shapes exist. | No material source weakness observed. | Avoid test-only parallel repository abstractions. |
+| `6` | `Naming Quality and Local Readability` | `9.8` | SR-002's domain-subject names now accurately express responsibility and remove provider leakage. | No material weakness observed. | Maintain the clean names with no aliases. |
+| `7` | `API/E2E Readiness` | `9.2` | Production typecheck/build, imports, naming/bypass/schema/version guards, and focused lifecycle probes pass. | Durable tests still require the explicitly assigned lifecycle-seam conversion and execution. | API/E2E should update existing tests, run real SQLite coverage, and report confidence. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | `9.3` | Normal source paths preserve mapping, transactions, target selection, crypto/data/WAL policy, and durable token quiescence. | Broader runtime evidence remains unexecuted by this role. | API/E2E should prove live concurrency, rollback, byte stability, and no late reopen. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.8` | Clean implementation and naming cutovers retain no dual path, shim, or legacy data mechanism. | No material weakness observed. | Keep downstream tests on the single current path. |
+| `10` | `Cleanup Completeness` | `9.6` | Obsolete clients, delegates, provider-named files/classes, and stale server resolution are absent; docs are aligned. | Final test/doc integrated-state cleanup remains downstream/delivery-owned. | Complete those normal stages without reintroducing old seams. |
 
 ## Findings
 
-### `CR-001` — Default token-pipeline stop can be undone by an ordinary late event during graceful shutdown
+No open implementation-source findings.
 
-- Priority: `High`
-- Status: `Open`
-- Classification: `Local Fix`
-- Affected approved basis: `REQ-002`, `AC-002`, `BEH-001`, `BEH-002`, `DS-002`, `DS-003`, `DS-004`, and confirmed reachable premise `MP-001`.
-- Source evidence:
-  - `autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts:26-37` closes the current processor and then clears both caches.
-  - The same file at `:11-23` creates a new open processor whenever the cache is empty; there is no durable stopped/quiescing state.
-  - `dispatch-processed-agent-run-events.ts:18` invokes that ordinary getter, and active Claude, Codex, and AutoByteus backend event paths invoke the dispatcher (`claude-agent-run-backend.ts:141-155`, `codex-agent-run-backend.ts:171-182`, `autobyteus-agent-run-backend.ts:214-228`). Their subscriptions/streams are closed by explicit run termination, not by the reviewed server `onClose` sequence.
-  - `server-runtime.ts:92-118` stops delivery/messaging services and the default pipeline but does not terminate active agent-run backends before vault/library close.
-  - Installed `repository_prisma@1.0.9` returns its lifecycle to `idle` after shutdown and its forwarding client lazy-binds on the next operation (`dist/index.mjs:368-378`, `:617-630`, `:664-672`).
-  - Focused built-module observation on the authoritative worktree returned `{"recreatedAfterStop":true}` after `getDefaultAgentRunEventPipeline(); await stopDefaultAgentRunEventPipeline(); getDefaultAgentRunEventPipeline()`.
-- Production reachability witness (`MP-001`):
-  - Initiating basis kind: `Operational` plus `System`.
-  - Independent supported trigger: an operator sends the registered `SIGINT`/`SIGTERM` while a supported active agent run is still emitting runtime/token events.
-  - Forward path: signal handler (`server-runtime.ts:123-143`) -> `app.close()` -> onClose stop/drain -> cache reset -> still-subscribed backend event -> `dispatchProcessedAgentRunEvents` -> ordinary default getter -> fresh processor -> enriched token event -> `setImmediate` append -> shared Prisma close or later idle lifecycle.
-  - Material consequence: the new append is outside the completed drain. It can race shutdown with `CLIENT_NOT_READY` and be dropped after warning, or run after shutdown and lazy-bind an ownerless client from ambient datasource configuration. Both outcomes violate the explicit no-post-shutdown-reopen and complete-drain contract.
-  - Reachability: `Reachable`; the initiating signal, active run, event producers, and caller path are production-supported. This is not inferred from the diff or probe alone.
-- Required action: keep the default token-persistence boundary quiescent for the remainder of normal server shutdown so ordinary late/default-pipeline callers cannot construct a live persistence processor or accept new token appends after stop begins/completes. Preserve idempotent repeated stop and any needed reset/restart only through an explicit lifecycle-owned seam. Provide focused implementation evidence for late/concurrent events after stop; after source re-review passes, API/E2E should add durable shutdown coverage against the real shared lifecycle.
-- Why proportionate: the approved contract and design already define this invariant, and the defect is bounded to implementation-owned default-pipeline lifecycle state/coordination. No requirement or design revision is needed.
+`CR-001` is resolved in `CRR-002`: stop establishes quiescence before drain, retains the stopped composition for ordinary getters, builds no token owners when stopped before first construction, and allows restart only through the explicit test reset. `IR-003` leaves that source unchanged. `USER-NAMING-001` is implemented directly with no compatibility surface.
 
 ## Classification
 
-- Latest result: `Fail`
-- Classification: `Local Fix`
-- Reason: one bounded implementation-owned lifecycle correction is required; approved behavior and ownership are already explicit.
+- Latest result: `Pass`
+- Classification: `N/A`
 
 ## Recommended Recipient
 
-- `implementation_engineer`
-- Routing note: resolve `CR-001`, update `implementation-revision-record.md`, and return the cumulative package for implementation-source re-review. API/E2E must not begin until the source review passes.
+- `api_e2e_engineer`
+- Routing note: proceed with coverage investigation, existing-test validity/lifecycle-seam updates, real SQLite/API/E2E execution, confidence scoring, cleanup, and evidence. A pass returns to code review for the separate proportional durable test-code review.
 
 ## Residual Risks
 
-- After `CR-001`, API/E2E still needs to update removed raw-client test seams and prove real-SQLite token/vault/importer behavior, lifecycle isolation, byte stability, logging/WAL policy, and installed-package behavior.
-- The global repository-prisma lifecycle still requires serialized explicit test rebinding; this is an approved downstream fixture/execution constraint, not a current source finding.
-- Existing app-data migration and read-only inspection raw clients remain intentionally bounded exceptions per the approved design.
+- Existing secret-vault/custom-provider durable tests still use the removed raw-client constructor seam and require API/E2E-owned conversion to explicit `initializePrisma`/`shutdownPrisma` sequencing.
+- API/E2E must validate real SQLite initializer serialization, transaction rollback/options, byte/data stability, importer target/failure cleanup, token append/statistics behavior, graceful repeated shutdown, active events concurrent with/after stop, logging/WAL policy, and installed-package behavior.
+- Repository-prisma's global lifecycle requires serialized explicit test rebinding. This is an approved execution constraint, not a source finding.
+- Existing app-data-migration and read-only inspection raw clients remain intentionally bounded exceptions under the approved design.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `8.9/10` (`89.1/100`); runtime correctness, data-flow spine, ownership, and API/E2E readiness are below the clean-pass threshold because of `CR-001`.
-- Failure Origin (when applicable): `Implementation-owned source lifecycle state in default agent-run event pipeline`
-- Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: package resolution, model repository adoption, vault transaction composition, importer lifecycle, cleanup, schema/migration guard, and production build-config typecheck otherwise passed review. No API/E2E handoff is authorized this round.
+- Score Summary: `9.5/10` (`94.9/100`); every category is at least `9.0`.
+- Failure Origin (when applicable): `N/A`
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: `CR-001` is resolved, `IR-002` remains intact at current HEAD, and `SR-002`/`IR-003` cleanly implement domain-subject repository names. API/E2E is authorized.

@@ -164,6 +164,19 @@ const initializeIsolatedRuntime = async (): Promise<void> => {
   process.env.AUTOBYTEUS_MEMORY_DIR = memoryDir;
   process.env.AUTOBYTEUS_LOG_DIR = logsDir;
   process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
+  await fs.writeFile(
+    path.join(tempRoot, ".env"),
+    [
+      "APP_ENV=test",
+      "DB_TYPE=sqlite",
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+      `DATABASE_URL=${databaseUrl}`,
+      `AUTOBYTEUS_MEMORY_DIR=${memoryDir}`,
+      `AUTOBYTEUS_LOG_DIR=${logsDir}`,
+      "",
+    ].join("\n"),
+    "utf-8",
+  );
 
   prisma = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
   for (const relativePath of TOKEN_USAGE_MIGRATION_SQL_FILES) {
@@ -172,6 +185,9 @@ const initializeIsolatedRuntime = async (): Promise<void> => {
   }
 
   vi.resetModules();
+  const { appConfigProvider } = await import("../../../src/config/app-config-provider.js");
+  appConfigProvider.resetForTests();
+  appConfigProvider.initialize({ appDataDir: tempRoot }).initialize();
   const [
     registryModule,
     runnerModule,
@@ -385,7 +401,7 @@ describe("token usage legacy path column drop startup E2E", () => {
     ];
     return new runtime.AppDataMigrationRunner(
       new runtime.AppDataMigrationRegistry(definitions),
-      new runtime.AppDataMigrationRecordRepository(),
+      new runtime.AppDataMigrationRecordRepository(prisma),
       { logsDir },
     );
   };
