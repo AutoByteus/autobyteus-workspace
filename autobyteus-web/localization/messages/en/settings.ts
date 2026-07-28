@@ -528,6 +528,7 @@ const settingsMessages = {
   'settings.components.settings.ProviderAPIKeyManager.save_option': 'Save option',
   'settings.components.settings.ProviderAPIKeyManager.save_and_use_mode': 'Save and use this mode',
   'settings.components.settings.ProviderAPIKeyManager.use_this_mode': 'Use this mode',
+  'settings.components.settings.ProviderAPIKeyManager.activate_mode': 'Activate',
   'settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility': 'Toggle API key visibility',
   'settings.components.settings.ProviderAPIKeyManager.enter_new_key_to_update': 'Enter new key to update...',
   'settings.components.settings.ProviderAPIKeyManager.enter_api_key': 'Enter API key...',

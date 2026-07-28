@@ -1,0 +1,30 @@
+COMMAND: pnpm test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run --reporter=verbose
+
+> autobyteus@1.4.26 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web
+
+stderr | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > renders all independent options with exactly one explicit active mode 15ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > expands only one editor, focuses it, and emits only the addressed save input 12ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > offers explicit first-time save-and-activate and configured-option activation 5ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > disables every conflicting option action while an operation is pending 7ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > shows the spinner instead of the idle check icon while activating 2ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > disables vault-backed unavailable options without disabling Vertex Project 2ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > clears write-only key editors after a refreshed setup snapshot 5ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  11:09:02
+   Duration  4.27s (transform 2.44s, setup 3.72s, collect 66ms, tests 49ms, environment 126ms, prepare 128ms)
+

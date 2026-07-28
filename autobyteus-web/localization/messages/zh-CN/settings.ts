@@ -528,6 +528,7 @@ const settingsMessages = {
   'settings.components.settings.ProviderAPIKeyManager.save_option': '保存选项',
   'settings.components.settings.ProviderAPIKeyManager.save_and_use_mode': '保存并使用此模式',
   'settings.components.settings.ProviderAPIKeyManager.use_this_mode': '使用此模式',
+  'settings.components.settings.ProviderAPIKeyManager.activate_mode': '启用',
   'settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility': '切换 API 密钥可见性',
   'settings.components.settings.ProviderAPIKeyManager.enter_new_key_to_update': '输入新密钥以更新...',
   'settings.components.settings.ProviderAPIKeyManager.enter_api_key': '输入 API 密钥...',

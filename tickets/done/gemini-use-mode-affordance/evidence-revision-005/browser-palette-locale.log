@@ -1,0 +1,90 @@
+EN_DESKTOP {
+  "idleColors": {
+    "background": "rgb(239, 246, 255)",
+    "borderColor": "rgb(191, 219, 254)",
+    "color": "rgb(29, 78, 216)",
+    "borderWidth": "1px"
+  },
+  "hoverColors": {
+    "background": "rgb(219, 234, 254)",
+    "color": "rgb(30, 64, 175)"
+  },
+  "activeColors": {
+    "background": "rgb(209, 250, 229)",
+    "color": "rgb(4, 120, 87)"
+  },
+  "enContrast": {
+    "idle": null,
+    "hover": null,
+    "active": null
+  },
+  "geometry": {
+    "idleText": "Activate",
+    "activeText": "ActiveActive",
+    "activeActionCount": 0,
+    "unavailableActionCount": 0,
+    "overflow": false
+  },
+  "focus": {
+    "focused": true,
+    "boxShadow": "rgb(255, 255, 255) 0px 0px 0px 2px, rgb(59, 130, 246) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "outline": "rgba(0, 0, 0, 0) solid 2px",
+    "box": {
+      "width": 81.484375,
+      "height": 44
+    }
+  }
+}
+EN_NARROW {
+  "buttonText": "Activate",
+  "buttonBox": {
+    "x": 606,
+    "y": 358,
+    "width": 81.484375,
+    "height": 44,
+    "right": 687.484375
+  },
+  "cardBox": {
+    "width": 108,
+    "height": 128
+  },
+  "withinViewport": true,
+  "overflow": false
+}
+EN_PENDING_REQUEST_OBSERVED
+EN_PENDING {
+  "text": "Activating...",
+  "disabled": true,
+  "spinner": true,
+  "idleActivate": false,
+  "box": {
+    "width": 127.6875,
+    "height": 44
+  },
+  "overflow": false
+}
+ZH_PENDING_REQUEST_OBSERVED
+ZH_IDLE {
+  "zhColors": {
+    "background": "rgb(239, 246, 255)",
+    "borderColor": "rgb(191, 219, 254)",
+    "color": "rgb(29, 78, 216)"
+  },
+  "zhIdle": {
+    "text": "启用",
+    "aria": "使用此模式: AI Studio",
+    "title": "使用此模式",
+    "activeText": "当前使用当前使用",
+    "overflow": false
+  }
+}
+ZH_PENDING {
+  "text": "切换中...",
+  "aria": "使用此模式: AI Studio",
+  "title": "使用此模式",
+  "disabled": true,
+  "spinner": true,
+  "idleActivate": false,
+  "overflow": false
+}
+PAGE_ERRORS []
