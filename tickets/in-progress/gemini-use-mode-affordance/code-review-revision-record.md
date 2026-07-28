@@ -6,6 +6,8 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review; initial implementation handoff for commit `a00dc0ee2` | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Successful API/E2E proportional test-code review; API-REV-001 | N/A (first test review) | Not Applicable | None |
+| CRR-003 | `code-review-report.md` | Implementation Review; SR-001/IR-002 rework commit `38327b315` | Pass (superseded contract) | Pass | None |
+| CRR-004 | `api-e2e-test-review-report.md` | Successful API/E2E proportional test-code review; API-REV-002 | Not Applicable | Not Applicable | None |
 
 ## Revision Entries
 
@@ -51,3 +53,48 @@ None. This is the first proportional test-code review baseline.
 - Material score or classification changes: None; this review has no implementation scorecard. Result is Not Applicable by rule.
 - Recommended recipient: delivery_engineer
 - Remaining risks or uncertainty: The broader settings suite retains one unrelated CodexFullAccessCard wording assertion failure; no changed Codex path is present. Browser validation used a read-only temporary Gemini setup response fixture because the existing backend lacked a safe configured non-active row.
+
+
+### CRR-003 — Revised explicit activation/state text source review
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/code-review-report.md
+- Review entry point and round: Implementation Review, round 2
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/implementation-handoff.md; SR-001; IR-002
+- Relevant solution revision IDs: SR-001
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: N/A; prior API-REV-001 covered the superseded icon-only implementation and is not current sign-off.
+- Prior authoritative result: Pass for the initial icon-only contract (CRR-001), superseded after rendered inspection and approved solution revision.
+- Current authoritative result: Pass
+- What changed in the review result and why: Re-reviewed the implementation against the revised requirements and design package. The Iconify check-circle/icon-only contract is fully removed; configured non-active rows now use visible localized Use this mode text, active rows use visible Active text, and existing command/state/accessibility boundaries remain intact. Focused Vitest independently passed with 1 file and 7 tests.
+
+#### Prior Finding Resolution
+
+None. CRR-001 had no implementation findings. Its historical Pass applies only to the superseded contract and is not reused as current rework evidence.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Current score 9.8/10 (98/100); no classification required.
+- Recommended recipient: api_e2e_engineer
+- Remaining risks or uncertainty: Narrow-width wrapping and live hover/focus/pending validation remain downstream checks. Prior API/E2E evidence must be rerun for the revised text/badge contract.
+
+
+### CRR-004 — Revised API/E2E proportional test-code review
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/api-e2e-test-review-report.md
+- Review entry point and round: Successful API/E2E proportional test-code review, round 2
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/api-e2e-execution-coverage-report.md; API-REV-002; scenarios API-GEMINI-201–API-GEMINI-206
+- Relevant solution revision IDs: SR-001
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Prior authoritative result: Not Applicable for proportional test-code review (CRR-002; no durable API/E2E test changes)
+- Current authoritative result: Not Applicable
+- What changed in the review result and why: Fresh API/E2E validation passed at 95% confidence for the revised visible text/badge contract, but no durable API/E2E test file was added, updated, or removed. The implementation-owned component test was rerun only as evidence; temporary browser probes, held requests, logs, and screenshots are not durable test code. The superseded icon assertions remain removed and were not reintroduced.
+
+#### Prior Finding Resolution
+
+None. CRR-002 had no findings and remains Not Applicable.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; this review has no implementation scorecard. Result is Not Applicable by rule.
+- Recommended recipient: delivery_engineer
+- Remaining risks or uncertainty: The 320px full Settings-shell off-canvas observation is an existing surrounding ProviderModelBrowser layout condition, not a changed test path or test-review issue. Keep pnpm dev:test running for user inspection until explicit completion.
+
