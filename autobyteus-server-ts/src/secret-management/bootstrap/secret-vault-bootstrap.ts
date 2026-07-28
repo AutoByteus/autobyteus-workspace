@@ -17,9 +17,9 @@ import {
 } from "../domain/secret-vault-types.js";
 import type {
   SecretVaultInitializationRepository,
-  SecretVaultMetadataRecord,
   SecretVaultPrismaRepository,
 } from "../persistence/secret-vault-prisma-repository.js";
+import type { SecretVaultMetadataRecord } from "../persistence/secret-vault-persistence-types.js";
 import { SecretRootKeyFile } from "../root-key/secret-root-key-file.js";
 
 export type SecretVaultBootstrapResult = {

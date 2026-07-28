@@ -18,11 +18,13 @@ import {
 } from "../domain/secret-vault-types.js";
 import type {
   CustomProviderMigrationBatchReceipt,
+  SecretVaultPrismaRepository,
+} from "../persistence/secret-vault-prisma-repository.js";
+import type {
   EncryptedSecretEntryRecord,
   SecretVaultBatchResult,
   SecretVaultMetadataRecord,
-  SecretVaultPrismaRepository,
-} from "../persistence/secret-vault-prisma-repository.js";
+} from "../persistence/secret-vault-persistence-types.js";
 
 export type SecretOperationEvent = {
   operation:

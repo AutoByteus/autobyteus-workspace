@@ -32,7 +32,10 @@ The ledger answers, per usage observation:
   - Claude Agent SDK: `src/agent-execution/backends/claude/session/` extracts
     terminal result/model-usage data into `TOKEN_USAGE_UPDATED` events.
 - Ledger/pricing/projections: `src/token-usage`
-- SQL repository: `src/token-usage/repositories/sql/token-usage-ledger-repository.ts`
+- SQL model repository:
+  `src/token-usage/repositories/sql/token-usage-ledger-repository.ts`, which
+  extends `repository_prisma` `BaseRepository` for
+  `TokenUsageLedgerEvent`.
 - Historical execution-address app-data backfill:
   `src/app-data-migrations/migrations/token-usage-execution-address-backfill-migration.ts`
 - GraphQL API: `src/api/graphql/types/token-usage-stats.ts`
@@ -67,9 +70,17 @@ payloads into the ledger/event contract:
 5. `TokenPriceConfigProvider` resolves a provider/model/runtime pricing policy
    through the shared `autobyteus-ts` model catalog, then `TokenCostCalculator`
    applies only trusted price dimensions to the component basis.
-6. `TokenUsageEventPersistenceProcessor` schedules an async append through
-   `TokenUsageLedgerStore`. Persistence failures are logged and must not block
-   runtime streaming/event dispatch.
+6. `TokenUsageEventPersistenceProcessor` schedules a tracked async append
+   through `TokenUsageLedgerStore`. Persistence failures are logged and must not
+   block runtime streaming/event dispatch. The default pipeline can quiesce and
+   drain every accepted scheduled/in-flight append before the shared Prisma
+   lifecycle closes; it resets the processor only after the drain finishes.
+
+The ledger repository acquires no raw or injected Prisma client. Each inherited
+model operation resolves the current `repository_prisma` root or
+AsyncLocalStorage transaction client at call time. Normal server composition
+initializes that root after schema migrations and shuts it down only after the
+default token processor has drained.
 
 ## Runtime-Native Token Event Ingestion
 

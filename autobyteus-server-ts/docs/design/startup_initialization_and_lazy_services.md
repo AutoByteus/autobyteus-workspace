@@ -12,17 +12,25 @@ The server must execute these steps in order:
 2. Initialize `appConfigProvider` with the effective `--data-dir`.
 3. Call `AppConfig.initialize()`.
 4. Import `src/server-runtime.ts` after bootstrap is complete.
-5. Run Prisma schema migrations, then required app-data migrations.
-6. Start transports and background tasks.
+5. Run Prisma schema migrations.
+6. Initialize `repository_prisma` with AppConfig's exact canonical database URL
+   and no WAL request.
+7. Initialize or verify the secret vault through that shared repository
+   lifecycle.
+8. Run required app-data migrations.
+9. Start transports and background tasks.
 
 ## Why This Exists
 
 - `AppConfig` determines `.env` location and derived paths.
-- Database clients and repositories read environment during initialization.
+- Runtime token and secret model repositories resolve the explicitly initialized
+  `repository_prisma` lifecycle; they do not create capability-local clients.
 - Media and workspace services derive storage roots from app data dir.
 - App-data migrations may read both SQL rows and memory files, so they must run
   after configuration and schema expansion but before runtime/API reads expose
   partially migrated data.
+- Shutdown drains the default token persistence processor, closes/zeroizes the
+  secret runtime, and only then shuts down the shared repository client.
 
 ## Design Decision
 

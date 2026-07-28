@@ -6,17 +6,33 @@ import { TokenUsageEventEnrichmentTransformer } from "./processors/token-usage/t
 import { TokenUsageEventPersistenceProcessor } from "./processors/token-usage/token-usage-event-persistence-processor.js";
 
 let cachedDefaultAgentRunEventPipeline: AgentRunEventPipeline | null = null;
+let cachedTokenUsagePersistenceProcessor: TokenUsageEventPersistenceProcessor | null = null;
 
 export const getDefaultAgentRunEventPipeline = (): AgentRunEventPipeline => {
   if (!cachedDefaultAgentRunEventPipeline) {
+    cachedTokenUsagePersistenceProcessor = new TokenUsageEventPersistenceProcessor();
     cachedDefaultAgentRunEventPipeline = new AgentRunEventPipeline([
       new LifecycleStatusEventProcessor(),
       new FileChangeEventProcessor(),
       new TeamCommunicationMessageProcessor(),
-      new TokenUsageEventPersistenceProcessor(),
+      cachedTokenUsagePersistenceProcessor,
     ], [
       new TokenUsageEventEnrichmentTransformer(),
     ]);
   }
   return cachedDefaultAgentRunEventPipeline;
+};
+
+export const stopDefaultAgentRunEventPipeline = async (): Promise<void> => {
+  const processor = cachedTokenUsagePersistenceProcessor;
+  if (!processor) {
+    cachedDefaultAgentRunEventPipeline = null;
+    return;
+  }
+
+  await processor.close();
+  if (cachedTokenUsagePersistenceProcessor === processor) {
+    cachedTokenUsagePersistenceProcessor = null;
+    cachedDefaultAgentRunEventPipeline = null;
+  }
 };
