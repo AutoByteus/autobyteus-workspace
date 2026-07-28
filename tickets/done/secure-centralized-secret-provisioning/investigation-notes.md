@@ -48,7 +48,7 @@ Through follow-up discussion, the user approved these clean directions:
 | Resolved tracked base/finalization branch | `origin/personal` |
 | Refreshed base HEAD (2026-07-26) | `d6983612c5a77fb94d9266df85a9d03fe2d1c68b` |
 | Merge base | `d6983612c5a77fb94d9266df85a9d03fe2d1c68b` (exact latest base) |
-| Ticket artifact root | `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning` |
+| Ticket artifact root | `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning` |
 | Workspace decision | Keep this dedicated ticket/worktree; replace active solution artifacts from first principles |
 | Alternative worktree | A briefly bootstrapped empty `single-database-encrypted-secret-vault` worktree/branch was removed after the user selected the current-ticket rewrite. It contained no work. |
 | Current downstream gate | Exact revised package is user-approved and submitted for bounded architecture re-review; implementation, API/E2E, and delivery remain paused until a Pass |

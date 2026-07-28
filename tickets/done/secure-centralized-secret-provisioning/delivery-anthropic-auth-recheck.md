@@ -5,8 +5,9 @@
 - Dependency: `EXT-ANTHROPIC-AGENT-SDK-AUTH`
 - Recheck date: 2026-07-27
 - Candidate: Round 22 reviewed/executed product HEAD
-  `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`; delivery integrated checkpoint
-  `57863a7005d13a0f5b68fa330b7f9c3ce5ce1dd7`.
+  `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`; reviewed-package delivery
+  checkpoint `57863a7005d13a0f5b68fa330b7f9c3ce5ce1dd7`; exact synchronized package
+  source HEAD `dae24b9c67b29c52454dd163d5a53c9478cbe308`.
 - Purpose: mandatory delivery/release risk recheck for the preserved exact
   Claude `auto|cli|api-key` selector, with `cli` as the default. This record is
   not legal clearance and does not authorize an authentication redesign.

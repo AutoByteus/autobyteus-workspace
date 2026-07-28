@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `encrypted-secret-vault-contract.md`, `gemini-setup-ui-ux-spec.md`, `credential-consumer-mapping.md`, `custom-provider-v1-migration-contract.md`, new evidence-only `scope-audit.md`, `use-case-spine-validation.md`, `secret-storage-architecture.md`, `live-test-secret-provisioning.md`, `threat-model-and-option-analysis.md`, and evidence-only `repository-prisma-1.0.8-assessment.md`; `secret-storage-backend-contract.md` remains a superseded tombstone.
 - Current Review Round: 36
 - Trigger: user-approved latest-HEAD exhaustive scope reset, restoration of every newly inventoried unrelated runtime/product delta, and removal of the ticket-added ordinary-provider and Gemini standalone credential-removal UI/API.

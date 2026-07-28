@@ -34,22 +34,22 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/design-spec.md`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/encrypted-secret-vault-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/gemini-setup-ui-ux-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/use-case-spine-validation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-architecture.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/custom-provider-v1-migration-contract.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/scope-audit.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/secret-storage-backend-contract.md` (historical-link tombstone only)
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/encrypted-secret-vault-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/gemini-setup-ui-ux-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/credential-consumer-mapping.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/use-case-spine-validation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/secret-storage-architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/live-test-secret-provisioning.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/threat-model-and-option-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/custom-provider-v1-migration-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/scope-audit.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/secret-storage-backend-contract.md` (historical-link tombstone only)
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/design-review-report.md`
 - Historical downstream reports/evidence were preserved without reset and are not treated as target authority.
 
 ## What Changed
@@ -259,8 +259,8 @@
 - States, layouts, viewports, and interactions inspected: collapsed configured inactive AI Studio, configured active Vertex Express, unconfigured Vertex Project; expanded AI Studio API-key editor and Vertex Project fields; initial focus; visibility icon; active/inactive mode icons; 430px content width; and a 320px narrow container with no horizontal overflow.
 - Visual or interaction issues found and corrected: removed the redundant Connection options card, repeated `Configured` and `Active` pills, large text buttons, per-option descriptive text, and excessive vertical padding. Replaced them with a compact active-mode bar, plain green configured dots, radio-style selection, pencil/chevron controls with native titles and accessible labels, and responsive editor layout. Live inspection also caught non-rendering icon-font classes, which were replaced with deterministic inline SVG.
 - Supporting evidence and remaining unverified states or limitations:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/357-implementation-gemini-compact-ui.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence/358-implementation-gemini-expanded-editor.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/execution-evidence/357-implementation-gemini-compact-ui.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/execution-evidence/358-implementation-gemini-expanded-editor.png`
   - No credential was entered, saved, read, or exposed during implementation inspection. Real GraphQL persistence and independent browser/API coverage remain downstream API/E2E work.
 
 ## Downstream Coverage Hints / Suggested Scenarios

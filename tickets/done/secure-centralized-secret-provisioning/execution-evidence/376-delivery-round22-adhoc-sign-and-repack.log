@@ -1,0 +1,114 @@
+# Round 22 local ad-hoc signing correction and container repack
+started_utc=2026-07-28T03:48:21Z
+source_head=dae24b9c67b29c52454dd163d5a53c9478cbe308
+reason=the documented no-sign build leaves the Electron linker signature with unsealed resources; this local candidate requires a complete ad-hoc bundle signature to open consistently
+signing_identity=ad-hoc (-); no Developer ID, notarization, timestamp, publication, or release
+[macSign] Signing 48 macOS subject(s) with AutoByteus signing policy
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/obj.target/pty/src/unix/pty.o
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/obj.target/spawn-helper/src/unix/spawn-helper.o
+  [none] Contents/Resources/server/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.2.71_zod@4.3.6/node_modules/@anthropic-ai/claude-agent-sdk/vendor/ripgrep/arm64-darwin/rg
+  [none] Contents/Resources/server/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.2.71_zod@4.3.6/node_modules/@anthropic-ai/claude-agent-sdk/vendor/ripgrep/x64-darwin/rg
+  [none] Contents/Resources/server/node_modules/.pnpm/@esbuild+darwin-arm64@0.27.3/node_modules/@esbuild/darwin-arm64/bin/esbuild
+  [none] Contents/Resources/server/node_modules/.pnpm/@img+sharp-darwin-arm64@0.34.5/node_modules/@img/sharp-darwin-arm64/lib/sharp-darwin-arm64.node
+  [none] Contents/Resources/server/node_modules/.pnpm/@img+sharp-libvips-darwin-arm64@1.2.4/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/bin/darwin-arm64-146/node-pty.node
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/pty.node
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/pty.node
+  [none] Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+  [none] Contents/Resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+  [none] Contents/Resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin.dylib.node
+  [none] Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node
+  [none] Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64
+  [none] Contents/Resources/server/node_modules/.pnpm/@rollup+rollup-darwin-arm64@4.57.1/node_modules/@rollup/rollup-darwin-arm64/rollup.darwin-arm64.node
+  [none] Contents/Resources/server/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/bin/esbuild
+  [none] Contents/Resources/server/node_modules/.pnpm/fsevents@2.3.3/node_modules/fsevents/fsevents.node
+  [none] Contents/Resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/libquery_engine-darwin-arm64.dylib.node
+  [none] Contents/Resources/server/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/libquery_engine-darwin.dylib.node
+  [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Helpers/chrome_crashpad_handler
+  [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libEGL.dylib
+  [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib
+  [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libffmpeg.dylib
+  [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libvk_swiftshader.dylib
+  [none] Contents/Frameworks/Squirrel.framework/Versions/A/Resources/ShipIt
+  [none] Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/skia.darwin-arm64.node
+  [helper-gpu] Contents/Frameworks/AutoByteus Helper (GPU).app/Contents/MacOS/AutoByteus Helper (GPU)
+  [helper-plugin] Contents/Frameworks/AutoByteus Helper (Plugin).app/Contents/MacOS/AutoByteus Helper (Plugin)
+  [helper-renderer] Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)
+  [helper-generic] Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper
+  [none] Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework
+  [none] Contents/Frameworks/Mantle.framework/Versions/A/Mantle
+  [none] Contents/Frameworks/ReactiveObjC.framework/Versions/A/ReactiveObjC
+  [none] Contents/Frameworks/Squirrel.framework/Versions/A/Squirrel
+  [root-app] Contents/MacOS/AutoByteus
+  [none] Contents/Frameworks/Electron Framework.framework
+  [none] Contents/Frameworks/Mantle.framework
+  [none] Contents/Frameworks/ReactiveObjC.framework
+  [none] Contents/Frameworks/Squirrel.framework
+  [helper-gpu] Contents/Frameworks/AutoByteus Helper (GPU).app
+  [helper-plugin] Contents/Frameworks/AutoByteus Helper (Plugin).app
+  [helper-renderer] Contents/Frameworks/AutoByteus Helper (Renderer).app
+  [helper-generic] Contents/Frameworks/AutoByteus Helper.app
+  [root-app] AutoByteus.app
+[macSign] AutoByteus macOS signing policy completed
+custom_adhoc_sign=PASS
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Plugin).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/Current/.
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (GPU).app
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+--prepared:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/Helpers/chrome_crashpad_handler
+--validated:/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/Current/.
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: valid on disk
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: satisfies its Designated Requirement
+strict_codesign_after_custom_sign=PASS
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=com.autobyteus.app
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20500 size=435 flags=0x10002(adhoc,runtime) hashes=3+7 location=embedded
+Hash type=sha256 size=32
+CandidateCDHash sha256=9b98d24e727f8025986e890201b494f4b97def10
+CandidateCDHashFull sha256=9b98d24e727f8025986e890201b494f4b97def1071235445898e079b72d731da
+Hash choices=sha256
+CMSDigest=9b98d24e727f8025986e890201b494f4b97def1071235445898e079b72d731da
+CMSDigestType=2
+CDHash=9b98d24e727f8025986e890201b494f4b97def10
+Signature=adhoc
+Info.plist entries=32
+TeamIdentifier=not set
+Runtime Version=26.2.0
+Sealed Resources version=2 rules=13 files=28622
+Internal requirements count=0 size=12
+spctl_assessment_expected_for_non_notarized_local_candidate:
+/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: rejected
+finished_signing_utc=2026-07-28T03:48:41Z
+
+## Repack signed app into local DMG and ZIP
+repack_started_utc=2026-07-28T03:49:02Z
+config=/tmp/scsp-round22-local-repack-config.json
+  • electron-builder  version=25.1.8 os=25.5.0
+  • loaded configuration  file=/tmp/scsp-round22-local-repack-config.json
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip
+  • skipped archiving  reason=Archive file is up to date outFile=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip.blockmap
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg.blockmap
+signed_app_container_repack=PASS
+repack_finished_utc=2026-07-28T03:49:45Z

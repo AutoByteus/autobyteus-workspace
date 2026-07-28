@@ -2,7 +2,7 @@
 
 ## Artifact Metadata
 
-- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
+- Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/repository-prisma-1.0.8-assessment.md`
 - Purpose: retain primary-package evidence and the bounded clean-replacement decision for the user-approved `repository_prisma` update to the latest published version.
 - Scope: exact npm metadata and provenance, packed ESM/CommonJS artifacts, import and query-log policy, current AutoByteus dependency/patch/import surfaces, lifecycle compatibility, persisted-data impact, and required validation.
 - Status: complete evidence from 2026-07-22, rechecked against current ticket source on 2026-07-26.

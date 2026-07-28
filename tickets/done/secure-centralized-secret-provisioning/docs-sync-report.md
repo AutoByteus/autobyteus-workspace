@@ -82,7 +82,18 @@ exact repository Prisma versions, and unchanged Docker topology.
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: build and validate a fresh Electron candidate from the exact integrated
-  Round 22 product plus synchronized docs, then request explicit user
-  verification. Ticket archive, push, merge, tag, release, deployment, and
-  worktree cleanup remain prohibited before that user signal.
+- Notes: delivery's attempted manual ad-hoc signing was proven invalid by a
+  real launch: DYLD killed the renderer for a Team-ID mismatch with Electron
+  Framework, producing a blank window (`382`–`383`). The user correctly
+  identified that no signing was needed. Delivery archived that entire dist,
+  rebuilt from a clean `electron-dist` with the documented no-sign command, and
+  did not apply any manual signature. The clean replacement launches the real
+  Electron main, backend, and persistent renderer; `/rest/health` passes; the
+  captured window contains the complete application UI; and no new renderer
+  crash report exists (`384`–`386`). DMG and ZIP integrity also pass. This is
+  an unsigned local verification candidate, not a signed/notarized release.
+  The user explicitly verified the clean candidate and authorized repository
+  finalization on 2026-07-28, while requesting no new version or release.
+  Finalization may archive/commit/push/merge/push and then build the updated
+  main-repository `personal` branch. Tag, release, publication, and deployment
+  remain intentionally excluded.

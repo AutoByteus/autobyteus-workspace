@@ -2,14 +2,14 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/requirements.md
-- Investigation Notes: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/investigation-notes.md
-- Design Spec: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-spec.md
+- Requirements Doc: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/requirements.md
+- Investigation Notes: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/investigation-notes.md
+- Design Spec: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/design-spec.md
 - Supplemental Task Artifacts: encrypted-secret-vault-contract.md, gemini-setup-ui-ux-spec.md, credential-consumer-mapping.md, custom-provider-v1-migration-contract.md, use-case-spine-validation.md, secret-storage-architecture.md, secret-storage-backend-contract.md, live-test-secret-provisioning.md, threat-model-and-option-analysis.md, and repository-prisma-1.0.8-assessment.md in the same ticket directory.
-- Design Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/design-review-report.md
-- Implementation Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/implementation-handoff.md
-- Code Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/code-review-report.md
-- Coverage Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md
+- Design Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/design-review-report.md
+- Implementation Handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/implementation-handoff.md
+- Code Review Report: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/code-review-report.md
+- Coverage Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/coverage-investigation.md
 - Current Execution Round: 22
 - Trigger: Round-47 CR-032 source-review Pass at final HEAD `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`; validate current compact Gemini Settings presentation plus proportionate provider/vault integration without reopening byte-identical backend/package/provider/Docker boundaries.
 - Prior Round Reviewed: Rounds 1–21. Round 21 remains the directly executed backend/package/provider baseline; Round 22 is authoritative for the superseding UI presentation.
@@ -209,7 +209,7 @@ Successful proportional test-code review is not requested yet because this is a 
 
 ## Evidence And Cleanup
 
-Evidence directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence
+Evidence directory: /Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/execution-evidence
 
 Key artifacts:
 - 03-real-e2e-preflight.log: exact value-free external capability blocker.
@@ -367,7 +367,7 @@ Round 1 passing changed-boundary evidence remains cumulative: Local Store fault/
 
 ### Round 2 Evidence And Cleanup
 
-Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/execution-evidence`
+Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/execution-evidence`
 
 New key artifacts:
 
@@ -563,7 +563,7 @@ The following eight stale ambient/no-argument live files remain removed and are 
 
 ### Trigger And Outcome
 
-- Trigger: proportional durable-test review `Fail` with `TCR-001` and `TCR-002` in `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/api-e2e-test-review-report.md`.
+- Trigger: proportional durable-test review `Fail` with `TCR-001` and `TCR-002` in `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/api-e2e-test-review-report.md`.
 - Implementation source decision remains `Pass`; implementation HEAD remains `62417e80831a52e627d1b4365e9bfcdc9817ae81`.
 - Round 3 system execution remains a truthful `Pass`; Round 4 changes and executes only the API/E2E-owned durable real-E2E harness/runner boundary and directly adjacent regression suites.
 - Round 4 result: **Pass**. Both test-review findings are corrected; no new implementation or executable failure was found.
@@ -1441,7 +1441,7 @@ The current resolver tests retain direct failure, timeout, and no-match containm
 ### Investigation And Execution Basis
 
 - Coverage investigation:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/in-progress/secure-centralized-secret-provisioning/coverage-investigation.md`.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/tickets/done/secure-centralized-secret-provisioning/coverage-investigation.md`.
 - Investigation completed before durable reconciliation and final execution:
   **Yes**.
 - Reviewed implementation HEAD:

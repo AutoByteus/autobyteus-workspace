@@ -1,0 +1,13 @@
+# Correct signed ZIP container creation
+started_utc=2026-07-28T03:50:46Z
+supersedes=377 ZIP result only; that precheck lacked errexit and printed PASS after codesign failure. DMG result in 377 remains valid.
+action=removed stale unsigned ZIP outputs from active dist, retained them outside worktree, rebuilt ZIP from the fully ad-hoc-signed app
+  • electron-builder  version=25.1.8 os=25.5.0
+  • loaded configuration  file=/tmp/scsp-round22-local-repack-config.json
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip
+  • building block map  blockMapFile=electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip.blockmap
+signed_zip_repack=PASS
+finished_utc=2026-07-28T03:53:07Z
