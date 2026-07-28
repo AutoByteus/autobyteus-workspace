@@ -9,6 +9,7 @@
 | DR-003 | Revised SR-001/IR-002 validation and CRR-004 handoff | `Ready for explicit user verification` | Revised API-REV-002 validation passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 | DR-004 | Current SR-002/IR-003 plain-check validation and CRR-006 handoff | `Ready for explicit user verification` | API-REV-003 passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 | DR-005 | Current SR-003/IR-005 localized Activate validation and CRR-009 handoff | `Ready for explicit user verification` | API-REV-004 passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
+| DR-006 | Current SR-005/IR-007 palette validation and CRR-011 handoff | `Ready for explicit user verification` | API-REV-005 passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 
 ## Revision Entries
 
@@ -86,4 +87,19 @@
 - Runtime cleanup state: Transient activation restored to Vertex Express active; browser contexts and held requests cleaned up.
 - Why this delivery revision was recorded: The approved behavior changed from plain-check action to localized visible `Activate` and added localized pending `Activating` evidence; API-REV-003 is superseded and API-REV-004 must be the sole current sign-off.
 - Next recipient/action: User inspects the running Settings → Gemini surface in English and Simplified Chinese and explicitly confirms completion; then delivery engineer performs final target refresh and repository finalization.
+- Remaining blockers, rollback concerns, or untested scope: Explicit user-verification hold; 320px whole-shell off-canvas behavior is an existing surrounding ProviderModelBrowser condition; Electron shell and external Gemini API remain out of scope.
+
+### DR-006 — Current blue/emerald palette validation delivery handoff
+
+- Delivery round and trigger: Round 6, triggered by current implementation/source review CRR-010, fresh API/E2E validation API-REV-005, and proportional test-code review CRR-011.
+- Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (`Pass`, 95%) and `api-e2e-test-review-report.md` (`Not Applicable`, no findings).
+- Prior authoritative result: `Ready for explicit user verification`.
+- Current authoritative result: Current blue outlined `Activate` and emerald `Active` palette validated at 95% in English and Simplified Chinese; latest tracked base confirmed current; docs sync remains no-impact; refreshed handoff is ready for user inspection.
+- Docs sync report: `docs-sync-report.md` — `Pass`, no-impact decision.
+- Handoff summary: `handoff-summary.md` — refreshed for SR-005/IR-007, API-REV-005, CRR-011, current palette/contrast evidence, and retained dev:test services.
+- Release/publication/deployment report: `release-deployment-report.md` — refreshed; finalization, archive, release, deployment, and cleanup remain on hold.
+- Integration and post-integration verification: `git fetch origin personal` confirmed `153f3409c` unchanged; no merge required; API-REV-005 passed focused 1/7, provider/manager 6/26, guards, and Chrome English/Simplified Chinese desktop/768px/pending palette validation.
+- User verification/finalization state: Explicit user completion not received. Keep `pnpm dev:test` on ports 3000/8000 running; do not archive, push, merge, release, deploy, or stop those services.
+- Why this delivery revision was recorded: The approved visual palette changed after the prior localized action/state contract; API-REV-004 is historical and API-REV-005 must be the sole current sign-off.
+- Next recipient/action: User inspects the running Settings → Gemini surface and explicitly confirms completion; then delivery engineer performs final target refresh and repository finalization.
 - Remaining blockers, rollback concerns, or untested scope: Explicit user-verification hold; 320px whole-shell off-canvas behavior is an existing surrounding ProviderModelBrowser condition; Electron shell and external Gemini API remain out of scope.

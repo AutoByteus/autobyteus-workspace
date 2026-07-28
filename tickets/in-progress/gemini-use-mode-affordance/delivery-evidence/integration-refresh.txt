@@ -54,3 +54,13 @@ Current contract: localized visible Activate action, visible Active state, and l
 Runtime cleanup: transient activation was restored to Vertex Express active; browser contexts and held requests were cleaned up.
 Project inspection environment: pnpm dev:test intentionally remains running on 127.0.0.1:3000 and 127.0.0.1:8000; do not stop before explicit user completion.
 Delivery action: update canonical handoff, docs-sync, release/deployment, and delivery revision artifacts; keep ticket in-progress and do not archive/finalize.
+
+Revision-005 delivery refresh — 2026-07-28
+
+Fetch: git fetch origin personal — passed; origin/personal unchanged at 153f3409cd90207f9219cbe20242606271b36104.
+No additional base integration required: branch already contains the latest tracked base and no new remote commits appeared.
+Upstream checkpoint: 5d5bc7f7e chore(ticket): checkpoint Gemini palette validation.
+Current authoritative validation: API-REV-005 Pass / 95%; CRR-011 Not Applicable with no findings.
+Current contract: blue outlined Activate action and emerald Active badge with measured contrast, localized English/Simplified Chinese labels, pending/disabled state, and 768px layout.
+Project inspection environment: pnpm dev:test intentionally remains running on 127.0.0.1:3000 and 127.0.0.1:8000; do not stop before explicit user completion.
+Delivery action: update canonical handoff, docs-sync, release/deployment, and delivery revision artifacts; keep ticket in-progress and do not archive/finalize.

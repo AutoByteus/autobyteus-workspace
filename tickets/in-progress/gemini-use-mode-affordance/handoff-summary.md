@@ -5,11 +5,11 @@
 - Ticket: `gemini-use-mode-affordance`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance`
 - Branch: `codex/gemini-use-mode-affordance`
-- Current solution revision: `SR-003`
-- Current implementation revision: `IR-005`, implementation commit `67d047d3f`
-- Current source review revision: `CRR-008`, `Pass`; F-001 resolved
-- Current API/E2E revision: `API-REV-004`, `Pass` at 95% confidence
-- Current test-code review revision: `CRR-009`, `Not Applicable`, no findings
+- Current solution revision: `SR-005`
+- Current implementation revision: `IR-007`, implementation commit `0f9fa87dc`
+- Current source review revision: `CRR-010`, `Pass`
+- Current API/E2E revision: `API-REV-005`, `Pass` at 95% confidence
+- Current test-code review revision: `CRR-011`, `Not Applicable`, no findings
 - Integrated base: `origin/personal` at `153f3409c`; confirmed current by the latest fetch
 - Current status: `Ready for explicit user verification; repository finalization remains on hold`
 
@@ -18,41 +18,41 @@
 - Recorded bootstrap/review base: `origin/personal` (see `investigation-notes.md`).
 - Latest tracked remote base after the current `git fetch origin personal`: `153f3409c`.
 - Base advanced during this delivery round: `No`; the ticket branch already contained the latest tracked base.
-- Delivery checkpoint for the current validation package: `8a0afd278` (`chore(ticket): checkpoint localized Gemini validation`).
+- Delivery checkpoint for the current validation package: `5d5bc7f7e` (`chore(ticket): checkpoint Gemini palette validation`).
 - Additional integration required: `No`.
-- Post-integration rerun: no base-driven rerun was required because the latest tracked base was unchanged; API-REV-004 independently validated the current implementation through focused/provider tests, guards, and Chrome English/Simplified Chinese desktop/768px/pending execution.
+- Post-integration rerun: no base-driven rerun was required because the latest tracked base was unchanged; API-REV-005 independently validated the current implementation through focused/provider tests, guards, and Chrome English/Simplified Chinese desktop/768px/pending execution.
 - Conflicts: None.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/delivery-evidence/integration-refresh.txt`.
 
 ## Delivered Behavior
 
-- Configured, non-active Gemini rows show a visible localized `Activate` action (`Activate` in English, `启用` in Simplified Chinese); existing mode-specific title/ARIA names remain authoritative.
-- Active Gemini rows show visible localized `Active` state and no activation action.
-- Pending activation keeps the button disabled and shows spinner plus localized visible `Activating...`/`切换中...`; idle action text is absent during the request.
-- Existing `data-testid`, activation event payload, focus/hover treatment, minimum 44px target, configured dot, edit/configure control, and provider state/API/persistence behavior remain intact.
-- No GraphQL, store, persistence, migration, backend, Electron, or non-Gemini provider behavior changed. Two approved hand-authored locale catalogs contain the new action key.
+- Configured, non-active Gemini rows show localized visible `Activate` with a blue outlined treatment (`blue-50/blue-200/blue-700`), blue hover/focus behavior, and disabled pending treatment.
+- Active Gemini rows show localized visible `Active` with an emerald status treatment (`emerald-100/emerald-700`) and no activation action.
+- Labels remain the semantic signal; color reinforces distinction rather than carrying meaning alone.
+- Pending activation shows localized `Activating...`/`切换中...`, spinner, disabled state, and no idle `Activate` text.
+- Existing title/ARIA name, `data-testid`, activation event payload, focus treatment, 44px minimum target, configured dot, edit/configure control, and provider state/API/persistence behavior remain intact.
+- No GraphQL, store, persistence, migration, backend, Electron, or non-Gemini provider behavior changed.
 
 ## Review And Execution Evidence
 
-- Current implementation source review: `Pass`, 9.8/10, no unresolved findings; F-001 is resolved.
-- Fresh API/E2E execution: `Pass`, API-REV-004 at 95% confidence; API-REV-003 is superseded and not current sign-off.
+- Current implementation source review: `Pass`, 9.8/10, no unresolved findings.
+- Fresh API/E2E execution: `Pass`, API-REV-005 at 95% confidence; all prior API revisions are superseded and not current sign-off.
 - Focused Gemini suite: 1 file / 7 tests passed.
 - Provider/manager suite: 6 files / 26 tests passed.
 - Localization/web-boundary guards and targeted diff checks: passed.
-- Chrome validation: English and Simplified Chinese visible Activate, Active, pending Activating/spinner/disabled, ARIA/title, hover/focus, 768px wrapping, gating, and no page errors all passed.
-- Proportional API/E2E test-code review: `Not Applicable` (CRR-009); no durable API/E2E test file changed.
-- Current evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/evidence-revision-004/`.
-- Runtime cleanup: transient activation was restored to Vertex Express active; browser contexts and held requests were cleaned up.
+- Chrome validation: blue outlined Activate and emerald Active palettes, measured contrast, hover/focus, pending Activating/spinner/disabled, 768px layout, English/Simplified Chinese locales, gating, and no page errors all passed.
+- Proportional API/E2E test-code review: `Not Applicable` (CRR-011); no durable API/E2E test file changed.
+- Current evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/evidence-revision-005/`.
 
 ## User Verification Checklist
 
 The project `pnpm dev:test` environment is intentionally running for inspection:
 
 1. Open `http://127.0.0.1:3000/settings` and select Gemini.
-2. Confirm configured non-active options visibly show localized `Activate`/`启用` action text with mode-specific tooltip/accessible name.
-3. Confirm the active option visibly shows localized `Active` and no activation button.
+2. Confirm configured non-active options show localized `Activate` in the blue outlined action treatment.
+3. Confirm the active option shows localized `Active` in the emerald status treatment and no activation button.
 4. Confirm pending activation shows localized `Activating...`/`切换中...`, spinner, and disabled state.
-5. Confirm desktop and 768px card-level wrapping remains usable with preserved hover/focus treatment.
+5. Confirm desktop and 768px card-level layout, hover/focus, and readable contrast.
 
 Do not stop the services until the user explicitly says inspection is complete.
 
@@ -60,7 +60,7 @@ Do not stop the services until the user explicitly says inspection is complete.
 
 - Approved persisted-data outcome: `Directly Usable — No Migration`; no persisted shape changed.
 - Residual layout note: At 320px the whole existing Settings shell can show an off-canvas surrounding ProviderModelBrowser layout; 768px card-level responsive validation passed. This is not a changed-path failure.
-- Browser fixtures: setup and activation responses were deterministic in-memory fixtures; the transient activation was restored to Vertex Express active; no lingering mutation or external Gemini credential was left.
+- Browser fixtures: setup and activation responses were deterministic in-memory fixtures; no lingering mutation or external Gemini credential was left.
 - Electron shell and external Gemini API were not exercised; no shell/API code changed.
 - Untracked dependency materialization directories remain while dev:test is running; cleanup is deferred until user completion and authorized finalization.
 - Before finalization, rollback is withholding verification. After finalization, revert the bounded ticket merge if needed.
@@ -95,5 +95,5 @@ All ticket artifacts are under:
 - `delivery-revision-record.md`
 - `release-deployment-report.md`
 - `delivery-evidence/integration-refresh.txt`
-- `evidence-revision-004/`
-- `evidence-revision-003/`, `evidence-revision-002/`, and `evidence/` historical API/E2E logs/screenshots
+- `evidence-revision-005/`
+- `evidence-revision-004/`, `evidence-revision-003/`, `evidence-revision-002/`, and `evidence/` historical API/E2E logs/screenshots
