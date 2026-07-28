@@ -98,7 +98,7 @@ governance and keeps its Codex-owned authentication behavior.
 
 - `SecretManagementService` owns value-free status, save/replace, idempotent
   removal, authorized just-in-time resolution, and atomic importer batches.
-- `SecretVaultPrismaRepository` coordinates cross-model persistence through
+- `SecretVaultRepository` coordinates cross-model persistence through
   separate `SecretEntry` and `SecretEncryptionMetadata` `BaseRepository`
   owners. It alone opens implicit transactions with the reviewed initialization
   (`2s` wait/`10s` timeout) and mutation/compensation (`2s` wait/`5s` timeout)

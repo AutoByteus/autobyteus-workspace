@@ -1,7 +1,7 @@
 import type { ApplicationDatabaseLocation } from "../config/application-database-location.js";
 import { SecretVaultBootstrap } from "./bootstrap/secret-vault-bootstrap.js";
 import { SecretVaultError, type SecretVaultHealth } from "./domain/secret-vault-types.js";
-import { SecretVaultPrismaRepository } from "./persistence/secret-vault-prisma-repository.js";
+import { SecretVaultRepository } from "./persistence/secret-vault-repository.js";
 import { SecretManagementService } from "./services/secret-management-service.js";
 
 export class SecretVaultRuntime {
@@ -9,7 +9,7 @@ export class SecretVaultRuntime {
 
   async initialize(location: ApplicationDatabaseLocation): Promise<void> {
     if (this.service) return;
-    const repository = new SecretVaultPrismaRepository();
+    const repository = new SecretVaultRepository();
     const bootstrap = await new SecretVaultBootstrap(location, repository).initializeOrVerify();
     this.service = new SecretManagementService(
       repository,

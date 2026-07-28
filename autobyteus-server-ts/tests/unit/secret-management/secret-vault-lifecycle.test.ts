@@ -11,7 +11,7 @@ import {
   customProviderSecretId,
   secretId,
 } from '../../../src/secret-management/domain/secret-id.js';
-import { SecretVaultPrismaRepository } from '../../../src/secret-management/persistence/secret-vault-prisma-repository.js';
+import { SecretVaultRepository } from '../../../src/secret-management/persistence/secret-vault-repository.js';
 import { SecretRootKeyFile } from '../../../src/secret-management/root-key/secret-root-key-file.js';
 import { SecretManagementService } from '../../../src/secret-management/services/secret-management-service.js';
 
@@ -83,7 +83,7 @@ describe('one-database secret vault lifecycle', () => {
     database.close();
 
     prisma = new PrismaClient({ datasources: { db: { url: location.databaseUrl } } });
-    const repository = new SecretVaultPrismaRepository(prisma);
+    const repository = new SecretVaultRepository(prisma);
     const bootstrap = await new SecretVaultBootstrap(location, repository).initializeOrVerify();
     expect(bootstrap.health).toEqual({ state: 'READY' });
     service = new SecretManagementService(
@@ -302,7 +302,7 @@ describe('one-database secret vault lifecycle', () => {
     'fails closed before repository access when the database permissions are unsafe',
     async () => {
       await fs.chmod(databasePath, 0o660);
-      const repository = new SecretVaultPrismaRepository(prisma);
+      const repository = new SecretVaultRepository(prisma);
       await expect(
         new SecretVaultBootstrap(
           ApplicationDatabaseLocation.fromConfiguredFileUrl('file:application.db', directory),
@@ -334,7 +334,7 @@ describe('secret vault initialization interruption safety', () => {
       directory,
       location,
       prisma,
-      repository: new SecretVaultPrismaRepository(prisma),
+      repository: new SecretVaultRepository(prisma),
     };
   };
 
@@ -407,7 +407,7 @@ describe('secret vault initialization interruption safety', () => {
       await firstCreatedPromise;
       const secondPromise = new SecretVaultBootstrap(
         fixture.location,
-        new SecretVaultPrismaRepository(secondPrisma),
+        new SecretVaultRepository(secondPrisma),
         secondRootKeyFile,
       ).initializeOrVerify();
       await new Promise((resolve) => setTimeout(resolve, 50));

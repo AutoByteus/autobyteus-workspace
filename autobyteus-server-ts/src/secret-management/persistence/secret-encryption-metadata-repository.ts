@@ -18,7 +18,7 @@ const toMetadata = (
   verifierAuthenticationTag: Buffer.from(record.verifierAuthenticationTag),
 });
 
-export class SecretEncryptionMetadataPrismaRepository extends BaseRepository.forModel(
+export class SecretEncryptionMetadataRepository extends BaseRepository.forModel(
   Prisma.ModelName.SecretEncryptionMetadata,
 ) {
   async readMetadata(): Promise<SecretVaultMetadataRecord | null> {

@@ -8,6 +8,7 @@
 - Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/repository-prisma-architecture-analysis.md` — evidence/context only; approval `N/A`.
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/solution-revision-record.md`
 - Triggering rework report/revision record and still-relevant prerequisite evidence:
+  - `SR-002` / `USER-NAMING-001` in the revised solution artifacts above
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/code-review-revision-record.md`
   - `/Users/normy/autobyteus_org/repository_prisma/tickets/done/transaction-options/handoff-summary.md`
@@ -18,7 +19,10 @@
 Normal server and standalone importer execution now explicitly bind
 `repository_prisma@1.0.9` to their exact canonical application DB target. The token
 ledger and both secret models resolve inherited `BaseRepository` delegates; the vault
-coordinator alone owns option-aware implicit transaction sequencing. The default token
+coordinator is the domain-named `SecretVaultRepository`; it composes
+`SecretEntryRepository` and `SecretEncryptionMetadataRepository` and alone owns
+option-aware implicit transaction sequencing. Prisma remains an internal model/context
+mechanism rather than repository identity. The default token
 processor owns accepted scheduled/in-flight work and server close drains it before
 vault key zeroization and shared Prisma shutdown. Stop first makes the default token
 boundary durably quiescent and retains that stopped composition, so an ordinary
@@ -30,11 +34,12 @@ read-only inspection exceptions.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision ID: `SR-001`
+- Current implementation revision ID: `IR-003`
+- Related solution revision ID: `SR-002`
 - Related code review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`
+- Triggering finding IDs: `USER-NAMING-001` (current); `CR-001` resolved in retained
+  `IR-002`
 
 ## Approved Behavior Implementation Trace
 
@@ -42,8 +47,8 @@ read-only inspection exceptions.
 | --- | --- | --- | --- |
 | `BEH-001` | One explicit normal-server datasource lifecycle; drain token work, keep persistence quiescent, zeroize vault, then close Prisma | `src/server-runtime.ts` -> `src/agent-execution/events/default-agent-run-event-pipeline.ts` -> token processor -> `src/secret-management/secret-vault-runtime.ts` | Migration-before-init startup and nested-finalizer shutdown implemented; stop transitions to quiescent before drain, retains the stopped composition, and WAL remains omitted. |
 | `BEH-002` | Preserve token ledger mapping/idempotency/order/statistics while using `BaseRepository` and owned non-blocking work | default pipeline -> token enrichment transformer -> token persistence processor -> `src/token-usage/providers/token-usage-ledger-store.ts` -> `src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | Existing domain/store/API contracts and model arguments retained; scheduled promises settle after append handling; stop quiesces enrichment and persistence before drain, so concurrent/late ordinary getters cannot query or create persistence work; an explicit test lifecycle reset remains available. |
-| `BEH-003` | Preserve vault bootstrap/service behavior while splitting model ownership | `src/secret-management/secret-vault-runtime.ts` -> bootstrap/service -> vault coordinator -> `secret-entry-prisma-repository.ts` and `secret-encryption-metadata-prisma-repository.ts` | Runtime owns service/key lifecycle only. Model repositories own mapping/CRUD; coordinator keeps stable service/bootstrap boundary. |
-| `BEH-004` | Preserve atomic vault initialization/batch/compensation rules through implicit transactions | `src/secret-management/persistence/secret-vault-prisma-repository.ts` -> `runInTransaction` -> both model repositories | Coordinator alone applies typed `2s/10s` initialization and `2s/5s` mutation/compensation options; no raw client, direct `$transaction`, or transaction parameters remain. |
+| `BEH-003` | Preserve vault bootstrap/service behavior while splitting model ownership under domain-subject identities | `src/secret-management/secret-vault-runtime.ts` -> bootstrap/service -> `SecretVaultRepository` -> `secret-entry-repository.ts` and `secret-encryption-metadata-repository.ts` | Runtime owns service/key lifecycle only. Domain-named model repositories own mapping/CRUD; coordinator keeps the stable service/bootstrap boundary with no provider suffix. |
+| `BEH-004` | Preserve atomic vault initialization/batch/compensation rules through implicit transactions | `src/secret-management/persistence/secret-vault-repository.ts` -> `runInTransaction` -> both model repositories | `SecretVaultRepository` alone applies typed `2s/10s` initialization and `2s/5s` mutation/compensation options; no raw client, direct `$transaction`, transaction parameters, or old-name alias remain. |
 | `BEH-005` | Import execution uses only immutable explicit target; preview stays lifecycle-free | `src/secret-management/provisioning/local-environment-secret-import-service.ts` -> migration -> `initializePrisma(exact URL)` -> vault/runtime/service -> nested close/`shutdownPrisma` | Success and initialization/runtime failure cleanup attempt runtime close then Prisma shutdown. Preview still uses `SecretVaultInspectionService` without the execution factory. |
 | `BEH-006` | Consume released transaction-options package normally with Prisma 5.22 compatibility | `autobyteus-server-ts/package.json`, `pnpm-lock.yaml`, vault coordinator imports | Manifest/lock/installed package resolve `1.0.9` with `@prisma/client` peer `^5.22.0`; no `1.0.8`, patch, link, workspace, vendor, or fallback path. |
 
@@ -55,9 +60,9 @@ read-only inspection exceptions.
 - `autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts`
 - `autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts`
 - `autobyteus-server-ts/src/secret-management/persistence/secret-vault-persistence-types.ts`
-- `autobyteus-server-ts/src/secret-management/persistence/secret-entry-prisma-repository.ts`
-- `autobyteus-server-ts/src/secret-management/persistence/secret-encryption-metadata-prisma-repository.ts`
-- `autobyteus-server-ts/src/secret-management/persistence/secret-vault-prisma-repository.ts`
+- `autobyteus-server-ts/src/secret-management/persistence/secret-entry-repository.ts`
+- `autobyteus-server-ts/src/secret-management/persistence/secret-encryption-metadata-repository.ts`
+- `autobyteus-server-ts/src/secret-management/persistence/secret-vault-repository.ts`
 - `autobyteus-server-ts/src/secret-management/secret-vault-runtime.ts`
 - `autobyteus-server-ts/src/secret-management/provisioning/local-environment-secret-import-service.ts`
 - `autobyteus-server-ts/package.json`, `pnpm-lock.yaml`, README and affected architecture/module docs.
@@ -95,11 +100,13 @@ read-only inspection exceptions.
   `Missing Invariant`.
 - Design refactor decision: `Refactor Needed Now`
 - Implementation matched the design assessment: `Yes`
-- If challenged, routed as `Design Impact`: `N/A`
+- If challenged, routed as `Design Impact`: `Yes` — direct user naming feedback was
+  resolved upstream in `SR-002` before this clean rename.
 - Evidence / notes: Composition roots now own target lifecycle; one-model
-  BaseRepositories own model CRUD/mapping; the vault coordinator owns cross-model
-  policy; the token processor/default pipeline own scheduled-work drain. No caller
-  bypasses the intended service/coordinator boundary.
+  BaseRepositories own model CRUD/mapping under domain-subject class/file identities;
+  `SecretVaultRepository` owns cross-model policy; the token processor/default pipeline
+  own scheduled-work drain. No caller bypasses the intended service/coordinator
+  boundary and no public secret repository identity exposes Prisma.
 
 ## Legacy / Compatibility Removal Check
 
@@ -113,7 +120,9 @@ read-only inspection exceptions.
   secret runtime client ownership/disconnect, coordinator raw-client/direct-delegate
   logic, transaction client types/adapters/parameters, and untracked fire-and-forget
   scheduling. `IR-002` retains one stopped default composition rather than introducing
-  a parallel/no-op persistence implementation. The pure persistence DTO file is 23 effective lines; model repositories
+  a parallel/no-op persistence implementation. `IR-003` cleanly removes all three
+  provider-specific secret repository names without aliases/re-export shims. The pure
+  persistence DTO file is 23 effective lines; model repositories
   are 63 and 59; coordinator is 172; the largest changed source file is 294. No file
   exceeds 500 effective lines; the coordinator's deletion-heavy delta was explicitly
   split by model owner rather than expanded.
@@ -157,6 +166,14 @@ Passed:
 10. Focused built-module default-pipeline lifecycle probes — blocked the append accepted before stop, invoked the ordinary getter and processed a concurrent cumulative token event after stop began, then processed another after stop completed and repeated stop. The getter retained the same pipeline, snapshot-read count remained zero, and append count remained one. Only `resetDefaultAgentRunEventPipelineForTests()` created a new pipeline and restored append count to two. A companion stop-before-first-get probe confirmed the resulting late composition had zero token reads/appends and remained authoritative until explicit reset.
 11. `git diff --check` — passed for the rework delta.
 
+`IR-003` naming rework checks:
+
+12. `pnpm -C autobyteus-server-ts build` — shared builds, Prisma generation, production compile, asset copy, built-in-agent bootstrap smoke, and sanitized built-module/bootstrap smoke passed after the clean rename.
+13. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — production source/build configuration typecheck passed.
+14. Rejected-name/file scan across `src`, durable docs/README, `tests`, and clean built `dist` — no old `*PrismaRepository` class, `*-prisma-repository` import/file, alias, re-export, duplicate provider-named file, or compatibility wrapper remained.
+15. Built ESM import smoke — `secret-vault-repository.js`, `secret-entry-repository.js`, and `secret-encryption-metadata-repository.js` imported successfully and exposed the exact three domain-named classes.
+16. `git diff --check` — passed for the naming rework.
+
 Diagnostic limitations encountered and not masked:
 
 - The first production typecheck attempt, before shared workspace preparation, failed
@@ -171,7 +188,9 @@ Diagnostic limitations encountered and not masked:
   (6,938 output lines). A focused log scan found no direct error in any changed
   implementation file. The temporary config was deleted and no baseline strictness
   remediation was made.
-- No durable unit/API/E2E test was added, modified, or broadly executed, per role scope.
+- No durable test behavior was added, changed, or broadly executed. Per `SR-002`, two
+  existing unit-test files received only the required class/import naming replacement;
+  API/E2E still owns their lifecycle seam and executable coverage.
 
 ## Frontend Rendered-Result Check
 
@@ -191,7 +210,8 @@ or interaction change.
 - Run the existing live vault suite for initializer serialization/termination,
   interrupted key-only recovery, byte/data-version-stable restart, metadata mismatch,
   batch commit/rollback/counts/domain change/collision, receipt ownership, exact-row
-  compensation, and the preserved option values.
+  compensation, preserved option values, and lifecycle-based construction after the
+  naming-only test reference update.
 - Prove importer preview performs no initialization/write; execution uses only the
   immutable explicit target and closes runtime plus Prisma on success/failure even when
   ambient/AppConfig URLs disagree.

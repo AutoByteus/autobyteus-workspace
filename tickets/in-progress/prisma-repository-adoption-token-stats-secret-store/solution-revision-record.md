@@ -9,6 +9,7 @@ rationale index.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Result |
 | --- | --- | --- | --- | --- |
 | `SR-001` | `solution_designer` / initial solution round | `N/A` | `Initial Baseline` | `Implementation Ready` |
+| `SR-002` | User design feedback / post-implementation naming review | `USER-NAMING-001` | `Design Impact` | `Implementation Ready — Rename Required` |
 
 ## Revision Entries
 
@@ -48,3 +49,39 @@ rationale index.
   correctness, process-global lifecycle serialization in tests, preservation of vault
   initialization/byte stability, and a scoped lockfile update; downstream evidence
   requirements are defined in the canonical artifacts.
+
+### SR-002 — Remove Prisma Provider Suffix From Secret Repository Names
+
+- Triggering role, report path, and round: User design feedback after the initial
+  implementation/source-review cycle; no report path.
+- Triggering finding IDs: `USER-NAMING-001`.
+- Prior authoritative result: `SR-001` — `Implementation Ready`.
+- Current authoritative result: `Implementation Ready — Rename Required`.
+- Why this baseline or revision entry is recorded: The user correctly identified
+  `SecretVaultPrismaRepository` as an unnatural name. The coordinator no longer owns a
+  Prisma client/delegate, and repository identity should express its domain subject
+  rather than a replaceable provider.
+- Resolution: Rename the coordinator/class/file to `SecretVaultRepository` /
+  `secret-vault-repository.ts`; rename the model owners to `SecretEntryRepository` /
+  `secret-entry-repository.ts` and `SecretEncryptionMetadataRepository` /
+  `secret-encryption-metadata-repository.ts`. Update imports and documentation
+  directly; retain no compatibility aliases or re-export shims.
+- Approved behavior or requirement IDs affected: Naming/structure under `BEH-003`,
+  `BEH-004`, `REQ-004`, `AC-005`, and `AC-012`; runtime behavior is unchanged.
+- Canonical artifacts and sections updated: Requirements status, `REQ-004`, `AC-005`,
+  `AC-012`, and approval; investigation source/components/recommendation/guidance;
+  design intended change, naming, removal, mapping, compatibility rejection,
+  tradeoffs, and implementation guidance.
+- Supplemental artifacts updated, added, or removed:
+  [repository-prisma-architecture-analysis.md](./repository-prisma-architecture-analysis.md)
+  target recommendation aligned; no supplement added or removed.
+- Implementation impact: Rename three implemented secret repository classes/files and
+  all source/doc/test imports/references; no logic, schema, data, lifecycle, or
+  transaction change.
+- Implementation-readiness checks repeated and result: Behavior/use-case/spine
+  coverage `Pass` unchanged; naming-to-responsibility `Pass` after correction;
+  dependency/file mapping/removal/compatibility/proportionality checks `Pass`.
+- Next recipient or routing: `implementation_engineer` for implementation-owned rename,
+  then implementation-source review must resume before API/E2E.
+- Remaining gaps or risks: No design gap. Implementation currently uses the rejected
+  names and must be corrected before the prior source-review result can advance.

@@ -58,17 +58,20 @@ Detailed evidence is in `investigation-notes.md` and
 5. Give `TokenUsageEventPersistenceProcessor` bounded pending-work ownership so normal
    event processing remains non-blocking but shutdown can stop scheduling, await all
    already-scheduled/in-flight appends, and prevent post-shutdown lazy rebinding.
-   The default pipeline composition owns construction, stop/drain, and reset of this
-   processor.
+   The default pipeline composition owns construction, stop/drain, a durable stopped
+   sentinel for the remainder of server shutdown, and an explicit lifecycle-owned
+   reset hook used only by isolated tests or a deliberate fresh lifecycle.
 6. Split secret model access into:
-   - `SecretEntryPrismaRepository extends BaseRepository.forModel(SecretEntry)`;
-   - `SecretEncryptionMetadataPrismaRepository extends
+   - `SecretEntryRepository extends BaseRepository.forModel(SecretEntry)`;
+   - `SecretEncryptionMetadataRepository extends
      BaseRepository.forModel(SecretEncryptionMetadata)`.
-7. Retain `SecretVaultPrismaRepository` as the authoritative vault persistence
-   coordinator. It composes those two model repositories, owns transaction sequencing,
-   batch counts, domain rechecks, receipt ownership, exact-row compensation, and uses
-   published `runInTransaction` options. It accepts no raw client or transaction
-   delegate.
+7. Replace the existing `SecretVaultPrismaRepository` name with
+   `SecretVaultRepository` and retain that boundary as the authoritative vault
+   persistence coordinator. It composes those two domain-named model repositories,
+   owns transaction sequencing, batch counts, domain rechecks, receipt ownership,
+   exact-row compensation, and uses published `runInTransaction` options. It accepts
+   no raw client or transaction delegate. No secret repository class/file exposes the
+   `Prisma` provider in its identity.
 8. Keep pure vault persistence DTOs in one persistence-owned type file so service,
    bootstrap, coordinator, and model repositories share tight shapes without callers
    depending on model-repository internals.
@@ -101,7 +104,7 @@ Detailed evidence is in `investigation-notes.md` and
 
 | Premise ID | Related Behavior ID(s) | Initiating Basis Kind (`User`/`System`/`Operational`/`Contract`) | Independent Product-Supported Trigger Or Applicable Contract And Support Evidence | Forward Production Path To Claimed State | Lifecycle Preconditions And Material Consequence | Reachability (`Reachable`/`Not Reachable`/`Unclear`) | Design Consequence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `MP-001` | `BEH-001`, `BEH-002` | `System` + `Operational` | Supported token event schedules persistence with `setImmediate`; supported SIGINT/SIGTERM/Fastify close shuts the server | Enriched event -> persistence processor schedules append -> shutdown hook can reach shared client close before callback begins/settles | Shared lifecycle can be disconnected while work is pending; a late BaseRepository call could fail or lazily rebind an ownerless client | `Reachable` | Processor tracks scheduled/in-flight tasks; default pipeline exposes idempotent stop/drain/reset; server awaits it before library shutdown |
+| `MP-001` | `BEH-001`, `BEH-002` | `System` + `Operational` | Supported token event schedules persistence with `setImmediate`; supported SIGINT/SIGTERM/Fastify close shuts the server | Enriched event -> persistence processor schedules append -> shutdown hook can reach shared client close before callback begins/settles | Shared lifecycle can be disconnected while work is pending; a late BaseRepository call could fail or lazily rebind an ownerless client | `Reachable` | Processor tracks scheduled/in-flight tasks; default pipeline exposes idempotent stop/drain and retains a stopped sentinel so ordinary getters cannot recreate work; server awaits it before library shutdown |
 | `MP-002` | `BEH-003`, `BEH-004` | `Operational` + `Contract` | Normal startup verifies an established DB/key pair; prior reviewed vault contract requires byte-stable verification | Server/import execution -> explicit library init without WAL -> initialization transaction -> metadata/key verification | A no-op lock write or WAL enablement would change physical bytes/sidecars and violate established restart evidence | `Reachable` | Preserve query-only lock callback, exact transaction options, no WAL request, same models/mappings, and no migration |
 | `MP-003` | `BEH-004` | `Operational` | Concurrent normal vault initializers/import processes are covered by the established serialized initialization contract | Separate process composition -> same SQLite target -> `runInTransaction` outer initialization callback | The physical transaction must be configured when opened; inner repository calls cannot change it | `Reachable` | Coordinator supplies `{ maxWait: 2_000, timeout: 10_000 }` to the outer HOF and passes no tx object; 1.0.9/Prisma own locking and timeout enforcement |
 | `MP-004` | `BEH-005` | `Operational` | CLI explicitly supports dry-run and confirmed execution as separate actions | Absolute CLI URL -> immutable target -> preview inspection OR confirmation -> execution runtime | Preview must not mutate or bind the global Prisma lifecycle; execution runs in its own CLI process/composition lifecycle | `Reachable` | Lifecycle calls exist only in the execution factory; target comes only from `targetLocation.databaseUrl`; cleanup always shuts down |
@@ -146,7 +149,7 @@ Detailed evidence is in `investigation-notes.md` and
 
 - **Runtime model repository:** A model-specific repository used by normal token or
   secret application behavior and backed by `BaseRepository`.
-- **Vault persistence coordinator:** `SecretVaultPrismaRepository`; the cross-model
+- **Vault persistence coordinator:** `SecretVaultRepository`; the cross-model
   owner above entry/metadata model repositories, not another Prisma client owner.
 - **Quiesce/drain:** Stop accepting new scheduled token persistence work and await all
   work already scheduled or executing before the shared client closes.
@@ -160,9 +163,12 @@ Detailed evidence is in `investigation-notes.md` and
   `PrismaClient` constructor argument, and `client` getter.
 - Remove `SecretVaultRuntime.prisma`, configured-client creation, retention, and direct
   disconnect.
-- Remove `SecretVaultPrismaRepository`'s raw-client constructor, `VaultTransactionClient`
-  type, direct model delegates, transaction-client arguments, and `*From`/`*With` helper
-  paths used only for explicit transaction propagation.
+- Replace the current `SecretVaultPrismaRepository` class/file with
+  `SecretVaultRepository`; remove its raw-client constructor,
+  `VaultTransactionClient` type, direct model delegates, transaction-client arguments,
+  and `*From`/`*With` helper paths used only for explicit transaction propagation.
+- Do not retain compatibility aliases or re-export files for the old
+  `*PrismaRepository`/`*-prisma-repository` secret names.
 - Remove server resolution of `repository_prisma@1.0.8`.
 - Remove documentation saying repository-prisma is dependency-only infrastructure.
 - Do not retain a direct-client fallback, local wrapper, parallel repository,
@@ -216,7 +222,7 @@ transformation is authorized.
 | `DS-005` | `Primary End-to-End` | `BEH-002` | GraphQL/provider summary or period request | Existing token result including safe-integer aggregates | Token provider/store/repository/projections | Preserves all read semantics above the persistence refactor |
 | `DS-006` | `Primary End-to-End` | `BEH-003`, `BEH-004` | Server/import vault initialization | Ready or fail-closed vault service/health | Secret bootstrap/runtime | Preserves DB/key verification and initializer serialization |
 | `DS-007` | `Primary End-to-End` | `BEH-003` | Authorized secret status/save/remove/resolve | Value-free state/mutation or trusted transient value | `SecretManagementService` | Keeps security/authorization/crypto above persistence |
-| `DS-008` | `Bounded Local` | `BEH-004` | Coordinator initialization/batch/compensation call | One outer transaction result/rollback and receipt/count outcome | `SecretVaultPrismaRepository` | Makes ALS multi-model sequencing and exact options explicit |
+| `DS-008` | `Bounded Local` | `BEH-004` | Coordinator initialization/batch/compensation call | One outer transaction result/rollback and receipt/count outcome | `SecretVaultRepository` | Makes ALS multi-model sequencing and exact options explicit |
 | `DS-009` | `Primary End-to-End` | `BEH-005` | Importer dry-run request | Read-only plan/output with no Prisma lifecycle | Import service + inspection service | Protects non-mutating preview and target authority |
 | `DS-010` | `Primary End-to-End` | `BEH-005`, `BEH-006` | Confirmed importer execution | Batch result/failure after vault and Prisma cleanup | Import execution composition | Carries exact target through migration/init/use/finally close |
 | `DS-011` | `Return-Event` | `BEH-001`, `BEH-003`–`BEH-005` | Prisma/vault callback result or failure | Commit/rollback, fail-closed health/error, cleanup completion | HOF/Prisma plus caller owner | Preserves atomic and value-safe failure behavior |
@@ -232,7 +238,7 @@ transformation is authorized.
 
 `GraphQL/provider request -> TokenUsageLedgerStore -> BaseRepository ledger reads -> existing projections/statistics -> GraphQLSafeInt/current result`
 
-`SecretManagementService operation -> SecretVaultPrismaRepository coordinator -> SecretEntry/Metadata BaseRepositories -> ALS/root Prisma delegate -> encrypted vault rows -> service result`
+`SecretManagementService operation -> SecretVaultRepository coordinator -> SecretEntry/Metadata BaseRepositories -> ALS/root Prisma delegate -> encrypted vault rows -> service result`
 
 `Importer explicit absolute URL -> immutable target -> read-only preview OR migrations -> initializePrisma(exact URL) -> vault runtime/service batch -> runtime close -> shutdownPrisma`
 
@@ -247,7 +253,7 @@ transformation is authorized.
 | `DS-005` | Queries call the existing provider/store APIs. The model repository reads rows in the same order and maps them identically; existing projections return unchanged hierarchy, prices, display fields, and safe integers. | GraphQL/provider; store; model repository; projection; response | Existing token store/providers | Display capture/backfill, pricing, safe integer scalar |
 | `DS-006` | An initialized library client is already available when runtime constructs a no-client vault coordinator. Bootstrap opens an optioned outer transaction, resolves metadata/entry model repositories through ALS, and returns Ready or established fail-closed health. | Composition root; runtime; bootstrap; coordinator; model repos; DB/key | `SecretVaultBootstrap` for state machine; coordinator for persistence transaction | DB identity, root-key file, verifier crypto |
 | `DS-007` | The service authorizes and encrypts/decrypts exactly as today, then calls only the coordinator boundary. The coordinator delegates model operations; service never sees a Prisma client or tx. | Consumer; service; catalog/crypto; coordinator; model repo; row | `SecretManagementService` | Event sink, zeroization, health |
-| `DS-008` | Coordinator chooses initialization or mutation options once, opens `runInTransaction`, and performs ordered cross-model work through model repos. Every repo call resolves the same ALS client. Throwing lets Prisma roll back; receipt state is created only after commit. | Coordinator; HOF; ALS; metadata repo; entry repo; receipt | `SecretVaultPrismaRepository` | Typed option constants, buffer matching/zeroization |
+| `DS-008` | Coordinator chooses initialization or mutation options once, opens `runInTransaction`, and performs ordered cross-model work through model repos. Every repo call resolves the same ALS client. Throwing lets Prisma roll back; receipt state is created only after commit. | Coordinator; HOF; ALS; metadata repo; entry repo; receipt | `SecretVaultRepository` | Typed option constants, buffer matching/zeroization |
 | `DS-009` | Dry-run validates the immutable request, reads source, and uses the read-only inspection service. The execution factory and repository-prisma are never reached. | CLI request; import service; source reader; inspection service; plan | Import service | Confirmation/output formatting, source release |
 | `DS-010` | After inspection and confirmation, execution runs migrations for the immutable target, initializes repository-prisma for that exact URL, creates the vault runtime, rechecks health, performs one atomic batch, and closes runtime then library in `finally`. | Import service; migrations; repository-prisma; runtime/service; batch; cleanup | Import execution factory/service | Source release, target identity, sanitized error projection |
 | `DS-011` | Library lifecycle, transaction, vault bootstrap, and import failures propagate through existing typed/value-safe boundaries while `finally` paths attempt dependent cleanup in the required order; thrown transaction callbacks remain rollback signals. | Lifecycle/HOF result; vault health/error; import/server cleanup | Calling composition or vault owner, with Prisma enforcing transaction outcome | Error classification, value-safe logging, key/buffer zeroization |
@@ -265,7 +271,7 @@ transformation is authorized.
   boundary.
 - `SecretVaultRuntime`, `SecretVaultBootstrap`, and `SecretManagementService`: vault
   runtime/state/security owners.
-- `SecretVaultPrismaRepository`: cross-model vault persistence coordinator.
+- `SecretVaultRepository`: cross-model vault persistence coordinator.
 - Secret entry and metadata model repositories: one-model CRUD/mapping owners.
 - Import service/inspection/execution factory: explicit target preview/execution owner.
 - Prisma 5.22/SQLite: physical queries, transaction enforcement, and storage.
@@ -294,7 +300,7 @@ transformation is authorized.
 | --- | --- | --- | --- |
 | `repository_prisma` package exports | Library lifecycle/context/BaseRepository owners | Stable public dependency boundary | AppConfig selection, server policy, local timeout implementation |
 | `SecretVaultRuntime.requireService/getHealth` | Runtime service/bootstrap state | Process-local availability facade | Prisma client, transaction, model delegate |
-| `SecretVaultPrismaRepository` single-entry methods | Entry/metadata model repositories, with coordinator governing cross-model work | Stable persistence boundary for service/bootstrap | Raw client lifecycle or tx propagation |
+| `SecretVaultRepository` single-entry methods | Entry/metadata model repositories, with coordinator governing cross-model work | Stable persistence boundary for service/bootstrap | Raw client lifecycle or tx propagation |
 | Import `ExecutionRuntime` wrapper | Runtime + repository-prisma cleanup sequence | Let service guarantee cleanup in `finally` | Alternate target selection or preview writes |
 
 ## Removal / Decommission Plan (Mandatory)
@@ -341,7 +347,7 @@ handling.`
 
 ### Vault initialization transaction
 
-- Parent owner: `SecretVaultPrismaRepository` serving `SecretVaultBootstrap`.
+- Parent owner: `SecretVaultRepository` serving `SecretVaultBootstrap`.
 - Chain: `withInitializationLock -> runInTransaction(options 2s/10s) -> operation(this)
   -> metadata read + entry count + optional metadata create through ALS -> commit/rollback`.
 - Why it matters: it preserves serialized first initialization and byte-stable
@@ -349,7 +355,7 @@ handling.`
 
 ### Vault mutation transaction
 
-- Parent owner: `SecretVaultPrismaRepository`.
+- Parent owner: `SecretVaultRepository`.
 - Chain: `save/create-missing/compensate -> runInTransaction(options 2s/5s) -> metadata
   domain read -> ordered entry repo operations -> counts/receipt or throw -> commit/rollback`.
 - Why it matters: cross-model invariants stay in one coordinator while each model repo
@@ -384,9 +390,10 @@ persistence-owned DTOs. It cannot call entry/metadata repositories. The coordina
 may call both model repositories and is the sole owner of cross-model transactions and
 receipts. Model repositories never call each other or implement domain/security policy.
 
-The default event-pipeline composition owns the token processor instance and its
-stop/reset lifecycle. Server composition calls only the pipeline stop boundary, not the
-processor's pending set.
+The default event-pipeline composition owns the token processor instance, its
+stop/drain lifecycle, the stopped sentinel retained throughout server close, and the
+separate explicit test-lifecycle reset. Server composition calls only the pipeline
+stop boundary, not the processor's pending set or reset hook.
 
 ## Boundary Encapsulation Map
 
@@ -395,7 +402,7 @@ processor's pending set.
 | Server/import composition lifecycle | repository-prisma initialize/shutdown sequencing | Normal process entrypoints | Repository/runtime constructs `PrismaClient` | Add needed lifecycle step at composition root |
 | `SqlTokenUsageLedgerRepository` | Token model delegate and mapping | Token store | Store/provider uses `rootPrismaClient` or custom factory | Add a subject-specific repository method |
 | Default pipeline stop boundary | Token processor closed state/pending promises | Server shutdown | Server inspects/awaits processor internals | Strengthen `stopDefaultAgentRunEventPipeline()` |
-| `SecretVaultPrismaRepository` | Entry/metadata repos, HOF calls, receipts, compensation | Bootstrap and secret service | Service calls model repos or `runInTransaction` directly | Add a vault persistence operation |
+| `SecretVaultRepository` | Entry/metadata repos, HOF calls, receipts, compensation | Bootstrap and secret service | Service calls model repos or `runInTransaction` directly | Add a vault persistence operation |
 | Entry/metadata model repositories | BaseRepository delegate and row mapping | Vault coordinator only | Coordinator uses direct Prisma model delegates | Add a tight model method |
 | Import service preview | Read-only inspection | CLI dry-run | Preview initializes repository-prisma/runtime | Extend inspection result only if approved |
 
@@ -424,12 +431,12 @@ processor's pending set.
 | Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
 | `initializePrisma({ datasourceUrl })` / `shutdownPrisma()` | One process root client | Bind/close exact canonical target | One non-empty canonical SQLite URL | Called only by normal server/import execution roots; WAL omitted |
-| `stopDefaultAgentRunEventPipeline()` | Default processor composition | Quiesce/drain/reset token persistence | Process singleton, no selector | Idempotent; no pending collection exposed |
+| `stopDefaultAgentRunEventPipeline()` | Default processor composition | Quiesce/drain token persistence and retain the stopped composition | Process singleton, no selector | Idempotent; no pending collection or reset exposed |
 | `TokenUsageEventPersistenceProcessor.close()` | Accepted token append work | Stop scheduling and await accepted tasks | Processor instance | Internal to default pipeline composition |
 | `SqlTokenUsageLedgerRepository` methods | `TokenUsageLedgerEvent` | Append/update/query/map one model | Usage/idempotency IDs; explicit run/team/period inputs | No client constructor |
-| `SecretEntryPrismaRepository` methods | `SecretEntry` | Entry CRUD and row mapping | Branded `SecretId` or `EncryptedSecretEntryRecord` | Internal to coordinator |
-| `SecretEncryptionMetadataPrismaRepository` methods | Metadata singleton/domain | Singleton validation/read/create/domain identity | Fixed singleton `1`; no caller-provided selector | Internal to coordinator |
-| `SecretVaultPrismaRepository.withInitializationLock` | Vault initialization persistence scope | One optioned outer transaction and initialization repository view | Callback only | Passes coordinator boundary, not tx |
+| `SecretEntryRepository` methods | `SecretEntry` | Entry CRUD and row mapping | Branded `SecretId` or `EncryptedSecretEntryRecord` | Internal to coordinator |
+| `SecretEncryptionMetadataRepository` methods | Metadata singleton/domain | Singleton validation/read/create/domain identity | Fixed singleton `1`; no caller-provided selector | Internal to coordinator |
+| `SecretVaultRepository.withInitializationLock` | Vault initialization persistence scope | One optioned outer transaction and initialization repository view | Callback only | Passes coordinator boundary, not tx |
 | Coordinator single/batch/compensation methods | Vault persistence | Cross-model sequencing and atomicity | `SecretId`, encrypted records, domain identity, opaque receipt | Existing service/bootstrap boundary |
 | `SecretVaultRuntime.initialize(location)` | Vault service/key lifecycle | Bootstrap against already-initialized repository client | One immutable `ApplicationDatabaseLocation` | Does not initialize/disconnect Prisma |
 | Import execution runtime factory | One CLI execution target | Migrate/init/runtime/cleanup | Immutable target location | Preview never invokes |
@@ -452,9 +459,9 @@ processor's pending set.
 | --- | --- | --- | --- | --- |
 | Token model repository | `SqlTokenUsageLedgerRepository` | `Yes` | `Low` | Retain established name |
 | Token processor stop | `stopDefaultAgentRunEventPipeline` | `Yes` | `Low` | Names the composition lifecycle, not a generic shutdown helper |
-| Vault coordinator | `SecretVaultPrismaRepository` | `Yes` | `Medium` | Document it as cross-model coordinator; it owns no client |
-| Entry model owner | `SecretEntryPrismaRepository` | `Yes` | `Low` | Add |
-| Metadata model owner | `SecretEncryptionMetadataPrismaRepository` | `Yes` | `Low` | Add |
+| Vault coordinator | `SecretVaultRepository` | `Yes` | `Low` | Rename from the provider-specific current name; document its cross-model responsibility |
+| Entry model owner | `SecretEntryRepository` | `Yes` | `Low` | Add |
+| Metadata model owner | `SecretEncryptionMetadataRepository` | `Yes` | `Low` | Add |
 | Shared DTOs | `secret-vault-persistence-types.ts` | `Yes` | `Low` | Keep only pure vault persistence contract types |
 
 ## Existing Capability / Subsystem Reuse Check
@@ -466,7 +473,7 @@ processor's pending set.
 | Optioned implicit transaction | `runInTransaction` 1.0.9 | `Reuse` | Preserves timeouts without tx propagation | N/A |
 | Server lifecycle sequencing | `server-runtime.ts` | `Extend` | Existing normal process composition owner | N/A |
 | Token pending-work close | Default pipeline/processor | `Extend` | Scheduling already lives there; server should not own task details | N/A |
-| Vault cross-model policy | Existing `SecretVaultPrismaRepository` | `Extend/Retighten` | Current authoritative persistence contract and receipts remain valid | N/A |
+| Vault cross-model policy | Existing vault persistence boundary, target `SecretVaultRepository` | `Extend/Retighten` | Current authoritative persistence contract and receipts remain valid; the provider-specific name does not | N/A |
 | Per-model secret CRUD | Secret persistence subsystem | `Create New` | No existing one-model owner; current file mixes both models | BaseRepository is reused underneath; two files are needed because model subjects differ |
 | Import target lifecycle | Existing execution factory | `Extend` | Already owns exact migration/runtime/close path | N/A |
 | Preview inspection | `SecretVaultInspectionService` | `Reuse` | Deliberately read-only and target-specific | N/A |
@@ -489,13 +496,13 @@ processor's pending set.
 | Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `server-runtime.ts` | Server composition | Process lifecycle | Explicit init, ordered finalization | Existing startup/shutdown owner | Library lifecycle |
-| `default-agent-run-event-pipeline.ts` | Token processing composition | Default pipeline | Construct/stop/reset token processor | Existing processor composition owner | Processor close |
+| `default-agent-run-event-pipeline.ts` | Token processing composition | Default pipeline | Construct, stop/drain, retain stopped sentinel, and expose separate explicit test reset | Existing processor composition owner | Processor close |
 | `token-usage-event-persistence-processor.ts` | Token processing | Pending work owner | Schedule/track/warn/drain | One bounded async lifecycle | Token store |
 | `token-usage-ledger-repository.ts` | Token persistence | Token model repo | Mapping, CRUD/query/idempotency | One model and its repository contract | BaseRepository |
 | `secret-vault-persistence-types.ts` | Secret persistence | Vault persistence boundary | Pure shared encrypted/metadata/domain/batch shapes | Used across four persistence callers without lower-level bypass | N/A |
-| `secret-entry-prisma-repository.ts` | Secret persistence | Entry model repo | Entry mapping/CRUD | One Prisma model | BaseRepository + DTO |
-| `secret-encryption-metadata-prisma-repository.ts` | Secret persistence | Metadata model repo | Singleton/domain mapping/CRUD | One Prisma model/invariant | BaseRepository + DTO |
-| `secret-vault-prisma-repository.ts` | Secret persistence | Coordinator | Transactions, sequencing, receipts, compensation | Cross-model invariants are cohesive here | Two model repos + DTOs + HOF |
+| `secret-entry-repository.ts` | Secret persistence | Entry model repo | Entry mapping/CRUD | One Prisma model | BaseRepository + DTO |
+| `secret-encryption-metadata-repository.ts` | Secret persistence | Metadata model repo | Singleton/domain mapping/CRUD | One Prisma model/invariant | BaseRepository + DTO |
+| `secret-vault-repository.ts` | Secret persistence | Coordinator | Transactions, sequencing, receipts, compensation | Cross-model invariants are cohesive here | Two model repos + DTOs + HOF |
 | `secret-vault-runtime.ts` | Secret runtime | Service/key lifecycle | Construct/bootstrap/hold/close service only | Existing runtime owner | Coordinator |
 | `secret-vault-bootstrap.ts` / service | Secret runtime/security | Existing owners | Import relocated DTOs; behavior unchanged | No new responsibility | Persistence DTOs/coordinator |
 | `local-environment-secret-import-service.ts` | Import provisioning | Execution composition | Exact target init/runtime/finally close | Existing execution factory | Library lifecycle |
@@ -525,13 +532,13 @@ processor's pending set.
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/server-runtime.ts` | Server composition | Process lifecycle | Explicit init and nested-finalizer shutdown order | Current server composition authority | repository-prisma lifecycle; default pipeline stop |
-| `.../events/default-agent-run-event-pipeline.ts` | Event composition | Default pipeline lifecycle | Cache processor/pipeline; idempotent stop/drain/reset | Composition already lives here | Processor |
+| `.../events/default-agent-run-event-pipeline.ts` | Event composition | Default pipeline lifecycle | Cache processor/pipeline; idempotent stop/drain; durable stopped sentinel; explicit test reset | Composition already lives here | Processor |
 | `.../token-usage-event-persistence-processor.ts` | Event processing | Pending token work | Non-blocking tracked schedule, warning, close | One bounded local lifecycle | Store |
 | `.../token-usage-ledger-repository.ts` | Token persistence | Token model repo | Existing mapping/query/idempotency via inherited CRUD | One model repository | BaseRepository |
 | `.../persistence/secret-vault-persistence-types.ts` | Secret persistence | Boundary DTOs | Four tight pure types | Prevents mixed-level imports | N/A |
-| `.../persistence/secret-entry-prisma-repository.ts` | Secret persistence | Entry model repo | Entry CRUD/row mapping | One model | BaseRepository + DTOs |
-| `.../persistence/secret-encryption-metadata-prisma-repository.ts` | Secret persistence | Metadata model repo | Singleton/domain reads and create/mapping | One model/invariant | BaseRepository + DTOs |
-| `.../persistence/secret-vault-prisma-repository.ts` | Secret persistence | Coordinator | Delegate to model repos; optioned transactions; receipts/compensation | One cross-model persistence owner | HOF/model repos/DTOs |
+| `.../persistence/secret-entry-repository.ts` | Secret persistence | Entry model repo | Entry CRUD/row mapping | One model | BaseRepository + DTOs |
+| `.../persistence/secret-encryption-metadata-repository.ts` | Secret persistence | Metadata model repo | Singleton/domain reads and create/mapping | One model/invariant | BaseRepository + DTOs |
+| `.../persistence/secret-vault-repository.ts` | Secret persistence | Coordinator | Delegate to model repos; optioned transactions; receipts/compensation | One cross-model persistence owner | HOF/model repos/DTOs |
 | `.../bootstrap/secret-vault-bootstrap.ts` | Secret bootstrap | DB/key state machine | Type import alignment only; behavior unchanged | Existing state-machine owner | Coordinator/DTO |
 | `.../services/secret-management-service.ts` | Secret service | Security/domain boundary | Type import alignment only; behavior unchanged | Existing owner | Coordinator/DTO |
 | `.../secret-vault-runtime.ts` | Secret runtime | Service/key lifecycle | No-client coordinator/bootstrap/service construction and close | One process-local vault runtime | Coordinator |
@@ -558,14 +565,14 @@ processor's pending set.
 | Path | Kind (`Folder`/`Module`/`File`) | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/server-runtime.ts` | `File` | Server composition | Process init/close sequencing | Existing real entry lifecycle | Model queries, tx policy, client factory |
-| `src/agent-execution/events/default-agent-run-event-pipeline.ts` | `File` | Default pipeline composition | Processor construction/stop/reset | Already owns cached processor graph | Pending task internals |
+| `src/agent-execution/events/default-agent-run-event-pipeline.ts` | `File` | Default pipeline composition | Processor construction, stop/drain, stopped sentinel, explicit test reset | Already owns cached processor graph | Pending task internals |
 | `src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts` | `File` | Token persistence scheduling | Track accepted work and drain | Existing scheduler owner | Prisma/client lifecycle or row mapping |
 | `src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | `File` | Token model repository | Model mapping/query/idempotency | Established persistence folder/model subject | Raw client/factory/shutdown |
 | `src/secret-management/persistence/` | `Folder` | Vault persistence subsystem | Boundary DTOs, model repos, coordinator | Two-model structural depth warrants explicit files | Crypto, root key, AppConfig, preview |
 | `src/secret-management/persistence/secret-vault-persistence-types.ts` | `File` | Persistence contract | Pure value shapes | Shared above/below coordinator | PrismaClient, methods, plaintext |
-| `src/secret-management/persistence/secret-entry-prisma-repository.ts` | `File` | Entry model repo | Entry mapping/CRUD | One model subject | Transactions, metadata, receipts |
-| `src/secret-management/persistence/secret-encryption-metadata-prisma-repository.ts` | `File` | Metadata model repo | Singleton/domain mapping/CRUD | One model subject | Entry CRUD, transactions |
-| `src/secret-management/persistence/secret-vault-prisma-repository.ts` | `File` | Vault coordinator | Cross-model transactions/receipts | Existing service/bootstrap persistence boundary | Raw client/tx parameters/security crypto |
+| `src/secret-management/persistence/secret-entry-repository.ts` | `File` | Entry model repo | Entry mapping/CRUD | One model subject | Transactions, metadata, receipts |
+| `src/secret-management/persistence/secret-encryption-metadata-repository.ts` | `File` | Metadata model repo | Singleton/domain mapping/CRUD | One model subject | Entry CRUD, transactions |
+| `src/secret-management/persistence/secret-vault-repository.ts` | `File` | Vault coordinator | Cross-model transactions/receipts | Existing service/bootstrap persistence boundary | Raw client/tx parameters/security crypto |
 | `src/secret-management/secret-vault-runtime.ts` | `File` | Vault runtime | Service/key lifecycle | Existing runtime owner | Prisma lifecycle |
 | `src/secret-management/provisioning/local-environment-secret-import-service.ts` | `File` | Import execution composition | Exact target init/use/finally close | Existing preview/execution owner | Ambient/AppConfig target fallback |
 
@@ -653,6 +660,7 @@ This is sequencing guidance, not a requirement to create a generic shutdown help
 | Add server-local repository_prisma wrapper | Could centralize imports | `Rejected` | Composition imports public library directly; no empty facade |
 | Resolve both 1.0.8 and 1.0.9 | Could leave stale transitive lock state | `Rejected` | Normal manifest/lock resolves 1.0.9 for server |
 | Convert migration raw clients too | Might look globally uniform | `Rejected` for this scope | Retain bounded historical/raw-SQL owners; not a compatibility path |
+| Keep or alias secret `*PrismaRepository` names | Could reduce import churn | `Rejected` | Rename all three secret repositories to domain-subject names and update callers/docs directly |
 | Preserve token/service public outcomes | Active approved behavior, not legacy | `N/A` | Keep existing stores/services/queries and mappings |
 
 ## Derived Layering (If Useful)
@@ -662,7 +670,7 @@ model BaseRepository -> repository_prisma current ALS/root client -> Prisma 5.22
 canonical SQLite`
 
 For the secret vault, the coordinator is an additional persistence-control layer:
-`SecretManagementService -> SecretVaultPrismaRepository -> Entry/Metadata
+`SecretManagementService -> SecretVaultRepository -> Entry/Metadata
 BaseRepositories`. It exists because cross-model atomicity and receipts are real, not
 as a generic pass-through.
 
@@ -672,8 +680,10 @@ as a generic pass-through.
    verify one server resolution with the unchanged Prisma 5.22 peer.
 2. Convert the token ledger repository to BaseRepository and delete its custom/injected
    client ownership. Do not alter mapping/query/domain behavior.
-3. Add processor pending-work tracking and default pipeline stop/drain/reset. Wire the
-   server close order before shared lifecycle shutdown.
+3. Add processor pending-work tracking and default pipeline stop/drain with a stopped
+   sentinel retained for the rest of server close. Keep reset behind a separate
+   explicit lifecycle-owned test hook. Wire the close order before shared lifecycle
+   shutdown.
 4. Add the persistence DTO file and the two secret model repositories.
 5. Rewrite the existing vault coordinator to compose model repos and published
    `runInTransaction` options. Remove all raw client/tx paths in the same change; do not
@@ -706,10 +716,10 @@ No temporary compatibility wrapper, local package link, or data migration is all
 - Tracking scheduled token work adds bounded state to the processor. Waiting in the
   normal event path would be simpler but would violate the approved non-blocking
   behavior; leaving tasks untracked would make clean shared shutdown impossible.
-- The coordinator name remains `SecretVaultPrismaRepository` to preserve the natural
-  service persistence boundary. Its documented role changes from direct-client
-  multi-model implementation to model-repository coordinator; renaming would add churn
-  without clarifying callers.
+- Renaming the coordinator and model repositories adds bounded import/file churn, but
+  removes a persistence-provider detail from domain repository identity. This follows
+  the historical service-to-repository pattern and makes the coordinator's post-refactor
+  name accurate; no aliases dilute the correction.
 - App-data-migration clients remain explicit. Forcing historical/raw SQL through
   current model repositories would broaden this refactor and weaken current-schema
   boundaries.
@@ -761,8 +771,10 @@ No temporary compatibility wrapper, local package link, or data migration is all
   behavior was added to the preserved contract. Architecture-level shutdown tracing
   exposed the reachable scheduled-token-append/shared-client race; `REQ-002`,
   `AC-002`, investigation evidence, premises, spines, ownership, file mapping, sequence,
-  and risks were corrected to require bounded quiesce/drain. Behavior, reachability,
-  spine span, ownership, dependency, interface, removal, data transition, and
+  and risks were corrected to require bounded quiesce/drain and a durable stopped
+  composition. The user's naming correction removed the `Prisma` provider suffix from
+  the vault coordinator and both secret model repositories. Behavior, reachability,
+  spine span, ownership, naming, dependency, interface, removal, data transition, and
   proportionality checks were then repeated.
 - Remaining non-blocking risks: Global lifecycle test serialization, exact token drain
   implementation, preserved SQLite initializer behavior, and scoped lockfile update;
@@ -782,13 +794,17 @@ No temporary compatibility wrapper, local package link, or data migration is all
   accounting, safe-integer, pricing, projection, or GraphQL changes.
 - The processor's tracked promise must begin before `setImmediate` is queued and settle
   only after append success/failure handling. `close()` must stop new scheduling,
-  await every accepted task, and be safe when called repeatedly. Reset the default
-  pipeline composition only after drain.
+  await every accepted task, and be safe when called repeatedly. Retain the stopped
+  default composition for the rest of server shutdown; only a separate explicit
+  lifecycle-owned test hook may reset it after drain.
 - Keep server shutdown ordering robust with nested `finally` blocks; shared Prisma
   shutdown must still be attempted after earlier dependent close failures, but never
   before token drain/key close are attempted.
 - Put only pure value types in `secret-vault-persistence-types.ts`. Keep receipt
   behavior/WeakMap in the coordinator.
+- Use `SecretVaultRepository`, `SecretEntryRepository`, and
+  `SecretEncryptionMetadataRepository` with matching non-`prisma` filenames. Do not
+  retain old-name aliases or re-export shims.
 - Model repositories own model CRUD/mapping only. Coordinator owns all transactions,
   domain recheck, counts, receipt ownership, and compensation comparisons.
 - Use typed module constants satisfying `RunInTransactionOptions` for `2s/10s` and

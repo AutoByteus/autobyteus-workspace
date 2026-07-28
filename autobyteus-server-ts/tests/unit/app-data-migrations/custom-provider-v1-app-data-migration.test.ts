@@ -15,7 +15,7 @@ import { SecretVaultBootstrap } from '../../../src/secret-management/bootstrap/s
 import {
   customProviderSecretId,
 } from '../../../src/secret-management/domain/secret-id.js';
-import { SecretVaultPrismaRepository } from '../../../src/secret-management/persistence/secret-vault-prisma-repository.js';
+import { SecretVaultRepository } from '../../../src/secret-management/persistence/secret-vault-repository.js';
 import { SecretManagementService } from '../../../src/secret-management/services/secret-management-service.js';
 
 const TABLES = `
@@ -66,7 +66,7 @@ describe('CustomProviderV1AppDataMigration', () => {
     database.exec(TABLES);
     database.close();
     prisma = new PrismaClient({ datasources: { db: { url: location.databaseUrl } } });
-    const repository = new SecretVaultPrismaRepository(prisma);
+    const repository = new SecretVaultRepository(prisma);
     const bootstrap = await new SecretVaultBootstrap(location, repository).initializeOrVerify();
     service = new SecretManagementService(
       repository,

@@ -23,7 +23,7 @@ const toEncryptedRecord = (
   authenticationTag: Buffer.from(record.authenticationTag),
 });
 
-export class SecretEntryPrismaRepository extends BaseRepository.forModel(
+export class SecretEntryRepository extends BaseRepository.forModel(
   Prisma.ModelName.SecretEntry,
 ) {
   async hasEntry(id: SecretId): Promise<boolean> {

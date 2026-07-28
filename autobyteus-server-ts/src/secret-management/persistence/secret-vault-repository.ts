@@ -3,8 +3,8 @@ import {
   type RunInTransactionOptions,
 } from "repository_prisma";
 import type { SecretId } from "../domain/secret-id.js";
-import { SecretEncryptionMetadataPrismaRepository } from "./secret-encryption-metadata-prisma-repository.js";
-import { SecretEntryPrismaRepository } from "./secret-entry-prisma-repository.js";
+import { SecretEncryptionMetadataRepository } from "./secret-encryption-metadata-repository.js";
+import { SecretEntryRepository } from "./secret-entry-repository.js";
 import type {
   EncryptedSecretEntryRecord,
   SecretVaultBatchResult,
@@ -46,13 +46,13 @@ const migrationReceiptRecords = new WeakMap<
 >();
 
 export type SecretVaultInitializationRepository = Pick<
-  SecretVaultPrismaRepository,
+  SecretVaultRepository,
   "readMetadata" | "countEntries" | "createMetadata"
 >;
 
-export class SecretVaultPrismaRepository {
-  private readonly entryRepository = new SecretEntryPrismaRepository();
-  private readonly metadataRepository = new SecretEncryptionMetadataPrismaRepository();
+export class SecretVaultRepository {
+  private readonly entryRepository = new SecretEntryRepository();
+  private readonly metadataRepository = new SecretEncryptionMetadataRepository();
 
   async readMetadata(): Promise<SecretVaultMetadataRecord | null> {
     return this.metadataRepository.readMetadata();

@@ -10,6 +10,7 @@ implementation-owned revision.
 | --- | --- | --- | --- | --- | --- |
 | `IR-001` | `solution_designer` / approved solution package / initial implementation round | `N/A` | `Initial Baseline` | `SR-001`; `CRR-*` N/A; `API-REV-*` N/A | Ready for implementation-source review |
 | `IR-002` | `code_reviewer` / `code-review-report.md` / implementation review round 1 | `CR-001` | `Local Fix` | `SR-001`; `CRR-001`; `API-REV-*` N/A | Late/default callers remain quiescent after stop; ready for source re-review |
+| `IR-003` | `solution_designer` / revised solution package / user naming rework | `USER-NAMING-001` | `Design Impact` | `SR-002`; `CRR-001`; `API-REV-*` N/A | Domain-named secret repositories; ready for new source review |
 
 ## Revision Entries
 
@@ -98,3 +99,48 @@ implementation-owned revision.
 - Remaining limitations or risks: Durable real-lifecycle shutdown coverage remains
   API/E2E-owned after source review passes. The process-global test lifecycle must use
   the explicit reset seam only after draining; no durable test was changed here.
+
+### IR-003 — Rename Secret Repositories By Domain Subject
+
+- Triggering role, report path, and round: `solution_designer`; revised canonical
+  solution package under `SR-002` after direct user naming feedback; no downstream
+  report path.
+- Triggering finding IDs: `USER-NAMING-001`.
+- Classification: `Design Impact`.
+- Prior authoritative result: `Implementation Ready — Rename Required`; the current
+  secret repository classes/files exposed the internal Prisma provider in their
+  identity.
+- Current authoritative result: Coordinator and model repository identities are
+  `SecretVaultRepository`, `SecretEntryRepository`, and
+  `SecretEncryptionMetadataRepository`, with matching domain-named files and no
+  old-name alias, re-export, duplicate file, or compatibility wrapper.
+- Related solution revision ID: `SR-002`.
+- Related code review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: Apply the user-approved
+  naming correction so repository identity expresses the owned domain subject while
+  Prisma remains only the internal BaseRepository/model mechanism.
+- Approved behavior or requirement IDs affected: Naming/structure under `BEH-003`,
+  `BEH-004`, `REQ-004`, `AC-005`, and `AC-012`; runtime behavior is unchanged.
+- Implementation delta: Renamed the three secret repository classes and files;
+  directly updated all production imports/types/construction, durable module
+  documentation, and existing unit-test references. No old-name compatibility surface
+  was retained, and no transaction, lifecycle, data, crypto, WAL, dependency, or token
+  quiescence logic changed.
+- Changed files or areas: Three files under
+  `autobyteus-server-ts/src/secret-management/persistence/`; secret runtime,
+  bootstrap, and management service imports/types; `docs/modules/secret_management.md`;
+  naming-only references in the custom-provider migration and vault lifecycle unit
+  tests; revised solution artifacts; this revision record and canonical handoff.
+- Local validation and result: Full server build passed, including shared builds,
+  Prisma generation, production compile, built-in-agent bootstrap smoke, and sanitized
+  built-module/bootstrap smoke. Production build-config no-emit typecheck passed.
+  Source/docs/tests/built-output scans found none of the rejected class/file names and
+  no secret `*prisma-repository*` file. Built ESM imports exposed all three exact
+  domain-named classes. `git diff --check` passed.
+- Next recipient or routing: `code_reviewer` for a new implementation-source review
+  against `SR-002` and the still-preserved `IR-002` token quiescence correction.
+- Remaining limitations or risks: Existing durable secret tests still need the
+  API/E2E-owned repository-prisma lifecycle seam update after source review authorizes
+  that stage; this round changed their names/import paths only, as required. No test
+  behavior or broad execution environment was changed.

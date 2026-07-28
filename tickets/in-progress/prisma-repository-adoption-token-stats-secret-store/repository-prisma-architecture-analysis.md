@@ -201,10 +201,10 @@ explicit --database-url
 
 Use two model repositories:
 
-- `SecretEntryPrismaRepository extends BaseRepository.forModel(Prisma.ModelName.SecretEntry)` owns entry CRUD and Prisma-row mapping;
-- `SecretEncryptionMetadataPrismaRepository extends BaseRepository.forModel(Prisma.ModelName.SecretEncryptionMetadata)` owns singleton metadata reads/count validation and mapping.
+- `SecretEntryRepository extends BaseRepository.forModel(Prisma.ModelName.SecretEntry)` owns entry CRUD and persistence-row mapping;
+- `SecretEncryptionMetadataRepository extends BaseRepository.forModel(Prisma.ModelName.SecretEncryptionMetadata)` owns singleton metadata reads/count validation and mapping.
 
-Retain one `SecretVaultPrismaRepository` coordinator as the authoritative vault persistence boundary. It composes those model repositories, owns cross-model sequencing/receipts, and opens implicit transactions with `runInTransaction`. Neither the service, coordinator, nor runtime should accept or retain raw `PrismaClient` or transaction delegates.
+Rename the existing boundary to `SecretVaultRepository` and retain it as the authoritative vault persistence coordinator. It composes those model repositories, owns cross-model sequencing/receipts, and opens implicit transactions with `runInTransaction`. Neither the service, coordinator, nor runtime should accept or retain raw `PrismaClient` or transaction delegates. The class/file names describe domain subjects; `Prisma` remains an internal implementation mechanism exposed only through `BaseRepository.forModel(...)`, not part of repository identity.
 
 `SecretVaultRuntime` should own only bootstrap/service/key lifecycle. Main server composition and the standalone importer execution composition should initialize and shut down `repository_prisma` with their already-canonical explicit database URL.
 

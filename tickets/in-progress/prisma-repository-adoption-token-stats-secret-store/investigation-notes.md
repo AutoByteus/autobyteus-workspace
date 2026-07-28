@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete; the backend task remains in its dedicated worktree, now fast-forwarded to refreshed `origin/personal@153f3409c`. The prerequisite library ticket was completed in its own worktree and archived after release.
-- Current Status: Investigation revalidated after `repository_prisma@1.0.9` publication; backend requirements are approved/refined and the target design passed implementation-readiness validation.
+- Current Status: Requirements/design revised under `SR-002` after the user's naming correction. The implementation-ready target uses domain-subject secret repository names with no `Prisma` provider suffix.
 - Investigation Goal: Determine whether active token-statistics and secret-store persistence bypass the intended repository-prisma architecture, recover the intended pattern from supplied source and Git history, and define a behavior-preserving refactor scope.
 - Scope Classification: `Large`
 - Scope Classification Rationale: The prerequisite package work is complete, but the backend change still spans main-server and standalone-importer lifecycle composition, token runtime persistence, high-assurance secret transactions, existing-data safety, and broad regression coverage.
@@ -79,6 +79,7 @@ Investigation confirms both active requested Prisma paths bypass the package. It
 | 2026-07-28 | Code / lifecycle reachability | `src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts`, `default-agent-run-event-pipeline.ts`, `server-runtime.ts` | Revalidate shared-client shutdown sequencing | Supported token events schedule untracked `setImmediate` appends. Closing the shared library before they settle can fail an append or let a later callback lazily reopen the global client | Resolved in target design: quiesce/drain before `shutdownPrisma()` |
 | 2026-07-28 | Architecture current-state read | `src/server-runtime.ts`; token repository/store/processor/default pipeline; `src/secret-management/{secret-vault-runtime.ts,persistence/secret-vault-prisma-repository.ts,bootstrap/**,services/**,provisioning/local-environment-secret-import-service.ts}`; released `repository_prisma@1.0.9` BaseRepository/context/lifecycle source | Validate complete target spines, owners, file boundaries, transaction/lifecycle reachability, and clean removal against current code | Composition roots can own the published lifecycle; token needs tracked scheduled-work drain; vault needs two model repositories plus its existing coordinator; importer preview/execution must remain split; app-data migrations and inspection are distinct bounded owners | Resolved in implementation-ready design |
 | 2026-07-28 | Design readiness validation | [design-spec.md](./design-spec.md), shared `design-principles.md`, and `references/design-examples.md` | Check approved use-case coverage, production-path/spine completeness, ownership/boundaries/dependencies/interfaces/removal/data transition/proportionality | `UC-001`–`UC-010` map through `BEH-001`–`BEH-006` and `DS-001`–`DS-012`; all applicable checks pass after adding shutdown drain and safe-integer preservation | No |
+| 2026-07-28 | User design feedback | “`SecretVaultPrismaRepository` … why do you put a Prisma in the file name? It's really strange” | Revalidate target naming against domain ownership and the historical repository pattern | The suffix exposes a replaceable persistence provider and is especially misleading on the cross-model coordinator, which no longer owns a Prisma client/delegate. The same issue applies to the new entry/metadata repository names | Resolved in `SR-002`: `SecretVaultRepository`, `SecretEntryRepository`, and `SecretEncryptionMetadataRepository`; no alias |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -119,7 +120,7 @@ Investigation confirms both active requested Prisma paths bypass the package. It
 | `autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts` | Schedules non-blocking ledger appends and warns on failure | Accepted callbacks are not tracked through `setImmediate` and append settlement | Own stopped state, pending work, idempotent close, and drain without making `process()` blocking |
 | `autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts` | Constructs/caches the default processor graph | Exposes no lifecycle boundary for its token processor | Own construction plus an idempotent stop/drain/reset function used by server shutdown |
 | `autobyteus-server-ts/src/secret-management/secret-vault-runtime.ts` | Vault service/key lifecycle plus Prisma client lifecycle | Retains/disconnects raw Prisma client | Remove DB lifecycle; retain vault service/key lifecycle |
-| `autobyteus-server-ts/src/secret-management/persistence/secret-vault-prisma-repository.ts` | Two-model access, mapping, transactions, receipt compensation | Cohesive domain persistence owner but model access/file responsibility overloaded | Retain coordinator; extract two BaseRepository model owners |
+| `autobyteus-server-ts/src/secret-management/persistence/secret-vault-prisma-repository.ts` | Two-model access, mapping, transactions, receipt compensation | Cohesive domain persistence owner but model access/file responsibility and provider-specific name are overloaded | Rename the coordinator to `secret-vault-repository.ts`; extract domain-named entry/metadata BaseRepository owners |
 | `autobyteus-server-ts/src/secret-management/services/secret-management-service.ts` | Authorization, crypto sequencing, value-free events | Correct authoritative boundary | Preserve; no raw Prisma/tx |
 | `autobyteus-server-ts/src/secret-management/provisioning/local-environment-secret-import-service.ts` | Explicit-target preview/execute composition | Execution constructs/closes secret runtime; preview separate | Execution factory owns package init/shutdown; preview unchanged |
 | `repository_prisma/src/lib/base-repository.ts` | Model repository CRUD | Supports all required operations/models | Reuse unchanged |
@@ -175,7 +176,7 @@ Temporary probe root `/tmp/repository-prisma-autobyteus-probe.qA4Sg4` is disposa
 
 - Central lifecycle at composition roots.
 - BaseRepository for the token model and two secret models.
-- Vault coordinator retained for cross-model business persistence sequencing.
+- Vault coordinator retained for cross-model business persistence sequencing and renamed `SecretVaultRepository`; model owners are `SecretEntryRepository` and `SecretEncryptionMetadataRepository`.
 - Published option-aware HOF; no direct transaction fallback.
 - Clean removal of per-capability raw clients/injection.
 
@@ -217,6 +218,7 @@ Transition decision: `Directly Usable — No Migration`.
 - Use the approved requirements and `Implementation Ready` design as the implementation authority.
 - Do not replace `SecretManagementService`, token store/statistics provider, AppConfig, or migration ownership.
 - Do not convert every direct Prisma use indiscriminately; the requested target is normal token/secret runtime persistence.
+- Remove the `PrismaRepository`/`prisma-repository` implementation-provider suffix from all three secret repository class/file names; do not keep aliases.
 - Treat deletion of token/secret custom clients, injected production seams, tx parameters, and obsolete imports as first-class work.
 - Review package source and installed artifact, not only local workspace linking.
 - Require exact source/structural scans plus behavioral/concurrency/data evidence before delivery.
