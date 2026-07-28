@@ -52,8 +52,15 @@
 |---|---|---|---|---|
 | `tickets/in-progress/gemini-use-mode-affordance/ui-ux-spec.md` | Focused visual and interaction specification for the activation affordance and contrast states. | Refined | `REQ-001`–`REQ-003`, `AC-001`–`AC-005` | Intended behavior; included in requirements basis. |
 
+## Downstream rendered-surface finding and scope revision
+
+- Triggering report: `implementation_engineer` Design Impact / Requirement Gap message, with live Settings screenshot `/Users/normy/.autobyteus/browser-artifacts/526f15-1785227527287.png` and DOM inspection of `http://127.0.0.1:3000/settings` (tab `526f15`).
+- The first implementation (`a00dc0ee2`, check-circle glyph) was inspected in the actual Settings surface. It improved the empty-ring glyph but did not resolve the broader ambiguity: non-active rows showed a green configured dot, a blue check-circle activation action, and an edit icon, while the active row showed a blue radio-like circle with center dot plus edit. The two circular controls still made action vs current state visually similar.
+- Revised clarity direction: make the non-active activation action a visible text button using the existing `Use this mode` localization, and replace the active radio-like visual with visible `Active` text/badge while retaining accessible names, test hooks, and active row styling. Leave the configured status dot and edit/configure control unchanged.
+- Product decision recorded here: use `Use this mode` rather than `Make active` so no new copy/translation is needed and the existing command language remains stable. Do not add a new icon to carry the meaning; visible text is the authoritative affordance.
+
 ## Open unknowns / residual risks
 
 - The referenced shared `design-principles.md` and template files are absent from the installed agent-skill directory. No blocking design ambiguity resulted because this is a local icon-only change and existing repository conventions provide direct evidence.
 - Browser/live validation is proportional and can remain downstream; the symbol is a static frontend render with existing component coverage.
-
+- The final badge treatment (compact blue `Active` text badge) should be validated at narrow card widths; the design explicitly allows wrapping while retaining a 44px minimum action height.
