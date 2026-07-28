@@ -110,12 +110,12 @@
 - Delivery round and trigger: Round 7, triggered by explicit user completion and finalization authorization.
 - Triggering upstream report, verification, or evidence: User message — “the task is done. lets finalize no need to release a new version”; `delivery-evidence/integration-refresh.txt` finalization preflight.
 - Prior authoritative result: `Ready for explicit user verification`.
-- Current authoritative result: User verification received; release explicitly declined; ticket archived; ticket branch pushed; `personal` finalized at `528c752ae`; cleanup completed.
+- Current authoritative result: User verification received; release explicitly declined; ticket archived; ticket branch pushed; `personal` finalized at `a2f71e03d`; cleanup completed.
 - Docs sync report: `docs-sync-report.md` — `Pass`, no-impact decision remains current.
 - Handoff summary: `handoff-summary.md` — updated with user verification and finalization state.
 - Release/publication/deployment report: `release-deployment-report.md` — updated with explicit no-release authorization and finalization checklist.
 - Integration and post-integration verification: `git fetch origin personal` confirmed target `153f3409c` unchanged from the verified handoff; no re-integration or rerun required. Dev:test services stopped after completion; validation-only symlinks removed.
-- User verification/finalization state: User verified. Ticket archived under `tickets/done/gemini-use-mode-affordance`; ticket commit `64f8825ee` pushed; initial target merge `fb061ab29` and final report merge/push completed at `528c752ae`; dedicated worktree and local branch cleanup completed.
+- User verification/finalization state: User verified. Ticket archived under `tickets/done/gemini-use-mode-affordance`; ticket commit `64f8825ee` pushed; initial target merge `fb061ab29` and final report merge/push completed at `a2f71e03d`; dedicated worktree and local branch cleanup completed.
 - Why this delivery revision was recorded: Establish the first authoritative post-verification delivery state and explicitly record the user’s no-release decision.
 - Next recipient/action: `N/A` — delivery finalization completed.
 - Remaining blockers, rollback concerns, or untested scope: No delivery blocker. Existing 320px surrounding-layout note and Electron/external-provider out-of-scope boundaries remain documented; no release rollback applies because release was explicitly declined.

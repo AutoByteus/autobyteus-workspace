@@ -72,7 +72,7 @@
 - Re-integration before final merge result: `Not needed`.
 - Target branch update result: `Completed` — refreshed target remained `153f3409c` before the initial merge; post-report refresh was based on `fb061ab29`.
 - Merge into target result: `Completed` — initial merge commit `fb061ab29`, followed by final report merge.
-- Push target branch result: `Completed` — `origin/personal` now points to final commit `528c752ae`.
+- Push target branch result: `Completed` — `origin/personal` now points to final commit `a2f71e03d`.
 - Repository finalization status: `Completed`.
 - Blocker: `None`.
 
@@ -138,4 +138,4 @@
 
 ## Final Status
 
-`Finalized — user verified, ticket archived, ticket branch pushed, personal updated at 528c752ae, release explicitly declined, remote branch deleted, and cleanup completed.`
+`Finalized — user verified, ticket archived, ticket branch pushed, personal updated at a2f71e03d, release explicitly declined, remote branch deleted, and cleanup completed.`

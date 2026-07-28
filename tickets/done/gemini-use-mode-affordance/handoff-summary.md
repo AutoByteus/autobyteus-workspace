@@ -71,7 +71,7 @@ Do not stop the services until the user explicitly says inspection is complete.
 - Verification reference: User message — “the task is done. lets finalize no need to release a new version”.
 - Finalization preflight: `origin/personal` refreshed and unchanged at `153f3409c`; no target re-integration or rerun was required.
 - Inspection services on ports 3000/8000 were stopped after explicit completion. Validation-only untracked node_modules symlinks were removed.
-- Ticket archived at `tickets/done/gemini-use-mode-affordance`. Final ticket-branch delivery commit `148ff604a` and push completed; final target update `528c752ae` was pushed to `personal` after merge `fb061ab29`.
+- Ticket archived at `tickets/done/gemini-use-mode-affordance`. Final ticket-branch delivery commit `148ff604a` and push completed; final target update `a2f71e03d` was pushed to `personal` after merge `fb061ab29`.
 
 ## Cumulative Artifact Package
 
