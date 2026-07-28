@@ -63,16 +63,16 @@
 
 - Bootstrap context source: `investigation-notes.md` and `implementation-handoff.md`.
 - Ticket branch: `codex/gemini-use-mode-affordance`.
-- Ticket branch commit result: `Completed` — `64f8825ee` (`chore(ticket): archive Gemini delivery`).
+- Ticket branch commit result: `Completed — archive commit `64f8825ee`; final report commit `148ff604a` was also pushed.
 - Ticket branch push result: `Completed` — `codex/gemini-use-mode-affordance` pushed to `origin`.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
 - Target advanced after user verification: `No`; target remained `153f3409c`.
 - Delivery-owned edits protected before re-integration: `Not needed` — target unchanged.
 - Re-integration before final merge result: `Not needed`.
-- Target branch update result: `Completed` — refreshed target remained `153f3409c` before merge.
-- Merge into target result: `Completed` — merge commit `fb061ab29`.
-- Push target branch result: `Completed` — `origin/personal` now points to `fb061ab29`.
+- Target branch update result: `Completed` — refreshed target remained `153f3409c` before the initial merge; post-report refresh was based on `fb061ab29`.
+- Merge into target result: `Completed` — initial merge commit `fb061ab29`, followed by final report merge.
+- Push target branch result: `Completed` — `origin/personal` now points to final commit `528c752ae`.
 - Repository finalization status: `Completed`.
 - Blocker: `None`.
 
@@ -138,4 +138,4 @@
 
 ## Final Status
 
-`Finalized — user verified, ticket archived, ticket branch pushed, personal updated at fb061ab29, release explicitly declined, and cleanup completed.`
+`Finalized — user verified, ticket archived, ticket branch pushed, personal updated at 528c752ae, release explicitly declined, and cleanup completed.`
