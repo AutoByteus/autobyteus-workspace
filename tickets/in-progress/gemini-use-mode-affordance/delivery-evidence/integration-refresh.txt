@@ -24,3 +24,12 @@ Integrated revision before the next delivery-artifact edit: $(git rev-parse HEAD
 Post-integration executable check:
   pnpm --dir autobyteus-web test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run
   Result: passed, 1 file / 7 tests
+
+Revision-002 delivery refresh — 2026-07-28
+
+Fetch: git fetch origin personal — passed; origin/personal unchanged at 153f3409cd90207f9219cbe20242606271b36104.
+No additional base integration required: branch already contains the latest tracked base and no new remote commits appeared.
+Upstream checkpoint: 2185f36ee chore(ticket): checkpoint revised Gemini validation.
+Current API/E2E: API-REV-002 Pass / 95%; proportional test review CRR-004 Not Applicable.
+Project inspection environment: pnpm dev:test intentionally remains running on 127.0.0.1:3000 and 127.0.0.1:8000; do not stop before explicit user completion.
+Delivery action: update canonical handoff, docs-sync, release/deployment, and delivery revision artifacts; keep ticket in-progress and do not archive/finalize.
