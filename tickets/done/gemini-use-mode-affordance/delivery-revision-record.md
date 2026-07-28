@@ -110,7 +110,7 @@
 - Delivery round and trigger: Round 7, triggered by explicit user completion and finalization authorization.
 - Triggering upstream report, verification, or evidence: User message — “the task is done. lets finalize no need to release a new version”; `delivery-evidence/integration-refresh.txt` finalization preflight.
 - Prior authoritative result: `Ready for explicit user verification`.
-- Current authoritative result: User verification received; release explicitly declined; ticket archived; ticket branch pushed; `personal` finalized at `a2f71e03d`; cleanup completed.
+- Current authoritative result: User verification received; release explicitly declined; ticket archived; ticket branch pushed; `personal` finalized with the ticket and authoritative delivery records; cleanup completed.
 - Docs sync report: `docs-sync-report.md` — `Pass`, no-impact decision remains current.
 - Handoff summary: `handoff-summary.md` — updated with user verification and finalization state.
 - Release/publication/deployment report: `release-deployment-report.md` — updated with explicit no-release authorization and finalization checklist.
