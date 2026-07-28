@@ -92,7 +92,7 @@
 - Worktree prune result: `Not started`.
 - Local ticket branch cleanup result: `Not started`.
 - Remote branch cleanup result: `Not required` unless later authorized by repository flow.
-- Blocker: Explicit user verification and finalization are pending.
+- Blocker: Explicit user verification and finalization are pending; temporary untracked dependency materializations are intentionally retained while dev:test is running.
 
 ## Escalation / Reroute
 

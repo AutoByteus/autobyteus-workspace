@@ -61,6 +61,7 @@ Do not stop the services until the user explicitly says inspection is complete.
 - Residual layout note: At 320px the whole existing Settings shell can show an off-canvas surrounding ProviderModelBrowser layout; 768px card-level responsive validation passed. This is not a changed-path failure.
 - Browser fixtures: setup and activation responses were deterministic in-memory fixtures; no persistent mutation or external Gemini credential was used.
 - Electron shell and external Gemini API were not exercised; no shell/API code changed.
+- Validation left untracked dependency materialization directories in sibling workspace modules; cleanup is deferred until the user ends inspection and delivery finalization is authorized.
 - Before finalization, rollback is withholding verification. After finalization, revert the bounded ticket merge if needed.
 
 ## User Verification And Finalization Authorization
