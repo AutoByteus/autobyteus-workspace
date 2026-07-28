@@ -11,7 +11,7 @@
 - Current API/E2E revision: `API-REV-005`, `Pass` at 95% confidence
 - Current test-code review revision: `CRR-011`, `Not Applicable`, no findings
 - Integrated base: `origin/personal` at `153f3409c`; confirmed current by the latest fetch
-- Current status: `User verified; repository finalization in progress`
+- Current status: `Finalized; user verified; release explicitly declined`
 
 ## Integrated-State Refresh
 
@@ -71,7 +71,7 @@ Do not stop the services until the user explicitly says inspection is complete.
 - Verification reference: User message — “the task is done. lets finalize no need to release a new version”.
 - Finalization preflight: `origin/personal` refreshed and unchanged at `153f3409c`; no target re-integration or rerun was required.
 - Inspection services on ports 3000/8000 were stopped after explicit completion. Validation-only untracked node_modules symlinks were removed.
-- Ticket is being moved to `tickets/done` before the final ticket-branch commit; push, target merge, and cleanup remain in progress.
+- Ticket archived at `tickets/done/gemini-use-mode-affordance`. Ticket branch commit `64f8825ee` and push completed; target merge `fb061ab29` was pushed to `personal`.
 
 ## Cumulative Artifact Package
 

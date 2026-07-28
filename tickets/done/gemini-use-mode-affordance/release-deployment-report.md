@@ -5,7 +5,7 @@
 - Ticket: `gemini-use-mode-affordance`
 - Current delivery scope: current SR-005/IR-007 palette handoff after API-REV-005.
 - Release/publication/deployment authorization: not requested and not in scope.
-- Current status: `User verified; repository finalization in progress; release explicitly excluded`.
+- Current status: `Finalized; user verified; release explicitly excluded`.
 
 ## Handoff Summary
 
@@ -49,8 +49,8 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `Pending pre-final-commit archive step`.
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/done/gemini-use-mode-affordance` (after archive step).
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`.
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/done/gemini-use-mode-affordance`.
 
 ## Version / Tag / Release Commit
 
@@ -63,18 +63,18 @@
 
 - Bootstrap context source: `investigation-notes.md` and `implementation-handoff.md`.
 - Ticket branch: `codex/gemini-use-mode-affordance`.
-- Ticket branch commit result: `Pending final archive/finalization commit.`
-- Ticket branch push result: `Not started`.
+- Ticket branch commit result: `Completed` — `64f8825ee` (`chore(ticket): archive Gemini delivery`).
+- Ticket branch push result: `Completed` — `codex/gemini-use-mode-affordance` pushed to `origin`.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
 - Target advanced after user verification: `No`; target remained `153f3409c`.
 - Delivery-owned edits protected before re-integration: `Not needed` — target unchanged.
 - Re-integration before final merge result: `Not needed`.
-- Target branch update result: `Pending`.
-- Merge into target result: `Pending`.
-- Push target branch result: `Pending`.
-- Repository finalization status: `In progress; authorized by user`.
-- Blocker: `None`; final push/merge steps remain to be executed.
+- Target branch update result: `Completed` — refreshed target remained `153f3409c` before merge.
+- Merge into target result: `Completed` — merge commit `fb061ab29`.
+- Push target branch result: `Completed` — `origin/personal` now points to `fb061ab29`.
+- Repository finalization status: `Completed`.
+- Blocker: `None`.
 
 ## Release / Publication / Deployment
 
@@ -88,11 +88,11 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance`.
-- Worktree cleanup result: `Pending final repository finalization`.
-- Worktree prune result: `Pending final repository finalization`.
-- Local ticket branch cleanup result: `Pending final repository finalization`.
+- Worktree cleanup result: `Completed` — dedicated ticket worktree removed after target push.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed` after finalization.
 - Remote branch cleanup result: `Not required` unless later authorized by repository flow.
-- Blocker: Final push/merge and safe cleanup remain in progress; validation-only dependency symlinks were already removed.
+- Blocker: `None`.
 
 ## Escalation / Reroute
 
@@ -138,4 +138,4 @@
 
 ## Final Status
 
-`User verified — repository finalization in progress; release explicitly declined.`
+`Finalized — user verified, ticket archived, ticket branch pushed, personal updated at fb061ab29, release explicitly declined, and cleanup completed.`

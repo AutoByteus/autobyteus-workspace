@@ -115,7 +115,7 @@
 - Handoff summary: `handoff-summary.md` — updated with user verification and finalization state.
 - Release/publication/deployment report: `release-deployment-report.md` — updated with explicit no-release authorization and finalization checklist.
 - Integration and post-integration verification: `git fetch origin personal` confirmed target `153f3409c` unchanged from the verified handoff; no re-integration or rerun required. Dev:test services stopped after completion; validation-only symlinks removed.
-- User verification/finalization state: User verified. Ticket archive, ticket push, target merge/push, and post-finalization cleanup remain in progress.
+- User verification/finalization state: User verified. Ticket archived under `tickets/done/gemini-use-mode-affordance`; ticket commit `64f8825ee` pushed; target merge/push completed at `fb061ab29`; dedicated worktree and local branch cleanup completed.
 - Why this delivery revision was recorded: Establish the first authoritative post-verification delivery state and explicitly record the user’s no-release decision.
-- Next recipient/action: `delivery_engineer` completes archive, commit, ticket push, target merge/push, final report update, and safe cleanup.
-- Remaining blockers, rollback concerns, or untested scope: No delivery blocker; rollback before target push is withholding the merge. Existing 320px surrounding-layout note and Electron/external-provider out-of-scope boundaries remain documented.
+- Next recipient/action: `N/A` — delivery finalization completed.
+- Remaining blockers, rollback concerns, or untested scope: No delivery blocker. Existing 320px surrounding-layout note and Electron/external-provider out-of-scope boundaries remain documented; no release rollback applies because release was explicitly declined.
