@@ -5,11 +5,11 @@
 - Ticket: `gemini-use-mode-affordance`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance`
 - Branch: `codex/gemini-use-mode-affordance`
-- Current implementation revision: `IR-002`, implementation commit `38327b315`
-- Current solution revision: `SR-001`
-- Current source review revision: `CRR-003`, `Pass`
-- Current API/E2E revision: `API-REV-002`, `Pass` at 95% confidence
-- Current test-code review revision: `CRR-004`, `Not Applicable`, no findings
+- Current implementation revision: `IR-003`, implementation commit `35cc293c2`
+- Current solution revision: `SR-002`
+- Current source review revision: `CRR-005`, `Pass`
+- Current API/E2E revision: `API-REV-003`, `Pass` at 95% confidence
+- Current test-code review revision: `CRR-006`, `Not Applicable`, no findings
 - Integrated base: `origin/personal` at `153f3409c`; confirmed current by the latest fetch
 - Current status: `Ready for explicit user verification; repository finalization remains on hold`
 
@@ -18,40 +18,40 @@
 - Recorded bootstrap/review base: `origin/personal` (see `investigation-notes.md`).
 - Latest tracked remote base after the current `git fetch origin personal`: `153f3409c`.
 - Base advanced during this delivery round: `No`; the ticket branch already contained the latest tracked base.
-- Delivery checkpoint for the revised validation package: `2185f36ee` (`chore(ticket): checkpoint revised Gemini validation`).
+- Delivery checkpoint for the current validation package: `96545fc3a` (`chore(ticket): checkpoint plain-check Gemini validation`).
 - Additional integration required: `No`.
-- Post-integration rerun: no base-driven rerun was required because the tracked remote base was unchanged; current API-REV-002 already includes focused/runtime/guard/browser execution, and the revised focused test passed 1 file / 7 tests.
+- Post-integration rerun: no base-driven rerun was required because the latest tracked base was unchanged; API-REV-003 independently validated the current implementation through focused/provider tests, guards, and Chrome.
 - Conflicts: None.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/delivery-evidence/integration-refresh.txt`.
 
 ## Delivered Behavior
 
-- Configured, non-active Gemini rows now show visible localized `Use this mode` action text rather than an icon-only check-circle affordance.
-- Active Gemini rows now show visible localized `Active` text/badge rather than the radio-like circle marker.
-- Existing title/ARIA name, `data-testid`, activation event payload, pending spinner, visible `Activating...` text, disabled semantics, focus/hover treatment, and minimum 44px target remain intact.
-- Active rows have no activation action; not-configured rows remain gated; configured status dot and edit/configure controls remain unchanged.
+- Configured, non-active Gemini rows now show a fixed 44×44 Iconify `heroicons:check` activation button; the existing localized `Use this mode` title/ARIA name remains authoritative.
+- Active Gemini rows show visible localized `Active` text/badge and no activation action.
+- Existing `data-testid`, activation event payload, pending spinner, disabled semantics, focus/hover treatment, and 44×44 target remain intact.
+- Pending activation omits the idle check icon and remains disabled; unavailable/not-configured rows remain gated.
 - No API, GraphQL, store, persistence, migration, localization-file, backend, Electron, or non-Gemini provider behavior changed.
 
 ## Review And Execution Evidence
 
-- Revised implementation source review: `Pass`, 9.8/10, no unresolved findings.
-- Fresh API/E2E execution: `Pass`, API-REV-002 at 95% confidence.
+- Current implementation source review: `Pass`, 9.8/10, no unresolved findings.
+- Fresh API/E2E execution: `Pass`, API-REV-003 at 95% confidence; API-REV-002 is superseded and not current sign-off.
 - Focused Gemini suite: 1 file / 7 tests passed.
 - Provider/manager suite: 6 files / 26 tests passed.
 - Localization/web-boundary guards and targeted diff checks: passed.
-- Chrome validation: visible `Use this mode` and `Active`, preserved semantics, hover/focus, 768px wrapping, pending spinner/`Activating...`/disabled, and unavailable gating all passed.
-- Proportional API/E2E test-code review: `Not Applicable` (CRR-004); no durable API/E2E test file changed.
-- Current evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/evidence-revision-002/`.
+- Chrome validation: actual `heroicons:check` SVG/path, exact 44×44 desktop/768px geometry, visible Active/no action, pending spinner/disabled substitution, hover/focus, and unavailable gating all passed.
+- Proportional API/E2E test-code review: `Not Applicable` (CRR-006); no durable API/E2E test file changed.
+- Current evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/evidence-revision-003/`.
 
 ## User Verification Checklist
 
 The project `pnpm dev:test` environment is intentionally running for inspection:
 
 1. Open `http://127.0.0.1:3000/settings` and select Gemini.
-2. Confirm configured non-active options visibly show `Use this mode`.
+2. Confirm configured non-active options show the plain checkmark activation button with `Use this mode` tooltip/accessible name.
 3. Confirm the active option visibly shows `Active` and no activation button.
-4. Confirm pending activation shows `Activating...`, spinner, and disabled state.
-5. Confirm the 768px card-level wrapping remains usable and the 44px target/focus treatment remain intact.
+4. Confirm pending activation shows the spinner, remains disabled, and removes the idle check icon.
+5. Confirm desktop and 768px card-level geometry remain 44×44 with preserved hover/focus treatment.
 
 Do not stop the services until the user explicitly says inspection is complete.
 
@@ -61,7 +61,7 @@ Do not stop the services until the user explicitly says inspection is complete.
 - Residual layout note: At 320px the whole existing Settings shell can show an off-canvas surrounding ProviderModelBrowser layout; 768px card-level responsive validation passed. This is not a changed-path failure.
 - Browser fixtures: setup and activation responses were deterministic in-memory fixtures; no persistent mutation or external Gemini credential was used.
 - Electron shell and external Gemini API were not exercised; no shell/API code changed.
-- Validation left untracked dependency materialization directories in sibling workspace modules; cleanup is deferred until the user ends inspection and delivery finalization is authorized.
+- Untracked dependency materialization directories remain while dev:test is running; cleanup is deferred until user completion and authorized finalization.
 - Before finalization, rollback is withholding verification. After finalization, revert the bounded ticket merge if needed.
 
 ## User Verification And Finalization Authorization
@@ -94,5 +94,5 @@ All ticket artifacts are under:
 - `delivery-revision-record.md`
 - `release-deployment-report.md`
 - `delivery-evidence/integration-refresh.txt`
-- `evidence-revision-002/`
-- `evidence/` historical API/E2E logs and screenshot
+- `evidence-revision-003/`
+- `evidence-revision-002/` and `evidence/` historical API/E2E logs/screenshots

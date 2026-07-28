@@ -3,15 +3,15 @@
 ## Scope
 
 - Ticket: `gemini-use-mode-affordance`
-- Trigger: Revised implementation source review `Pass` (CRR-003), fresh API/E2E validation `Pass` (API-REV-002, 95% confidence), and proportional API/E2E test-code review `Not Applicable` (CRR-004).
+- Trigger: Revised implementation source review `Pass` (CRR-005), fresh API/E2E validation `Pass` (API-REV-003, 95% confidence), and proportional API/E2E test-code review `Not Applicable` (CRR-006).
 - Bootstrap base reference: `origin/personal` as recorded in `investigation-notes.md`.
 - Integrated base reference used for docs sync: `origin/personal` at `153f3409c`; `git fetch origin personal` confirmed it remains current, so no additional merge was required for this delivery round.
-- Post-integration verification reference: `delivery-evidence/integration-refresh.txt`; the revised focused implementation test passed 1 file / 7 tests, and API-REV-002 independently passed its broader checks.
+- Post-integration verification reference: `delivery-evidence/integration-refresh.txt`; current API-REV-003 evidence includes focused/provider suites, guards, and Chrome desktop/768px/pending validation.
 
 ## Why Docs Were Updated
 
-- Summary: No long-lived documentation change is required. The approved revision changes a local Gemini card presentation from icon-only state controls to visible `Use this mode` action text and visible `Active` state text, while preserving the documented Gemini Settings flow and runtime contracts.
-- Why this should live in long-lived project docs: `autobyteus-web/docs/settings.md` owns the durable Gemini configuration journey; its existing description of the specialized flow, Use-this-mode action, and configured/active state remains accurate. The exact card markup and responsive classes are implementation-local.
+- Summary: No long-lived documentation change is required. The approved current revision uses a plain checkmark activation glyph plus visible `Active` state text, while preserving the documented Gemini Settings flow and runtime contracts.
+- Why this should live in long-lived project docs: `autobyteus-web/docs/settings.md` owns the durable Gemini configuration journey; its existing description of the specialized flow, Use-this-mode action, and configured/active state remains accurate. Exact icon markup and geometry remain implementation-local.
 
 ## Long-Lived Docs Reviewed
 
@@ -26,31 +26,32 @@
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| None | N/A | No long-lived doc edits. | The revised visible action/state presentation is already covered by the durable Settings behavior description; adding exact local class/markup detail would overfit implementation. |
+| None | N/A | No long-lived doc edits. | The current icon/action and visible Active state implement the already-documented Gemini setup journey without changing durable contracts. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Gemini activation/state distinction | Configured non-active rows visibly say `Use this mode`; active rows visibly say `Active`; pending and unavailable gating remain unchanged. | `requirements.md`, `design-spec.md`, `ui-ux-spec.md`, `solution-revision-record.md`, `api-e2e-execution-coverage-report.md` | N/A — the durable Settings doc already describes this journey at the appropriate level. |
+| Gemini activation/state distinction | Configured non-active rows use a plain `heroicons:check` icon-only action with existing `Use this mode` tooltip/ARIA name; active rows visibly say `Active`; pending and unavailable gating remain unchanged. | `requirements.md`, `design-spec.md`, `ui-ux-spec.md`, `solution-revision-record.md`, `api-e2e-execution-coverage-report.md` | N/A — current durable Settings docs already describe the behavior at the appropriate level. |
 
 ## Removed / Replaced Components Recorded
 
 | Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
 | --- | --- | --- |
-| Icon-only check-circle activation affordance | Visible localized `Use this mode` text button | Current `GeminiConfigurationOptionCard.vue`, revised requirements/design, and API-REV-002 evidence. |
-| Radio-like active circle marker | Visible localized `Active` badge/text | Current `GeminiConfigurationOptionCard.vue`, revised requirements/design, and API-REV-002 evidence. |
+| Icon-only check-circle activation affordance | Fixed 44×44 Iconify `heroicons:check` action | Current `GeminiConfigurationOptionCard.vue`, revised requirements/design, and API-REV-003 evidence. |
+| Temporary visible `Use this mode` text-button contract | Plain check icon-only action with existing localized tooltip/ARIA name | Current `GeminiConfigurationOptionCard.vue`, SR-002/IR-003, and API-REV-003 evidence. |
+| Radio-like active circle marker | Visible localized `Active` badge/text | Current `GeminiConfigurationOptionCard.vue`, revised requirements/design, and API-REV-003 evidence. |
 
 ## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
 
 - Docs impact: `No impact`
-- Rationale: The long-lived Settings documentation already describes the Gemini three-option setup flow, Use-this-mode activation, and configured/active state. The revision improves the local visual expression of those existing contracts without changing APIs, persistence, localization keys, navigation, or broader settings behavior.
+- Rationale: The long-lived Settings documentation already covers the Gemini three-option setup flow, Use-this-mode activation, and configured/active states. The current revision only selects the approved plain check glyph and keeps visible Active state; no API, persistence, navigation, localization key, or broader provider behavior changed.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next delivery action: Present the refreshed handoff for explicit user completion while preserving the intentionally running `pnpm dev:test` services on ports 3000/8000.
-- Notes: The 320px whole-shell off-canvas observation is an existing surrounding ProviderModelBrowser condition, not a scoped failure. The prior broader Codex baseline failure is historical/out of scope for the revised current validation.
+- Notes: The 320px whole-shell off-canvas observation is an existing surrounding ProviderModelBrowser condition, not a scoped failure. API-REV-002 visible-text evidence is superseded; API-REV-003 is current.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
