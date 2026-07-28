@@ -13,6 +13,8 @@
 | CRR-007 | `code-review-report.md` | Implementation Review; SR-003/IR-004 rework commit `e8aa1b011` | Pass (superseded contract) | Fail | F-001 |
 | CRR-008 | `code-review-report.md` | Implementation Review; F-001/IR-005 fix commit `67d047d3f` | Fail | Pass | F-001 resolved |
 | CRR-009 | `api-e2e-test-review-report.md` | Successful API/E2E proportional test-code review; API-REV-004 | Not Applicable | Not Applicable | None |
+| CRR-010 | `code-review-report.md` | Implementation Review; SR-005/IR-007 color rework commit `0f9fa87dc` | Pass (prior contract) | Pass | None |
+| CRR-011 | `api-e2e-test-review-report.md` | Successful API/E2E proportional test-code review; API-REV-005 | Not Applicable | Not Applicable | None |
 
 ## Revision Entries
 
@@ -207,6 +209,49 @@ None. CRR-005 had no implementation findings; its historical Pass applied only t
 #### Prior Finding Resolution
 
 None. CRR-006 had no findings and remains Not Applicable.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; this review has no implementation scorecard. Result is Not Applicable by rule.
+- Recommended recipient: delivery_engineer
+- Remaining risks or uncertainty: The 320px full Settings-shell off-canvas observation is an existing surrounding ProviderModelBrowser layout condition, not a changed test path or test-review issue. Keep pnpm dev:test running for user inspection until explicit completion.
+
+
+### CRR-010 — SR-005 action/state color source review
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/code-review-report.md
+- Review entry point and round: Implementation Review, round 6
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/implementation-handoff.md; SR-005; IR-007; commit 0f9fa87dc
+- Relevant solution revision IDs: SR-005
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: N/A; prior API evidence is not reused.
+- Prior authoritative result: Pass for the functional Activate/Activating/Active contract (CRR-008); SR-005 changed the visual palette only.
+- Current authoritative result: Pass
+- What changed in the review result and why: Reviewed the approved blue outlined Activate and emerald Active treatment. Source and focused class assertions match SR-005; action/state words, pending behavior, event flow, accessibility, and state/API boundaries remain unchanged.
+- New or remaining finding IDs: None
+- Material score or classification changes: 9.8/10 (98/100); all mandatory categories meet the clean-pass target.
+- Recommended recipient: api_e2e_engineer
+- Remaining risks or uncertainty: Fresh API/E2E must validate live palette contrast, hover/focus, pending/disabled, narrow layout, and both supported locales.
+
+#### Prior Finding Resolution
+
+None. CRR-008 had no open findings; this is a focused approved visual refinement.
+
+
+### CRR-011 — Current palette API/E2E proportional test-code review
+
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/api-e2e-test-review-report.md
+- Review entry point and round: Successful API/E2E proportional test-code review, round 5
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/api-e2e-execution-coverage-report.md; API-REV-005; scenarios API-GEMINI-501–API-GEMINI-507
+- Relevant solution revision IDs: SR-005
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-005
+- Prior authoritative result: Not Applicable for proportional test-code review (CRR-009; no durable API/E2E test changes)
+- Current authoritative result: Not Applicable
+- What changed in the review result and why: Fresh API/E2E validation passed at 95% confidence for current blue Activate/emerald Active palette behavior, but no durable API/E2E test file was added, updated, or removed. The implementation-owned component test was rerun only as evidence; temporary browser probes, locale setup, contrast calculations, logs, and screenshots are not durable test code.
+
+#### Prior Finding Resolution
+
+None. CRR-009 had no findings and remains Not Applicable.
 
 - New or remaining finding IDs: None
 - Material score or classification changes: None; this review has no implementation scorecard. Result is Not Applicable by rule.

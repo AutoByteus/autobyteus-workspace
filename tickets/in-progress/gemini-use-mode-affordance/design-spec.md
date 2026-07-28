@@ -6,7 +6,7 @@
 
 ## Design summary
 
-Make the configured, non-active Gemini mode activation affordance a visible localized `Activate` text button and keep the active mode as a visible `Active` badge/text. Rendered inspection showed that icon-only check, check-circle, and radio-like markers can all be interpreted as selection state. Words explicitly separate action from state. The button remains an explicit activation command; no state, API, persistence, or activation event behavior changes.
+Make the configured, non-active Gemini mode activation affordance a visible localized `Activate` text button with a blue outlined treatment, and make the active mode a green/emerald `Active` badge/text. Exploratory rendered inspection and the user-approved palette direction establish blue as the actionable color and emerald as the current/ready status color. The words remain visible so color reinforces, rather than solely carries, the distinction. The button remains an explicit activation command; no state, API, persistence, or activation event behavior changes.
 
 ## Approved basis
 
@@ -26,6 +26,8 @@ Make the configured, non-active Gemini mode activation affordance a visible loca
 | `BEH-002` / `AC-003` pending activation | Preserve spinner substitution, disabled state, and live announcement; show localized `Activating…` text within the pending button if present in the current implementation. | Parent `activating` prop → card `actionsDisabled` → spinner/text/disabled render. | `SP-UI-002` |
 | `BEH-003` / `UC-003` active contrast | Keep visible `Active` text/badge and omit the activation button. Preserve active row styling, title, test ID, and accessible status. | `active` prop → visible active badge branch; `v-if="configured && !active"` remains false. | `SP-UI-003` |
 | `BEH-006` / `UC-001`, `UC-003` visual distinction | Separate action and state through visible `Activate` versus visible `Active`; configured dot/edit control remain unchanged. | Card status/action cluster → visible activation text button or visible active badge. | `SP-UI-001`, `SP-UI-003` |
+| `BEH-007` / `AC-007` color distinction | Make `Active` emerald and `Activate` blue outlined with readable hover/focus/disabled treatments. | Card action/status cluster → blue activation button or emerald active badge. | `SP-UI-001`, `SP-UI-003`, `SP-UI-004` |
+| `BEH-008` / `AC-008` palette fit | Reuse the existing emerald/green configured and success/ready palette for the active badge. | Existing configured dot/status palette → active badge; visible `Active` text remains the semantic signal. | `SP-UI-003`, `SP-UI-004` |
 | `BEH-004` / `AC-002` testable interaction | Extend focused component assertions for localized action/state text without changing event assertions. | `GeminiSetupForm.spec.ts` mount → configured/active rows → DOM and click assertions. | `SP-TEST-001` |
 
 ## Data-flow spines
@@ -45,6 +47,10 @@ Parent `activating` → `actionsDisabled` → spinner + localized `activating` t
 ### `SP-UI-003` — Active-state contrast
 
 Parent `active` → visible `Active` badge/text branch and activation-button guard → clearly labeled active state only.
+
+### `SP-UI-004` — Action/state color variant
+
+`configured && !active` → blue outlined `Activate` button (`border-blue-200 bg-blue-50 text-blue-700`, hover `bg-blue-100 text-blue-800`, blue focus ring); `active` → emerald `Active` badge (`border-emerald-200 bg-emerald-100 text-emerald-700`). Visible words remain the primary semantic signal.
 
 ### `SP-TEST-001` — Durable verification
 
@@ -66,6 +72,7 @@ Parent `active` → visible `Active` badge/text branch and activation-button gua
 
 - Change the activation button from icon-only `h-11 w-11` to a compact text-button layout with minimum `h-11`, horizontal padding, and existing blue hover/focus/disabled classes.
 - Render `t('settings.components.settings.ProviderAPIKeyManager.activate_mode')` visibly in the idle branch.
+- Use the blue outlined action classes: `border border-blue-200 bg-blue-50 text-blue-700`, hover `bg-blue-100 text-blue-800`, focus `ring-blue-500`, and existing disabled opacity/cursor treatment. Use `border-emerald-200 bg-emerald-100 text-emerald-700` for the active badge. Do not rely on color without the visible words.
 - Keep the activating spinner and render existing localized `activating` text while pending so the visible control remains understandable.
 - Keep active `Active` badge/text branch, configured dot, edit/configure control, title, ARIA label, data-testid, click event, and disabled logic unchanged.
 - Do not add a new icon or alter any parent/store/API code.
