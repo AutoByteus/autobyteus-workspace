@@ -10,7 +10,7 @@
 
 ### SR-001 — Resolve exact-display contract conflict
 
-- Triggering role, report path, and round: `api_e2e_engineer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/api-e2e-coverage-investigation.md`, initial coverage investigation.
+- Triggering role, report path, and round: `api_e2e_engineer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`, initial coverage investigation.
 - Triggering finding IDs: `AC-002` exact-display conflict; API-001 missing `tokenUsageTaskStatisticsInPeriod` coverage and native AppConfig setup remain downstream local-fix items.
 - Why revision was required: The approved AC-002 requires exact decimal digits in the rendered report, but `TokenUsageTaskStatisticsTable.vue` used `formatCompactInteger`, producing `3.14B` for `3,136,827,911`. The prior design incorrectly preserved that formatter and could not truthfully pass the criterion.
 - Resolution: Keep the GraphQLSafeInt transport correction and add a narrow frontend production change: primary Task-table input/output token cells use the existing full `formatInteger` formatter. Compact formatting remains allowed for secondary cache/thinking explanatory sublines. The controls, table structure, grouping, provider, persistence, loading, empty, and unrelated-error behavior remain unchanged.

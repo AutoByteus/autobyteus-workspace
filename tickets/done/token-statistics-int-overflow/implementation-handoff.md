@@ -2,19 +2,19 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/design-spec.md`
-- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/graphql-token-count-contract.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/solution-revision-record.md` (`SR-001`)
-- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/code-review-report.md` (round 2, `CR-001`)
-- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/code-review-revision-record.md` (`CRR-001`)
-- Still-relevant upstream evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/design-spec.md`
+- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/solution-revision-record.md` (`SR-001`)
+- Triggering rework report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/code-review-report.md` (round 2, `CR-001`)
+- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/code-review-revision-record.md` (`CRR-001`)
+- Still-relevant upstream evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related solution revision ID: `SR-001`
 - Related code review revision IDs: `CRR-001`

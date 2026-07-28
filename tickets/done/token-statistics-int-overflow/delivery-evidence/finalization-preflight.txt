@@ -1,0 +1,29 @@
+Token Statistics repository finalization preflight
+Timestamp: 2026-07-28T10:12:02+02:00
+User authorization: "the task is done. lets finalize no need to release."
+Release scope: explicitly excluded
+
+Post-verification target refresh:
+  command: git fetch origin personal --prune
+  result: pass
+  verified handoff base: a3beeec29a701e6731d985f76d083a12bd82478f
+  refreshed origin/personal: a3beeec29a701e6731d985f76d083a12bd82478f
+  target advanced: no
+  renewed verification required: no
+  base-driven rerun required: no
+
+Ticket state:
+  branch: codex/token-statistics-int-overflow
+  reviewed checkpoint: 1701f4f33526e7b016edbd1655f26b2c84d33212
+  divergence from origin/personal: 1 ahead, 0 behind before archive commit
+  archived path: tickets/done/token-statistics-int-overflow
+
+Target integration safety:
+  checked-out personal worktree contains unrelated uncommitted
+  application-agent-streaming and article work.
+  preservation decision: do not modify, stage, stash, reset, or clean that work.
+  integration method: use a clean temporary detached worktree at the refreshed
+  origin/personal revision, merge the finalized ticket branch there, and push
+  the resulting HEAD explicitly to origin/personal.
+
+Preflight result: PASS

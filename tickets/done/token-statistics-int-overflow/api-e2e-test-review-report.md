@@ -6,17 +6,17 @@ This is the separate proportional review of durable test-code changes after the 
 
 - Review Round: `1`
 - Trigger: Successful API/E2E revision `API-REV-001`; execution report result `Pass`; proportional durable-test review requested by `api_e2e_engineer`.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/requirements-doc.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/graphql-token-count-contract.md`
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/solution-revision-record.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/implementation-revision-record.md`
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/code-review-revision-record.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/requirements-doc.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/design-spec.md`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/solution-revision-record.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/implementation-revision-record.md`
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-003`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
-- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/api-e2e-revision-record.md` (`API-REV-001`)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
+- Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/api-e2e-revision-record.md` (`API-REV-001`)
 - API/E2E Result: `Pass`
 - Final Validation Confidence: `96%`
 - Prior unresolved test-review findings rechecked: `None` — this is the first proportional test-code review. The earlier implementation finding `CR-001` was independently resolved and closed by `CRR-002` before execution.

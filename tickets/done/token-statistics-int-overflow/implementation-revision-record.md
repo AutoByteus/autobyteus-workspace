@@ -10,7 +10,7 @@
 
 ### IR-001 — Render exact primary Task-table token values
 
-- Triggering role, report path, and round: `code_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/code-review-report.md`, implementation review round 2.
+- Triggering role, report path, and round: `code_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/code-review-report.md`, implementation review round 2.
 - Triggering finding IDs: `CR-001`.
 - Classification: `Local Fix`.
 - Related solution revision ID: `SR-001`.

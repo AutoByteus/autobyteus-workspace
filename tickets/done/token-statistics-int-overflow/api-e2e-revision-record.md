@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Resume after exact-display design correction and complete executable coverage
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/code-review-report.md`; implementation-source review round 3.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/code-review-report.md`; implementation-source review round 3.
 - Triggering finding or scenario IDs: prior AC-002 compact-primary display blocker; current API-001, WEB-001, and WEB-002 durable candidates.
 - Related solution, implementation, or code-review revision IDs: `SR-001`, `IR-001`, `CRR-001`, `CRR-002`.
 - Why coverage or execution was revised: the prior API/E2E investigation correctly stopped because the approved exact-decimal criterion contradicted the Task table's compact primary formatter. `SR-001` corrected the solution, `IR-001` changed both primary cells to `formatInteger`, and `CRR-002` passed the revised source, making execution valid again.

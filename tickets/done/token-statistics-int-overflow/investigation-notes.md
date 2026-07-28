@@ -22,7 +22,7 @@ The user supplied a Settings → Token Statistics screenshot for Task grouping o
 
 - Project Type (`Git`/`Non-Git`): `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow`
 - Current Branch: `codex/token-statistics-int-overflow`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow`
 - Bootstrap Base Branch: `origin/personal`
@@ -37,7 +37,7 @@ The user supplied a Settings → Token Statistics screenshot for Task grouping o
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/graphql-token-count-contract.md` | Focused protocol/API contract for token-valued GraphQL fields. | Current `Int` defect, target `SafeInt` contract, explicit frontend codegen mapping, rejected corrupting alternatives, invariants, and coverage shape. | Requirements and design | REQ-001, REQ-002; AC-001, AC-002, AC-005 | Current; retain through implementation/review/testing | Approved with requirements basis on 2026-07-28 | Keep aligned if scalar or affected field scope changes. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md` | Focused protocol/API contract for token-valued GraphQL fields. | Current `Int` defect, target `SafeInt` contract, explicit frontend codegen mapping, rejected corrupting alternatives, invariants, and coverage shape. | Requirements and design | REQ-001, REQ-002; AC-001, AC-002, AC-005 | Current; retain through implementation/review/testing | Approved with requirements basis on 2026-07-28 | Keep aligned if scalar or affected field scope changes. |
 
 ## Source Log
 
@@ -104,7 +104,7 @@ The user supplied a Settings → Token Statistics screenshot for Task grouping o
 | 2026-07-28 | Probe | Read-only SQLite grouped aggregate over screenshot bounds | Exact `3136827911` value is produced from 21,016 normal rows. | Not corrupted or manually fabricated data. |
 | 2026-07-28 | Probe | Local `graphql-scalars` serialization of `2147483647`, `3136827911`, `Number.MAX_SAFE_INTEGER`, and unsafe successor | `GraphQLSafeInt` preserves all safe values and rejects the unsafe successor. | Correct range contract for current JS-number domain. |
 | 2026-07-28 | Probe | Disposable GraphQL Codegen 4.1.6 generation with unmapped `SafeInt` | Generated scalar/operation type becomes `any`. | Explicit `SafeInt` mapping is part of the fix. |
-| 2026-07-28 | Trace | Baseline UI/store/table source plus downstream `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/api-e2e-coverage-investigation.md` | The store/model table preserve numeric values, but `TokenUsageTaskStatisticsTable.vue` calls `formatCompactInteger` for primary input/output cells; a runtime formatter probe yields `3.14B` for `3136827911`. | Narrow existing-owner presentation correction is required; no UI redesign or state change. |
+| 2026-07-28 | Trace | Baseline UI/store/table source plus downstream `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md` | The store/model table preserve numeric values, but `TokenUsageTaskStatisticsTable.vue` calls `formatCompactInteger` for primary input/output cells; a runtime formatter probe yields `3.14B` for `3136827911`. | Narrow existing-owner presentation correction is required; no UI redesign or state change. |
 
 ## External / Public Source Findings
 
@@ -168,7 +168,7 @@ Follow the approved GraphQL contract supplement and revised design spec. Preserv
 
 ### API/E2E Finding Resolved In This Revision
 
-- Source: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/api-e2e-coverage-investigation.md`, initial coverage investigation by `api_e2e_engineer`.
+- Source: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`, initial coverage investigation by `api_e2e_engineer`.
 - Finding: AC-002 requires exact decimal digits in the rendered report, but `autobyteus-web/components/settings/token-usage/TokenUsageTaskStatisticsTable.vue` used `formatCompactInteger`, producing `3.14B` for `3136827911`.
 - Classification: `Design Impact` / `Requirement Gap` for the prior design; not a new product use case. The exact-display requirement was already approved in AC-002, while the design incorrectly preserved a conflicting formatter.
 - Resolution: Requirements and design now explicitly modify only the Task table's primary input/output cells to use existing `formatInteger`. Secondary cache/thinking sublines may remain compact. Controls, table structure, grouping, state, provider, persistence, and unrelated errors remain unchanged.

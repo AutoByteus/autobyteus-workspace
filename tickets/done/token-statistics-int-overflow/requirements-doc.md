@@ -22,7 +22,7 @@ The supplied screenshot and `/Users/normy/.autobyteus/logs/app.log` show the exa
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/in-progress/token-statistics-int-overflow/graphql-token-count-contract.md` | Protocol/API contract defining the large non-negative token-count boundary and rejected corrupting alternatives. | REQ-001, REQ-002 | AC-001, AC-002, AC-005 | Current; approved with the requirements basis on 2026-07-28. | Makes the exact transport contract and code-generation consequence reviewable without replacing the core requirements. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md` | Protocol/API contract defining the large non-negative token-count boundary and rejected corrupting alternatives. | REQ-001, REQ-002 | AC-001, AC-002, AC-005 | Current; approved with the requirements basis on 2026-07-28. | Makes the exact transport contract and code-generation consequence reviewable without replacing the core requirements. |
 
 ## Design Health Assessment (Mandatory)
 

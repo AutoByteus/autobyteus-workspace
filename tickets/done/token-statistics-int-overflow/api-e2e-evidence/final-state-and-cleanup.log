@@ -20,7 +20,7 @@ autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts  ce8303be777cbf5e47
  M autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
  M autobyteus-web/generated/graphql.ts
  M autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts
-?? tickets/in-progress/token-statistics-int-overflow/
+?? tickets/done/token-statistics-int-overflow/
 === cleanup scan ===
 Error: in prepare, no such table: token_usage_ledger_events
 === corrected final cleanup state ===
