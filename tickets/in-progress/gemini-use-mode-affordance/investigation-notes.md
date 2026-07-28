@@ -60,9 +60,11 @@
 - Product decision recorded here: use `Use this mode` rather than `Make active` so no new copy/translation is needed and the existing command language remains stable. Do not add a new icon to carry the meaning; visible text is the authoritative affordance.
 - Follow-up direction approved by the user via the implementation-engineer report: keep the visible `Active` badge/text, but restore an icon-only activation control using a plain `heroicons:check` glyph. The checkmark communicates apply/select without the circular shape that caused the ambiguity; the existing `Use this mode: <option>` title/ARIA label remains authoritative.
 - This supersedes the temporary visible-text activation direction in `SR-001`; it does not restore the circular check icon or the active radio marker.
+- Further user-approved direction, superseding `SR-002`: the plain check still reads as a selected-state indicator. Use visible words for both meanings: non-active configured rows show a visible `Activate` button, and active rows show visible `Active`. Add the new localized key `settings.components.settings.ProviderAPIKeyManager.activate_mode` (`Activate` / `启用`) for the button text. Keep `use_this_mode` for the tooltip/ARIA contract and existing recovery copy.
+- Localization evidence: only `en` and `zh-CN` catalogs are supported (`autobyteus-web/localization/runtime/types.ts`); both `autobyteus-web/localization/messages/en/settings.ts` and `.../zh-CN/settings.ts` must receive the new key. Generated catalogs are merged before hand-authored settings catalogs, so the hand-authored locale files are the authoritative update surface.
 
 ## Open unknowns / residual risks
 
 - The referenced shared `design-principles.md` and template files are absent from the installed agent-skill directory. No blocking design ambiguity resulted because this is a local icon-only change and existing repository conventions provide direct evidence.
 - Browser/live validation is proportional and can remain downstream; the symbol is a static frontend render with existing component coverage.
-- The final compact blue `Active` text badge and plain-check icon button should be validated at narrow card widths; the design retains a 44×44px activation target.
+- The final compact blue `Active` text badge and visible `Activate` button should be validated at narrow card widths; the design retains a 44px minimum action height and allows the button to widen/wrap with the card.

@@ -6,29 +6,34 @@
 
 ## Goal
 
-Make the configured/non-active action read as “select/apply this mode” with a plain checkmark, and make the current active state immediately recognizable with visible text.
+Make the configured/non-active action read as “select/apply this mode” with visible `Activate` text, and make the current active state immediately recognizable with visible `Active` text.
 
 ## Visual decision
 
-- Render a plain `heroicons:check` glyph in the activation button. The existing localized title/ARIA label (`Use this mode: <mode>`) is the authoritative explanation; no circular glyph is used.
-- Use the existing blue action color (`text-blue-700`) with the original compact icon-button treatment and existing hover/focus styling. Keep the 44×44px hit target.
+- Render the localized `activate_mode` text (`Activate` in English, `启用` in Chinese) visibly in the activation button. The existing localized title/ARIA label (`Use this mode: <mode>`) remains the accessible action contract.
+- Use the existing blue action color (`text-blue-700`) with a compact text-button treatment and existing hover/focus styling. Keep a minimum 44px height; the button may widen to fit the label.
 - Replace the active row’s radio-like visual marker with a compact visible `Active` badge/text treatment. Use the existing active localization key; keep the active row blue background/left accent and `data-testid`.
 - Keep the configured green dot and icon-only edit/configure control unchanged; they communicate status and editing respectively and retain their current accessible labels/tooltips.
-- Do not use circular arrows, refresh, shuffle, power, radio, or check-circle symbols; those imply cycling or a competing state marker. The plain checkmark is the only activation glyph.
+- Do not use circular arrows, refresh, shuffle, power, radio, check-circle, or plain checkmark symbols as the primary activation explanation; they can be interpreted as current selection rather than an action.
 
 ## States
 
 | State | Visual | Interaction / accessibility |
 |---|---|---|
-| Configured, non-active, idle | Plain checkmark inside the blue icon button. | Existing title/ARIA label identify `Use this mode: <mode>`; click emits `activate`. |
-| Configured, non-active, hover/focus | Existing hover background and focus ring around the icon button. | Keyboard activation unchanged; button remains 44×44px. |
-| Configured, non-active, activating | Existing CSS spinner replaces the checkmark; the control remains disabled. | Existing disabled state and live `Activating…` announcement remain. |
+| Configured, non-active, idle | Visible localized `Activate` text inside the blue action button. | Existing title/ARIA label identify `Use this mode: <mode>`; click emits `activate`. |
+| Configured, non-active, hover/focus | Existing hover background and focus ring around the text button. | Keyboard activation unchanged; button remains at least 44px high and can widen within the row. |
+| Configured, non-active, activating | Existing CSS spinner plus localized `Activating…` text; the control remains disabled. | Existing disabled state and live announcement remain. |
 | Active | Visible compact `Active` badge/text; no activation button. | Existing active test hook/title and screen-reader status remain. |
 | Not configured / unavailable | No activation button; existing Configure/status behavior remains. | No new controls or messaging. |
 
 ## Responsive / accessibility constraints
 
-- Keep the icon button at 44×44px.
-- Retain the localized accessible name and title because the glyph is decorative and the action text is not visible.
+- Keep the visible text button at a minimum 44px height and provide enough horizontal padding for the label.
+- Retain the localized accessible name and title even though the action text is visible, so tooltip and screen-reader wording remain stable.
 - Keep the explicit button semantics rather than changing the whole row to a selector.
 - Ensure `Active` is visible text and not conveyed by color or a circular marker alone.
+
+## Localization decision
+
+- Add `settings.components.settings.ProviderAPIKeyManager.activate_mode` to the supported English and Simplified Chinese settings catalogs: `Activate` / `启用`.
+- Keep `settings.components.settings.ProviderAPIKeyManager.use_this_mode` unchanged for the button title, ARIA label construction, and existing partial-activation recovery message. Do not overload that longer phrase as the visible compact action label.

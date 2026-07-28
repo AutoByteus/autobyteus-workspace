@@ -1,14 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 
-vi.mock('@iconify/vue', () => ({
-  Icon: {
-    name: 'Icon',
-    props: ['icon'],
-    template: '<i class="icon-stub" :data-icon="icon" />',
-  },
-}))
-
 import GeminiSetupForm from '../GeminiSetupForm.vue'
 
 const translations: Record<string, string> = {
@@ -33,6 +25,7 @@ const translations: Record<string, string> = {
   'settings.components.settings.ProviderAPIKeyManager.save_option': 'Save option',
   'settings.components.settings.ProviderAPIKeyManager.save_and_use_mode': 'Save and use this mode',
   'settings.components.settings.ProviderAPIKeyManager.use_this_mode': 'Use this mode',
+  'settings.components.settings.ProviderAPIKeyManager.activate_mode': 'Activate',
   'settings.components.settings.ProviderAPIKeyManager.configure_option': 'Configure',
   'settings.components.settings.ProviderAPIKeyManager.collapse': 'Collapse',
   'settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility': 'Toggle key visibility',
@@ -87,8 +80,7 @@ describe('GeminiSetupForm', () => {
     expect(wrapper.get('[data-testid="gemini-active-mode"]').text()).toContain('Vertex Express')
     expect(wrapper.get('[data-testid="gemini-option-status-AI_STUDIO"]').attributes('title')).toBe('Configured')
     expect(wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]').attributes('aria-label')).toBe('Use this mode: AI Studio')
-    expect(wrapper.get('[data-testid="gemini-activate-AI_STUDIO"] [data-icon="heroicons:check"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="gemini-activate-AI_STUDIO"] [data-icon="heroicons:check-circle"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]').text()).toContain('Activate')
     expect(wrapper.get('[data-testid="gemini-option-active-VERTEX_EXPRESS"]').text()).toContain('Active')
     expect(wrapper.get('[data-testid="gemini-toggle-VERTEX_PROJECT"]').attributes('aria-label')).toBe('Configure: Vertex Project')
     expect(wrapper.get('[data-testid="gemini-option-description-AI_STUDIO"]').text()).toBe('Gemini Developer API key')
@@ -140,13 +132,13 @@ describe('GeminiSetupForm', () => {
     expect(wrapper.get('[data-testid="gemini-activate-VERTEX_PROJECT"]').attributes('disabled')).toBeDefined()
   })
 
-  it('shows the spinner instead of the idle check icon while activating', () => {
+  it('shows the spinner instead of the idle activation label while activating', () => {
     const wrapper = mountComponent({ activating: true })
     const activateButton = wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]')
 
     expect(activateButton.attributes('disabled')).toBeDefined()
     expect(activateButton.find('.animate-spin').exists()).toBe(true)
-    expect(activateButton.find('[data-icon="heroicons:check"]').exists()).toBe(false)
+    expect(activateButton.text()).not.toContain('Activate')
   })
 
   it('disables vault-backed unavailable options without disabling Vertex Project', () => {
