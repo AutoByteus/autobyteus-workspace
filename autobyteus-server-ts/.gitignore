@@ -16,6 +16,7 @@ node_modules/
 .env.*
 !.env.example
 !.env.test
+!.env.development
 
 # Runtime data
 /db/

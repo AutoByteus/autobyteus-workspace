@@ -397,49 +397,51 @@ cp .env.example .env
 pnpm -C autobyteus-server-ts exec vitest
 ```
 
-### Start the real backend and frontend for live API/E2E testing
+### Start the real backend and frontend for local development
 
-Run the combined test development stack from the workspace root:
-
-```bash
-pnpm dev:test
-```
-
-This is a real local runtime, not a mocked test server. The command:
-
-1. builds `autobyteus-server-ts`;
-2. validates the committed non-secret
-   `autobyteus-server-ts/.env.test` template;
-3. automatically materializes
-   `autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env`;
-4. starts the built backend on `http://127.0.0.1:8000` with that directory
-   passed as `--data-dir`; and
-5. starts the Nuxt frontend on `http://127.0.0.1:3000`, configured to use the
-   test backend.
-
-Open `http://127.0.0.1:3000` in a browser. Press `Ctrl+C` in the terminal that
-owns `pnpm dev:test` to stop both processes.
-
-The server reads the generated runtime `.env`, not `.env.test` directly.
-Developers do not create that runtime file manually: the test runner derives it
-from the committed template, writes it atomically with restricted permissions,
-and starts the server with a sanitized child environment. The template selects
-the project-local SQLite test application database under
-`autobyteus-server-ts/db/`. Managed provider credentials remain encrypted in
-that database's vault; do not put provider credential values in `.env.test` or
-the generated runtime `.env`.
-
-To run the processes in separate terminals instead:
+Run the complete local development stack from the workspace root:
 
 ```bash
-# Terminal 1, from the workspace root
-pnpm server:test
+pnpm dev
 ```
 
+This is a real local runtime, not a mocked test server. The command builds the
+server, validates the credential-free `autobyteus-server-ts/.env.development`
+template, atomically materializes the ignored runtime environment under
+`<repo>/.autobyteus/development/server-data/`, and starts:
+
+- backend: `http://127.0.0.1:8000`;
+- frontend: `http://127.0.0.1:3000`.
+
+The launcher proves both endpoints are ready before reporting success, owns
+only the two child processes it started, and stops them on `Ctrl+C`. The
+development database, adjacent vault key, logs, memory, workspaces, and
+runtime `.env` persist below `.autobyteus/development/server-data/`. The
+launcher does not read `.env`, `.env.test`, `.env.example`, or a home-directory
+environment file.
+
+Configure provider credentials through the existing Settings UI. For explicit
+file import, pass the absolute development database URL to the existing
+importer; the target is never inferred:
+
 ```bash
-# Terminal 2, from the workspace root
-pnpm web:test
+pnpm secrets:import -- \
+  --source /absolute/path/to/assignments \
+  --database-url file:/absolute/path/to/.autobyteus/development/server-data/db/development.db \
+  --dry-run
 ```
+
+To reset development state, stop the stack first and remove only
+`.autobyteus/development/` from the workspace root.
+
+Deterministic E2E assertions run separately:
+
+```bash
+pnpm test:e2e
+```
+
+This uses the existing test-owned Vitest setup and test runtime. Do not use a
+development database for tests.
 
 Useful real-provider checks against the same project test runtime:
 
