@@ -6,7 +6,7 @@
 
 ## Design summary
 
-Make the configured, non-active Gemini mode activation affordance a visible `Use this mode` text button and make the active mode a visible `Active` badge/text. Rendered inspection showed that the initial check-circle replacement still left the action and state visually ambiguous because both used circular visual language. The button remains an explicit activation command; no state, API, persistence, or command-label behavior changes.
+Make the configured, non-active Gemini mode activation affordance an icon-only plain `heroicons:check` button and make the active mode a visible `Active` badge/text. Rendered inspection showed that the initial check-circle and radio-like markers left action and state visually ambiguous. The plain checkmark communicates apply/select without competing with the visible active state. The button remains an explicit activation command; no state, API, persistence, or command-label behavior changes.
 
 ## Approved basis
 
@@ -20,18 +20,18 @@ Make the configured, non-active Gemini mode activation affordance a visible `Use
 
 | Behavior ID / use case | Approved change or preserved outcome | Target production path | Spine IDs |
 |---|---|---|---|
-| `BEH-001` / `UC-001` recognize activation | Render visible `Use this mode` text; no icon-only activation affordance. Preserve title, ARIA name, test ID, and button semantics. | Settings API Key Management → Gemini setup → `GeminiSetupForm` → `GeminiConfigurationOptionCard` render. | `SP-UI-001` |
-| `BEH-001` / `UC-002` activate mode | Preserve click routing and exact option payload; only the visible button presentation changes. | User click → button `@click` → `emit('activate', option)` → existing parent/store/GraphQL activation path. | `SP-UI-001`, `SP-ACT-001` |
+| `BEH-001` / `UC-001` recognize activation | Render a plain `heroicons:check` icon-only activation affordance; no circular glyph. Preserve title, ARIA name, test ID, and button semantics. | Settings API Key Management → Gemini setup → `GeminiSetupForm` → `GeminiConfigurationOptionCard` render. | `SP-UI-001` |
+| `BEH-001` / `UC-002` activate mode | Preserve click routing and exact option payload; only the icon presentation changes. | User click → button `@click` → `emit('activate', option)` → existing parent/store/GraphQL activation path. | `SP-UI-001`, `SP-ACT-001` |
 | `BEH-002` / `AC-003` pending activation | Preserve spinner substitution, disabled state, and live announcement. | Parent `activating` prop → card `actionsDisabled` → spinner/disabled render. | `SP-UI-002` |
 | `BEH-003` / `UC-003` active contrast | Replace the radio-like marker with visible `Active` text/badge and omit the activation button. Preserve active row styling, title, test ID, and accessible status. | `active` prop → visible active badge branch; `v-if="configured && !active"` remains false. | `SP-UI-003` |
-| `BEH-006` / `UC-001`, `UC-003` visual distinction | Separate action and state through text rather than similar circular glyphs; configured dot/edit control remain unchanged. | Card status/action cluster → visible activation text or visible active badge. | `SP-UI-001`, `SP-UI-003` |
-| `BEH-004` / `AC-002` testable interaction | Extend focused component assertions for visible action/state text without changing event assertions. | `GeminiSetupForm.spec.ts` mount → configured/active rows → DOM and click assertions. | `SP-TEST-001` |
+| `BEH-006` / `UC-001`, `UC-003` visual distinction | Separate action and state through a plain checkmark versus visible `Active` text; configured dot/edit control remain unchanged. | Card status/action cluster → checkmark activation icon or visible active badge. | `SP-UI-001`, `SP-UI-003` |
+| `BEH-004` / `AC-002` testable interaction | Extend focused component assertions for the plain icon and visible active state without changing event assertions. | `GeminiSetupForm.spec.ts` mount → configured/active rows → DOM and click assertions. | `SP-TEST-001` |
 
 ## Data-flow spines
 
 ### `SP-UI-001` — Render explicit activation affordance
 
-`GeminiSetupForm.geminiSetup` → `isConfigured(option)` / `active` props → `GeminiConfigurationOptionCard` conditional action → visible localized `Use this mode` text + existing accessible metadata.
+`GeminiSetupForm.geminiSetup` → `isConfigured(option)` / `active` props → `GeminiConfigurationOptionCard` conditional action → plain `heroicons:check` glyph + existing accessible metadata.
 
 ### `SP-ACT-001` — Preserve activation command
 
@@ -47,14 +47,14 @@ Parent `active` → visible `Active` badge/text branch and activation-button gua
 
 ### `SP-TEST-001` — Durable verification
 
-`GeminiSetupForm.spec.ts` → configured non-active/active rows → visible action/state DOM assertions and existing accessible/event assertions.
+`GeminiSetupForm.spec.ts` → configured non-active/active rows → icon/state DOM assertions and existing accessible/event assertions.
 
 ## Ownership and boundaries
 
 - Governing owner: `GeminiConfigurationOptionCard.vue` owns the activation control and active-state visual presentation.
 - Upstream owner: `GeminiSetupForm.vue` owns option iteration and state projection; unchanged.
 - Downstream owner: existing provider store/API path owns activation semantics; unchanged and out of scope.
-- No new coordinator, shared text-button wrapper, abstraction, or compatibility alias is justified for this local template/style correction.
+- No new coordinator, shared icon wrapper, abstraction, or compatibility alias is justified for this local template/style correction.
 
 ## File and interface design
 
@@ -62,9 +62,9 @@ Parent `active` → visible `Active` badge/text branch and activation-button gua
 
 `autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionCard.vue`
 
-- Remove the now-unneeded `Icon` import from `@iconify/vue`.
-- Change the activation button from fixed `h-11 w-11` icon-only layout to a compact text-button layout with at least `h-11`, horizontal padding, and the existing blue hover/focus/disabled classes.
-- Render the existing localized `use_this_mode` text visibly in the idle branch. Keep the activating spinner and render the existing localized `activating` text while pending so the visible control remains understandable.
+- Retain/import `Icon` from `@iconify/vue` and render `<Icon icon="heroicons:check" class="h-5 w-5" aria-hidden="true" />` in the idle branch.
+- Restore the activation button’s fixed `h-11 w-11` icon-only layout and existing blue hover/focus/disabled classes.
+- Keep the activating spinner as the only pending visual; do not render visible action text.
 - Change the active branch from the radio-like circle marker to a compact visible badge/text using the existing localized `active` key. Keep `data-testid`, `title`, and screen-reader status.
 - Leave the button condition, title, `aria-label`, `data-testid`, `@click`, and disabled logic unchanged.
 
@@ -72,8 +72,8 @@ Parent `active` → visible `Active` badge/text branch and activation-button gua
 
 `autobyteus-web/components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts`
 
-- Remove the no-longer-needed `@iconify/vue` test mock.
-- Assert that a configured non-active activation button visibly contains `Use this mode` and does not depend on an icon-only child.
+- Retain/mock `@iconify/vue` with a small test component exposing the requested icon name.
+- Assert that a configured non-active activation button contains `heroicons:check` and not the superseded `heroicons:check-circle`.
 - Assert that the active option visibly contains `Active` within its existing active test hook and still renders no activation button.
 - Preserve existing click/event, pending-state, and unavailable-option assertions.
 
@@ -84,16 +84,16 @@ Parent `active` → visible `Active` badge/text branch and activation-button gua
 
 ## Dependency and encapsulation rules
 
-- Do not add or retain an icon dependency for this action; visible text is the authoritative affordance.
-- Retain localized title/ARIA metadata because the action must remain robust to layout and assistive technology.
+- Reuse the existing `@iconify/vue` dependency; do not add dependencies.
+- Keep the icon decorative (`aria-hidden`) and retain localized title/ARIA metadata because the accessible action name is not visible.
 - Do not encode activation state in the icon alone or infer state from visual output.
 - Do not alter activation event or provider state ownership.
 
 ## Change sequence
 
-1. Revise `GeminiConfigurationOptionCard.vue` to use a visible activation text button and visible active badge/text.
-2. Remove the superseded Iconify check-circle implementation and its test mock/assertions.
-3. Extend focused `GeminiSetupForm.spec.ts` coverage for visible action/state text and retain existing interaction assertions.
+1. Revise `GeminiConfigurationOptionCard.vue` to use a plain checkmark icon-only activation button and visible active badge/text.
+2. Replace the superseded visible activation text contract and any check-circle implementation with `heroicons:check`.
+3. Extend focused `GeminiSetupForm.spec.ts` coverage for the plain icon and visible active state while retaining existing interaction assertions.
 4. Run focused Vitest plus frontend localization and web-boundary guards; report any environment limitation.
 
 ## Removal / decommissioning
@@ -104,12 +104,12 @@ Parent `active` → visible `Active` badge/text branch and activation-button gua
 
 ## Task design health assessment
 
-`No refactor needed.` The current component remains the narrow owner of both the activation control and active-state presentation; its props and emitted event are semantically correct. The broader correction is still a local template/style change, and changing a shared abstraction or runtime boundary would add scope without addressing the demonstrated ambiguity.
+`No refactor needed.` The current component remains the narrow owner of both the activation control and active-state presentation; its props and emitted event are semantically correct. The revised correction is still a local template/style change, and changing a shared abstraction or runtime boundary would add scope without addressing the demonstrated ambiguity.
 
 ## Implementation readiness validation
 
-1. Every approved use case (`UC-001`–`UC-003`) and the revised visual distinction behavior (`BEH-006`) appears in the behavior map and is supported by repository evidence plus the downstream rendered screenshot; no mechanically invented use case was added.
+1. Every approved use case (`UC-001`–`UC-003`) and the revised visual distinction behavior (`BEH-006`) appears in the behavior map and is supported by repository evidence, downstream rendered inspection, and the user-approved follow-up direction; no mechanically invented use case was added.
 2. Each mapped behavior has a complete target path and the required UI/action/test spine IDs (`SP-UI-001`, `SP-ACT-001`, `SP-UI-002`, `SP-UI-003`, `SP-TEST-001`).
-3. The design was revalidated against the available shared workflow principles: behavior-first scope, existing owner reuse, explicit boundaries, no unnecessary refactor, clean replacement, accessibility preservation, responsive text treatment, and proportional verification. The referenced external principles file was unavailable in the installed skill directory and is recorded as a non-blocking environment gap in investigation notes.
+3. The design was revalidated against the available shared workflow principles: behavior-first scope, existing owner reuse, explicit boundaries, no unnecessary refactor, clean replacement, accessibility preservation, responsive active badge treatment, and proportional verification. The referenced external principles file was unavailable in the installed skill directory and is recorded as a non-blocking environment gap in investigation notes.
 
 **Result: implementation-ready.**

@@ -70,7 +70,7 @@
           <button
             v-if="configured && !active"
             type="button"
-            class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-blue-700 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             :disabled="actionsDisabled"
             :data-testid="`gemini-activate-${option}`"
             :title="$t('settings.components.settings.ProviderAPIKeyManager.use_this_mode')"
@@ -82,12 +82,12 @@
               class="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
               aria-hidden="true"
             ></span>
-            <span v-if="activating">
-              {{ $t('settings.components.settings.ProviderAPIKeyManager.activating') }}
-            </span>
-            <span v-else>
-              {{ $t('settings.components.settings.ProviderAPIKeyManager.use_this_mode') }}
-            </span>
+            <Icon
+              v-else
+              icon="heroicons:check"
+              class="h-5 w-5"
+              aria-hidden="true"
+            />
           </button>
           <button
             type="button"
@@ -166,6 +166,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { Icon } from '@iconify/vue'
 import GeminiConfigurationOptionEditor from './GeminiConfigurationOptionEditor.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type {

@@ -5,7 +5,8 @@
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | `Initial Baseline` / `Local Fix` / `Design Impact` / `Requirement Gap` / `Unclear` |  |  |
 | IR-001 | Implementation handoff, initial round | N/A | `Initial Baseline` | `N/A` | Superseded by IR-002 after rendered inspection. |
-| IR-002 | `solution_designer` revised package / SR-001, implementation rework round | SR-001; downstream rendered ambiguity finding | `Design Impact` | `SR-001`; `CRR-*` / `API-REV-*`: `N/A` | Implemented visible activation/state text; ready for source review. |
+| IR-002 | `solution_designer` revised package / SR-001, implementation rework round | SR-001; downstream rendered ambiguity finding | `Design Impact` | `SR-001`; `CRR-*` / `API-REV-*`: `N/A` | Superseded by IR-003 after user-approved symbol correction. |
+| IR-003 | `solution_designer` revised package / SR-002, implementation rework round | SR-002; user-approved plain-check direction | `Design Impact` | `SR-002`; `CRR-*` / `API-REV-*`: `N/A` | Restored plain check activation icon while retaining visible Active badge; ready for source review. |
 
 ## Revision Entries
 
@@ -44,3 +45,21 @@
 - Local validation and result: Focused Vitest passed (1 file / 7 tests); localization boundary, web boundary, localization literal audit, `git diff --check`, and Nuxt production build/prerender passed. Live `open_tab` inspection at `http://127.0.0.1:3000/settings` showed the visible `Use this mode` action and `Active` badge; screenshot `/Users/normy/.autobyteus/browser-artifacts/526f15-1785227978715.png` was captured before this round and `/Users/normy/.autobyteus/browser-artifacts/526f15-1785227978715.png` reflects the updated live surface.
 - Next recipient or routing: `code_reviewer` for implementation-source review, then API/E2E flow.
 - Remaining limitations or risks: Live inspection covered the available ~930px viewport; narrow-width wrapping, hover/focus, and pending browser state remain for downstream validation.
+
+### IR-003 — Plain check activation icon with visible active state
+
+- Triggering role, report path, and round: `solution_designer` revised implementation-ready package and `solution-revision-record.md` (`SR-002`), rework round; user-approved follow-up direction.
+- Triggering finding IDs: `SR-002`; temporary visible activation-text mismatch.
+- Classification: `Design Impact`.
+- Prior authoritative result: `IR-002` visible `Use this mode` text button plus visible `Active` badge.
+- Current authoritative result: Configured non-active rows render a fixed 44×44 Iconify `heroicons:check` activation button; active rows retain visible `Active` badge and no activation button.
+- Related solution revision ID: `SR-002`.
+- Related code review revision IDs: `N/A`.
+- Related API/E2E revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: The user-approved direction restores a compact symbol action while relying on the visible Active badge to distinguish current state.
+- Approved behavior or requirement IDs affected: Revised `BEH-001`, `BEH-002`, `BEH-003`, `BEH-004`, `BEH-006`; `REQ-001`–`REQ-005`; `AC-001`–`AC-006`.
+- Implementation delta: Restored `@iconify/vue` import and focused test mock; changed idle icon to plain `heroicons:check`; restored `h-11 w-11` button geometry; removed visible action/pending text; retained visible Active badge and its assertions.
+- Changed files or areas: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionCard.vue`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web/components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts`.
+- Local validation and result: Focused Vitest passed (1 file / 7 tests); localization boundary, web boundary, localization literal audit, `git diff --check`, and Nuxt production build/prerender passed. Live `open_tab` inspection at `http://127.0.0.1:3000/settings` captured `/Users/normy/.autobyteus/browser-artifacts/526f15-1785229422040.png`; the plain check rendered beside the visible Active badge.
+- Next recipient or routing: `code_reviewer` for implementation-source review, then API/E2E flow.
+- Remaining limitations or risks: Live inspection covered the available approximately 930px viewport; hover/focus, pending browser state, and narrow-width behavior remain downstream validation items.

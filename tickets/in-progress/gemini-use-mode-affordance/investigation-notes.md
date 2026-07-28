@@ -58,9 +58,11 @@
 - The first implementation (`a00dc0ee2`, check-circle glyph) was inspected in the actual Settings surface. It improved the empty-ring glyph but did not resolve the broader ambiguity: non-active rows showed a green configured dot, a blue check-circle activation action, and an edit icon, while the active row showed a blue radio-like circle with center dot plus edit. The two circular controls still made action vs current state visually similar.
 - Revised clarity direction: make the non-active activation action a visible text button using the existing `Use this mode` localization, and replace the active radio-like visual with visible `Active` text/badge while retaining accessible names, test hooks, and active row styling. Leave the configured status dot and edit/configure control unchanged.
 - Product decision recorded here: use `Use this mode` rather than `Make active` so no new copy/translation is needed and the existing command language remains stable. Do not add a new icon to carry the meaning; visible text is the authoritative affordance.
+- Follow-up direction approved by the user via the implementation-engineer report: keep the visible `Active` badge/text, but restore an icon-only activation control using a plain `heroicons:check` glyph. The checkmark communicates apply/select without the circular shape that caused the ambiguity; the existing `Use this mode: <option>` title/ARIA label remains authoritative.
+- This supersedes the temporary visible-text activation direction in `SR-001`; it does not restore the circular check icon or the active radio marker.
 
 ## Open unknowns / residual risks
 
 - The referenced shared `design-principles.md` and template files are absent from the installed agent-skill directory. No blocking design ambiguity resulted because this is a local icon-only change and existing repository conventions provide direct evidence.
 - Browser/live validation is proportional and can remain downstream; the symbol is a static frontend render with existing component coverage.
-- The final badge treatment (compact blue `Active` text badge) should be validated at narrow card widths; the design explicitly allows wrapping while retaining a 44px minimum action height.
+- The final compact blue `Active` text badge and plain-check icon button should be validated at narrow card widths; the design retains a 44×44px activation target.
