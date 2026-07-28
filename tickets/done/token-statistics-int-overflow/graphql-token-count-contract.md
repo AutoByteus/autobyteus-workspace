@@ -6,9 +6,9 @@ Current protocol/API contract supplement. Related requirements: REQ-001 and REQ-
 
 Core artifact links:
 
-- [Requirements doc](/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/requirements-doc.md)
-- [Investigation notes](/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/investigation-notes.md)
-- [Design spec](/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/design-spec.md)
+- [Requirements doc](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/requirements-doc.md)
+- [Investigation notes](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/investigation-notes.md)
+- [Design spec](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/design-spec.md)
 
 ## Evidence
 

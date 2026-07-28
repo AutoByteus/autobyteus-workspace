@@ -38,7 +38,7 @@ The behavior map contains the complete approved product scope. Shared run-summar
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md` | Exact token scalar, field-family scope, codegen mapping, invariants, rejected alternatives, and coverage shape. | REQ-001, REQ-002; AC-001, AC-002, AC-005 | Supplies the protocol-level details projected into the file/interface design below. | Current; approved with requirements basis on 2026-07-28. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md` | Exact token scalar, field-family scope, codegen mapping, invariants, rejected alternatives, and coverage shape. | REQ-001, REQ-002; AC-001, AC-002, AC-005 | Supplies the protocol-level details projected into the file/interface design below. | Current; approved with requirements basis on 2026-07-28. |
 
 ## Task Design Health Assessment (Mandatory)
 
