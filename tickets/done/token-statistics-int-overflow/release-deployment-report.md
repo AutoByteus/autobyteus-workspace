@@ -3,15 +3,15 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `token-statistics-int-overflow`
-- Current delivery scope: authorized repository finalization and cleanup after the successful integrated-state/docs handoff.
+- Current delivery scope: completed repository finalization and cleanup after the successful integrated-state/docs handoff.
 - Release/publication/deployment authorization: explicitly declined; the user requested finalization with no release.
-- Current status: `Repository finalization in progress`.
+- Current status: `Complete — finalized without release`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Records the current integrated candidate, exact validated behavior, evidence, residuals, verification checklist, cumulative artifact package, and finalization hold.
+- Notes: Records the integrated behavior, evidence, user authorization, completed repository finalization/cleanup, explicit no-release decision, and residual scope.
 
 ## Initial Delivery Integration Refresh
 
@@ -39,7 +39,7 @@
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-server-ts/docs/modules/token_usage.md`; `autobyteus-web/docs/settings.md`
 - No-impact rationale (if applicable): `N/A`
@@ -47,30 +47,30 @@
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow`
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Not started`
-- Release commit: `Not started`
-- Tag: `Not created`
+- Version bump: `Not required`
+- Release commit: `Not required`
+- Tag: `Not required`
 - Reason: The user explicitly requested no release.
 
 ## Repository Finalization
 
 - Bootstrap context source: `requirements-doc.md` and `implementation-handoff.md`
 - Ticket branch: `codex/token-statistics-int-overflow`
-- Ticket branch commit result: Delivery-safety checkpoint `1701f4f33` completed; final delivery/archive commit pending.
-- Ticket branch push result: `Pending`
+- Ticket branch commit result: `Completed` — checkpoint `1701f4f33`; final archive/handoff commit `cc6cb2e48`
+- Ticket branch push result: `Completed` before post-finalization branch cleanup
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: `Pending`
-- Merge into target result: `Pending`
-- Push target branch result: `Pending`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — clean temporary detached worktree created at refreshed `origin/personal` to avoid modifying unrelated dirty work in the checked-out `personal` worktree.
+- Merge into target result: `Completed` — `169fd12f409083c7b9268243a3152041eb0e2205`
+- Push target branch result: `Completed` — merge revision matched `origin/personal` after push.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `None`
 
 ## Release / Publication / Deployment
@@ -85,23 +85,23 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow`
-- Worktree cleanup result: `Pending`
-- Worktree prune result: `Pending`
-- Local ticket branch cleanup result: `Pending`
-- Remote branch cleanup result: `Pending`
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
 - Blocker (if applicable): `N/A`
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`
-- Why final handoff could not complete: `N/A`; finalization is authorized and in progress.
+- Why final handoff could not complete: `N/A`; finalization completed.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/tickets/done/token-statistics-int-overflow/release-notes.md`
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/release-notes.md`
 - Archived release notes artifact used for release/publication: `No — release explicitly excluded`
-- Release notes status: `Updated`
+- Release notes status: `Not required`; the prepared ticket-local notes remain archived but were not used.
 
 ## Deployment Steps
 
@@ -118,20 +118,24 @@
 ## Verification Checks
 
 - `git fetch origin personal`: `Pass`; tracked base unchanged at `a3beeec29a701e6731d985f76d083a12bd82478f`.
-- Ancestry/divergence: `Pass`; checkpoint is one commit ahead and zero behind `origin/personal`.
+- Initial delivery ancestry/divergence: `Pass`; checkpoint was one commit ahead and zero behind the then-current `origin/personal`.
 - Durable test patch hash comparison: `Pass`; all three hashes match the proportional review handoff.
 - Upstream source review: `Pass`, 9.61/10, no unresolved findings.
 - Upstream API/E2E: `Pass`, 96% confidence, all critical acceptance criteria directly proven.
 - Upstream proportional test-code review: `Pass`, no unresolved findings.
 - Delivery documentation structural, inventory, result, identity, hash, and contract checks: `Pass`; see `delivery-evidence/package-validation.txt`.
+- Final merged-target diff and structural assertions: `Pass`.
+- Target containment/push: `Pass`; merge commit `169fd12f4` was pushed to `origin/personal`.
+- Cleanup audit: `Pass`; the dedicated ticket worktree and both local/remote ticket branches were removed and worktrees pruned.
+- Unrelated-work preservation: `Pass`; the dirty checked-out `personal` worktree was not reset, stashed, cleaned, staged, or otherwise modified by this finalization.
+- Finalization package validation: `Pass`; see `delivery-evidence/finalization-package-validation.txt`.
 
 ## Rollback Criteria
 
-- Before the target push: withhold the final merge; `personal` and the installed package remain unchanged.
-- After repository finalization: revert the bounded ticket merge if needed; do not modify correct ledger data.
+- After repository finalization: revert merge commit `169fd12f4` if needed; do not modify correct ledger data.
 - Publication rollback: `N/A`; no release/publication/deployment is authorized or planned.
 - Escalate values above `Number.MAX_SAFE_INTEGER` as a new design/requirements task rather than weakening the current exact-number contract.
 
 ## Final Status
 
-`Repository finalization in progress — user verified, target unchanged, ticket archived, and release explicitly excluded.`
+`Complete — ticket archived, merged and pushed to origin/personal, dedicated ticket resources cleaned up, and no release performed by explicit user instruction.`
