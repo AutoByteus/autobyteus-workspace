@@ -73,7 +73,11 @@ describe('tokenUsageStatistics store', () => {
               createdTimeSource: 'RUN_HISTORY',
               models: ['gpt-shared'],
               runtimeKinds: ['autobyteus', 'codex_app_server'],
-              aggregate: aggregate(),
+              aggregate: aggregate({
+                grossInputTokens: 3_136_827_911,
+                outputTokens: 30,
+                totalTokens: 3_136_827_941,
+              }),
               children: [{
                 rowId: 'team:team-newer:member:designer',
                 rowKind: 'MEMBER_RUN',
@@ -144,7 +148,9 @@ describe('tokenUsageStatistics store', () => {
       createdTimeSource: 'RUN_HISTORY',
       runtimeKinds: ['autobyteus', 'codex_app_server'],
       aggregate: expect.objectContaining({
-        grossInputTokens: 160,
+        grossInputTokens: 3_136_827_911,
+        outputTokens: 30,
+        totalTokens: 3_136_827_941,
         cacheReadInputTokenRate: 0.25,
         apiCostStatus: 'estimated',
       }),

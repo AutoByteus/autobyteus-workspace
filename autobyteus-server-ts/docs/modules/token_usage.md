@@ -362,6 +362,16 @@ metadata, component `unitPrices`, latest prompt/context-window fields,
 model/runtime identity, and `usageReportCount`. Clients must treat those fields
 as server-owned summary data, not as a prompt to recalculate prices locally.
 
+Token-valued outputs in this GraphQL family use the `SafeInt` scalar rather
+than the built-in signed 32-bit `Int`. The supported transport and client
+contract remains an exact JavaScript `number` through
+`Number.MAX_SAFE_INTEGER`; values beyond that boundary require a separately
+designed cross-client contract and must not be rounded, capped, string-coerced,
+or dropped. Non-token counters such as `usageReportCount` remain GraphQL `Int`.
+The web code generator must explicitly map `SafeInt` input and output to
+TypeScript `number`, because remote schema introspection does not carry the
+scalar package's code-generation metadata.
+
 `unitPrices` is the display-safe explanation of the unit-price basis used by
 the summary. It reports a `{ status, pricePerMillion }` summary for standard
 input, cache-read input, cache-write input, cache-write 5m/1h subtype buckets,
@@ -415,6 +425,10 @@ The frontend treats token usage as display-only state:
   top-level rows plus five recursive `children` levels; deeper backend trees
   require an explicit query-depth follow-up before all levels are visible in the
   web table.
+- Primary Task-table `Input` and `Output` cells render full locale-aware
+  integer digits so supported safe-integer totals remain exact and inspectable;
+  compact formatting is reserved for secondary cache/thinking explanatory
+  sublines.
 - `TokenUsageMeterPanel` presents the approved Token Meter hierarchy:
   `Latest prompt`, `Gross input`, `Output`, `Total estimate`,
   `Input breakdown`, `Pricing details`, and collapsed `Calculation details`.

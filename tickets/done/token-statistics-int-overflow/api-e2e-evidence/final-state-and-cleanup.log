@@ -1,0 +1,29 @@
+=== final durable test patch hashes ===
+autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts  4e017e132d7930fda0f7623cf3d9ce279628963e39186916f32f730314ec9746  -
+autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts  4d53062b5929ef28b84804b3acbb1c00a3143443803c39fe8c2aafbb6a794123  -
+autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts  ce8303be777cbf5e47e0607faf3c73dbfb8616ba245659e6b6cc1fd5909b7869  -
+=== final diff stat ===
+ .../src/api/graphql/types/token-usage-stats.ts     |  44 +++----
+ ...ken-usage-ledger-provider-semantics.e2e.test.ts | 139 +++++++++++++++++++++
+ autobyteus-web/codegen.ts                          |  10 +-
+ .../token-usage/TokenUsageTaskStatisticsTable.vue  |   4 +-
+ .../TokenUsageTaskStatisticsTable.spec.ts          |  32 +++++
+ autobyteus-web/generated/graphql.ts                |  68 +++++-----
+ .../stores/__tests__/tokenUsageStatistics.spec.ts  |  10 +-
+ 7 files changed, 247 insertions(+), 60 deletions(-)
+=== status ===
+## codex/token-statistics-int-overflow...origin/personal
+ M autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts
+ M autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts
+ M autobyteus-web/codegen.ts
+ M autobyteus-web/components/settings/token-usage/TokenUsageTaskStatisticsTable.vue
+ M autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+ M autobyteus-web/generated/graphql.ts
+ M autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts
+?? tickets/done/token-statistics-int-overflow/
+=== cleanup scan ===
+Error: in prepare, no such table: token_usage_ledger_events
+=== corrected final cleanup state ===
+Owned temp directories:
+Disposable harness files:
+Project test DB absent after runner cleanup; no ticket rows can remain.

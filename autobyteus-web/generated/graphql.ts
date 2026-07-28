@@ -22,6 +22,8 @@ export type Scalars = {
   JSON: { input: any; output: any; }
   /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
+  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
+  SafeInt: { input: number; output: number; }
 };
 
 export type AgentDefinition = {
@@ -2454,14 +2456,14 @@ export type TestMemoryHubConnectionInput = {
 export type TokenUsageCostSummaryAggregateGraphql = {
   __typename?: 'TokenUsageCostSummaryAggregateGraphql';
   apiCostStatus: Scalars['String']['output'];
-  billableOutputTokens: Scalars['Int']['output'];
-  cacheCreation1hInputTokens: Scalars['Int']['output'];
-  cacheCreation5mInputTokens: Scalars['Int']['output'];
+  billableOutputTokens: Scalars['SafeInt']['output'];
+  cacheCreation1hInputTokens: Scalars['SafeInt']['output'];
+  cacheCreation5mInputTokens: Scalars['SafeInt']['output'];
   cacheCreationInputTokenRate?: Maybe<Scalars['Float']['output']>;
-  cacheCreationInputTokens: Scalars['Int']['output'];
-  cacheMissInputTokens: Scalars['Int']['output'];
+  cacheCreationInputTokens: Scalars['SafeInt']['output'];
+  cacheMissInputTokens: Scalars['SafeInt']['output'];
   cacheReadInputTokenRate?: Maybe<Scalars['Float']['output']>;
-  cacheReadInputTokens: Scalars['Int']['output'];
+  cacheReadInputTokens: Scalars['SafeInt']['output'];
   cacheState: Scalars['String']['output'];
   currency?: Maybe<Scalars['String']['output']>;
   estimatedApiCacheCreation1hInputCost?: Maybe<Scalars['Float']['output']>;
@@ -2473,18 +2475,18 @@ export type TokenUsageCostSummaryAggregateGraphql = {
   estimatedApiReasoningOutputCost?: Maybe<Scalars['Float']['output']>;
   estimatedApiStandardInputCost?: Maybe<Scalars['Float']['output']>;
   estimatedApiTotalCost?: Maybe<Scalars['Float']['output']>;
-  grossInputTokens: Scalars['Int']['output'];
+  grossInputTokens: Scalars['SafeInt']['output'];
   missingPriceDimensions: Array<Scalars['String']['output']>;
   observedModelIdentifiers: Array<Scalars['String']['output']>;
   observedModelProviders: Array<Scalars['String']['output']>;
   observedRuntimeKinds: Array<Scalars['String']['output']>;
-  outputTokens: Scalars['Int']['output'];
+  outputTokens: Scalars['SafeInt']['output'];
   pricingPolicyKey?: Maybe<Scalars['String']['output']>;
-  reasoningOutputTokens: Scalars['Int']['output'];
+  reasoningOutputTokens: Scalars['SafeInt']['output'];
   selectedPricingTierId?: Maybe<Scalars['String']['output']>;
   standardInputTokenRate?: Maybe<Scalars['Float']['output']>;
-  standardInputTokens: Scalars['Int']['output'];
-  totalTokens: Scalars['Int']['output'];
+  standardInputTokens: Scalars['SafeInt']['output'];
+  totalTokens: Scalars['SafeInt']['output'];
   unitPrices: TokenUsageUnitPricesGraphql;
   updatedAt?: Maybe<Scalars['String']['output']>;
   usageReportCount: Scalars['Int']['output'];
@@ -2494,18 +2496,18 @@ export type TokenUsageRunSummaryGraphql = {
   __typename?: 'TokenUsageRunSummaryGraphql';
   agentDefinitionId?: Maybe<Scalars['String']['output']>;
   apiCostStatus: Scalars['String']['output'];
-  billableOutputTokens: Scalars['Int']['output'];
-  cacheCreation1hInputTokens: Scalars['Int']['output'];
-  cacheCreation5mInputTokens: Scalars['Int']['output'];
+  billableOutputTokens: Scalars['SafeInt']['output'];
+  cacheCreation1hInputTokens: Scalars['SafeInt']['output'];
+  cacheCreation5mInputTokens: Scalars['SafeInt']['output'];
   cacheCreationInputTokenRate?: Maybe<Scalars['Float']['output']>;
-  cacheCreationInputTokens: Scalars['Int']['output'];
-  cacheMissInputTokens: Scalars['Int']['output'];
+  cacheCreationInputTokens: Scalars['SafeInt']['output'];
+  cacheMissInputTokens: Scalars['SafeInt']['output'];
   cacheReadInputTokenRate?: Maybe<Scalars['Float']['output']>;
-  cacheReadInputTokens: Scalars['Int']['output'];
+  cacheReadInputTokens: Scalars['SafeInt']['output'];
   cacheState: Scalars['String']['output'];
   contextWindowUsagePercent?: Maybe<Scalars['Float']['output']>;
   currency?: Maybe<Scalars['String']['output']>;
-  effectiveContextWindowTokens?: Maybe<Scalars['Int']['output']>;
+  effectiveContextWindowTokens?: Maybe<Scalars['SafeInt']['output']>;
   estimatedApiCacheCreation1hInputCost?: Maybe<Scalars['Float']['output']>;
   estimatedApiCacheCreation5mInputCost?: Maybe<Scalars['Float']['output']>;
   estimatedApiCacheCreationInputCost?: Maybe<Scalars['Float']['output']>;
@@ -2516,10 +2518,10 @@ export type TokenUsageRunSummaryGraphql = {
   estimatedApiStandardInputCost?: Maybe<Scalars['Float']['output']>;
   estimatedApiTotalCost?: Maybe<Scalars['Float']['output']>;
   executionAddress?: Maybe<Scalars['JSON']['output']>;
-  grossInputTokens: Scalars['Int']['output'];
+  grossInputTokens: Scalars['SafeInt']['output'];
   latestModelIdentifier?: Maybe<Scalars['String']['output']>;
   latestModelProvider?: Maybe<Scalars['String']['output']>;
-  latestPromptTokens?: Maybe<Scalars['Int']['output']>;
+  latestPromptTokens?: Maybe<Scalars['SafeInt']['output']>;
   latestRuntimeKind?: Maybe<Scalars['String']['output']>;
   memberAgentRunId?: Maybe<Scalars['String']['output']>;
   memberRouteKey?: Maybe<Scalars['String']['output']>;
@@ -2527,15 +2529,15 @@ export type TokenUsageRunSummaryGraphql = {
   observedModelIdentifiers: Array<Scalars['String']['output']>;
   observedModelProviders: Array<Scalars['String']['output']>;
   observedRuntimeKinds: Array<Scalars['String']['output']>;
-  outputTokens: Scalars['Int']['output'];
+  outputTokens: Scalars['SafeInt']['output'];
   pricingPolicyKey?: Maybe<Scalars['String']['output']>;
-  reasoningOutputTokens: Scalars['Int']['output'];
+  reasoningOutputTokens: Scalars['SafeInt']['output'];
   rootTeamRunId?: Maybe<Scalars['String']['output']>;
   runId: Scalars['String']['output'];
   selectedPricingTierId?: Maybe<Scalars['String']['output']>;
   standardInputTokenRate?: Maybe<Scalars['Float']['output']>;
-  standardInputTokens: Scalars['Int']['output'];
-  totalTokens: Scalars['Int']['output'];
+  standardInputTokens: Scalars['SafeInt']['output'];
+  totalTokens: Scalars['SafeInt']['output'];
   unitPrices: TokenUsageUnitPricesGraphql;
   updatedAt?: Maybe<Scalars['String']['output']>;
   usageReportCount: Scalars['Int']['output'];
@@ -2705,24 +2707,24 @@ export type UsageStatistics = {
   aggregate: TokenUsageCostSummaryAggregateGraphql;
   apiCostStatus: Scalars['String']['output'];
   assistantCost?: Maybe<Scalars['Float']['output']>;
-  assistantTokens: Scalars['Int']['output'];
-  cacheCreationInputTokens: Scalars['Int']['output'];
+  assistantTokens: Scalars['SafeInt']['output'];
+  cacheCreationInputTokens: Scalars['SafeInt']['output'];
   cacheReadInputTokenRate?: Maybe<Scalars['Float']['output']>;
-  cacheReadInputTokens: Scalars['Int']['output'];
+  cacheReadInputTokens: Scalars['SafeInt']['output'];
   cacheState: Scalars['String']['output'];
   currency?: Maybe<Scalars['String']['output']>;
   inputCost?: Maybe<Scalars['Float']['output']>;
-  inputTokens: Scalars['Int']['output'];
+  inputTokens: Scalars['SafeInt']['output'];
   llmModel: Scalars['String']['output'];
   outputCost?: Maybe<Scalars['Float']['output']>;
-  outputTokens: Scalars['Int']['output'];
+  outputTokens: Scalars['SafeInt']['output'];
   promptCost?: Maybe<Scalars['Float']['output']>;
-  promptTokens: Scalars['Int']['output'];
+  promptTokens: Scalars['SafeInt']['output'];
   reasoningCost?: Maybe<Scalars['Float']['output']>;
-  reasoningTokens: Scalars['Int']['output'];
+  reasoningTokens: Scalars['SafeInt']['output'];
   runtimeKind: Scalars['String']['output'];
   thinkingCost?: Maybe<Scalars['Float']['output']>;
-  thinkingTokens: Scalars['Int']['output'];
+  thinkingTokens: Scalars['SafeInt']['output'];
   totalCost?: Maybe<Scalars['Float']['output']>;
 };
 

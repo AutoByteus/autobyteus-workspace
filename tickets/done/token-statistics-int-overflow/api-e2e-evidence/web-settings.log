@@ -1,0 +1,22 @@
+
+> autobyteus@1.4.26 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/__tests__/TokenUsageStatistics.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow/autobyteus-web
+
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (3 tests) 26ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  09:43:30
+   Duration  4.78s (transform 2.59s, setup 4.05s, collect 121ms, tests 26ms, environment 180ms, prepare 158ms)
