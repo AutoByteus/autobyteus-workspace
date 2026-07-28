@@ -7,7 +7,8 @@
 | IR-001 | Implementation handoff, initial round | N/A | `Initial Baseline` | `N/A` | Superseded by IR-002 after rendered inspection. |
 | IR-002 | `solution_designer` revised package / SR-001, implementation rework round | SR-001; downstream rendered ambiguity finding | `Design Impact` | `SR-001`; `CRR-*` / `API-REV-*`: `N/A` | Superseded by IR-003 after user-approved symbol correction. |
 | IR-003 | `solution_designer` revised package / SR-002, implementation rework round | SR-002; user-approved plain-check direction | `Design Impact` | `SR-002`; `CRR-*` / `API-REV-*`: `N/A` | Superseded by IR-004 after user-approved explicit-word direction. |
-| IR-004 | `solution_designer` revised package / SR-003, implementation rework round | SR-003; user-approved Activate/Active direction | `Design Impact` | `SR-003`; `CRR-*` / `API-REV-*`: `N/A` | Implemented visible localized Activate action and retained visible Active state; ready for source review. |
+| IR-004 | `solution_designer` revised package / SR-003, implementation rework round | SR-003; user-approved Activate/Active direction | `Design Impact` | `SR-003`; `CRR-*` / `API-REV-*`: `N/A` | Superseded by IR-005 after CRR-007 found the pending button omitted visible Activating text. |
+| IR-005 | `code_reviewer` `code-review-report.md` / CRR-007, bounded local-fix round | F-001; pending state omitted visible Activating text | `Local Fix` | `SR-003`; `CRR-007`; `API-REV-*`: fresh validation required | Added visible localized Activating text beside the existing spinner and asserted it in the focused test; ready for renewed source review. |
 
 ## Revision Entries
 
@@ -82,3 +83,21 @@
 - Local validation and result: Focused Vitest passed (1 file / 7 tests); localization boundary, web boundary, localization literal audit, `git diff --check`, and Nuxt production build/prerender passed. The focused `zhCnGlossaryConsistency.spec.ts` was run but has an unrelated pre-existing deprecated-glossary failure (`TokenUsageStatistics.noTaskUsage` contains `代理`). Live `open_tab` inspection at `http://127.0.0.1:3000/settings` captured `/Users/normy/.autobyteus/browser-artifacts/526f15-1785231690937.png` and visibly shows `Activate` versus `Active`.
 - Next recipient or routing: `code_reviewer` for implementation-source review, then API/E2E flow.
 - Remaining limitations or risks: Live inspection covered the available approximately 930px viewport; Simplified Chinese visual rendering and narrow-width wrapping remain downstream validation items.
+
+### IR-005 — Visible pending activation status
+
+- Triggering role, report path, and round: `code_reviewer`, `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/code-review-report.md`, CRR-007, source-review round 4.
+- Triggering finding IDs: `F-001`; approved pending state required the existing spinner plus visible localized `Activating` text.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-004` implemented the approved idle `Activate` and active `Active` contract but rendered only the spinner during activation.
+- Current authoritative result: The configured non-active activation button remains disabled while pending, renders the existing spinner plus visible localized `Activating...`, and omits idle `Activate`; all activation/state/API/persistence paths remain unchanged.
+- Related solution revision ID: `SR-003`.
+- Related code review revision ID: `CRR-007`.
+- Related API/E2E revision IDs: Fresh validation required; prior API/E2E sign-off is not reused.
+- Why this implementation revision is recorded: Resolve the bounded source-review finding without changing the approved action/state contract or ownership boundaries.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-004`, `AC-003`; pending presentation detail `SP-UI-002`.
+- Implementation delta: Added the existing `activating` localization visibly inside the pending activation button while retaining the spinner and disabled behavior; renamed and extended the focused test to assert visible `Activating...` and absence of `Activate`.
+- Changed files or areas: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionCard.vue`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web/components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts`; implementation handoff.
+- Local validation and result: Focused Vitest passed (1 file / 7 tests); localization boundary, web boundary, localization literal audit, `git diff --check`, and Nuxt production build/prerender passed. The known `zhCnGlossaryConsistency` unrelated `代理` baseline failure remains unchanged.
+- Next recipient or routing: `code_reviewer` for renewed implementation-source review; if passed, `api_e2e_engineer` for fresh API/E2E coverage and execution.
+- Remaining limitations or risks: Pending browser screenshot, narrow-width wrapping, and hover/focus remain downstream validation items; fresh source review and API/E2E are mandatory.

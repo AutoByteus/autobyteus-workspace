@@ -82,6 +82,9 @@
               class="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
               aria-hidden="true"
             ></span>
+            <span v-if="activating">
+              {{ $t('settings.components.settings.ProviderAPIKeyManager.activating') }}
+            </span>
             <span v-else>
               {{ $t('settings.components.settings.ProviderAPIKeyManager.activate_mode') }}
             </span>

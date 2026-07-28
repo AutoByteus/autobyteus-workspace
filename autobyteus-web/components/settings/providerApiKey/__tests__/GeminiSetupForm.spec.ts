@@ -132,12 +132,13 @@ describe('GeminiSetupForm', () => {
     expect(wrapper.get('[data-testid="gemini-activate-VERTEX_PROJECT"]').attributes('disabled')).toBeDefined()
   })
 
-  it('shows the spinner instead of the idle activation label while activating', () => {
+  it('shows the spinner and pending label while activating', () => {
     const wrapper = mountComponent({ activating: true })
     const activateButton = wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]')
 
     expect(activateButton.attributes('disabled')).toBeDefined()
     expect(activateButton.find('.animate-spin').exists()).toBe(true)
+    expect(activateButton.text()).toContain('Activating...')
     expect(activateButton.text()).not.toContain('Activate')
   })
 
