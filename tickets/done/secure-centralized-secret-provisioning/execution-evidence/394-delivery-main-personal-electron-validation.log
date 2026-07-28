@@ -1,0 +1,49 @@
+Secure Centralized Secret Provisioning main personal Electron validation
+timestamp_utc=2026-07-28T05:55:03Z
+source_head=6313a3c6c3f33ef1c21d24d4c247ffb2ab8e96e1
+origin_personal=6313a3c6c3f33ef1c21d24d4c247ffb2ab8e96e1
+source_branch=personal
+app=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg
+zip=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip
+artifact_presence=pass
+bundle_id=com.autobyteus.app
+bundle_version=1.4.26
+bundle_build=1.4.26
+binary=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+packaged_server_and_renderer_presence=pass
+builder_signing_policy=identity explicitly null; signing skipped
+builder_completion=pass
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $C22B87F5
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $3BF34077
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $F9D3C935
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $DAD887A5
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $F9D3C935
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $952EAE27
+Die überprüfte CRC32-Prüfsumme ist $854B3840
+dmg_verify=pass
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip.
+zip_integrity=pass
+app_asar_sha256=11393e9de16b3a6843a0f5ee32e86c0d58f75823de41ae8fb08b8def79744cc3
+dmg_sha256=d5c1883618de5df40388d9023911d60e6b9081a0d491e8b0812597efa9700f00
+zip_sha256=aa9ff94c80a754838690dec1488facb24f9829ebce76c1e92fc909ea1726dfe0
+dmg_embedded_app_asar_sha256=11393e9de16b3a6843a0f5ee32e86c0d58f75823de41ae8fb08b8def79744cc3
+zip_embedded_app_asar_sha256=11393e9de16b3a6843a0f5ee32e86c0d58f75823de41ae8fb08b8def79744cc3
+container_payload_identity=pass
+user_installed_main=14365 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+user_installed_backend_listener=AutoByteu:14977:*:29695
+user_installed_process_signaled=no
+main_personal_app_launched=no (user-installed app intentionally preserved on fixed port 29695)
+dmg_build_resume_note=host sleep left the task-local temporary UDRW image attached after content creation; delivery detached that exact temporary image, electron-builder resumed, converted the final DMG, and exited 0. Final hdiutil verification passes.
+validation=pass
+mount_cleanup=pass

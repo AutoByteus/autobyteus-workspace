@@ -1,154 +1,110 @@
-# Secure Centralized Secret Provisioning — Finalization Handoff
+# Secure Centralized Secret Provisioning — Final Handoff
 
 ## Status
 
-`User verified; repository finalization authorized; no release requested.`
+`Finalized; no release requested or performed.`
 
-> The manually ad-hoc-signed package that produced a blank window is
-> superseded and archived outside the active dist. The current paths below are
-> from a clean no-sign rebuild. A real launch proves a persistent renderer,
-> healthy backend, and visibly rendered full application UI (`384`–`386`).
+The user declared the task done and authorized finalization on 2026-07-28. The
+ticket is archived under `tickets/done`, merged into `personal`, pushed, and its
+dedicated ticket worktree and local/remote ticket branches are removed.
 
-The earlier Round 21 package, the first stale Round 22 package, and the broken
-manually signed package are superseded. Please test only the clean no-sign
-Round 22 artifact paths below.
+## Repository Identity
 
-- Ticket worktree:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning`
-- Ticket branch: `codex/secure-centralized-secret-provisioning`
+- Main repository:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Finalization target: `origin/personal`
+- Ticket archive commit:
+  `3a20ed08cbfbcef1395882e3a70339df6442cf9f`
+- Merge commit on `personal`:
+  `6313a3c6c3f33ef1c21d24d4c247ffb2ab8e96e1`
 - Final reviewed/executed product HEAD:
   `49c27b2fe3aeb8b8299759c6ae64f7ffddc09254`
-- Reviewed-package delivery checkpoint:
-  `57863a7005d13a0f5b68fa330b7f9c3ce5ce1dd7`
-- Exact fresh-package source HEAD:
-  `dae24b9c67b29c52454dd163d5a53c9478cbe308`
-- Tracked base:
+- Recorded base checked before finalization:
   `origin/personal@d6983612c5a77fb94d9266df85a9d03fe2d1c68b`
-- Base relation: 0 behind / 59 ahead; exact merge-base is the tracked base.
-- Source review: Round 47 `Pass`, 9.69/10.
-- API/E2E: Round 22 `Pass`, 98.7%, no critical gap.
-- Proportional test gate: Round 12 `Not Applicable`, no unresolved finding.
+- Base relation at finalization: 0 behind; exact merge-base was the recorded
+  base, so renewed user verification was not required.
 
-On 2026-07-28 the user explicitly declared the task done, authorized
-finalization, requested that no new version be released, and requested a fresh
-Electron build from the updated main-repository `personal` branch. Finalization
-therefore includes archive/commit/push/merge/push, the requested main-repository
-build, and safe ticket-worktree cleanup. It explicitly excludes version bump,
-tag, publication, deployment, and release.
+## Quality Gates
 
-## What Changed Since The Previous Package
+- Source review: Round 47 `Pass`, 9.69/10, no open implementation finding.
+- API/E2E: Round 22 `Pass`, 98.7%, no category below 90%, no critical gap.
+- Proportional durable-test review: Round 12 `Not Applicable`, no unresolved
+  finding.
+- Actual `open_tab` browser validation proved the compact Gemini three-option
+  panel, single focused editor, masked/write-only credential entry,
+  Save-and-use, Configured/Active state, clearing, reload persistence, and no
+  standalone removal.
+- Retained Round 21 evidence continues to cover provider capability, migration,
+  Docker lifecycle, packaged existing-user behavior, terminal, external Codex
+  and Claude CLI, and exact repository-Prisma integration.
 
-Round 22 is a focused Gemini Settings presentation improvement within the
-approved credential-custody ticket:
+Truthful limitations remain: Gemini AI Studio and Serper were unconfigured;
+AutoByteus remote discovery was unavailable and is not claimed as passed.
 
-- three compact connection options rather than permanently expanded forms;
-- Configure expands and focuses exactly one editor;
-- key fields remain hidden/write-only with a transient visibility control;
-- Save-and-use, Configured/Active state, save clearing, and reload persistence;
-- no standalone key/configuration removal.
+## Final Main-Repository Electron Build
 
-The actual `open_tab` browser directly proved those behaviors against an
-isolated supported backend/frontend stack. Focused web/server suites and both
-production builds passed. Task ports, runtime root, DB, and adjacent key were
-cleaned; the user's same-worktree stack was preserved.
+Built from exact main `personal` merge commit
+`6313a3c6c3f33ef1c21d24d4c247ffb2ab8e96e1` after archiving the previous dist
+and starting with no active `electron-dist`:
 
-All narrow-scope corrections from the user's earlier concern remain intact:
-18 enumerated paths were restored to `origin/personal`, unrelated Electron/PTY/
-Claude MCP/session/built-in-default changes remain removed, and ordinary/Gemini
-standalone removal remains absent.
-
-## Fresh macOS arm64 Candidate
-
-Built from exact secure-ticket source HEAD
-`dae24b9c67b29c52454dd163d5a53c9478cbe308`:
-
-- Application:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- App:
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - DMG:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.dmg`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg`
 - ZIP:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.26.zip`
+  `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip`
+- `app.asar` SHA-256:
+  `11393e9de16b3a6843a0f5ee32e86c0d58f75823de41ae8fb08b8def79744cc3`
 - DMG SHA-256:
-  `d15b24cf426af07597b7e538077b06e234a649a0eada1180754fe480f3d2b36b`
+  `d5c1883618de5df40388d9023911d60e6b9081a0d491e8b0812597efa9700f00`
 - ZIP SHA-256:
-  `ad11a1d69be56e73595866331713ab14747823e7ac11cdb3a66f5ba72cb32baa`
+  `aa9ff94c80a754838690dec1488facb24f9829ebce76c1e92fc909ea1726dfe0`
 
-The app is version `1.4.26`, arm64, and intentionally unsigned by
-electron-builder. No manual signing was applied. Its original Electron
-linker-only signatures do not satisfy strict distributable-package
-verification; that is expected for this local candidate. It is not Developer
-ID signed or notarized.
+Frozen install, clean Electron build, `hdiutil verify`, ZIP integrity, packaged
+server/renderer presence, and container payload identity all passed
+(`392`–`394`). Signing was explicitly disabled. These are local unsigned test
+artifacts, not a signed/notarized release.
 
-## Delivery Validation Performed
+The main candidate was not launched because the user's installed
+`/Applications/AutoByteus.app` was already running on fixed backend port
+`29695`. That process was preserved and not signaled. Before finalization, the
+clean unsigned ticket-worktree candidate had already passed a real launch with
+a persistent renderer, healthy backend, zero new renderer crash reports, and a
+visibly nonblank full UI; the user then declared the task done.
 
-The clean no-sign replacement passed:
+## Delivered Behavior And Boundaries
 
-1. complete removal/archive of the broken signed `electron-dist`;
-2. documented no-sign Electron rebuild from exact secure-ticket source HEAD;
-3. DMG checksum and ZIP integrity verification;
-4. real launch of the exact worktree app;
-5. exact worktree Electron main, backend, and persistent renderer process;
-6. backend `/rest/health` response `status=ok`;
-7. zero new renderer crash reports after launch;
-8. targeted screenshot proving a nonblank, fully rendered application UI;
-9. the clean candidate was left running for the user during verification.
+- Central encrypted secret vault with value-safe reads and provider/subject
+  resolution at point of use.
+- One application database plus adjacent key as a single backup/restore unit.
+- No automatic `.env` credential migration; importer target and source are
+  immutable and explicit.
+- Ordinary provider and Gemini save/overwrite without standalone credential
+  removal; custom-provider Delete remains entity lifecycle.
+- Claude remains exactly `auto|cli|api-key`, default `cli`; only explicit
+  `api-key` resolves `agentRuntime/claude_agent_sdk/apiKey`.
+- `LOCAL_HARDENED` covers local vault/file-root/value-safe custody only; Codex is
+  excluded, inherited environments prove continuity rather than isolation, and
+  `STRONG_AGENT_ISOLATION` remains deferred.
+- Exact unpatched `repository_prisma@1.0.8` with Prisma `5.22.0` and unchanged
+  Docker topology are preserved.
+- `DASHSCOPE_API_KEY` remains the only Qwen mapping.
 
-## How To Verify This Exact Candidate
+The `EXT-ANTHROPIC-AGENT-SDK-AUTH` official-source recheck is a delivery/release
+risk check only, not legal clearance or an authentication redesign.
 
-1. Quit the currently installed/running AutoByteus app normally.
-2. Confirm port `29695` has no listener:
-   `lsof -nP -iTCP:29695 -sTCP:LISTEN`.
-3. Open the fresh DMG above or launch the fresh `.app`. It is an unsigned local
-   build, so macOS may require **Control-click → Open** the first time.
-4. Prefer a disposable macOS profile. If you reuse application data, back up
-   the application database **together with its adjacent `.secret.key`** as one
-   unit; never restore only one of them.
-5. In **Settings → API Key Management → Gemini**, confirm:
-   - exactly three compact options are visible initially;
-   - Configure opens and focuses only one editor;
-   - key text is hidden by default and the visibility control only affects the
-     currently typed transient value;
-   - Save and use this mode produces Configured and Active state;
-   - the key input clears after save and remains absent after reload;
-   - no standalone Remove/Delete credential action appears.
-6. Check an ordinary provider still supports save/overwrite without a new
-   standalone Remove action, while custom-provider Delete still removes the
-   provider entity.
-7. Open Terminal, start a session, run `pwd`, and print a unique marker. This
-   rechecks the earlier superseded terminal regression through the actual GUI.
-8. If desired, check normal agent/team workflows plus Codex and Claude
-   continuity. Claude must remain `auto|cli|api-key`, default `cli`, with only
-   explicit `api-key` vault-backed.
-9. Quit the candidate and report either:
-   - **Verified** — this exact Round 22 candidate behaves correctly; or
-   - **Failed** — provide the action, visible error, and approximate timestamp.
+## Cleanup And Preservation
 
-Do not run the installed app and candidate simultaneously; both use fixed port
-`29695`, which makes the observed binary and state ambiguous.
+- Dedicated ticket worktree removed and pruned.
+- Local and remote `codex/secure-centralized-secret-provisioning` branches
+  removed after safe merge.
+- Unrelated detached user-build worktree retained.
+- User-installed AutoByteus process and retained project test DB/key/config were
+  not stopped, replaced, or modified.
+- Unrelated application-agent-streaming workspace changes were kept outside the
+  ticket and restored after the final secure-ticket records were committed.
 
-## Preserved Boundaries And Limitations
+## Release Decision
 
-- `LOCAL_HARDENED`: local vault/file-root/value-safe custody only.
-- Codex excluded; inherited environments are continuity, not isolation;
-  `STRONG_AGENT_ISOLATION` deferred.
-- Claude exact `auto|cli|api-key`, default `cli`; no silent fallback/login broker.
-- One application DB plus adjacent key; no automatic `.env` credential migration.
-- Explicit importer target/source immutability.
-- `DASHSCOPE_API_KEY` only for Qwen.
-- Exact unpatched `repository_prisma@1.0.8` with Prisma `5.22.0`.
-- Docker topology unchanged.
-- Gemini AI Studio and Serper unconfigured; AutoByteus remote discovery
-  unavailable and not claimed as passed.
-- Anthropic recheck is not legal clearance.
-- User-installed application and retained project test DB/key/config untouched.
-
-## Finalization Decision
-
-Explicit user verification/finalization authorization was received on
-2026-07-28. A fresh remote check (`388`) confirmed that `origin/personal`
-remains exactly
-`d6983612c5a77fb94d9266df85a9d03fe2d1c68b`; the verified ticket state is still
-0 behind, so renewed verification is not required. Proceed with repository
-finalization and the requested clean unsigned Electron build from the resulting
-main-repository `personal` branch. Do not create a version bump, tag, release,
-publication, or deployment.
+No release: no version bump, tag, GitHub release, publication, deployment,
+notarization, or installation was performed.

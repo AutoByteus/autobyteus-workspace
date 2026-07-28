@@ -1,0 +1,17 @@
+timestamp_utc=2026-07-28T05:57:47Z
+ticket_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/secure-centralized-secret-provisioning
+ticket_head_before=3a20ed08cbfbcef1395882e3a70339df6442cf9f
+ticket_status_entries_before=0
+merged_into_personal=yes
+worktree_remove=pass
+worktree_prune=pass
+Deleted branch codex/secure-centralized-secret-provisioning (was 3a20ed08c).
+local_ticket_branch_delete=pass
+remote_ticket_branch_delete=pass
+ticket_worktree_exists_after=no
+ticket_worktree_registered_after=no
+local_ticket_branch_after=absent
+remote_ticket_branch_after=absent
+personal_head=6313a3c6c3f33ef1c21d24d4c247ffb2ab8e96e1
+origin_personal=6313a3c6c3f33ef1c21d24d4c247ffb2ab8e96e1
+retained_detached_user_build_registered=yes
