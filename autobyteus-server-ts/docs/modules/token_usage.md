@@ -74,7 +74,10 @@ payloads into the ledger/event contract:
    through `TokenUsageLedgerStore`. Persistence failures are logged and must not
    block runtime streaming/event dispatch. The default pipeline can quiesce and
    drain every accepted scheduled/in-flight append before the shared Prisma
-   lifecycle closes; it resets the processor only after the drain finishes.
+   lifecycle closes. Normal shutdown keeps token enrichment and persistence
+   quiescent, so a late active-run event cannot query or create new persistence
+   work after the drain; only an explicit lifecycle-owned test reset can create
+   a new token pipeline.
 
 The ledger repository acquires no raw or injected Prisma client. Each inherited
 model operation resolves the current `repository_prisma` root or

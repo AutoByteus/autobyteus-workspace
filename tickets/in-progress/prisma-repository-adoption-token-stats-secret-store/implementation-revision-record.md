@@ -9,6 +9,7 @@ implementation-owned revision.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | `IR-001` | `solution_designer` / approved solution package / initial implementation round | `N/A` | `Initial Baseline` | `SR-001`; `CRR-*` N/A; `API-REV-*` N/A | Ready for implementation-source review |
+| `IR-002` | `code_reviewer` / `code-review-report.md` / implementation review round 1 | `CR-001` | `Local Fix` | `SR-001`; `CRR-001`; `API-REV-*` N/A | Late/default callers remain quiescent after stop; ready for source re-review |
 
 ## Revision Entries
 
@@ -51,3 +52,49 @@ implementation-owned revision.
   lifecycle/transaction regression execution, importer target/failure evidence, and
   broader token/vault regression confidence. No durable test file was changed or broad
   API/E2E environment started during implementation.
+
+### IR-002 — Preserve Default Token-Pipeline Quiescence After Stop
+
+- Triggering role, report path, and round: `code_reviewer`;
+  [code-review-report.md](./code-review-report.md); implementation-source review
+  round 1.
+- Triggering finding IDs: `CR-001`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `Fail — Local Fix`; an ordinary getter could recreate a
+  live token persistence processor after the shutdown drain cleared both caches.
+- Current authoritative result: Stop marks token persistence quiescent before drain
+  and quiesces token enrichment before retaining the authoritative stopped pipeline.
+  Ordinary concurrent/late getters cannot recreate, query, or accept persistence work;
+  only the explicit lifecycle-owned `resetDefaultAgentRunEventPipelineForTests()` seam
+  can restart it.
+- Related solution revision ID: `SR-001`.
+- Related code review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`.
+- Why this baseline or implementation revision is recorded: Close the approved
+  reachable `MP-001` signal-plus-active-event path through shared Prisma shutdown
+  without expanding scope or changing event-streaming behavior before stop.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-002`, `REQ-002`,
+  `AC-002`, `DS-002`, `DS-003`, and `DS-004`.
+- Implementation delta: Added explicit accepting/quiescent composition state; stop
+  transitions state and quiesces the token transformer before accessing/closing the
+  processor, then retains the stopped composition; a first getter after a
+  pre-construction stop builds a pipeline without token enrichment or persistence;
+  added a test-only explicit drain/reset seam; aligned durable token documentation
+  with the corrected lifecycle.
+- Changed files or areas:
+  `autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts`,
+  `autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.ts`,
+  `autobyteus-server-ts/docs/modules/token_usage.md`, this revision record, and the
+  canonical implementation handoff.
+- Local validation and result: Production build-config typecheck passed; full server
+  build and sanitized bootstrap smoke passed. A focused built-module probe blocked one
+  append accepted before stop, sent a second event concurrently after stop began, sent
+  a third after stop completed, and called stop repeatedly: only the pre-stop append
+  ran, no late cumulative-snapshot repository read occurred, and the ordinary getter
+  retained the same pipeline. The probe then proved only the explicit test reset
+  created a new pipeline and restored persistence. A companion stop-before-first-get
+  probe observed zero token reads/appends and a stable quiescent composition.
+- Next recipient or routing: `code_reviewer` for implementation-source re-review.
+- Remaining limitations or risks: Durable real-lifecycle shutdown coverage remains
+  API/E2E-owned after source review passes. The process-global test lifecycle must use
+  the explicit reset seam only after draining; no durable test was changed here.

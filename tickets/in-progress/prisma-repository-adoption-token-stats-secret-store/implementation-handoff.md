@@ -7,7 +7,9 @@
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/design-spec.md`
 - Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/repository-prisma-architecture-analysis.md` — evidence/context only; approval `N/A`.
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/solution-revision-record.md`
-- Triggering rework report, revision record, or evidence: No rework report. Published prerequisite evidence remains relevant:
+- Triggering rework report/revision record and still-relevant prerequisite evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/code-review-revision-record.md`
   - `/Users/normy/autobyteus_org/repository_prisma/tickets/done/transaction-options/handoff-summary.md`
   - `/Users/normy/autobyteus_org/repository_prisma/tickets/done/transaction-options/release-deployment-report.md`
 
@@ -18,25 +20,28 @@ Normal server and standalone importer execution now explicitly bind
 ledger and both secret models resolve inherited `BaseRepository` delegates; the vault
 coordinator alone owns option-aware implicit transaction sequencing. The default token
 processor owns accepted scheduled/in-flight work and server close drains it before
-vault key zeroization and shared Prisma shutdown. Runtime raw clients, transaction
+vault key zeroization and shared Prisma shutdown. Stop first makes the default token
+boundary durably quiescent and retains that stopped composition, so an ordinary
+concurrent or late active-run caller cannot recreate persistence work; only an
+explicit lifecycle-owned test reset can restart it. Runtime raw clients, transaction
 propagation, and the token lazy client owner were removed without changing schema,
 stored data, crypto, WAL policy, public domain/service contracts, or migration-only and
 read-only inspection exceptions.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/tickets/in-progress/prisma-repository-adoption-token-stats-secret-store/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision ID: `SR-001`
-- Related code review revision IDs: `N/A`
+- Related code review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 ## Approved Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | One explicit normal-server datasource lifecycle; drain token work, zeroize vault, then close Prisma | `src/server-runtime.ts` -> `src/agent-execution/events/default-agent-run-event-pipeline.ts` -> token processor -> `src/secret-management/secret-vault-runtime.ts` | Migration-before-init startup and nested-finalizer shutdown implemented; WAL remains omitted. |
-| `BEH-002` | Preserve token ledger mapping/idempotency/order/statistics while using `BaseRepository` and owned non-blocking work | `src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts` -> `src/token-usage/providers/token-usage-ledger-store.ts` -> `src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | Existing domain/store/API contracts and model arguments retained; lazy/injected client owner removed; scheduled promise begins before `setImmediate` and settles after append handling. |
+| `BEH-001` | One explicit normal-server datasource lifecycle; drain token work, keep persistence quiescent, zeroize vault, then close Prisma | `src/server-runtime.ts` -> `src/agent-execution/events/default-agent-run-event-pipeline.ts` -> token processor -> `src/secret-management/secret-vault-runtime.ts` | Migration-before-init startup and nested-finalizer shutdown implemented; stop transitions to quiescent before drain, retains the stopped composition, and WAL remains omitted. |
+| `BEH-002` | Preserve token ledger mapping/idempotency/order/statistics while using `BaseRepository` and owned non-blocking work | default pipeline -> token enrichment transformer -> token persistence processor -> `src/token-usage/providers/token-usage-ledger-store.ts` -> `src/token-usage/repositories/sql/token-usage-ledger-repository.ts` | Existing domain/store/API contracts and model arguments retained; scheduled promises settle after append handling; stop quiesces enrichment and persistence before drain, so concurrent/late ordinary getters cannot query or create persistence work; an explicit test lifecycle reset remains available. |
 | `BEH-003` | Preserve vault bootstrap/service behavior while splitting model ownership | `src/secret-management/secret-vault-runtime.ts` -> bootstrap/service -> vault coordinator -> `secret-entry-prisma-repository.ts` and `secret-encryption-metadata-prisma-repository.ts` | Runtime owns service/key lifecycle only. Model repositories own mapping/CRUD; coordinator keeps stable service/bootstrap boundary. |
 | `BEH-004` | Preserve atomic vault initialization/batch/compensation rules through implicit transactions | `src/secret-management/persistence/secret-vault-prisma-repository.ts` -> `runInTransaction` -> both model repositories | Coordinator alone applies typed `2s/10s` initialization and `2s/5s` mutation/compensation options; no raw client, direct `$transaction`, or transaction parameters remain. |
 | `BEH-005` | Import execution uses only immutable explicit target; preview stays lifecycle-free | `src/secret-management/provisioning/local-environment-secret-import-service.ts` -> migration -> `initializePrisma(exact URL)` -> vault/runtime/service -> nested close/`shutdownPrisma` | Success and initialization/runtime failure cleanup attempt runtime close then Prisma shutdown. Preview still uses `SecretVaultInspectionService` without the execution factory. |
@@ -46,6 +51,7 @@ read-only inspection exceptions.
 
 - `autobyteus-server-ts/src/server-runtime.ts`
 - `autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts`
+- `autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-event-enrichment-transformer.ts`
 - `autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-event-persistence-processor.ts`
 - `autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts`
 - `autobyteus-server-ts/src/secret-management/persistence/secret-vault-persistence-types.ts`
@@ -62,8 +68,9 @@ read-only inspection exceptions.
   delegate selection and idempotent lifecycle cleanup; application code does not add a
   second timer, transaction, client, or retry policy.
 - Fastify normal close stops accepting new requests before the registered `onClose`
-  dependency sequence runs. The default pipeline therefore quiesces accepted token
-  work rather than serving as an independent process ingress gate.
+  dependency sequence runs. Active backend callbacks can still reach the ordinary
+  default getter during that sequence, so the default pipeline retains a durable
+  quiescent state until an explicit lifecycle-owned test reset.
 - `SecretVaultRuntime.initialize()` is called only after its composition root has bound
   the correct datasource; alternate tests/entrypoints must explicitly own lifecycle
   setup and teardown instead of injecting a Prisma client.
@@ -77,6 +84,8 @@ read-only inspection exceptions.
   API/E2E stage, not this implementation round.
 - Server startup still uses the existing process-exit failure boundary after migration
   and bootstrap/startup failures; this refactor did not redesign startup semantics.
+- The explicit reset seam is test-lifecycle-only. Production does not restart the
+  default persistence boundary after normal shutdown begins.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -103,7 +112,8 @@ read-only inspection exceptions.
 - Notes: Removed `TokenUsagePrismaClientOwner`, injected/default client selection,
   secret runtime client ownership/disconnect, coordinator raw-client/direct-delegate
   logic, transaction client types/adapters/parameters, and untracked fire-and-forget
-  scheduling. The pure persistence DTO file is 23 effective lines; model repositories
+  scheduling. `IR-002` retains one stopped default composition rather than introducing
+  a parallel/no-op persistence implementation. The pure persistence DTO file is 23 effective lines; model repositories
   are 63 and 59; coordinator is 172; the largest changed source file is 294. No file
   exceeds 500 effective lines; the coordinator's deletion-heavy delta was explicitly
   split by model owner rather than expanded.
@@ -140,6 +150,13 @@ Passed:
 6. Structural scans — no runtime token/vault raw client, client factory/owner, direct model delegate, direct `$transaction`, transaction delegate type/parameter, stale `1.0.8`, local link/file/workspace override, schema/migration diff, or durable test diff. Installed package metadata matched `1.0.9` and peer `^5.22.0`.
 7. `git diff --check` — passed.
 
+`IR-002` rework checks:
+
+8. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — production source/build configuration typecheck passed after the quiescence correction.
+9. `pnpm -C autobyteus-server-ts build` — full server build and sanitized built-in-agent bootstrap smoke passed after the correction.
+10. Focused built-module default-pipeline lifecycle probes — blocked the append accepted before stop, invoked the ordinary getter and processed a concurrent cumulative token event after stop began, then processed another after stop completed and repeated stop. The getter retained the same pipeline, snapshot-read count remained zero, and append count remained one. Only `resetDefaultAgentRunEventPipelineForTests()` created a new pipeline and restored append count to two. A companion stop-before-first-get probe confirmed the resulting late composition had zero token reads/appends and remained authoritative until explicit reset.
+11. `git diff --check` — passed for the rework delta.
+
 Diagnostic limitations encountered and not masked:
 
 - The first production typecheck attempt, before shared workspace preparation, failed
@@ -166,8 +183,9 @@ or interaction change.
 - Rebind existing repository tests through explicit `initializePrisma`/`shutdownPrisma`
   rather than removed raw-client constructors; serialize target switches.
 - Prove normal startup ordering and normal/repeated close ordering, including token
-  accepted-before-close work, append failures, vault key zeroization, one Prisma
-  shutdown, and no post-shutdown scheduled reopen.
+  accepted-before-close work, active backend events concurrent with and after default
+  pipeline stop, append failures, durable quiescence until explicit test reset, vault
+  key zeroization, one Prisma shutdown, and no post-shutdown scheduled reopen.
 - Run token append/duplicate-key/cumulative-order/display/statistics/hierarchy/pricing
   and GraphQLSafeInt regressions against the real initialized repository.
 - Run the existing live vault suite for initializer serialization/termination,

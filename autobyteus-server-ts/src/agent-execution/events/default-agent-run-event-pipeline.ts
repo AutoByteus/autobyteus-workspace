@@ -6,33 +6,45 @@ import { TokenUsageEventEnrichmentTransformer } from "./processors/token-usage/t
 import { TokenUsageEventPersistenceProcessor } from "./processors/token-usage/token-usage-event-persistence-processor.js";
 
 let cachedDefaultAgentRunEventPipeline: AgentRunEventPipeline | null = null;
+let cachedTokenUsageEnrichmentTransformer: TokenUsageEventEnrichmentTransformer | null = null;
 let cachedTokenUsagePersistenceProcessor: TokenUsageEventPersistenceProcessor | null = null;
+let tokenUsageLifecycleState: "accepting" | "quiescent" = "accepting";
 
 export const getDefaultAgentRunEventPipeline = (): AgentRunEventPipeline => {
   if (!cachedDefaultAgentRunEventPipeline) {
-    cachedTokenUsagePersistenceProcessor = new TokenUsageEventPersistenceProcessor();
+    cachedTokenUsageEnrichmentTransformer = tokenUsageLifecycleState === "accepting"
+      ? new TokenUsageEventEnrichmentTransformer()
+      : null;
+    cachedTokenUsagePersistenceProcessor = tokenUsageLifecycleState === "accepting"
+      ? new TokenUsageEventPersistenceProcessor()
+      : null;
     cachedDefaultAgentRunEventPipeline = new AgentRunEventPipeline([
       new LifecycleStatusEventProcessor(),
       new FileChangeEventProcessor(),
       new TeamCommunicationMessageProcessor(),
-      cachedTokenUsagePersistenceProcessor,
-    ], [
-      new TokenUsageEventEnrichmentTransformer(),
-    ]);
+      ...(cachedTokenUsagePersistenceProcessor
+        ? [cachedTokenUsagePersistenceProcessor]
+        : []),
+    ], cachedTokenUsageEnrichmentTransformer
+      ? [cachedTokenUsageEnrichmentTransformer]
+      : []);
   }
   return cachedDefaultAgentRunEventPipeline;
 };
 
 export const stopDefaultAgentRunEventPipeline = async (): Promise<void> => {
+  tokenUsageLifecycleState = "quiescent";
+  cachedTokenUsageEnrichmentTransformer?.quiesce();
   const processor = cachedTokenUsagePersistenceProcessor;
-  if (!processor) {
-    cachedDefaultAgentRunEventPipeline = null;
-    return;
+  if (processor) {
+    await processor.close();
   }
+};
 
-  await processor.close();
-  if (cachedTokenUsagePersistenceProcessor === processor) {
-    cachedTokenUsagePersistenceProcessor = null;
-    cachedDefaultAgentRunEventPipeline = null;
-  }
+export const resetDefaultAgentRunEventPipelineForTests = async (): Promise<void> => {
+  await stopDefaultAgentRunEventPipeline();
+  cachedDefaultAgentRunEventPipeline = null;
+  cachedTokenUsageEnrichmentTransformer = null;
+  cachedTokenUsagePersistenceProcessor = null;
+  tokenUsageLifecycleState = "accepting";
 };
