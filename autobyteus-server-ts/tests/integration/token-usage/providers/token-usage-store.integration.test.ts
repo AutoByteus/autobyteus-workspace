@@ -1,13 +1,11 @@
-import { afterAll, afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
-import { PrismaClient } from "@prisma/client";
+import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { createTokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageLedgerStore } from "../../../../src/token-usage/providers/token-usage-ledger-store.js";
-import { SqlTokenUsageLedgerRepository } from "../../../../src/token-usage/repositories/sql/token-usage-ledger-repository.js";
 import type { TokenUsageUpdatedPayload } from "../../../../src/agent-execution/domain/agent-run-token-usage.js";
 
-const prisma = new PrismaClient();
-const store = new TokenUsageLedgerStore(new SqlTokenUsageLedgerRepository(prisma));
+const store = new TokenUsageLedgerStore();
 const createdRunIds = new Set<string>();
 
 const buildLedgerEvent = (input: {
@@ -120,16 +118,21 @@ const buildLedgerEvent = (input: {
   };
 };
 
+beforeAll(async () => {
+  await shutdownPrisma();
+  await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
+});
+
 afterEach(async () => {
   const runIds = Array.from(createdRunIds);
   createdRunIds.clear();
   if (runIds.length > 0) {
-    await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+    await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
   }
 });
 
 afterAll(async () => {
-  await prisma.$disconnect();
+  await shutdownPrisma();
 });
 
 describe("TokenUsageLedgerStore", () => {

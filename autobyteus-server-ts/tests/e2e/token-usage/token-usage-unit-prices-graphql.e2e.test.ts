@@ -4,14 +4,13 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { PrismaClient } from "@prisma/client";
+import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { createTokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenUsageLedgerStore } from "../../../src/token-usage/providers/token-usage-ledger-store.js";
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import type { TokenUsageExecutionAddress } from "../../../src/token-usage/domain/execution-address.js";
 
-const prisma = new PrismaClient();
 const store = new TokenUsageLedgerStore();
 const createdRunIds = new Set<string>();
 
@@ -192,6 +191,8 @@ describe("token usage unit-price GraphQL hydration", () => {
   let graphql: typeof graphqlFn;
 
   beforeAll(async () => {
+    await shutdownPrisma();
+    await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -203,10 +204,10 @@ describe("token usage unit-price GraphQL hydration", () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
-    await prisma.$disconnect();
+    await shutdownPrisma();
   });
 
   const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {

@@ -30,10 +30,14 @@ The TypeScript server follows a layered domain architecture:
 3. Initialize `AppConfig` (loads `.env`, resolves paths, sets DB URL for SQLite).
 4. Dynamically import `src/server-runtime.ts` only after config bootstrap completes.
 5. Run Prisma migrations when the schema is present.
-6. Run required app-data migrations against the expanded schema.
-7. Build and start Fastify transports.
-8. Create temp workspace.
-9. Schedule non-critical background startup tasks.
+6. Initialize `repository_prisma@1.0.9` for the exact canonical application
+   database URL, without enabling WAL.
+7. Initialize or verify the encrypted secret vault through the shared
+   repository lifecycle.
+8. Run required app-data migrations against the expanded schema.
+9. Build and start Fastify transports.
+10. Create temp workspace.
+11. Schedule non-critical background startup tasks.
 
 ## Caching and Singleton Pattern
 
@@ -61,9 +65,15 @@ Current task groups include:
 
 Persistence is subsystem-owned rather than selected through a global mode.
 
-- Token usage is persisted through `src/token-usage/providers/token-usage-store.ts`.
+- Token usage is persisted through `src/token-usage/providers/token-usage-ledger-store.ts`.
   - The store is the authoritative token-usage boundary.
-  - It writes and reads SQL rows through Prisma-backed repositories.
+  - It writes and reads SQL rows through a model-specific
+    `repository_prisma` `BaseRepository`.
+- Encrypted secret persistence uses separate `SecretEntry` and
+  `SecretEncryptionMetadata` model repositories behind the vault persistence
+  coordinator. The coordinator alone opens option-aware implicit transactions;
+  service, bootstrap, and runtime code do not receive Prisma clients or
+  transaction delegates.
 - Agent definitions, team definitions, and MCP server config remain file-backed through their own subsystem providers.
 - Memory Sync hub/source config, source-state fingerprints, and hub credential
   metadata are file-backed under `<appDataDir>/memory-sync/`; imported memory
@@ -77,6 +87,12 @@ Persistence is subsystem-owned rather than selected through a global mode.
   migration has added the column, and the later token-usage legacy-path-column
   contract migration drops obsolete physical path columns only after that
   backfill has reached terminal success.
+
+Normal server shutdown first stops dependent delivery runtimes, then quiesces
+and drains every token append accepted by the default event pipeline. It next
+closes the secret runtime to zeroize its root key and finally shuts down the one
+shared `repository_prisma` client. The ordering prevents an already-scheduled
+token callback from reopening the database after shutdown.
 
 External-channel persistence has one deliberate exception:
 

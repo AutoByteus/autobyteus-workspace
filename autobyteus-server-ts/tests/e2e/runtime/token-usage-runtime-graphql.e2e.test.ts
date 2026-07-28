@@ -9,7 +9,7 @@ import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { PrismaClient } from "@prisma/client";
+import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
@@ -21,7 +21,6 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 const runRealRuntimeTokenUsageE2e = process.env.RUN_RUNTIME_TOKEN_USAGE_E2E === "1"
   ? describe
   : describe.skip;
-const prisma = new PrismaClient();
 const REAL_RUNTIME_TIMEOUT_MS = Number(process.env.RUNTIME_TOKEN_USAGE_E2E_TIMEOUT_MS || 300_000);
 const EVENT_WAIT_TIMEOUT_MS = Number(process.env.RUNTIME_TOKEN_USAGE_E2E_EVENT_WAIT_TIMEOUT_MS || 180_000);
 const GRAPHQL_PERSISTENCE_TIMEOUT_MS = Number(process.env.RUNTIME_TOKEN_USAGE_E2E_GRAPHQL_WAIT_TIMEOUT_MS || 60_000);
@@ -269,6 +268,8 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
   const createdRunIds = new Set<string>();
 
   beforeAll(async () => {
+    await shutdownPrisma();
+    await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "runtime-token-usage-e2e-"));
     await writeFile(
       path.join(testDataDir, ".env"),
@@ -292,7 +293,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
     for (const workspaceRoot of createdWorkspaceRoots) {
@@ -303,7 +304,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
     }
-    await prisma.$disconnect();
+    await shutdownPrisma();
   });
 
   const execGraphql = async <T>(
@@ -660,7 +661,7 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           socket.close();
           await app.close();
           await terminateAgentRun(runId).catch(() => undefined);
-          await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId } });
+          await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId } });
         }
       },
       REAL_RUNTIME_TIMEOUT_MS,

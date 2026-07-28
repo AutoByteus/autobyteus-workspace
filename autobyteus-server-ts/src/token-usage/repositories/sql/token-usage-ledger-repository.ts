@@ -1,10 +1,9 @@
-import type {
+import {
   Prisma,
-  PrismaClient,
-  TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent,
+  type TokenUsageLedgerEvent as PrismaTokenUsageLedgerEvent,
 } from "@prisma/client";
+import { BaseRepository } from "repository_prisma";
 import type { TokenUsageUpdatedPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
-import { createConfiguredPrismaClient } from "../../../config/prisma-client-factory.js";
 import { normalizeTokenUsageExecutionAddress } from "../../domain/execution-address.js";
 import { isCacheState, isInputTokenSemantic } from "../../domain/token-usage-component-basis.js";
 
@@ -226,35 +225,16 @@ export const toDomainPayload = (record: PrismaTokenUsageLedgerEvent): TokenUsage
   };
 };
 
-class TokenUsagePrismaClientOwner {
-  private prisma: PrismaClient | null = null;
-
-  get client(): PrismaClient {
-    this.prisma ??= createConfiguredPrismaClient();
-    return this.prisma;
-  }
-}
-
-const defaultPrismaClientOwner = new TokenUsagePrismaClientOwner();
-
-export class SqlTokenUsageLedgerRepository {
-  private readonly injectedPrisma: PrismaClient | null;
-
-  constructor(prisma?: PrismaClient) {
-    this.injectedPrisma = prisma ?? null;
-  }
-
-  private get client(): PrismaClient {
-    return this.injectedPrisma ?? defaultPrismaClientOwner.client;
-  }
-
+export class SqlTokenUsageLedgerRepository extends BaseRepository.forModel(
+  Prisma.ModelName.TokenUsageLedgerEvent,
+) {
   async appendUsageEvent(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
     try {
-      const created = await this.client.tokenUsageLedgerEvent.create({ data: toCreateInput(payload) });
+      const created = await this.create({ data: toCreateInput(payload) });
       return toDomainPayload(created);
     } catch (error) {
       if (typeof error === "object" && error && "code" in error && (error as { code?: string }).code === "P2002") {
-        const existing = await this.client.tokenUsageLedgerEvent.findFirst({
+        const existing = await this.findFirst({
           where: {
             OR: [
               { usageEventId: payload.usage_event_id },
@@ -269,7 +249,7 @@ export class SqlTokenUsageLedgerRepository {
   }
 
   async updateUsageEventDisplayFields(payload: TokenUsageUpdatedPayload): Promise<TokenUsageUpdatedPayload> {
-    const updated = await this.client.tokenUsageLedgerEvent.update({
+    const updated = await this.update({
       where: { usageEventId: payload.usage_event_id },
       data: {
         teamName: payload.team_name,
@@ -286,7 +266,7 @@ export class SqlTokenUsageLedgerRepository {
     runId: string;
     snapshotSeriesKey: string;
   }): Promise<TokenUsageUpdatedPayload | null> {
-    const record = await this.client.tokenUsageLedgerEvent.findFirst({
+    const record = await this.findFirst({
       where: {
         runId: input.runId,
         snapshotSeriesKey: input.snapshotSeriesKey,
@@ -301,7 +281,7 @@ export class SqlTokenUsageLedgerRepository {
   }
 
   async listEventsByRunId(runId: string): Promise<TokenUsageUpdatedPayload[]> {
-    const records = await this.client.tokenUsageLedgerEvent.findMany({
+    const records = await this.findMany({
       where: { runId },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });
@@ -309,7 +289,7 @@ export class SqlTokenUsageLedgerRepository {
   }
 
   async listEventsByTeamRunId(rootTeamRunId: string): Promise<TokenUsageUpdatedPayload[]> {
-    const records = await this.client.tokenUsageLedgerEvent.findMany({
+    const records = await this.findMany({
       where: { rootTeamRunId },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });
@@ -320,7 +300,7 @@ export class SqlTokenUsageLedgerRepository {
     startDate: Date;
     endDate: Date;
   }): Promise<TokenUsageUpdatedPayload[]> {
-    const records = await this.client.tokenUsageLedgerEvent.findMany({
+    const records = await this.findMany({
       where: { observedAt: { gte: input.startDate, lte: input.endDate } },
       orderBy: [{ observedAt: "asc" }, { id: "asc" }],
     });

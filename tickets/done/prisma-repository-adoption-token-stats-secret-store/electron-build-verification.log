@@ -1,0 +1,83 @@
+Electron build verification
+Date: 2026-07-28T11:36:58Z
+Candidate: 97c5c3e42d57fa740c15d602904759312b43e653
+Host: Darwin arm64
+
+=== Artifacts ===
+-rw-r--r--@ 1 normy  staff   383M Jul 28 13:34 /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg
+-rw-r--r--@ 1 normy  staff   409K Jul 28 13:34 /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   379M Jul 28 13:35 /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip
+-rw-r--r--@ 1 normy  staff   400K Jul 28 13:36 /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip.blockmap
+
+6b7253e3d74eb4b12d5e0c0da3de7822681511c53726da83f26b1979dec5566c  /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg
+7d5c0781209ca795569be85db28c79602738a50d13a40909766a9532f1fcf370  /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip
+
+=== Bundle metadata ===
+CFBundleIdentifier=com.autobyteus.app
+CFBundleShortVersionString=1.4.26
+CFBundleVersion=1.4.26
+/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+=== Bundled server ===
+PASS: dist/app.js present
+{
+  "name": "autobyteus-server-ts",
+  "version": "0.1.1",
+  "repository_prisma": "^1.0.9",
+  "prisma_client": "^5.22.0"
+}
+repository_prisma_package=/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/repository_prisma@1.0.9_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/package.json
+repository_prisma_installed_version=1.0.9
+prisma_client_package=/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/package.json
+prisma_client_installed_version=5.22.0
+
+=== Packaged terminal runtime: staged ===
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+
+=== Packaged terminal runtime: final bundle + spawn probe ===
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+=== Archive integrity ===
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $72B1DB43
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $C2A51503
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $33868C37
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $B59E4A1E
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $33868C37
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $B113A946
+Die überprüfte CRC32-Prüfsumme ist $BB35CCC3
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg" is VALID
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip.
+
+=== Signing disposition ===
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+Signed bundle metadata was present.
+
+=== Result ===
+PASS: personal macOS arm64 Electron artifacts and packaged runtime verified.
+
+=== Strict bundle signature verification (expected local-build limitation) ===
+/Users/normy/autobyteus_org/autobyteus-worktrees/prisma-repository-adoption-token-stats-secret-store/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app: code has no resources but signature indicates they must be present
+EXPECTED LOCAL-BUILD RESULT: strict Developer ID bundle verification did not pass (exit 1); electron-builder was intentionally run without signing identity or notarization.

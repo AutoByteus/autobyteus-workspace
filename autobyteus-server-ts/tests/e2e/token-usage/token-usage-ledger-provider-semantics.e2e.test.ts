@@ -6,14 +6,13 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
-import { PrismaClient } from '@prisma/client';
+import { initializePrisma, rootPrismaClient, shutdownPrisma } from 'repository_prisma';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 
-const prisma = new PrismaClient();
 const store = new TokenUsageLedgerStore();
 const createdRunIds = new Set<string>();
 
@@ -102,6 +101,8 @@ describe('token usage ledger GraphQL provider semantics', () => {
   let appDataDir: string;
 
   beforeAll(async () => {
+    await shutdownPrisma();
+    await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
     appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-token-usage-graphql-'));
     fs.writeFileSync(
       path.join(appDataDir, '.env'),
@@ -127,12 +128,12 @@ describe('token usage ledger GraphQL provider semantics', () => {
   afterAll(async () => {
     const runIds = Array.from(createdRunIds);
     if (runIds.length > 0) {
-      await prisma.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
+      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: runIds } } });
     }
     createdRunIds.clear();
     appConfigProvider.resetForTests();
     fs.rmSync(appDataDir, { recursive: true, force: true });
-    await prisma.$disconnect();
+    await shutdownPrisma();
   });
 
   const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {

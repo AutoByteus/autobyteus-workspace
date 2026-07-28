@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PrismaClient } from "@prisma/client";
+import { initializePrisma, shutdownPrisma } from "repository_prisma";
 
 const factoryHarness = vi.hoisted(() => ({
   createConfiguredPrismaClient: vi.fn(),
@@ -14,11 +15,16 @@ import { PrismaTokenUsageExecutionAddressBackfillDatabase } from "../../../src/a
 import { PrismaTokenUsageLegacyPathColumnsDropDatabase } from "../../../src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.js";
 
 describe("Prisma import lifecycle", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    await shutdownPrisma();
     factoryHarness.createConfiguredPrismaClient.mockReset();
     factoryHarness.createConfiguredPrismaClient.mockImplementation(() => {
       throw new Error("configured Prisma acquisition attempted");
     });
+  });
+
+  afterEach(async () => {
+    await shutdownPrisma();
   });
 
   it("imports and constructs database owners without acquiring runtime configuration", () => {
@@ -31,9 +37,8 @@ describe("Prisma import lifecycle", () => {
     expect(factoryHarness.createConfiguredPrismaClient).not.toHaveBeenCalled();
   });
 
-  it("acquires the configured client only on each owner's first database operation", async () => {
+  it("acquires the configured client only on each migration owner's first database operation", async () => {
     const operations = [
-      () => new SqlTokenUsageLedgerRepository().listEventsByRunId("run-1"),
       () => new AppDataMigrationRecordRepository().getRecord("migration-1"),
       () => new PrismaTokenUsageExecutionAddressBackfillDatabase().listTokenUsageLedgerRows(),
       () => new PrismaTokenUsageLegacyPathColumnsDropDatabase().listTokenUsageLedgerColumns(),
@@ -46,19 +51,21 @@ describe("Prisma import lifecycle", () => {
     }
   });
 
-  it("does not acquire or disconnect caller-injected clients", async () => {
-    const findMany = vi.fn().mockResolvedValue([]);
+  it("does not acquire or disconnect caller-injected migration clients", async () => {
     const disconnect = vi.fn().mockResolvedValue(undefined);
     const injectedClient = {
-      tokenUsageLedgerEvent: { findMany },
+      $queryRaw: vi.fn().mockResolvedValue([]),
+      $queryRawUnsafe: vi.fn().mockResolvedValue([]),
       $disconnect: disconnect,
     } as unknown as PrismaClient;
 
-    await new SqlTokenUsageLedgerRepository(injectedClient).listEventsByRunId("run-injected");
-    await new PrismaTokenUsageExecutionAddressBackfillDatabase(injectedClient).disconnect();
-    await new PrismaTokenUsageLegacyPathColumnsDropDatabase(injectedClient).disconnect();
+    const backfill = new PrismaTokenUsageExecutionAddressBackfillDatabase(injectedClient);
+    const drop = new PrismaTokenUsageLegacyPathColumnsDropDatabase(injectedClient);
+    await backfill.listTokenUsageLedgerRows();
+    await drop.listTokenUsageLedgerColumns();
+    await backfill.disconnect();
+    await drop.disconnect();
 
-    expect(findMany).toHaveBeenCalledOnce();
     expect(factoryHarness.createConfiguredPrismaClient).not.toHaveBeenCalled();
     expect(disconnect).not.toHaveBeenCalled();
   });
@@ -92,18 +99,15 @@ describe("Prisma import lifecycle", () => {
     expect(dropDisconnect).toHaveBeenCalledOnce();
   });
 
-  it("shares one lazy configured client across multiple default token-usage repositories and stores", async () => {
-    const findMany = vi.fn().mockResolvedValue([]);
-    const sharedClient = {
-      tokenUsageLedgerEvent: { findMany },
-    } as unknown as PrismaClient;
-    factoryHarness.createConfiguredPrismaClient.mockReturnValue(sharedClient);
+  it("uses the explicitly initialized repository_prisma lifecycle for default token repositories and stores", async () => {
+    const datasourceUrl = process.env.DATABASE_URL;
+    expect(datasourceUrl).toBeTruthy();
+    await initializePrisma({ datasourceUrl });
 
     await new SqlTokenUsageLedgerRepository().listEventsByRunId("run-a");
     await new TokenUsageLedgerStore().getAgentRunSummary("run-b");
     await new TokenUsageLedgerStore().getAgentRunSummary("run-c");
 
-    expect(factoryHarness.createConfiguredPrismaClient).toHaveBeenCalledOnce();
-    expect(findMany).toHaveBeenCalledTimes(3);
+    expect(factoryHarness.createConfiguredPrismaClient).not.toHaveBeenCalled();
   });
 });

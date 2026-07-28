@@ -18,11 +18,13 @@ import {
 } from "../domain/secret-vault-types.js";
 import type {
   CustomProviderMigrationBatchReceipt,
+  SecretVaultRepository,
+} from "../persistence/secret-vault-repository.js";
+import type {
   EncryptedSecretEntryRecord,
   SecretVaultBatchResult,
   SecretVaultMetadataRecord,
-  SecretVaultPrismaRepository,
-} from "../persistence/secret-vault-prisma-repository.js";
+} from "../persistence/secret-vault-persistence-types.js";
 
 export type SecretOperationEvent = {
   operation:
@@ -41,7 +43,7 @@ export type SecretOperationEventSink = (event: SecretOperationEvent) => void;
 
 export class SecretManagementService {
   constructor(
-    private readonly repository: SecretVaultPrismaRepository,
+    private readonly repository: SecretVaultRepository,
     private readonly rootKey: Buffer | null,
     private readonly metadata: SecretVaultMetadataRecord | null,
     private health: SecretVaultHealth,
