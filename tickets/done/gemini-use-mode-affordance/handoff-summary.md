@@ -11,7 +11,7 @@
 - Current API/E2E revision: `API-REV-005`, `Pass` at 95% confidence
 - Current test-code review revision: `CRR-011`, `Not Applicable`, no findings
 - Integrated base: `origin/personal` at `153f3409c`; confirmed current by the latest fetch
-- Current status: `Ready for explicit user verification; repository finalization remains on hold`
+- Current status: `User verified; repository finalization in progress`
 
 ## Integrated-State Refresh
 
@@ -63,14 +63,15 @@ Do not stop the services until the user explicitly says inspection is complete.
 - Browser fixtures: setup and activation responses were deterministic in-memory fixtures; no lingering mutation or external Gemini credential was left.
 - Electron shell and external Gemini API were not exercised; no shell/API code changed.
 - Untracked dependency materialization directories remain while dev:test is running; cleanup is deferred until user completion and authorized finalization.
-- Before finalization, rollback is withholding verification. After finalization, revert the bounded ticket merge if needed.
+- User verification authorizes finalization. Before target push, rollback is withholding the merge; after finalization, revert the bounded ticket merge if needed.
 
 ## User Verification And Finalization Authorization
 
-- Explicit user verification received: `No`.
-- Verification reference: `Pending user response`.
-- Ticket remains in `tickets/in-progress`; no push, target merge, release, deployment, archive, or cleanup has been performed.
-- Next action after explicit verification: refresh `origin/personal` again, protect any delivery edits, rerun the required check if the target advanced, then archive and finalize according to the delivery report.
+- Explicit user verification received: `Yes`.
+- Verification reference: User message — “the task is done. lets finalize no need to release a new version”.
+- Finalization preflight: `origin/personal` refreshed and unchanged at `153f3409c`; no target re-integration or rerun was required.
+- Inspection services on ports 3000/8000 were stopped after explicit completion. Validation-only untracked node_modules symlinks were removed.
+- Ticket is being moved to `tickets/done` before the final ticket-branch commit; push, target merge, and cleanup remain in progress.
 
 ## Cumulative Artifact Package
 

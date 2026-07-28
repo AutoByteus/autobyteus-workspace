@@ -10,6 +10,7 @@
 | DR-004 | Current SR-002/IR-003 plain-check validation and CRR-006 handoff | `Ready for explicit user verification` | API-REV-003 passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 | DR-005 | Current SR-003/IR-005 localized Activate validation and CRR-009 handoff | `Ready for explicit user verification` | API-REV-004 passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 | DR-006 | Current SR-005/IR-007 palette validation and CRR-011 handoff | `Ready for explicit user verification` | API-REV-005 passed at 95%; docs/handoff refreshed; user inspection hold remains. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
+| DR-007 | Explicit user verification and finalization authorization | `Ready for explicit user verification` | User verified; release declined; repository finalization in progress. | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 
 ## Revision Entries
 
@@ -103,3 +104,18 @@
 - Why this delivery revision was recorded: The approved visual palette changed after the prior localized action/state contract; API-REV-004 is historical and API-REV-005 must be the sole current sign-off.
 - Next recipient/action: User inspects the running Settings → Gemini surface and explicitly confirms completion; then delivery engineer performs final target refresh and repository finalization.
 - Remaining blockers, rollback concerns, or untested scope: Explicit user-verification hold; 320px whole-shell off-canvas behavior is an existing surrounding ProviderModelBrowser condition; Electron shell and external Gemini API remain out of scope.
+
+### DR-007 — User-verified finalization baseline
+
+- Delivery round and trigger: Round 7, triggered by explicit user completion and finalization authorization.
+- Triggering upstream report, verification, or evidence: User message — “the task is done. lets finalize no need to release a new version”; `delivery-evidence/integration-refresh.txt` finalization preflight.
+- Prior authoritative result: `Ready for explicit user verification`.
+- Current authoritative result: User verification received; finalization authorized; release explicitly declined; target refresh completed with no advancement; repository finalization is in progress.
+- Docs sync report: `docs-sync-report.md` — `Pass`, no-impact decision remains current.
+- Handoff summary: `handoff-summary.md` — updated with user verification and finalization state.
+- Release/publication/deployment report: `release-deployment-report.md` — updated with explicit no-release authorization and finalization checklist.
+- Integration and post-integration verification: `git fetch origin personal` confirmed target `153f3409c` unchanged from the verified handoff; no re-integration or rerun required. Dev:test services stopped after completion; validation-only symlinks removed.
+- User verification/finalization state: User verified. Ticket archive, ticket push, target merge/push, and post-finalization cleanup remain in progress.
+- Why this delivery revision was recorded: Establish the first authoritative post-verification delivery state and explicitly record the user’s no-release decision.
+- Next recipient/action: `delivery_engineer` completes archive, commit, ticket push, target merge/push, final report update, and safe cleanup.
+- Remaining blockers, rollback concerns, or untested scope: No delivery blocker; rollback before target push is withholding the merge. Existing 320px surrounding-layout note and Electron/external-provider out-of-scope boundaries remain documented.
