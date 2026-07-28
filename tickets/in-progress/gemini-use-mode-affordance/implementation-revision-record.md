@@ -9,7 +9,8 @@
 | IR-003 | `solution_designer` revised package / SR-002, implementation rework round | SR-002; user-approved plain-check direction | `Design Impact` | `SR-002`; `CRR-*` / `API-REV-*`: `N/A` | Superseded by IR-004 after user-approved explicit-word direction. |
 | IR-004 | `solution_designer` revised package / SR-003, implementation rework round | SR-003; user-approved Activate/Active direction | `Design Impact` | `SR-003`; `CRR-*` / `API-REV-*`: `N/A` | Superseded by IR-005 after CRR-007 found the pending button omitted visible Activating text. |
 | IR-005 | `code_reviewer` `code-review-report.md` / CRR-007, bounded local-fix round | F-001; pending state omitted visible Activating text | `Local Fix` | `SR-003`; `CRR-007`; `API-REV-*`: fresh validation required | Superseded by IR-006 after SR-004 required a neutral Activate variant to distinguish it from the blue Active badge. |
-| IR-006 | `solution_designer` revised package / SR-004, variant-only correction round | SR-004; Activate and Active shared blue treatment | `Design Impact` | `SR-004`; `CRR-*` / `API-REV-*`: fresh review and validation required | Added the approved neutral outlined Activate variant, retained the blue Active badge and pending behavior, and extended focused class assertions; ready for source review. |
+| IR-006 | `solution_designer` revised package / SR-004, variant-only correction round | SR-004; Activate and Active shared blue treatment | `Design Impact` | `SR-004`; `CRR-*` / `API-REV-*`: fresh review and validation required | Superseded by IR-007 after exploratory iteration selected blue Activate and green Active treatments. |
+| IR-007 | `solution_designer` revised package / SR-005, user-authorized exploratory visual iteration | SR-005; selected blue Activate and green Active treatments | `Design Impact` | `SR-005`; `CRR-*` / `API-REV-*`: fresh review and validation required | Finalized the blue outlined Activate and green/emerald Active variants, retained pending behavior, and extended focused class assertions; ready for source review. |
 
 ## Revision Entries
 
@@ -120,3 +121,21 @@
 - Local validation and result: Focused Vitest passed (1 file / 7 tests); localization boundary, web boundary, localization literal audit, `git diff --check`, and Nuxt production build/prerender passed. Live Settings screenshot `/Users/normy/.autobyteus/browser-artifacts/8a0e34-1785233322746.png` shows the neutral outlined Activate treatment; this variant-only change still requires renewed source review and fresh API/E2E.
 - Next recipient or routing: `code_reviewer` for implementation-source review; if passed, `api_e2e_engineer` for fresh API/E2E coverage and execution.
 - Remaining limitations or risks: Live browser reinspection of the new neutral treatment, narrow-width wrapping, contrast, hover/focus, and pending browser visuals remain downstream validation items.
+
+### IR-007 — Blue Activate and green Active variants
+
+- Triggering role, report path, and round: `solution_designer` revised implementation-ready package and `solution-revision-record.md` (`SR-005`), after user-authorized exploratory visual iteration; triggering evidence `/Users/normy/.autobyteus/browser-artifacts/8a0e34-1785233706633.png`.
+- Triggering finding IDs: `SR-005`; the user requested further style exploration after the neutral Activate/blue Active treatment remained improvable.
+- Classification: `Design Impact`.
+- Prior authoritative result: `IR-006` used a neutral outlined Activate button and blue Active badge; exploration found a clearer palette using blue for action and green/emerald for current state.
+- Current authoritative result: Configured non-active rows render localized `Activate` in a blue outlined button (`border-blue-200 bg-blue-50 text-blue-700`, blue hover); active rows render localized `Active` in a green/emerald badge (`border-emerald-200 bg-emerald-100 text-emerald-700`). Pending retains the blue treatment, spinner, visible localized Activating text, and disabled behavior.
+- Related solution revision ID: `SR-005`.
+- Related code review revision IDs: Fresh source review required.
+- Related API/E2E revision IDs: Fresh validation required; prior API/E2E sign-off is not reused.
+- Why this implementation revision is recorded: Apply the selected visual distinction after comparing multiple styles in the live Settings surface, without changing visible words, semantics, interaction, state, API, persistence, or localization contracts.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-002`, `BEH-003`, `BEH-006`; `AC-001`, `AC-003`, `SP-UI-001`, `SP-UI-002`.
+- Implementation delta: Changed the Activate button from gray neutral styling to blue outlined styling and changed the Active badge from blue to green/emerald; added focused class assertions for both variants. Pending spinner/text, focus ring, disabled treatment, and all behavior contracts remain unchanged.
+- Changed files or areas: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web/components/settings/providerApiKey/GeminiConfigurationOptionCard.vue`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web/components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts`; implementation handoff.
+- Local validation and result: Focused Vitest passed (1 file / 7 tests); localization boundary, web boundary, localization literal audit, and `git diff --check` passed. The live screenshot shows the selected distinction; fresh source review and API/E2E remain required.
+- Next recipient or routing: `code_reviewer` for implementation-source review; if passed, `api_e2e_engineer` for fresh API/E2E coverage and execution.
+- Remaining limitations or risks: Narrow-width wrapping, hover/focus, contrast, and pending browser visuals remain downstream validation items.

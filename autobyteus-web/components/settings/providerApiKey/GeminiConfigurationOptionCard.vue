@@ -53,7 +53,7 @@
           </span>
           <span
             v-if="active"
-            class="inline-flex min-h-11 items-center rounded-full bg-blue-100 px-3 text-sm font-semibold text-blue-700"
+            class="inline-flex min-h-11 items-center rounded-full bg-emerald-100 px-3 text-sm font-semibold text-emerald-700"
             :data-testid="`gemini-option-active-${option}`"
             :title="$t('settings.components.settings.ProviderAPIKeyManager.active')"
           >
@@ -70,7 +70,7 @@
           <button
             v-if="configured && !active"
             type="button"
-            class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-gray-300 bg-white px-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-100 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             :disabled="actionsDisabled"
             :data-testid="`gemini-activate-${option}`"
             :title="$t('settings.components.settings.ProviderAPIKeyManager.use_this_mode')"

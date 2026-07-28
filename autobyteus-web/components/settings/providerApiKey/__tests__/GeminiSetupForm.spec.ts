@@ -84,13 +84,17 @@ describe('GeminiSetupForm', () => {
     expect(activateButton.text()).toContain('Activate')
     expect(activateButton.classes()).toEqual(expect.arrayContaining([
       'border',
-      'border-gray-300',
-      'bg-white',
-      'text-gray-700',
-      'hover:bg-gray-50',
-      'hover:text-gray-900',
+      'border-blue-200',
+      'bg-blue-50',
+      'text-blue-700',
+      'hover:bg-blue-100',
+      'hover:text-blue-800',
     ]))
     expect(wrapper.get('[data-testid="gemini-option-active-VERTEX_EXPRESS"]').text()).toContain('Active')
+    expect(wrapper.get('[data-testid="gemini-option-active-VERTEX_EXPRESS"]').classes()).toEqual(expect.arrayContaining([
+      'bg-emerald-100',
+      'text-emerald-700',
+    ]))
     expect(wrapper.get('[data-testid="gemini-toggle-VERTEX_PROJECT"]').attributes('aria-label')).toBe('Configure: Vertex Project')
     expect(wrapper.get('[data-testid="gemini-option-description-AI_STUDIO"]').text()).toBe('Gemini Developer API key')
     expect(wrapper.get('[data-testid="gemini-option-description-VERTEX_EXPRESS"]').text()).toBe('Vertex AI Express API key')
