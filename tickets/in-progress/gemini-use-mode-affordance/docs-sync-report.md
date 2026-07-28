@@ -5,8 +5,8 @@
 - Ticket: `gemini-use-mode-affordance`
 - Trigger: API/E2E execution `Pass` at 95% confidence and proportional API/E2E test-code review `Not Applicable` with no findings.
 - Bootstrap base reference: `origin/personal` as recorded in `investigation-notes.md`.
-- Integrated base reference used for docs sync: refreshed `origin/personal` at `169fd12f4`; merged into ticket branch before delivery-owned edits.
-- Post-integration verification reference: `delivery-evidence/integration-refresh.txt`; focused Gemini suite passed 1 file / 7 tests.
+- Integrated base reference used for docs sync: refreshed `origin/personal` at `153f3409c`; initially merged before delivery-owned edits; a second pre-verification refresh to the latest tracked base was subsequently merged and the no-impact conclusion revalidated.
+- Post-integration verification reference: `delivery-evidence/integration-refresh.txt`; both post-integration focused Gemini checks passed 1 file / 7 tests.
 
 ## Why Docs Were Updated
 

@@ -5,16 +5,16 @@
 - Ticket: `gemini-use-mode-affordance`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance`
 - Branch: `codex/gemini-use-mode-affordance`
-- Integrated reviewed-state revision: `$(git rev-parse HEAD)`
+- Integrated reviewed-state revision: `d10d05b133a1b4b7ac1d5eb71f1f8aa90254b016` (latest pre-verification merge).
 - Finalization target: `personal` / `origin/personal`
 - Current status: `Ready for explicit user verification; repository finalization is on hold`
 
 ## Integrated-State Refresh
 
 - Recorded bootstrap/review base: `origin/personal` (see `investigation-notes.md`).
-- Latest tracked remote base after `git fetch origin personal`: `169fd12f4`.
-- Base advanced since bootstrap/review: `Yes` — three token-statistics commits were integrated.
-- Integration method: `git merge --no-ff origin/personal`.
+- Latest tracked remote base after the second pre-verification `git fetch origin personal`: `153f3409c`.
+- Base advanced since bootstrap/review: `Yes` — the latest tracked remote also advanced during the pre-verification hold; its delivery-only docs commit was integrated.
+- Integration method: `git merge --no-ff origin/personal` for both delivery refreshes.
 - Local delivery-safety checkpoint before integration: `8b3cd4a08` (`chore(ticket): checkpoint Gemini delivery package`).
 - Post-integration executable check: `pnpm --dir autobyteus-web test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run` — passed, 1 file / 7 tests.
 - Conflicts: None.

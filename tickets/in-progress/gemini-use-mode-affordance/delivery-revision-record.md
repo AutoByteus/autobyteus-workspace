@@ -22,3 +22,18 @@
 - Why this baseline or delivery revision was recorded: Establish the first authoritative delivery result; no prior delivery result is inferred from missing records.
 - Next recipient/action: User verifies or explicitly accepts the handoff; then delivery engineer refreshes the finalization target and proceeds only if the verified state remains current.
 - Remaining blockers, rollback concerns, or untested scope: User-verification hold; browser idle configured state used a read-only fixture; Electron shell was not exercised because no shell-specific code changed; unrelated broader Codex wording baseline failure remains out of scope. Before finalization, rollback is withholding approval.
+
+### DR-002 — Pre-verification latest-base refresh
+
+- Delivery round and trigger: Round 2, triggered because `origin/personal` advanced during the explicit user-verification hold after DR-001 preparation.
+- Triggering upstream report, verification, or evidence: `delivery-evidence/integration-refresh.txt` second refresh entry; latest remote `153f3409c`.
+- Prior authoritative result: `Ready for explicit user verification`.
+- Current authoritative result: Latest tracked remote base integrated without conflicts; focused Gemini suite rerun passed; handoff remains ready for explicit user verification.
+- Docs sync report: `docs-sync-report.md` — no-impact decision remains accurate after review of the integrated state.
+- Handoff summary: `handoff-summary.md` — refreshed to identify the latest integrated base and check.
+- Release/publication/deployment report: `release-deployment-report.md` — refreshed; finalization and release remain on hold.
+- Integration and post-integration verification: Second `git fetch origin personal` observed `153f3409c`; merge completed; `pnpm --dir autobyteus-web test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run` passed 1 file / 7 tests.
+- User verification/finalization state: Explicit user verification still not received. Ticket remains in `tickets/in-progress`; no push, archive, target merge, release, deployment, or cleanup performed.
+- Why this delivery revision was recorded: Prevent handing off a stale branch after the tracked remote base advanced during the hold.
+- Next recipient/action: User verifies or explicitly accepts the refreshed handoff; delivery engineer then refreshes the finalization target again before any archive or push.
+- Remaining blockers, rollback concerns, or untested scope: User-verification hold; same documented browser fixture/Electron-shell residuals and unrelated broader Codex baseline failure.

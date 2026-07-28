@@ -12,3 +12,15 @@ Post-integration executable check:
   pnpm --dir autobyteus-web test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run
   Result: passed, 1 file / 7 tests
 Post-integration state: current with latest tracked origin/personal; no conflicts.
+
+
+Pre-verification refresh — 2026-07-28
+
+Fetch: git fetch origin personal — passed
+Latest tracked remote base: 153f3409cd90207f9219cbe20242606271b36104
+Reason: origin/personal advanced during the user-verification hold.
+Integration: git merge --no-ff origin/personal -m "merge: refresh Gemini handoff against latest personal" — passed; no conflicts.
+Integrated revision before the next delivery-artifact edit: $(git rev-parse HEAD)
+Post-integration executable check:
+  pnpm --dir autobyteus-web test:nuxt components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts --run
+  Result: passed, 1 file / 7 tests

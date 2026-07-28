@@ -12,17 +12,17 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/tickets/in-progress/gemini-use-mode-affordance/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 - Notes: Integrated reviewed candidate is ready for explicit user verification; no finalization action is authorized yet.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` as recorded in `investigation-notes.md`.
-- Latest tracked remote base reference checked: `origin/personal` at `169fd12f4` after `git fetch origin personal`.
+- Latest tracked remote base reference checked: `origin/personal` at `153f3409c` after `git fetch origin personal`.
 - Base advanced since bootstrap or previous refresh: `Yes`
-- New base commits integrated into the ticket branch: `Yes` — 3 commits.
+- New base commits integrated into the ticket branch: `Yes` — first refresh integrated 3 commits; second refresh integrated the latest tracked remote delivery record commit.
 - Local checkpoint commit result: `Completed` — `8b3cd4a08`.
-- Integration method: `Merge`
+- Integration method: `Merge` (initial refresh plus a second pre-verification refresh)
 - Integration result: `Completed`; no conflicts.
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed` — focused Gemini suite, 1 file / 7 tests.
@@ -62,7 +62,7 @@
 
 - Bootstrap context source: `investigation-notes.md` and `implementation-handoff.md`.
 - Ticket branch: `codex/gemini-use-mode-affordance`.
-- Ticket branch commit result: `Delivery checkpoint and integration merge completed; delivery artifact commit pending user verification hold.`
+- Ticket branch commit result: `Delivery checkpoint, initial integration, delivery-artifact commit, and second latest-base integration completed; no push or finalization before user verification.`
 - Ticket branch push result: `Not started`.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
@@ -118,7 +118,7 @@
 
 ## Verification Checks
 
-- `git fetch origin personal`: `Pass`; tracked base at `169fd12f4`.
+- `git fetch origin personal`: `Pass`; tracked base at `153f3409c`.
 - Base integration: `Pass`; merge completed without conflicts.
 - Post-integration focused Gemini test: `Pass`; 1 file / 7 tests.
 - Upstream source review: `Pass`; no unresolved findings.
