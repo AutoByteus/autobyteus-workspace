@@ -91,7 +91,7 @@
 - Worktree cleanup result: `Completed` — dedicated ticket worktree removed after target push.
 - Worktree prune result: `Completed`.
 - Local ticket branch cleanup result: `Completed` after finalization.
-- Remote branch cleanup result: `Not required` unless later authorized by repository flow.
+- Remote branch cleanup result: `Completed` — `origin/codex/gemini-use-mode-affordance` deleted after merge.
 - Blocker: `None`.
 
 ## Escalation / Reroute
@@ -138,4 +138,4 @@
 
 ## Final Status
 
-`Finalized — user verified, ticket archived, ticket branch pushed, personal updated at 528c752ae, release explicitly declined, and cleanup completed.`
+`Finalized — user verified, ticket archived, ticket branch pushed, personal updated at 528c752ae, release explicitly declined, remote branch deleted, and cleanup completed.`
