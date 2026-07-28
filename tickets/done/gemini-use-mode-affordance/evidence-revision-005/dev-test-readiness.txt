@@ -1,0 +1,10 @@
+UTC 2026-07-28T10:20:24Z
+backend_health={"status":"ok","message":"Server is running"}
+frontend_status=200
+setup_config={"data":{"getGeminiSetupConfig":{"activeMode":"VERTEX_EXPRESS","aiStudioConfigured":true,"vertexExpressConfigured":true,"vertexProject":null}}}
+listen_3000
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    10276 normy   17u  IPv4 0x46c6814ba1e75e2e      0t0  TCP 127.0.0.1:3000 (LISTEN)
+listen_8000
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    10242 normy   25u  IPv4 0x6f98d24e89c222b0      0t0  TCP 127.0.0.1:8000 (LISTEN)

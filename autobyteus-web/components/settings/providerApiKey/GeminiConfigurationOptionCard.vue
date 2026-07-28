@@ -53,15 +53,12 @@
           </span>
           <span
             v-if="active"
-            class="inline-flex h-11 w-11 items-center justify-center"
+            class="inline-flex min-h-11 items-center rounded-full bg-emerald-100 px-3 text-sm font-semibold text-emerald-700"
             :data-testid="`gemini-option-active-${option}`"
             :title="$t('settings.components.settings.ProviderAPIKeyManager.active')"
           >
-            <span
-              class="flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-600"
-              aria-hidden="true"
-            >
-              <span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>
+            <span aria-hidden="true">
+              {{ $t('settings.components.settings.ProviderAPIKeyManager.active') }}
             </span>
             <span class="sr-only">
               {{ $t('settings.components.settings.ProviderAPIKeyManager.active') }}
@@ -73,7 +70,7 @@
           <button
             v-if="configured && !active"
             type="button"
-            class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-blue-700 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-100 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             :disabled="actionsDisabled"
             :data-testid="`gemini-activate-${option}`"
             :title="$t('settings.components.settings.ProviderAPIKeyManager.use_this_mode')"
@@ -85,11 +82,12 @@
               class="h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
               aria-hidden="true"
             ></span>
-            <span
-              v-else
-              class="h-5 w-5 rounded-full border-2 border-current"
-              aria-hidden="true"
-            ></span>
+            <span v-if="activating">
+              {{ $t('settings.components.settings.ProviderAPIKeyManager.activating') }}
+            </span>
+            <span v-else>
+              {{ $t('settings.components.settings.ProviderAPIKeyManager.activate_mode') }}
+            </span>
           </button>
           <button
             type="button"
