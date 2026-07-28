@@ -1,0 +1,80 @@
+COMMAND: pnpm test:nuxt components/settings/providerApiKey --run --reporter=verbose
+
+> autobyteus@1.4.26 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/providerApiKey --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web
+
+stderr | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts > ProviderApiKeyEditor > emits the entered API key from local editor state 10ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderApiKeyEditor.spec.ts > ProviderApiKeyEditor > uses the configured placeholder and resets local state when resetVersion changes 4ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts > ProviderModelBrowser > keeps built-in AutoByteus labels on model identifiers 16ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts > ProviderModelBrowser > shows friendly labels for saved custom-provider models 3ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts > ProviderModelBrowser > renders the draft row as the standard New Provider entry 4ms
+ ✓ components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts > ProviderModelBrowser > emits selection and reload intents without touching the store 4ms
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts > provider-centric Settings Apollo contract > keeps one exact provider status across subordinate LLM/audio/image rows
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts > provider-centric Settings Apollo contract > keeps one exact provider status across subordinate LLM/audio/image rows
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ✓ components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts > provider-centric Settings Apollo contract > keeps one exact provider status across subordinate LLM/audio/image rows 25ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > uses one provider group for identity, status, and all capability counts 17ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > never supplies one provider status from another provider 2ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > saves through the exact provider command 3ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > pins Settings reload commands to the AutoByteus runtime 3ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > sends no type/runtime fields in custom provider commands 2ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > detects truthful partial Gemini save-and-activate from the returned state 1ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > reports full Gemini activation only when returned active mode matches 1ms
+ ✓ components/settings/providerApiKey/__tests__/useProviderApiKeySectionRuntime.spec.ts > useProviderApiKeySectionRuntime > keeps conflicting writes fenced while a Gemini action is pending 3ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > renders all independent options with exactly one explicit active mode 19ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > expands only one editor, focuses it, and emits only the addressed save input 18ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > offers explicit first-time save-and-activate and configured-option activation 9ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > disables every conflicting option action while an operation is pending 5ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > shows the spinner instead of the idle activation icon while activating 3ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > disables vault-backed unavailable options without disabling Vertex Project 2ms
+ ✓ components/settings/providerApiKey/__tests__/GeminiSetupForm.spec.ts > GeminiSetupForm > clears write-only key editors after a refreshed setup snapshot 6ms
+
+ Test Files  5 passed (5)
+      Tests  22 passed (22)
+   Start at  10:04:52
+   Duration  5.85s (transform 3.12s, setup 24.50s, collect 470ms, tests 166ms, environment 1.07s, prepare 1.09s)
+

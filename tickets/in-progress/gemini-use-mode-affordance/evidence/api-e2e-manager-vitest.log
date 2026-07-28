@@ -1,0 +1,27 @@
+COMMAND: pnpm test:nuxt components/settings/__tests__/ProviderAPIKeyManager.spec.ts --run --reporter=verbose
+
+> autobyteus@1.4.26 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/__tests__/ProviderAPIKeyManager.spec.ts --run --reporter=verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-use-mode-affordance/autobyteus-web
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the canonical provider group and ordinary editor 13ms
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders the draft custom-provider path without credential-status gating 4ms
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders custom details and wires exact-provider delete 8ms
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts > ProviderAPIKeyManager > renders tight Gemini state and wires the specialized UI action 4ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  10:04:39
+   Duration  5.11s (transform 2.87s, setup 4.32s, collect 155ms, tests 30ms, environment 175ms, prepare 127ms)
+
