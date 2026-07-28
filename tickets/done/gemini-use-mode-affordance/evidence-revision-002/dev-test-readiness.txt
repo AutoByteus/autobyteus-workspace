@@ -1,0 +1,16 @@
+COMMAND: curl -sS http://127.0.0.1:8000/rest/health
+{"status":"ok","message":"Server is running"}
+COMMAND: curl -sS -I http://127.0.0.1:3000/settings
+HTTP/1.1 200 OK
+content-type: text/html;charset=utf-8
+x-powered-by: Nuxt
+date: Tue, 28 Jul 2026 08:50:16 GMT
+connection: close
+
+COMMAND: GraphQL getGeminiSetupConfig against test server
+{"data":{"getGeminiSetupConfig":{"activeMode":"VERTEX_EXPRESS","aiStudioConfigured":true,"vertexExpressConfigured":true,"vertexProject":null}}}
+PROCESS: pnpm dev:test intentionally retained for user inspection
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    10276 normy   17u  IPv4 0x46c6814ba1e75e2e      0t0  TCP 127.0.0.1:3000 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    10242 normy   25u  IPv4 0x6f98d24e89c222b0      0t0  TCP 127.0.0.1:8000 (LISTEN)

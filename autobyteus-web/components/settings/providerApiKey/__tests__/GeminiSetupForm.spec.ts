@@ -25,6 +25,7 @@ const translations: Record<string, string> = {
   'settings.components.settings.ProviderAPIKeyManager.save_option': 'Save option',
   'settings.components.settings.ProviderAPIKeyManager.save_and_use_mode': 'Save and use this mode',
   'settings.components.settings.ProviderAPIKeyManager.use_this_mode': 'Use this mode',
+  'settings.components.settings.ProviderAPIKeyManager.activate_mode': 'Activate',
   'settings.components.settings.ProviderAPIKeyManager.configure_option': 'Configure',
   'settings.components.settings.ProviderAPIKeyManager.collapse': 'Collapse',
   'settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility': 'Toggle key visibility',
@@ -78,7 +79,22 @@ describe('GeminiSetupForm', () => {
     expect(wrapper.find('[data-testid="gemini-option-active-AI_STUDIO"]').exists()).toBe(false)
     expect(wrapper.get('[data-testid="gemini-active-mode"]').text()).toContain('Vertex Express')
     expect(wrapper.get('[data-testid="gemini-option-status-AI_STUDIO"]').attributes('title')).toBe('Configured')
-    expect(wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]').attributes('aria-label')).toBe('Use this mode: AI Studio')
+    const activateButton = wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]')
+    expect(activateButton.attributes('aria-label')).toBe('Use this mode: AI Studio')
+    expect(activateButton.text()).toContain('Activate')
+    expect(activateButton.classes()).toEqual(expect.arrayContaining([
+      'border',
+      'border-blue-200',
+      'bg-blue-50',
+      'text-blue-700',
+      'hover:bg-blue-100',
+      'hover:text-blue-800',
+    ]))
+    expect(wrapper.get('[data-testid="gemini-option-active-VERTEX_EXPRESS"]').text()).toContain('Active')
+    expect(wrapper.get('[data-testid="gemini-option-active-VERTEX_EXPRESS"]').classes()).toEqual(expect.arrayContaining([
+      'bg-emerald-100',
+      'text-emerald-700',
+    ]))
     expect(wrapper.get('[data-testid="gemini-toggle-VERTEX_PROJECT"]').attributes('aria-label')).toBe('Configure: Vertex Project')
     expect(wrapper.get('[data-testid="gemini-option-description-AI_STUDIO"]').text()).toBe('Gemini Developer API key')
     expect(wrapper.get('[data-testid="gemini-option-description-VERTEX_EXPRESS"]').text()).toBe('Vertex AI Express API key')
@@ -127,6 +143,16 @@ describe('GeminiSetupForm', () => {
     expect(wrapper.get('[data-testid="gemini-save-AI_STUDIO"]').attributes('disabled')).toBeDefined()
     expect(wrapper.get('[data-testid="gemini-toggle-VERTEX_PROJECT"]').attributes('disabled')).toBeDefined()
     expect(wrapper.get('[data-testid="gemini-activate-VERTEX_PROJECT"]').attributes('disabled')).toBeDefined()
+  })
+
+  it('shows the spinner and pending label while activating', () => {
+    const wrapper = mountComponent({ activating: true })
+    const activateButton = wrapper.get('[data-testid="gemini-activate-AI_STUDIO"]')
+
+    expect(activateButton.attributes('disabled')).toBeDefined()
+    expect(activateButton.find('.animate-spin').exists()).toBe(true)
+    expect(activateButton.text()).toContain('Activating...')
+    expect(activateButton.text()).not.toContain('Activate')
   })
 
   it('disables vault-backed unavailable options without disabling Vertex Project', () => {

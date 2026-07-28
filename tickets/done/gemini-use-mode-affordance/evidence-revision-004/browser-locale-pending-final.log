@@ -1,0 +1,29 @@
+EN_PENDING_REQUEST {"operationName":"UseGeminiMode","variables":{"mode":"AI_STUDIO"},"query":"mutation UseGeminiMode($mode: GeminiSetupMode!) {\n  useGeminiMode(mode: $mode) {\n    activeMode\n    aiStudioConfigured\n    vertexExpressConfi
+EN_PENDING_RESULT {
+  "text": "Activating...",
+  "aria": "Use this mode: AI Studio",
+  "title": "Use this mode",
+  "disabled": true,
+  "spinner": true,
+  "idleActivate": false,
+  "overflow": false
+}
+ZH_PENDING_REQUEST {"operationName":"UseGeminiMode","variables":{"mode":"AI_STUDIO"},"query":"mutation UseGeminiMode($mode: GeminiSetupMode!) {\n  useGeminiMode(mode: $mode) {\n    activeMode\n    aiStudioConfigured\n    vertexExpressConfi
+ZH_IDLE_RESULT {
+  "text": "启用",
+  "aria": "使用此模式: AI Studio",
+  "title": "使用此模式",
+  "activeText": "当前使用当前使用",
+  "lang": "",
+  "overflow": false
+}
+ZH_PENDING_RESULT {
+  "text": "切换中...",
+  "aria": "使用此模式: AI Studio",
+  "title": "使用此模式",
+  "disabled": true,
+  "spinner": true,
+  "idleActivate": false,
+  "overflow": false
+}
+PAGE_ERRORS []
