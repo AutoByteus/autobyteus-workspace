@@ -243,6 +243,38 @@ const topLevelRowTexts = (wrapper: ReturnType<typeof mount>) => wrapper.findAll(
   .filter((text) => !text.includes('↳') && !text.includes('Cost breakdown'));
 
 describe('TokenUsageTaskStatisticsTable', () => {
+  it('renders exact primary token counts while keeping explanatory sublines compact', () => {
+    const largeRows: TokenUsageTaskStatisticsRow[] = [{
+      ...rows[0]!,
+      aggregate: buildAggregate({
+        grossInputTokens: 3_136_827_911,
+        cacheReadInputTokens: 3_136_827_911,
+        outputTokens: 3_136_827_941,
+        reasoningOutputTokens: 3_136_827_911,
+        totalTokens: 6_273_655_852,
+        cacheReadInputTokenRate: 1,
+      }),
+    }];
+    const wrapper = mount(TokenUsageTaskStatisticsTable, { props: { rows: largeRows } });
+
+    const tokenCells = wrapper.find('tbody > tr').findAll('td');
+    const inputCellText = normalizedText(tokenCells[3]!.text());
+    const outputCellText = normalizedText(tokenCells[4]!.text());
+    const inputPrimaryText = normalizedText(tokenCells[3]!.find('div').text());
+    const outputPrimaryText = normalizedText(tokenCells[4]!.find('div').text());
+    const inputSublineText = normalizedText(tokenCells[3]!.findAll('div')[1]!.text());
+    const outputSublineText = normalizedText(tokenCells[4]!.findAll('div')[1]!.text());
+
+    expect(inputPrimaryText.replace(/[^0-9]/g, '')).toBe('3136827911');
+    expect(outputPrimaryText.replace(/[^0-9]/g, '')).toBe('3136827941');
+    expect(inputSublineText).toContain('cached');
+    expect(inputSublineText.replace(/[^0-9]/g, '')).not.toContain('3136827911');
+    expect(outputSublineText).toContain('thinking included');
+    expect(outputSublineText.replace(/[^0-9]/g, '')).not.toContain('3136827911');
+    expect(inputCellText).toContain(inputPrimaryText);
+    expect(outputCellText).toContain(outputPrimaryText);
+  });
+
   it('sorts task rows by created time by default and labels fallback timestamps', () => {
     const wrapper = mount(TokenUsageTaskStatisticsTable, { props: { rows } });
 
