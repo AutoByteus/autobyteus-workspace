@@ -7,19 +7,19 @@
 - **Design spec:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/design-spec.md`
 - **Supplemental task artifacts:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/development-startup-contract.md`
 - **Solution revision record:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/solution-revision-record.md`
-- **Triggering rework report, revision record, or evidence:** N/A — initial implementation round; current implementation revision record is `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md` (`IR-001`).
+- **Triggering rework report, revision record, or evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md` (`CR-001`), `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-revision-record.md` (`CRR-002`), and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md` (`API-REV-001`). Current implementation revision record is `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md` (`IR-002`).
 
 ## Current Implementation Summary
 
-- **Implementation cycle:** Initial.
+- **Implementation cycle:** Rework.
 - **Implementation revision record:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md`
-- **Current implementation revision ID:** `IR-001`.
+- **Current implementation revision ID:** `IR-002`.
 - **Related solution revision ID:** `SR-001`.
-- **Related code review revision IDs:** N/A.
-- **Related API/E2E revision IDs:** N/A.
-- **Triggering finding IDs:** N/A.
+- **Related code review revision IDs:** `CRR-002` (prior baseline: `CRR-001`).
+- **Related API/E2E revision IDs:** `API-REV-001`.
+- **Triggering finding IDs:** `CR-001`, `DEV-007`, `REQ-009`, `AC-008`.
 
-The implementation creates a root-owned development startup boundary without changing server, Nuxt, Electron, Docker, provider, vault, importer, or test-runtime internals. `pnpm dev` builds the existing backend and enters `scripts/development/run-dev.mjs`; the launcher materializes fixed repository-local development state through `development-runtime.mjs`, starts the existing built server and Nuxt entrypoints, proves exact readiness, and owns bounded cleanup. `pnpm test:e2e` delegates deterministic assertions to the existing server Vitest setup. The old root manual `*:test` commands and wrappers are removed without aliases.
+The implementation creates a root-owned development startup boundary without changing server, Nuxt, Electron, Docker, provider, vault, importer, or test-runtime internals. `pnpm dev` builds the existing backend and enters `scripts/development/run-dev.mjs`; the launcher materializes fixed repository-local development state through `development-runtime.mjs`, starts the existing built server and Nuxt entrypoints, proves exact readiness, and owns bounded cleanup. After API/E2E found `CR-001`, the root `test:e2e` script now forwards `--run tests/e2e` without the extra separator that had produced `vitest -- --run tests/e2e`; the existing server `pretest` and test-owned setup remain authoritative. The old root manual `*:test` commands and wrappers are removed without aliases. This rework is limited to root command packaging; fresh exact `pnpm test:e2e` execution remains downstream.
 
 ## Approved Behavior Implementation Trace
 
@@ -27,7 +27,7 @@ The implementation creates a root-owned development startup boundary without cha
 | --- | --- | --- | --- |
 | `BEH-001` | `pnpm dev` is the sole accurately named full-stack development command; real built backend and Nuxt behavior remain | Root `package.json` -> `scripts/development/run-dev.mjs` -> existing `autobyteus-server-ts/dist/app.js` and `autobyteus-web` `pnpm dev` | Implemented; no `dev:test`, `server:test`, or `web:test` aliases remain |
 | `BEH-002` | Development persists below `<repo>/.autobyteus/development/server-data/`, isolated from tests and packaged production | `development-runtime.mjs` fixed module-relative paths -> backend `--data-dir` -> existing AppConfig/DB/vault owners | Implemented; logs, memory, temp workspace, runtime `.env`, DB, and adjacent key target are launcher-owned below the development root |
-| `BEH-003` | Deterministic assertions stay test-owned; real-provider E2E stays explicit | Root `test:e2e` -> server Vitest `tests/e2e`; existing `test:e2e:real(:preflight)` remains unchanged | Implemented; development launcher does not import test bootstrap or start assertion sessions |
+| `BEH-003` | Deterministic assertions stay test-owned; real-provider E2E stays explicit | Root `test:e2e` -> server Vitest `--run tests/e2e`; existing `test:e2e:real(:preflight)` remains unchanged | Command packaging corrected in `IR-002`; exact root execution must confirm only `tests/e2e` collection |
 | `BEH-004` | Template/path routing is fixed and ambient launcher-owned redirects cannot escape | `development-runtime.mjs` -> strict `.env.development` parser -> confined directories -> atomic runtime `.env` -> seven owned backend keys | Implemented; no cwd, `.env.test`, `.env.example`, home `.env`, or parent database/path values select development state |
 | `BEH-005` | Exact fixed ports/readiness, truthful failure, and owned shutdown | `run-dev.mjs` fixed TCP preflight -> backend marker + `/rest/health` -> Nuxt HTTP probe -> owned POSIX group/Windows-handle cleanup | Implemented; occupied ports fail before child startup; readiness lines are emitted only after both endpoints pass |
 | `BEH-006` | Credential-free templates and existing Settings/importer/vault ownership remain | `.env.development` four-key template; launcher writes no credential values; existing `secrets:import` and Settings/vault paths remain untouched | Implemented; docs provide explicit absolute development DB target and no automatic import |
@@ -40,6 +40,7 @@ The implementation creates a root-owned development startup boundary without cha
 - `autobyteus-server-ts/.env.development`: tracked non-secret four-key development template.
 - Root/server package and ignore files: canonical command surface and generated-state policy.
 - Root/server/secret-management docs: development/test/production data ownership, credentials, fixed URLs, and reset instructions.
+- Root `package.json` `test:e2e`: bounded `IR-002` fix removing the extra pnpm/Vitest argument separator; no test implementation changed.
 - Removed `test-support/live-e2e/run-test-dev.mjs`, `run-test-server.mjs`, and `run-test-web.mjs`: obsolete manual test-labelled lifecycle wrappers.
 
 ## Important Assumptions
@@ -54,7 +55,7 @@ The implementation creates a root-owned development startup boundary without cha
 - POSIX detached process groups and Windows child-handle/taskkill fallback need independent API/E2E lifecycle validation; the launcher never searches or kills unrelated processes.
 - Filesystem lstat/realpath checks and atomic replacement bound symlink/path risk but cannot eliminate a hostile race after validation.
 - Nuxt compile/readiness timing is bounded at 120 seconds and should be exercised downstream on a clean checkout.
-- The full-stack direct check was blocked by unrelated existing listeners on 127.0.0.1:8000 and :3000; the launcher returned stable `DEV_PORT_OCCUPIED` without touching those processes.
+- The full-stack direct check was blocked by unrelated existing listeners on 127.0.0.1:8000 and :3000; the launcher returned stable `DEV_PORT_OCCUPIED` without touching those processes. The corrected deterministic E2E command requires a fresh downstream run.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -100,6 +101,7 @@ The implementation creates a root-owned development startup boundary without cha
 | `node --check scripts/development/run-dev.mjs` | Pass | New launcher syntax |
 | `node --check scripts/development/run-dev.test.mjs` | Pass | New durable test syntax |
 | `node --test scripts/development/run-dev.test.mjs` | Pass (4/4) | Strict template, path/env materialization, retained settings, and occupied fixed port checks |
+| `pnpm --filter autobyteus-server-ts test --run tests/e2e --help` | Pass | Effective command output is `vitest --run tests/e2e`; existing `pretest` preparation remains active. This is an argument/help probe, not E2E execution. |
 | `git diff --check` | Pass | Changed source/docs whitespace check |
 | `node scripts/development/run-dev.mjs` | Expected bounded failure | Returned `DEV_PORT_OCCUPIED` before spawning children because unrelated processes owned 8000/3000; not API/E2E sign-off |
 

@@ -4,7 +4,7 @@
   "scripts": {
     "secrets:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
     "dev": "pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs",
-    "test:e2e": "pnpm --filter autobyteus-server-ts test -- --run tests/e2e",
+    "test:e2e": "pnpm --filter autobyteus-server-ts test --run tests/e2e",
     "test:e2e:real:preflight": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs --preflight",
     "test:e2e:real": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs",
     "verify:android-profile": "bash scripts/verify-android-profile.sh",
