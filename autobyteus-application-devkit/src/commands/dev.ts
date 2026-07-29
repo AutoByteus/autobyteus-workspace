@@ -1,5 +1,4 @@
 import path from 'node:path';
-import { loadApplicationDevkitConfig } from '../config/load-application-devkit-config.js';
 import { runStandaloneDevelopmentSession } from '../development/standalone-development-session.js';
 import { runStudioDevelopmentSession } from '../development/studio-development-session.js';
 import {
@@ -25,11 +24,10 @@ export const runDevCommand = async (args: string[]): Promise<void> => {
   if (hostMode !== 'standalone') {
     throw new Error("--host must be 'standalone' or 'studio'.");
   }
-  const config = await loadApplicationDevkitConfig(projectRoot);
   await runStandaloneDevelopmentSession({
     projectRoot,
     host: readStringFlag(options, 'listen-host') ?? '127.0.0.1',
-    port: readPortFlag(options, 'port') ?? config.config.dev.port,
+    portOverride: readPortFlag(options, 'port'),
     publicBaseUrl: readStringFlag(options, 'public-base-url'),
     openBrowser: !readBooleanFlag(options, 'no-open'),
   });

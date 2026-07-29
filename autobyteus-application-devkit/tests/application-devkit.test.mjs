@@ -252,6 +252,157 @@ test('validator reports unsafe local application ids in generated packages', asy
   )), true);
 });
 
+test('controlled development browser retains and explicitly reloads the active page', async () => {
+  const { PlaywrightDevelopmentBrowserSession } = await import(
+    '../dist/development/development-browser-session.js'
+  );
+  const calls = [];
+  const page = {
+    isClosed: () => false,
+    reload: async (options) => { calls.push(['reload', options]); },
+    goto: async (url, options) => { calls.push(['goto', url, options]); },
+  };
+  let contextCloseCount = 0;
+  let browserCloseCount = 0;
+  const session = new PlaywrightDevelopmentBrowserSession(
+    { close: async () => { browserCloseCount += 1; } },
+    { close: async () => { contextCloseCount += 1; } },
+    page,
+    'http://127.0.0.1:43124',
+  );
+
+  await session.reload('http://127.0.0.1:43124/');
+  await session.reload('http://127.0.0.1:43125');
+  await session.close();
+  await session.close();
+
+  assert.deepEqual(calls, [
+    ['reload', { waitUntil: 'domcontentloaded' }],
+    ['goto', 'http://127.0.0.1:43125', { waitUntil: 'domcontentloaded' }],
+  ]);
+  assert.equal(contextCloseCount, 1);
+  assert.equal(browserCloseCount, 1);
+});
+
+test('project watcher replaces resolved input subscriptions after config changes', async () => {
+  const {
+    resolveApplicationProjectWatchPaths,
+    watchApplicationProject,
+  } = await import('../dist/development/application-project-watch.js');
+  const {
+    resolveApplicationDevelopmentProjectState,
+  } = await import('../dist/development/application-development-project-state.js');
+  const target = path.join(await createTempDirectory('dynamic-watch'), 'sample-app');
+  await materializeApplicationTemplate({
+    targetDirectory: target,
+    applicationId: 'sample-app',
+    applicationName: 'Sample App',
+  });
+  const alternateFrontend = path.join(target, 'alternate/frontend');
+  const alternateBackend = path.join(target, 'alternate/backend');
+  const alternateAgents = path.join(target, 'alternate/agents');
+  const alternateTeams = path.join(target, 'alternate/agent-teams');
+  await Promise.all([
+    fs.mkdir(alternateFrontend, { recursive: true }),
+    fs.mkdir(alternateBackend, { recursive: true }),
+    fs.mkdir(alternateAgents, { recursive: true }),
+    fs.mkdir(alternateTeams, { recursive: true }),
+  ]);
+
+  const observedPaths = [];
+  const watcher = await watchApplicationProject({
+    projectRoot: target,
+    onChange: async (changedPath) => { observedPaths.push(path.resolve(changedPath)); },
+  });
+  try {
+    await writeDevkitConfig(target, {
+      source: {
+        frontendDir: 'alternate/frontend',
+        backendDir: 'alternate/backend',
+        agentsDir: 'alternate/agents',
+        agentTeamsDir: 'alternate/agent-teams',
+      },
+      output: { packageRoot: 'alternate-output/importable-package' },
+      dev: { port: 43199 },
+    });
+    await waitForCondition(
+      () => watcher.getWatchedPaths().includes(alternateFrontend),
+      'watcher to subscribe to the reconfigured frontend path',
+    );
+
+    const changedFrontendPath = path.join(alternateFrontend, 'changed.js');
+    await fs.writeFile(changedFrontendPath, 'export {};\n', 'utf8');
+    await waitForCondition(
+      () => observedPaths.includes(changedFrontendPath),
+      'watcher to observe the reconfigured frontend input',
+    );
+    await rewriteApplicationManifest(target, { id: 'renamed-app' });
+    await waitForCondition(
+      () => observedPaths.includes(path.join(target, 'application.json')),
+      'watcher to observe the changed source manifest',
+    );
+
+    const state = await resolveApplicationDevelopmentProjectState(target);
+    const resolvedPaths = await resolveApplicationProjectWatchPaths(target);
+    assert.equal(state.manifest.id, 'renamed-app');
+    assert.equal(state.config.config.dev.port, 43199);
+    assert.equal(
+      state.outputPackageRoot,
+      path.join(target, 'alternate-output/importable-package'),
+    );
+    assert.equal(resolvedPaths.includes(alternateFrontend), true);
+    assert.equal(resolvedPaths.includes(path.join(target, 'src/frontend')), false);
+  } finally {
+    await watcher.close();
+  }
+});
+
+test('Studio client refreshes a registered local package before resolving its current identity', async () => {
+  const { StudioApplicationClient } = await import(
+    '../dist/development/studio-application-client.js'
+  );
+  const originalFetch = globalThis.fetch;
+  const queries = [];
+  globalThis.fetch = async (_url, init) => {
+    const body = JSON.parse(init.body);
+    queries.push(body.query);
+    if (body.query.includes('mutation DevkitImportApplicationPackage')) {
+      return Response.json({ data: { importApplicationPackage: [{ packageId: 'pkg-current' }] } });
+    }
+    if (body.query.includes('query DevkitApplicationPackages')) {
+      return Response.json({ data: { applicationPackages: [{ packageId: 'pkg-current' }] } });
+    }
+    if (body.query.includes('query DevkitApplicationPackageDetails')) {
+      return Response.json({
+        data: { applicationPackageDetails: { rootPath: '/tmp/current-package' } },
+      });
+    }
+    if (body.query.includes('query DevkitApplications')) {
+      return Response.json({
+        data: {
+          listApplications: [{
+            id: 'canonical-current',
+            localApplicationId: 'renamed-app',
+            packageId: 'pkg-current',
+          }],
+        },
+      });
+    }
+    throw new Error(`Unexpected query: ${body.query}`);
+  };
+  try {
+    const selected = await new StudioApplicationClient('http://127.0.0.1:8000')
+      .ensureLocalPackage('/tmp/current-package', 'renamed-app');
+    assert.deepEqual(selected, {
+      packageId: 'pkg-current',
+      applicationId: 'canonical-current',
+    });
+    assert.equal(queries[0].includes('mutation DevkitImportApplicationPackage'), true);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 const rewriteApplicationManifest = async (projectRoot, overrides) => {
   const manifestPath = path.join(projectRoot, 'application.json');
   const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
@@ -273,4 +424,15 @@ const fileExists = async (targetPath) => {
   } catch {
     return false;
   }
+};
+
+const waitForCondition = async (condition, label, timeoutMs = 5000) => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (condition()) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  assert.fail(`Timed out waiting for ${label}.`);
 };

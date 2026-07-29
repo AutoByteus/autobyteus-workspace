@@ -10,7 +10,7 @@ import { writeBackendBundleManifest } from './backend-bundle-manifest-writer.js'
 import { buildFrontendAssets } from './frontend-builder.js';
 import { copyApplicationResources } from './resource-copier.js';
 
-type ApplicationSourceManifest = {
+export type ApplicationSourceManifest = {
   id: string;
   name: string;
 };
