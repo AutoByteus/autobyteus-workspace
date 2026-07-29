@@ -18,14 +18,15 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/brief-dev-studio.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/studio-root-dev.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/devkit-studio-existing-package-regression.log`
-  - Failure-origin result `CRR-003`: `Fail — Local Fix`; finding `CR-003`, linked to `APIE2E-007`, `APIE2E-F001`, and `API-REV-001`.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-002-studio-bundle-team-api-mismatch.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-002-studio-bundle-team-gate-failure.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-002-studio-bundle-team-gate-failure.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-002-studio-root-dev.log`
+  - Failure-origin result `CRR-005`: `Fail — Local Fix`; finding `CR-004`, linked to `APIE2E-STUDIO-001`, `APIE2E-F002`, and `API-REV-002`.
 
 ## Current Implementation Summary
 
-The complete implementation spans the initial source commit `247795f5f4fd9fda2e45347b7a9680b4c385e0a7`, the deterministic development-lifecycle fix `0762cd7e37122e0c6c4e5d4ed463a28c9030d38f`, and the current Studio repeated-edit fix `b0eaa5f8aa9bce49be61a916349e04eb5c2eb28f` on `codex/universal-application-framework-proposal-analysis`.
+The complete implementation spans the initial source commit `247795f5f4fd9fda2e45347b7a9680b4c385e0a7`, the deterministic development-lifecycle fix `0762cd7e37122e0c6c4e5d4ed463a28c9030d38f`, the Studio repeated-edit fix `b0eaa5f8aa9bce49be61a916349e04eb5c2eb28f`, and the current Studio definition-authority fix `b14dee08fecf42beb8cb5eb78cccea3f149215ee` on `codex/universal-application-framework-proposal-analysis`.
 
 - Replaced the iframe-specific application entry with one unversioned `startApplication` API, a strict host-neutral runtime bootstrap, and Studio-iframe and standalone-same-origin providers.
 - Added explicit graph-local application platform composition, readiness, recovery, lifecycle, gateway, engine, storage, orchestration, communication, streaming, notification, and run authorities.
@@ -38,16 +39,17 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 - Replaced the stateless OS URL launcher with one devkit-owned controlled Chrome/Edge page. Initial standalone start navigates once; a successful same-origin watched host restart explicitly invokes a full document reload, while an effective port change navigates that same page to the new host URL.
 - Made long-running project watching re-resolve and replace configured input subscriptions after every successful rebuild. Standalone and Studio rebuilds now re-read current config/manifest state; standalone uses the current manifest ID and non-overridden config port, while Studio refreshes the current output-root package registration and resolves the current canonical application selection before reload.
 - Corrected Studio repeated-edit handling without weakening unique-root enforcement: the devkit resolves an existing package root before import, invokes a dedicated Studio package-reload mutation backed by the existing registry/cache refresh owner, resolves the current manifest identity after that refresh, and only then invokes the existing backend reload/re-entry endpoint. Initial roots still use the import owner exactly once.
+- Corrected the Studio definition-authority split: the existing composition-to-GraphQL authority holder now receives the exact `AgentDefinitionService` and `AgentTeamDefinitionService` created for the Studio application graph, and every agent/team GraphQL read, refresh, create, update, and delete operation uses those authorities. Process-global singleton lookup, catalog merging, and fallback access are absent from that surface.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004`
 - Related solution revision IDs: `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
-- Related API/E2E revision IDs: `API-REV-001`
+- Related code-review revision IDs: `CRR-001`–`CRR-005`
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-003`, `APIE2E-F001`
+- Triggering finding IDs: `CR-004`, `APIE2E-STUDIO-001`, `APIE2E-F002`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -56,12 +58,12 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 | DS-001 | Studio iframe bootstrap becomes provider-local while application source receives one runtime contract/client. | `autobyteus-application-sdk-contracts/src/{application-iframe-contract,application-runtime-bootstrap}.ts`; `autobyteus-application-frontend-sdk/src/application-startup/{application-startup-coordinator,studio-iframe-bootstrap-provider}.ts`; `autobyteus-web/components/applications/{ApplicationSurface,ApplicationIframeHost}.vue` | Implemented. Iframe correlation/origin validation remains in the provider/Studio host; application callbacks receive no iframe-only fields. |
 | DS-002 | A selected current package starts standalone at `/` and mounts through the same application client. | `autobyteus-server-ts/src/standalone-application-host/**`; `autobyteus-application-frontend-sdk/src/application-startup/standalone-same-origin-bootstrap-provider.ts`; `autobyteus-application-sdk-contracts/src/standalone-application-bootstrap.ts` | Implemented. Live Brief startup mounted the business UI from a fresh isolated data root with the strict same-origin bootstrap. |
 | DS-003 | Studio and standalone mounts delegate backend operations to one gateway/engine path. | `autobyteus-server-ts/src/compositions/{build-studio-server-composition,build-standalone-application-server-composition}.ts`; `src/api/rest/application-backend-route-handlers.ts`; `src/application-backend-api-gateway/**` | Implemented with explicit injected graph authorities and host-specific ingress cardinality. No host imports application business backend code. |
-| DS-004 | Resource resolution, run launch, events, artifacts, streaming, and communication remain shared runtime authorities. | `autobyteus-server-ts/src/application-platform/runtime/{create-application-orchestration-authorities,create-application-run-authorities}.ts`; `src/application-orchestration/**`; `src/application-agent-{communication,streaming}/**` | Implemented. Existing orchestration semantics are retained behind graph-local service construction; exact runtime execution remains a downstream executable-coverage target. |
+| DS-004 | Resource resolution, run launch, events, artifacts, streaming, communication, and definition catalogs remain shared composition authorities. | `autobyteus-server-ts/src/application-platform/runtime/{create-application-definition-services,create-application-orchestration-authorities,create-application-run-authorities}.ts`; `src/api/graphql/{studio-application-api-authorities,types/agent-definition,types/agent-team-definition}.ts`; `src/application-orchestration/**`; `src/application-agent-{communication,streaming}/**` | Implemented through `IR-004`. The runtime graph and Studio GraphQL surface receive the exact same composition-created agent/team definition services; all related GraphQL reads, refreshes, and mutations avoid process-global lookup. Existing orchestration semantics remain unchanged. |
 | DS-005 | Explicit reusable preparation/readiness/recovery/stop lifecycle for both compositions. | `autobyteus-server-ts/src/application-platform/runtime/{application-platform-lifecycle,application-definition-runtime-readiness,application-runtime-definition-validator,create-application-platform-runtime-graph}.ts`; `src/server-runtime.ts` | Implemented. Readiness includes the exact seven tool groups and definition/resource validation; selected-app diagnostics fail standalone and quarantine invalid Studio apps. Stop is idempotent and aggregates cleanup errors. |
 | DS-006 | Real native standalone and Studio development sessions use the shared pack owner and checked-in mappings. | `autobyteus-application-devkit/src/development/{application-development-project-state,application-project-watch,development-browser-session,standalone-development-session,studio-development-session,studio-application-client}.ts`; `autobyteus-server-ts/src/api/graphql/types/application-packages.ts`; `src/commands/dev.ts`; maintained `autobyteus-app.config.mjs`/`package.json`; starter templates | Implemented through `IR-003`. Standalone retains one controlled browser page and explicitly reloads it after successful same-host restart. Both session modes re-read current config/manifest state and replace resolved source subscriptions. Studio now distinguishes absent-root import from existing-root package refresh, resolves current identity only after catalog refresh, and then requests backend reload. Unique-root rejection remains authoritative. Mock dev-server product files and custom maintained-app builders remain deleted. Full live API/E2E rerun is pending. |
 | DS-007 | One current package remains directly consumable by both hosts without mutation or host-specific rebuild. | Devkit `packApplicationProject` output; Studio local-package client; standalone selection/start boundary; regenerated `applications/*/dist/importable-package` | Production paths consume the package read-only and `start` performs validation only. Durable digest-based dual-host conformance proof remains for API/E2E ownership. |
 | DS-008 | Standalone root/assets/eligible SPA fallback are confined to selected `ui/`; platform routes remain reserved. | `autobyteus-server-ts/src/standalone-application-host/api/{standalone-application-static-routes,register-standalone-application-rest,standalone-browser-websocket-origin}.ts` | Implemented. Live smoke returned root and HTML-navigation fallback, reserved-route 404, API-style asset 404, invalid-origin WebSocket close `1008`, and matching-origin connection. |
-| DS-009 | Studio launch/reload/teardown remains explicit and compatible with the new iframe provider. | `autobyteus-web/components/applications/{ApplicationSurface,ApplicationIframeHost}.vue`; `utils/application/applicationLaunchDescriptor.ts`; focused component tests | Implemented without adding implicit relaunch or runtime-run behavior. Existing launch-state owner remains authoritative. |
+| DS-009 | Studio setup/launch/reload/teardown remains explicit and compatible with the new iframe provider. | `autobyteus-server-ts/src/compositions/build-studio-server-composition.ts`; GraphQL definition authority files; `autobyteus-web/components/applications/{ApplicationSurface,ApplicationIframeHost}.vue`; `components/applications/setup/ApplicationTeamLaunchProfileEditor.vue`; focused component tests | Implemented through `IR-004` without adding implicit relaunch or runtime-run behavior. The setup editor's GraphQL catalog now resolves through the same definition authorities that validated the application graph. Existing launch-state owner remains authoritative; the exact live gate/iframe path requires API/E2E rerun. |
 | DS-010 | `build`/`validate` then build-free production `start` runs the real standalone composition with separate durable data and graceful stop. | `autobyteus-application-devkit/src/commands/start.ts`; `src/development/development-process-lifetime.ts`; `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | Implemented. Direct CLI SIGTERM smoke exited `0`, released the listener, and left the isolated database/root key in the configured data root. |
 
 ## Key Files Or Areas
@@ -80,6 +82,7 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 
 - Manifest v4 remains the one current package format; serialized contract/version values remain data while public current-contract symbols are unversioned.
 - Studio's GraphQL package list/import/reload operations and application backend reload route form the supported `dev:studio` integration boundary; package reload delegates to the existing registry/catalog refresh service rather than duplicate registration.
+- Studio's agent/team definition GraphQL surface is a composition adapter over the exact services created by `createApplicationDefinitionServices`; it is not an independent global catalog owner.
 - Standalone execution selects one explicit local application ID and runs in its own process/data root; it does not attempt concurrent independent process-global AppConfig instances in one Node process.
 - A missing standalone data-root `.env` may be materialized as an empty non-secret file; existing files are never overwritten.
 - API/E2E owns durable conformance/test updates and broader real-host execution, including exact team-run equivalence.
@@ -87,11 +90,12 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 ## Known Risks
 
 - API/E2E determined the previously failing REST assertions and several related integrations remained behaviorally valid but had stale implicit-owner setup. Its preserved uncommitted durable updates passed the 50-file affected server selection at 216/216; proportional test-code review remains pending after a successful full rerun.
-- API/E2E round `API-REV-001` exercised real Brief `dev:studio` and exposed the repeated-root failure now addressed by `IR-003`; its full rerun and remaining live matrix are required before any pass claim.
+- `API-REV-002` confirms `CR-003`/`APIE2E-F001` resolved: devkit 19/19 and real initial plus two repeated Brief Studio refresh generations pass without duplicate import.
+- `API-REV-002` then exposed `CR-004`/`APIE2E-F002`: the graph-local Brief team was `READY`, while the singleton-backed GraphQL catalog omitted it and blocked Studio entry. `IR-004` corrects that authority wiring; the exact setup/iframe scenario must be rerun before any pass claim.
 - Dual-host immutable digest conformance, the complete same-Brief journey, the complete starter/Brief/Socratic command matrix, and Studio browser remount remain incomplete according to the current API/E2E report.
 - The rendered implementation check covered standalone Brief startup/empty state at the browser tool's narrow responsive viewport. Studio rendering, Socratic rendering, transient startup failure UI, and business mutations remain independently unverified.
 - Restart cleanup is proven for two sequential standalone graph generations in one process; broader long-running leak detection remains downstream coverage.
-- `IR-002` added focused source-level and narrow live-browser evidence for config-driven watch replacement and explicit document reload. `IR-003` adds focused ordering evidence for one-time initial import and repeated existing-root package refresh/current identity/backend reload. Full repeated live execution and Studio presentation remount remain downstream API/E2E ownership.
+- `IR-002` added focused source-level and narrow live-browser evidence for config-driven watch replacement and explicit document reload. `IR-003` corrected repeated package refresh and is API/E2E-confirmed. `IR-004` adds focused exact-authority list/refresh evidence; full Studio setup, presentation remount, and in-Studio team execution remain downstream API/E2E ownership.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -100,7 +104,7 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`.
-- Evidence / notes: provider wire concerns, lifecycle sequencing, graph construction, ingress mounting, project commands, and package assembly now have explicit owners. Host adapters depend on the graph/gateway boundaries rather than global application registrars or copied server implementations.
+- Evidence / notes: provider wire concerns, lifecycle sequencing, graph construction, ingress mounting, project commands, package assembly, and Studio definition APIs now have explicit owners. `CR-004` was a bounded implementation deviation from the reviewed design; `IR-004` makes the GraphQL definition adapters depend on the exact composition authorities rather than route-level definition singletons.
 
 ## Legacy / Compatibility Removal Check
 
@@ -110,7 +114,7 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: removed `startHostedApplication`, version-suffixed current-contract symbols, mock dev server product files, custom maintained-app builders, generated source-root mirrors/vendor trees, broad application route registration, and the stateless `openDevelopmentBrowser` launcher. The current browser lifecycle, project-state resolution, watch replacement, and host sessions have distinct owners; no changed source implementation file exceeds 500 effective lines.
+- Notes: removed `startHostedApplication`, version-suffixed current-contract symbols, mock dev server product files, custom maintained-app builders, generated source-root mirrors/vendor trees, broad application route registration, the stateless `openDevelopmentBrowser` launcher, and the Studio agent/team GraphQL singleton bypasses. The current browser lifecycle, project-state resolution, watch replacement, host sessions, and definition API authority each have explicit owners; no changed source implementation file exceeds 500 effective lines.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -130,7 +134,8 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 - Nuxt focused tests required the normal `pnpm -C autobyteus-web exec nuxt prepare` generated-type setup because `.nuxt/tsconfig.json` was initially absent.
 - Initial implementation commit: `247795f5f4fd9fda2e45347b7a9680b4c385e0a7`.
 - Deterministic development-lifecycle source commit: `0762cd7e37122e0c6c4e5d4ed463a28c9030d38f`.
-- Current Studio repeated-edit source commit: `b0eaa5f8aa9bce49be61a916349e04eb5c2eb28f`.
+- Studio repeated-edit source commit: `b0eaa5f8aa9bce49be61a916349e04eb5c2eb28f`.
+- Current Studio definition-authority source commit: `b14dee08fecf42beb8cb5eb78cccea3f149215ee`.
 
 ## Local Implementation Checks Run
 
@@ -158,8 +163,13 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` after `IR-003` — passed.
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-packages/application-package-service.test.ts --no-file-parallelism --maxWorkers=1` — 13/13 passed, including the existing local-package reload/cache-refresh authority.
 - `IR-003` disposable client/session-order probe — passed. Initial root sequence was lookup -> import -> resolve root -> current identity -> backend reload. Two existing-root generations each ran lookup -> package reload -> refreshed current identity -> backend reload, selected the renamed current canonical IDs, and never invoked import.
-- The shared-worktree devkit suite currently reports 18/19 passed. The sole failure is the API/E2E-owned uncommitted regression mock rejecting the newly required `DevkitReloadApplicationPackage` operation as “Unexpected query” before its final no-import assertion. Source inspection and the disposable probe confirm no duplicate import; the durable mock must be extended by `api_e2e_engineer` during the mandatory rerun. No implementation-owned test file was changed or committed in `IR-003`.
+- The `IR-003` shared-worktree devkit run reported 18/19 because the then-preserved API/E2E regression did not model package reload. `API-REV-002` supersedes that limitation: its updated durable regression and full devkit suite pass 19/19, and real repeated Studio refresh also passes.
 - `IR-003` owned-source `git diff --check`, focused commit-content check, and effective-line guard — passed; the changed devkit client and GraphQL resolver remain at 99 and 153 effective non-empty lines.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` after `IR-004` — passed.
+- `IR-004` resolver singleton guard — passed: neither Studio agent nor team definition resolver contains `AgentDefinitionService.getInstance()` or `AgentTeamDefinitionService.getInstance()`.
+- `IR-004` disposable GraphQL authority probe — passed. The authority holder returned the exact configured services; agent/team list operations reached those services; agent refresh used the exact agent service; team refresh preserved agent-before-team order on the same configured pair.
+- Existing `definition-catalog-refresh.test.ts` currently reports 1/3 passed: schema exposure remains correct, while its two singleton-spy tests now fail because the production resolver correctly requires configured Studio authorities. Per workflow ownership and `CRR-005`, `api_e2e_engineer` must adjust this durable boundary coverage during rerun; no implementation-owned test file was changed or committed.
+- `IR-004` owned-source diff/commit checks and size guard — passed. The authority holder, agent resolver, team resolver, and Studio composition remain at 44, 279, 293, and 162 effective non-empty lines; all are under 500 and the local deltas are below the 220-line split trigger.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -175,7 +185,8 @@ The complete implementation spans the initial source commit `247795f5f4fd9fda2e4
 
 - Update or replace the two stale REST tests against explicit Studio/standalone compositions; verify long canonical application IDs and execution-resource configuration routes through the current injected graph.
 - Prove two independent composition graphs do not share availability, gateway, engine, storage, run lookup, notification, WebSocket, or orchestration state.
-- Rerun `API-REV-001` after updating its durable Studio-client mock to model the dedicated existing-package reload mutation; require repeated real Brief `dev:studio` edits to complete package refresh, current identity selection, backend reload, and explicit Studio remount without a second import.
+- Rerun `APIE2E-STUDIO-001` first against `IR-004`; require Studio GraphQL to return the exact package-owned Brief team already reported `READY` by the application graph, enable `Enter application`, and create the expected iframe.
+- Adjust durable GraphQL definition-boundary coverage to configure exact composition authorities and assert coherent agent/team reads, refresh ordering, and relevant mutations without singleton access.
 - Run the remaining `dev`, `dev:studio`, `build`, `validate`, and build-free `start` matrix from the starter, Brief, and Socratic roots; mutate current source inputs, `application.json`, and `autobyteus-app.config.mjs` mappings/port/output root and verify subscription replacement, current selection, atomic rebuild/restart, standalone full document reload, Studio explicit remount, and cleanup.
 - Hash the generated package before Studio and standalone runs and after shutdown; require an unchanged package and identical relevant entry/backend digests.
 - Execute the real Brief team through `context.agentExecution` in both hosts with the same resource/launch profile and assert event/artifact/notification equivalence.
