@@ -33,19 +33,47 @@ const PRICING_TOKEN_KEYS = new Set([
   "maxinputtokens",
   "inputtokenpricingtiers",
 ]);
+const ENDPOINT_ADDRESS_QUALIFIERS = new Set([
+  "api",
+  "endpoint",
+  "gateway",
+  "host",
+  "hostname",
+  "provider",
+  "proxy",
+  "server",
+  "service",
+]);
 
 const forbiddenReason = (key: string): string | null => {
   const normalized = canonicalKey(key);
   const tokens = semanticKeyTokens(key);
   if (/password|passphrase/.test(normalized)) return "password/passphrase fields are host-owned";
-  if (/credential|secret|apikey|clientsecret|privatekey/.test(normalized)) {
+  if (
+    /credential|secret|apikey|clientsecret|privatekey|accesskey|accountkey|clientkey|subscriptionkey/.test(
+      normalized,
+    )
+  ) {
     return "credential or secret fields are host-owned";
   }
-  if (/authorization|authheader|bearer/.test(normalized)) {
+  if (
+    /authorization|authentication|authheader|bearer/.test(normalized)
+    || tokens.includes("auth")
+  ) {
     return "authorization or bearer fields are host-owned";
   }
   if (normalized.includes("token")) return "token-value fields are host-owned";
-  if (/endpoint|baseurl|apibase/.test(normalized)) return "endpoint/base-URL fields are host-owned";
+  if (
+    /endpoint|baseurl|baseuri|apibase|connectionstring|dsn/.test(normalized)
+    || tokens.includes("url")
+    || tokens.includes("uri")
+    || (
+      tokens.includes("address")
+      && tokens.some((token) => ENDPOINT_ADDRESS_QUALIFIERS.has(token))
+    )
+  ) {
+    return "endpoint/base-URL fields are host-owned";
+  }
   if (tokens.includes("host") || tokens.includes("hostname")) {
     return "host endpoint fields are host-owned";
   }
