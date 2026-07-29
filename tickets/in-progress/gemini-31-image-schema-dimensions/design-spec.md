@@ -11,8 +11,8 @@ parameter schemas for native Gemini image models and add a provider-owned
 normalization step in `GeminiImageClient`. The public tool contract uses
 snake_case `generation_config.aspect_ratio` and `generation_config.image_size`.
 Only the Gemini client converts those values into the current JavaScript
-Generate Content shape `config.responseFormat.image.aspectRatio` and
-`config.responseFormat.image.imageSize`.
+Generate Content shape `config.imageConfig.aspectRatio` and
+`config.imageConfig.imageSize`.
 
 No new service, client, transport, compatibility wrapper, or default-model
 change is needed.
@@ -28,7 +28,7 @@ change is needed.
 | Behavior ID | Approved change / preserved outcome | Target production path | Spine IDs |
 | --- | --- | --- | --- |
 | B-IMG-SCHEMA-001 | Gemini native model selection exposes a nested model-specific generation schema instead of only common fields. | Default model setting / tool discovery -> `MediaModelResolver` -> `ImageClientFactory` -> `ImageModel.parameterSchema` -> `buildMediaToolParameterSchema` -> generated tool schema. | DS-001, DS-004 |
-| B-IMG-SCHEMA-002 | Supported aspect/size inputs are applied to Gemini requests using the SDK's canonical response-format fields. | Tool call -> parser -> `MediaGenerationService` -> `GeminiImageClient` normalization -> `models.generateContent`. | DS-002, DS-003 |
+| B-IMG-SCHEMA-002 | Supported aspect/size inputs are applied to Gemini requests using the SDK's canonical `imageConfig` fields. | Tool call -> parser -> `MediaGenerationService` -> `GeminiImageClient` normalization -> `models.generateContent`. | DS-002, DS-003 |
 | B-IMG-SCHEMA-003 | Editing/reference-image flow shares the same config normalization and keeps current image extraction/output behavior. | Edit tool -> service input/reference resolution -> `GeminiImageClient.editImage` -> `generateImage` -> provider response -> file writer -> tool result. | DS-002, DS-003 |
 | B-IMG-SCHEMA-004 | Existing models and no-config calls preserve current behavior. | Existing catalog selection -> existing model client -> existing request/response path. | DS-001, DS-002, DS-003 |
 | B-IMG-SCHEMA-005 | Gemini 3.1 Flash Lite exposes all 14 currently documented aspect ratios, including the four narrow ratios omitted by the initial matrix, while retaining its verified 1K-only size boundary. | Lite catalog schema -> media tool enum -> shared Gemini normalizer -> provider request. | DS-001, DS-002, DS-004 |
@@ -119,12 +119,12 @@ when absent, the provider's normal default behavior remains in effect.
    existing precedence (per-call values win).
 2. Reads `aspect_ratio` and `image_size` only as documented schema fields.
 3. Removes those tool-facing keys from the top-level SDK config.
-4. If either is present, merges an `image` object into
-   `config.responseFormat` using `aspectRatio` / `imageSize`; existing
-   provider-shaped `responseFormat` fields, if present, are preserved.
+4. If either is present, merges an `imageConfig` object into the SDK config
+   using `aspectRatio` / `imageSize`; existing provider-shaped `imageConfig`
+   fields, if present, are preserved.
 5. Leaves the existing `responseModalities` default logic and all unrelated
    config fields unchanged.
-6. Does not create `responseFormat` when neither image field is supplied.
+6. Does not create `imageConfig` when neither image field is supplied.
 
 Illustrative result:
 
@@ -135,9 +135,7 @@ Illustrative result:
 // SDK request config
 {
   responseModalities: ['IMAGE'],
-  responseFormat: {
-    image: { aspectRatio: '21:9', imageSize: '4K' },
-  },
+  imageConfig: { aspectRatio: '21:9', imageSize: '4K' },
 }
 ```
 
@@ -186,7 +184,7 @@ Forbidden:
 | Change | Path | Responsibility / action |
 | --- | --- | --- |
 | Modify | `autobyteus-ts/src/multimedia/image/image-client-factory.ts` | Add schema constants/builder and attach per-model schemas to native Gemini entries. |
-| Modify | `autobyteus-ts/src/multimedia/image/api/gemini-image-client.ts` | Normalize snake_case schema fields into SDK `responseFormat.image`; preserve request/response owner. |
+| Modify | `autobyteus-ts/src/multimedia/image/api/gemini-image-client.ts` | Normalize snake_case schema fields into SDK `imageConfig`; preserve request/response owner. |
 | Modify | `autobyteus-ts/tests/unit/multimedia/image/image-client-factory.test.ts` | Assert exact model-specific schema values and no over-broad inheritance. |
 | Modify | `autobyteus-ts/tests/unit/multimedia/image/api/gemini-image-client.test.ts` | Assert no-config preservation, generation translation, and edit/reference translation. |
 | Modify or add focused | `autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts` or a focused media schema test | Prove resolved Gemini default exposes nested `generation_config` if existing test setup supports it without new environment machinery. |

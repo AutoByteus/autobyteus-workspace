@@ -402,6 +402,45 @@ IDs. The active IDs use the same provider API value for API-key and Vertex
 runtimes and reuse the existing `GeminiImageClient` generation/editing request
 path.
 
+#### Native Gemini image output controls
+
+The image catalog is also the durable owner of the model-specific image output
+schema. `ImageClientFactory` defines each native Gemini model's
+`parameterSchema`; `media-tool-parameter-schemas.ts` projects that metadata as
+the optional `generation_config` object on both `generate_image` and
+`edit_image`. `GeminiImageClient` owns the provider request-shape conversion.
+The supported catalog matrix verified on 2026-07-29 is:
+
+| Model | `generation_config.aspect_ratio` | `generation_config.image_size` |
+| --- | --- | --- |
+| `gemini-3.1-flash-image` | `1:1`, `1:4`, `1:8`, `2:3`, `3:2`, `3:4`, `4:1`, `4:3`, `4:5`, `5:4`, `8:1`, `9:16`, `16:9`, `21:9` | `512`, `1K`, `2K`, `4K` |
+| `gemini-3.1-flash-lite-image` | The same 14-value allowlist, including `1:4`, `1:8`, `4:1`, and `8:1` | `1K` only |
+| `gemini-3-pro-image` | Standard 10-value allowlist: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9` | `1K`, `2K`, `4K` |
+| `gemini-2.5-flash-image` | Standard 10-value allowlist | No configurable size |
+
+The tool uses repository snake_case names. With the installed
+`@google/genai` Generate Content SDK, `GeminiImageClient` removes those tool
+keys from the direct config and sends them as
+`config.imageConfig.aspectRatio` and `config.imageConfig.imageSize`. This is
+the current SDK serialization boundary; do not document or reintroduce the
+older `responseFormat.image` spelling. When neither value is provided, the
+existing provider-default behavior is preserved. Generation and editing share
+this normalization, while reference-image assembly and response extraction
+remain in the existing client path.
+
+The 2026-07-29 provider-doc review retains a known documentation discrepancy:
+Google's Gemini 3.1 Flash Lite model page claims a discrete set of 14 aspect
+ratios but its visible bullet list contains ten standard values. The catalog
+keeps the full 14-value allowlist based on the provider capability statement,
+the Generate Content guide, and live 1:4/4:1 validation; it remains
+conservative at 1K because the same model page and guide prose state that 2K
+and 4K are unsupported. Refresh this section and the schema matrix if Google
+resolves or changes that discrepancy.
+
+Provider references (rechecked 2026-07-29): [Gemini image generation guide](https://ai.google.dev/gemini-api/docs/image-generation),
+[Gemini 3.1 Flash Image model](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image),
+and [Gemini 3.1 Flash Lite Image model](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-image).
+
 ### Gemini Video Models
 
 Gemini video model registration lives in `VideoClientFactory`, with runtime

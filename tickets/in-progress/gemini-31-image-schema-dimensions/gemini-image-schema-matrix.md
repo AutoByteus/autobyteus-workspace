@@ -9,32 +9,32 @@ values; it does not authorize arbitrary undocumented Gemini configuration.
 
 ## Provider contract checked on 2026-07-29
 
-Source: [Gemini Generate Content image-generation guide](https://ai.google.dev/gemini-api/docs/generate-content/image-generation).
-The current JavaScript `models.generateContent` shape is:
+Source: [Gemini image-generation guide](https://ai.google.dev/gemini-api/docs/image-generation).
+The current installed JavaScript `models.generateContent` SDK shape is:
 
 ```ts
 config: {
   responseModalities: ['IMAGE'],
-  responseFormat: {
-    image: {
-      aspectRatio: '16:9',
-      imageSize: '2K',
-    },
+  imageConfig: {
+    aspectRatio: '16:9',
+    imageSize: '2K',
   },
 }
 ```
 
 The AutoByteus tool-facing names remain `aspect_ratio` and `image_size` so
 agent tool arguments follow the repository's snake_case contract. The Gemini
-client owns the translation to `responseFormat.image.aspectRatio` and
-`responseFormat.image.imageSize` before calling `@google/genai`.
+client owns the translation to `imageConfig.aspectRatio` and
+`imageConfig.imageSize` before calling `@google/genai`. The earlier
+`responseFormat.image` wording was corrected after the installed SDK serializer
+probe; it is not a second supported transport or user-facing field.
 
 ### Contract reconciliation (CR-001)
 
 The implementation-source review identified that the initial Lite row was
 stale: the current [Gemini 3.1 Flash Lite model page](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-image)
 states that Lite supports a discrete set of **14** aspect ratios, including
-`1:4`, `1:8`, `4:1`, and `8:1`. The current [Generate Content image guide](https://ai.google.dev/gemini-api/docs/generate-content/image-generation)
+`1:4`, `1:8`, `4:1`, and `8:1`. The current [Generate Content image guide](https://ai.google.dev/gemini-api/docs/image-generation)
 also lists those 14 ratios for Lite. The matrix is corrected below; this is a
 requirements/design correction, not a new ownership or transport design.
 

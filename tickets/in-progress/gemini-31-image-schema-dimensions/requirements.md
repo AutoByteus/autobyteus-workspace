@@ -26,14 +26,15 @@ path without adding an alternate image transport.
   model-specific controls do not appear.
 - The current `GeminiImageClient` forwards the merged config to
   `models.generateContent` but does not translate tool-facing snake_case image
-  controls into the documented JavaScript `responseFormat.image` shape. Adding
+  controls into the installed JavaScript SDK's `imageConfig` shape. Adding
   catalog fields without this client normalization would make the schema look
   correct while not reliably applying the selected controls.
-- Current official Google documentation for the Generate Content API documents
-  `responseFormat.image.aspectRatio` and `responseFormat.image.imageSize` for
-  native Gemini image generation. Gemini 3.1 Flash Image supports 14 aspect
-  ratios and `512`, `1K`, `2K`, `4K`; the exact model matrix is retained in the
-  supplemental schema artifact.
+- Current official Google documentation for native Gemini image generation
+  documents the `aspect_ratio` and `image_size` controls. The installed
+  `@google/genai` Generate Content SDK serializes their JavaScript request shape
+  as `config.imageConfig.aspectRatio` and `config.imageConfig.imageSize`.
+  Gemini 3.1 Flash Image supports 14 aspect ratios and `512`, `1K`, `2K`, `4K`;
+  the exact model matrix is retained in the supplemental schema artifact.
 - Implementation-source review finding `CR-001` identified a stale Lite
   capability row in the approved matrix. The current Gemini 3.1 Flash Lite
   model page and Generate Content image guide describe Lite as supporting all
@@ -69,7 +70,7 @@ schema/request path if the evidence confirms the gap.
   `aspect_ratio` and `image_size` fields.
 - **UC-002 — Gemini 3.1 configurable generation:** A caller can provide one or
   both supported fields to `generate_image`; the requested output controls are
-  translated into the provider's `responseFormat.image` request shape.
+  translated into the provider SDK's `imageConfig` request shape.
 - **UC-003 — Gemini 3.1 configurable editing:** A caller can provide the same
   controls to `edit_image`; the existing reference-image/editing flow remains
   intact while the output controls are applied.
@@ -109,8 +110,8 @@ schema/request path if the evidence confirms the gap.
 - **REQ-003 — Provider request translation:** `GeminiImageClient` must merge
   catalog defaults and per-call generation config, remove the tool-facing
   snake_case controls from the direct SDK config, and add them under
-  `responseFormat.image` as `aspectRatio` and `imageSize`. If neither field is
-  supplied, the client must preserve current provider-default behavior.
+  `imageConfig` as `aspectRatio` and `imageSize`. If neither field is supplied,
+  the client must preserve current provider-default behavior.
 - **REQ-004 — Shared generation/editing path:** Both `generateImage()` and
   `editImage()` must use the same normalization and the existing
   `models.generateContent` boundary. Reference-image loading, response modality
@@ -134,7 +135,7 @@ schema/request path if the evidence confirms the gap.
 | Behavior ID | Current evidence-backed behavior | Desired behavior | Must remain unchanged |
 | --- | --- | --- | --- |
 | B-IMG-SCHEMA-001 | `generate_image`/`edit_image` builds three common parameters; `generation_config` is omitted for Gemini because `parameterSchema` is empty. Evidence: `media-tool-parameter-schemas.ts`, `ImageClientFactory`. | Gemini native model selection adds a documented nested `generation_config` schema. | Common prompt, input-image, mask, and output-path arguments. |
-| B-IMG-SCHEMA-002 | `GeminiImageClient` merges config and forwards it to `models.generateContent`; no schema-backed aspect/size translation exists. Evidence: `gemini-image-client.ts`. | `aspect_ratio`/`image_size` become `responseFormat.image.aspectRatio`/`imageSize`. | Model runtime mapping, response modality defaults, response extraction, and errors. |
+| B-IMG-SCHEMA-002 | `GeminiImageClient` merges config and forwards it to `models.generateContent`; no schema-backed aspect/size translation exists. Evidence: `gemini-image-client.ts`. | `aspect_ratio`/`image_size` become SDK `config.imageConfig.aspectRatio`/`imageSize`. | Model runtime mapping, response modality defaults, response extraction, and errors. |
 | B-IMG-SCHEMA-003 | Native Gemini model IDs and factory ownership are already correct. | Extend their model metadata only; no ID or owner change. | Active model IDs and API-key/Vertex runtime resolution. |
 | B-IMG-SCHEMA-004 | OpenAI image schemas already expose model-specific generation parameters. | Keep OpenAI schemas and client behavior unchanged. | OpenAI image generation/editing behavior. |
 | B-IMG-SCHEMA-005 | The initial Lite matrix exposed only 10 ratios, so the reachable default-Lite tool path rejected four currently documented ratios. Evidence: implementation review `CR-001`, current Google Lite model page and Generate Content guide. | Lite exposes all 14 documented aspect ratios while retaining only the verified `1K` image-size value; the provider-docs 512 conflict remains explicit risk. | Existing Lite model identity, 1K-only conservative size boundary, and all non-Lite behavior. |
@@ -150,9 +151,9 @@ schema/request path if the evidence confirms the gap.
   `8:1`; its image-size enum contains exactly `512`, `1K`, `2K`, and `4K`.
 - **AC-003:** A mocked Gemini `generateContent` request with
   `{ aspect_ratio: '16:9', image_size: '2K' }` contains
-  `config.responseFormat.image.aspectRatio === '16:9'` and
-  `config.responseFormat.image.imageSize === '2K'`, and does not send those
-  snake_case keys as top-level SDK config fields.
+  `config.imageConfig.aspectRatio === '16:9'` and
+  `config.imageConfig.imageSize === '2K'`, and does not send those snake_case
+  keys as top-level SDK config fields.
 - **AC-004:** The same normalization is used by `editImage()` and preserves
   inline reference-image content and image response extraction.
 - **AC-005:** Native Gemini model schemas match the matrix; in particular Lite
@@ -175,7 +176,8 @@ schema/request path if the evidence confirms the gap.
   `GeminiImageClient` remains the Gemini request/response owner;
   `media-tool-parameter-schemas.ts` remains the dynamic tool-schema adapter.
 - Tool-facing fields use repository snake_case; provider-facing fields use the
-  SDK's current JavaScript camelCase `responseFormat` contract.
+  installed Generate Content SDK's current JavaScript camelCase `imageConfig`
+  contract.
 - Provider documentation is temporally unstable and must be rechecked by
   API/E2E/delivery at execution time.
 

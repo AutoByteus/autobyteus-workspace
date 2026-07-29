@@ -45,12 +45,12 @@
 | 2026-07-29 | Code | `autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts`, `media-tool-input-parsers.ts` | Trace tool call into provider | `generation_config` is intentionally passed through the service to the selected image client for both generation and editing. |
 | 2026-07-29 | Code | `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts` and `autobyteus-web/graphql/queries/llm_provider_queries.ts` | Check catalog/listing surfaces | Server model details can serialize multimedia `parameterSchema`; the current agent tool schema is generated server-side from the resolved default model. Image model listing queries do not request configSchema, but no image-config UI dependency was found in scope. |
 | 2026-07-29 | Code/history | `git blame` on `image-client-factory.ts`; prior ticket `tickets/done/gemini-latest-image-model-support/review-report.md` | Check why schema was previously absent | Earlier Gemini model support deliberately deferred optional image schema; the prior review explicitly named future `imageConfig` exposure as follow-up. |
-| 2026-07-29 | Web | `https://ai.google.dev/gemini-api/docs/generate-content/image-generation` | Verify current Generate Content request shape | JavaScript uses `config.responseFormat.image.aspectRatio` and `imageSize`; 3.1 Flash supports 14 ratios and `512`, `1K`, `2K`, `4K`; Lite is 1K-only; Pro supports standard ratios and 1K/2K/4K; 2.5 exposes ratios with fixed 1K output. |
+| 2026-07-29 | Web / SDK probe | `https://ai.google.dev/gemini-api/docs/image-generation`; installed `@google/genai` declarations and serializer | Verify current Generate Content request shape | Provider docs cover the image controls; the installed JavaScript SDK serializes them as `config.imageConfig.aspectRatio` and `imageSize`. 3.1 Flash supports 14 ratios and `512`, `1K`, `2K`, `4K`; Lite is 1K-only; Pro supports standard ratios and 1K/2K/4K; 2.5 exposes ratios with fixed 1K output. |
 | 2026-07-29 | Web | `https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image` | Verify target model capabilities | Current stable model is `gemini-3.1-flash-image`; docs call out new 0.5K/2K/4K output options and new 1:4/4:1/1:8/8:1 ratios. |
 | 2026-07-29 | Web | `https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-image` | Verify Lite limits | The current model page says Lite supports a discrete set of 14 ratios, including `1:4`, `1:8`, `4:1`, and `8:1`, and supports only `1024px (1K)` output. This supersedes the initial 10-ratio assumption. |
 | 2026-07-29 | Web | `https://ai.google.dev/gemini-api/docs/models/gemini-3-pro-image` | Verify Pro limits | Pro supports standard ratios and up to 4K. |
 | 2026-07-29 | Source review | `code-review-report.md`, finding `CR-001` | Reconcile implementation against the current provider contract | Review result was `Fail / Requirement Gap`: the code followed the initial matrix, but the reachable Lite default path rejected four currently documented ratios. Requirements, matrix, and design must be corrected before implementation rework. |
-| 2026-07-29 | Web / reconciliation | `https://ai.google.dev/gemini-api/docs/generate-content/image-generation`; `https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-image` | Resolve CR-001 and verify Lite size | Both current pages support the 14-ratio Lite interpretation. The guide's resolution table shows a conflicting 512 cell, while the model page and guide prose state Lite is 1K-only; retain only `1K` and record the conflict as residual verification risk. |
+| 2026-07-29 | Web / reconciliation | `https://ai.google.dev/gemini-api/docs/image-generation`; `https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-image` | Resolve CR-001 and verify Lite size | The current provider capability statement supports the 14-ratio Lite interpretation, while the visible model-page bullet list contains ten values. The guide's resolution table shows a conflicting 512 cell, while the model page and guide prose state Lite is 1K-only; retain only `1K`, preserve the dated ratio/list discrepancy, and record both as residual documentation risk. |
 
 ## Current Supported Behavior / Production Path Map
 
@@ -60,7 +60,7 @@
 | B-IMG-SCHEMA-002 | Caller supplies `generation_config` | Parser -> `MediaGenerationService` -> `GeminiImageClient` | Config is passed to client, then shallow-merged into SDK config; no documented image output fields are generated or translated. | `media-tool-input-parsers.ts`, `media-generation-service.ts`, `gemini-image-client.ts` |
 | B-IMG-SCHEMA-003 | Gemini image generation/edit request reaches provider | `GeminiImageClient` -> runtime resolver -> `models.generateContent` -> response-part scan | Model/runtime/response handling works for active Gemini IDs; controls are not part of the current catalog schema. | `gemini-image-client.ts`, `gemini-model-mapping.ts` |
 | B-IMG-SCHEMA-004 | Non-Gemini or existing media model is selected | Same tool boundary -> model-specific catalog schema/client | OpenAI image schemas already expose three model-specific fields; video/audio schemas demonstrate nested dynamic schema behavior. | `image-client-factory.ts`, `audio-client-factory.ts`, `video-client-factory.ts` |
-| B-IMG-SCHEMA-005 | Gemini 3.1 Flash Lite is selected as the configured/default image model and caller uses one of the four narrow documented ratios | Lite catalog schema -> media tool enum -> Gemini client validation -> `responseFormat.image` | The initial implementation exposed only 10 ratios and therefore rejected `1:4`, `1:8`, `4:1`, and `8:1`; corrected design expands the allowlist to all 14 while retaining `1K` only. | `code-review-report.md` CR-001; current Google Lite model page and Generate Content guide |
+| B-IMG-SCHEMA-005 | Gemini 3.1 Flash Lite is selected as the configured/default image model and caller uses one of the four narrow documented ratios | Lite catalog schema -> media tool enum -> Gemini client validation -> SDK `imageConfig` | The initial implementation exposed only 10 ratios and therefore rejected `1:4`, `1:8`, `4:1`, and `8:1`; corrected implementation expands the allowlist to all 14 while retaining `1K` only. | `code-review-report.md` CR-001; current Google Lite model page and image-generation guide |
 
 ## Root Cause / Design Health Evidence
 
@@ -103,7 +103,7 @@ conclusive:
 4. The generated image tool therefore contains only the three common fields.
 5. Existing `generation_config` values, if manually supplied, reach
    `GeminiImageClient`, but the client only shallow-merges them and does not
-   create `responseFormat.image`.
+   create the SDK's `imageConfig` request object.
 
 Downstream must execute a focused schema inspection and mocked request probe
 after dependency setup.
@@ -113,7 +113,7 @@ after dependency setup.
 | Path | Current responsibility | Target implication |
 | --- | --- | --- |
 | `autobyteus-ts/src/multimedia/image/image-client-factory.ts` | Built-in image model catalog | Add tight per-model native Gemini parameter schemas. |
-| `autobyteus-ts/src/multimedia/image/api/gemini-image-client.ts` | Gemini image request/response owner | Add one normalization step from tool fields to SDK `responseFormat.image`; keep client boundary. |
+| `autobyteus-ts/src/multimedia/image/api/gemini-image-client.ts` | Gemini image request/response owner | Add one normalization step from tool fields to SDK `imageConfig`; keep client boundary. |
 | `autobyteus-ts/src/multimedia/image/image-model.ts` | Schema/default config storage | No change expected; existing `ParameterSchema` is sufficient. |
 | `autobyteus-server-ts/src/agent-tools/media/media-tool-parameter-schemas.ts` | Dynamic tool-schema adapter | No change expected; it already consumes non-empty catalog schemas. |
 | `autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts` | Tool-to-client orchestration | No change expected; it already passes generation config for generation/editing. |
