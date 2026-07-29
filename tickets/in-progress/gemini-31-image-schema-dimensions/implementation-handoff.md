@@ -2,9 +2,9 @@
 
 ## Status
 
-Implementation complete and ready for implementation-source review. API/E2E and
-broader executable coverage remain downstream work; this handoff does not claim
-API/E2E sign-off.
+Implementation rework for `CR-001` is complete and ready for a fresh
+implementation-source review. API/E2E and broader executable coverage remain
+downstream work; this handoff does not claim API/E2E sign-off.
 
 ## Upstream Artifact Package
 
@@ -13,6 +13,8 @@ API/E2E sign-off.
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/design-spec.md`
 - Supplemental schema matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/gemini-image-schema-matrix.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/solution-revision-record.md`
+- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`
+- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-revision-record.md`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-revision-record.md`
 
 ## What Changed
@@ -20,10 +22,14 @@ API/E2E sign-off.
 - Added a tight local schema builder and documented model matrices in
   `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-ts/src/multimedia/image/image-client-factory.ts`:
   - Gemini 3.1 Flash Image: 14 aspect ratios and `512`, `1K`, `2K`, `4K`.
-  - Gemini 3.1 Flash Lite Image: standard 10 ratios and `1K`.
+  - Gemini 3.1 Flash Lite Image: the full 14-ratio allowlist and `1K` only.
   - Gemini 3 Pro Image: standard 10 ratios and `1K`, `2K`, `4K`.
   - Gemini 2.5 Flash Image: standard 10 ratios and no size field.
   - Imagen remains schema-empty and unchanged.
+- Reworked the Lite assignment after `CR-001`: the four narrow documented values
+  `1:4`, `1:8`, `4:1`, and `8:1` are now exposed; no Lite `512` value was added
+  because the corrected solution package retains the conservative 1K-only
+  boundary while the provider guide's 512 table cell remains contradictory.
 - Added provider-owned normalization in
   `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-ts/src/multimedia/image/api/gemini-image-client.ts`.
   Supported catalog fields are validated, removed from the top-level config, and
@@ -47,10 +53,11 @@ API/E2E sign-off.
 | `B-IMG-SCHEMA-002` | `GeminiImageClient.generateImage` -> local config normalizer -> existing `models.generateContent` boundary. | Implemented; snake_case controls map to the SDK response format and are not sent top-level. |
 | `B-IMG-SCHEMA-003` | Existing `editImage` -> `generateImage` shared path -> existing inline reference assembly and response extraction. | Implemented; editing uses the same normalization and preserves reference content. |
 | `B-IMG-SCHEMA-004` | Existing OpenAI/Imagen entries and no-config Gemini request path. | Preserved; OpenAI code is untouched, Imagen remains schema-empty, and no image-specific response format is injected without a supplied control. |
+| `B-IMG-SCHEMA-005` | Lite model schema -> media tool enum -> Gemini client validation/request mapping. | Implemented; Lite now accepts all 14 corrected aspect ratios and retains only `1K`. |
 
 ## Acceptance-Criteria Coverage
 
-- `AC-001`, `AC-002`, `AC-005`: exact per-model catalog and JSON-schema assertions in the factory and server projection tests.
+- `AC-001`, `AC-002`, `AC-005`: exact per-model catalog and JSON-schema assertions in the factory and server projection tests; Lite now asserts all 14 ratios and only `1K`.
 - `AC-003`: mocked generation request asserts `responseFormat.image` mapping and absence of snake_case top-level fields.
 - `AC-004`: mocked editing request asserts the same mapping plus inline reference content and image extraction.
 - `AC-006`: no-config request asserts the existing response-modality-only config.
@@ -69,8 +76,10 @@ API/E2E sign-off.
 ## Important Assumptions / Limitations
 
 - The supplemental matrix is the approved source for current provider values;
-  `512` is the Generate Content API value corresponding to the documented 0.5K
-  option.
+  `512` is exposed for Gemini 3.1 Flash Image as the Generate Content API value
+  corresponding to the documented 0.5K option. Lite remains 1K-only because the
+  corrected solution package records a conflicting provider-guide 512 table cell
+  against stronger model-page/prose evidence.
 - The client normalizes `aspect_ratio` and `image_size` only when the selected
   catalog model declares those fields. This keeps the separate Imagen entry's
   prior pass-through behavior unchanged while native Gemini schemas are tight.
@@ -80,11 +89,13 @@ API/E2E sign-off.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Bug fix / behavior expansion.
+- Reviewed change posture: Bug fix / behavior expansion with bounded rework.
 - Reviewed root-cause classification: Local implementation defect / missing model invariant.
 - Reviewed refactor decision: No refactor needed.
 - Implementation matched the reviewed assessment: Yes.
-- Design impact or requirement-gap reroute: N/A.
+- Design impact or requirement-gap reroute: `CR-001` was routed through
+  `solution_designer`; corrected package `SR-002` was then implemented without a
+  structural design change.
 - Evidence: the existing catalog owner now carries model-specific schemas, the
   existing server adapter projects them without duplication, and the existing
   Gemini client boundary owns only the provider field translation.
@@ -93,7 +104,8 @@ API/E2E sign-off.
 
 - Backward-compatibility mechanisms introduced: None.
 - Legacy old behavior retained in scope: No; the empty native Gemini schemas were
-  replaced by the approved current schemas.
+  replaced by the approved current schemas, and the stale initial 10-ratio Lite
+  allowlist was replaced by the corrected 14-ratio contract.
 - Dead/obsolete code or dormant replaced paths removed: Yes; no obsolete file or
   branch existed beyond the empty schema assignments.
 - Shared structures remain tight: Yes; model-specific arrays are passed through a
@@ -118,8 +130,8 @@ API/E2E sign-off.
 
 ## Local Implementation Checks
 
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/multimedia/image` — passed, 5 files / 32 tests.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/media` — passed, 6 files / 23 tests.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/multimedia/image` — passed fresh rework check, 5 files / 32 tests.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/media` — passed fresh rework check, 6 files / 23 tests.
 - `pnpm -C autobyteus-ts build` — passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts build` — passed, including Prisma generation and sanitized built-module/bootstrap smoke.
 - `git diff --check` — passed.
@@ -127,13 +139,15 @@ API/E2E sign-off.
 
 ## Downstream Coverage Hints
 
-- Independently verify GraphQL/tool registration with the real configured
-  `gemini-3.1-flash-image` default and both `generate_image` / `edit_image` tool
-  schemas, including exact nested enum values.
+- Independently verify GraphQL/tool registration with configured
+  `gemini-3.1-flash-image` and `gemini-3.1-flash-lite-image` defaults and both
+  `generate_image` / `edit_image` tool schemas, including exact nested enum
+  values and Lite's four narrow ratios.
 - Exercise mocked or intercepted provider calls through the broader media service
   path, preserving reference-image content and returned image files.
 - Recheck official Google documentation and, if credentials/access permit,
-  perform live generation/editing for representative 14-ratio and 4-size values.
+  perform live generation/editing for representative Flash and Lite ratios;
+  resolve or preserve evidence for the Lite 512 table/prose conflict.
 - Verify non-Gemini defaults, Imagen registration, runtime mapping, and no-config
   requests remain unchanged in the broader executable matrix.
 

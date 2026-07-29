@@ -194,7 +194,7 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-3.1-flash-lite-image',
       provider: MultimediaProvider.GEMINI,
       clientClass: GeminiImageClient,
-      parameterSchema: buildGeminiImageParameterSchema(GEMINI_STANDARD_IMAGE_ASPECT_RATIOS, ['1K']),
+      parameterSchema: buildGeminiImageParameterSchema(GEMINI_31_FLASH_IMAGE_ASPECT_RATIOS, ['1K']),
       description:
         'Fast, cost-efficient Gemini 3.1 Flash-Lite Image model with 1K output; best for lightweight image generation and edits, not multiple references or multi-turn editing.'
     });
