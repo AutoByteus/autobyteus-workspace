@@ -13,6 +13,7 @@ import {
   ApplicationRecoveryOutcome,
   getApplicationOrchestrationRecoveryService,
 } from "./application-orchestration-recovery-service.js";
+import { ApplicationAvailabilityStateRegistry } from "../../application-platform/runtime/application-availability-state-registry.js";
 
 export type ApplicationAvailabilityState = "ACTIVE" | "QUARANTINED" | "REENTERING";
 export type ApplicationStartupPresence = "CATALOG_ACTIVE" | "CATALOG_QUARANTINED" | "PERSISTED_ONLY";
@@ -64,16 +65,21 @@ export class ApplicationAvailabilityService {
     cachedApplicationAvailabilityService = null;
   }
 
-  private readonly availabilityByApplicationId = new Map<string, ApplicationAvailabilityRecord>();
-
   constructor(
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
       engineHostService?: ApplicationEngineHostService;
       recoveryService?: ApplicationOrchestrationRecoveryService;
       dispatchService?: ApplicationExecutionEventDispatchService;
+      stateRegistry?: ApplicationAvailabilityStateRegistry;
     } = {},
   ) {}
+
+  private readonly defaultStateRegistry = new ApplicationAvailabilityStateRegistry();
+
+  private get stateRegistry(): ApplicationAvailabilityStateRegistry {
+    return this.dependencies.stateRegistry ?? this.defaultStateRegistry;
+  }
 
   private get applicationBundleService(): ApplicationBundleService {
     return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
@@ -96,7 +102,7 @@ export class ApplicationAvailabilityService {
     const nextAvailabilityByApplicationId = new Map<string, ApplicationAvailabilityRecord>();
 
     for (const application of snapshot.applications) {
-      const existing = this.availabilityByApplicationId.get(application.id);
+      const existing = this.stateRegistry.getAvailability(application.id);
       if (existing?.state === "REENTERING") {
         nextAvailabilityByApplicationId.set(application.id, { ...existing });
         continue;
@@ -119,7 +125,7 @@ export class ApplicationAvailabilityService {
       this.dispatchService.suspendApplication(diagnostic.applicationId);
     }
 
-    for (const [applicationId, record] of this.availabilityByApplicationId.entries()) {
+    for (const [applicationId, record] of this.stateRegistry.entries()) {
       if (nextAvailabilityByApplicationId.has(applicationId)) {
         continue;
       }
@@ -128,10 +134,7 @@ export class ApplicationAvailabilityService {
       }
     }
 
-    this.availabilityByApplicationId.clear();
-    for (const [applicationId, record] of nextAvailabilityByApplicationId.entries()) {
-      this.availabilityByApplicationId.set(applicationId, record);
-    }
+    this.stateRegistry.replaceAll(nextAvailabilityByApplicationId.values());
   }
 
   reconcileCatalogSnapshotWithKnownApplications(
@@ -184,7 +187,7 @@ export class ApplicationAvailabilityService {
     startupPresence: ApplicationStartupPresence,
     outcome: ApplicationRecoveryOutcome,
   ): ApplicationAvailabilityRecord {
-    const currentDetail = this.availabilityByApplicationId.get(applicationId)?.detail ?? null;
+    const currentDetail = this.stateRegistry.getAvailability(applicationId)?.detail ?? null;
 
     switch (startupPresence) {
       case "CATALOG_ACTIVE":
@@ -223,7 +226,7 @@ export class ApplicationAvailabilityService {
   }
 
   async getAvailability(applicationId: string): Promise<ApplicationAvailabilityRecord | null> {
-    const existing = this.availabilityByApplicationId.get(applicationId);
+    const existing = this.stateRegistry.getAvailability(applicationId);
     if (existing) {
       return { ...existing };
     }
@@ -253,6 +256,10 @@ export class ApplicationAvailabilityService {
       return;
     }
     throw new ApplicationUnavailableError(applicationId, availability.state, availability.detail);
+  }
+
+  quarantineApplication(applicationId: string, detail: string): ApplicationAvailabilityRecord {
+    return this.setAvailability(applicationId, "QUARANTINED", detail);
   }
 
   async reloadAndReenter(applicationId: string): Promise<ApplicationAvailabilityRecord> {
@@ -297,7 +304,12 @@ export class ApplicationAvailabilityService {
       detail,
       updatedAt: new Date().toISOString(),
     };
-    this.availabilityByApplicationId.set(applicationId, record);
+    this.stateRegistry.writer.setAvailability(
+      applicationId,
+      record.state,
+      record.detail,
+      record.updatedAt,
+    );
     if (state !== "ACTIVE") {
       this.dispatchService.suspendApplication(applicationId);
     }

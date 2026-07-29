@@ -1,5 +1,5 @@
 export const APPLICATION_IFRAME_CHANNEL = "autobyteus.application.host";
-export const APPLICATION_IFRAME_CONTRACT_VERSION_V4 = "4";
+export const APPLICATION_IFRAME_CONTRACT_VERSION = "4";
 export const APPLICATION_IFRAME_READY_EVENT = "autobyteus.application.ui.ready";
 export const APPLICATION_IFRAME_BOOTSTRAP_EVENT = "autobyteus.application.host.bootstrap";
 export const APPLICATION_IFRAME_QUERY_CONTRACT_VERSION = "autobyteusContractVersion";
@@ -34,7 +34,7 @@ export const doesApplicationHostOriginMatch = (expectedNormalizedHostOrigin, act
     }
     return normalizedActualOrigin === expectedNormalizedHostOrigin;
 };
-export const isApplicationIframeEnvelopeV4 = (value) => {
+export const isApplicationIframeEnvelope = (value) => {
     if (!isObjectRecord(value)) {
         return false;
     }
@@ -43,7 +43,7 @@ export const isApplicationIframeEnvelopeV4 = (value) => {
         && typeof value.eventName === "string"
         && isObjectRecord(value.payload));
 };
-export const isApplicationUiReadyPayloadV4 = (value) => {
+export const isApplicationUiReadyPayload = (value) => {
     if (!isObjectRecord(value)) {
         return false;
     }
@@ -51,10 +51,10 @@ export const isApplicationUiReadyPayloadV4 = (value) => {
         && isNonEmptyString(value.applicationId)
         && isNonEmptyString(value.iframeLaunchId));
 };
-export const isApplicationUiReadyEnvelopeV4 = (value) => (isApplicationIframeEnvelopeV4(value)
-    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V4
+export const isApplicationUiReadyEnvelope = (value) => (isApplicationIframeEnvelope(value)
+    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION
     && value.eventName === APPLICATION_IFRAME_READY_EVENT
-    && isApplicationUiReadyPayloadV4(value.payload));
+    && isApplicationUiReadyPayload(value.payload));
 const isApplicationHostTransport = (value) => {
     if (!isObjectRecord(value)) {
         return false;
@@ -65,7 +65,7 @@ const isApplicationHostTransport = (value) => {
         && isNullableString(value.backendWebSocketBaseUrl)
         && isNullableString(value.agentCommunicationWebSocketBaseUrl));
 };
-export const isApplicationBootstrapPayloadV4 = (value) => {
+export const isApplicationBootstrapPayload = (value) => {
     if (!isObjectRecord(value)) {
         return false;
     }
@@ -89,19 +89,19 @@ export const isApplicationBootstrapPayloadV4 = (value) => {
         && isNonEmptyString(requestContext.applicationId)
         && isApplicationHostTransport(transport));
 };
-export const isApplicationHostBootstrapEnvelopeV4 = (value) => (isApplicationIframeEnvelopeV4(value)
-    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V4
+export const isApplicationHostBootstrapEnvelope = (value) => (isApplicationIframeEnvelope(value)
+    && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION
     && value.eventName === APPLICATION_IFRAME_BOOTSTRAP_EVENT
-    && isApplicationBootstrapPayloadV4(value.payload));
-export const createApplicationUiReadyEnvelopeV4 = (payload) => ({
+    && isApplicationBootstrapPayload(value.payload));
+export const createApplicationUiReadyEnvelope = (payload) => ({
     channel: APPLICATION_IFRAME_CHANNEL,
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION,
     eventName: APPLICATION_IFRAME_READY_EVENT,
     payload,
 });
-export const createApplicationHostBootstrapEnvelopeV4 = (payload) => ({
+export const createApplicationHostBootstrapEnvelope = (payload) => ({
     channel: APPLICATION_IFRAME_CHANNEL,
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION,
     eventName: APPLICATION_IFRAME_BOOTSTRAP_EVENT,
     payload,
 });
@@ -111,14 +111,14 @@ export const readApplicationIframeLaunchHints = (search) => {
     const applicationId = searchParams.get(APPLICATION_IFRAME_QUERY_APPLICATION_ID)?.trim() ?? "";
     const iframeLaunchId = searchParams.get(APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID)?.trim() ?? "";
     const hostOrigin = searchParams.get(APPLICATION_IFRAME_QUERY_HOST_ORIGIN)?.trim() ?? "";
-    if (contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V4
+    if (contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION
         || !applicationId
         || !iframeLaunchId
         || !hostOrigin) {
         return null;
     }
     return {
-        contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
+        contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION,
         applicationId,
         iframeLaunchId,
         hostOrigin,

@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { DatabaseSync } from "node:sqlite";
 import type {
   ApplicationEngineStatus,
   ApplicationPublishedArtifactEvent,
@@ -53,6 +52,7 @@ import {
   type ApplicationWorkerWebSocketActionInput,
 } from "../runtime/protocol.js";
 import { createApplicationAgentStreamObserverActivationBarrier } from "./application-agent-stream-observer-activation-barrier.js";
+import { applicationEngineStorageNeedsRepair } from "./application-engine-storage-health.js";
 
 const createBaseStatus = (applicationId: string): ApplicationEngineStatus => ({
   applicationId,
@@ -253,6 +253,22 @@ export class ApplicationEngineHostService {
     this.runtimeHandleByApplicationId.delete(applicationId);
     this.agentStreamingService.stopApplication(applicationId);
     this.updateStatus(applicationId, createBaseStatus(applicationId));
+  }
+
+  async stopAllApplicationEngines(): Promise<void> {
+    await Promise.allSettled(this.startupPromiseByApplicationId.values());
+    const applicationIds = Array.from(this.runtimeHandleByApplicationId.keys());
+    const outcomes = await Promise.allSettled(
+      applicationIds.map((applicationId) => this.stopApplicationEngine(applicationId)),
+    );
+    this.notificationListeners.clear();
+    this.webSocketActionListeners.clear();
+    this.workerCloseListeners.clear();
+    const failures = outcomes.flatMap((outcome) =>
+      outcome.status === "rejected" ? [outcome.reason] : []);
+    if (failures.length > 0) {
+      throw new AggregateError(failures, "Application engine cleanup failed.");
+    }
   }
 
   private async startApplicationEngine(applicationId: string): Promise<ApplicationEngineStatus> {
@@ -494,29 +510,7 @@ export class ApplicationEngineHostService {
 
   private runtimeStorageNeedsRepair(applicationId: string): boolean {
     const layout = this.storageLifecycleService.getStorageLayout(applicationId);
-    try {
-      const stats = fs.statSync(layout.appDatabasePath);
-      if (stats.size <= 0) {
-        return true;
-      }
-
-      const db = new DatabaseSync(layout.appDatabasePath);
-      try {
-        const row = db
-          .prepare(
-            `SELECT COUNT(*) AS tableCount
-               FROM sqlite_master
-              WHERE type = 'table'
-                AND name NOT LIKE 'sqlite_%'`,
-          )
-          .get() as { tableCount?: number } | undefined;
-        return Number(row?.tableCount ?? 0) === 0;
-      } finally {
-        db.close();
-      }
-    } catch {
-      return true;
-    }
+    return applicationEngineStorageNeedsRepair(layout.appDatabasePath);
   }
 
   private publishWorkerClose(applicationId: string, error: Error | null): void {

@@ -335,6 +335,12 @@ export class ApplicationRunObserverService {
       // no-op
     }
   }
+
+  dispose(): void {
+    for (const bindingId of Array.from(this.registrations.keys())) {
+      this.releaseRegistration(bindingId);
+    }
+  }
 }
 
 let cachedApplicationRunObserverService: ApplicationRunObserverService | null = null;

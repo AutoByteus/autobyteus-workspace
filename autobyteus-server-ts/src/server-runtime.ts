@@ -1,132 +1,36 @@
-import fastify, { type FastifyInstance } from "fastify";
-import cors from "@fastify/cors";
-import multipart from "@fastify/multipart";
-import websocket from "@fastify/websocket";
+import type { FastifyInstance } from "fastify";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
+import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
   seedInternalServerBaseUrlFromListenAddress,
 } from "./config/server-runtime-endpoints.js";
 import { appConfigProvider } from "./config/app-config-provider.js";
-import { getLoggingConfigFromEnv, type LoggingConfig } from "./config/logging-config.js";
-import { registerHttpAccessLogPolicy } from "./logging/http-access-log-policy.js";
-import { createServerLogger, initializeServerAppLogger } from "./logging/server-app-logger.js";
+import { getLoggingConfigFromEnv } from "./config/logging-config.js";
 import {
-  getFastifyLoggerOptions,
   initializeRuntimeLoggerBootstrap,
 } from "./logging/runtime-logger-bootstrap.js";
-import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
+import { createServerLogger, initializeServerAppLogger } from "./logging/server-app-logger.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
-import { scheduleBackgroundTasks } from "./startup/background-runner.js";
-import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
-import { registerRestRoutes } from "./api/rest/index.js";
-import { registerGraphql } from "./api/graphql/index.js";
-import { registerWebsocketRoutes } from "./api/websocket/index.js";
-import { registerAgentToolsMcpRoutes } from "./agent-tools/mcp/agent-tools-mcp-routes.js";
-import { registerMcpGatewayRoutes } from "./mcp-gateway/mcp-gateway-routes.js";
-import { registerRemoteAccessPolicyPlugin } from "./api/security/remote-access-policy-plugin.js";
-import { registerMobileWebStaticRoutes } from "./api/static/mobile-web.js";
-import { getApplicationExecutionEventDispatchService } from "./application-orchestration/services/application-execution-event-dispatch-service.js";
-import { getApplicationOrchestrationRecoveryService } from "./application-orchestration/services/application-orchestration-recovery-service.js";
-import { getApplicationOrchestrationStartupGate } from "./application-orchestration/services/application-orchestration-startup-gate.js";
-import { getApplicationAvailabilityService } from "./application-orchestration/services/application-availability-service.js";
-import { ApplicationBundleService } from "./application-bundles/services/application-bundle-service.js";
-import { ApplicationPackageRegistryService } from "./application-packages/services/application-package-registry-service.js";
-import { ApplicationPlatformStateStore } from "./application-storage/stores/application-platform-state-store.js";
+import { scheduleStudioBackgroundTasks } from "./startup/background-runner.js";
 import {
   startChannelRunOutputDeliveryRuntime,
-  stopChannelRunOutputDeliveryRuntime,
 } from "./external-channel/runtime/channel-run-output-runtime-singleton.js";
 import {
   startGatewayCallbackDeliveryRuntime,
-  stopGatewayCallbackDeliveryRuntime,
 } from "./external-channel/runtime/gateway-callback-delivery-runtime.js";
 import { getManagedMessagingGatewayService } from "./managed-capabilities/messaging-gateway/defaults.js";
-import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
-import { stopMemorySyncWorker } from "./memory-sync/source/memory-sync-worker.js";
 import type { ServerOptions } from "./app.js";
 import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
-import { registerProvisionedSearchTool } from "./agent-tools/search/register-search-tool.js";
-import { stopDefaultAgentRunEventPipeline } from "./agent-execution/events/default-agent-run-event-pipeline.js";
-import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
+import { buildStudioServerComposition } from "./compositions/build-studio-server-composition.js";
 
 const logger = createServerLogger("server.runtime");
 
-export type BuildAppOptions = {
-  loggingConfig?: LoggingConfig;
-};
-
-export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstance> {
-  registerProvisionedSearchTool();
-  const loggingConfig = options?.loggingConfig ?? getLoggingConfigFromEnv(process.env);
-  const app = fastify({
-    logger: getFastifyLoggerOptions(loggingConfig),
-    disableRequestLogging: true,
-    maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
-  });
-  registerHttpAccessLogPolicy(app, {
-    mode: loggingConfig.httpAccessLogMode,
-    includeNoisyRoutes: loggingConfig.includeNoisyHttpAccessRoutes,
-  });
-  const maxUploadFileSizeBytes = 25 * 1024 * 1024;
-
-  await registerAgentToolsMcpRoutes(app);
-  await registerMcpGatewayRoutes(app);
-  await app.register(cors, {
-    origin: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  });
-  await app.register(multipart, {
-    limits: {
-      fileSize: maxUploadFileSizeBytes,
-    },
-  });
-  await app.register(websocket);
-
-  await registerRemoteAccessPolicyPlugin(app);
-  await registerMobileWebStaticRoutes(app);
-  await app.register(registerRestRoutes, { prefix: "/rest" });
-  await registerWebsocketRoutes(app);
-  await registerGraphql(app);
-  app.addHook("onClose", async () => {
-    try {
-      stopMemorySyncWorker();
-    } finally {
-      try {
-        await stopChannelRunOutputDeliveryRuntime();
-      } finally {
-        try {
-          await stopGatewayCallbackDeliveryRuntime();
-        } finally {
-          try {
-            await getManagedMessagingGatewayService().close();
-          } finally {
-            try {
-              await stopDefaultAgentRunEventPipeline();
-            } finally {
-              try {
-                await getSecretVaultRuntime().close();
-              } finally {
-                await shutdownPrisma();
-              }
-            }
-          }
-        }
-      }
-    }
-  });
-
-  return app;
-}
-
-function registerShutdownHandlers(app: FastifyInstance): void {
+const registerShutdownHandlers = (app: FastifyInstance): void => {
   let shuttingDown = false;
-
   const shutdown = async (signal: string) => {
-    if (shuttingDown) {
-      return;
-    }
+    if (shuttingDown) return;
     shuttingDown = true;
     logger.info(`Received ${signal}. Shutting down server...`);
     try {
@@ -138,122 +42,117 @@ function registerShutdownHandlers(app: FastifyInstance): void {
       process.exit(1);
     }
   };
-
   process.once("SIGINT", () => void shutdown("SIGINT"));
   process.once("SIGTERM", () => void shutdown("SIGTERM"));
-}
+};
 
-export async function startConfiguredServer(options: ServerOptions): Promise<void> {
-  let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
-
+const initializeStudioProcessResources = async (): Promise<{
+  loggingConfig: ReturnType<typeof getLoggingConfigFromEnv>;
+}> => {
+  let prismaInitializationStarted = false;
+  let vaultInitializationStarted = false;
   try {
-    loggingConfig = getLoggingConfigFromEnv(process.env);
+    const config = appConfigProvider.config;
+    const loggingConfig = getLoggingConfigFromEnv(process.env);
     initializeRuntimeLoggerBootstrap({
-      logsDir: appConfigProvider.config.getLogsDir(),
+      logsDir: config.getLogsDir(),
       loggingConfig,
     });
     initializeServerAppLogger(loggingConfig);
-  } catch (error) {
-    logger.error(`Failed to initialize runtime logging: ${String(error)}`);
-    process.exit(1);
-  }
-
-  try {
-    const config = appConfigProvider.config;
     runMigrations({
       appRoot: config.getAppRootDir(),
       databaseUrl: config.getOperationalDatabaseUrl(),
     });
+    const databaseLocation = config.getOperationalDatabaseLocation();
+    configureFileToolDeniedPaths([
+      databaseLocation.databasePath,
+      databaseLocation.rootKeyPath,
+      `${databaseLocation.databasePath}-wal`,
+      `${databaseLocation.databasePath}-shm`,
+      `${databaseLocation.databasePath}-journal`,
+    ]);
+    prismaInitializationStarted = true;
+    await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
+    vaultInitializationStarted = true;
+    await getSecretVaultRuntime().initialize(databaseLocation);
+    try {
+      const migrations = await getAppDataMigrationRunner().runPending();
+      for (const migration of migrations) {
+        if (migration.status === "FAILED" || migration.status === "RUNNING") {
+          logger.warn(
+            `Studio app-data migration '${migration.migrationId}' is ${migration.status}: `
+            + `${migration.errorMessage ?? "no detail"}`,
+          );
+        }
+      }
+    } catch (error) {
+      logger.error(`Failed to run Studio app data migrations: ${String(error)}`);
+    }
+    return { loggingConfig };
   } catch (error) {
-    logger.error(`Failed to run database migrations: ${String(error)}`);
-    process.exit(1);
+    if (vaultInitializationStarted) {
+      try {
+        await getSecretVaultRuntime().close();
+      } finally {
+        if (prismaInitializationStarted) {
+          await shutdownPrisma();
+        }
+      }
+    } else if (prismaInitializationStarted) {
+      await shutdownPrisma();
+    }
+    throw error;
   }
+};
 
-  const databaseLocation = appConfigProvider.config.getOperationalDatabaseLocation();
-  configureFileToolDeniedPaths([
-    databaseLocation.databasePath,
-    databaseLocation.rootKeyPath,
-    `${databaseLocation.databasePath}-wal`,
-    `${databaseLocation.databasePath}-shm`,
-    `${databaseLocation.databasePath}-journal`,
-  ]);
+export async function startConfiguredServer(options: ServerOptions): Promise<void> {
+  let app: FastifyInstance | null = null;
+  let processResourcesInitialized = false;
   try {
-    await initializePrisma({
-      datasourceUrl: databaseLocation.databaseUrl,
+    const { loggingConfig } = await initializeStudioProcessResources();
+    processResourcesInitialized = true;
+    const composition = await buildStudioServerComposition({
+      appConfig: appConfigProvider.config,
+      loggingConfig,
     });
-  } catch (error) {
-    logger.error(`Failed to initialize application database: ${String(error)}`);
-    process.exit(1);
-  }
-  await getSecretVaultRuntime().initialize(databaseLocation);
-
-  try {
-    await getAppDataMigrationRunner().runPending();
-  } catch (error) {
-    logger.error(`Failed to run app data migrations: ${String(error)}`);
-  }
-
-  try {
-    await bootstrapBuiltInAgents();
-  } catch (error) {
-    logger.error(`Failed to bootstrap built-in agents: ${String(error)}`);
-    process.exit(1);
-  }
-
-  const app = await buildApp({ loggingConfig });
-  registerShutdownHandlers(app);
-  await app.listen({ host: options.host, port: options.port });
-  logger.info(`Server listening on ${options.host}:${options.port}`);
-  startChannelRunOutputDeliveryRuntime();
-  startGatewayCallbackDeliveryRuntime();
-
-  try {
-    const internalBaseUrl = seedInternalServerBaseUrlFromListenAddress({
-      requestedHost: options.host,
-      listenAddress: app.server.address(),
-    });
-    logger.info(`Server internal base URL configured to: ${internalBaseUrl}`);
-  } catch (error) {
-    delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
-    logger.error(
-      `Failed to derive internal server base URL for managed messaging: ${String(error)}`,
-    );
-  }
-
-  try {
-    await getManagedMessagingGatewayService().restoreIfEnabled();
-  } catch (error) {
-    logger.error(`Failed to restore managed messaging gateway: ${String(error)}`);
-  }
-
-  try {
-    await getWorkspaceManager().getOrCreateTempWorkspace();
-  } catch (error) {
-    logger.error(`Failed to create temp workspace: ${String(error)}`);
-    process.exit(1);
-  }
-
-  try {
-    const packageRegistrySnapshot = await ApplicationPackageRegistryService.getInstance().getRegistrySnapshot();
-    const catalogSnapshot = await ApplicationBundleService.getInstance().getCatalogSnapshot(packageRegistrySnapshot);
-    const persistedKnownApplicationIds = await new ApplicationPlatformStateStore().listKnownApplicationIds();
-    const availabilityService = getApplicationAvailabilityService();
-    await getApplicationOrchestrationStartupGate().runStartupRecovery(async () => {
-      const recoveryOutcomes = await getApplicationOrchestrationRecoveryService().resumeBindings(
-        catalogSnapshot,
-        persistedKnownApplicationIds,
-      );
-      availabilityService.reconcileCatalogSnapshotWithKnownApplications(catalogSnapshot, {
-        persistedKnownApplicationIds,
-        recoveryOutcomesByApplicationId: new Map(
-          recoveryOutcomes.map((outcome) => [outcome.applicationId, outcome]),
-        ),
+    app = composition.app;
+    registerShutdownHandlers(app);
+    await composition.applicationGraph.lifecycle.prepareBeforeListen();
+    await app.listen({ host: options.host, port: options.port });
+    logger.info(`Server listening on ${options.host}:${options.port}`);
+    startChannelRunOutputDeliveryRuntime();
+    startGatewayCallbackDeliveryRuntime();
+    try {
+      const internalBaseUrl = seedInternalServerBaseUrlFromListenAddress({
+        requestedHost: options.host,
+        listenAddress: app.server.address(),
       });
-      await getApplicationExecutionEventDispatchService().resumePendingEvents();
-    });
+      logger.info(`Server internal base URL configured to: ${internalBaseUrl}`);
+    } catch (error) {
+      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+      logger.error(
+        `Failed to derive internal server base URL for managed messaging: ${String(error)}`,
+      );
+    }
+    try {
+      await getManagedMessagingGatewayService().restoreIfEnabled();
+    } catch (error) {
+      logger.error(`Failed to restore managed messaging gateway: ${String(error)}`);
+    }
+    await composition.applicationGraph.lifecycle.recoverAfterListen();
+    await scheduleStudioBackgroundTasks();
   } catch (error) {
-    logger.error(`Failed to complete application orchestration startup recovery: ${String(error)}`);
-    process.exit(1);
+    if (app) {
+      await app.close().catch((closeError) => {
+        logger.error(`Failed to close Studio composition after startup error: ${String(closeError)}`);
+      });
+    } else if (processResourcesInitialized) {
+      try {
+        await getSecretVaultRuntime().close();
+      } finally {
+        await shutdownPrisma();
+      }
+    }
+    throw error;
   }
-  await scheduleBackgroundTasks();
 }

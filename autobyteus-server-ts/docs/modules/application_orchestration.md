@@ -184,6 +184,6 @@ See [`application_sessions.md`](./application_sessions.md) only for the historic
 - [`application_communication_model.md`](./application_communication_model.md)
 - [`agent_artifacts.md`](./agent_artifacts.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-backend-sdk/README.md`

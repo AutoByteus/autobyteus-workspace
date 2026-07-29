@@ -4,7 +4,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  createDevBootstrapSession,
   materializeApplicationTemplate,
   packApplicationProject,
   validateApplicationPackage,
@@ -251,30 +250,6 @@ test('validator reports unsafe local application ids in generated packages', asy
     diagnostic.code === 'INVALID_LOCAL_APPLICATION_ID'
     && diagnostic.message.includes('application.json id')
   )), true);
-});
-
-test('dev bootstrap session uses v4 launch hints, direct WebSocket bases, and one real-backend application identity', () => {
-  const session = createDevBootstrapSession({
-    hostOrigin: 'http://127.0.0.1:43124',
-    iframeLaunchId: 'application-local:%2Fworkspace__sample-app::dev-launch',
-    localApplicationId: 'sample-app',
-    applicationId: 'application-local:%2Fworkspace__sample-app',
-    applicationName: 'Sample App',
-    backendBaseUrl: 'http://127.0.0.1:43123/rest/applications/application-local:%2Fworkspace__sample-app/backend',
-    backendNotificationsUrl: null,
-    backendWebSocketBaseUrl: 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/backend/routes',
-    agentCommunicationWebSocketBaseUrl: 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/agent-communication',
-  });
-
-  assert.match(session.iframePath, /autobyteusContractVersion=4/);
-  assert.match(session.iframePath, /autobyteusApplicationId=application-local/);
-  assert.match(session.iframePath, /autobyteusIframeLaunchId=/);
-  assert.match(session.iframePath, /autobyteusHostOrigin=http/);
-  assert.equal(session.bootstrapEnvelope.payload.application.applicationId, 'application-local:%2Fworkspace__sample-app');
-  assert.equal(session.bootstrapEnvelope.payload.requestContext.applicationId, 'application-local:%2Fworkspace__sample-app');
-  assert.equal(session.bootstrapEnvelope.payload.iframeLaunchId, 'application-local:%2Fworkspace__sample-app::dev-launch');
-  assert.equal(session.bootstrapEnvelope.payload.transport.backendWebSocketBaseUrl, 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/backend/routes');
-  assert.equal(session.bootstrapEnvelope.payload.transport.agentCommunicationWebSocketBaseUrl, 'ws://127.0.0.1:43123/ws/applications/application-local:%2Fworkspace__sample-app/agent-communication');
 });
 
 const rewriteApplicationManifest = async (projectRoot, overrides) => {

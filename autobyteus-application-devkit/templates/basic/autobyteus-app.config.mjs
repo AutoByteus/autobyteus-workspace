@@ -23,6 +23,7 @@ export default {
       graphql: true,
       notifications: true,
       eventHandlers: false,
+      webSockets: false,
     },
     migrationsDir: 'migrations',
     assetsDir: 'assets',

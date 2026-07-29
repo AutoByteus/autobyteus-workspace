@@ -39,12 +39,12 @@ export const stopDefaultAgentRunEventPipeline = async (): Promise<void> => {
   if (processor) {
     await processor.close();
   }
-};
-
-export const resetDefaultAgentRunEventPipelineForTests = async (): Promise<void> => {
-  await stopDefaultAgentRunEventPipeline();
   cachedDefaultAgentRunEventPipeline = null;
   cachedTokenUsageEnrichmentTransformer = null;
   cachedTokenUsagePersistenceProcessor = null;
   tokenUsageLifecycleState = "accepting";
+};
+
+export const resetDefaultAgentRunEventPipelineForTests = async (): Promise<void> => {
+  await stopDefaultAgentRunEventPipeline();
 };

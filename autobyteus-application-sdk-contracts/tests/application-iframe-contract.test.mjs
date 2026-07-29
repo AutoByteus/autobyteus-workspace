@@ -2,15 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   APPLICATION_IFRAME_BOOTSTRAP_EVENT,
-  APPLICATION_IFRAME_CONTRACT_VERSION_V4,
+  APPLICATION_IFRAME_CONTRACT_VERSION,
   APPLICATION_IFRAME_READY_EVENT,
-  createApplicationHostBootstrapEnvelopeV4,
-  createApplicationUiReadyEnvelopeV4,
+  createApplicationHostBootstrapEnvelope,
+  createApplicationUiReadyEnvelope,
   decodeApplicationAgentTargetPath,
   doesApplicationHostOriginMatch,
   encodeApplicationAgentTargetPath,
-  isApplicationHostBootstrapEnvelopeV4,
-  isApplicationUiReadyEnvelopeV4,
+  isApplicationHostBootstrapEnvelope,
+  isApplicationUiReadyEnvelope,
   normalizeApplicationHostOrigin,
   readApplicationIframeLaunchHints,
 } from '../dist/index.js';
@@ -39,7 +39,7 @@ test('application agent target path decoder rejects non-canonical and incomplete
   }
 });
 
-const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelopeV4({
+const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelope({
   host: { origin: 'http://127.0.0.1:43123' },
   application: {
     applicationId: 'bundle-app__pkg__sample-app',
@@ -65,7 +65,7 @@ test('readApplicationIframeLaunchHints parses a valid v4 iframe launch-hint quer
   );
 
   assert.deepEqual(hints, {
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V4,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION,
     applicationId: 'bundle-app__pkg__sample-app',
     iframeLaunchId: IFRAME_LAUNCH_ID,
     hostOrigin: 'http://127.0.0.1:43123',
@@ -105,7 +105,7 @@ test('packaged host-origin normalization preserves the file/null equivalence rul
 });
 
 test('ready and bootstrap validators accept tight v4 envelopes and reject malformed variants', () => {
-  const readyEnvelope = createApplicationUiReadyEnvelopeV4({
+  const readyEnvelope = createApplicationUiReadyEnvelope({
     applicationId: 'bundle-app__pkg__sample-app',
     iframeLaunchId: IFRAME_LAUNCH_ID,
   });
@@ -113,8 +113,8 @@ test('ready and bootstrap validators accept tight v4 envelopes and reject malfor
 
   assert.equal(readyEnvelope.eventName, APPLICATION_IFRAME_READY_EVENT);
   assert.equal(bootstrapEnvelope.eventName, APPLICATION_IFRAME_BOOTSTRAP_EVENT);
-  assert.equal(isApplicationUiReadyEnvelopeV4(readyEnvelope), true);
-  assert.equal(isApplicationHostBootstrapEnvelopeV4(bootstrapEnvelope), true);
+  assert.equal(isApplicationUiReadyEnvelope(readyEnvelope), true);
+  assert.equal(isApplicationHostBootstrapEnvelope(bootstrapEnvelope), true);
   assert.deepEqual(bootstrapEnvelope.payload.requestContext, {
     applicationId: 'bundle-app__pkg__sample-app',
   });
@@ -132,9 +132,9 @@ test('ready and bootstrap validators accept tight v4 envelopes and reject malfor
     },
   };
 
-  assert.equal(isApplicationHostBootstrapEnvelopeV4(malformedBootstrapEnvelope), false);
+  assert.equal(isApplicationHostBootstrapEnvelope(malformedBootstrapEnvelope), false);
   assert.equal(
-    isApplicationUiReadyEnvelopeV4({
+    isApplicationUiReadyEnvelope({
       ...readyEnvelope,
       payload: {
         applicationId: 'bundle-app__pkg__sample-app',
@@ -143,7 +143,7 @@ test('ready and bootstrap validators accept tight v4 envelopes and reject malfor
     false,
   );
   assert.equal(
-    isApplicationHostBootstrapEnvelopeV4({
+    isApplicationHostBootstrapEnvelope({
       ...bootstrapEnvelope,
       payload: {
         ...bootstrapEnvelope.payload,

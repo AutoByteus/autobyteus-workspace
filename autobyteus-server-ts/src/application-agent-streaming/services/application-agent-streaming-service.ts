@@ -105,6 +105,14 @@ export class ApplicationAgentStreamingService {
     const prefix = `${applicationId}\u0000`;
     for (const [key, subscription] of this.subscriptions) if (key.startsWith(prefix)) subscription.stopForWorker();
   }
+
+  async stopAll(): Promise<void> {
+    await Promise.allSettled(
+      Array.from(this.subscriptions.values()).map((subscription) =>
+        subscription.unsubscribe("ABORTED")),
+    );
+    this.subscriptions.clear();
+  }
 }
 
 const mapEstablishmentError = (error: unknown): Error => {

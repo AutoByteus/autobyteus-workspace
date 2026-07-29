@@ -42,6 +42,13 @@ export class ApplicationAgentCommunicationService {
     void session.establish();
     return sessionId;
   }
+
+  closeAll(): void {
+    for (const session of Array.from(this.sessions.values())) {
+      session.abort();
+    }
+    this.sessions.clear();
+  }
 }
 
 let cachedService: ApplicationAgentCommunicationService | null = null;

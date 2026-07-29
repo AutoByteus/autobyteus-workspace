@@ -9,9 +9,7 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import {
-  ApplicationPackageRegistryService,
-} from "../../../application-packages/services/application-package-registry-service.js";
+import { getStudioApplicationPackageRegistryService } from "../studio-application-api-authorities.js";
 import type {
   ApplicationPackageDebugDetails as ApplicationPackageDebugDetailsModel,
   ApplicationPackageImportInput as ApplicationPackageImportInputModel,
@@ -142,7 +140,7 @@ const mapImportInput = (
 export class ApplicationPackageResolver {
   @Query(() => [ApplicationPackage])
   async applicationPackages(): Promise<ApplicationPackage[]> {
-    const service = ApplicationPackageRegistryService.getInstance();
+    const service = getStudioApplicationPackageRegistryService();
     const packages = await service.listApplicationPackages();
     return packages.map(mapApplicationPackage);
   }
@@ -151,7 +149,7 @@ export class ApplicationPackageResolver {
   async applicationPackageDetails(
     @Arg("packageId", () => String) packageId: string,
   ): Promise<ApplicationPackageDetails | null> {
-    const service = ApplicationPackageRegistryService.getInstance();
+    const service = getStudioApplicationPackageRegistryService();
     const packageDetails = await service.getApplicationPackageDetails(packageId);
     return packageDetails ? mapApplicationPackageDetails(packageDetails) : null;
   }
@@ -161,7 +159,7 @@ export class ApplicationPackageResolver {
     @Arg("input", () => ImportApplicationPackageInput)
     input: ImportApplicationPackageInput,
   ): Promise<ApplicationPackage[]> {
-    const service = ApplicationPackageRegistryService.getInstance();
+    const service = getStudioApplicationPackageRegistryService();
     const packages = await service.importApplicationPackage(mapImportInput(input));
     return packages.map(mapApplicationPackage);
   }
@@ -170,7 +168,7 @@ export class ApplicationPackageResolver {
   async removeApplicationPackage(
     @Arg("packageId", () => String) packageId: string,
   ): Promise<ApplicationPackage[]> {
-    const service = ApplicationPackageRegistryService.getInstance();
+    const service = getStudioApplicationPackageRegistryService();
     const packages = await service.removeApplicationPackage(packageId);
     return packages.map(mapApplicationPackage);
   }

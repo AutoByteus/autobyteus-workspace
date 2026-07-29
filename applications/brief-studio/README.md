@@ -4,7 +4,7 @@ Brief Studio is the current in-repo teaching sample for the “many runs over on
 
 It demonstrates:
 
-- framework-owned hosted application startup through `startHostedApplication(...)`
+- one provider-neutral `startApplication(...)` entry for Studio and standalone
 - one app-owned GraphQL brief API hosted under the platform backend mount
 - one app-owned `briefId` business identity
 - one required manifest `executionResourceSlots[]` team slot resolved through the host-managed setup-first launch gate
@@ -23,10 +23,10 @@ Authoring roots:
 - `frontend-src/`
 - `agent-teams/brief-studio-team/`
 
-Runnable bundle roots remain:
+Generated runnable bundle roots:
 
-- `ui/`
-- `backend/`
+- `dist/importable-package/applications/brief-studio/ui/`
+- `dist/importable-package/applications/brief-studio/backend/`
 
 Package/import root:
 

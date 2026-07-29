@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
-  type ApplicationBackendBundleManifestV1,
+  APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
+  type ApplicationBackendBundleManifest,
 } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationBackendBundle } from "../domain/models.js";
 
@@ -87,7 +87,7 @@ const normalizeOptionalBackendRelativePath = (
 const normalizeBooleanRecord = (
   value: unknown,
   fieldName: string,
-): ApplicationBackendBundleManifestV1["supportedExposures"] => {
+): ApplicationBackendBundleManifest["supportedExposures"] => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new ApplicationBackendManifestParseError(`${fieldName} must be an object.`);
   }
@@ -97,7 +97,7 @@ const normalizeBooleanRecord = (
   if (unknownKey) {
     throw new ApplicationBackendManifestParseError(`${fieldName} contains unsupported key '${unknownKey}'.`);
   }
-  const readFlag = (key: keyof ApplicationBackendBundleManifestV1["supportedExposures"]): boolean => {
+  const readFlag = (key: keyof ApplicationBackendBundleManifest["supportedExposures"]): boolean => {
     if (typeof record[key] !== "boolean") {
       throw new ApplicationBackendManifestParseError(`${fieldName}.${key} must be a boolean.`);
     }
@@ -132,7 +132,7 @@ export const parseApplicationBackendManifest = (
     throw new ApplicationBackendManifestParseError("Application backend bundle manifest must be a JSON object.");
   }
 
-  const manifest = payload as ApplicationBackendBundleManifestV1 & Record<string, unknown>;
+  const manifest = payload as ApplicationBackendBundleManifest & Record<string, unknown>;
   rejectUnknownFields(manifest, [
     "contractVersion",
     "entryModule",
@@ -145,7 +145,7 @@ export const parseApplicationBackendManifest = (
     "assetsDir",
   ], "Application backend bundle manifest");
   const contractVersion = normalizeRequiredString(manifest.contractVersion, "contractVersion");
-  if (contractVersion !== APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1) {
+  if (contractVersion !== APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION) {
     throw new ApplicationBackendManifestParseError(
       `Unsupported backend bundle contractVersion '${contractVersion}'.`,
     );
@@ -186,7 +186,7 @@ export const parseApplicationBackendManifest = (
     sdkCompatibility.backendDefinitionContractVersion,
     "sdkCompatibility.backendDefinitionContractVersion",
   );
-  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4) {
+  if (backendDefinitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION) {
     throw new ApplicationBackendManifestParseError(
       `Unsupported backendDefinitionContractVersion '${backendDefinitionContractVersion}'.`,
     );
@@ -195,7 +195,7 @@ export const parseApplicationBackendManifest = (
     sdkCompatibility.frontendSdkContractVersion,
     "sdkCompatibility.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION) {
     throw new ApplicationBackendManifestParseError(
       `Unsupported frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
     );
@@ -224,8 +224,8 @@ export const parseApplicationBackendManifest = (
       semver,
     },
     sdkCompatibility: {
-      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
-      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
+      backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION,
+      frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION,
     },
     supportedExposures: normalizeBooleanRecord(manifest.supportedExposures, "supportedExposures"),
     migrationsDirPath: migrationsDirRelativePath ? path.resolve(bundleRootPath, migrationsDirRelativePath) : null,

@@ -1,13 +1,13 @@
 # Custom Application Development — Milestone 1
 
-External AutoByteus application authors use the devkit, canonical source layout, package validator, and local iframe-contract v4 dev host described here.
+External AutoByteus application authors use the devkit, canonical source layout, package validator, and the real standalone or Studio hosts described here.
 
 ## Installable packages
 
 External projects should depend on these package names:
 
 - `@autobyteus/application-devkit` for the `autobyteus-app` CLI.
-- `@autobyteus/application-frontend-sdk` for `startHostedApplication(...)`.
+- `@autobyteus/application-frontend-sdk` for `startApplication(...)`.
 - `@autobyteus/application-backend-sdk` for `defineApplication(...)`.
 - `@autobyteus/application-sdk-contracts` for shared manifest, iframe, backend, and request-context types.
 
@@ -44,7 +44,7 @@ my-autobyteus-app/
 
 Developers edit `src/**`, `application.json`, and `autobyteus-app.config.mjs`. The runtime `ui/` and `backend/` folders are generated only inside `dist/importable-package/applications/<app-id>/` because the production AutoByteus package contract still expects those names.
 
-Do not use root-level `frontend-src/`, `backend-src/`, generated `ui/`, or generated `backend/` as the external default layout. Existing repository samples may still use older internal authoring roots until they are explicitly migrated.
+Do not use generated `ui/` or `backend/` trees as source. Maintained repository samples use checked-in devkit configuration when their authoring roots differ from the starter defaults.
 
 ## Create a starter
 
@@ -54,7 +54,7 @@ cd my-autobyteus-app
 pnpm install
 ```
 
-The starter frontend calls `startHostedApplication(...)` once. It does not include a dev-only alternate startup path.
+The starter frontend calls `startApplication(...)` once. It does not include a dev-only alternate startup path.
 
 Local application ids must start with a letter or number and contain only letters, numbers, underscores, or hyphens. The id becomes the generated package directory name under `applications/<app-id>/`.
 
@@ -83,32 +83,28 @@ autobyteus-app validate --package-root dist/importable-package
 
 The devkit validator checks package-root shape, application manifest v4 fields, generated UI files, the backend bundle manifest v1 seven-flag exposure authority, backend entry file presence, v4 SDK/backend-definition versions, and manifest path containment. It is a preflight tool for developers and CI; the server import/discovery validation remains the authoritative production gate.
 
-## Local frontend dev bootstrap
+## Develop in either real host
 
 ```bash
 autobyteus-app dev
 ```
 
-The dev host serves the generated frontend through iframe contract v4. The iframe URL includes:
-
-- `autobyteusContractVersion=4`
-- `autobyteusApplicationId`
-- `autobyteusIframeLaunchId`
-- `autobyteusHostOrigin`
-
-When the app emits `autobyteus.application.ui.ready`, the dev host posts `autobyteus.application.host.bootstrap` with top-level `iframeLaunchId` and `requestContext: { applicationId }`.
-
-For a real AutoByteus backend transport, pass the exact backend application id explicitly:
+The default command builds a disposable package, starts the real selected-application standalone host, and rebuilds/restarts it when resolved application inputs change. No backend URL or application ID override is required.
 
 ```bash
-autobyteus-app dev \
-  --application-id 'application-local:%2Fworkspace__my-autobyteus-app' \
-  --backend-base-url 'http://127.0.0.1:43123/rest/applications/application-local:%2Fworkspace__my-autobyteus-app/backend'
+autobyteus-app dev --host studio --studio-url http://127.0.0.1:8000
 ```
 
-Real-backend dev mode uses the same id in launch hints, bootstrap `application.applicationId`, and `requestContext.applicationId`. Without real backend URLs, dev mode uses a local mock backend for startup and transport-shape testing.
+Studio mode packs the configured output, imports or finds that exact local package through Studio's public API, and requests package reload after rebuild. Use Studio's explicit **Reload application** action to remount the current view.
 
-When the application needs live transports in real-backend mode, pass their fixed desktop bases explicitly with `--backend-notifications-url`, `--backend-websocket-base-url`, and `--agent-communication-websocket-base-url`. The resulting v4 bootstrap transport has exactly those three fields plus `backendBaseUrl`; it has no application credential field.
+## Run an existing build standalone
+
+```bash
+pnpm build
+pnpm start
+```
+
+`start` validates `dist/importable-package` and runs it without rebuilding or watching. Mutable database, vault, logs, and application state live under `.autobyteus/standalone-data` by default; the package remains read-only.
 
 ## Agent-published artifacts
 

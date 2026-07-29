@@ -50,6 +50,7 @@ export class ApplicationBackendApiGatewayService {
   }
 
   private subscribedToEngineNotifications = false;
+  private unsubscribeEngineNotifications: (() => void) | null = null;
   private webSocketSessionServiceInstance: ApplicationBackendWebSocketSessionService | null = null;
 
   constructor(
@@ -96,7 +97,7 @@ export class ApplicationBackendApiGatewayService {
       return;
     }
     this.subscribedToEngineNotifications = true;
-    this.engineHostService.onNotification(({ applicationId, message }) => {
+    this.unsubscribeEngineNotifications = this.engineHostService.onNotification(({ applicationId, message }) => {
       this.notificationHub.publish({
         applicationId,
         topic: message.topic,
@@ -193,6 +194,15 @@ export class ApplicationBackendApiGatewayService {
       ...input,
       requireApplication: () => this.requireApplicationWebSocketExposure(input.applicationId),
     });
+  }
+
+  dispose(): void {
+    this.unsubscribeEngineNotifications?.();
+    this.unsubscribeEngineNotifications = null;
+    this.subscribedToEngineNotifications = false;
+    this.dependencies.webSocketSessionService?.dispose();
+    this.webSocketSessionServiceInstance?.dispose();
+    this.webSocketSessionServiceInstance = null;
   }
 }
 

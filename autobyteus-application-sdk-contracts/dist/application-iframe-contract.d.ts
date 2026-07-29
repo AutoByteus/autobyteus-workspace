@@ -1,5 +1,5 @@
 export declare const APPLICATION_IFRAME_CHANNEL: "autobyteus.application.host";
-export declare const APPLICATION_IFRAME_CONTRACT_VERSION_V4: "4";
+export declare const APPLICATION_IFRAME_CONTRACT_VERSION: "4";
 export declare const APPLICATION_IFRAME_READY_EVENT: "autobyteus.application.ui.ready";
 export declare const APPLICATION_IFRAME_BOOTSTRAP_EVENT: "autobyteus.application.host.bootstrap";
 export declare const APPLICATION_IFRAME_QUERY_CONTRACT_VERSION: "autobyteusContractVersion";
@@ -14,28 +14,28 @@ export type ApplicationHostTransport = {
     agentCommunicationWebSocketBaseUrl: string | null;
 };
 export type ApplicationIframeLaunchHints = {
-    contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V4;
+    contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION;
     applicationId: string;
     iframeLaunchId: string;
     hostOrigin: string;
 };
-export type ApplicationIframeEnvelopeV4<TPayload extends UnknownRecord = UnknownRecord> = {
+export type ApplicationIframeEnvelope<TPayload extends UnknownRecord = UnknownRecord> = {
     channel: typeof APPLICATION_IFRAME_CHANNEL;
-    contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V4;
+    contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION;
     eventName: string;
     payload: TPayload;
 };
-export type ApplicationUiReadyPayloadV4 = {
+export type ApplicationUiReadyPayload = {
     applicationId: string;
     iframeLaunchId: string;
 };
-export type ApplicationIframeReadySignal = ApplicationUiReadyPayloadV4 & {
+export type ApplicationIframeReadySignal = ApplicationUiReadyPayload & {
     iframeOrigin: string;
 };
-export type ApplicationUiReadyEnvelopeV4 = ApplicationIframeEnvelopeV4<ApplicationUiReadyPayloadV4> & {
+export type ApplicationUiReadyEnvelope = ApplicationIframeEnvelope<ApplicationUiReadyPayload> & {
     eventName: typeof APPLICATION_IFRAME_READY_EVENT;
 };
-export type ApplicationBootstrapPayloadV4 = {
+export type ApplicationBootstrapPayload = {
     host: {
         origin: string;
     };
@@ -51,18 +51,18 @@ export type ApplicationBootstrapPayloadV4 = {
     };
     transport: ApplicationHostTransport;
 };
-export type ApplicationHostBootstrapEnvelopeV4 = ApplicationIframeEnvelopeV4<ApplicationBootstrapPayloadV4> & {
+export type ApplicationHostBootstrapEnvelope = ApplicationIframeEnvelope<ApplicationBootstrapPayload> & {
     eventName: typeof APPLICATION_IFRAME_BOOTSTRAP_EVENT;
 };
 export declare const normalizeApplicationHostOrigin: (origin: string | null | undefined, protocol?: string | null) => string;
 export declare const doesApplicationHostOriginMatch: (expectedNormalizedHostOrigin: string, actualOrigin: string | null | undefined) => boolean;
-export declare const isApplicationIframeEnvelopeV4: (value: unknown) => value is ApplicationIframeEnvelopeV4<UnknownRecord>;
-export declare const isApplicationUiReadyPayloadV4: (value: unknown) => value is ApplicationUiReadyPayloadV4;
-export declare const isApplicationUiReadyEnvelopeV4: (value: unknown) => value is ApplicationUiReadyEnvelopeV4;
-export declare const isApplicationBootstrapPayloadV4: (value: unknown) => value is ApplicationBootstrapPayloadV4;
-export declare const isApplicationHostBootstrapEnvelopeV4: (value: unknown) => value is ApplicationHostBootstrapEnvelopeV4;
-export declare const createApplicationUiReadyEnvelopeV4: (payload: ApplicationUiReadyPayloadV4) => ApplicationUiReadyEnvelopeV4;
-export declare const createApplicationHostBootstrapEnvelopeV4: (payload: ApplicationBootstrapPayloadV4) => ApplicationHostBootstrapEnvelopeV4;
+export declare const isApplicationIframeEnvelope: (value: unknown) => value is ApplicationIframeEnvelope<UnknownRecord>;
+export declare const isApplicationUiReadyPayload: (value: unknown) => value is ApplicationUiReadyPayload;
+export declare const isApplicationUiReadyEnvelope: (value: unknown) => value is ApplicationUiReadyEnvelope;
+export declare const isApplicationBootstrapPayload: (value: unknown) => value is ApplicationBootstrapPayload;
+export declare const isApplicationHostBootstrapEnvelope: (value: unknown) => value is ApplicationHostBootstrapEnvelope;
+export declare const createApplicationUiReadyEnvelope: (payload: ApplicationUiReadyPayload) => ApplicationUiReadyEnvelope;
+export declare const createApplicationHostBootstrapEnvelope: (payload: ApplicationBootstrapPayload) => ApplicationHostBootstrapEnvelope;
 export declare const readApplicationIframeLaunchHints: (search: string) => ApplicationIframeLaunchHints | null;
 export {};
 //# sourceMappingURL=application-iframe-contract.d.ts.map

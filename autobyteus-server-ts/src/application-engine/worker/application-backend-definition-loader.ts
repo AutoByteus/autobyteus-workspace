@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import {
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION,
   type ApplicationBackendDefinition,
   type ApplicationBackendExposureSummary,
   type ApplicationStorageContext,
@@ -123,7 +123,7 @@ export class ApplicationBackendDefinitionLoader {
     const namespace = await import(pathToFileURL(input.entryModulePath).href);
     const definition = resolveDefinition(namespace as Record<string, unknown>);
     validateDefinitionShape(definition);
-    if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4) {
+    if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION) {
       throw new Error(`Unsupported application backend definitionContractVersion '${String(definition.definitionContractVersion)}'.`);
     }
     validateExposures(definition, input.supportedExposures);

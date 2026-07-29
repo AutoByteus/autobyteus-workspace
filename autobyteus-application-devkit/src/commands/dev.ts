@@ -1,19 +1,36 @@
-import { startDevBootstrapServer } from '../dev-server/dev-bootstrap-server.js';
-import { parseCommandOptions, readBooleanFlag, readPortFlag, readStringFlag } from './command-options.js';
+import path from 'node:path';
+import { loadApplicationDevkitConfig } from '../config/load-application-devkit-config.js';
+import { runStandaloneDevelopmentSession } from '../development/standalone-development-session.js';
+import { runStudioDevelopmentSession } from '../development/studio-development-session.js';
+import {
+  parseCommandOptions,
+  readBooleanFlag,
+  readPortFlag,
+  readStringFlag,
+} from './command-options.js';
 
 export const runDevCommand = async (args: string[]): Promise<void> => {
   const options = parseCommandOptions(args);
-  const server = await startDevBootstrapServer({
-    projectRoot: readStringFlag(options, 'project-root') ?? process.cwd(),
-    port: readPortFlag(options, 'port'),
-    applicationId: readStringFlag(options, 'application-id'),
-    backendBaseUrl: readStringFlag(options, 'backend-base-url'),
-    backendNotificationsUrl: readStringFlag(options, 'backend-notifications-url'),
-    backendWebSocketBaseUrl: readStringFlag(options, 'backend-websocket-base-url'),
-    agentCommunicationWebSocketBaseUrl: readStringFlag(options, 'agent-communication-websocket-base-url'),
-    mockBackend: readBooleanFlag(options, 'mock-backend'),
+  const projectRoot = path.resolve(
+    readStringFlag(options, 'project-root') ?? process.cwd(),
+  );
+  const hostMode = readStringFlag(options, 'host') ?? 'standalone';
+  if (hostMode === 'studio') {
+    await runStudioDevelopmentSession({
+      projectRoot,
+      studioUrl: readStringFlag(options, 'studio-url') ?? 'http://127.0.0.1:8000',
+    });
+    return;
+  }
+  if (hostMode !== 'standalone') {
+    throw new Error("--host must be 'standalone' or 'studio'.");
+  }
+  const config = await loadApplicationDevkitConfig(projectRoot);
+  await runStandaloneDevelopmentSession({
+    projectRoot,
+    host: readStringFlag(options, 'listen-host') ?? '127.0.0.1',
+    port: readPortFlag(options, 'port') ?? config.config.dev.port,
+    publicBaseUrl: readStringFlag(options, 'public-base-url'),
+    openBrowser: !readBooleanFlag(options, 'no-open'),
   });
-  console.log(`AutoByteus application dev host: ${server.url}`);
-  console.log(`Local application id: ${server.session.localApplicationId}`);
-  console.log(`Bootstrap application id: ${server.session.applicationId}`);
 };

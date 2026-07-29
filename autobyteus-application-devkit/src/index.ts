@@ -23,9 +23,5 @@ export type { ValidationDiagnostic, ValidationResult } from './validation/valida
 export { formatValidationDiagnostics } from './validation/validation-result.js';
 export { materializeApplicationTemplate } from './template/template-materializer.js';
 export type { ApplicationTemplateOptions, ApplicationTemplateResult } from './template/template-materializer.js';
-export { createDevBootstrapSession, buildLaunchQueryString, renderDevHostPage } from './dev-server/dev-host-page.js';
-export type { DevBootstrapSession } from './dev-server/dev-host-page.js';
-export { startDevBootstrapServer } from './dev-server/dev-bootstrap-server.js';
-export type { DevBootstrapServerHandle, StartDevBootstrapServerOptions } from './dev-server/dev-bootstrap-server.js';
 export { getLocalApplicationIdValidationError, normalizeLocalApplicationId } from './validation/local-application-id.js';
 export { LOCAL_APPLICATION_ID_PATTERN, LOCAL_APPLICATION_ID_RULE_DESCRIPTION } from './validation/local-application-id.js';

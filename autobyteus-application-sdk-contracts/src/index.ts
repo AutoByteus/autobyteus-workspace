@@ -29,10 +29,12 @@ export * from "./application-agent-events.js";
 export * from "./application-agent-communication.js";
 export * from "./application-agent-target-path.js";
 export * from "./application-websockets.js";
+export * from "./application-runtime-bootstrap.js";
+export * from "./standalone-application-bootstrap.js";
 
-export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4 = "4" as const;
-export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4 = "4" as const;
+export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION = "1" as const;
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION = "4" as const;
+export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION = "4" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
 export type ApplicationRouteMethod =
@@ -55,8 +57,8 @@ export type ApplicationBackendSupportedExposures = {
   webSockets: boolean;
 };
 
-export type ApplicationBackendBundleManifestV1 = {
-  contractVersion: typeof APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1;
+export type ApplicationBackendBundleManifest = {
+  contractVersion: typeof APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION;
   entryModule: string;
   moduleFormat: "esm";
   distribution: "self-contained";
@@ -65,8 +67,8 @@ export type ApplicationBackendBundleManifestV1 = {
     semver: string;
   };
   sdkCompatibility: {
-    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
-    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4;
+    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION;
+    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION;
   };
   supportedExposures: ApplicationBackendSupportedExposures;
   migrationsDir?: string | null;
@@ -331,7 +333,7 @@ export type ApplicationRouteDefinition = {
 };
 
 export type ApplicationBackendDefinition = {
-  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
+  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION;
   lifecycle?: {
     onStart?: ApplicationLifecycleHook;
     onStop?: ApplicationLifecycleHook;

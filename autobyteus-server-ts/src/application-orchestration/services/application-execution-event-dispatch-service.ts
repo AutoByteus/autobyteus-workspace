@@ -52,6 +52,7 @@ export class ApplicationExecutionEventDispatchService {
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
       availabilityService?: ApplicationAvailabilityService;
+      availabilityReader?: Pick<ApplicationAvailabilityService, "isApplicationActive">;
       platformStateStore?: ApplicationPlatformStateStore;
       journalStore?: ApplicationExecutionEventJournalStore;
       engineHostService?: ApplicationEngineHostService;
@@ -62,8 +63,10 @@ export class ApplicationExecutionEventDispatchService {
     return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
   }
 
-  private get availabilityService(): ApplicationAvailabilityService {
-    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
+  private get availabilityService(): Pick<ApplicationAvailabilityService, "isApplicationActive"> {
+    return this.dependencies.availabilityReader
+      ?? this.dependencies.availabilityService
+      ?? getApplicationAvailabilityService();
   }
 
   private get platformStateStore(): ApplicationPlatformStateStore {
@@ -239,6 +242,14 @@ export class ApplicationExecutionEventDispatchService {
     }, Math.max(0, delayMs));
     timeoutHandle.unref?.();
     this.retryTimerByApplicationId.set(applicationId, timeoutHandle);
+  }
+
+  stop(): void {
+    for (const timeoutHandle of this.retryTimerByApplicationId.values()) {
+      clearTimeout(timeoutHandle);
+    }
+    this.retryTimerByApplicationId.clear();
+    this.runningApplications.clear();
   }
 }
 

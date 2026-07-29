@@ -1,5 +1,5 @@
 import { Arg, Field, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
-import { ApplicationBundleService } from "../../../application-bundles/services/application-bundle-service.js";
+import { getStudioApplicationBundleService } from "../studio-application-api-authorities.js";
 
 export enum ApplicationExecutionResourceKindGraph {
   AGENT = "AGENT",
@@ -66,7 +66,9 @@ export class Application {
 
 @Resolver()
 export class ApplicationResolver {
-  private readonly service = ApplicationBundleService.getInstance();
+  private get service() {
+    return getStudioApplicationBundleService();
+  }
 
   @Query(() => [Application])
   async listApplications(): Promise<Application[]> {

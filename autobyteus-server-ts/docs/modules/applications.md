@@ -135,7 +135,7 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`
 - `../../../autobyteus-application-backend-sdk/README.md`

@@ -22,7 +22,7 @@ export class ApplicationOrchestrationStartupGate {
   private startupCompleted = false;
   private startupFailure: Error | null = null;
 
-  private constructor() {
+  constructor() {
     this.readyPromise = new Promise<void>((resolve, reject) => {
       this.resolveReady = resolve;
       this.rejectReady = reject;

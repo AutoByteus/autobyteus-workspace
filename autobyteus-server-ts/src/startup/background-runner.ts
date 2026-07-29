@@ -14,9 +14,6 @@ type TaskSpec = {
 
 const taskSpecs: TaskSpec[] = [
   { name: "Cache Pre-loading", modulePath: "./cache-preloader.js", exportName: "runCachePreloading" },
-  { name: "Agent Customizations", modulePath: "./agent-customization-loader.js", exportName: "loadAgentCustomizations" },
-  { name: "Workspaces", modulePath: "./workspace-loader.js", exportName: "loadWorkspaces" },
-  { name: "Agent Tools", modulePath: "./agent-tool-loader.js", exportName: "loadAllAgentTools" },
   { name: "MCP Tool Registration", modulePath: "./mcp-loader.js", exportName: "runMcpToolRegistration" },
   { name: "Memory Sync Worker", modulePath: "./memory-sync-worker-loader.js", exportName: "loadMemorySyncWorker" },
 ];
@@ -70,8 +67,8 @@ async function runAllBackgroundTasks(): Promise<void> {
   }
 }
 
-export async function scheduleBackgroundTasks(): Promise<void> {
-  logger.info("Scheduling non-critical startup tasks to run in the background...");
+export async function scheduleStudioBackgroundTasks(): Promise<void> {
+  logger.info("Scheduling Studio-only non-critical startup tasks...");
   void runAllBackgroundTasks().catch((error) => {
     logger.error(`Failed to run background tasks: ${String(error)}`);
   });

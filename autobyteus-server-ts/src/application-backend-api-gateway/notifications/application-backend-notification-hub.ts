@@ -61,6 +61,20 @@ export class ApplicationBackendNotificationHub {
       }
     }
   }
+
+  closeAll(): void {
+    for (const listeners of this.listenersByApplicationId.values()) {
+      for (const connection of listeners.values()) {
+        try {
+          connection.close(1001);
+        } catch {
+          // Connection cleanup is isolated.
+        }
+      }
+    }
+    this.listenersByApplicationId.clear();
+    this.applicationIdByConnectionId.clear();
+  }
 }
 
 let cachedApplicationBackendNotificationHub: ApplicationBackendNotificationHub | null = null;

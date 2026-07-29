@@ -1,0 +1,1 @@
+{"version":3,"file":"application-bootstrap-provider.js","sourceRoot":"","sources":["../../src/application-startup/application-bootstrap-provider.ts"],"names":[],"mappings":"AA+BA,MAAM,CAAC,MAAM,+BAA+B,GAAG,GAA6B,EAAE;IAC5E,MAAM,aAAa,GAAI,UAAkC,CAAC,MAAM,CAAC;IACjE,IAAI,CAAC,aAAa,EAAE,CAAC;QACnB,MAAM,IAAI,KAAK,CAAC,uDAAuD,CAAC,CAAC;IAC3E,CAAC;IACD,OAAO,aAAoD,CAAC;AAC9D,CAAC,CAAC"}

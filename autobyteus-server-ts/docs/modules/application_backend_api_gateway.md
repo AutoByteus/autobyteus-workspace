@@ -88,6 +88,6 @@ This escape hatch is not used to implement `applicationClient.agentCommunication
 - [`application_storage.md`](./application_storage.md)
 - [`application_communication_model.md`](./application_communication_model.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`

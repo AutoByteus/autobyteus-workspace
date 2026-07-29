@@ -27,7 +27,7 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `utils/application/applicationLaunchProfile.ts`
 - `utils/application/applicationSetupGate.ts`
 - `utils/teamLaunchReadinessCore.ts`
-- `docs/application-bundle-iframe-contract-v4.md`
+- `docs/application-bundle-iframe-contract.md`
 - `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
 
 ## Runtime Availability And Gating
@@ -165,7 +165,7 @@ It owns:
 
 `ApplicationIframeHost.vue` is an internal bridge only. It renders the iframe, validates the raw ready message against the current iframe window/origin/application/iframe launch identity, and posts the supplied bootstrap envelope back to the iframe.
 
-Inside the bundle, `startHostedApplication(...)` from `@autobyteus/application-frontend-sdk` becomes the authoritative bundle-local startup owner. It owns:
+Inside the bundle, `startApplication(...)` from `@autobyteus/application-frontend-sdk` becomes the authoritative bundle-local startup owner. It owns:
 
 - launch-hint parsing
 - unsupported raw-entry behavior
@@ -208,7 +208,7 @@ The public author-facing surface is:
 - `@autobyteus/application-sdk-contracts` for shared manifest, request-context, storage, `agentExecution`, `agentResources`, and `publishedArtifacts` capability types, plus execution-event types
 - `@autobyteus/application-frontend-sdk` for framework-owned startup plus app UI query/command/GraphQL/notification helpers
 - `@autobyteus/application-backend-sdk` for backend definition typing
-- `application-bundle-iframe-contract-v4.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
+- `application-bundle-iframe-contract.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
 
 App UIs use `applicationClient.backend` for backend request/response and optional custom WebSockets, `applicationClient.notifications.subscribe(listener)` for one-way backend notifications, and `applicationClient.agentCommunication.connect(address)` for the separate standard direct connection to a bound agent/team target. Standard agent communication does not traverse the backend API gateway, application engine, or worker. All three capabilities derive their fixed desktop endpoints from the strict v4 bootstrap transport, which exposes no application authentication field.
 
@@ -237,7 +237,7 @@ This separation is the core architectural change: the Applications page launches
 
 ## Related Docs
 
-- `application-bundle-iframe-contract-v4.md`
+- `application-bundle-iframe-contract.md`
 - `agent_management.md`
 - `agent_teams.md`
 - `settings.md`

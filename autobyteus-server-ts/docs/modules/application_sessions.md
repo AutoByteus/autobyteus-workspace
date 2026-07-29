@@ -20,6 +20,6 @@ The current implementation replaced the old session-owned model with application
 - [`application_storage.md`](./application_storage.md)
 - [`applications.md`](./applications.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v4.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract.md`
 
 Keep this file only as a redirect for historical links. Do not treat it as the current architecture description.

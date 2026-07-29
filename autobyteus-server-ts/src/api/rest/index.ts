@@ -15,8 +15,12 @@ import { registerApplicationAvailabilityRoutes } from "./application-availabilit
 import { registerApplicationExecutionResourceRoutes } from "./application-execution-resources.js";
 import { registerRemoteAccessRoutes } from "./remote-access.js";
 import { registerMemorySyncRoutes } from "./memory-sync.js";
+import type { ApplicationPlatformRuntimeGraph } from "../../application-platform/runtime/application-platform-runtime-graph.js";
 
-export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
+export async function registerRestRoutes(
+  app: FastifyInstance,
+  applicationGraph: ApplicationPlatformRuntimeGraph,
+): Promise<void> {
   await registerHealthRoutes(app);
   await registerRemoteAccessRoutes(app);
   await registerMemorySyncRoutes(app);
@@ -29,8 +33,18 @@ export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
   await registerTeamCommunicationRoutes(app);
   await registerTaskDelegationRoutes(app);
   await registerDefaultChannelIngressRoutes(app);
-  await registerApplicationBundleRoutes(app);
-  await registerApplicationBackendRoutes(app);
-  await registerApplicationAvailabilityRoutes(app);
-  await registerApplicationExecutionResourceRoutes(app);
+  await registerApplicationBundleRoutes(app, applicationGraph.bundleService);
+  await registerApplicationBackendRoutes(app, {
+    gateway: applicationGraph.backendGateway,
+    lifecycle: applicationGraph.lifecycle,
+  });
+  await registerApplicationAvailabilityRoutes(app, {
+    gateway: applicationGraph.backendGateway,
+    availabilityService: applicationGraph.availabilityService,
+    lifecycle: applicationGraph.lifecycle,
+  });
+  await registerApplicationExecutionResourceRoutes(
+    app,
+    applicationGraph.orchestrationHostService,
+  );
 }

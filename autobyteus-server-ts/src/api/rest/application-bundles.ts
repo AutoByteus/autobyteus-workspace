@@ -1,11 +1,12 @@
 import fs from "node:fs";
 import type { FastifyInstance } from "fastify";
 import { lookup as lookupMime } from "mime-types";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 
-const service = () => ApplicationBundleService.getInstance();
-
-export async function registerApplicationBundleRoutes(app: FastifyInstance): Promise<void> {
+export async function registerApplicationBundleRoutes(
+  app: FastifyInstance,
+  bundleService: ApplicationBundleService,
+): Promise<void> {
   app.get<{
     Params: { applicationId: string } & Record<string, string>;
   }>("/application-bundles/:applicationId/assets/*", async (request, reply) => {
@@ -17,7 +18,7 @@ export async function registerApplicationBundleRoutes(app: FastifyInstance): Pro
     }
 
     try {
-      const asset = await service().resolveUiAsset(applicationId, relativeAssetPath);
+      const asset = await bundleService.resolveUiAsset(applicationId, relativeAssetPath);
       const mimeType = lookupMime(asset.absolutePath) || "application/octet-stream";
       reply.type(mimeType.toString());
       return reply.send(fs.createReadStream(asset.absolutePath));

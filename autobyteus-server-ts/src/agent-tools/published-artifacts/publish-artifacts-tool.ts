@@ -3,6 +3,7 @@ import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
+import type { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 import {
   APPLICATION_EXECUTION_CONTEXT_KEY,
   type ApplicationExecutionContext,
@@ -12,7 +13,10 @@ import {
   PUBLISH_ARTIFACTS_TOOL_NAME,
   normalizePublishArtifactsToolInput,
 } from "../../services/published-artifacts/published-artifact-tool-contract.js";
-import { getPublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
+import {
+  getPublishedArtifactPublicationService,
+  type PublishedArtifactPublicationService,
+} from "../../services/published-artifacts/published-artifact-publication-service.js";
 
 export type ToolContext = {
   agentId?: string;
@@ -128,7 +132,11 @@ export const buildPublishArtifactsParameterSchema = (): ParameterSchema => {
 
 const argumentSchema = buildPublishArtifactsParameterSchema();
 
-const publishArtifacts = async (context: ToolContext, rawArguments: unknown): Promise<string> => {
+const publishArtifacts = async (
+  publicationService: PublishedArtifactPublicationService,
+  context: ToolContext,
+  rawArguments: unknown,
+): Promise<string> => {
   const runId =
     normalizeOptionalNonEmptyString(context.customData?.member_run_id)
     ?? normalizeOptionalNonEmptyString(context.agentId)
@@ -149,7 +157,7 @@ const publishArtifacts = async (context: ToolContext, rawArguments: unknown): Pr
     publicationRequest.fallbackRuntimeContext = fallbackRuntimeContext;
   }
 
-  const artifacts = await getPublishedArtifactPublicationService().publishManyForRun(publicationRequest);
+  const artifacts = await publicationService.publishManyForRun(publicationRequest);
 
   return JSON.stringify({
     success: true,
@@ -159,6 +167,13 @@ const publishArtifacts = async (context: ToolContext, rawArguments: unknown): Pr
 
 class PublishArtifactsTool extends BaseTool<ToolContext, Record<string, unknown>, string> {
   static CATEGORY = "Applications";
+
+  constructor(
+    private readonly publicationService: PublishedArtifactPublicationService,
+    config?: ToolConfig,
+  ) {
+    super(config);
+  }
 
   static getName(): string {
     return PUBLISH_ARTIFACTS_TOOL_NAME;
@@ -180,28 +195,29 @@ class PublishArtifactsTool extends BaseTool<ToolContext, Record<string, unknown>
     context: ToolContext,
     rawArguments: Record<string, unknown> = {},
   ): Promise<string> {
-    return publishArtifacts(context, rawArguments);
+    return publishArtifacts(this.publicationService, context, rawArguments);
   }
 }
 
 let cachedTool: BaseTool | null = null;
 
-export function registerPublishArtifactsTool(): BaseTool {
-  if (!defaultToolRegistry.getToolDefinition(PUBLISH_ARTIFACTS_TOOL_NAME)) {
-    const definition = new ToolDefinition(
-      PUBLISH_ARTIFACTS_TOOL_NAME,
-      PUBLISH_ARTIFACTS_TOOL_DESCRIPTION,
-      ToolOrigin.LOCAL,
-      PublishArtifactsTool.CATEGORY,
-      () => PublishArtifactsTool.getArgumentSchema(),
-      () => PublishArtifactsTool.getConfigSchema(),
-      { toolClass: PublishArtifactsTool },
-    );
-    defaultToolRegistry.registerTool(definition);
-  }
-
-  if (!cachedTool) {
-    cachedTool = defaultToolRegistry.createTool(PUBLISH_ARTIFACTS_TOOL_NAME) as BaseTool;
-  }
+export function registerPublishArtifactsTool(
+  publicationService: PublishedArtifactPublicationService =
+    getPublishedArtifactPublicationService(),
+): BaseTool {
+  const definition = new ToolDefinition(
+    PUBLISH_ARTIFACTS_TOOL_NAME,
+    PUBLISH_ARTIFACTS_TOOL_DESCRIPTION,
+    ToolOrigin.LOCAL,
+    PublishArtifactsTool.CATEGORY,
+    () => PublishArtifactsTool.getArgumentSchema(),
+    () => PublishArtifactsTool.getConfigSchema(),
+    {
+      customFactory: (config) =>
+        new PublishArtifactsTool(publicationService, config),
+    },
+  );
+  defaultToolRegistry.registerTool(definition);
+  cachedTool = defaultToolRegistry.createTool(PUBLISH_ARTIFACTS_TOOL_NAME) as BaseTool;
   return cachedTool;
 }

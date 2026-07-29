@@ -41,32 +41,64 @@ const loaderSpecs: LoaderSpec[] = [
     modulePath: "../agent-tools/media/register-media-tools.js",
     exportName: "registerMediaTools",
   },
+  {
+    name: "Search Tools",
+    modulePath: "../agent-tools/search/register-search-tool.js",
+    exportName: "registerProvisionedSearchTool",
+  },
 ];
 
-type Loader = () => void;
+type Loader = (dependency?: unknown) => void;
+type LoaderArguments = {
+  publishedArtifactPublicationService?: unknown;
+};
 
-async function loadToolGroup(spec: LoaderSpec): Promise<void> {
-  try {
-    const moduleUrl = new URL(spec.modulePath, import.meta.url).href;
-    const module = await import(moduleUrl);
-    const loader = module[spec.exportName] as Loader | undefined;
-    if (typeof loader !== "function") {
-      logger.warn(`Tool loader '${spec.name}' missing export '${spec.exportName}'. Skipping.`);
-      return;
+export type AgentToolGroupReadinessResult = {
+  name: string;
+  status: "registered";
+};
+
+async function loadToolGroup(
+  spec: LoaderSpec,
+  arguments_: LoaderArguments,
+): Promise<AgentToolGroupReadinessResult> {
+  const moduleUrl = new URL(spec.modulePath, import.meta.url).href;
+  const module = await import(moduleUrl);
+  const loader = module[spec.exportName] as Loader | undefined;
+  if (typeof loader !== "function") {
+    throw new Error(`Tool loader '${spec.name}' is missing export '${spec.exportName}'.`);
+  }
+  loader(
+    spec.name === "Published Artifact Tools"
+      ? arguments_.publishedArtifactPublicationService
+      : undefined,
+  );
+  logger.info(`Loaded required tool group: ${spec.name}`);
+  return { name: spec.name, status: "registered" };
+}
+
+export class AgentToolRegistryReadiness {
+  constructor(private readonly dependencies: LoaderArguments = {}) {}
+
+  async registerRequiredGroups(): Promise<AgentToolGroupReadinessResult[]> {
+    logger.info("Loading seven required agent tool groups...");
+    const outcomes = await Promise.allSettled(
+      loaderSpecs.map((spec) => loadToolGroup(spec, this.dependencies)),
+    );
+    const failures = outcomes.flatMap((outcome, index) =>
+      outcome.status === "rejected"
+        ? [`${loaderSpecs[index]!.name}: ${String(outcome.reason)}`]
+        : []);
+    if (failures.length > 0) {
+      const message = `Required agent tool registration failed: ${failures.join("; ")}`;
+      logger.error(message);
+      throw new Error(message);
     }
-    loader();
-    logger.info(`Loaded tool group: ${spec.name}`);
-  } catch (error) {
-    const err = error as Error & { code?: string };
-    if (err.code === "ERR_MODULE_NOT_FOUND") {
-      logger.warn(`Tool loader '${spec.name}' not available yet. Skipping.`);
-      return;
-    }
-    logger.error(`Failed to load tool group '${spec.name}': ${String(error)}`);
+    return outcomes.map((outcome) =>
+      (outcome as PromiseFulfilledResult<AgentToolGroupReadinessResult>).value);
   }
 }
 
 export async function loadAllAgentTools(): Promise<void> {
-  logger.info("Loading agent tool definitions...");
-  await Promise.all(loaderSpecs.map(loadToolGroup));
+  await new AgentToolRegistryReadiness().registerRequiredGroups();
 }

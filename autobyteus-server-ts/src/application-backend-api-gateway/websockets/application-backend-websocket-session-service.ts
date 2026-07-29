@@ -51,9 +51,16 @@ const toIpcFrame = (data: unknown, isBinary: boolean): ApplicationWebSocketIpcFr
 
 export class ApplicationBackendWebSocketSessionService {
   private readonly sessions = new Map<string, Session>();
+  private readonly unsubscribeEngineListeners: Array<() => void>;
   constructor(private readonly dependencies: { engineHostService?: ApplicationEngineHostService } = {}) {
-    this.engineHostService.onWebSocketAction((event) => this.handleWorkerAction(event.applicationId, event.action));
-    this.engineHostService.onWorkerClose(({ applicationId }) => this.closeApplicationSessions(applicationId));
+    this.unsubscribeEngineListeners = [
+      this.engineHostService.onWebSocketAction(
+        (event) => this.handleWorkerAction(event.applicationId, event.action),
+      ),
+      this.engineHostService.onWorkerClose(
+        ({ applicationId }) => this.closeApplicationSessions(applicationId),
+      ),
+    ];
   }
   private get engineHostService(): ApplicationEngineHostService {
     return this.dependencies.engineHostService ?? getApplicationEngineHostService();
@@ -198,6 +205,15 @@ export class ApplicationBackendWebSocketSessionService {
   private closeApplicationSessions(applicationId: string): void {
     for (const session of this.sessions.values()) {
       if (session.applicationId === applicationId) this.closeNetwork(session, 1012, "Application backend worker stopped");
+    }
+  }
+
+  dispose(): void {
+    for (const session of Array.from(this.sessions.values())) {
+      this.closeNetwork(session, 1001, "Application host is stopping");
+    }
+    for (const unsubscribe of this.unsubscribeEngineListeners.splice(0)) {
+      unsubscribe();
     }
   }
 }
