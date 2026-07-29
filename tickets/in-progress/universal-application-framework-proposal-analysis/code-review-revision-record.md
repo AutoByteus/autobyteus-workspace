@@ -286,3 +286,31 @@ None.
 - Material score or classification changes: no score or routing change; refreshed full score remains `8.1/10` (`81/100`) and the package remains `Fail — Design Impact`. The required remedy is superseded from a normal standalone setup/configuration surface to complete package defaults plus optional host overrides and strict host validation.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: exact schema placement and effective-configuration owner must be specified in the revised solution and architecture-reviewed. API/E2E must prove fresh-root standalone execution from package defaults, Studio override/reset behavior, negative package/host validation, and the independent CR-008 prompt-authority fix.
+
+### CRR-011 — SR-005 implementation re-review finds three bounded package/Studio defects
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `11`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-006`, prior `CR-006`–`CR-008`, new `CR-009`–`CR-011`
+- Relevant solution revision IDs: `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Design Impact` (`CRR-010`, before SR-005/ARCH-REV-005/IR-006)
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: IR-006 resolves the prior architecture findings in source: exact Luna package defaults, one launch-configuration/readiness authority, guarded standalone/business launch, invalid-row preservation/reset, and graph-local prompt construction are present. Complete review and focused probes found three bounded defects within the approved owners: the portable validator rejects accepted token tuning by substring; Studio’s sparse model override resolves blank runtime through global AutoByteus rather than package inheritance; and stale topology details are dropped from the draft/UI while a retained test protects that obsolete behavior.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-005` | Resolved | Remain Resolved | `IR-002`–`IR-005`, `API-REV-001`–`API-REV-004` | IR-006 does not alter the confirmed browser, watch, package refresh, Studio definition, or run-identity ownership paths. |
+| `CR-006` | Open — Design Impact | Resolved in source; API/E2E rerun pending | `SR-005`, `ARCH-REV-005`, `IR-006` | Maintained leaves package exact Codex/Luna defaults; one launch authority resolves package plus optional host override and business consumes only guarded effective configuration. |
+| `CR-007` | Open — Design Impact | Resolved in source; API/E2E rerun pending | `SR-005`, `ARCH-REV-005`, `IR-006` | Exact three-state readiness and standalone pre-listen/business guards replace null-profile success. |
+| `CR-008` | Open — bounded implementation defect | Resolved in source; API/E2E rerun pending | `SR-005`, `ARCH-REV-005`, `IR-006` | One graph-local `MemberTeamContextBuilder` reaches application root/subteam managers, persistent/task registries, new/restored handles, and final prompt composition. |
+
+- New or remaining finding IDs: `CR-009`, `CR-010`, `CR-011`.
+- Material score or classification changes: current full score improves from historical `8.1/10` (`81/100`) to `8.9/10` (`89/100`). The package no longer has Design Impact; the remaining failures are bounded implementation-owned Local Fixes.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: after source fixes and re-review, API/E2E must update durable coverage (including removal of the stale topology-repair assertion), rerun the prior clean standalone failure first, then validate package tuning, sparse Studio model override, invalid resource/topology diagnosis/reset, graph-local prompt semantics, both-host parity/digests, full maintained commands, recovery, and cleanup.
