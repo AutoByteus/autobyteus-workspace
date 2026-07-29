@@ -1,0 +1,62 @@
+Server Docker failure origin analysis
+Captured at: 2026-07-29T07:29:48+02:00
+
+Failure:
+- Server Docker Release run 30425051361 failed in Build and push default multi-arch image.
+- Dockerfile.monorepo line 16 executes COPY patches ./patches, but the release tree has no patches directory.
+
+Repository evidence:
+HEAD patch tree entries:
+
+v1.4.26 patch tree entries:
+patches/repository_prisma@1.0.6.patch
+
+Commits since v1.4.26 affecting patches or server Dockerfile:
+3fdaf0c62 fix: harden secret importer and update repository prisma
+
+Patch deletion summary:
+commit 3fdaf0c629419257f9a7bdf2ac081f9ba78d4680
+Author: normy <normy@macbookpro.speedport.ip>
+Date:   Wed Jul 22 13:45:07 2026 +0200
+
+    fix: harden secret importer and update repository prisma
+
+ delete mode 100644 patches/repository_prisma@1.0.6.patch
+
+Current obsolete references:
+HEAD:autobyteus-server-ts/docker/Dockerfile.monorepo:16:COPY patches ./patches
+HEAD:docker/Dockerfile.allinone:14:COPY patches ./patches
+HEAD:docker/Dockerfile.remote-server:12:COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/review-report.md:24:| 2 | Local Docker packaging fix after API/E2E `VAL-IMG-003` | Docker packaging failure | None | Pass | No | All-in-one `COPY patches ./patches` and workspace package packaging fix accepted; still preserved in Round 4. |
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/api-e2e-round3-docker-allinone-build.log:47:#13 [builder  5/22] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/api-e2e-round3-docker-monorepo-build.log:59:#16 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/api-e2e-round3-docker-remote-server-build.log:68:#17 [builder  5/19] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/api-e2e-round4-docker-allinone-build.log:82:#23 [builder  5/22] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/api-e2e-round4-docker-monorepo-build.log:82:#22 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/api-e2e-round4-docker-remote-server-build.log:49:#13 [builder  5/19] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/api-e2e-round4-final-user-requested-docker-rebuild.log:105:#27 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/docker-allinone-build-api-e2e-r2.log:160:#50 [builder  5/22] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/docker-allinone-build-localfix.log:52:#13 [builder  5/22] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/docker-monorepo-build.log:61:#16 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/docker-remote-server-build.log:62:#16 [builder  5/19] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/implementation-round3-docker-allinone-build.log:72:#19 [builder  5/22] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/implementation-round4-docker-allinone-build.log:78:#21 [builder  5/22] COPY patches ./patches
+HEAD:tickets/done/mobile-safe-container-401/validation-evidence/implementation-round4-final-docker-monorepo-build.log:72:#20 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/118-round12-docker-build-up.log:65:#17 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/151-round13-docker-build-up.log:90:#18 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/152-round13-docker-build-up-clean.log:73:#19 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/207-round16-docker-build-up.log:72:#17 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/255-round17-docker-build-up.log:104:#18 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/281-round18-docker-build-up.log:95:#25 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/300-round19-docker-build-up-isolated-config.log:109:#22 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/31-round2-docker-build-up.log:258:#18 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/324-round20-docker-build-up.log:126:#21 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/338-round21-docker-build-up.log:124:#17 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/34-round3-docker-build-up.log:69:#17 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/61-round7-docker-build-up.log:61:#12 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/69-round8-exact-docker-build-up.log:73:#17 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/84-round10-docker-build-up.log:81:#20 [builder  5/20] COPY patches ./patches
+HEAD:tickets/done/secure-centralized-secret-provisioning/execution-evidence/98-round11-docker-build-up.log:81:#21 [builder  5/20] COPY patches ./patches
+
+Classification: implementation-owned packaging Local Fix.
+Release state: blocked; published tag and completed release work are not undone.

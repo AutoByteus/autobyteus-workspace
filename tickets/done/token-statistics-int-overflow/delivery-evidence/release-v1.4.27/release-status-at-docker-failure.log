@@ -1,0 +1,14 @@
+Release v1.4.27 workflow status snapshot
+Captured at: 2026-07-29T07:29:38+02:00
+Release commit: 2127840eeeb66dc4cce66b51e59fb7c6a5eff112
+Annotated tag object: a89d7828fd05db8abfabbee25bcaa88cce39af18
+Remote personal: 2127840eeeb66dc4cce66b51e59fb7c6a5eff112
+Remote tag object: a89d7828fd05db8abfabbee25bcaa88cce39af18
+Remote peeled tag: 2127840eeeb66dc4cce66b51e59fb7c6a5eff112
+
+Tag-triggered workflow runs:
+{"conclusion":"success","databaseId":30425051390,"event":"push","headBranch":"v1.4.27","headSha":"2127840eeeb66dc4cce66b51e59fb7c6a5eff112","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051390","workflowName":"Release Messaging Gateway"}
+{"conclusion":"success","databaseId":30425051388,"event":"push","headBranch":"v1.4.27","headSha":"2127840eeeb66dc4cce66b51e59fb7c6a5eff112","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051388","workflowName":"Android APK Release"}
+{"conclusion":"","databaseId":30425051368,"event":"push","headBranch":"v1.4.27","headSha":"2127840eeeb66dc4cce66b51e59fb7c6a5eff112","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051368","workflowName":"iOS App Store Connect Release"}
+{"conclusion":"failure","databaseId":30425051361,"event":"push","headBranch":"v1.4.27","headSha":"2127840eeeb66dc4cce66b51e59fb7c6a5eff112","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051361","workflowName":"Server Docker Release"}
+{"conclusion":"","databaseId":30425051350,"event":"push","headBranch":"v1.4.27","headSha":"2127840eeeb66dc4cce66b51e59fb7c6a5eff112","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051350","workflowName":"Desktop Release"}

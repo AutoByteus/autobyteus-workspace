@@ -3,9 +3,9 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `token-statistics-int-overflow`
-- Current delivery scope: completed repository finalization/cleanup plus the later user-requested local-main Electron build.
-- Release/publication/deployment authorization: explicitly declined; the user requested finalization with no release.
-- Current status: `Complete — finalized and locally built without release`.
+- Current delivery scope: completed repository finalization/cleanup, the later local-main Electron build, and the user-authorized `v1.4.27` release.
+- Release/publication/deployment authorization: explicitly authorized by the user on 2026-07-29 after the earlier no-release finalization.
+- Current status: `Blocked — v1.4.27 tag and release commit published, but Server Docker Release failed on an obsolete packaging COPY instruction`.
 
 ## Handoff Summary
 
@@ -51,10 +51,11 @@
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Not required`
-- Release commit: `Not required`
-- Tag: `Not required`
-- Reason: The user explicitly requested no release.
+- Version bump: `Completed` — workspace release version `1.4.27`.
+- Release commit: `2127840eeeb66dc4cce66b51e59fb7c6a5eff112` (`chore(release): bump workspace release version to 1.4.27`).
+- Tag: annotated `v1.4.27`; local/remote tag object `a89d7828fd05db8abfabbee25bcaa88cce39af18`, peeled target `2127840eeeb66dc4cce66b51e59fb7c6a5eff112`.
+- Release command: `pnpm release 1.4.27 -- --release-notes tickets/done/token-statistics-int-overflow/release-notes.md --branch release/token-statistics-int-overflow-v1.4.27 --no-push`, followed by a refreshed `origin/personal`, one push of the release commit to `origin/personal`, and one push of the annotated tag.
+- Tag-push result: `Completed`; five documented tag-triggered workflows started. No manual-dispatch workflow was invoked.
 
 ## Repository Finalization
 
@@ -75,12 +76,16 @@
 
 ## Release / Publication / Deployment
 
-- Applicable: `No — explicitly excluded by the user`
-- Method: `Other`
-- Method reference / command: If later authorized, use the documented root release workflow (`pnpm release <version>`) only after repository finalization and with the archived release notes.
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): `N/A`
+- Applicable: `Yes — explicitly authorized by the user on 2026-07-29`
+- Method: documented root tag-driven release helper and GitHub Actions workflows.
+- Method reference / command: `pnpm release 1.4.27 -- --release-notes tickets/done/token-statistics-int-overflow/release-notes.md --branch release/token-statistics-int-overflow-v1.4.27 --no-push`; release commit and tag then pushed separately after a final tracked-base refresh.
+- Release/publication/deployment result: `Blocked after partial execution`.
+- Release notes handoff result: `Completed`; canonical notes were synchronized into the release commit.
+- Triggered workflows: Desktop `30425051350`; Android `30425051388`; iOS `30425051368`; Messaging Gateway `30425051390`; Server Docker `30425051361`.
+- Confirmed failure: Server Docker run `30425051361` failed during `Build and push default multi-arch image` because `autobyteus-server-ts/docker/Dockerfile.monorepo` executes `COPY patches ./patches` while release tree `v1.4.27` contains no `patches/` directory.
+- Failure origin: commit `3fdaf0c629419257f9a7bdf2ac081f9ba78d4680` removed the last root patch after `v1.4.26`; three Dockerfiles retain obsolete `COPY patches` instructions. This is an implementation-owned packaging `Local Fix`, not a transient runner failure.
+- Blocker: server Docker publication for `1.4.27` is incomplete. Do not rerun the unchanged failed job and do not move/rewrite the published tag. Route the bounded packaging fix through implementation source review and targeted API/E2E packaging validation before selecting a truthful recovery release action.
+- Evidence: `delivery-evidence/release-v1.4.27/release-status-at-docker-failure.log`, `server-docker-failure.log`, and `server-docker-failure-origin.txt`.
 
 ## Post-Finalization Local Personal Refresh And Electron Build
 
@@ -111,15 +116,15 @@
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
-- Classification: `N/A`
-- Recommended recipient: `N/A`
-- Why final handoff could not complete: `N/A`; finalization completed.
+- Classification: `Local Fix — implementation-owned packaging source`
+- Recommended recipient: `implementation_engineer`
+- Why final handoff could not complete: release workflow `30425051361` cannot build the server image because the versioned Dockerfile copies a root `patches/` directory that no longer exists. Repository finalization remains complete; only release completion is blocked.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/release-notes.md`
-- Archived release notes artifact used for release/publication: `No — release explicitly excluded`
-- Release notes status: `Not required`; the prepared ticket-local notes remain archived but were not used.
+- Archived release notes artifact used for release/publication: `Yes`
+- Release notes status: `Used for v1.4.27`; synchronized by the release helper and retained as the canonical ticket notes.
 
 ## Deployment Steps
 
@@ -154,9 +159,9 @@
 ## Rollback Criteria
 
 - After repository finalization: revert merge commit `169fd12f4` if needed; do not modify correct ledger data.
-- Publication rollback: `N/A`; no release/publication/deployment is authorized or planned.
+- Publication rollback: do not rewrite or delete the published `v1.4.27` tag while other tag-triggered workflows may have produced artifacts. Preserve the failed Docker evidence; after the packaging fix is reviewed and validated, choose a documented recovery release action.
 - Escalate values above `Number.MAX_SAFE_INTEGER` as a new design/requirements task rather than weakening the current exact-number contract.
 
 ## Final Status
 
-`Complete — ticket finalized, latest local personal confirmed, unsigned macOS ARM64 Electron package built and validated, and no release performed.`
+`Blocked — repository finalization remains complete and v1.4.27 was initiated, but the server Docker publication failed on an implementation-owned packaging defect. Release completion awaits the bounded fix, review, targeted validation, and a truthful recovery release decision.`
