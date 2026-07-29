@@ -7,6 +7,7 @@
 | `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-001` | `N/A` | `Fail — Local Fix` | `CR-001`, `CR-002` |
 | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-002` | `Fail — Local Fix` | `Pass` | `CR-001`, `CR-002` |
 | `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-003`, `APIE2E-F001` |
+| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-003` | `Fail — Local Fix` | `Pass` | `CR-003`, `APIE2E-F001` |
 
 ## Revision Entries
 
@@ -84,3 +85,30 @@ None.
 - Material score or classification changes: the prior full source score is historical and was not recomputed; current result changes from `Pass` to `Fail — Local Fix` because API/E2E readiness and runtime fidelity are disproven on AC-011.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: the unexecuted remainder of the API/E2E live matrix, Studio remount, complete maintained-app command coverage, dual-host parity/digests, and proportional review of durable test changes remain pending after the fix and rerun.
+
+### CRR-004 — Studio existing-package refresh source fix passes re-review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `4`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-003`, `APIE2E-007`, `APIE2E-F001`
+- Relevant solution revision IDs: `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Local Fix` (`CRR-003`)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: IR-003 now looks up the resolved root before registration, imports only an absent package, refreshes an existing package through a narrow GraphQL mutation delegating to the established registry reload owner, resolves current identity after refresh, and then uses the existing backend reload. Source/type/service/ordering evidence confirms the duplicate-import path is removed without weakening unique-root enforcement.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `API-REV-001` | IR-003 does not alter standalone browser or restart ownership; prior real controlled-browser evidence remains valid. |
+| `CR-002` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `IR-003` | Dynamic project-state/watch resolution remains intact and feeds the corrected package decision. |
+| `CR-003` | Open | Resolved | `IR-003`, `CRR-003`, `CRR-004`, `API-REV-001` | Root-first lookup, import-on-absence, reload-on-presence, catalog refresh, current renamed identity, and backend reload ordering verified; 13/13 registry service tests pass. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: current full implementation score is `9.2/10` (`92/100`); result changes from `Fail — Local Fix` to `Pass`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must extend its preserved devkit mock for the new reload mutation and rerun the full live/coverage matrix; no proportional test-code review or delivery routing applies before that Pass.
