@@ -1,0 +1,46 @@
+{
+  "index": 0,
+  "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
+  "body": {
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "probe responseFormat"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ]
+    }
+  }
+}
+{
+  "index": 1,
+  "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
+  "body": {
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "probe imageConfig"
+          }
+        ],
+        "role": "user"
+      }
+    ],
+    "generationConfig": {
+      "responseModalities": [
+        "IMAGE"
+      ],
+      "imageConfig": {
+        "aspectRatio": "1:4",
+        "imageSize": "2K"
+      }
+    }
+  }
+}

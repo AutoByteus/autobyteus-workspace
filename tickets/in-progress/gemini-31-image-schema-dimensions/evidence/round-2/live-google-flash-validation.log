@@ -1,0 +1,86 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts/.env
+[dotenv@17.3.1] injecting env (0) from autobyteus-server-ts/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:18080
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:18080
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts/memory
+============================================================
+AppConfig initialization completed successfully
+prisma:info Starting a sqlite pool with 21 connections.
+prisma:info Starting a sqlite pool with 21 connections.
+{
+  "model": "gemini-3.1-flash-image",
+  "runtime": "Vertex Express (database-backed)",
+  "requested": {
+    "generate": {
+      "aspect_ratio": "1:4",
+      "image_size": "512"
+    },
+    "edit": {
+      "aspect_ratio": "4:1",
+      "image_size": "512"
+    }
+  },
+  "startedAt": "2026-07-29T07:28:01.425Z",
+  "generation": {
+    "elapsedMs": 8265,
+    "imageCount": 1,
+    "image": {
+      "mimeType": "image/png",
+      "bytes": 294296,
+      "dimensions": {
+        "width": 256,
+        "height": 1024,
+        "format": "png"
+      },
+      "file": "live-flash-generated-1x4-512.png"
+    }
+  },
+  "edit": {
+    "elapsedMs": 8039,
+    "imageCount": 1,
+    "image": {
+      "mimeType": "image/png",
+      "bytes": 315843,
+      "dimensions": {
+        "width": 1024,
+        "height": 256,
+        "format": "png"
+      },
+      "file": "live-flash-edited-4x1-512.png"
+    }
+  },
+  "result": "Pass",
+  "elapsedMs": 16337
+}

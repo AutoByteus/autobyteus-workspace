@@ -1,0 +1,10 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-ts
+
+ ✓ tests/unit/multimedia/image/api/gemini-image-client.test.ts (6 tests) 21ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  09:26:50
+   Duration  1.64s (transform 532ms, setup 43ms, import 1.39s, tests 21ms, environment 0ms)
+

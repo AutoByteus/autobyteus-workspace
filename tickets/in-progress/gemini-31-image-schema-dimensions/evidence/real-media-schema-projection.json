@@ -1,0 +1,186 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-server-ts
+AppConfig instance created.
+[
+  {
+    "toolName": "generate_image",
+    "model": "gemini-3.1-flash-image",
+    "parameters": [
+      "prompt",
+      "input_images",
+      "output_file_path",
+      "generation_config"
+    ],
+    "generationConfig": {
+      "type": "object",
+      "properties": {
+        "aspect_ratio": {
+          "description": "The aspect ratio of the generated image.",
+          "type": "string",
+          "enum": [
+            "1:1",
+            "1:4",
+            "1:8",
+            "2:3",
+            "3:2",
+            "3:4",
+            "4:1",
+            "4:3",
+            "4:5",
+            "5:4",
+            "8:1",
+            "9:16",
+            "16:9",
+            "21:9"
+          ]
+        },
+        "image_size": {
+          "description": "The output size of the generated image.",
+          "type": "string",
+          "enum": [
+            "512",
+            "1K",
+            "2K",
+            "4K"
+          ]
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "toolName": "edit_image",
+    "model": "gemini-3.1-flash-image",
+    "parameters": [
+      "prompt",
+      "input_images",
+      "output_file_path",
+      "mask_image",
+      "generation_config"
+    ],
+    "generationConfig": {
+      "type": "object",
+      "properties": {
+        "aspect_ratio": {
+          "description": "The aspect ratio of the generated image.",
+          "type": "string",
+          "enum": [
+            "1:1",
+            "1:4",
+            "1:8",
+            "2:3",
+            "3:2",
+            "3:4",
+            "4:1",
+            "4:3",
+            "4:5",
+            "5:4",
+            "8:1",
+            "9:16",
+            "16:9",
+            "21:9"
+          ]
+        },
+        "image_size": {
+          "description": "The output size of the generated image.",
+          "type": "string",
+          "enum": [
+            "512",
+            "1K",
+            "2K",
+            "4K"
+          ]
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "toolName": "generate_image",
+    "model": "gemini-3.1-flash-lite-image",
+    "parameters": [
+      "prompt",
+      "input_images",
+      "output_file_path",
+      "generation_config"
+    ],
+    "generationConfig": {
+      "type": "object",
+      "properties": {
+        "aspect_ratio": {
+          "description": "The aspect ratio of the generated image.",
+          "type": "string",
+          "enum": [
+            "1:1",
+            "1:4",
+            "1:8",
+            "2:3",
+            "3:2",
+            "3:4",
+            "4:1",
+            "4:3",
+            "4:5",
+            "5:4",
+            "8:1",
+            "9:16",
+            "16:9",
+            "21:9"
+          ]
+        },
+        "image_size": {
+          "description": "The output size of the generated image.",
+          "type": "string",
+          "enum": [
+            "1K"
+          ]
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "toolName": "edit_image",
+    "model": "gemini-3.1-flash-lite-image",
+    "parameters": [
+      "prompt",
+      "input_images",
+      "output_file_path",
+      "mask_image",
+      "generation_config"
+    ],
+    "generationConfig": {
+      "type": "object",
+      "properties": {
+        "aspect_ratio": {
+          "description": "The aspect ratio of the generated image.",
+          "type": "string",
+          "enum": [
+            "1:1",
+            "1:4",
+            "1:8",
+            "2:3",
+            "3:2",
+            "3:4",
+            "4:1",
+            "4:3",
+            "4:5",
+            "5:4",
+            "8:1",
+            "9:16",
+            "16:9",
+            "21:9"
+          ]
+        },
+        "image_size": {
+          "description": "The output size of the generated image.",
+          "type": "string",
+          "enum": [
+            "1K"
+          ]
+        }
+      },
+      "required": []
+    }
+  }
+]

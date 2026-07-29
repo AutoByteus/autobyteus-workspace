@@ -1,0 +1,45 @@
+{
+  "model": "gemini-3.1-flash-lite-image",
+  "runtime": "Vertex Express (database-backed)",
+  "requested": {
+    "generate": {
+      "aspect_ratio": "1:4",
+      "image_size": "1K"
+    },
+    "edit": {
+      "aspect_ratio": "4:1",
+      "image_size": "1K"
+    }
+  },
+  "startedAt": "2026-07-29T07:28:52.246Z",
+  "generation": {
+    "elapsedMs": 3015,
+    "imageCount": 1,
+    "image": {
+      "mimeType": "image/jpeg",
+      "bytes": 49730,
+      "dimensions": {
+        "width": 512,
+        "height": 2064,
+        "format": "jpeg"
+      },
+      "file": "live-lite-generated-1x4-1K.jpg"
+    }
+  },
+  "edit": {
+    "elapsedMs": 3792,
+    "imageCount": 1,
+    "image": {
+      "mimeType": "image/jpeg",
+      "bytes": 36212,
+      "dimensions": {
+        "width": 2064,
+        "height": 512,
+        "format": "jpeg"
+      },
+      "file": "live-lite-edited-4x1-1K.jpg"
+    }
+  },
+  "result": "Pass",
+  "elapsedMs": 6831
+}
