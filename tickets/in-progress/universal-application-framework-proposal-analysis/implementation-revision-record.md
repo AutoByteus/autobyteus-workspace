@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | Code reviewer; `code-review-report.md`; `CRR-001` | `CR-001`, `CR-002` | `Local Fix` | `SR-003`, `ARCH-REV-003`, `CRR-001`; `API-REV/DR: N/A` | `Ready for source re-review` |
 | IR-003 | Code reviewer; `code-review-report.md`; `CRR-003` / `API-REV-001` | `CR-003`, `APIE2E-F001` | `Local Fix` | `SR-003`, `ARCH-REV-003`, `CRR-003`, `API-REV-001`; `DR: N/A` | `Ready for source re-review` |
 | IR-004 | Code reviewer; `code-review-report.md`; `CRR-005` / `API-REV-002` | `CR-004`, `APIE2E-STUDIO-001`, `APIE2E-F002` | `Local Fix` | `SR-003`, `ARCH-REV-003`, `CRR-005`, `API-REV-002`; `DR: N/A` | `Ready for source re-review` |
+| IR-005 | Code reviewer; `code-review-report.md`; `CRR-007` / `API-REV-003` | `CR-005`, `APIE2E-BRIEF-002`, `APIE2E-F003` | `Local Fix` | `SR-003`, `ARCH-REV-003`, `CRR-007`, `API-REV-003`; `DR: N/A` | `Ready for source re-review` |
 
 ## Revision Entries
 
@@ -92,3 +93,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: source commit `b14dee08fecf42beb8cb5eb78cccea3f149215ee`; server TypeScript no-emit check passed; singleton guard found no agent/team definition singleton lookup in the two resolvers; a disposable authority probe confirmed exact service identity, coherent agent/team list reads, agent refresh, and agent-before-team refresh ordering. Owned-source diff/commit and file-size guards passed. The existing three-test refresh-boundary file is 1/3 until API/E2E replaces its two singleton spies with configured-authority coverage; schema exposure remains passing.
 - Next recipient or routing: `code_reviewer` for implementation-source and structural re-review; after Pass, return to `api_e2e_engineer` to adjust durable boundary coverage and rerun `APIE2E-STUDIO-001` first.
 - Remaining limitations or risks: no implementation-stage Studio live stack was started for this bounded fix. API/E2E must prove the exact bundled team is present through GraphQL, the setup gate enables entry, the iframe mounts/remounts, and the real in-Studio Brief team journey proceeds before resuming parity/digest and remaining command coverage.
+
+### IR-005 — Keep application run identity allocation graph-local
+
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-007`, triggered by API/E2E round `API-REV-003`.
+- Triggering finding IDs: `CR-005`, `APIE2E-BRIEF-002`, `APIE2E-F003`
+- Classification: `Local Fix`
+- Prior authoritative result: `Ready for source re-review` (`IR-004`); source review passed in `CRR-006`, then `API-REV-003` confirmed `CR-004` resolved but produced `Fail / 88%` when the real Brief team member allocator could not load the package-owned `researcher`; `CRR-007` classified that failure `Fail — Local Fix`.
+- Current authoritative result: `Ready for source re-review`
+- Related solution revision IDs: `SR-003`
+- Related architecture-review revision IDs: `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-007` (`CRR-006` is the superseded source-pass entry)
+- Related API/E2E revision IDs: `API-REV-003`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: the supported real Brief `Generate draft` path reached `TeamRunService`, but its default `AgentRunIdentityAllocator` selected process-global definition and collision authorities instead of the exact application graph. Allocation failed before provider invocation, binding/run creation, or artifact publication.
+- Approved behavior or requirement IDs affected: `BEH-004`, `BEH-006`; `UC-009`; `AC-005`, `AC-006`; `DS-003`, `DS-004`.
+- Implementation delta: `createApplicationRunAuthorities()` now constructs one application-graph `AgentRunIdentityAllocator` with the exact graph-local `AgentDefinitionService`, `AgentRunManager`, `AgentRunMetadataService`, `TeamRunMetadataService`, and memory root. It injects that allocator into `TeamRunService` and `AgentRunService`, so application agent and team-member identities share one reservation/uniqueness authority and neither application launch path falls back to process-global collaborators. The same graph-local agent metadata service now also feeds the agent run service and published-artifact projection. No bundled-ID special case, catalog merge, compatibility branch, or weakened collision check was added.
+- Changed files or areas: `autobyteus-server-ts/src/application-platform/runtime/create-application-run-authorities.ts`; canonical `implementation-handoff.md` and this revision record. API/E2E-owned uncommitted durable tests, reports, and evidence were preserved exactly and are not part of the implementation source commit.
+- Local validation and result: source commit `feb5e7a3efc284fd4eeef75dc42875a2b621eee6`; server build-config TypeScript no-emit passed; existing allocator, launch-assignment, and team-run-service unit selection passed 3 files / 16 tests; and a disposable direct non-fake allocator probe passed 1/1. The probe verified the exact definition service, active-run manager, agent/team metadata collision services, shared agent/team allocator identity, shared agent metadata projection authority, and successful package-owned `Researcher` ID allocation. The disposable probe was removed after execution; diff and 101-effective-line source-size guards passed.
+- Next recipient or routing: `code_reviewer` for implementation-source and structural re-review; after Pass, return to `api_e2e_engineer` to add the direct non-fake allocator regression and rerun `APIE2E-BRIEF-002` first.
+- Remaining limitations or risks: no implementation-stage Studio/live provider environment was started for this bounded backend wiring fix. API/E2E must prove binding/run creation, provider invocation, successful Brief artifact publication, then complete both-host parity/digests and the remaining maintained-application command matrix.
