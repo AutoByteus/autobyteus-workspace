@@ -17,6 +17,7 @@
 | `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-006` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011` |
 | `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-007` | `Fail — Local Fix` | `Fail — Design Impact` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
 | `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-008` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
+| `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-009` | `Fail — Local Fix` | `Pass` | `CR-009` |
 
 ## Revision Entries
 
@@ -374,3 +375,31 @@ None.
 - Material score or classification changes: score rises from `8.8/10` (`88/100`) to `9.3/10` (`93/100`). The prior Design Impact is resolved; the current result is `Fail — Local Fix` because API/E2E readiness and runtime fidelity remain below 9.0 on one explicit package-portability contract.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: after CR-009 correction and source re-review, API/E2E must add durable recursive policy and selected-resource coverage, rerun clean standalone first, then complete real Studio/standalone Luna provider/artifact parity, commands, digests, recovery, and cleanup.
+
+
+### CRR-014 — IR-009 closes the portable host-alias gap
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `14`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-009`; `CR-009`
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-009`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Local Fix` (`CRR-013`, `93/100`)
+- Current authoritative result: `Pass` (`CRR-014`, `94/100`)
+- What changed in the review result and why: IR-009 extends the existing recursive policy—without another policy, exception, fallback, or schema path—to reject URL/URI, connection-string/DSN, qualified endpoint-address, access/account/client/subscription-key, and authentication aliases. Independent direct and copied real-package probes reject the CRR-013 aliases at exact paths without values and preserve approved token counts, pricing tiers, and harmless nested response-format data.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-008` | Resolved in source / applicable rerun pending | Remain Resolved | `IR-002`–`IR-006`, `API-REV-001`–`API-REV-004` | IR-009 changes only package field classification. |
+| `CR-009` | Open — Local Fix | Resolved in source; API/E2E durable coverage/rerun pending | `IR-009`, `CRR-013`, `CRR-014` | Reviewer direct probe rejected eight alias families with exact no-value diagnostics. Copied real AutoByteus Brief packages accepted the positive token/pricing case and rejected `server_url`, `api_url`, `connection_string`, and `access_key`. Server TypeScript no-emit and diff checks passed. |
+| `CR-010`, `CR-011`, `CR-012` | Resolved in source; API/E2E rerun pending | Remain Resolved | `IR-007`, `IR-008`, `SR-006`, `ARCH-REV-006` | The one-file IR-009 delta does not alter selected-resource, sparse inheritance, stale-row, or preview/PUT paths. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: score rises from `9.3/10` (`93/100`) to `9.4/10` (`94/100`); result changes from `Fail — Local Fix` to `Pass`, with every scorecard category >=9.0.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must reconcile/add durable policy and selected-resource tests, rerun the clean standalone failure first, then complete real Studio/standalone Luna provider/artifact parity, commands, digests, recovery, graph isolation, and cleanup.
