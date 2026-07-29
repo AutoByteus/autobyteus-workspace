@@ -4,6 +4,7 @@ import type { AgentTeamDefinitionService } from "../../agent-team-definition/ser
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import { AutoByteusAgentRunBackendFactory } from "../../agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
@@ -46,7 +47,6 @@ export const createApplicationRunAuthorities = (input: {
     runFileChangeService,
     memoryRecorder: new AgentRunMemoryRecorder(),
   });
-  const agentRunService = new AgentRunService(memoryDir, { agentRunManager });
   const agentTeamRunManager = new AgentTeamRunManager({
     mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
       createTeamManager: (context, subTeamRunFactory) =>
@@ -58,11 +58,25 @@ export const createApplicationRunAuthorities = (input: {
     teamCommunicationService: new TeamCommunicationService({ memoryDir }),
     runFileChangeService,
   });
+  const agentRunMetadataService = new AgentRunMetadataService(memoryDir);
   const teamRunMetadataService = new TeamRunMetadataService(memoryDir);
+  const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
+    agentDefinitionService: input.agentDefinitionService,
+    agentRunManager,
+    agentRunMetadataService,
+    teamRunMetadataService,
+    memoryDir,
+  });
+  const agentRunService = new AgentRunService(memoryDir, {
+    agentRunManager,
+    metadataService: agentRunMetadataService,
+    agentRunIdentityAllocator,
+  });
   const teamRunService = new TeamRunService({
     agentTeamRunManager,
     teamDefinitionService: input.agentTeamDefinitionService,
     teamRunMetadataService,
+    agentRunIdentityAllocator,
     teamRunHistoryCatalogService: new TeamRunHistoryCatalogService(memoryDir, {
       teamRunManager: agentTeamRunManager,
     }),
@@ -75,7 +89,7 @@ export const createApplicationRunAuthorities = (input: {
   });
   const publishedArtifactProjectionService = new PublishedArtifactProjectionService({
     agentRunManager,
-    metadataService: new AgentRunMetadataService(memoryDir),
+    metadataService: agentRunMetadataService,
   });
   return {
     agentRunService,
