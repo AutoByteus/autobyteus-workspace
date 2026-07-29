@@ -1,0 +1,20 @@
+Resolve Release Metadata	Resolve publish metadata	2026-07-29T06:22:33.9610025Z   INPUT_RELEASE_REF: cc79c46dc5fac8879f45e376b2c44129eaa09568
+Resolve Release Metadata	Summarize publish plan	2026-07-29T06:22:33.9878265Z   echo "Release tag: \`v1.4.27\`"
+Resolve Release Metadata	Summarize publish plan	2026-07-29T06:22:33.9878871Z   echo "Release ref: \`cc79c46dc5fac8879f45e376b2c44129eaa09568\`"
+Resolve Release Metadata	Summarize publish plan	2026-07-29T06:22:33.9881345Z   echo "Published tags:"
+Resolve Release Metadata	Summarize publish plan	2026-07-29T06:22:33.9881826Z   echo "autobyteus/autobyteus-server:1.4.27
+Resolve Release Metadata	Summarize publish plan	2026-07-29T06:22:33.9882486Z autobyteus/autobyteus-server:latest" | sed 's/^/- `/' | sed 's/$/`/'
+Build And Push Server Image	Checkout workspace	2026-07-29T06:22:40.7914949Z   ref: cc79c46dc5fac8879f45e376b2c44129eaa09568
+Build And Push Server Image	Checkout workspace	2026-07-29T06:22:49.7109191Z [command]/usr/bin/git rev-parse --verify --quiet cc79c46dc5fac8879f45e376b2c44129eaa09568^{object}
+Build And Push Server Image	Checkout workspace	2026-07-29T06:22:49.7142438Z cc79c46dc5fac8879f45e376b2c44129eaa09568
+Build And Push Server Image	Checkout workspace	2026-07-29T06:22:49.7274991Z [command]/usr/bin/git checkout --progress --force cc79c46dc5fac8879f45e376b2c44129eaa09568
+Build And Push Server Image	Checkout workspace	2026-07-29T06:22:52.0465502Z Note: switching to 'cc79c46dc5fac8879f45e376b2c44129eaa09568'.
+Build And Push Server Image	Checkout workspace	2026-07-29T06:22:52.0472787Z HEAD is now at cc79c46dc fix(docker): remove obsolete root patch copy
+Build And Push Server Image	Checkout workspace	2026-07-29T06:22:52.0654042Z cc79c46dc5fac8879f45e376b2c44129eaa09568
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T06:43:14.2960645Z #98 exporting manifest list sha256:29665911776efa9a53b6a1de3334dba7593ea05e5bd67ea1abd72a1b7ddcd620 done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T06:47:19.4435277Z               "vcs:revision": "cc79c46dc5fac8879f45e376b2c44129eaa09568",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T06:47:19.4439594Z             "release_ref": "cc79c46dc5fac8879f45e376b2c44129eaa09568",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T06:47:19.4538012Z               "vcs:revision": "cc79c46dc5fac8879f45e376b2c44129eaa09568",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T06:47:19.4542969Z             "release_ref": "cc79c46dc5fac8879f45e376b2c44129eaa09568",
+Build And Push Server Image	Publish summary	2026-07-29T06:47:19.4734945Z   echo "Release tag: \`v1.4.27\`"
+Build And Push Server Image	Publish summary	2026-07-29T06:47:19.4736053Z   echo "Published tags:"

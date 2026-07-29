@@ -1,0 +1,13 @@
+Server Docker v1.4.27 recovery dispatch
+Started at: 2026-07-29T08:22:20+02:00
+Published tag remains object: a89d7828fd05db8abfabbee25bcaa88cce39af18
+Published tag remains peeled target: 2127840eeeb66dc4cce66b51e59fb7c6a5eff112
+Reviewed packaging-fix source: cc79c46dc5fac8879f45e376b2c44129eaa09568
+Latest-base integrated branch source: e4b04314658414ff0f5d97fbf360f1e5e946ca36
+Recovery choice: documented existing-tag manual recovery for Server Docker only, using exact reviewed fix SHA.
+Reason: preserves the published tag and already-successful v1.4.27 artifacts while rebuilding only the failed server image from v1.4.27 plus the bounded packaging correction.
+origin/personal before recovery push: ca97fa2f537f5bf31c4adbddc3d094c5bd7c7e96
+origin/personal after recovery push: e4b04314658414ff0f5d97fbf360f1e5e946ca36
+Dispatch command: gh workflow run release-server-docker.yml --ref personal -f release_tag=v1.4.27 -f release_ref=cc79c46dc5fac8879f45e376b2c44129eaa09568
+Dispatched at: 2026-07-29T08:22:29+02:00
+[{"conclusion":"","createdAt":"2026-07-29T06:22:29Z","databaseId":30427959310,"displayTitle":"Server Docker Release","headBranch":"personal","headSha":"e4b04314658414ff0f5d97fbf360f1e5e946ca36","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30427959310"},{"conclusion":"success","createdAt":"2026-07-15T17:07:15Z","databaseId":29435205011,"displayTitle":"Server Docker Release","headBranch":"personal","headSha":"fbd7b6764bd43751956d69ffe22b943d06188444","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29435205011"},{"conclusion":"success","createdAt":"2026-07-10T13:16:11Z","databaseId":29095437779,"displayTitle":"Server Docker Release","headBranch":"personal","headSha":"3effb76ab56d4d1bb876ad0623a8e5eb7093a584","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/29095437779"},{"conclusion":"success","createdAt":"2026-07-09T05:36:26Z","databaseId":28996621634,"displayTitle":"Server Docker Release","headBranch":"personal","headSha":"4f3ddc4d5dcaa4cf98195143a8abe04906259124","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/28996621634"},{"conclusion":"success","createdAt":"2026-06-01T16:58:21Z","databaseId":26769349316,"displayTitle":"Server Docker Release","headBranch":"personal","headSha":"cc9e2855ec3415d9f338552a892133d8181f206d","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26769349316"}]

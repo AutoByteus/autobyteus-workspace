@@ -8,6 +8,7 @@
 | DR-002 | User completion/verification and authorization to finalize without release | Ready for explicit user verification | Complete — finalized without release | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/finalization-preflight.txt`, `delivery-evidence/finalization-result.txt`, `delivery-evidence/finalization-package-validation.txt` |
 | DR-003 | User requested latest local personal plus Electron build | Complete — finalized without release | Complete — local Electron build passed, still no release | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/local-main-electron-build/` |
 | DR-004 | User authorized a new release; `v1.4.27` tag-triggered Server Docker workflow failed | Complete — local Electron build passed, still no release | Blocked — implementation-owned Docker packaging fix required | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/release-v1.4.27/` |
+| DR-005 | Reviewed/API-validated packaging repair returned and existing-tag Server Docker recovery completed | Blocked — implementation-owned Docker packaging fix required | Complete — v1.4.27 fully published across all release surfaces | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/release-v1.4.27/` |
 
 ## Revision Entries
 
@@ -71,3 +72,19 @@
 - Why this delivery revision was recorded: preserve the irreversible published-tag boundary and exact failure origin rather than treating a partial multi-workflow release as complete or retrying unchanged source.
 - Next recipient/action: `implementation_engineer` investigates/removes the obsolete Docker packaging assumption, performs implementation-scoped checks, and routes the fix through source review and targeted API/E2E packaging execution before delivery recovery.
 - Remaining blockers, rollback concerns, or untested scope: do not rewrite/delete `v1.4.27`; do not rerun the unchanged Docker job. Other workflow results and published artifacts require final verification after the packaging repair path returns to delivery.
+
+
+### DR-005 — v1.4.27 release recovery complete
+
+- Delivery round and trigger: Round 5, triggered by `code_reviewer` returning the DR-004 packaging package after source review, API/E2E Pass, and separate proportional durable-test review Pass.
+- Triggering upstream report, verification, or evidence: `IR-002`; `CRR-004` (`Pass`, 9.75/10); `API-REV-002` (`Pass`, 97%); `CRR-005` (`Pass`, no findings); retained original Server Docker failure `30425051361`.
+- Prior authoritative result: DR-004 — blocked after partial `v1.4.27` release because Server Docker could not copy the retired root `patches/` path.
+- Current authoritative result: Complete — reviewed fix integrated with latest `origin/personal`; documented existing-tag Server Docker recovery `30427959310` succeeded; all release surfaces and final artifact/registry checks passed.
+- Docs sync report: original SafeInt/exact-display docs remain updated; DR-005 records explicit no additional long-lived docs impact because release commands/operator behavior did not change and the invariant is durable in focused test code.
+- Handoff summary: updated with final release identity, provenance split, recovery run/digest, 21-asset GitHub Release, residuals, and rollback boundaries.
+- Release/publication/deployment report: updated from blocked to complete with original workflow outcomes, qualification chain, exact recovery command/ref, final publication evidence, and registry manifests.
+- Integration and post-integration verification: reviewed checkpoint `cc79c46dc` was merged with 14 advanced `origin/personal` commits at `ca97fa2f5`; relevant inputs were unchanged except root script additions; 10/10 focused contracts and three Buildx checks passed. Integrated source/evidence commit `e4b043146` was pushed to `origin/personal` with zero divergence before recovery.
+- User verification/finalization state: repository finalization remained complete and the user's explicit release authorization remained applicable; no material token-statistics or packaging behavior changed during base integration.
+- Why this delivery revision was recorded: close DR-004 truthfully without rewriting the published tag or hiding the original failure, and preserve the exact recovery source/image provenance.
+- Next recipient/action: `None required`; optional staged product/Docker smoke and App Store Connect monitoring are operational follow-up only.
+- Remaining blockers, rollback concerns, or untested scope: no delivery blocker. Apple post-upload processing/public availability remains external; Node-20-targeting Actions emitted a non-blocking deprecation annotation; values above `Number.MAX_SAFE_INTEGER` and the pre-existing package-level server typecheck issue remain out of scope. Never move `v1.4.27`; issue a corrective version or platform-specific withdrawal if rollback is required.

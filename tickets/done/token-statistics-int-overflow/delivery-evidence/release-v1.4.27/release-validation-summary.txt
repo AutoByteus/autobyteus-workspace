@@ -1,0 +1,16 @@
+v1.4.27 release validation summary
+Captured at: 2026-07-29T08:54:30.853030+02:00
+PASS run 30425051350 Desktop Release: success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051350
+PASS run 30425051388 Android APK Release: success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051388
+PASS run 30425051368 iOS App Store Connect Release: success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051368
+PASS run 30425051390 Release Messaging Gateway: success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051390
+PASS run 30425051361 Server Docker Release: failure https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30425051361
+PASS run 30427959310 Server Docker Release: success https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30427959310
+PASS GitHub Release: stable, curated body exact, 21 assets, all digests present, https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.27
+PASS tag immutable: object a89d7828..., peeled target 2127840ee...
+PASS Docker 1.4.27: index sha256:296659..., linux/amd64 + linux/arm64
+PASS Docker latest: index sha256:296659..., linux/amd64 + linux/arm64
+PASS recovery provenance: exact reviewed fix SHA checked out and recorded as vcs:revision
+PASS recovery fix is reachable from origin/personal
+PASS canonical delivery result: Complete, DR-005 present
+FINAL: PASS
