@@ -58,13 +58,22 @@ export class StudioApplicationClient {
     packageId: string;
     applicationId: string;
   }> {
-    await this.graphql(
-      'mutation DevkitImportApplicationPackage($input: ImportApplicationPackageInput!) { '
-      + 'importApplicationPackage(input: $input) { packageId } }',
-      { input: { sourceKind: 'LOCAL_PATH', source: path.resolve(packageRoot) } },
-    );
-    const packageId = await this.findPackageId(packageRoot);
-    if (!packageId) throw new Error('Studio did not retain the imported local application package.');
+    let packageId = await this.findPackageId(packageRoot);
+    if (packageId) {
+      await this.graphql(
+        'mutation DevkitReloadApplicationPackage($packageId: String!) { '
+        + 'reloadApplicationPackage(packageId: $packageId) { packageId } }',
+        { packageId },
+      );
+    } else {
+      await this.graphql(
+        'mutation DevkitImportApplicationPackage($input: ImportApplicationPackageInput!) { '
+        + 'importApplicationPackage(input: $input) { packageId } }',
+        { input: { sourceKind: 'LOCAL_PATH', source: path.resolve(packageRoot) } },
+      );
+      packageId = await this.findPackageId(packageRoot);
+    }
+    if (!packageId) throw new Error('Studio did not retain the local application package.');
     const applications = await this.graphql<{
       listApplications: Array<{
         id: string;

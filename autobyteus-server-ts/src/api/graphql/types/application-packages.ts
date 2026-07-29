@@ -165,6 +165,15 @@ export class ApplicationPackageResolver {
   }
 
   @Mutation(() => [ApplicationPackage])
+  async reloadApplicationPackage(
+    @Arg("packageId", () => String) packageId: string,
+  ): Promise<ApplicationPackage[]> {
+    const service = getStudioApplicationPackageRegistryService();
+    const packages = await service.reloadPackage(packageId);
+    return packages.map(mapApplicationPackage);
+  }
+
+  @Mutation(() => [ApplicationPackage])
   async removeApplicationPackage(
     @Arg("packageId", () => String) packageId: string,
   ): Promise<ApplicationPackage[]> {
