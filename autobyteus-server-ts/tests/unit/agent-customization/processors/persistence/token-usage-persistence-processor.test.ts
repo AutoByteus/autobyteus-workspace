@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createTokenUsageUpdatedPayload } from "../../../../../src/agent-execution/domain/agent-run-token-usage.js";
+import { TokenUsageComponentBasisResolver } from "../../../../../src/token-usage/projections/token-usage-component-basis-resolver.js";
 import { TokenUsageSnapshotDeltaNormalizer } from "../../../../../src/token-usage/projections/token-usage-snapshot-delta-normalizer.js";
 
 describe("token usage event-ledger accounting replacement", () => {
@@ -44,13 +45,15 @@ describe("token usage event-ledger accounting replacement", () => {
       payload: {
         usage_scope: "per_turn",
         idempotency_key: "run_2:turn_1",
+        input_token_semantic: "gross_includes_cache",
         reported_input_tokens: 30,
         reported_output_tokens: 10,
         reported_total_tokens: 40,
       },
     });
 
-    const normalized = await normalizer.normalizeAccountingDelta(payload);
+    const withComponentBasis = new TokenUsageComponentBasisResolver().resolve(payload);
+    const normalized = await normalizer.normalizeAccountingDelta(withComponentBasis);
 
     expect(normalized.accounting_input_tokens).toBe(30);
     expect(normalized.accounting_output_tokens).toBe(10);

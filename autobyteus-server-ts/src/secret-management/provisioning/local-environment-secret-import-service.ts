@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SecretValue } from 'autobyteus-ts/secrets/secret-value.js';
+import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import {
   ApplicationDatabaseLocation,
 } from '../../config/application-database-location.js';
@@ -60,9 +61,38 @@ export class LocalEnvironmentSecretImportService {
         appRoot: importerAppRoot,
         databaseUrl: targetLocation.databaseUrl,
       });
+      try {
+        await initializePrisma({
+          datasourceUrl: targetLocation.databaseUrl,
+        });
+      } catch (error) {
+        try {
+          await shutdownPrisma();
+        } finally {
+          throw error;
+        }
+      }
       const runtime = new SecretVaultRuntime();
-      await runtime.initialize(targetLocation);
-      return { runtime, close: () => runtime.close() };
+      try {
+        await runtime.initialize(targetLocation);
+        return {
+          runtime,
+          close: async () => {
+            try {
+              await runtime.close();
+            } finally {
+              await shutdownPrisma();
+            }
+          },
+        };
+      } catch (error) {
+        try {
+          await runtime.close();
+        } finally {
+          await shutdownPrisma();
+        }
+        throw error;
+      }
     },
   ) {}
 

@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { pathToFileURL } from 'node:url';
+import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { runLocalEnvironmentImportCli } from '../../../src/secret-management/cli/import-local-environment-secrets.js';
@@ -50,6 +52,7 @@ describe('explicit target database importer lifecycle', () => {
       if (value === undefined) delete process.env[key];
       else process.env[key] = value;
     }
+    await shutdownPrisma();
     if (runtimeRoot && database) await removeOwnedTestRuntime(runtimeRoot, database);
     runtimeRoot = null;
     database = null;
@@ -191,6 +194,35 @@ describe('explicit target database importer lifecycle', () => {
     });
     expect(JSON.stringify(result)).not.toContain('synthetic-');
 
+    const failedSourcePath = path.join(runtimeRoot, 'operator-selected.failed-batch-environment');
+    const failedSource = Buffer.from([
+      'ANTHROPIC_API_KEY=synthetic-anthropic-rollback-canary',
+      'SERPER_API_KEY=synthetic-serper-rejected-canary',
+      '',
+    ].join('\n'));
+    fs.writeFileSync(failedSourcePath, failedSource, { mode: 0o600 });
+    if (process.platform !== 'win32') fs.chmodSync(failedSourcePath, 0o600);
+    const triggerDatabase = new DatabaseSync(database.databasePath);
+    triggerDatabase.exec(`
+      CREATE TRIGGER reject_serper_import
+      BEFORE INSERT ON secret_entries
+      WHEN NEW.secret_id = 'search.serper.api-key'
+      BEGIN
+        SELECT RAISE(ABORT, 'synthetic rejected importer write');
+      END;
+    `);
+    triggerDatabase.close();
+
+    await expect(service.execute({
+      sourcePath: failedSourcePath,
+      targetLocation,
+      dryRun: false,
+      overwrite: false,
+    }, confirmation('IMPORT'))).rejects.toMatchObject({
+      code: 'IMPORT_BATCH_FAILED',
+    });
+
+    await initializePrisma({ datasourceUrl: targetLocation.databaseUrl });
     const reopened = new SecretVaultRuntime();
     await reopened.initialize(targetLocation);
     try {
@@ -215,11 +247,26 @@ describe('explicit target database importer lifecycle', () => {
         providerId: 'QWEN',
         credentialSlot: 'apiKey',
       })).resolves.toBe('CONFIGURED');
+      await expect(management.getStatusForConsumer({
+        kind: 'llm',
+        providerId: 'ANTHROPIC',
+        credentialSlot: 'apiKey',
+      })).resolves.toBe('MISSING');
+      await expect(management.getStatusForConsumer({
+        kind: 'search',
+        providerId: 'serper',
+        credentialSlot: 'apiKey',
+      })).resolves.toBe('MISSING');
     } finally {
-      await reopened.close();
+      try {
+        await reopened.close();
+      } finally {
+        await shutdownPrisma();
+      }
     }
 
     expect(fs.readFileSync(sourcePath)).toEqual(source);
+    expect(fs.readFileSync(failedSourcePath)).toEqual(failedSource);
     expect(readTrackedTestEnvironment().bytes).toEqual(templateBefore);
     for (const redirect of [
       ambientDatabase,

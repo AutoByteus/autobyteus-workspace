@@ -2,6 +2,7 @@ import fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
+import { initializePrisma, shutdownPrisma } from "repository_prisma";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
   seedInternalServerBaseUrlFromListenAddress,
@@ -47,6 +48,7 @@ import { stopMemorySyncWorker } from "./memory-sync/source/memory-sync-worker.js
 import type { ServerOptions } from "./app.js";
 import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
 import { registerProvisionedSearchTool } from "./agent-tools/search/register-search-tool.js";
+import { stopDefaultAgentRunEventPipeline } from "./agent-execution/events/default-agent-run-event-pipeline.js";
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
 
 const logger = createServerLogger("server.runtime");
@@ -88,11 +90,31 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
   app.addHook("onClose", async () => {
-    stopMemorySyncWorker();
-    await stopChannelRunOutputDeliveryRuntime();
-    await stopGatewayCallbackDeliveryRuntime();
-    await getManagedMessagingGatewayService().close();
-    await getSecretVaultRuntime().close();
+    try {
+      stopMemorySyncWorker();
+    } finally {
+      try {
+        await stopChannelRunOutputDeliveryRuntime();
+      } finally {
+        try {
+          await stopGatewayCallbackDeliveryRuntime();
+        } finally {
+          try {
+            await getManagedMessagingGatewayService().close();
+          } finally {
+            try {
+              await stopDefaultAgentRunEventPipeline();
+            } finally {
+              try {
+                await getSecretVaultRuntime().close();
+              } finally {
+                await shutdownPrisma();
+              }
+            }
+          }
+        }
+      }
+    }
   });
 
   return app;
@@ -155,6 +177,14 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     `${databaseLocation.databasePath}-shm`,
     `${databaseLocation.databasePath}-journal`,
   ]);
+  try {
+    await initializePrisma({
+      datasourceUrl: databaseLocation.databaseUrl,
+    });
+  } catch (error) {
+    logger.error(`Failed to initialize application database: ${String(error)}`);
+    process.exit(1);
+  }
   await getSecretVaultRuntime().initialize(databaseLocation);
 
   try {

@@ -11,6 +11,10 @@ const logger = {
 };
 
 export class TokenUsageEventPersistenceProcessor implements AgentRunEventProcessor {
+  private readonly pendingTasks = new Set<Promise<void>>();
+  private closed = false;
+  private closePromise: Promise<void> | null = null;
+
   constructor(private readonly store = new TokenUsageLedgerStore()) {}
 
   process(input: AgentRunEventProcessorInput): [] {
@@ -28,13 +32,37 @@ export class TokenUsageEventPersistenceProcessor implements AgentRunEventProcess
     return [];
   }
 
+  close(): Promise<void> {
+    this.closed = true;
+    this.closePromise ??= this.drainPendingTasks();
+    return this.closePromise;
+  }
+
   private scheduleAppend(payload: TokenUsageUpdatedPayload): void {
-    setImmediate(() => {
-      void this.store.appendTokenUsageEvent(payload).catch((error: unknown) => {
-        logger.warn(
-          `Failed to persist token usage event '${payload.usage_event_id}' for run '${payload.run_id}': ${String(error)}`,
-        );
+    if (this.closed) {
+      return;
+    }
+
+    const task = new Promise<void>((resolve) => {
+      setImmediate(() => {
+        void this.store.appendTokenUsageEvent(payload)
+          .catch((error: unknown) => {
+            logger.warn(
+              `Failed to persist token usage event '${payload.usage_event_id}' for run '${payload.run_id}': ${String(error)}`,
+            );
+          })
+          .finally(resolve);
       });
     });
+    this.pendingTasks.add(task);
+    void task.finally(() => {
+      this.pendingTasks.delete(task);
+    });
+  }
+
+  private async drainPendingTasks(): Promise<void> {
+    while (this.pendingTasks.size > 0) {
+      await Promise.all([...this.pendingTasks]);
+    }
   }
 }

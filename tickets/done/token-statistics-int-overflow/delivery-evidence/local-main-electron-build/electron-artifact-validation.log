@@ -1,0 +1,122 @@
+Token Statistics local-main Electron artifact validation
+Started: 2026-07-28T15:41:18+02:00
+Revision: 5d979a5d5208157a25927b256932a25a5bed385b
+Origin personal: 5d979a5d5208157a25927b256932a25a5bed385b
+
+[Existence]
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg.blockmap
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip.blockmap
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/latest-mac.yml
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+PASS: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/api/graphql/types/token-usage-stats.js
+
+[Bundle metadata]
+CFBundleShortVersionString=1.4.26
+CFBundleVersion=1.4.26
+CFBundleExecutable=AutoByteus
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+PASS: app version and arm64 executable
+
+[Packaged token contract]
+14:import { GraphQLJSON, GraphQLSafeInt } from "graphql-scalars";
+112:    Field(() => GraphQLSafeInt),
+116:    Field(() => GraphQLSafeInt),
+120:    Field(() => GraphQLSafeInt),
+124:    Field(() => GraphQLSafeInt),
+128:    Field(() => GraphQLSafeInt),
+132:    Field(() => GraphQLSafeInt),
+136:    Field(() => GraphQLSafeInt),
+140:    Field(() => GraphQLSafeInt),
+144:    Field(() => GraphQLSafeInt),
+148:    Field(() => GraphQLSafeInt),
+152:    Field(() => GraphQLSafeInt),
+299:    Field(() => GraphQLSafeInt, { nullable: true }),
+303:    Field(() => GraphQLSafeInt, { nullable: true }),
+466:    Field(() => GraphQLSafeInt),
+470:    Field(() => GraphQLSafeInt),
+474:    Field(() => GraphQLSafeInt),
+478:    Field(() => GraphQLSafeInt),
+490:    Field(() => GraphQLSafeInt),
+494:    Field(() => GraphQLSafeInt),
+498:    Field(() => GraphQLSafeInt),
+502:    Field(() => GraphQLSafeInt),
+PASS: packaged server contains GraphQLSafeInt token schema
+
+[Packaged terminal helper permissions]
+PASS executable: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+PASS executable: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+PASS executable: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+PASS: exactly 3 packaged spawn-helper files are executable
+
+[Artifact sizes]
+1.2G	/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+638M	/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg 402314552 bytes
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip 397877386 bytes
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg.blockmap 420082 bytes
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip.blockmap 409473 bytes
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/latest-mac.yml 555 bytes
+
+[SHA-256]
+caf16e961825e45d5f45f05142ab59f2f384d0014963f7d3d5715c8fb91f8c0d  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg
+4a38a3b30ea01f097d5a951468d84acaaa1d53d5a37a48e8f5f28c9dc590e983  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip
+8e71e2df683434933e4e9eca4ed399e57822cff426861c5378d67e1a698e947a  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg.blockmap
+694a1a01f5cff060fecd5958e82ce66f9efaa729c313df6e91f4eda924545b84  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip.blockmap
+0e531d2931736c381c41a913e3531c1504b61af87aebe041a772cd812c0076db  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/latest-mac.yml
+
+[DMG integrity]
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $F05A8DF8
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $3C326D91
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $9D8FB332
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $56B97A1B
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $9D8FB332
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $4B2D5B65
+Die überprüfte CRC32-Prüfsumme ist $9AEEF057
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.dmg" is VALID
+PASS: hdiutil verify
+
+[ZIP integrity]
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.26.zip.
+PASS: unzip -tq
+
+[Signing expectation]
+Executable=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+INFO: bundle reports signing metadata
+
+[Updater manifest]
+version: 1.4.26
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.26.zip
+    sha512: hXJEiEowwMsfd0DJcPwMKwndxyIzjwj7dw7D1Ks3uricRA0mgrKOtk7ksk4lYcn5p+9SAn00cL9/8H/uO31GGw==
+    size: 397877386
+  - url: AutoByteus_personal_macos-arm64-1.4.26.dmg
+    sha512: DptiSyzyCaaG8tdsBpr9VT9yyKQQCm8+mX7HaQmP+GP2iSfzh+IwdQUwNRFVS63QYzJDtXoNdyurVMFnkq3stg==
+    size: 402314552
+path: AutoByteus_personal_macos-arm64-1.4.26.zip
+sha512: hXJEiEowwMsfd0DJcPwMKwndxyIzjwj7dw7D1Ks3uricRA0mgrKOtk7ksk4lYcn5p+9SAn00cL9/8H/uO31GGw==
+releaseDate: '2026-07-28T13:40:23.131Z'
+PASS: updater manifest references current personal macOS ARM64 ZIP
+
+Finished: 2026-07-28T15:41:35+02:00
+Final result: PASS

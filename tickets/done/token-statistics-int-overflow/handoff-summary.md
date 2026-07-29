@@ -8,7 +8,7 @@
 - Ticket branch: `codex/token-statistics-int-overflow` (`removed locally and remotely after finalization`)
 - Reviewed-state checkpoint: `1701f4f33526e7b016edbd1655f26b2c84d33212`
 - Finalization target: `personal` / `origin/personal`
-- Current status: `Complete`; repository finalization and dedicated ticket cleanup passed. The user explicitly requested no release, so no version, tag, publication, or deployment work was performed.
+- Current status: `Complete`; repository finalization and cleanup passed, and the later user-requested Electron build from latest local `personal` passed. No version, tag, publication, or deployment work was performed.
 
 ## Integrated-State Refresh
 
@@ -45,6 +45,17 @@
 - Primary Task-table Input and Output cells render exact full locale-aware integer digits, such as `3,136,827,911`; secondary cache/thinking explanatory sublines remain compact.
 - No SQLite/Prisma schema, ledger data, accounting, pricing, grouping, or date-boundary behavior changed.
 
+## Post-Finalization Local Personal Electron Build
+
+- User request: make the local main repository's `personal` branch latest and build Electron from it.
+- Refresh result: after `git fetch origin personal --prune`, local `personal` and `origin/personal` already matched at `5d979a5d5208157a25927b256932a25a5bed385b`; divergence was `0 / 0`.
+- Fix containment: finalization audit `153f3409c` is an ancestor of the built revision, and the source still contains the backend `GraphQLSafeInt` plus full primary Task-cell integer formatting.
+- Build command/result: documented unsigned local macOS command `pnpm build:electron:mac`; `Pass`.
+- Package: version `1.4.26`, flavor `personal`, macOS ARM64.
+- Artifact validation: app architecture/version, packaged server `GraphQLSafeInt`, terminal helper permissions, DMG integrity, ZIP integrity, checksums, and updater manifest all passed.
+- Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/electron-test-build-report.md`.
+- No release, tag, publication, deployment, installation, or launch was performed.
+
 ## Review And Execution Evidence
 
 - Implementation source review: `Pass`, 9.61/10, no unresolved findings.
@@ -67,7 +78,7 @@
 
 ## User Verification Checklist
 
-The current installed Electron `1.4.26` package predates this source change. The user explicitly accepted completion on 2026-07-28 after receiving the retained API/browser evidence. The verification checklist supplied at handoff was:
+The previously installed Electron `1.4.26` package predates this source change. A fresh local `1.4.26` verification package containing the fix is now available under `autobyteus-web/electron-dist`. The user explicitly accepted task completion on 2026-07-28 after receiving the retained API/browser evidence. The verification checklist supplied at handoff was:
 
 1. Open Settings → Token Statistics and fetch a supported period containing a total above `2,147,483,647`.
 2. Confirm the request succeeds without `Int cannot represent non 32-bit signed integer value`.
@@ -78,7 +89,7 @@ The current installed Electron `1.4.26` package predates this source change. The
 ## Persisted Data, Residual Risk, And Rollback
 
 - Approved persisted-data outcome: `Not Affected`; existing ledger rows remain directly usable with no migration, rewrite, discard, rebuild, backup, or maintenance window.
-- Non-blocking residual: packaged Electron-shell rollout was not executed because no shell-specific source changed; a rebuilt/reinstalled or source-launched app is required before the packaged runtime reflects the fix.
+- Local packaging result: a fresh unsigned/ad-hoc macOS ARM64 Electron package now contains the fix. The existing installed app remains unchanged until the user launches or installs the new local artifact.
 - Non-blocking out-of-scope boundary: values above `Number.MAX_SAFE_INTEGER` require a separately approved cross-client design and remain rejected rather than corrupted.
 - Non-blocking pre-existing issue: package-level server `typecheck` has an unrelated rootDir/include problem; the established source typecheck and full server build passed.
 - Repository rollback is a normal revert of merge commit `169fd12f4` if necessary; do not rewrite correct ledger data. No release rollback is needed because the user requested no release.
@@ -93,7 +104,7 @@ The current installed Electron `1.4.26` package predates this source change. The
 - Release/publication/deployment executed: `No`
 - Release authorization: `Explicitly declined for this task`
 - Dedicated worktree/branch cleanup executed: `Yes`
-- Next action: `None`; task delivery is complete.
+- Next action: Optional user launch/manual verification of the local app bundle; repository delivery and requested build are complete.
 
 ## Cumulative Artifact Package
 
@@ -123,3 +134,7 @@ All ticket artifacts below are under:
 - Finalization preflight: `delivery-evidence/finalization-preflight.txt`
 - Finalization result: `delivery-evidence/finalization-result.txt`
 - Finalization package validation: `delivery-evidence/finalization-package-validation.txt`
+- Electron test build: `electron-test-build-report.md`
+- Local personal refresh: `delivery-evidence/local-main-electron-build/local-personal-refresh.log`
+- Local-main Electron build log: `delivery-evidence/local-main-electron-build/electron-build.log`
+- Electron artifact validation: `delivery-evidence/local-main-electron-build/electron-artifact-validation.log`

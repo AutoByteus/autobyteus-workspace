@@ -2,16 +2,16 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import { PrismaClient } from '@prisma/client';
 import { SecretValue } from 'autobyteus-ts';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { initializePrisma, shutdownPrisma } from 'repository_prisma';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
 import { SecretVaultBootstrap } from '../../../src/secret-management/bootstrap/secret-vault-bootstrap.js';
 import {
   customProviderSecretId,
   secretId,
 } from '../../../src/secret-management/domain/secret-id.js';
-import { SecretVaultPrismaRepository } from '../../../src/secret-management/persistence/secret-vault-prisma-repository.js';
+import { SecretVaultRepository } from '../../../src/secret-management/persistence/secret-vault-repository.js';
 import { SecretRootKeyFile } from '../../../src/secret-management/root-key/secret-root-key-file.js';
 import { SecretManagementService } from '../../../src/secret-management/services/secret-management-service.js';
 
@@ -70,10 +70,10 @@ const snapshotDatabaseFamily = async (databasePath: string) => Object.fromEntrie
 describe('one-database secret vault lifecycle', () => {
   let directory: string;
   let databasePath: string;
-  let prisma: PrismaClient;
   let service: SecretManagementService;
 
   beforeEach(async () => {
+    await shutdownPrisma();
     directory = await fs.mkdtemp(path.join(os.tmpdir(), 'secret-vault-lifecycle-'));
     if (process.platform !== 'win32') await fs.chmod(directory, 0o700);
     const location = ApplicationDatabaseLocation.fromConfiguredFileUrl('file:application.db', directory);
@@ -82,8 +82,8 @@ describe('one-database secret vault lifecycle', () => {
     database.exec(TABLES);
     database.close();
 
-    prisma = new PrismaClient({ datasources: { db: { url: location.databaseUrl } } });
-    const repository = new SecretVaultPrismaRepository(prisma);
+    await initializePrisma({ datasourceUrl: location.databaseUrl });
+    const repository = new SecretVaultRepository();
     const bootstrap = await new SecretVaultBootstrap(location, repository).initializeOrVerify();
     expect(bootstrap.health).toEqual({ state: 'READY' });
     service = new SecretManagementService(
@@ -96,7 +96,7 @@ describe('one-database secret vault lifecycle', () => {
 
   afterEach(async () => {
     service?.close();
-    await prisma?.$disconnect();
+    await shutdownPrisma();
     await fs.rm(directory, { recursive: true, force: true });
   });
 
@@ -302,7 +302,7 @@ describe('one-database secret vault lifecycle', () => {
     'fails closed before repository access when the database permissions are unsafe',
     async () => {
       await fs.chmod(databasePath, 0o660);
-      const repository = new SecretVaultPrismaRepository(prisma);
+      const repository = new SecretVaultRepository();
       await expect(
         new SecretVaultBootstrap(
           ApplicationDatabaseLocation.fromConfiguredFileUrl('file:application.db', directory),
@@ -329,12 +329,12 @@ describe('secret vault initialization interruption safety', () => {
     const database = new DatabaseSync(location.databasePath);
     database.exec(TABLES);
     database.close();
-    const prisma = new PrismaClient({ datasources: { db: { url: location.databaseUrl } } });
+    await shutdownPrisma();
+    await initializePrisma({ datasourceUrl: location.databaseUrl });
     return {
       directory,
       location,
-      prisma,
-      repository: new SecretVaultPrismaRepository(prisma),
+      repository: new SecretVaultRepository(),
     };
   };
 
@@ -363,16 +363,13 @@ describe('secret vault initialization interruption safety', () => {
       result.rootKey?.fill(0);
       expectedKey.fill(0);
     } finally {
-      await fixture.prisma.$disconnect();
+      await shutdownPrisma();
       await fs.rm(fixture.directory, { recursive: true, force: true });
     }
   });
 
-  it('serializes live initializers and publishes one key/domain pair', async () => {
+  it('serializes two repository owners over the process-global package client', async () => {
     const fixture = await createFixture();
-    const secondPrisma = new PrismaClient({
-      datasources: { db: { url: fixture.location.databaseUrl } },
-    });
     let releaseFirst!: () => void;
     let firstCreated!: () => void;
     const firstCreatedPromise = new Promise<void>((resolve) => {
@@ -392,9 +389,12 @@ describe('secret vault initialization interruption safety', () => {
         return key;
       },
     } as unknown as SecretRootKeyFile;
-    const secondInspect = vi.fn(() => secondDelegate.inspectExisting());
+    let secondInspectCount = 0;
     const secondRootKeyFile = {
-      inspectExisting: secondInspect,
+      inspectExisting: () => {
+        secondInspectCount += 1;
+        return secondDelegate.inspectExisting();
+      },
       createExclusive: () => secondDelegate.createExclusive(),
     } as unknown as SecretRootKeyFile;
 
@@ -407,11 +407,11 @@ describe('secret vault initialization interruption safety', () => {
       await firstCreatedPromise;
       const secondPromise = new SecretVaultBootstrap(
         fixture.location,
-        new SecretVaultPrismaRepository(secondPrisma),
+        new SecretVaultRepository(),
         secondRootKeyFile,
       ).initializeOrVerify();
       await new Promise((resolve) => setTimeout(resolve, 50));
-      expect(secondInspect).not.toHaveBeenCalled();
+      expect(secondInspectCount).toBe(0);
       releaseFirst();
 
       const [first, second] = await Promise.all([firstPromise, secondPromise]);
@@ -426,8 +426,7 @@ describe('secret vault initialization interruption safety', () => {
       second.rootKey?.fill(0);
     } finally {
       releaseFirst();
-      await secondPrisma.$disconnect();
-      await fixture.prisma.$disconnect();
+      await shutdownPrisma();
       await fs.rm(fixture.directory, { recursive: true, force: true });
     }
   });
@@ -461,7 +460,7 @@ describe('secret vault initialization interruption safety', () => {
       });
       expect(await fixture.repository.readMetadata()).not.toBeNull();
     } finally {
-      await fixture.prisma.$disconnect();
+      await shutdownPrisma();
       await fs.rm(fixture.directory, { recursive: true, force: true });
     }
   });
@@ -502,7 +501,7 @@ describe('secret vault initialization interruption safety', () => {
       keyBefore?.bytes.fill(0);
     } finally {
       observer.close();
-      await fixture.prisma.$disconnect();
+      await shutdownPrisma();
       await fs.rm(fixture.directory, { recursive: true, force: true });
     }
   });

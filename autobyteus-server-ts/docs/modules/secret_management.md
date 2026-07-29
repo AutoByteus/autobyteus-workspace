@@ -57,10 +57,11 @@ Startup follows one ordered lifecycle:
 
 1. obtain and canonicalize `DATABASE_URL`;
 2. run ordinary application migrations;
-3. initialize a new vault or verify the established database/key pair;
-4. run registered app-data migrations, including the bounded custom-provider-v1
+3. initialize `repository_prisma` for that exact URL without enabling WAL;
+4. initialize a new vault or verify the established database/key pair;
+5. run registered app-data migrations, including the bounded custom-provider-v1
    transition described below;
-5. expose runtime APIs with value-free vault health.
+6. expose runtime APIs with value-free vault health.
 
 First initialization is interruption-safe and transactionally excludes
 concurrent initializers. If an interruption leaves only a valid secure 32-byte
@@ -97,6 +98,11 @@ governance and keeps its Codex-owned authentication behavior.
 
 - `SecretManagementService` owns value-free status, save/replace, idempotent
   removal, authorized just-in-time resolution, and atomic importer batches.
+- `SecretVaultRepository` coordinates cross-model persistence through
+  separate `SecretEntry` and `SecretEncryptionMetadata` `BaseRepository`
+  owners. It alone opens implicit transactions with the reviewed initialization
+  (`2s` wait/`10s` timeout) and mutation/compensation (`2s` wait/`5s` timeout)
+  settings. Callers do not receive raw Prisma clients or transaction delegates.
 - `SecretCatalog` maps semantic consumer identities to stable `SecretId`
   records and rejects unknown or mismatched consumers before vault access.
 - `ProviderApiKeyResolver` is storage-neutral. Concrete provider clients call it
@@ -319,11 +325,20 @@ is not attempted.
 
 ## Database Dependency Boundary
 
-The workspace resolves exact unpatched `repository_prisma@1.0.8` with
-Prisma/`@prisma/client` 5.22.0. Automatic updates and local patches are out of
-scope. The dependency remains import-safe and query logging stays default-off.
-It is infrastructure only: existing AutoByteus Prisma owners, schemas,
-migrations, data, and Docker topology remain authoritative.
+The workspace resolves unpatched published `repository_prisma@1.0.9` with
+Prisma/`@prisma/client` 5.22.0. It is the active lifecycle,
+model-repository, and implicit-transaction boundary for normal token and secret
+runtime persistence. Server composition initializes it after schema migrations,
+then shutdown drains token persistence, closes/zeroizes the vault, and closes
+the shared client. The standalone importer performs the same explicit
+initialize/use/finally-shutdown lifecycle for only its immutable CLI target;
+dry-run remains inspection-only.
+
+The dependency remains import-safe, query logging stays default-off, and this
+adoption does not enable WAL or change schema, migrations, stored rows,
+encryption/key bytes, database identity, or Docker topology. Bounded app-data
+migrations keep their explicit raw clients, and importer preview keeps the
+read-only `SecretVaultInspectionService`.
 
 ## Related Documentation
 

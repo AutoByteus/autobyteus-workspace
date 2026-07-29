@@ -10,6 +10,8 @@ import { TokenCostCalculator } from "../../../../token-usage/pricing/token-cost-
 import { TokenUsageContextEnricher } from "./token-usage-context-enricher.js";
 
 export class TokenUsageEventEnrichmentTransformer implements AgentRunEventTransformer {
+  private quiescent = false;
+
   constructor(
     private readonly contextEnricher = new TokenUsageContextEnricher(),
     private readonly componentBasisResolver = new TokenUsageComponentBasisResolver(),
@@ -17,7 +19,15 @@ export class TokenUsageEventEnrichmentTransformer implements AgentRunEventTransf
     private readonly costCalculator = new TokenCostCalculator(),
   ) {}
 
+  quiesce(): void {
+    this.quiescent = true;
+  }
+
   async transform(input: AgentRunEventTransformerInput): Promise<AgentRunEvent[]> {
+    if (this.quiescent) {
+      return [...input.events];
+    }
+
     const output: AgentRunEvent[] = [];
     for (const event of input.events) {
       if (event.eventType !== AgentRunEventType.TOKEN_USAGE_UPDATED) {

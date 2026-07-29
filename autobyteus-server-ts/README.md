@@ -91,7 +91,10 @@ node autobyteus-server-ts/dist/app.js --host 0.0.0.0 --port 8000
 Notes:
 - `pnpm -C autobyteus-server-ts build` also builds the `autobyteus-ts` workspace package.
 - `pnpm -C autobyteus-server-ts build` also runs `prisma generate --schema ./prisma/schema.prisma` before TypeScript compile.
-- `repository_prisma` is consumed as a normal npm dependency (no local sibling clone required).
+- `repository_prisma@1.0.9` is consumed as a normal npm dependency (no local
+  sibling clone required). Server composition initializes it for the canonical
+  application database after schema migrations; token and secret runtime model
+  repositories use its context-aware `BaseRepository` and transaction boundary.
 
 Optional custom data directory:
 

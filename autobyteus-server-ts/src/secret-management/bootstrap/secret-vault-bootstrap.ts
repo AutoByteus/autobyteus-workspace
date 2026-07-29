@@ -17,9 +17,9 @@ import {
 } from "../domain/secret-vault-types.js";
 import type {
   SecretVaultInitializationRepository,
-  SecretVaultMetadataRecord,
-  SecretVaultPrismaRepository,
-} from "../persistence/secret-vault-prisma-repository.js";
+  SecretVaultRepository,
+} from "../persistence/secret-vault-repository.js";
+import type { SecretVaultMetadataRecord } from "../persistence/secret-vault-persistence-types.js";
 import { SecretRootKeyFile } from "../root-key/secret-root-key-file.js";
 
 export type SecretVaultBootstrapResult = {
@@ -76,7 +76,7 @@ const validateMetadata = (metadata: SecretVaultMetadataRecord): void => {
 export class SecretVaultBootstrap {
   constructor(
     private readonly location: ApplicationDatabaseLocation,
-    private readonly repository: SecretVaultPrismaRepository,
+    private readonly repository: SecretVaultRepository,
     private readonly rootKeyFile = new SecretRootKeyFile(location),
   ) {}
 
