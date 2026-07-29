@@ -1,0 +1,35 @@
+Server listening on 127.0.0.1:8000
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data
+Server listening on 127.0.0.1:8000
+Server listening on 127.0.0.1:8000
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data
+Server listening on 127.0.0.1:8000
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data
+Server listening on 127.0.0.1:8000
+Server listening on 127.0.0.1:8000
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data
+PASS module-relative root remains canonical from alternate cwd
+PASS hostile inherited launcher-owned environment cannot redirect runtime
+PASS tracked development template is byte-identical after materialization
+PASS development data-root symlink is rejected without escape
+PASS tracked template symlink is rejected
+PASS runtime env symlink is rejected
+PASS signal shutdown is deliberate, bounded, and repeat-idempotent
+PASS backend startup failure propagates stable failure and cleans child
+PASS frontend startup failure propagates stable failure and cleans both children
+PASS unexpected child exit propagates and does not orphan sibling
+PASS owned cleanup leaves unrelated process alive
+RUNTIME_ROOT=/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data
+BACKEND_URL=http://127.0.0.1:8000
+FRONTEND_URL=http://127.0.0.1:3000
+RUNTIME_ENV=/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/.autobyteus/development/server-data/.env
+ORIGINAL_RUNTIME_BYTES=740
+lifecycle_harness_status=0

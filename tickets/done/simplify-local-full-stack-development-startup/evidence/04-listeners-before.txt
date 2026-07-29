@@ -1,0 +1,12 @@
+Tue Jul 28 10:21:40 UTC 2026
+listeners
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    10242 normy   25u  IPv4 0x6f98d24e89c222b0      0t0  TCP 127.0.0.1:8000 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    10276 normy   17u  IPv4 0x46c6814ba1e75e2e      0t0  TCP 127.0.0.1:3000 (LISTEN)
+tracked template hashes
+8a977b42415ae91eb8c083b1f20c1f5fc0e58491  autobyteus-server-ts/.env.development
+650d7eefdd9bdc74953431573fb1ec46a534fdb1  autobyteus-server-ts/.env.test
+fc471834f7047148cad1c3330342f77024ae698a  autobyteus-server-ts/.env.example
+production path metadata only
+path=/Users/normy/.autobyteus/server-data mode=drwxr-xr-x inode=12014671 size=992 mtime=1785137446

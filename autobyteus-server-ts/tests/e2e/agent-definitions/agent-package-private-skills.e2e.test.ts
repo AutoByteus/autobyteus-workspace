@@ -321,9 +321,7 @@ const createAutoByteusRuntimeProbe = (workspaceRoot: string): {
   const factory = new AutoByteusAgentRunBackendFactory({
     agentDefinitionService: AgentDefinitionService.getInstance(),
     skillService: SkillService.getInstance(),
-    llmFactory: {
-      createLLM: vi.fn(async () => ({})),
-    } as any,
+    createLLM: vi.fn(async () => ({})),
     workspaceManager: {
       getWorkspaceById: vi.fn((workspaceId: string) =>
         workspaceId === workspace.workspaceId ? workspace : undefined,
