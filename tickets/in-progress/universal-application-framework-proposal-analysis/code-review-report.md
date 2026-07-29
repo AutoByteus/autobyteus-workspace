@@ -16,11 +16,11 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`–`IR-005`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-009`
-- Current Review Round: `9`
-- Trigger: `API-REV-004` failure plus the user's explicit request for a fresh, complete review using the canonical design principles rather than a bounded failure-origin check. Reviewed production HEAD `59db1da126171d8a4360f6b2e93c9fcbd2882db0` against approved base `6caf809303294252c109420b238588f0c68aca6a`.
-- Prior Review Round Reviewed: round `8`, `CRR-008`, `Pass`
-- Latest Authoritative Round: `9`
+- Current Code Review Revision ID: `CRR-010`
+- Current Review Round: `10`
+- Trigger: follow-up product-contract clarification after the `CRR-009` fresh review. The user confirmed that a standalone-capable application must package complete application-owned model/runtime defaults, while Studio is an optional override/testing surface. No production source changed; the review classification and score remain unchanged, but the prescribed design direction is refined.
+- Prior Review Round Reviewed: round `9`, `CRR-009`, `Fail — Design Impact`
+- Latest Authoritative Round: `10`
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
@@ -40,12 +40,12 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: the package must run through both real hosts; AC-005/006 require the real Brief bundled team to execute in both hosts with the same selected resource/launch semantics; UC-009 requires missing setup/runtime to become an explicit availability/setup result; native `dev`/`start` are supported clean standalone product paths.
-- Design-spec behavior map verified against the implementation: `Contradicted`. DS-002 stops at mounted business UI, DS-003 begins at an already-issued backend operation, and DS-004 begins after the backend already has a launchable resource. No reviewed spine or owner carries required model/profile input from a supported standalone action into persisted/effective launch configuration. The design self-validation nevertheless marked UC-009 complete and assumed the Brief bundled-team resource default was a runnable launch default.
+- Approved requirements basis understood: the package must run through both real hosts; AC-005/006 require the real Brief bundled team to execute in both hosts with the same selected resource/launch semantics; a standalone-capable package must provide complete application-owned runtime/model defaults for every effective leaf agent; Studio may persist separate overrides for model/runtime experimentation; native `dev`/`start` are supported clean standalone product paths.
+- Design-spec behavior map verified against the implementation: `Contradicted`. DS-002 stops at mounted business UI, DS-003 begins at an already-issued backend operation, and DS-004 begins after the backend already has a launchable resource. No reviewed spine or owner requires, resolves, validates, or carries complete application-owned defaults into effective standalone launch configuration. The design self-validation nevertheless marked UC-009 complete and assumed the Brief bundled-team resource selection was a runnable launch default.
 - Design review report and round confirmed: `ARCH-REV-003`, `Pass`, against `SR-003`; its readiness conclusion is superseded for the affected standalone execution path.
 - Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. The intended both-host behavior is already explicit; the problem is an incomplete reviewed design and implementation, not a new product decision.
-- Remaining material ambiguity, if any: the intended result is clear, but the supported standalone configuration surface/contract and its governing owner were never decided. That is Design Impact, not permission for the reviewer to invent one.
+- Changed or newly discovered behavior, if any: the user clarified the governing configuration contract after `CRR-009`: complete package-owned defaults are the standalone baseline; Studio configuration is an optional non-mutating override. This resolves the earlier ambiguity about whether standalone required a normal setup surface.
+- Remaining material ambiguity, if any: the detailed schema/owner mapping remains solution-design work, but a mandatory standalone setup UI is no longer an open product choice. The reviewed design is still inadequate because it did not specify or enforce the clarified package-default and effective-readiness invariant.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
@@ -54,7 +54,7 @@
 | `BEH-003` | Confirmed | The same package entries remain immutable across exercised hosts and mutable state stays under host data roots. | N/A |
 | `BEH-004` | Contradicted | Studio setup persists a launch profile and completes the real team run. Clean standalone resolves only the bundled resource, reports ready with `launchProfile: null`, then `Generate draft` fails before binding/provider invocation. The real member prompt path also reads team context through a process-global definition fallback and omits the package team's non-empty team instruction. | API-REV-004: `llmModelIdentifier is required`, zero standalone configuration rows, no binding/run/artifacts; final Studio system-prompt evidence contains Agent and Runtime sections but no `Team Instruction` section. |
 | `BEH-005` | Confirmed | Explicit Studio and selected-app standalone compositions, route cardinality, storage roots, process prerequisites, and cleanup remain distinct and real. | N/A |
-| `BEH-006` | Contradicted | The native commands start/build/watch real hosts, but documented clean `pnpm dev`/`start` has no supported resource/model/profile input or setup UI and therefore cannot complete the required representative standalone execution. | API-REV-004 executes the documented command on a fresh data root and reaches the supported app action before failing on missing launch input. |
+| `BEH-006` | Contradicted | The native commands start/build/watch real hosts, but the maintained package supplies only `runtimeKind` and no effective `llmModelIdentifier`; the toolchain does not reject that incomplete standalone package and startup does not resolve it as non-runnable. | API-REV-004 executes the documented command on a fresh data root and reaches the supported app action before failing on missing launch input. |
 | `BEH-007` | Confirmed | Current schemas, migrations, app/platform databases, recovery owners, and package immutability work; F004 is absent configuration, not migration/storage corruption. | N/A |
 
 ## Structural / Design Checks
@@ -63,20 +63,20 @@
 | --- | --- | --- | --- |
 | Task design health assessment is present, evidence-backed, and preserved by the implementation | Fail | `design-self-validation.md` marks UC-009/SV-C21 complete because Brief has a bundled-team default, but the manifest default selects only the resource and supplies no required model/profile. | Reopen the solution basis and correct the false completeness premise. |
 | Implementation matches approved behavior-defining supplemental artifacts | Fail | The supplements promise both-host real execution and setup-required readiness; standalone reports ready and fails only after `Generate draft`. | Revise affected supplemental claims and implement the reviewed replacement. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-002 ends at mounted UI; DS-003/004 assume configuration/launchability. The supported configuration-acquisition path and its return/readiness consequence are absent, violating the Spine Span Sufficiency Rule. | Add a full standalone configuration/execution spine from supported input through readiness and real run outcome. |
-| Ownership boundary preservation and clarity | Fail | No standalone owner receives or obtains required launch configuration. Separately, `MemberTeamContextBuilder` obtains `AgentTeamDefinitionService.getInstance()` instead of the graph-selected service. | Decide the standalone configuration owner and remove the supported application path's definition-authority bypass. |
-| Off-spine concern clarity | Fail | Launch-profile acquisition is treated as incidental readiness detail even though it is a necessary main-line input for AC-005/006. | Put configuration acquisition/validation on the primary path; attach persistence/catalog concerns to its named owner. |
-| Existing capability/subsystem reuse check | Pass | The current configuration service/store, launch-profile contracts, lifecycle readiness, and graph-local definition services are reusable; no parallel subsystem is justified. | Revised design must choose how supported standalone input reaches these existing owners. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-002 ends at mounted UI; DS-003/004 assume configuration/launchability. The package-default -> optional host override -> effective profile -> host validation -> readiness -> execution path is absent, violating the Spine Span Sufficiency Rule. | Add that complete host-neutral resolution/execution spine and its real run outcome. |
+| Ownership boundary preservation and clarity | Fail | No owner enforces complete package defaults or resolves them with optional host overrides before readiness. Separately, `MemberTeamContextBuilder` obtains `AgentTeamDefinitionService.getInstance()` instead of the graph-selected service. | Assign one effective-launch-configuration owner and remove the supported application path's definition-authority bypass. |
+| Off-spine concern clarity | Fail | Effective launch-profile resolution is treated as incidental readiness detail even though it is a necessary main-line input for AC-005/006. | Put package-default resolution and validation on the primary path; keep override persistence as an optional host concern attached to the same contract. |
+| Existing capability/subsystem reuse check | Pass | The current configuration service/store, launch-profile contracts, lifecycle readiness, and graph-local definition services are reusable; no parallel subsystem is justified. | Revised design must make application-owned defaults the baseline consumed by these owners; persistence is needed only for explicit overrides. |
 | Reusable owned structures check | Pass | Current execution-resource and launch-profile structures are shared across hosts; no duplicate package-specific launch model was added. | Preserve shared contracts while tightening their readiness semantics. |
 | Shared-structure/data-model tightness check | Fail | `ApplicationExecutionResourceConfigurationView.status = READY` with `launchProfile: null` is consumed by lifecycle as application-ready although the selected resource cannot produce the required launch. One status is serving resource selection and runnable readiness inconsistently. | Define a truthful authoritative runnable-configuration/readiness projection without overlapping meanings. |
 | Repeated coordination ownership check | Fail | Studio UI gates required model input, lifecycle performs a weaker readiness check, and the SDK finally throws at launch. Runnable-configuration policy has no single owner. | Assign the invariant to one authoritative boundary and make UI/standalone/lifecycle consume it. |
 | Empty indirection check | Pass | Composition, lifecycle, gateway, and SDK boundaries perform real work; no new pass-through-only layer was found. | None. |
 | Scope-appropriate separation of concerns and file responsibility clarity | Pass | Changed files are generally cohesive and paths match responsibilities; the architecture failure is missing ownership/wiring, not indiscriminate file mixing. | Preserve current file clarity in the redesign. |
 | Ownership-driven dependency check | Fail | Standalone execution lacks the required configuration dependency; mixed-team prompt construction silently selects a process-global definition service outside the graph owner. | Make both dependencies explicit from their governing composition/owner. |
-| Authoritative Boundary Rule check | Fail | The application graph owns the exact package definition services, yet member prompt construction bypasses that authority. Standalone runtime ingress is exposed without an authoritative supported setup/configuration entrypoint. | Keep callers on one graph/configuration authority; do not use hidden global or direct-store workarounds. |
+| Authoritative Boundary Rule check | Fail | The application graph owns the exact package definition services, yet member prompt construction bypasses that authority. Standalone runtime ingress is exposed without an authoritative effective-configuration resolver enforcing package completeness and host resolvability. | Keep callers on one graph/configuration authority; do not use hidden global, copied-database, or direct-store workarounds. |
 | File placement check | Pass | Existing configuration, lifecycle, CLI, host, and team-context files are in their owning subsystems. | The revised design should map any new surface only after ownership is decided. |
 | Flat-vs-over-split layout judgment | Pass | The implementation is navigable and not artificially fragmented; source threshold review found no oversized changed implementation file. | None. |
-| Interface/API/query/command/service-method boundary clarity | Fail | `dev`/`start` and standalone REST expose no profile/setup contract; lifecycle accepts a resource-only `READY` view as runnable. | Specify the supported standalone input/API and the setup-required/readiness contract. |
+| Interface/API/query/command/service-method boundary clarity | Fail | Package validation does not require complete launch defaults, Studio override precedence is not the governing shared contract, and lifecycle accepts a resource-only `READY` view as runnable. | Specify the package-default schema, optional override precedence, and exact runnable/non-runnable readiness contract. |
 | Naming quality and naming-to-responsibility alignment check | Fail | Most naming is strong, but `READY` is misleading at the lifecycle boundary when mandatory launch input is absent. | Make status names/meanings align with the chosen resource-ready versus run-ready ownership model. |
 | No unjustified duplication of code / repeated structures in changed scope | Pass | Shared host-neutral SDK, gateway, orchestration, package, and runtime owners are reused. | Do not solve F004 with a package-specific profile copy or second config model. |
 | Patch-on-patch complexity control | Pass | Prior fixes removed concrete bypasses without catalog merges, compatibility aliases, or ID special cases; the current defects are not caused by accumulated fallback machinery. | Re-enter architecture rather than applying another isolated workaround. |
@@ -120,8 +120,8 @@ None. The process-global defaults identified by the dependency audit are not aut
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: current devkit/custom-application/Brief documentation says `dev`/`start` are real standalone flows and describes host-managed launch setup, but it does not state any supported standalone way to obtain required launch input. The docs currently overstate executable standalone behavior for the representative app.
-- Files or areas likely affected: `autobyteus-application-devkit/README.md`; `applications/brief-studio/README.md`; `docs/custom-application-development.md`; command help/options; any new standalone setup/configuration contract chosen upstream.
+- Why: current devkit/custom-application/Brief documentation says `dev`/`start` are real standalone flows, but the package does not declare a complete model launch default and the documentation does not establish complete package-owned defaults as the standalone contract or Studio configuration as an override.
+- Files or areas likely affected: `autobyteus-application-devkit/README.md`; `applications/brief-studio/README.md`; `docs/custom-application-development.md`; package/agent/team configuration documentation; Studio override/reset documentation.
 
 ## Material Premise Validation
 
@@ -142,7 +142,7 @@ None. The process-global defaults identified by the dependency audit are not aut
 | `MP-CR-004` | Confirmed | API-REV-003/004 retain exact package-team visibility and Studio entry. |
 | `MP-CR-005` | Confirmed | API-REV-004 proves the corrected graph-local allocator and complete real Studio team run. |
 
-### `MP-CR-006` — Clean standalone reaches a required team launch without a usable host-managed profile
+### `MP-CR-006` — Clean standalone reaches a required team launch without a complete effective package-owned profile
 
 - Origin: `New`
 - Related approved requirement or established contract: `BEH-004`, `BEH-006`; `UC-004`, `UC-009`, `UC-015`, `UC-018`; `AC-005`, `AC-006`, `AC-011`, `AC-013`.
@@ -151,9 +151,9 @@ None. The process-global defaults identified by the dependency audit are not aut
 - Independent product-supported initiating trigger or applicable governing contract: a developer/operator runs the documented `pnpm dev` from the Brief application folder with a fresh writable data root; the user opens the exposed standalone Brief UI, creates a brief, and clicks `Generate draft`.
 - Support evidence: the command and root UI/actions are documented product surfaces; API-REV-004 used the exact command, real host, real Chrome, and application API without hidden-state mutation.
 - Forward current production path: `pnpm dev -> devkit pack -> startStandaloneApplicationHost(package/id/data/network) -> selected standalone composition -> / -> Brief UI -> Create brief -> Generate draft -> backend resolveDraftingTeamConfiguration -> configuration service returns bundled resource with launchProfile null/status READY -> buildConfiguredTeamRunLaunch -> require llmModelIdentifier`.
-- Lifecycle preconditions and material consequence: the new data root has no stored launch profile; CLI/config/routes/UI expose no supported way to create one. The application reports ready and accepts business input, then becomes blocked before binding, run, provider, notification continuation, or artifacts.
+- Lifecycle preconditions and material consequence: the package agents declare `runtimeKind` but no `llmModelIdentifier`; the new data root appropriately has no Studio override. The application reports ready and accepts business input, then becomes blocked before binding, run, provider, notification continuation, or artifacts.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: drives `CR-006` and `CR-007`; the missing product spine/owner requires solution redesign, while hidden database copying, environment-specific package defaults, or a test-only seed are not valid fixes.
+- Review consequence / proportionate response: drives `CR-006` and `CR-007`; the missing package-default/effective-resolution spine and owner require solution redesign. Complete portable runtime/model selection belongs in the package, while credentials, secrets, machine-local endpoints, hidden database copying, silent provider selection, and test-only seeds do not.
 
 ### `MP-CR-008` — A real package-owned team run silently loses its team instruction through a global definition lookup
 
@@ -176,10 +176,10 @@ None. The process-global defaults identified by the dependency audit are not aut
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 7.2 | Host/package/backend/event spines are otherwise detailed. | The required standalone configuration-acquisition spine is absent and UC-009 was incorrectly marked complete. | Add the complete supported input -> authoritative config -> readiness -> real run/result spine. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 7.4 | Composition and graph owners are explicit in most changed code. | Standalone launch configuration has no owner; member prompt construction bypasses the graph definition authority. | Decide one configuration owner and inject exact graph authority throughout reachable team construction. |
-| `3` | `API / Interface / Query / Command Clarity` | 7.5 | Existing host-neutral SDK and selected-app ingress are narrow. | No standalone setup/config input exists; lifecycle treats resource-only readiness as runnable. | Define the product/API contract and explicit setup-required outcome. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | Changed files and folders remain cohesive and appropriately placed. | The redesign may require one new surface after ownership is decided. | Preserve responsibility-led placement; avoid a generic setup helper. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 7.2 | Host/package/backend/event spines are otherwise detailed. | The required package defaults -> effective resolution -> host validation -> readiness spine is absent and UC-009 was incorrectly marked complete. | Add the complete authoritative configuration -> readiness -> real run/result spine. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 7.4 | Composition and graph owners are explicit in most changed code. | Effective launch configuration has no single owner; member prompt construction bypasses the graph definition authority. | Assign one resolver/validator authority and inject exact graph authority throughout reachable team construction. |
+| `3` | `API / Interface / Query / Command Clarity` | 7.5 | Existing host-neutral SDK and selected-app ingress are narrow. | Package completeness and override precedence are unspecified; lifecycle treats resource-only readiness as runnable. | Define the package-default, optional-override, and explicit non-runnable contracts. |
+| `4` | `Separation of Concerns and File Placement` | 9.1 | Changed files and folders remain cohesive and appropriately placed. | The redesign must refine existing definition/configuration/readiness owners. | Preserve responsibility-led placement; do not add a mandatory standalone setup subsystem. |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 8.0 | Shared resource/profile structures avoid host-specific copies. | `READY` is consumed with two meanings and runnable policy is split across UI/lifecycle/SDK. | Define one tight readiness projection/invariant used by both hosts. |
 | `6` | `Naming Quality and Local Readability` | 8.8 | Most names and local code are clear. | `READY` materially overstates the lifecycle state when mandatory launch input is absent. | Align status terminology with its exact responsibility. |
 | `7` | `API/E2E Readiness` | 7.0 | Repository tests, Studio live execution, cleanup, and integrity are strong. | A critical documented standalone journey fails; prompt authority lacks durable proof. | Re-enter design/architecture, implement, then rerun both exact scenarios before the remaining matrix. |
@@ -210,16 +210,16 @@ None. The process-global defaults identified by the dependency audit are not aut
 - Status: `Resolved and API/E2E-confirmed`.
 - Verification: API-REV-004's direct non-fake regression passes and the real package researcher/writer allocate, invoke `LMStudioLLM`, publish two artifacts, and reach `in_review`.
 
-### `CR-006` — Missing supported standalone launch-configuration spine and owner
+### `CR-006` — Incomplete standalone package-default/effective-configuration spine and owner
 
 - Status: `Open`
 - Severity / confidence: `Major` / `High`
 - Classification: `Design Impact`
 - Affected approved behavior: `BEH-004`, `BEH-006`; `UC-004`, `UC-009`, `UC-015`, `UC-018`; `AC-005`, `AC-006`, `AC-011`, `AC-013`.
 - Material premise: `MP-CR-006` (`Reachable`).
-- Evidence: the Brief manifest selects a default bundled team but declares model/profile fields separately; the app says model defaults come from host-managed launch setup; Studio owns a setup surface and persists a profile; standalone CLI/config/routes/bootstrap expose only package/id/data/network/runtime ingress; a clean data root has zero configuration rows and the real action fails with `llmModelIdentifier is required`.
-- Why this is architectural: a required main-line input has no supported initiating surface, governing owner, or end-to-end spine. The reviewed design incorrectly equated a resource default with runnable launch semantics and could not derive a valid implementation API from ownership.
-- Required action: `solution_designer` must decide and specify the supported clean-standalone configuration journey and owner, reconcile the no-setup-UI assumption if necessary, map the full spine and APIs, and send the revised package through architecture review. Do not patch by copying Studio data, seeding SQLite, embedding environment-specific models in the package, or silently choosing a provider.
+- Evidence: the Brief manifest selects a default bundled team; its researcher/writer `defaultLaunchConfig` values contain only `runtimeKind: autobyteus` and omit `llmModelIdentifier`; Studio persists a working override; clean standalone has no override and the real action fails with `llmModelIdentifier is required`.
+- Why this is architectural: the reviewed package contract does not require complete application-owned launch defaults, and no single owner resolves package defaults plus optional host overrides and validates the result before readiness. The reviewed design incorrectly equated resource selection with runnable launch semantics.
+- Required action: `solution_designer` must specify complete package-owned launch defaults for every effective leaf agent, precedence (`host/Studio override > application team/member default > agent default` or an equally explicit reviewed rule), one effective-configuration resolver/validator, and the complete build/start/readiness/execution spine. A mandatory standalone setup UI is not required. Do not patch by copying Studio data, pre-seeding SQLite, embedding credentials/secrets/machine-local endpoints, or silently choosing a provider.
 
 ### `CR-007` — Standalone readiness reports success without required runnable launch input
 
@@ -229,8 +229,8 @@ None. The process-global defaults identified by the dependency audit are not aut
 - Affected approved behavior: `BEH-004`, `BEH-006`; `UC-009`, `UC-012`; `AC-005`, `AC-006`.
 - Material premise: `MP-CR-006` (`Reachable`).
 - Evidence: `ApplicationExecutionResourceConfigurationService` returns `READY` with `launchProfile: null`; `ApplicationRuntimeDefinitionValidator.validateLaunchProfile()` returns immediately for null; lifecycle therefore reports ready and serves the business UI. Studio separately knows a model is required, while the SDK throws only after the business action.
-- Why this is not safely isolated as a local fix: changing readiness alone would make clean standalone exit setup-required, which is more truthful but still cannot satisfy AC-005/006 because CR-006 defines no supported way to become configured.
-- Required action: the revised design must define one authoritative runnable-configuration invariant and explicit setup-required outcome, then align configuration status/readiness, Studio gating, standalone startup, and launch validation to it.
+- Why this is not safely isolated as a local fix: changing readiness alone would truthfully reject the current package but still would not satisfy AC-005/006 until CR-006 defines and enforces complete package defaults and their override semantics.
+- Required action: the revised design must define one authoritative runnable-configuration invariant, reject incomplete standalone-capable packages during build/validation, reject unavailable declared model/runtime or missing credentials before business execution, and align Studio overrides, standalone startup, lifecycle readiness, and launch validation to it. Prefer distinct `INVALID_PACKAGE`, `HOST_REQUIREMENT_MISSING`, and `RUNNABLE` meanings rather than overloading `READY`.
 
 ### `CR-008` — Mixed-team member prompts bypass the graph-local team-definition authority
 
@@ -256,11 +256,11 @@ The broader composition-default audit found no additional finding that meets the
 
 ## Residual Risks
 
-- The exact standalone setup/configuration contract is intentionally not invented by this review.
-- After redesign and implementation, API/E2E must rerun clean standalone `APIE2E-BRIEF-003` first, prove the setup-required/configured transitions, then prove real team/provider/events/artifacts and both-host parity/digests.
+- The user has now fixed the product direction: complete application-owned defaults are foundational, and Studio is an optional override/testing surface. Exact schema and owner mapping still require solution and architecture review.
+- After redesign and implementation, API/E2E must rerun clean standalone `APIE2E-BRIEF-003` from a fresh data root and prove a real run from package defaults without a setup UI or preseeded configuration row; it must also prove Studio override and reset-to-default behavior plus negative incomplete-package/host-requirement outcomes.
 - The package team-instruction boundary needs direct durable coverage and a live prompt-semantic recheck.
 - Remaining starter/Socratic/full command matrix and fresh explicit Studio remount repetition remain downstream after the blockers resolve.
-- General singleton/default seams remain an audit watchlist, not findings absent a supported initiating path. Every newly added configuration path must inject exact graph authorities and be reviewed against the Authoritative Boundary Rule.
+- General singleton/default seams remain an audit watchlist, not findings absent a supported initiating path. The effective-configuration path and every override adapter must consume exact graph authorities and be reviewed against the Authoritative Boundary Rule.
 
 ## Latest Authoritative Result
 
@@ -268,6 +268,6 @@ The broader composition-default audit found no additional finding that meets the
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — both material premises are independently product-reachable and forward-traced.
 - Score Summary: `8.1/10` (`81/100`); data-flow, ownership, API, data-model, naming, API/E2E, and runtime categories are below the clean-pass threshold.
-- Failure Origin: `APIE2E-F004` is `Design Impact`: the reviewed standalone architecture has no supported launch-configuration spine/owner and its readiness invariant is incomplete. The full audit also found `CR-008`, a separate reachable graph-authority bypass in team prompt construction.
+- Failure Origin: `APIE2E-F004` is `Design Impact`: the reviewed standalone architecture does not require or resolve complete application-owned launch defaults and its readiness invariant is incomplete. The full audit also found `CR-008`, a separate reachable graph-authority bypass in team prompt construction.
 - Recommended Recipient: `solution_designer`
-- Notes: this is the requested fresh complete review. There is now a confirmed architecture issue; another isolated implementation fix would be inappropriate until the configuration/readiness boundary is redesigned and architecture-reviewed.
+- Notes: `CRR-010` preserves the requested fresh review result while superseding its earlier mandatory-setup-oriented remedy. There is a confirmed architecture issue, but the revised solution should simplify around complete package defaults plus optional Studio overrides rather than add a second mandatory setup surface.

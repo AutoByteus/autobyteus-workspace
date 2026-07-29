@@ -13,6 +13,7 @@
 | `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` | `Pass` | `Fail — Local Fix` | `CR-005`, `APIE2E-F003` |
 | `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-005`, `APIE2E-F003` |
 | `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / `API-REV-004` + user-requested full audit | `Pass` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
+| `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Review clarification / user-confirmed package-default contract | `Fail — Design Impact` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
 
 ## Revision Entries
 
@@ -258,3 +259,30 @@ None.
 - Material score or classification changes: refreshed full score changes from `9.2/10` (`92/100`) to `8.1/10` (`81/100`). Result changes from `Pass` to `Fail — Design Impact`; the prior design-completeness, data-flow, ownership, authoritative-boundary, API/readiness, and runtime-fidelity conclusions are superseded for these paths.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: the exact standalone setup/configuration product contract must be decided upstream; after architecture review and implementation, API/E2E must reprove clean standalone configuration/execution, package team prompt semantics, both-host parity/digests, and the remaining command/remount matrix. General singleton/default seams remain watchlist items only where no supported path has been established.
+
+### CRR-010 — User clarification simplifies the standalone configuration remedy
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review Clarification`, round `10`
+- Triggering role, report path, and finding or scenario IDs: user clarification after the `CRR-009` fresh review; `CR-006`, `CR-007`, `CR-008`, `APIE2E-BRIEF-003`, `APIE2E-F004`
+- Relevant solution revision IDs: `SR-003` (revision by `solution_designer` pending)
+- Relevant architecture-review revision IDs: `ARCH-REV-003` (new architecture review pending)
+- Relevant implementation revision IDs: `IR-001`–`IR-005`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Design Impact` (`CRR-009`)
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: the user confirmed that every standalone-capable application must package complete application-owned runtime/model defaults for every effective leaf agent, while Studio is an optional non-mutating override and experimentation surface. This resolves the earlier uncertainty about a normal standalone setup journey. The architecture finding remains because the reviewed design and implementation neither require complete package defaults nor resolve and validate them before readiness, but the proper solution is now simpler and more precise.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-006` | Open — Design Impact | Open — Design Impact, remedy refined | `CRR-009`, `CRR-010`, `API-REV-004` | Brief researcher/writer definitions still omit `llmModelIdentifier`; the user-established contract now makes package-default completeness—not a mandatory standalone setup surface—the required baseline. |
+| `CR-007` | Open — Design Impact | Open — Design Impact, invariant refined | `CRR-009`, `CRR-010`, `API-REV-004` | `READY` with `launchProfile: null` remains false; revised design must distinguish invalid package, missing host requirement, and runnable state before business execution. |
+| `CR-008` | Open — bounded implementation defect | Remains Open | `CRR-009`, `CRR-010`, `API-REV-004` | User clarification does not change the independently reachable package team-instruction authority bypass. |
+
+- New or remaining finding IDs: `CR-006`, `CR-007`, `CR-008`; linked `APIE2E-F004`.
+- Material score or classification changes: no score or routing change; refreshed full score remains `8.1/10` (`81/100`) and the package remains `Fail — Design Impact`. The required remedy is superseded from a normal standalone setup/configuration surface to complete package defaults plus optional host overrides and strict host validation.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: exact schema placement and effective-configuration owner must be specified in the revised solution and architecture-reviewed. API/E2E must prove fresh-root standalone execution from package defaults, Studio override/reset behavior, negative package/host validation, and the independent CR-008 prompt-authority fix.
