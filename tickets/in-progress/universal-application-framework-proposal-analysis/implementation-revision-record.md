@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer; `design-review-report.md`; architecture round 3 | `N/A` | `Initial Baseline` | `SR-003`, `ARCH-REV-003`; `CRR/API-REV/DR: N/A` | `Ready for source review` |
 | IR-002 | Code reviewer; `code-review-report.md`; `CRR-001` | `CR-001`, `CR-002` | `Local Fix` | `SR-003`, `ARCH-REV-003`, `CRR-001`; `API-REV/DR: N/A` | `Ready for source re-review` |
+| IR-003 | Code reviewer; `code-review-report.md`; `CRR-003` / `API-REV-001` | `CR-003`, `APIE2E-F001` | `Local Fix` | `SR-003`, `ARCH-REV-003`, `CRR-003`, `API-REV-001`; `DR: N/A` | `Ready for source re-review` |
 
 ## Revision Entries
 
@@ -50,3 +51,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: source commit `0762cd7e37122e0c6c4e5d4ed463a28c9030d38f`; devkit build/test passed 19/19; focused real filesystem watcher/config/manifest and Studio selection scenarios passed; a real system-Chrome headless smoke observed root navigation before and after same-port server replacement through the retained browser session; Brief Studio and Socratic package build/validate passed; diff and source-size checks passed.
 - Next recipient or routing: `code_reviewer` for implementation-source and structural re-review.
 - Remaining limitations or risks: API/E2E still owns full application-folder command execution, repeated live edit/reload behavior, live Studio connection/remount, graph isolation, package immutability, worker recovery, and cleanup/leak evidence. Existing stale REST test validity remains API/E2E-owned after source review passes.
+
+### IR-003 — Reuse and refresh registered Studio packages on repeated edits
+
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-003`, triggered by API/E2E round `API-REV-001`.
+- Triggering finding IDs: `CR-003`, `APIE2E-007`, `APIE2E-F001`
+- Classification: `Local Fix`
+- Prior authoritative result: `Ready for source re-review` (`IR-002`); source review subsequently passed in `CRR-002`, then API/E2E produced `Fail / 89%` (`API-REV-001`) and focused review classified `Fail — Local Fix` (`CRR-003`).
+- Current authoritative result: `Ready for source re-review`
+- Related solution revision IDs: `SR-003`
+- Related architecture-review revision IDs: `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-003` (`CRR-002` is the superseded source-pass entry)
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: real repeated Brief `dev:studio` edits proved that IR-002 unconditionally re-imported a root already registered during the initial development build. The server correctly rejected the second registration before identity selection or backend reload.
+- Approved behavior or requirement IDs affected: `BEH-006`; `UC-015`; `AC-011`; `DS-006`.
+- Implementation delta: `StudioApplicationClient.ensureLocalPackage()` now resolves the package root before deciding registration. An absent root uses the existing import mutation once. An existing root uses the new `reloadApplicationPackage` Studio mutation, which delegates to the existing `ApplicationPackageRegistryService.reloadPackage()` cache/catalog refresh owner without changing root uniqueness. Only after import or refresh does the devkit resolve the current manifest-local/canonical application identity; `StudioDevelopmentSession` then invokes the existing backend reload/re-entry endpoint.
+- Changed files or areas: `autobyteus-application-devkit/src/development/studio-application-client.ts`; `autobyteus-server-ts/src/api/graphql/types/application-packages.ts`; canonical `implementation-handoff.md` and this revision record. API/E2E-owned uncommitted tests, reports, and evidence were preserved exactly and are not part of the implementation source commit.
+- Local validation and result: source commit `b0eaa5f8aa9bce49be61a916349e04eb5c2eb28f`; devkit build and server TypeScript no-emit check passed; existing application-package service tests passed 13/13; a disposable ordering probe passed initial import and two existing-root refresh generations with current renamed identities and backend reload after selection, with no repeated import. The shared-worktree devkit suite is 18/19 because the preserved API/E2E-owned regression mock does not yet model the new package-reload mutation; its extension and rerun remain API/E2E-owned.
+- Next recipient or routing: `code_reviewer` for implementation-source and structural re-review; after Pass, return to `api_e2e_engineer` for the full rerun and durable-test update.
+- Remaining limitations or risks: no implementation-stage live Studio environment was started for this local fix. The full repeated-edit live proof, Studio remount, remaining command matrix, dual-host parity/digests, and proportional review of API/E2E durable changes remain pending. The preserved API/E2E-owned Studio regression must be extended to assert package reload/current identity/backend reload ordering during rerun.
