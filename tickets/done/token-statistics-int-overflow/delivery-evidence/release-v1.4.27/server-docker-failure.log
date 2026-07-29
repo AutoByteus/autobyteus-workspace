@@ -1,0 +1,349 @@
+Build And Push Server Image	Build and push default multi-arch image	﻿2026-07-29T05:27:03.6205420Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6206647Z ##[group]Run docker/build-push-action@v6
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6206938Z with:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6207137Z   context: .
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6207484Z   file: ***-server-ts/docker/Dockerfile.monorepo
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6207841Z   build-args: CLI_INSTALL_CACHE_BUSTER=30425051361
+Build And Push Server Image	Build and push default multi-arch image
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6208173Z   platforms: linux/amd64,linux/arm64
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6208614Z   push: true
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6208826Z   provenance: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6209051Z   sbom: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6209334Z   cache-from: type=gha,scope=release-server-docker-default
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6209900Z   cache-to: type=gha,mode=max,scope=release-server-docker-default
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6210462Z   tags: ***/***-server:1.4.27
+Build And Push Server Image	Build and push default multi-arch image	***/***-server:latest
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6210757Z   load: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6210971Z   no-cache: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6211190Z   pull: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6213740Z   github-token: ***
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6213963Z env:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6214237Z   DEFAULT_IMAGE_NAME: ***/***-server
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.6214516Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8597965Z (node:3311) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8599188Z (Use `node --trace-deprecation ...` to show where the warning was created)
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8618095Z ##[group]GitHub Actions runtime token ACs
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8625611Z refs/heads/refs/tags/v1.4.27: read/write
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8626234Z refs/heads/personal: read
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8626904Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8627476Z ##[group]Docker info
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8673511Z [command]/usr/bin/docker version
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8888691Z Client: Docker Engine - Community
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8889288Z  Version:           28.0.4
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8889940Z  API version:       1.48
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8912906Z  Go version:        go1.23.7
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8913676Z  Git commit:        b8034c0
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8914092Z  Built:             Tue Mar 25 15:07:16 2025
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8914560Z  OS/Arch:           linux/amd64
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8914953Z  Context:           default
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8915172Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8915343Z Server: Docker Engine - Community
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8915727Z  Engine:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8915952Z   Version:          28.0.4
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8916229Z   API version:      1.48 (minimum version 1.24)
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8916560Z   Go version:       go1.23.7
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8916816Z   Git commit:       6430e49
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8917087Z   Built:            Tue Mar 25 15:07:16 2025
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8917374Z   OS/Arch:          linux/amd64
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8917626Z   Experimental:     false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8917868Z  containerd:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8918085Z   Version:          v2.2.6
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8918388Z   GitCommit:        11ce9d5f3c68c941867e82890e93e815c1304f1b
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8918706Z  runc:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8918900Z   Version:          1.3.6
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8919147Z   GitCommit:        v1.3.6-0-g491b69ba
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8919455Z  docker-init:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8919930Z   Version:          0.19.0
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8920291Z   GitCommit:        de40ad0
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.8931880Z [command]/usr/bin/docker info
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9470908Z Client: Docker Engine - Community
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9480264Z  Version:    28.0.4
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9480669Z  Context:    default
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9480997Z  Debug Mode: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9481321Z  Plugins:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9481656Z   buildx: Docker Buildx (Docker Inc.)
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9482067Z     Version:  v0.35.0
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9482529Z     Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9483591Z   compose: Docker Compose (Docker Inc.)
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9484037Z     Version:  v2.38.2
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9484478Z     Path:     /usr/libexec/docker/cli-plugins/docker-compose
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9484857Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9484984Z Server:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9485274Z  Containers: 1
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9485581Z   Running: 1
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9485877Z   Paused: 0
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9486165Z   Stopped: 0
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9486469Z  Images: 2
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9486777Z  Server Version: 28.0.4
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9487137Z  Storage Driver: overlay2
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9487494Z   Backing Filesystem: extfs
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9487884Z   Supports d_type: true
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9488705Z   Using metacopy: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9489048Z   Native Overlay Diff: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9489417Z   userxattr: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9490375Z  Logging Driver: json-file
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9490741Z  Cgroup Driver: systemd
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9491092Z  Cgroup Version: 2
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9491436Z  Plugins:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9491775Z   Volume: local
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9492146Z   Network: bridge host ipvlan macvlan null overlay
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9492752Z   Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9493323Z  Swarm: inactive
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9493660Z  Runtimes: io.containerd.runc.v2 runc
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9494074Z  Default Runtime: runc
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9494413Z  Init Binary: docker-init
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9494850Z  containerd version: 11ce9d5f3c68c941867e82890e93e815c1304f1b
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9495320Z  runc version: v1.3.6-0-g491b69ba
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9495725Z  init version: de40ad0
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9500406Z  Security Options:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9500804Z   apparmor
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9501110Z   seccomp
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9501410Z    Profile: builtin
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9501743Z   cgroupns
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9502067Z  Kernel Version: 6.17.0-1020-azure
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9502511Z  Operating System: Ubuntu 24.04.4 LTS
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9502989Z  OSType: linux
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9503331Z  Architecture: x86_64
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9503676Z  CPUs: 4
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9503981Z  Total Memory: 15.61GiB
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9504340Z  Name: runnervmvrwv9
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9504868Z  ID: dce1e4a9-fc26-4218-aaf0-feee5194c8cb
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9505341Z  Docker Root Dir: /var/lib/docker
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9505750Z  Debug Mode: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9506198Z  Username: ***
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9506543Z  Experimental: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9506906Z  Insecure Registries:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9507278Z   ::1/128
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9507569Z   127.0.0.0/8
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9507903Z  Live Restore Enabled: false
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9508170Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9508659Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9509239Z ##[group]Proxy configuration
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9510080Z No proxy configuration found
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:03.9510677Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.0187375Z ##[group]Buildx version
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.0209994Z [command]/usr/bin/docker buildx version
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.0686569Z github.com/docker/buildx v0.35.0 a319e5b15052cf6557ceb666eb8ff6e32380b782
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.0721183Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.0721651Z ##[group]Builder info
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1558428Z {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1558836Z   "nodes": [
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1559075Z     {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1559416Z       "name": "builder-1ea24552-b0ca-4ffe-9153-d9914e619d980",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1560637Z       "endpoint": "unix:///var/run/docker.sock",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1561030Z       "status": "running",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1561592Z       "buildkitd-flags": "--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1562171Z       "buildkit": "v0.31.2",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1562903Z       "platforms": "linux/amd64,linux/amd64/v2,linux/amd64/v3,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/loong64,linux/arm/v7,linux/arm/v6",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1563652Z       "features": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1564270Z         "Automatically load images to the Docker Engine image store": true,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1564686Z         "Cache export": true,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1564960Z         "Direct push": true,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1565214Z         "Docker exporter": true,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1565481Z         "Multi-platform build": true,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1565762Z         "OCI exporter": true
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1566051Z       },
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1566275Z       "labels": {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1566565Z         "org.mobyproject.buildkit.worker.executor": "oci",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1567003Z         "org.mobyproject.buildkit.worker.hostname": "5e8f18a0524f",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1567593Z         "org.mobyproject.buildkit.worker.network": "host",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1568038Z         "org.mobyproject.buildkit.worker.oci.process-mode": "sandbox",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1568507Z         "org.mobyproject.buildkit.worker.selinux.enabled": "false",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1568938Z         "org.mobyproject.buildkit.worker.snapshotter": "overlayfs"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1569287Z       },
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1569671Z       "gcPolicy": [
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1569988Z         {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1570269Z           "all": false,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1570608Z           "filter": [
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1571089Z             "type==source.local type==exec.cachemount type==source.git.checkout"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1571504Z           ],
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1571719Z           "keepDuration": "48h0m0s",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1572000Z           "maxUsedSpace": "488.3MiB"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1572248Z         },
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1572447Z         {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1572639Z           "all": false,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1572905Z           "keepDuration": "1440h0m0s",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1573174Z           "reservedSpace": "9.313GiB",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1573437Z           "maxUsedSpace": "93.13GiB",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1573702Z           "minFreeSpace": "27.01GiB"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1573941Z         },
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1574134Z         {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1574332Z           "all": false,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1574582Z           "reservedSpace": "9.313GiB",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1574891Z           "maxUsedSpace": "93.13GiB",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1575174Z           "minFreeSpace": "27.01GiB"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1575423Z         },
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1575617Z         {
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1575826Z           "all": true,
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1576060Z           "reservedSpace": "9.313GiB",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1576320Z           "maxUsedSpace": "93.13GiB",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1576585Z           "minFreeSpace": "27.01GiB"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1576823Z         }
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1577006Z       ]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1577194Z     }
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1577393Z   ],
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1577668Z   "name": "builder-1ea24552-b0ca-4ffe-9153-d9914e619d98",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1578005Z   "driver": "docker-container",
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1578298Z   "lastActivity": "2026-07-29T05:27:00.000Z"
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1578592Z }
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.1579065Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.2277170Z [command]/usr/bin/docker buildx build --build-arg CLI_INSTALL_CACHE_BUSTER=30425051361 --cache-from type=gha,scope=release-server-docker-default --cache-to type=gha,mode=max,scope=release-server-docker-default --file ***-server-ts/docker/Dockerfile.monorepo --iidfile /home/runner/work/_temp/docker-actions-toolkit-S9yKpM/build-iidfile-7918882414.txt --platform linux/amd64,linux/arm64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --tag ***/***-server:1.4.27 --tag ***/***-server:latest --metadata-file /home/runner/work/_temp/docker-actions-toolkit-S9yKpM/build-metadata-c22b239e49.json --push .
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.5456435Z #0 building with "builder-1ea24552-b0ca-4ffe-9153-d9914e619d98" instance using docker-container driver
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.5456934Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.5457128Z #1 [internal] load build definition from Dockerfile.monorepo
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.5457692Z #1 transferring dockerfile: 4.12kB 0.0s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.5458618Z #1 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.5458819Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.5459152Z #2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.7087363Z #2 ...
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.7087597Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.7087831Z #3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.7088207Z #3 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.8580377Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.8581078Z #2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:04.9430920Z #2 DONE 0.5s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.0457686Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.0461137Z #4 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.0463195Z #4 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.0464352Z #4 sha256:50ba52cd6a2c01eaf1a9efbedc7c75b5da5e3965c1586001c722980487a73fd7 14.36MB / 14.36MB 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.1672136Z #4 extracting sha256:50ba52cd6a2c01eaf1a9efbedc7c75b5da5e3965c1586001c722980487a73fd7 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.1673043Z #4 DONE 0.2s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.2950572Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.2951210Z #5 [auth] library/node:pull token for registry-1.docker.io
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.2951614Z #5 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.2951746Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.2952054Z #6 [auth] ***/chrome-vnc:pull token for registry-1.docker.io
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.4454844Z #6 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.4455104Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.4455512Z #7 [linux/arm64 internal] load metadata for docker.io/***/chrome-vnc:latest
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.5747857Z #7 ...
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.5748096Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.5748406Z #8 [linux/amd64 internal] load metadata for docker.io/library/node:22-bookworm
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.5748973Z #8 DONE 0.3s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.7251697Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.7252486Z #9 [linux/arm64 internal] load metadata for docker.io/library/node:22-bookworm
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.7460976Z #9 DONE 0.5s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.7461661Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.7462372Z #10 [linux/amd64 internal] load metadata for docker.io/***/chrome-vnc:latest
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9254352Z #10 DONE 0.7s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9254975Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9255752Z #7 [linux/arm64 internal] load metadata for docker.io/***/chrome-vnc:latest
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9256387Z #7 DONE 0.6s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9256566Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9256682Z #11 [internal] load .dockerignore
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9256983Z #11 transferring context: 282B done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:05.9257364Z #11 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1325841Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1326412Z #12 [internal] load build context
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1326809Z #12 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1326943Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1327727Z #13 [linux/amd64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1328984Z #13 resolve docker.io/***/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029 done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1330008Z #13 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1330196Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1330787Z #14 [linux/amd64 builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1332078Z #14 resolve docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37 done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1332863Z #14 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1333033Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.1333255Z #15 importing cache manifest from gha:16358560425420853741
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.2144544Z #15 DONE 0.2s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3233167Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3239010Z #16 [linux/arm64 runtime  1/23] FROM docker.io/***/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3251361Z #16 resolve docker.io/***/chrome-vnc:latest@sha256:f5a12a4fc553d40158b6d6c5f87e3ea0a2bcfbc71e3cb8153f7a3aa310241029 done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3262949Z #16 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3263664Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3293844Z #17 [linux/arm64 builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3301147Z #17 resolve docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37 done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3310187Z #17 DONE 0.0s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3310624Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:06.3310994Z #12 [internal] load build context
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1406265Z #12 transferring context: 37.73MB 0.9s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1406950Z #12 DONE 0.9s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1407108Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1407405Z #18 [linux/arm64 builder  4/20] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1409653Z #18 CACHED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1409980Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1410158Z #19 [linux/arm64 builder  2/20] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1410589Z #19 CACHED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1410757Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1410943Z #20 [linux/arm64 builder  3/20] RUN corepack enable
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1411417Z #20 CACHED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1411568Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1411778Z #21 [linux/arm64 builder  5/20] COPY patches ./patches
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1412741Z #21 ERROR: failed to calculate checksum of ref zr4z7faar51p47mkt60obb06x::r2aeamqz2q6yayhb6ouiq2bx6: "/patches": not found
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1413471Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1413635Z #22 [linux/amd64 builder  2/20] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1414062Z #22 CACHED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1414221Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1414572Z #23 [linux/amd64 builder  4/20] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1414989Z #23 CACHED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1415107Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1415256Z #24 [linux/amd64 builder  5/20] COPY patches ./patches
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1416182Z #24 ERROR: failed to calculate checksum of ref zr4z7faar51p47mkt60obb06x::r2aeamqz2q6yayhb6ouiq2bx6: "/patches": not found
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1416906Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.1417039Z #25 [linux/amd64 builder  3/20] RUN corepack enable
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2587425Z #25 CANCELED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2587874Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2588069Z #26 [linux/arm64 runtime  2/23] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2588540Z #26 DONE 0.9s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2588727Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2589437Z #27 [linux/arm64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2590616Z #27 CANCELED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2590799Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2590964Z #28 [linux/amd64 runtime  2/23] WORKDIR /app
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2591734Z #28 sha256:6721df19bd6362d99a1bd7432d0e8e6edbc1c4f1aa056adf97b7cfb42842be54 93B / 93B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2592862Z #28 sha256:d0787be1dd6db98af771461c0aadf77027dcd97ba4c404ce6eb634614d8e461f 1.10kB / 1.10kB 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2593963Z #28 sha256:463b63698431fd5773ee9a6505c4257909e24bc88b18848348aa826805693fc4 137B / 137B 0.2s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2595176Z #28 sha256:8eaeb76065e6d990b91f5cadcc889e32322b2c41c512c4f45ddbb3170fb1d4ac 203B / 203B 0.2s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2596127Z #28 sha256:34b2dd9ac352ccce50c4ae17710395723fc17bd40578484b3b608e09e6a5b788 1.32kB / 1.32kB 0.0s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2597015Z #28 sha256:acdd41956a4abc571893af3de09391b76578f4e2febf11146b46ad60cb7951bf 791B / 791B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2597683Z #28 sha256:46b72ebf5602dc1cb4803e6f8c2e45fa0faab5a098a684995aeee0315233356c 383B / 383B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2598348Z #28 sha256:79b716d063d02d0f7c18b81291fe8488fb7ee1a1ee5d6a43c20eecf0538bb7c7 1.09kB / 1.09kB 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2598998Z #28 sha256:f2f9b7d727291e37256434f4871d9203c9ceb85724905b6bad715426f877695b 2.96kB / 2.96kB 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2599757Z #28 sha256:35bf6ac2a057b323707db92e5f8d7ee04a27fa272338e063a99a99767d82afe5 160B / 160B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2600396Z #28 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2601027Z #28 sha256:1197f7d496423c3aa3459a39755c245ca3e1b99e395f165a4a0c1da792fd7437 162B / 162B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2601910Z #28 sha256:78d4dd120a1cad8773e13f0395b8ce9cd51704bb213e03286bd1ce0a32607668 153B / 153B 0.2s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2602520Z #28 sha256:2251ec022e9a3875f1076b5c0ef651cfef2ab85147abf22883fc0381820eeb9f 392B / 392B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2603122Z #28 sha256:0802c21f8211d84da10a65b61f0b181fb3e208317fdf79b8483b9e0df4ce0c27 124B / 124B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2603743Z #28 sha256:04ba61a35a8dac9dd28c4c5875af22b9890a37512ef9e22478cc0dc532d73999 5.04kB / 5.04kB 0.0s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2604404Z #28 sha256:625715c6e5a6e34ff058e8bebb38e5bc3dcd3c936ccbaf5f20b2dd1bbde86279 147B / 147B 0.1s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2605036Z #28 sha256:1197d54ff130bc21a90f4abfc45c49f2daf7ac4a159e97d200b24e6f22b26a0c 0B / 995.40kB 0.2s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2605807Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 0B / 119.61MB 0.2s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.2606398Z #28 sha256:93519bba9704006e97baede30a90a498d980e2bee43358e1786e425d2b0e24f0 0B / 865.85kB 0.2s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.3941810Z #28 sha256:1197d54ff130bc21a90f4abfc45c49f2daf7ac4a159e97d200b24e6f22b26a0c 995.40kB / 995.40kB 0.2s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.3943033Z #28 sha256:93519bba9704006e97baede30a90a498d980e2bee43358e1786e425d2b0e24f0 865.85kB / 865.85kB 0.3s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.6342555Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 14.68MB / 119.61MB 0.6s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.7848895Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 27.26MB / 119.61MB 0.8s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:07.9343602Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 44.04MB / 119.61MB 0.9s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.0850705Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 59.77MB / 119.61MB 1.1s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.2352207Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 76.55MB / 119.61MB 1.2s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.3845474Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 90.18MB / 119.61MB 1.4s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.5348733Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 105.91MB / 119.61MB 1.5s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.6827972Z #28 sha256:956dc2c609b391ac9aa075366711205756fce90a1a969e1bcdc8265110510416 119.61MB / 119.61MB 1.6s done
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.6829032Z #28 DONE 2.5s
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7068020Z
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7069058Z #29 [linux/amd64 runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7069884Z #29 CANCELED
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7070099Z ------
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7070380Z  > [linux/arm64 builder  5/20] COPY patches ./patches:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7070721Z ------
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7070912Z ------
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7071186Z  > [linux/amd64 builder  5/20] COPY patches ./patches:
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7071568Z ------
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7220084Z Dockerfile.monorepo:16
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7220534Z --------------------
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7220870Z   14 |
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7221360Z   15 |     COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7221933Z   16 | >>> COPY patches ./patches
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7222904Z   17 |     COPY ***-ts/package.json ***-ts/tsconfig.build.json ***-ts/tsconfig.json ./***-ts/
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7223718Z   18 |     COPY ***-ts/scripts ./***-ts/scripts
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7224166Z --------------------
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7224940Z ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref zr4z7faar51p47mkt60obb06x::r2aeamqz2q6yayhb6ouiq2bx6: "/patches": not found
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.7289908Z ##[group]Reference
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.8296624Z builder-1ea24552-b0ca-4ffe-9153-d9914e619d98/builder-1ea24552-b0ca-4ffe-9153-d9914e619d980/tsr5atdkcf4rt0hcmqd1kc7xs
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.8298089Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.8298906Z ##[group]Check build summary support
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.8302480Z Build summary supported!
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.8303468Z ##[endgroup]
+Build And Push Server Image	Build and push default multi-arch image	2026-07-29T05:27:08.8326499Z ##[error]buildx failed with: ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref zr4z7faar51p47mkt60obb06x::r2aeamqz2q6yayhb6ouiq2bx6: "/patches": not found

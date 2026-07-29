@@ -7,6 +7,7 @@
 | DR-001 | Initial delivery round after API/E2E Pass and proportional test-code review Pass | N/A | Ready for explicit user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 | DR-002 | User completion/verification and authorization to finalize without release | Ready for explicit user verification | Complete — finalized without release | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/finalization-preflight.txt`, `delivery-evidence/finalization-result.txt`, `delivery-evidence/finalization-package-validation.txt` |
 | DR-003 | User requested latest local personal plus Electron build | Complete — finalized without release | Complete — local Electron build passed, still no release | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/local-main-electron-build/` |
+| DR-004 | User authorized a new release; `v1.4.27` tag-triggered Server Docker workflow failed | Complete — local Electron build passed, still no release | Blocked — implementation-owned Docker packaging fix required | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/release-v1.4.27/` |
 
 ## Revision Entries
 
@@ -54,3 +55,19 @@
 - Why this baseline or delivery revision was recorded: Preserve the later packaging result separately from DR-002 rather than rewriting finalization history or implying a release.
 - Next recipient/action: Optional user manual verification of `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 - Remaining blockers, rollback concerns, or untested scope: No build blocker. The package is ad-hoc/unsigned, not notarized, and must not be distributed as a release. Existing unrelated worktree changes remain untouched. Values above `Number.MAX_SAFE_INTEGER` and the pre-existing package-level server `typecheck` issue remain outside this task.
+
+
+### DR-004 — v1.4.27 release blocked by server Docker packaging defect
+
+- Delivery round and trigger: Round 4, triggered by the user's 2026-07-29 instruction to release a new version.
+- Triggering upstream report, verification, or evidence: DR-003 completed local build plus the documented root release policy and fresh confirmation that `v1.4.26` was the latest stable release.
+- Prior authoritative result: DR-003 — complete, finalized and locally built without release.
+- Current authoritative result: Blocked — `1.4.27` release commit and annotated tag were pushed and all five tag-driven workflows started, but Server Docker run `30425051361` failed on an obsolete root `patches/` copy.
+- Docs sync report: `docs-sync-report.md` remains authoritative; no new behavior-doc change was introduced by the release attempt.
+- Handoff summary: `handoff-summary.md` records release identity, workflow inventory, exact packaging failure, safety constraints, and routing.
+- Release/publication/deployment report: `release-deployment-report.md` now records partial execution and the blocking implementation-owned packaging defect.
+- Integration and post-integration verification: release commit `2127840ee` was prepared from freshly confirmed `origin/personal`; annotated tag `v1.4.27` was pushed exactly once and peels to that commit. No manual-dispatch workflow was invoked.
+- User verification/finalization state: repository finalization remains complete. Release was explicitly authorized, but release completion cannot be claimed while server Docker publication is failed.
+- Why this delivery revision was recorded: preserve the irreversible published-tag boundary and exact failure origin rather than treating a partial multi-workflow release as complete or retrying unchanged source.
+- Next recipient/action: `implementation_engineer` investigates/removes the obsolete Docker packaging assumption, performs implementation-scoped checks, and routes the fix through source review and targeted API/E2E packaging execution before delivery recovery.
+- Remaining blockers, rollback concerns, or untested scope: do not rewrite/delete `v1.4.27`; do not rerun the unchanged Docker job. Other workflow results and published artifacts require final verification after the packaging repair path returns to delivery.

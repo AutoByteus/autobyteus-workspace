@@ -8,7 +8,7 @@
 - Ticket branch: `codex/token-statistics-int-overflow` (`removed locally and remotely after finalization`)
 - Reviewed-state checkpoint: `1701f4f33526e7b016edbd1655f26b2c84d33212`
 - Finalization target: `personal` / `origin/personal`
-- Current status: `Complete`; repository finalization and cleanup passed, and the later user-requested Electron build from latest local `personal` passed. No version, tag, publication, or deployment work was performed.
+- Current status: `Blocked at release`; repository finalization/cleanup and the local Electron build passed. The user later authorized `v1.4.27`; its release commit/tag were published, but the Server Docker workflow failed on an obsolete `COPY patches` packaging instruction.
 
 ## Integrated-State Refresh
 
@@ -54,7 +54,19 @@
 - Package: version `1.4.26`, flavor `personal`, macOS ARM64.
 - Artifact validation: app architecture/version, packaged server `GraphQLSafeInt`, terminal helper permissions, DMG integrity, ZIP integrity, checksums, and updater manifest all passed.
 - Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/electron-test-build-report.md`.
-- No release, tag, publication, deployment, installation, or launch was performed.
+- This local build preceded the later `v1.4.27` release attempt; it was not itself installed or published.
+
+## Release v1.4.27 Attempt And Packaging Blocker
+
+- User authorization: explicit new-release request on 2026-07-29.
+- Release version/tag: `1.4.27` / annotated `v1.4.27`.
+- Release commit: `2127840eeeb66dc4cce66b51e59fb7c6a5eff112`; tag object `a89d7828fd05db8abfabbee25bcaa88cce39af18` peels to that commit.
+- Push discipline: `origin/personal` was refreshed and unchanged before the release commit push; the tag was pushed once; no manual-dispatch workflow was invoked.
+- Tag-triggered workflows: Desktop `30425051350`, Android `30425051388`, iOS `30425051368`, Messaging Gateway `30425051390`, Server Docker `30425051361`.
+- Blocking failure: Server Docker run `30425051361` failed because `autobyteus-server-ts/docker/Dockerfile.monorepo` copies `patches/`, but the last file in that directory was removed by `3fdaf0c62` after the successful `v1.4.26` release. `docker/Dockerfile.allinone` and `docker/Dockerfile.remote-server` retain the same obsolete instruction.
+- Classification/routing: bounded implementation-owned packaging `Local Fix`; route to `implementation_engineer`, then source review and targeted executable packaging validation before delivery resumes.
+- Safety: do not rewrite/delete the published tag and do not rerun the unchanged failed job. Already-completed repository finalization and release work remain intact.
+- Evidence: `delivery-evidence/release-v1.4.27/`.
 
 ## Review And Execution Evidence
 
@@ -101,10 +113,10 @@ The previously installed Electron `1.4.26` package predates this source change. 
 - Ticket moved to `tickets/done`: `Yes`
 - Ticket branch pushed: `Yes` (then removed after successful target finalization)
 - Finalization target merged/pushed: `Yes`
-- Release/publication/deployment executed: `No`
-- Release authorization: `Explicitly declined for this task`
+- Release/publication/deployment executed: `Partially — v1.4.27 commit/tag published and workflows triggered; server Docker failed`
+- Release authorization: `Explicitly authorized on 2026-07-29 after the earlier no-release finalization`
 - Dedicated worktree/branch cleanup executed: `Yes`
-- Next action: Optional user launch/manual verification of the local app bundle; repository delivery and requested build are complete.
+- Next action: implementation-owned packaging fix, source review, targeted packaging validation, then delivery recovery decision and final release verification.
 
 ## Cumulative Artifact Package
 
