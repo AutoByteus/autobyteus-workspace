@@ -8,6 +8,7 @@
 | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-002` | `Fail — Local Fix` | `Pass` | `CR-001`, `CR-002` |
 | `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-003`, `APIE2E-F001` |
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-003` | `Fail — Local Fix` | `Pass` | `CR-003`, `APIE2E-F001` |
+| `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-004`, `APIE2E-F002` |
 
 ## Revision Entries
 
@@ -112,3 +113,30 @@ None.
 - Material score or classification changes: current full implementation score is `9.2/10` (`92/100`); result changes from `Fail — Local Fix` to `Pass`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must extend its preserved devkit mock for the new reload mutation and rerun the full live/coverage matrix; no proportional test-code review or delivery routing applies before that Pass.
+
+### CRR-005 — API/E2E exposes Studio definition-authority split
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `5`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-STUDIO-001`, `APIE2E-F002`, new source finding `CR-004`
+- Relevant solution revision IDs: `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` (`CRR-004`)
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: API/E2E first proved the prior repeated-import defect resolved, then the supported real Studio setup path showed that the application graph contains the exact package-owned Brief team while Studio GraphQL omits it. Source inspection confirms GraphQL uses process-global agent/team definition singletons instead of the explicit services constructed for the Studio application graph. This is a bounded implementation defect and a source-review gap, not a missing requirement or inadequate design.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `API-REV-001`, `API-REV-002` | Standalone controlled-browser behavior is unchanged and outside the new Studio-only authority failure. |
+| `CR-002` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `IR-003`, `API-REV-002` | Current project/package state reaches the exact Studio route and selected bundled-team ID. |
+| `CR-003` | Resolved pending rerun | Resolved and API/E2E-confirmed | `IR-003`, `CRR-003`, `CRR-004`, `API-REV-002` | Devkit 19/19 and real initial plus two repeated Brief Studio refresh generations pass; duplicate import does not recur. |
+
+- New or remaining finding IDs: `CR-004` linked to `APIE2E-STUDIO-001` / `APIE2E-F002`.
+- Material score or classification changes: the prior full score is historical and was not recomputed. The Authoritative Boundary Rule, API/E2E readiness, and runtime-fidelity conclusions are superseded; current result is `Fail — Local Fix`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: after the bounded source correction and source re-review, API/E2E must rerun the exact Studio setup/entry scenario first, add or adjust durable authority-boundary coverage, and then resume explicit remount, real in-Studio team execution, both-host parity/digests, and the remaining maintained-app matrix.
