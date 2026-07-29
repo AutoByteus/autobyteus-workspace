@@ -11,6 +11,7 @@
 | `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-004`, `APIE2E-F002` |
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `APIE2E-F002` |
 | `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` | `Pass` | `Fail — Local Fix` | `CR-005`, `APIE2E-F003` |
+| `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-005`, `APIE2E-F003` |
 
 ## Revision Entries
 
@@ -198,3 +199,32 @@ None.
 - Material score or classification changes: the prior full score remains historical; Authoritative Boundary Rule, API/E2E readiness, and runtime fidelity are disproven for real team identity allocation. Current result is `Fail — Local Fix`.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: after bounded source correction/re-review, API/E2E must add a direct non-fake allocator regression, rerun the real Brief team journey first, then complete both-host parity/digests and the remaining maintained-app command matrix.
+
+### CRR-008 — Graph-local run identity correction passes source re-review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `8`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `CR-005`, `APIE2E-BRIEF-002`, `APIE2E-F003`
+- Relevant solution revision IDs: `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Local Fix`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: IR-005 constructs one identity allocator from the application graph's exact agent-definition, run-manager, agent/team metadata, and memory-root authorities and injects it into both agent and team run services. Source tracing proves the supported Brief member-launch path no longer activates process-global allocator defaults. TypeScript, 3 files/16 focused tests, a disposable direct 1/1 graph-authority/allocation probe, source-size, diff, and cleanup guards pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains Resolved | `IR-002`, `CRR-002` | Standalone browser/restart ownership is unchanged by IR-005. |
+| `CR-002` | Resolved | Remains Resolved | `IR-002`, `CRR-002` | Current config/manifest/package resolution is unchanged. |
+| `CR-003` | Resolved and API/E2E-confirmed | Remains Resolved | `IR-003`, `API-REV-002`, `CRR-004` | Repeated Studio package refresh remains on the confirmed reload path. |
+| `CR-004` | Resolved and API/E2E-confirmed | Remains Resolved | `IR-004`, `API-REV-003`, `CRR-006` | Exact Studio definition visibility, setup, iframe entry, and remount remain confirmed. |
+| `CR-005` | Open — Local Fix | Resolved in source; API/E2E rerun pending | `IR-005`, `API-REV-003`, `CRR-007` | One allocator is built with the exact graph definition/run/metadata authorities and shared by both application agent/team services; direct package-owned `Researcher` allocation succeeds in the reviewer probe. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: full implementation score restored to `9.2/10` (`92/100`) with every category >=9.0; `Local Fix` failure classification clears for source review.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must add the durable direct non-fake allocator regression, rerun `APIE2E-BRIEF-002` first, and then complete provider/artifact proof, both-host parity/digests, and the remaining command matrix.
