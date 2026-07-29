@@ -1,9 +1,9 @@
 Platform detection: Windows=false
 App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
-App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata
 AppConfig instance created.
-Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/.env
-Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/.env
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/.env
 [dotenv@17.3.1] injecting env (2) from tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
 Environment variables loaded successfully
 Server public base URL configured to: http://127.0.0.1:29695
@@ -12,11 +12,11 @@ Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteu
 ============================================================
 SERVER PUBLIC URL: http://127.0.0.1:29695
 APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
-APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata
-DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/db
-LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/logs
-DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/download
-MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/memory
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/memory
 ============================================================
 AppConfig initialization completed successfully
 Successfully registered tool definition: 'read_file'
@@ -62,9 +62,9 @@ AgentTeamRunManager initialized with MixedTeamManager-only team execution.
 {"level":30,"time":1784175512613,"pid":55363,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:18123"}
 [2026-07-16T04:18:32.613Z] [INFO] [server.runtime] Server listening on 127.0.0.1:18123
 [2026-07-16T04:18:32.614Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:18123
-Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/temp_workspace
-Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/temp_workspace.
-Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/browser-appdata/temp_workspace with fixed ID 'temp_ws_default'
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-appdata/temp_workspace with fixed ID 'temp_ws_default'
 Temp workspace created and cached with ID: temp_ws_default
 Scheduling non-critical startup tasks to run in the background...
 Background cache pre-loading process has started.

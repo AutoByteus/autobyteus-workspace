@@ -2,9 +2,9 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/design-spec.md`
 - Supplemental Task Artifacts: `production-trace-evidence.md`; `delivery-integration-conflict-report.md`
 - Solution Revision Record: `N/A` — no such upstream artifact was supplied.
 - Design Review Report: `design-review-report.md`
@@ -26,7 +26,7 @@
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: `Yes`
 - Investigation plan followed: `Yes`, with one evidence-led validity pivot: the initial AutoByteus live run exposed that the pre-existing live test fixture had not been updated for v1.4.28's mandatory encrypted secret vault. The investigation was updated before the test-only fixture was changed.
 - Existing coverage decisions revised during execution, with evidence: `Yes`; the two AutoByteus live files moved from `Still Valid` to `Needs Update` for setup only. Lifecycle assertions remained valid. Evidence: `105`, `107`, `108` and the Round 7 validity section of the investigation.

@@ -2,9 +2,9 @@
 
 ## Canonical Artifacts
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-execution-coverage-report.md`
-- Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/execution-evidence`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-execution-coverage-report.md`
+- Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence`
 
 This record is a chronological navigation and routing index. The canonical artifacts above remain the authoritative detailed result.
 
@@ -42,7 +42,7 @@ This record is a chronological navigation and routing index. The canonical artif
 ### API-REV-002 — v1.4.28 Current-Head Revalidation Pass
 
 - Recorded: `2026-07-29`
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`; implementation-source review round 5 / API-E2E round 7.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`; implementation-source review round 5 / API-E2E round 7.
 - Integrated head evaluated: `740bec4cd4f03a198e0cc7cd8e575351e607991f`
 - Recorded base and merge base evaluated: `origin/personal@6caf809303294252c109420b238588f0c68aca6a`
 - Triggering finding or scenario IDs: renewed current-base coverage gate; recheck prior `APIE2E-LC-AUTOBYTEUS-STANDALONE-R6` and `APIE2E-LC-AUTOBYTEUS-TEAM-R6`; validate v1.4.28 token-pipeline and Event Monitor coexistence.
@@ -72,8 +72,8 @@ This record is a chronological navigation and routing index. The canonical artif
 | Direct DeepSeek readiness | External provider identity | Still HTTP 401 at both model-list endpoints and direct live attempt; retained as a provider-specific residual, not the successful AutoByteus runtime route. | `execution-evidence/99-round7-deepseek-credential-recheck.log`; `108-round7-live-autobyteus-standalone-vault-fixture-rerun.log` |
 
 - Canonical artifacts updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-coverage-investigation.md` — authoritative Round 7 checkpoint, broader-validation result, scorecards and decision.
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-execution-coverage-report.md` — authoritative Round 7 Pass.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-coverage-investigation.md` — authoritative Round 7 checkpoint, broader-validation result, scorecards and decision.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-execution-coverage-report.md` — authoritative Round 7 Pass.
   - This revision record.
 - Prior result and confidence: `Blocked / 93.6%` (`API-REV-001`, historical head).
 - Current result and confidence: `Pass / 97.9%`.

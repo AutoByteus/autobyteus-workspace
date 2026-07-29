@@ -24,5 +24,5 @@
 - Deterministic lifecycle, WebSocket reconnect, command acknowledgement, team status, and external-channel coverage passed.
 - Independent live Codex and Claude Agent SDK runs verified running-to-idle settlement, no post-idle reopen, reconnect snapshots, runtime restore, and a later reusable turn.
 - Live two-member Claude teams verified bidirectional inter-agent status/receipt handling and retained both member projections across terminate, restore, and continued turns.
-- Live DeepSeek-backed AutoByteus runs verified standalone lifecycle/reconnect/restore, two-member status/projection restore, and real `send_message_to` delivery with reference-file projection and reviewer response.
-- Browser validation confirmed that agent and team status surfaces remain idle while delayed content stays visible.
+- Live AutoByteus runs through the configured authorized remote provider verified standalone lifecycle/reconnect/restore, two-member status/projection restore, and real `send_message_to` delivery with reference-file projection and reviewer response.
+- Isolated real-browser validation confirmed that agent and team status surfaces remain idle while delayed content stays visible, and the pre-release macOS ARM64 Electron candidate passed native-terminal and embedded-server startup verification.

@@ -1,0 +1,10 @@
+timestamp=2026-07-29T12:52:25Z
+ticket_path=tickets/done/agent-idle-status-lifecycle
+canonical_diff_check=PASS
+canonical_in_progress_refs:
+secret-pattern-scan:
+secret_pattern_scan=PASS
+Repository artifact hygiene check passed.
+Tracked files scanned: 17413
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json

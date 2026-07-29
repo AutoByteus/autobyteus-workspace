@@ -1,0 +1,11 @@
+2026-07-29T11:19:13Z
+HEAD=7e4b78d314b867c57723cee95d0cdd24be33a3cf
+REVIEWED_HEAD=740bec4cd4f03a198e0cc7cd8e575351e607991f
+REVIEWED_PACKAGE_CHECKPOINT=7e4b78d314b867c57723cee95d0cdd24be33a3cf
+BASE=6caf809303294252c109420b238588f0c68aca6a
+MERGE_BASE=6caf809303294252c109420b238588f0c68aca6a
+AHEAD_BEHIND=17	0
+VERSION=1.4.28
+STATUS:
+## codex/agent-idle-status-lifecycle...origin/personal [ahead 17]
+?? tickets/in-progress/agent-idle-status-lifecycle/execution-evidence/127-delivery-v1428-base-refresh.log

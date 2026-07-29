@@ -46,7 +46,7 @@ No frontend presentation behavior, public status vocabulary, persistence schema,
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/production-trace-evidence.md` | Retain exact production timestamps, turn IDs, runtime/model metadata, control comparison, and source causal chain | R-002–R-008, R-011; AC-001–AC-012 | Establishes why ordinary activity cannot be a lifecycle opener and supplies the required Codex regression sequence | Complete / `N/A` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/production-trace-evidence.md` | Retain exact production timestamps, turn IDs, runtime/model metadata, control comparison, and source causal chain | R-002–R-008, R-011; AC-001–AC-012 | Establishes why ordinary activity cannot be a lifecycle opener and supplies the required Codex regression sequence | Complete / `N/A` |
 
 ## Task Design Health Assessment (Mandatory)
 

@@ -1,0 +1,9 @@
+# DR-002 post-build latest-base and checksum confirmation
+timestamp=2026-07-29T11:50:40Z
+head=7e4b78d314b867c57723cee95d0cdd24be33a3cf
+origin_personal=6caf809303294252c109420b238588f0c68aca6a
+merge_base=6caf809303294252c109420b238588f0c68aca6a
+ahead_behind=17	0
+bcf8f7f981b837c3250d32bfc7676ab054b46b35f489516495f36031aa277298  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.28.dmg
+a36b85ece5b5f3deffaf3296e3b7ccac7ebc6f53cd46580c66dadf5e4d324081  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.28.zip
+post_build_base_confirmation=pass

@@ -3,7 +3,7 @@
 ## Canonical Artifacts
 
 - Current code: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/implementation-handoff.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/implementation-handoff.md`
 
 This record is a chronological navigation and routing index. The current code and implementation handoff remain authoritative.
 
@@ -21,7 +21,7 @@ This record is a chronological navigation and routing index. The current code an
 
 ### IR-001 — Initial exact-turn lifecycle implementation
 
-- Triggering role, report path, and round: architecture-reviewed solution package; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/design-review-report.md`; initial implementation.
+- Triggering role, report path, and round: architecture-reviewed solution package; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/design-review-report.md`; initial implementation.
 - Triggering finding IDs: `N/A`
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -41,7 +41,7 @@ This record is a chronological navigation and routing index. The current code an
 
 ### IR-002 — Accepted-result projection and direct-pipeline cleanup
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`; round 1.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`; round 1.
 - Triggering finding IDs: `CR-001`, `CR-002`
 - Classification: `Local Fix`
 - Prior authoritative result: Source review `Fail`.
@@ -61,7 +61,7 @@ This record is a chronological navigation and routing index. The current code an
 
 ### IR-003 — Terminal-first accepted-result reconciliation
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`; round 2.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`; round 2.
 - Triggering finding IDs: `CR-001`
 - Classification: `Local Fix`
 - Prior authoritative result: Source review `Fail`; `CR-001` partially resolved.
@@ -81,7 +81,7 @@ This record is a chronological navigation and routing index. The current code an
 
 ### IR-004 — v1.4.24 Event Monitor integration
 
-- Triggering role, report path, and round: `delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/delivery-integration-conflict-report.md`; latest-base delivery refresh.
+- Triggering role, report path, and round: `delivery_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/delivery-integration-conflict-report.md`; latest-base delivery refresh.
 - Triggering finding IDs: `N/A`
 - Classification: `Local Fix`
 - Prior authoritative result: Reviewed v1.4.23 candidate; delivery blocked on a behavior-sensitive merge conflict.

@@ -2,8 +2,8 @@
 
 ## Canonical Artifacts
 
-- Implementation source review / failure-origin report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
-- Proportional API/E2E test-code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
+- Implementation source review / failure-origin report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`
+- Proportional API/E2E test-code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
 
 This record is the chronological navigation and rationale index. The canonical reports above remain authoritative for their latest applicable result.
 
@@ -27,7 +27,7 @@ This record is the chronological navigation and rationale index. The canonical r
 
 ### CRR-001 — Initial implementation-source review baseline
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 1.
 - Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `implementation-handoff.md`; CR-001 and CR-002.
 - Relevant solution revision IDs: `N/A`
@@ -50,7 +50,7 @@ None.
 
 ### CRR-002 — First bounded source rework review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 2.
 - Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `implementation-handoff.md`; CR-001 and CR-002.
 - Relevant solution revision IDs: `N/A`
@@ -76,7 +76,7 @@ None.
 
 ### CRR-003 — Terminal-first reconciliation source pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 3.
 - Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `implementation-handoff.md`; CR-001.
 - Relevant solution revision IDs: `N/A`
@@ -102,7 +102,7 @@ None.
 
 ### CRR-004 — Initial proportional API/E2E test-code pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round 1.
 - Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `api-e2e-execution-coverage-report.md`; seven durable lifecycle/API/E2E test paths.
 - Relevant solution revision IDs: `N/A`
@@ -125,7 +125,7 @@ None.
 
 ### CRR-005 — Claude standalone execution with no durable test delta
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round 2.
 - Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; refreshed Claude standalone execution; no durable test change.
 - Relevant solution revision IDs: `N/A`
@@ -148,7 +148,7 @@ None.
 
 ### CRR-006 — Claude team execution with no durable test delta
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round 3.
 - Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; Claude team roundtrip and restore execution; no durable test change.
 - Relevant solution revision IDs: `N/A`
@@ -171,7 +171,7 @@ None.
 
 ### CRR-007 — Blocked supplemental AutoByteus execution with no durable test delta
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional Test-Code Disposition`, round 4.
 - Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; supplemental AutoByteus/DeepSeek attempt blocked before durable test modification.
 - Relevant solution revision IDs: `N/A`
@@ -194,7 +194,7 @@ None.
 
 ### CRR-008 — DeepSeek team test configuration pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round 5.
 - Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `APIE2E-LC-AUTOBYTEUS`; one updated AutoByteus team E2E path.
 - Relevant solution revision IDs: `N/A`
@@ -217,7 +217,7 @@ None.
 
 ### CRR-009 — v1.4.24 integrated source pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 4.
 - Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `delivery-integration-conflict-report.md` / IR-004; no new finding.
 - Relevant solution revision IDs: `N/A`
@@ -243,7 +243,7 @@ None.
 
 ### CRR-010 — v1.4.28 rebased source pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 5.
 - Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `implementation-handoff.md` / IR-005; no new finding.
 - Relevant solution revision IDs: `N/A`
@@ -269,9 +269,9 @@ None.
 
 ### CRR-011 — v1.4.28 current-vault test fixture pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round 6.
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/api-e2e-execution-coverage-report.md`; `APIE2E-LC-AUTOBYTEUS-R7`; three durable test paths.
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/api-e2e-execution-coverage-report.md`; `APIE2E-LC-AUTOBYTEUS-R7`; three durable test paths.
 - Relevant solution revision IDs: `N/A`
 - Relevant architecture-review revision IDs: `N/A`
 - Relevant implementation revision IDs: `IR-005`
