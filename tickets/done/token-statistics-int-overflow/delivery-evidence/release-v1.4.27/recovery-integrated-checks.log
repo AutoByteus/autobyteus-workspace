@@ -1,0 +1,115 @@
+Integrated-state packaging validation
+Captured at: 2026-07-29T08:20:17+02:00
+HEAD: b08ee8ed9669cc299a25ece0e1f4f4413b9e72cd
+
+$ python3 -m unittest scripts.tests.test_docker_build_context_sources scripts.tests.test_server_docker_cli_latest_defaults scripts.tests.test_server_docker_browser_bridge
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 3.415s
+
+OK
+
+$ docker buildx build --check --progress=plain -f autobyteus-server-ts/docker/Dockerfile.monorepo .
+#0 building with "multi-platform-builder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 4.09kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.2s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#4 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/library/node:22-bookworm
+#8 ...
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#5 DONE 0.5s
+
+#8 [internal] load metadata for docker.io/library/node:22-bookworm
+#8 DONE 0.6s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.0s
+Check complete, no warnings found.
+
+$ docker buildx build --check --progress=plain -f docker/Dockerfile.allinone .
+#0 building with "multi-platform-builder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.allinone
+#1 transferring dockerfile: 3.85kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.3s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#3 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm
+#4 DONE 0.2s
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:zh
+#5 DONE 0.4s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 282B done
+#6 DONE 0.0s
+Check complete, no warnings found.
+
+$ docker buildx build --check --progress=plain -f docker/Dockerfile.remote-server .
+#0 building with "multi-platform-builder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.remote-server
+#1 transferring dockerfile: 2.63kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.3s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#3 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#4 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 0.3s
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#4 DONE 0.9s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 282B 0.0s done
+#6 DONE 0.0s
+Check complete, no warnings found.
+
+$ git diff --check origin/personal...HEAD
+
+$ python source inventory
+PASS autobyteus-server-ts/docker/Dockerfile.monorepo: no obsolete root patches COPY
+PASS docker/Dockerfile.allinone: no obsolete root patches COPY
+PASS docker/Dockerfile.remote-server: no obsolete root patches COPY
+
+Result: PASS

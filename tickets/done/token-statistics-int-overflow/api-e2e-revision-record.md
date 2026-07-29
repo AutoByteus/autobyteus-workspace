@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `code_reviewer` / `code-review-report.md` implementation-source round 3 | `SR-001`, `IR-001`, `CRR-002` | Investigation stopped and rerouted; 61% provisional, no execution result | `Pass`; 96% final confidence |
+| API-REV-002 | `code_reviewer` / `code-review-report.md` implementation-source round 4 | `DR-004`, `IR-002`, `CRR-004`; product basis retains `SR-001` | `Pass`; 96% final confidence | `Pass`; 97% final confidence |
 
 ## Revision Entries
 
@@ -36,3 +37,31 @@
 - New or remaining failure IDs: `None`.
 - Recommended recipient: `code_reviewer` for proportional durable-test review.
 - Remaining risks, blocked evidence, or untested scope: packaged artifact rollout and values above `Number.MAX_SAFE_INTEGER` are non-blocking/out of scope. Chrome proved the shared renderer path; packaged Electron rollout remains a non-blocking delivery concern because no shell-specific code changed.
+
+### API-REV-002 — Validate the DR-004 Docker packaging correction
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/code-review-report.md`; implementation-source review round 4.
+- Triggering finding or scenario IDs: delivery revision `DR-004`, implementation revision `IR-002`, Server Docker Release run `30425051361`, and current scenarios `PKG-001`–`PKG-007`.
+- Related solution, implementation, or code-review revision IDs: original product basis retains `SR-001`; current packaging correction is `IR-002` / `CRR-004`; prior product/API passage retains `IR-001` / `CRR-002` / `CRR-003` / `API-REV-001`.
+- Why this coverage/execution revision was recorded: the user-authorized `v1.4.27` tag-triggered release exposed an obsolete repository-root `COPY patches ./patches` in three supported Dockerfiles. Source review passed the exact three-line removal, but real Docker/BuildKit execution, dependency inspection, cleanup, and durable regression protection remained required.
+- Coverage decisions or durable test paths changed:
+  - Added `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/scripts/tests/test_docker_build_context_sources.py`.
+  - The test generically inventories direct non-stage `COPY` sources for the monorepo, all-in-one, and remote-server Dockerfiles and asserts that they exist in repository-root context.
+  - File SHA-256: `8de41e4923a8a776cb4ea3655f4fe1adcc0b889ca6c023331c9a9ff30651d1d0`; patch SHA-256: `1d01b8833094455863a34361f885f0bcb53724874d4cf6f8dfc2186a5e0fca77`.
+  - No durable test was updated, removed, disabled, or replaced.
+- Scenarios added, changed, removed, or rechecked: `PKG-001` added and passed; `PKG-002`–`PKG-007` added as executable coverage and passed; the established CLI/browser-bridge Docker contracts rechecked 9/9 and the combined suite passed 10/10. Original API/UI scenarios remain the unchanged passed `API-REV-001` baseline.
+- Commands, environment, fixture, or broader-validation delta: an owned Docker-container Buildx builder ran every affected Dockerfile from the real repository root. The release monorepo Dockerfile completed its full native arm64 `builder` target and was loaded for ephemeral package/output inspection; all-in-one and remote-server completed full builder targets with cache-only output; multi-platform BuildKit check passed; no registry or workflow action occurred. The owned builder, image, containers, cache, and temporary lock snapshot were removed.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-004` / run `30425051361`: BuildKit failed for both release platforms on missing root `patches/` before install | Implementation-owned packaging `Local Fix` | `IR-002` removes the obsolete copy from all three affected Dockerfiles; every real native builder target now completes from repository-root context. | `pkg-003-monorepo-builder-build.log`; both `pkg-004-*-builder-build.log`; `CRR-004`. |
+| Current dependency/patch state needed executable confirmation | Validation gap, not a prior API/E2E failure | Loaded monorepo builder inspection reports unpatched `repository_prisma@1.0.9`, no `/app/patches`, no patch metadata, and successful server/mobile outputs. | `pkg-003-monorepo-builder-inspection.log`; `pkg-005-contract-audit.log`. |
+
+- Canonical artifacts and sections updated: current `api-e2e-coverage-investigation.md`, current `api-e2e-execution-coverage-report.md`, this revision record, and retained `api-e2e-evidence/docker-packaging-dr004/`.
+- Prior result and confidence: `API-REV-001` — `Pass`, 96% final confidence for the original product scope.
+- Current result and confidence: `Pass`, 97% final confidence for the cumulative current package; all current-round critical scenarios passed and no applicable category is below 95%.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `code_reviewer` for proportional review of the one added durable test.
+- Remaining risks, blocked evidence, or untested scope: registry publication/workflow recovery, full emulated amd64 compile, and unchanged runtime-stage launch were not performed. During execution `origin/personal` advanced 14 commits; exact Dockerfiles/lock/server package/.dockerignore inputs remained unchanged and the root package changed scripts only. Delivery must perform its required latest-base refresh and integrated-state check before selecting any recovery action. Published `v1.4.27` remains unchanged.

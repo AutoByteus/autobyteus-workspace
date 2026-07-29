@@ -3,25 +3,22 @@
 ## Ticket
 
 - Ticket: `token-statistics-int-overflow`
-- Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow` (`removed after finalization`)
 - Canonical archived path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow`
-- Ticket branch: `codex/token-statistics-int-overflow` (`removed locally and remotely after finalization`)
-- Reviewed-state checkpoint: `1701f4f33526e7b016edbd1655f26b2c84d33212`
-- Finalization target: `personal` / `origin/personal`
-- Current status: `Blocked at release`; repository finalization/cleanup and the local Electron build passed. The user later authorized `v1.4.27`; its release commit/tag were published, but the Server Docker workflow failed on an obsolete `COPY patches` packaging instruction.
+- Original ticket branch/worktree: removed after repository finalization.
+- Recovery branch/worktree: removed after successful release recovery; no remote recovery branch was created.
+- Finalization target: `personal` / `origin/personal`.
+- Release: stable `v1.4.27` at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.27`.
+- Current status: `Complete`; repository finalization, local Electron verification, product release, packaging repair, and Server Docker recovery all passed.
 
 ## Integrated-State Refresh
 
-- Recorded bootstrap/review base: `origin/personal` at `a3beeec29a701e6731d985f76d083a12bd82478f`.
-- Latest tracked remote base after `git fetch origin personal`: the same `a3beeec29a701e6731d985f76d083a12bd82478f`.
-- Base advanced: `No`.
-- Integration method: `Already current`; no merge or rebase was needed.
-- Delivery-safety checkpoint: `1701f4f33` preserves the complete reviewed and validated implementation/test/evidence package before delivery-owned edits.
-- Post-integration executable rerun: not required because no base commit changed the reviewed state.
-- Integrity check: the three API/E2E-owned durable test patch hashes match the successful proportional review exactly.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/delivery-evidence/integration-refresh.txt`.
-- Delivery package validation: `Pass` at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/delivery-evidence/package-validation.txt`.
-- Post-verification target refresh: `git fetch origin personal --prune` passed; `origin/personal` remained at `a3beeec29a701e6731d985f76d083a12bd82478f`, so no renewed verification or executable rerun was required.
+- Original reviewed-state refresh: `origin/personal` remained `a3beeec29a701e6731d985f76d083a12bd82478f`; no base-driven rerun was needed before repository finalization.
+- Recovery reviewed checkpoint: `cc79c46dc5fac8879f45e376b2c44129eaa09568`.
+- Recovery base advance: `origin/personal` advanced 14 commits from `390307afb` to `ca97fa2f537f5bf31c4adbddc3d094c5bd7c7e96` during API/E2E.
+- Recovery integration: clean merge, producing integrated delivery source `e4b04314658414ff0f5d97fbf360f1e5e946ca36` after the evidence commit; zero behind when pushed.
+- Relevant-base result: three Dockerfiles, workspace/lock/server manifests, and `.dockerignore` were unchanged; root package changes were script-only.
+- Post-integration validation: 10/10 focused Docker contracts, three Buildx checks, source inventory, and diff check passed.
+- Evidence: `delivery-evidence/release-v1.4.27/recovery-integration-refresh.log` and `recovery-integrated-checks.log`.
 
 ## Repository Finalization
 
@@ -56,16 +53,16 @@
 - Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/electron-test-build-report.md`.
 - This local build preceded the later `v1.4.27` release attempt; it was not itself installed or published.
 
-## Release v1.4.27 Attempt And Packaging Blocker
+## Release v1.4.27 And Server Docker Recovery
 
-- User authorization: explicit new-release request on 2026-07-29.
-- Release version/tag: `1.4.27` / annotated `v1.4.27`.
-- Release commit: `2127840eeeb66dc4cce66b51e59fb7c6a5eff112`; tag object `a89d7828fd05db8abfabbee25bcaa88cce39af18` peels to that commit.
-- Push discipline: `origin/personal` was refreshed and unchanged before the release commit push; the tag was pushed once; no manual-dispatch workflow was invoked.
-- Tag-triggered workflows: Desktop `30425051350`, Android `30425051388`, iOS `30425051368`, Messaging Gateway `30425051390`, Server Docker `30425051361`.
-- Blocking failure: Server Docker run `30425051361` failed because `autobyteus-server-ts/docker/Dockerfile.monorepo` copies `patches/`, but the last file in that directory was removed by `3fdaf0c62` after the successful `v1.4.26` release. `docker/Dockerfile.allinone` and `docker/Dockerfile.remote-server` retain the same obsolete instruction.
-- Classification/routing: bounded implementation-owned packaging `Local Fix`; route to `implementation_engineer`, then source review and targeted executable packaging validation before delivery resumes.
-- Safety: do not rewrite/delete the published tag and do not rerun the unchanged failed job. Already-completed repository finalization and release work remain intact.
+- User authorization: explicit release request on 2026-07-29.
+- Release identity: release commit `2127840eeeb66dc4cce66b51e59fb7c6a5eff112`; annotated tag object `a89d7828fd05db8abfabbee25bcaa88cce39af18` peels to that commit and remains unchanged.
+- Initial outcomes: Desktop `30425051350`, Android `30425051388`, iOS `30425051368`, and Messaging Gateway `30425051390` succeeded. Original Server Docker `30425051361` failed on stale `COPY patches ./patches`; that failure remains retained evidence.
+- Repair: removed the obsolete source from all three supported Dockerfiles and added a generic direct-COPY build-context contract. Implementation `IR-002`, source review `CRR-004`, API/E2E `API-REV-002` at 97%, and proportional test review `CRR-005` all passed.
+- Recovery: documented existing-tag Server Docker dispatch `30427959310` checked out exact fix source `cc79c46dc5fac8879f45e376b2c44129eaa09568` and succeeded.
+- Registry result: `autobyteus/autobyteus-server:1.4.27` and `:latest` both resolve to OCI index `sha256:29665911776efa9a53b6a1de3334dba7593ea05e5bd67ea1abd72a1b7ddcd620`, with linux/amd64 and linux/arm64 manifests.
+- GitHub Release: stable, public, 21 assets with digest metadata; curated body matches `release-notes.md`.
+- Provenance: tag-based desktop/mobile/messaging artifacts use the tag commit; the recovered Docker image explicitly records `vcs:revision=cc79c46dc...`. No tag rewrite/deletion or broad workflow republish occurred.
 - Evidence: `delivery-evidence/release-v1.4.27/`.
 
 ## Review And Execution Evidence
@@ -81,42 +78,38 @@
 
 ## Documentation Sync
 
-- Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/docs-sync-report.md`
-- Result: `Pass — Updated`
-- Long-lived docs updated:
-  - `autobyteus-server-ts/docs/modules/token_usage.md`
-  - `autobyteus-web/docs/settings.md`
-- Release notes prepared: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/release-notes.md`
+- Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/docs-sync-report.md`.
+- Result: `Pass — product docs updated; DR-005 packaging recovery has explicit no additional long-lived docs impact`.
+- Product docs updated: `autobyteus-server-ts/docs/modules/token_usage.md`; `autobyteus-web/docs/settings.md`.
+- Recovery rationale: release/operator procedures were unchanged; the stale build source was removed and a durable generic build-context test now owns the invariant.
 
 ## User Verification Checklist
 
-The previously installed Electron `1.4.26` package predates this source change. A fresh local `1.4.26` verification package containing the fix is now available under `autobyteus-web/electron-dist`. The user explicitly accepted task completion on 2026-07-28 after receiving the retained API/browser evidence. The verification checklist supplied at handoff was:
+The user accepted the product behavior before finalization and later explicitly authorized the release. Official `v1.4.27` desktop/mobile artifacts now contain the verified token-statistics fix.
 
-1. Open Settings → Token Statistics and fetch a supported period containing a total above `2,147,483,647`.
-2. Confirm the request succeeds without `Int cannot represent non 32-bit signed integer value`.
-3. Confirm the primary Task Input/Output cells show complete decimal digits (locale separators are expected), not only compact notation.
-4. Confirm a smaller-count period and the Model grouping remain usable.
-5. Confirm unrelated request failures still use the existing error state and clear loading normally.
+1. Optional release smoke: install a matching `v1.4.27` desktop artifact and open Settings → Token Statistics.
+2. Confirm a supported period above `2,147,483,647` loads without the GraphQL signed-Int error and shows complete locale-aware digits.
+3. For Docker fleets, pin `autobyteus/autobyteus-server:1.4.27` for controlled rollout; its published multi-arch digest is recorded below.
+4. Apple TestFlight/App Store processing and public availability remain visible in App Store Connect rather than the GitHub workflow.
 
 ## Persisted Data, Residual Risk, And Rollback
 
-- Approved persisted-data outcome: `Not Affected`; existing ledger rows remain directly usable with no migration, rewrite, discard, rebuild, backup, or maintenance window.
-- Local packaging result: a fresh unsigned/ad-hoc macOS ARM64 Electron package now contains the fix. The existing installed app remains unchanged until the user launches or installs the new local artifact.
-- Non-blocking out-of-scope boundary: values above `Number.MAX_SAFE_INTEGER` require a separately approved cross-client design and remain rejected rather than corrupted.
-- Non-blocking pre-existing issue: package-level server `typecheck` has an unrelated rootDir/include problem; the established source typecheck and full server build passed.
-- Repository rollback is a normal revert of merge commit `169fd12f4` if necessary; do not rewrite correct ledger data. No release rollback is needed because the user requested no release.
+- Persisted-data outcome: `Not Affected`; no schema migration, rewrite, discard, rebuild, backup, or maintenance window.
+- Product boundary: values above `Number.MAX_SAFE_INTEGER` require a separate cross-client design and remain out of scope.
+- Pre-existing non-blocking issue: package-level server `typecheck` has an unrelated rootDir/include problem; established source typecheck and full server builds passed.
+- Release residual: Apple controls post-upload processing/review/public availability. GitHub Actions also emitted a non-blocking Node 20 action-runtime deprecation annotation while successfully running under Node 24.
+- Product rollback: normal revert of the finalized token-statistics merge; do not rewrite correct ledger data.
+- Published-artifact rollback: never move `v1.4.27`; withdraw an affected asset/platform listing or issue a new corrective version. For Docker, pin a last-known-good versioned tag if runtime rollout detects a critical defect.
+- Recovered Server Docker provenance is explicit: `vcs:revision=cc79c46dc...`, index digest `sha256:296659...`.
 
 ## User Verification And Finalization Authorization
 
-- Explicit user verification received: `Yes`
-- Verification reference: User message on 2026-07-28 — “the task is done. lets finalize no need to release.”
-- Ticket moved to `tickets/done`: `Yes`
-- Ticket branch pushed: `Yes` (then removed after successful target finalization)
-- Finalization target merged/pushed: `Yes`
-- Release/publication/deployment executed: `Partially — v1.4.27 commit/tag published and workflows triggered; server Docker failed`
-- Release authorization: `Explicitly authorized on 2026-07-29 after the earlier no-release finalization`
-- Dedicated worktree/branch cleanup executed: `Yes`
-- Next action: implementation-owned packaging fix, source review, targeted packaging validation, then delivery recovery decision and final release verification.
+- Explicit product verification received: `Yes` — 2026-07-28.
+- Repository finalization and cleanup: `Completed`.
+- Release authorization: `Yes` — explicit new-release request on 2026-07-29.
+- Release/publication/deployment result: `Completed` for GitHub Release, desktop, Android, iOS App Store Connect upload, messaging gateway, and Server Docker.
+- Recovery authorization basis: documented existing-tag recovery executed only after implementation, source review, API/E2E, proportional test review, and latest-base integration passed.
+- Next action: `None required`; optional staged rollout/manual smoke remains at the user's discretion.
 
 ## Cumulative Artifact Package
 
@@ -150,3 +143,11 @@ All ticket artifacts below are under:
 - Local personal refresh: `delivery-evidence/local-main-electron-build/local-personal-refresh.log`
 - Local-main Electron build log: `delivery-evidence/local-main-electron-build/electron-build.log`
 - Electron artifact validation: `delivery-evidence/local-main-electron-build/electron-artifact-validation.log`
+- Recovery integration refresh: `delivery-evidence/release-v1.4.27/recovery-integration-refresh.log`
+- Recovery integrated checks: `delivery-evidence/release-v1.4.27/recovery-integrated-checks.log`
+- Recovery dispatch: `delivery-evidence/release-v1.4.27/server-docker-recovery-dispatch.log`
+- Server Docker recovery result: `delivery-evidence/release-v1.4.27/server-docker-recovery-result.log`
+- Recovery key log: `delivery-evidence/release-v1.4.27/server-docker-recovery-key-log.txt`
+- Final release verification: `delivery-evidence/release-v1.4.27/release-final-verification.log`
+- Compact release validation: `delivery-evidence/release-v1.4.27/release-validation-summary.txt`
+- Recovery cleanup: `delivery-evidence/release-v1.4.27/recovery-cleanup.log`

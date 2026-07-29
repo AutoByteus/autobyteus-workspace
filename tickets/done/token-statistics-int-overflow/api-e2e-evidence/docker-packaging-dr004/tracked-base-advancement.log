@@ -1,0 +1,104 @@
+# Tracked-base advancement observed during API/E2E
+2026-07-29T08:04:03+02:00
+HEAD=390307afb496eecdba43143c085cfde7a73fd3e2
+origin/personal=ca97fa2f537f5bf31c4adbddc3d094c5bd7c7e96
+0	14
+## commits HEAD..origin/personal
+ca97fa2f5 (origin/personal, origin/HEAD, codex/gemini-31-image-schema-dimensions) docs(ticket): record cleanup evidence
+f187010b8 docs(ticket): record cleanup completion
+f5ce226ce docs(ticket): synchronize final target hash
+9ca6a69b0 docs(ticket): synchronize final target hash
+3b759e61b docs(ticket): record finalization results
+8a95e4f74 docs(ticket): record finalization results
+6fd7aff2b merge: finalize simplify local full-stack development startup
+e29a1b616 chore(ticket): archive simplify local full-stack development startup
+0cd1aff64 Merge remote-tracking branch 'origin/personal' into codex/simplify-local-full-stack-development-startup
+b7ea162cb chore(ticket): checkpoint latest-base integration before finalization
+a4040047b Merge remote-tracking branch 'origin/personal' into codex/simplify-local-full-stack-development-startup
+89c0a24b4 chore(ticket): checkpoint reviewed startup package before delivery integration
+0f836c992 fix deterministic e2e command forwarding
+6280e7072 simplify local full-stack development startup
+## changed paths HEAD..origin/personal
+M	.gitignore
+M	README.md
+A	autobyteus-server-ts/.env.development
+M	autobyteus-server-ts/.gitignore
+M	autobyteus-server-ts/README.md
+M	autobyteus-server-ts/docs/modules/secret_management.md
+M	autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+M	package.json
+A	scripts/development/development-runtime.mjs
+A	scripts/development/run-dev.mjs
+A	scripts/development/run-dev.test.mjs
+D	test-support/live-e2e/run-test-dev.mjs
+D	test-support/live-e2e/run-test-server.mjs
+D	test-support/live-e2e/run-test-web.mjs
+A	tickets/done/simplify-local-full-stack-development-startup/api-e2e-coverage-investigation.md
+A	tickets/done/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md
+A	tickets/done/simplify-local-full-stack-development-startup/api-e2e-revision-record.md
+A	tickets/done/simplify-local-full-stack-development-startup/api-e2e-test-review-report.md
+A	tickets/done/simplify-local-full-stack-development-startup/code-review-report.md
+A	tickets/done/simplify-local-full-stack-development-startup/code-review-revision-record.md
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/integration-refresh.txt
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-base-managed-gateway-focused.log
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-base-root-test-e2e-rerun-20260729.log
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-base-root-test-e2e.log
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-target-post-merge-check.log
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-target-root-test-e2e.log
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/post-integration-check.log
+A	tickets/done/simplify-local-full-stack-development-startup/delivery-revision-record.md
+A	tickets/done/simplify-local-full-stack-development-startup/design-spec.md
+A	tickets/done/simplify-local-full-stack-development-startup/development-startup-contract.md
+A	tickets/done/simplify-local-full-stack-development-startup/docs-sync-report.md
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/01-launcher-unit.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/02-server-build.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/03-root-test-e2e.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/04-alternate-cwd-occupied-port.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/04-listeners-after.txt
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/04-listeners-before.txt
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/04-occupied-port.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/05-lifecycle-harness.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/06-root-test-e2e-rerun.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/07-backend-health.json
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/07-development-before-stop.txt
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/07-frontend-headers.txt
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/07-frontend-index.html
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/07-pnpm-dev-live.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/08-backend-health.json
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/08-frontend-headers.txt
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/08-frontend-index.html
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/08-live-checks.txt
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/08-pnpm-dev-alternate-cwd.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/09-final-isolation.txt
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/10-fixture-runtime-focused.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/10-token-backfill-focused.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/10-token-gpt-focused.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/10-token-ledger-focused.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/10-token-legacy-focused.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/10-token-unit-prices-focused.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/11-typecheck.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/12-root-test-e2e-fixed-fixtures.log
+A	tickets/done/simplify-local-full-stack-development-startup/evidence/13-build-typecheck.log
+A	tickets/done/simplify-local-full-stack-development-startup/handoff-summary.md
+A	tickets/done/simplify-local-full-stack-development-startup/implementation-handoff.md
+A	tickets/done/simplify-local-full-stack-development-startup/implementation-revision-record.md
+A	tickets/done/simplify-local-full-stack-development-startup/investigation-notes.md
+A	tickets/done/simplify-local-full-stack-development-startup/release-deployment-report.md
+A	tickets/done/simplify-local-full-stack-development-startup/requirements.md
+A	tickets/done/simplify-local-full-stack-development-startup/solution-revision-record.md
+## packaging-sensitive paths changed?
+A	autobyteus-server-ts/.env.development
+M	autobyteus-server-ts/.gitignore
+M	autobyteus-server-ts/README.md
+M	autobyteus-server-ts/docs/modules/secret_management.md
+M	autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/media/server-owned-media-tools.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+M	package.json
+## origin reflog
+ca97fa2f5 refs/remotes/origin/personal@{2026-07-29 07:52:33 +0200}: update by push
+f187010b8 refs/remotes/origin/personal@{2026-07-29 07:52:20 +0200}: update by push
+f5ce226ce refs/remotes/origin/personal@{2026-07-29 07:50:31 +0200}: update by push
+3b759e61b refs/remotes/origin/personal@{2026-07-29 07:49:28 +0200}: update by push

@@ -1,0 +1,24 @@
+# Docker environment preflight
+2026-07-29T07:49:23+02:00
+## client
+{"Version":"29.0.1","ApiVersion":"1.52","DefaultAPIVersion":"1.52","GitCommit":"eedd969","GoVersion":"go1.25.4","Os":"darwin","Arch":"arm64","BuildTime":"Fri Nov 14 16:16:57 2025","Context":"desktop-linux"}
+## server
+{"Platform":{"Name":"Docker Desktop 4.52.0 (210994)"},"Version":"29.0.1","ApiVersion":"1.52","MinAPIVersion":"1.44","Os":"linux","Arch":"arm64","Components":[{"Name":"Engine","Version":"29.0.1","Details":{"ApiVersion":"1.52","Arch":"arm64","BuildTime":"Fri Nov 14 16:18:20 2025","Experimental":"false","GitCommit":"198b5e3","GoVersion":"go1.25.4","KernelVersion":"6.12.54-linuxkit","MinAPIVersion":"1.44","Os":"linux"}},{"Name":"containerd","Version":"v2.1.5","Details":{"GitCommit":"fcd43222d6b07379a4be9786bda52438f0dd16a1"}},{"Name":"runc","Version":"1.3.3","Details":{"GitCommit":"v1.3.3-0-gd842d771"}},{"Name":"docker-init","Version":"0.19.0","Details":{"GitCommit":"de40ad0"}}],"GitCommit":"198b5e3","GoVersion":"go1.25.4","KernelVersion":"6.12.54-linuxkit","BuildTime":"Fri Nov 14 16:18:20 2025"}
+## buildx
+github.com/docker/buildx v0.29.1-desktop.1 28f6246ff24e2c05095e8741e48c48dcb2d3b4bc
+## builders
+NAME/NODE                     DRIVER/ENDPOINT     STATUS    BUILDKIT   PLATFORMS
+multi-platform-builder*       docker-container
+ \_ multi-platform-builder0    \_ desktop-linux   running   v0.26.2    linux/amd64 (+2), linux/arm64, linux/arm (+2), linux/ppc64le, (3 more)
+default                       docker
+ \_ default                    \_ default         running   v0.25.2    linux/amd64 (+2), linux/arm64, linux/ppc64le, linux/s390x, (2 more)
+desktop-linux                 docker
+ \_ desktop-linux              \_ desktop-linux   running   v0.25.2    linux/amd64 (+2), linux/arm64, linux/ppc64le, linux/s390x, (2 more)
+## docker info summary
+ServerVersion=29.0.1 OS=Docker Desktop Arch=aarch64 Driver=overlayfs CPUs=10 Mem=16484704256
+## disk
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          83        8         229.2GB   105.4GB (45%)
+Containers      13        8         4.587GB   1.238GB (26%)
+Local Volumes   96        29        115.4GB   12.59GB (10%)
+Build Cache     788       0         121.7GB   19.96GB

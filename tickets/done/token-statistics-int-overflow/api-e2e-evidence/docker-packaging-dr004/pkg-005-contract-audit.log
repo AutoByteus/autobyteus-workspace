@@ -1,0 +1,146 @@
+# PKG-005 manifest, lock, history, context, and immutable-tag audit
+2026-07-29T08:03:41+02:00
+## git identities
+head=390307afb496eecdba43143c085cfde7a73fd3e2
+origin_personal=ca97fa2f537f5bf31c4adbddc3d094c5bd7c7e96
+tag_object=a89d7828fd05db8abfabbee25bcaa88cce39af18
+tag_peeled=2127840eeeb66dc4cce66b51e59fb7c6a5eff112
+branch=release/token-statistics-int-overflow-v1.4.27
+## current package and lock references
+    "mercurius": "^13.1.0",
+    "mime-types": "^3.0.2",
+    "reflect-metadata": "^0.2.2",
+    "repository_prisma": "^1.0.9",
+    "type-graphql": "^2.0.0-rc.2",
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6"
+        version: 0.2.2
+      repository_prisma:
+        specifier: ^1.0.9
+        version: 1.0.9(@prisma/client@5.22.0(prisma@5.22.0))
+      type-graphql:
+  repository_prisma@1.0.9:
+    resolution: {integrity: sha512-LY1ZkCpUQyj3kSUC7dBYjyBdezvscCOTTMNMNQFsy4g3InKlWii04hHFNMcIriDU4pQVsexx59+rDTPfN+S7YQ==}
+    peerDependencies:
+      '@prisma/client': ^5.22.0
+
+  repository_prisma@1.0.9(@prisma/client@5.22.0(prisma@5.22.0)):
+    dependencies:
+      '@prisma/client': 5.22.0(prisma@5.22.0)
+      uuid: 13.0.0
+
+## install instructions
+docker/Dockerfile.remote-server:24:RUN pnpm install --no-frozen-lockfile
+docker/Dockerfile.allinone:28:RUN pnpm install --no-frozen-lockfile \
+autobyteus-server-ts/docker/Dockerfile.monorepo:23:RUN pnpm install --no-frozen-lockfile
+## live patch-contract search (must be empty)
+no live root patch directory, Dockerfile patch copy, patchedDependencies, or lock patch hash
+## direct COPY source inventories
+autobyteus-server-ts/docker/Dockerfile.monorepo direct_sources=27 missing=0
+docker/Dockerfile.allinone direct_sources=28 missing=0
+docker/Dockerfile.remote-server direct_sources=21 missing=0
+## source patch hashes (git diff for each file)
+autobyteus-server-ts/docker/Dockerfile.monorepo ec66d0690033b19778cd32682a12f7e07209141ea018cc9f6a4fa57adec1be5d
+docker/Dockerfile.allinone 91c8f0f91c0b4f1550c9efbebc569d035f24d961a3c05b6467e2afe075383252
+docker/Dockerfile.remote-server 742c22659781f6a27aedb0ef7506e9432f40f90ef7e1d122b106c0937b0d128e
+## durable test file hash and diff
+8de41e4923a8a776cb4ea3655f4fe1adcc0b889ca6c023331c9a9ff30651d1d0  scripts/tests/test_docker_build_context_sources.py
+diff --git a/scripts/tests/test_docker_build_context_sources.py b/scripts/tests/test_docker_build_context_sources.py
+new file mode 100644
+index 000000000..8272efaed
+--- /dev/null
++++ b/scripts/tests/test_docker_build_context_sources.py
+@@ -0,0 +1,85 @@
++import glob
++import json
++import shlex
++import unittest
++from pathlib import Path
++
++
++REPO_ROOT = Path(__file__).resolve().parents[2]
++SUPPORTED_DOCKERFILES = (
++    REPO_ROOT / "autobyteus-server-ts" / "docker" / "Dockerfile.monorepo",
++    REPO_ROOT / "docker" / "Dockerfile.allinone",
++    REPO_ROOT / "docker" / "Dockerfile.remote-server",
++)
++
++
++class DockerBuildContextSourcesTest(unittest.TestCase):
++    def test_direct_copy_sources_exist_in_repository_root_context(self) -> None:
++        for dockerfile in SUPPORTED_DOCKERFILES:
++            direct_sources = list(direct_copy_sources(dockerfile))
++            self.assertTrue(direct_sources, f"{dockerfile} has no direct COPY sources")
++
++            for source in direct_sources:
++                with self.subTest(dockerfile=dockerfile.relative_to(REPO_ROOT), source=source):
++                    matches = glob.glob(str(REPO_ROOT / source), recursive=True)
++                    self.assertTrue(
++                        matches,
++                        f"{dockerfile.relative_to(REPO_ROOT)} copies missing repository-root source {source!r}",
++                    )
++
++
++def direct_copy_sources(dockerfile: Path):
++    for instruction in logical_instructions(dockerfile.read_text(encoding="utf-8")):
++        command, separator, arguments = instruction.partition(" ")
++        if not separator or command.upper() != "COPY":
++            continue
++
++        tokens = copy_tokens(arguments)
++        from_stage = False
++        while tokens and tokens[0].startswith("--"):
++            flag = tokens.pop(0)
++            from_stage = from_stage or flag == "--from" or flag.startswith("--from=")
++            if flag in {"--from", "--chown", "--chmod", "--exclude"}:
++                if not tokens:
++                    raise AssertionError(f"{dockerfile}: COPY flag {flag!r} has no value")
++                tokens.pop(0)
++
++        if from_stage:
++            continue
++        if len(tokens) < 2:
++            raise AssertionError(f"{dockerfile}: COPY must declare a source and destination: {instruction!r}")
++
++        yield from tokens[:-1]
++
++
++def logical_instructions(dockerfile: str):
++    pending = ""
++    for raw_line in dockerfile.splitlines():
++        stripped = raw_line.strip()
++        if not stripped or stripped.startswith("#"):
++            continue
++
++        pending = f"{pending} {stripped}".strip()
++        if pending.endswith("\\"):
++            pending = pending[:-1].rstrip()
++            continue
++
++        yield pending
++        pending = ""
++
++    if pending:
++        yield pending
++
++
++def copy_tokens(arguments: str) -> list[str]:
++    arguments = arguments.strip()
++    if arguments.startswith("["):
++        tokens = json.loads(arguments)
++        if not isinstance(tokens, list) or not all(isinstance(token, str) for token in tokens):
++            raise AssertionError(f"COPY JSON form must be an array of strings: {arguments!r}")
++        return tokens
++    return shlex.split(arguments)
++
++
++if __name__ == "__main__":
++    unittest.main()
+## historical retirement commit
+3fdaf0c62 fix: harden secret importer and update repository prisma
+ autobyteus-server-ts/package.json     |  2 +-
+ package.json                          |  5 +--
+ patches/repository_prisma@1.0.6.patch | 70 -----------------------------------
+ pnpm-lock.yaml                        | 16 +++-----
+ 4 files changed, 7 insertions(+), 86 deletions(-)
+## hygiene

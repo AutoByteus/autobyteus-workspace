@@ -1,0 +1,56 @@
+# Relevant latest-base diff detail
+2026-07-29T08:04:17+02:00
+diff --git a/package.json b/package.json
+index 2120ff68f..018d1c45b 100644
+--- a/package.json
++++ b/package.json
+@@ -1,39 +1,38 @@
+ {
+   "name": "autobyteus-workspace",
+   "private": true,
+   "scripts": {
+     "secrets:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
+-    "server:test": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-test-server.mjs",
+-    "web:test": "node test-support/live-e2e/run-test-web.mjs",
+-    "dev:test": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-test-dev.mjs",
++    "dev": "pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs",
++    "test:e2e": "pnpm --filter autobyteus-server-ts test --run tests/e2e",
+     "test:e2e:real:preflight": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs --preflight",
+     "test:e2e:real": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs",
+     "verify:android-profile": "bash scripts/verify-android-profile.sh",
+     "android:bootstrap": "bash scripts/android-bootstrap-termux.sh",
+     "android:bootstrap:check": "bash scripts/android-bootstrap-termux.sh --check-only",
+     "android:server:start": "bash scripts/android-run-server-termux.sh",
+     "android:server:start:bg": "bash scripts/android-run-server-termux.sh --background",
+     "android:server:stop": "bash scripts/android-run-server-termux.sh --stop",
+     "android:server:status": "bash scripts/android-run-server-termux.sh --status",
+     "release": "bash scripts/desktop-release.sh release",
+     "release:test": "bash scripts/desktop-release.sh test",
+     "release:manual-dispatch": "bash scripts/desktop-release.sh manual-dispatch"
+   },
+   "packageManager": "pnpm@10.28.2",
+   "pnpm": {
+     "onlyBuiltDependencies": [
+       "@parcel/watcher",
+       "@prisma/client",
+       "@prisma/engines",
+       "@whiskeysockets/baileys",
+       "electron",
+       "esbuild",
+       "node-pty",
+       "prisma",
+       "protobufjs",
+       "sharp",
+       "vue-demi"
+     ]
+   },
+   "license": "Apache-2.0"
+ }
+## exact Docker/manifests unchanged on latest base
+autobyteus-server-ts/docker/Dockerfile.monorepo unchanged
+docker/Dockerfile.allinone unchanged
+docker/Dockerfile.remote-server unchanged
+pnpm-lock.yaml unchanged
+pnpm-workspace.yaml unchanged
+autobyteus-server-ts/package.json unchanged
+.dockerignore unchanged

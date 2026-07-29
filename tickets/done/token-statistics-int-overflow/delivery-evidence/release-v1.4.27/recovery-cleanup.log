@@ -1,0 +1,13 @@
+v1.4.27 recovery resource cleanup
+Captured at: 2026-07-29T08:57:16+02:00
+Recovery worktree path: /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27
+Recovery worktree removed: YES
+Local recovery branch removed: YES
+Remote recovery branch absent: YES (never pushed)
+Local personal: 41c5a4faca935642ee47ccdb35569666d1522e09
+Remote personal: 41c5a4faca935642ee47ccdb35569666d1522e09
+Divergence: 0	0
+Tag object: a89d7828fd05db8abfabbee25bcaa88cce39af18
+Tag target: 2127840eeeb66dc4cce66b51e59fb7c6a5eff112
+Unrelated dirty application-agent-streaming/article work remained present and checksum/status comparison was unchanged across the local personal fast-forward.
+Result: PASS

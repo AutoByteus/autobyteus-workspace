@@ -1,0 +1,22 @@
+# API/E2E DR-004 artifact validation
+2026-07-29T08:12:08+02:00
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.024s
+
+OK
+api-e2e-coverage-investigation.md: lines=214 required_markers=pass
+api-e2e-execution-coverage-report.md: lines=233 required_markers=pass
+api-e2e-revision-record.md: lines=67 required_markers=pass
+pkg-003-monorepo-builder-build.log: evidence_markers=pass
+pkg-003-monorepo-builder-inspection.log: evidence_markers=pass
+pkg-004-allinone-builder-build.log: evidence_markers=pass
+pkg-004-remote-server-builder-build.log: evidence_markers=pass
+pkg-006-docker-cleanup.log: evidence_markers=pass
+## canonical hashes
+a6a5f2c41bf5a3e1bb8ed23b1bc79a09e9ca592865797e0456e815643868c740  /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md
+6b3e80f32d863b1057695670770e8ba7cd39d88f9b4fa8399c72bbfa3843f9eb  /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-execution-coverage-report.md
+dc790c5c5eda64992450cb361a95381f7e7c3295facb1866c947d0f4eba70032  /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-revision-record.md
+8de41e4923a8a776cb4ea3655f4fe1adcc0b889ca6c023331c9a9ff30651d1d0  scripts/tests/test_docker_build_context_sources.py
+artifact_validation=pass

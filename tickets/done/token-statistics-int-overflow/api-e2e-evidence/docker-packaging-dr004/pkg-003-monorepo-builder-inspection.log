@@ -1,0 +1,34 @@
+# PKG-003 monorepo builder inspection
+2026-07-29T07:57:41+02:00
+host_lock_sha256=a5316d95b92596fe0968334563d4185fb96bd70e84853274ea5a73213b286a77
+container_lock_sha256=89680741d03b0ff319f3b2bafeb8ad561bbaff82f83fbecd8400d6301a2fa905
+container_lock_rewrite=yes (the production Dockerfile intentionally runs --no-frozen-lockfile against a partial manifest-only workspace before source copy)
+ .../container-lock-snapshot.tmp                    | 372 +--------------------
+ 1 file changed, 1 insertion(+), 371 deletions(-)
+image_id=sha256:02266a22681484fbfa94ce476e04c8b230c48ae624e6d94ef41c814685f47280 architecture=arm64 os=linux size=1016215934 created=2026-07-29T05:53:32.638195879Z
+node=v22.23.1 pnpm=10.28.2
+repository_prisma_version=1.0.9
+app_patches_path=absent
+patch_metadata=absent
+container_lock_repository_prisma_block:
+88-        version: 0.2.2
+89:      repository_prisma:
+90-        specifier: ^1.0.9
+91-        version: 1.0.9(@prisma/client@5.22.0(prisma@5.22.0))
+92-      type-graphql:
+builder_outputs=server-dist,mobile-web-present
+host_lock_repository_prisma_block:
+        version: 0.2.2
+      repository_prisma:
+        specifier: ^1.0.9
+        version: 1.0.9(@prisma/client@5.22.0(prisma@5.22.0))
+      type-graphql:
+  repository_prisma@1.0.9:
+    resolution: {integrity: sha512-LY1ZkCpUQyj3kSUC7dBYjyBdezvscCOTTMNMNQFsy4g3InKlWii04hHFNMcIriDU4pQVsexx59+rDTPfN+S7YQ==}
+    peerDependencies:
+      '@prisma/client': ^5.22.0
+
+  repository_prisma@1.0.9(@prisma/client@5.22.0(prisma@5.22.0)):
+    dependencies:
+      '@prisma/client': 5.22.0(prisma@5.22.0)
+      uuid: 13.0.0
