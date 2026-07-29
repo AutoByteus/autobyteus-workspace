@@ -70,17 +70,17 @@ Planned release is `v1.4.29`, the next patch after current `v1.4.28`. The releas
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/investigation-notes.md`
 - Ticket branch: `codex/agent-idle-status-lifecycle`
-- Ticket branch commit result: delivery-safety checkpoint `7e4b78d314b867c57723cee95d0cdd24be33a3cf`; delivery reports/evidence remain unfinalized pending verification.
-- Ticket branch push result: `In progress`
+- Ticket branch commit result: `Completed` — archive/finalization commit `0febb53a136f8d4bb183edd3015db97a98ecb550`, following delivery-safety checkpoint `7e4b78d314b867c57723cee95d0cdd24be33a3cf`.
+- Ticket branch push result: `Completed` to `origin/codex/agent-idle-status-lifecycle`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`; the post-verification fetch still resolved `origin/personal` to `6caf809303294252c109420b238588f0c68aca6a`.
-- Delivery-owned edits protected before re-integration: `Completed` for upstream reviewed package; current delivery artifacts remain local.
-- Re-integration before final merge result: `Not needed` in this round; target was already contained. A new post-verification fetch will still be mandatory.
-- Target branch update result: `Pending in clean temporary worktree`
-- Merge into target result: `Pending`
+- Delivery-owned edits protected before re-integration: `Completed` in ticket commit `0febb53a136f8d4bb183edd3015db97a98ecb550`.
+- Re-integration before final merge result: `Completed`; clean temporary branch started directly at latest `origin/personal@6caf809303294252c109420b238588f0c68aca6a`.
+- Target branch update result: `Completed` in clean temporary worktree without touching the unrelated dirty local `personal` worktree.
+- Merge into target result: `Completed without conflicts` at merge commit `318e2847eb083517c40aaf3c7fcd5df3d7c440b4`.
 - Push target branch result: `Pending`
-- Repository finalization status: `In progress`
+- Repository finalization status: `Integrated checks passed; target push pending`
 - Blocker: N/A
 
 ## Release / Publication / Deployment
@@ -132,6 +132,8 @@ No deployment was performed.
 - Live runtime/browser: Codex, Claude Agent SDK, and AutoByteus standalone/team journeys passed; isolated real Chrome passed 22/22 lifecycle/Event Monitor assertions.
 - Electron DR-002: README/base evidence `136`; frozen install `137`; build `138` passed; package/runtime/server/notice/signing/cleanup verification `139` passed; post-build base and checksums `140` passed.
 - Final base confirmation: `origin/personal@6caf809303294252c109420b238588f0c68aca6a`; ahead 17 / behind 0 at package head `7e4b78d314b867c57723cee95d0cdd24be33a3cf`.
+- Finalization merge/smoke: merge commit `318e2847eb083517c40aaf3c7fcd5df3d7c440b4`; frozen install evidence `144`; clean-worktree prerequisite miss evidence `145`; shared-package/Prisma preparation evidence `146`; unchanged rerun evidence `147`, `Pass` with 6 files / 38 tests.
+- Evidence `145` classification: delivery execution-environment setup, not product failure. The clean worktree had not yet generated Prisma client or built shared workspace packages; no implementation or test code changed before the successful rerun.
 - Verification-script history: `130` used the wrong Electron plist key; `131` incorrectly expected no signature instead of an ad-hoc linker signature. Package bytes were unchanged and both are classified as delivery-script issues, not product failures.
 
 ## Remaining Risks / Residuals
