@@ -1,0 +1,393 @@
+# Round 6 AutoByteus runtime live team send_message_to
+# Started: 2026-07-22T06:47:40Z
+# Credential source: /Users/normy/autobyteus_org/autobyteus/.env.test (loaded into child environment only)
+# Command: RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=deepseek-v4-flash pnpm exec vitest run tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts -t <send_message_to scenario> --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:68221) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-aM1zek
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-aM1zek/.env
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Failed to resolve model metadata for provider ANTHROPIC: Anthropic metadata request failed with status 401
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Failed to resolve model metadata for provider KIMI: Kimi metadata request failed with status 401
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Discovering LM Studio models from host: http://192.168.2.158:1234
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Discovering Autobyteus models from host: https://192.168.2.158:51739
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Finished Autobyteus discovery. Total models registered: 37
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Successfully fetched 73 models from LLMFactory.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+LLM models cache populated with 73 items.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent Definition created successfully with ID: autobyteus-team-coordinator-5558a85b-ebab-452e-b3d6-3743245d7f52
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent Definition created successfully with ID: autobyteus-team-reviewer-91468e64-c5d1-41fe-b512-8f5384b8dbf6
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+[2026-07-22T06:47:47.693Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent Team Definition created successfully with ID: autobyteus-send-message-team-de0ffea1-0141-4e34-b211-963570069662
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+AgentRunManager initialized.
+
+stderr | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-send-message-workspace-4G943z
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-send-message-workspace-4G943z.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Created and registered workspace ID: agent_ws_3b3dc0013210fe9329c0b6732c8ae05e9af043fd74c27597acd0d519a6e0de12
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+[2026-07-22T06:47:47.707Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Registered 6 image models from Autobyteus host https://192.168.2.158:51739.
+Autobyteus image models from https://192.168.2.158:51739: gpt-image-1-rpa@192.168.2.158:51739, nano-banana-pro-app-rpa@192.168.2.158:51739, imagen-4-rpa@192.168.2.158:51739, imagen-4-ultra-rpa@192.168.2.158:51739, imagen-4-fast-rpa@192.168.2.158:51739, qwen-image-rpa@192.168.2.158:51739
+Autobyteus image discovery summary for https://192.168.2.158:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=18
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Finished Autobyteus image model discovery. Total models registered: 6
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Registered 4 audio models from Autobyteus host https://192.168.2.158:51739.
+Autobyteus audio models from https://192.168.2.158:51739: gemini-2.5-pro-tts-rpa@192.168.2.158:51739, gemini-2.5-flash-tts-rpa@192.168.2.158:51739, gemini-3.1-flash-tts-rpa@192.168.2.158:51739, qwen-tts-rpa@192.168.2.158:51739
+Autobyteus audio discovery summary for https://192.168.2.158:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=17
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Finished Autobyteus audio model discovery. Total models registered: 4
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+[2026-07-22T06:47:47.739Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Successfully created mixed team run 'autobyteus_send_message_team_de0ffea1_0141_4e34_e03825a9e97d4970aa4d896827424a42'.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent team websocket attached for team run autobyteus_send_message_team_de0ffea1_0141_4e34_e03825a9e97d4970aa4d896827424a42
+Created agent session cd06fc78-5117-4ca1-a764-93348402fce8 for run autobyteus_send_message_team_de0ffea1_0141_4e34_e03825a9e97d4970aa4d896827424a42
+Agent Team WebSocket connected: session=cd06fc78-5117-4ca1-a764-93348402fce8, run=autobyteus_send_message_team_de0ffea1_0141_4e34_e03825a9e97d4970aa4d896827424a42
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Resolved system prompt from fresh definition instructions for AgentDefinition autobyteus-team-coordinator-5558a85b-ebab-452e-b3d6-3743245d7f52.
+Successfully registered tool definition: 'send_message_to'
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentRuntimeState initialized for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': LLM instance 'DeepSeekLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' with config: 'autobyteus-team-coordinator-5558a85b-ebab-452e-b3d6-3743245d7f52'.
+AgentWorker initialized for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'.
+Registered AgentContext for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'. Context registered.
+Agent facade initialized for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' created and stored successfully.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' requesting runtime to start.
+AgentRuntime for 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Starting worker.
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Starting...
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' asyncRun(): Starting.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Runtime init completed (event store initialized).
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Runtime init completed (status deriver initialized).
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Runtime init completed (AgentEventInbox initialized).
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' to become idle (timeout: 30s)...
+AgentEventStream (ID: 6b6eb964-ca8c-42a3-9730-78b3c577d6d2) initialized for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'. Subscribed to notifier.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Bootstrapper starting direct lifecycle execution.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Executing SystemPromptProcessingStep.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Final processed system prompt configured on LLM instance. Final length: 1903.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Final processed system prompt:
+---
+## Team Instruction
+Validate direct team member communication.
+
+## Agent Instruction
+You are participating in live all-AutoByteus team communication validation. If the user asks you to call send_message_to with exact JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool. If a teammate asks you to reply with an exact token, output that token exactly and do not call tools.
+
+## Runtime Instruction
+Current team member: coordinator
+If you use `send_message_to`, choose exactly one target selector.
+Set `recipient_name` to one allowed roster name for a logical teammate.
+Set `target_agent_run_id` to an exact currently active AgentRun id supplied by a task packet, task event, or prior message when the message must reach that exact live run.
+Use `send_message_to` only for actual delivery; plain text does not deliver a teammate or exact-run message.
+When sending files the recipient may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files`.
+Example: content explains the handoff and may mention `/Users/me/project/implementation-handoff.md`; reference_files includes [`/Users/me/project/implementation-handoff.md`].
+Do not claim delivery unless the tool call succeeds.
+
+Team membership roster
+
+You are: coordinator
+
+You are a member of these teams:
+1. autobyteus-send-message-team-de0ffea1-0141-4e34-b211-963570069662
+   Your role: coordinator
+   Team members:
+   - coordinator (you, coordinator)
+   - reviewer
+
+   You can message:
+   - reviewer
+
+When using send_message_to, choose exactly one target selector.
+Use recipient_name for one logical roster recipient:
+- reviewer
+Use target_agent_run_id instead when a task packet, task event, or prior message gives a concrete currently active AgentRun id and the message must reach that exact live run. Do not provide both selectors.
+---
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' has become idle.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentEventStream (ID: 6b6eb964-ca8c-42a3-9730-78b3c577d6d2) for 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentEventStream (ID: 82ebb205-3568-4f41-b9f2-65452a1067d0) initialized for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'. Subscribed to notifier.
+Successfully created autobyteus agent run 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentEventStream (ID: 82ebb205-3568-4f41-b9f2-65452a1067d0) for 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'. Attempting graceful shutdown.
+Agent 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Stop requested.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentExternalEventNotifier (NotifierID: f7928a6d-4095-4276-ad74-addebbce8e46, AgentID: autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Closed agent session cd06fc78-5117-4ca1-a764-93348402fce8
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Agent Team WebSocket disconnected: cd06fc78-5117-4ca1-a764-93348402fce8
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' asyncRun() loop has finished.
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Shutdown resource cleanup completed successfully.
+AgentWorker 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Unregistered AgentContext for agent_id 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c'.
+AgentRuntime for 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c': Context unregistered.
+
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+AgentRuntime for 'autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c' stop() method completed.
+
+ × tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files 242001ms
+   → Timed out waiting for team websocket message 'coordinator send_message_to TOOL_EXECUTION_SUCCEEDED'. preview='CONNECTED:{"team_id":"autobyteus_send_message_team_de0ffea1_0141_4e34_e03825a9e97d4970aa4d896827424a42","session_id":"cd06fc78-5117-4ca1-a764-93348402fce8"} | AGENT_STATUS:{"status":"offline","can_interrupt":false,"agent_name":"coordinator","agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","member_route_ke | AGENT_STATUS:{"status":"offline","can_interrupt":false,"agent_name":"reviewer","agent_id":"autobyteus_team_reviewer_91468e64_c5d1_41fe_b512_c15daea30f714f9199685967663bd3c8","member_route_key": | TEAM_STATUS:{"status":"offline","source_path":[]} | AGENT_STATUS:{"status":"initializing","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_rou | TEAM_STATUS:{"status":"initializing","source_path":[]} | AGENT_STATUS:{"status":"initializing","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_rou | MEMBER_INPUT_MESSAGE:{"content":"Call send_message_to exactly once now with these exact JSON arguments: {\"recipient_name\":\"reviewer\",\"content\":\"Please reply with exactly AUTO_SEND_MESSAGE_REPLY_ | TURN_STARTED:{"turn_id":"turn_0001","agent_name":"coordinator","agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","member_route_key":"coordinator","m | AGENT_STATUS:{"status":"running","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_ke | TEAM_STATUS:{"status":"running","source_path":[]} | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key | ERROR:{"source":"LlmPhase.stream","message":"Error processing your request with the LLM: Error: Error in API streaming: Error: 401 Authentication Fails, Your api key: ****d7bf is invalid | AGENT_STATUS:{"status":"running","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_ke | ASSISTANT_COMPLETE:{"content":"Error processing your request with the LLM: Error: Error in API streaming: Error: 401 Authentication Fails, Your api key: ****d7bf is invalid","image_urls":[],"audio_ur | TURN_COMPLETED:{"turn_id":"turn_0001","agent_name":"coordinator","agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","member_route_key":"coordinator","m | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key": | TEAM_STATUS:{"status":"idle","source_path":[]} | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key":'
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > creates a real team, approves a tool call, restores it, and continues on the same websocket
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > serves every team member projection after terminate, restore, and continue
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts > AutoByteus team current GraphQL runtime e2e > routes send_message_to between real AutoByteus team members and projects reference files
+Error: Timed out waiting for team websocket message 'coordinator send_message_to TOOL_EXECUTION_SUCCEEDED'. preview='CONNECTED:{"team_id":"autobyteus_send_message_team_de0ffea1_0141_4e34_e03825a9e97d4970aa4d896827424a42","session_id":"cd06fc78-5117-4ca1-a764-93348402fce8"} | AGENT_STATUS:{"status":"offline","can_interrupt":false,"agent_name":"coordinator","agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","member_route_ke | AGENT_STATUS:{"status":"offline","can_interrupt":false,"agent_name":"reviewer","agent_id":"autobyteus_team_reviewer_91468e64_c5d1_41fe_b512_c15daea30f714f9199685967663bd3c8","member_route_key": | TEAM_STATUS:{"status":"offline","source_path":[]} | AGENT_STATUS:{"status":"initializing","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_rou | TEAM_STATUS:{"status":"initializing","source_path":[]} | AGENT_STATUS:{"status":"initializing","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_rou | MEMBER_INPUT_MESSAGE:{"content":"Call send_message_to exactly once now with these exact JSON arguments: {\"recipient_name\":\"reviewer\",\"content\":\"Please reply with exactly AUTO_SEND_MESSAGE_REPLY_ | TURN_STARTED:{"turn_id":"turn_0001","agent_name":"coordinator","agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","member_route_key":"coordinator","m | AGENT_STATUS:{"status":"running","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_ke | TEAM_STATUS:{"status":"running","source_path":[]} | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key | ERROR:{"source":"LlmPhase.stream","message":"Error processing your request with the LLM: Error: Error in API streaming: Error: 401 Authentication Fails, Your api key: ****d7bf is invalid | AGENT_STATUS:{"status":"running","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_ke | ASSISTANT_COMPLETE:{"content":"Error processing your request with the LLM: Error: Error in API streaming: Error: 401 Authentication Fails, Your api key: ****d7bf is invalid","image_urls":[],"audio_ur | TURN_COMPLETED:{"turn_id":"turn_0001","agent_name":"coordinator","agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","member_route_key":"coordinator","m | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key": | TEAM_STATUS:{"status":"idle","source_path":[]} | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_id":"autobyteus_team_coordinator_5558a85b_ebab_452e_b_90cca89d81884d298a2c5f939bfe684c","agent_name":"coordinator","member_route_key":'
+ ❯ waitForMessage tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:103:9
+    101|     .map((message) => `${message.type}:${JSON.stringify(message.payloa…
+    102|     .join(" | ");
+    103|   throw new Error(`Timed out waiting for team websocket message '${lab…
+       |         ^
+    104| };
+    105| 
+ ❯ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:514:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  08:47:40
+   Duration  247.40s (transform 3.42s, setup 17ms, import 4.85s, tests 242.05s, environment 0ms)
+
+# Exit code: 1

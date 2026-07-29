@@ -12,6 +12,10 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import {
+  closeLiveRuntimeSecretVault,
+  initializeLiveRuntimeSecretVaultFromEnvironment,
+} from "../helpers/live-runtime-secret-vault-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eTeamMemberMetadata } from "../helpers/team-run-metadata-helpers.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
@@ -178,6 +182,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       "utf-8",
     );
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
+    await initializeLiveRuntimeSecretVaultFromEnvironment();
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -193,6 +198,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     createdWorkspaceRoots.clear();
 
     if (testDataDir) {
+      await closeLiveRuntimeSecretVault();
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
     }

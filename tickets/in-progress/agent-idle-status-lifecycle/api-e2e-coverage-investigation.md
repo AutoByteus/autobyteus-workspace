@@ -9,10 +9,11 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/implementation-handoff.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/in-progress/agent-idle-status-lifecycle/code-review-report.md`
-- Current Investigation Round: `5`
-- Trigger: User refreshed the active superrepository DeepSeek credential and requested completion of live AutoByteus standalone and team validation.
-- Prior Investigation Reviewed: `Round 4`
-- Latest Authoritative Investigation: `Round 5`
+- Current Investigation Round: `7`
+- Trigger: Renewed implementation-source review round 5 passed after rebasing/reconciling the ticket onto v1.4.28 `origin/personal@6caf809303294252c109420b238588f0c68aca6a`; all repository, provider, and browser evidence must be fresh.
+- Prior Investigation Reviewed: `Round 6` (`API-REV-001`, historical pre-rebase Blocked result only)
+- Latest Authoritative Investigation: `Round 7`
+- Integrated State Under Test: `HEAD 740bec4cd4f03a198e0cc7cd8e575351e607991f`; base and merge base `origin/personal@6caf809303294252c109420b238588f0c68aca6a`
 
 ## Current Requirement And Design Basis
 
@@ -21,6 +22,49 @@ The critical invariant is `live runtime + current active turn = running`; `live 
 The reviewed implementation centralizes this contract in a replacement-array lifecycle transformer, serializes pipeline plus listener delivery per run, makes canonical `AGENT_STATUS` the sole backend/frontend status event, carries strict diagnostic/turn-terminal/runtime-global error evidence, and correlates accepted commands before terminal settlement. The frontend's former activity-driven `error -> running` repair is deleted. Live stream, reconnect snapshots, focused header, and team-tree presentation must therefore converge on the same backend status. Existing metadata and raw traces are directly usable without migration.
 
 The production supplement proves the exact defect shape: a Codex turn completed and projected idle, then a delayed same-turn tool result arrived minutes later and the prior processor derived running. That exact sequence is the primary deterministic regression. Real Codex, Claude, and AutoByteus timing; restored-context isolation; mixed-team converter reuse; same-run listener sequencing; canonical error/status adjacency; and browser convergence remain the main execution risks after source review.
+
+## Round 7 v1.4.28 Reconciliation And Revalidation Plan
+
+Rounds 1–6 are historical only. The v1.4.28 rebase changes the production reconciliation boundary: upstream token enrichment/persistence and shutdown behavior now coexist with the ticket lifecycle-first transformer; Codex reasoning closes neutrally before classified terminal/global `ERROR -> AGENT_STATUS`; frontend Event Monitor mutation tracking remains while ordinary activity repair stays deleted. Current execution must prove that combined state rather than merely rerun the old defect sequence.
+
+| Current-Head Coverage Surface | Validity Decision | Round-7 Action |
+| --- | --- | --- |
+| Historical eight ticket-owned durable API/E2E paths | Still Valid as scenarios; historical results are not sign-off | Rerun the complete ticket matrix on `740bec4cd`, including command/ACK, exact late-tool, restore, team, and external-channel neutrality. |
+| New upstream token-pipeline lifecycle tests (`default-agent-run-event-pipeline-lifecycle`, enrichment, persistence lifecycle, provider integration) | Still Valid and reconciliation-critical | Add to current repository selection to prove lifecycle-first transformation does not break token enrichment, persistence, quiesce, or close behavior. |
+| Codex reasoning/converter/thread tests | Still Valid and reconciliation-critical | Execute reasoning closure plus classified/unclassified error/status ordering and status-projector behavior together. |
+| Frontend streaming/status/Event Monitor tests | Still Valid | Rerun current 44-test selection and use real Chrome through `AgentStreamingService.dispatchMessage`. |
+| Codex, Claude, AutoByteus standalone/team live suites | Still Valid; credential state unknown until probed | Recheck current identity/configuration, then run current-head standalone restore/continue and representative team projection/inter-agent scenarios for all three families. |
+| Round-6 browser harness | Use Temporary Executable Probe Only | Reuse the retained probe against current source on a new isolated port; it is evidence, not a durable repository test. |
+| Electron rebuild | Out Of Scope for API/E2E | Leave to delivery after current API/E2E and proportional test review pass. |
+
+No durable test change is planned initially. Existing tests already encode the approved lifecycle, Event Monitor, Codex reasoning-order, and token-pipeline reconciliation contracts. Any failure will be validity-classified before code is changed.
+
+### Round 7 Test-Validity Update After Live AutoByteus Execution
+
+The first current-head AutoByteus standalone attempt reached the real GraphQL/WebSocket/runtime boundary but reported `SECRET_VAULT_UNAVAILABLE` before DeepSeek authentication. This is not a lifecycle implementation failure and it is not evidence that the current credential is invalid. The v1.4.28 base deliberately removed ambient `.env` aliases as runtime credential providers and now requires an initialized encrypted vault, while the two pre-existing lifecycle E2E files still constructed the schema/runtime without initializing that required test-owned service. Their lifecycle assertions remain valid, but their environment fixture is stale.
+
+| Scenario / Fixture | Validity Decision | Round-7 Action |
+| --- | --- | --- |
+| `agent-runtime-graphql.e2e.test.ts` AutoByteus live suites | Needs Update | Initialize the current test database's vault and explicitly seed supported credential aliases from the already-authorized child environment; close/reset the vault in owned teardown. Do not expose values or restore ambient-runtime fallback behavior. |
+| `autobyteus-team-runtime-graphql.e2e.test.ts` | Needs Update | Reuse the same test-only vault fixture for current standalone/team parity. |
+| Shared test-only vault helper | Add Durable Coverage Support | Add one value-safe helper under `tests/e2e/helpers`; use the production vault API/catalog and current application database, with no production hook and no credential output. |
+
+The initial failed attempt is retained as setup evidence in `execution-evidence/105-round7-live-autobyteus-standalone.log`. The corrected tests must be typechecked/focused-executed before their live results are accepted, and the durable test delta requires proportional review if the round can pass.
+
+## Round 6 Integrated-Base Delta And Revalidation Plan
+
+Prior round-1 through round-5 execution remains useful coverage history but is not counted as sign-off for the integrated v1.4.24-base source. The material integration delta is frontend-local: latest base adds `beginRecentEventMonitorMutation` / `commitRecentEventMonitorMutation` around every standalone dispatch, while the ticket removes ordinary-activity lifecycle repair. The current base must prove both behaviors coexist: Event Monitor presentation revision/window behavior remains active, ordinary activity stays lifecycle-neutral, and only canonical `AGENT_STATUS` or approved command/runtime projection inputs recover `error` or open `running`.
+
+| Current-Base Coverage Surface | Validity Decision | Round-6 Action |
+| --- | --- | --- |
+| Eight ticket-owned durable API/E2E paths from round 5 | Still Valid; source/test paths remain present after merge, but old execution is historical | Rerun the directly relevant deterministic API/E2E matrix and implementation-changed backend/SDK checks on the integrated head. |
+| `AgentStreamingService.spec.ts`, `agentRuntimeStatusState.spec.ts` | Still Valid and conflict-critical | Rerun canonical status, ordinary-activity neutrality, command ACK, and Event Monitor revision assertions together. |
+| `recentEventMonitorMutationCommit.spec.ts`, `recentEventMonitorProductionDispatch.spec.ts` | Still Valid latest-base coverage | Rerun current-base mutation/revision and real-dispatch tests; do not weaken or duplicate them. |
+| Prior browser lifecycle harness | Replace as a temporary executable probe | Use the real integrated `AgentStreamingService.dispatchMessage` path in Chrome and observe Event Monitor revision/content plus status neutrality and canonical recovery. The prior direct status-handler harness is insufficient for this merge delta. |
+| Codex, Claude, and AutoByteus standalone/team live cases | Still Valid; prior runs historical | Rerun selected standalone lifecycle/reconnect/restore plus representative team projection/inter-agent journeys for all supported runtime families. |
+| Electron package/rebuild | Out Of Scope for API/E2E | Preserve delivery ownership; browser proves web-equivalent renderer only, then delivery rebuilds after review gates. |
+
+No durable coverage addition is planned initially because current repository tests already encode the merged Event Monitor/lifecycle contract. A current-base failure will be validity-classified before any test or source change.
 
 ## Changed Behavior Summary
 
@@ -55,7 +99,7 @@ The production supplement proves the exact defect shape: a Codex turn completed 
 - Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle`
 - Project type and runtime stack: pnpm TypeScript monorepo; Fastify/GraphQL/WebSocket backend; AutoByteus SDK; Nuxt/Vue web renderer; Electron desktop wrapper.
 - Conflicting, missing, or unclear project instructions: server package `typecheck` is a known repository-baseline `TS6059` failure because tests are outside `rootDir`; authoritative implementation compilation uses `tsconfig.build.json`. Web `nuxi typecheck` has known unrelated baseline failures. No repository Playwright/Cypress config exists, but `playwright-core` and local Google Chrome are available for a temporary browser journey.
-- Required environment variables or secrets available: `Yes`. Local Codex CLI and Claude CLI/SDK authentication passed. The user-refreshed `DEEPSEEK_API_KEY` in the active superrepository returned HTTP 200 in round 5 and enabled live AutoByteus standalone and team execution. The key was injected only into child test processes; no secret value was printed, copied, or recorded.
+- Required environment variables or secrets available: `Unknown at round-7 investigation start`; recheck is mandatory. Historical round-6 state was only partially available. Local Codex CLI and Claude CLI/SDK authentication passed. The current `DEEPSEEK_API_KEY` in `/Users/normy/autobyteus_org/autobyteus/.env.test` was present but returned HTTP 401 from DeepSeek and from both current-base AutoByteus live journeys. Round-5 HTTP-200/pass evidence is historical and was not counted as current-base sign-off. The key was loaded only into child processes; no value was printed, copied, or recorded.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
@@ -74,7 +118,7 @@ The production supplement proves the exact defect shape: a Codex turn completed 
 | Codex live runtime | Server package | `RUN_CODEX_E2E=1 ... vitest run ...` | `codex-cli 0.144.4` found; suite owns temp app data | model catalog/start event and WebSocket response | suite teardown closes app-server manager and removes temp data |
 | Claude live runtime | Server package | `RUN_CLAUDE_E2E=1 ... vitest run ...` | Claude Code `2.1.207`; refreshed CLI OAuth authenticated successfully in round 2 | model catalog/start event and WebSocket response | suite teardown and temp data cleanup |
 | AutoByteus + LM Studio | Server package | `RUN_LMSTUDIO_E2E=1 ... vitest run ...` | Local `/v1/models` returned HTTP 200; choose available text model | model catalog and live response | suite teardown; LM Studio is pre-existing and will not be stopped |
-| AutoByteus + DeepSeek | Server package | `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=deepseek-v4-flash ... vitest run ...` with the key loaded only into the child environment | User-refreshed active-superrepository credential returned HTTP 200; `deepseek-v4-flash` selected exactly | direct `/models` credential probe; standalone and two-member team GraphQL/WebSocket journeys | suite teardown; no credential file copied into worktree |
+| AutoByteus + DeepSeek | Server package | `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=deepseek-v4-flash ... vitest run ...` with the key loaded only into the child environment | Current main-repository credential is present but rejected with HTTP 401; `deepseek-v4-flash` is selected exactly | direct `/v1/models` and `/models` probes; standalone and two-member team GraphQL/WebSocket attempts | suite teardown; no credential file copied into worktree |
 | Browser development path | Worktree | Built server on unique port with temp data; Nuxt dev on a unique port; Chrome headless through `playwright-core` | Must not touch existing AutoByteus process on port 29695 | HTTP readiness + semantic DOM/status assertions | stop only owned server/Nuxt/Chrome; remove temp data |
 
 | Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
@@ -125,12 +169,12 @@ The production supplement proves the exact defect shape: a Codex turn completed 
 | Scenario ID | Path / Scenario | Change | Requirement / Acceptance Criteria | Final Result |
 | --- | --- | --- | --- | --- |
 | APIE2E-LC-001 | `autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts` | Added real default-pipeline -> real `AgentRun` -> Fastify WebSocket late-tool/reconnect scenario. | R-003–R-007; AC-001/AC-002/AC-006/AC-007/AC-010 | Pass: final durable matrix 6 files / 38 tests; focused file 10/10. |
-| APIE2E-LC-002 | `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` shared create/restore/continue scenario | Added active-run reconnect idle, pre-idle running proof, and bounded no-post-terminal-running assertion. | R-006/R-007/R-011; AC-001/AC-004/AC-007/AC-012 | Pass independently with live Codex, live Claude, and DeepSeek-backed AutoByteus: each targeted run passed 1 test / 19 skipped. |
+| APIE2E-LC-002 | `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` shared create/restore/continue scenario | Added active-run reconnect idle, pre-idle running proof, and bounded no-post-terminal-running assertion. | R-006/R-007/R-011; AC-001/AC-004/AC-007/AC-012 | Durable scenario remains valid. Round 5 passed all three runtimes historically; round 6 passes Codex/Claude but AutoByteus success is credential-blocked. |
 | APIE2E-LC-003 | `tests/e2e/agent/agent-command-correlated-status.e2e.test.ts` | Replaced stale direct-pipeline/status-only expectations with matching-terminal/canonical-status and accepted-result overlay semantics. | AC-004/AC-007/AC-008; DS-001/DS-004 | Pass: 1/1 and included in final 38/38 matrix. |
 | APIE2E-LC-004 | `tests/integration/agent/agent-websocket.integration.test.ts` restore scenario | Updated restored ACK/status ordering to the reviewed running reconciliation and isolated later provider-running observation. | AC-004/AC-007; CR-001 | Pass: 7/7 and included in final 38/38 matrix. |
 | APIE2E-LC-005 | `tests/unit/agent-team-execution/team-command-start-status.test.ts` | Repaired stale lifecycle fixture prerequisites. | AC-004/AC-006; team initiating overlay | Pass: 6/6 and included in final 38/38 matrix. |
 | APIE2E-LC-006 | `tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts` and `channel-team-run-facade.test.ts` | Removed obsolete activity-carried `ACTIVE` expectation. | R-002/R-004/R-008; AC-009 | Pass: 14/14 and included in final 38/38 matrix. |
-| APIE2E-LC-AUTOBYTEUS | `tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` forced `send_message_to` scenario | Added provider-aware DeepSeek v4 forced-tool configuration; no production source changed. | AC-004/AC-006/AC-007/AC-010; real team/listener boundary | Initial stale setup failed with provider HTTP 400; corrected live rerun passed 1/1 with 4 skipped. |
+| APIE2E-LC-AUTOBYTEUS | `tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` forced `send_message_to` scenario | Added provider-aware DeepSeek v4 forced-tool configuration; no production source changed. | AC-004/AC-006/AC-007/AC-010; real team/listener boundary | Historical round 5: corrected live rerun passed. Current round 6: external DeepSeek HTTP 401 blocks tool execution. |
 
 ## Durable Coverage To Remove
 
@@ -171,61 +215,217 @@ The broad suite failures are retained rather than hidden. They do not constitute
 - Any applicable category below `90%`: `No`.
 - Default clean-confidence target met at checkpoint: `No`; broader validation remained required.
 
+## Round 6 Repository Execution Checkpoint
+
+Integrated-head repository execution is green on the directly relevant boundaries:
+
+| Evidence | Current-Base Result | Artifact |
+| --- | --- | --- |
+| Integrated-base/source-boundary audit | Pass: recorded base is an ancestor; Event Monitor begin/commit present; all three activity-repair symbols and backend bypass/removed symbols absent | `execution-evidence/73-round6-integrated-base-audit.log` |
+| Focused Nuxt lifecycle + Event Monitor suite | Pass: 4 files / 42 tests, including ordinary-activity neutrality, canonical running recovery, mutation commit, and 1,001-message production dispatch stress | `execution-evidence/74-round6-web-lifecycle-event-monitor.log` |
+| Server durable API/E2E + implementation regression matrix | Pass: 24 files / 287 tests | `execution-evidence/75-round6-server-durable-and-implementation.log` |
+| AutoByteus SDK lifecycle contract + build | Pass: 2 files / 11 tests; build/runtime-dependency verification passed | `execution-evidence/76-round6-sdk-focused-and-build.log` |
+| Server production build/bootstrap | Pass | `execution-evidence/77-round6-server-build.log` |
+| Nuxt production build | Pass: client/SSR/prerender; existing chunk-size warning only | `execution-evidence/78-round6-web-production-build.log` |
+
+No repository-resident test was added, updated, replaced, or removed in round 6. All current-base coverage assertions remain aligned with the approved behavior.
+
+| Confidence Category | Round-6 Post-Repository Score | Support | Remaining Gap |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | Exact late-tool/reconnect/command/error/state-machine scenarios pass on current head. | Current-base live timing pending. |
+| Changed-boundary execution directness | 95% | Real pipeline/`AgentRun`/WebSocket plus real integrated frontend dispatcher tests. | Browser/live provider callbacks pending. |
+| Cross-boundary integration realism and mock gap | 92% | Backend transport and frontend production dispatch are direct; Event Monitor/lifecycle coexistence is jointly tested. | Provider and browser processes pending. |
+| Environment, configuration, identity, and fixture fidelity | 90% | Current migrations, builds, temp SQLite, and current dependency graph execute. | Current provider credentials/runtime identities pending. |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | 287 backend tests include old/new turns, diagnostics, terminal/global errors, queue/restore/ACK ordering. | Live callback timing pending. |
+| User-surface, browser, and desktop-shell confidence | 90% | Current Nuxt production build and focused dispatch/status tests pass; Electron shell is delivery-owned. | Current-base Chrome journey pending. |
+| Durable regression coverage quality and relevance | 98% | Existing eight ticket paths plus latest-base Event Monitor suites are direct and coherent. | No round-6 test delta; execution evidence only. |
+
+- Round-6 post-repository confidence: `93.6%` (`655 / 7`).
+- Broader-validation decision: `Required`.
+- Selected evidence gain: current-base Codex/Claude/AutoByteus standalone and team execution plus real Chrome through the integrated `AgentStreamingService`/Event Monitor path.
+
 ## Broader Validation Decision And Result
 
 - Decision: `Required`
-- Selected execution mode: `Live API + Browser + Lifecycle`
-- Result: `Executed`
-- Evidence gained:
-  - Live Codex standalone create/turn/idle/no-reopen/active reconnect/terminate/restore/second turn passed: `execution-evidence/02-live-codex-lifecycle.log`.
-  - Live Codex team member projection terminate/restore/continue passed through the mixed-team backend: `execution-evidence/13-live-codex-team-restore.log`.
-  - Real Chrome on isolated server/Nuxt ports observed offline -> running A -> idle A -> late content with idle preserved -> running B -> idle B; both agent and team dots converged: `execution-evidence/browser-lifecycle-probe-result.json`, `browser-lifecycle-final.png`, and `17-browser-lifecycle-probe.log`.
-  - Claude first returned HTTP 401 because its OAuth token was revoked: `06-live-claude-lifecycle.log`. After the user refreshed authentication, the targeted real Claude Agent SDK create/turn/running/idle/no-reopen/reconnect/terminate/restore/second-turn scenario passed 1/1 in 11.6 seconds: `31-live-claude-lifecycle-rerun.log`.
-  - Existing live Claude team coverage was then executed without test-code changes. A two-member `ping`/`pong` team passed bidirectional `send_message_to`, normalized tool start/success with no failure, team-message receipt, recipient `TURN_COMPLETED`, and recipient `AGENT_STATUS idle` for both members: `35-live-claude-team-roundtrip.log`.
-  - A second existing live Claude team case passed two-member projection continuity across terminate -> restore -> continue and preserved both members' pre/post-restore conversation tokens: `36-live-claude-team-restore.log`.
-  - AutoByteus was attempted three ways. LM Studio catalog was reachable but the selected model could not load (HTTP 400); an Ollama model answered direct `PING`, but the integrated AutoByteus turn did not produce assistant completion within the suite's 120-second bound. Evidence: `03`–`05` and `24-provider-diagnostics.log`.
-  - At the user's request, AutoByteus was first attempted with `deepseek-v4-flash`; the then-invalid key produced HTTP 401 while lifecycle still settled `running -> terminal/error -> idle`. Evidence: `37-live-autobyteus-deepseek-lifecycle.log` and `38-deepseek-credential-probe.log`.
-  - After the user refreshed the active superrepository credential, the direct DeepSeek probe returned HTTP 200 without printing or copying the key: `39-deepseek-credential-recheck.log`.
-  - The shared live standalone AutoByteus case then passed: assistant success, first-turn `running -> idle`, 750 ms without a synthetic post-idle `running`, fresh active-socket idle snapshot, terminate/restore, and second-turn completion/idle. Evidence: `40-live-autobyteus-deepseek-lifecycle-rerun.log`.
-  - The existing two-member AutoByteus projection case passed for coordinator and reviewer: each completed and emitted `AGENT_STATUS idle`, then both retained conversation projections across terminate -> restore -> continued turns and returned idle again. Evidence: `41-live-autobyteus-deepseek-team-restore.log`.
-  - The real AutoByteus `send_message_to` case initially reached the provider but DeepSeek rejected stale test setup (`tool_choice: required` with thinking enabled) with HTTP 400 while lifecycle still returned idle: `42-live-autobyteus-deepseek-team-message.log`. A narrow test-only configuration fix aligned this case with the repository's existing DeepSeek forced-tool precedent. The rerun passed coordinator tool success, team-message/reference-file projection, reviewer delivery, and assistant reply: `43-live-autobyteus-deepseek-team-message-rerun.log`.
-- Criticality decision: live Codex, Claude, and AutoByteus now directly prove the shared standalone lifecycle boundary. Live teams cover restore/projection across all three runtime families, and real inter-agent delivery is directly proven for Claude and AutoByteus. No live-provider completion gap remains for this ticket.
+- Selected execution mode: `Current-base live API + real Chrome lifecycle/Event Monitor probe`
+- Result: `Blocked by external AutoByteus/DeepSeek authentication after all safe in-scope setup`
+- Current-base evidence gained:
+  - Codex standalone lifecycle/reconnect/restore passed: 1 passed / 19 skipped (`execution-evidence/79-round6-live-codex-standalone.log`).
+  - Codex two-member projection/terminate/restore/continue passed: 1 passed / 4 skipped (`execution-evidence/80-round6-live-codex-team-restore.log`).
+  - Claude Agent SDK standalone lifecycle/reconnect/restore passed: 1 passed / 19 skipped (`execution-evidence/81-round6-live-claude-standalone.log`).
+  - Claude two-member projection/restore passed in the combined run. The inter-agent ping/pong case timed out once after observable real ping/pong, terminal, and idle traffic, then passed alone without a source/test change: 1 passed / 4 skipped in 15.0 seconds (`execution-evidence/82-round6-live-claude-team.log`, `83-round6-live-claude-team-roundtrip-rerun.log`). This is retained as bounded provider/timing nondeterminism, not hidden.
+  - Real Chrome executed the integrated `AgentStreamingService.dispatchMessage` path. Canonical error rendered red; tool start/log/result stayed lifecycle-neutral; the real Event Monitor revision advanced only for the visible tool summary; canonical running recovered error; idle resisted the delayed result; the result remained visible; a second canonical running/idle turn converged green. The clean rerun passed 22 semantic assertions without a page error (`execution-evidence/90-round6-browser-event-monitor-lifecycle-clean-rerun.log`, result JSON, screenshot, and retained temporary harness/probe).
+  - The current DeepSeek key source exists and contains a non-empty assignment, but both `/models` endpoints returned HTTP 401 (`execution-evidence/84-round6-deepseek-credential-recheck.log`).
+  - The current-base AutoByteus standalone journey reached the real GraphQL/WebSocket/runtime boundary and emitted `running -> ERROR/ASSISTANT_COMPLETE/TURN_COMPLETED -> idle`, but the provider response was `401 Authentication Fails`, so the required success/reconnect/restore journey timed out (`execution-evidence/85-round6-live-autobyteus-deepseek-standalone.log`).
+  - The current-base AutoByteus two-member `send_message_to` journey likewise reached real team status projection (`offline -> initializing -> running -> provider error -> idle`) but could not execute the tool because the same DeepSeek credential was rejected (`execution-evidence/86-round6-live-autobyteus-deepseek-team.log`).
+- Criticality decision: deterministic repository coverage, current-base Codex/Claude standalone/team execution, and current-base Chrome all pass. However, code review and the user explicitly requested a current-base successful AutoByteus standalone/team run. Historical round-5 success cannot replace that gate, and the present credential prevents it. Therefore this round cannot declare `Pass`.
+
+## Round 6 Final Confidence Scorecard
+
+| Confidence Category | Final Score | Current-Base Support | Remaining Gap |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 98% | Current deterministic API/E2E matrix, canonical error/running/idle browser journey, and two live runtime families pass. | AutoByteus success path not current-base proven. |
+| Changed-boundary execution directness | 98% | Real pipeline/`AgentRun`/WebSocket, integrated frontend dispatcher/Event Monitor, Codex and Claude provider callbacks. | AutoByteus success/restore is blocked. |
+| Cross-boundary integration realism and mock gap | 92% | Current live standalone/team coverage for Codex and Claude plus real Chrome. | Third runtime family reached the boundary but provider auth prevented successful completion. |
+| Environment, configuration, identity, and fixture fidelity | 75% | Current migrations/temp data/real CLIs/Chrome are faithful. | Required DeepSeek identity is rejected with HTTP 401; this category is below the 90% pass floor. |
+| Failure, edge-case, lifecycle, and recovery evidence | 97% | Old/new turns, queue, restore, canonical error recovery, delayed result neutrality, and provider error-to-idle all observed. | No current AutoByteus success/restore callback timing. |
+| User-surface, browser, and desktop-shell confidence | 97% | Current Chrome passed 22 integrated semantic assertions; production Nuxt build passed. | Electron packaging is delivery-owned, not this execution gate. |
+| Durable regression coverage quality and relevance | 98% | Existing eight ticket paths plus latest-base Event Monitor suites passed current head; no round-6 test delta. | None material in durable coverage. |
+
+- Overall final confidence: `93.6%` (`655 / 7`).
+- Any final applicable category below 90%: `Yes — environment/configuration at 75%`.
+- Default clean target met: `No`.
+- Missing critical current-base evidence: successful AutoByteus standalone reconnect/restore and team `send_message_to` execution.
 
 ## Desktop Application Validation Decision
 
 - Browser development mode was used for the web-equivalent Electron renderer behavior.
-- No preload, IPC, native module, packaging, or window lifecycle boundary changed, so actual Electron execution was not warranted.
-- The user-owned AutoByteus process on port 29695 remained running and was neither reused nor stopped; the final round-5 audit observed PID 77867 after the user's power cycle.
+- No preload, IPC, native module, packaging, or window-lifecycle boundary changed; Electron rebuild remains explicitly delivery-owned after API/E2E passes.
+- The user-owned AutoByteus process on port 29695 remained running and was neither reused nor stopped.
 
 ## Live Environment And Fixture Result
 
-- Isolated backend: built server on `127.0.0.1:18123`, temp app data, `APP_ENV=test`.
-- Isolated renderer: Nuxt dev on `127.0.0.1:18124`, pointed at the isolated backend.
-- Browser: local Google Chrome through existing `playwright-core`, 1280x720, headless.
-- Cleanup: Chrome closed by probe; owned Nuxt/server sessions stopped; ports verified free; temporary page and app data removed.
-- Existing provider services and user app were not stopped.
+- Codex and Claude suites used their normal project-owned temporary app-data and SQLite/Prisma setup; suite teardown completed.
+- AutoByteus used exact model `deepseek-v4-flash` and loaded `/Users/normy/autobyteus_org/autobyteus/.env.test` only into child processes. No credential file was copied into the worktree.
+- Renderer used isolated Nuxt port `18134` and local headless Google Chrome. No backend was needed because the retained deterministic page exercised the real production dispatcher/store/component boundary directly.
+- Cleanup audit: temporary route absent, port 18134 free, no owned temp runtime directory/process, no worktree `.env.test`, full DeepSeek secret absent from round-6 logs, user port 29695 still listening (`execution-evidence/91-round6-cleanup-security-audit.log`; final package audit `92-round6-final-blocked-package-audit.log`).
 
 ## Temporary Executable Validation
 
 | Scenario ID | Probe | Result | Cleanup |
 | --- | --- | --- | --- |
-| APIE2E-LC-007 | Retained browser harness/probe under ticket evidence, temporarily copied into Nuxt pages only during execution | Pass: 13 semantic status/DOM/class/content observations | Temporary route removed; owned processes/data removed; evidence retained. |
-| APIE2E-LC-008 | Long-retired-ID stress | Not run | Deterministic context-isolation tests plus bounded string-only residual were sufficient; no critical behavior depends on eviction. |
+| APIE2E-LC-007-R6 | Retained round-6 Vue harness + Playwright-core probe; temporarily copied into Nuxt pages | Pass: 22 semantic assertions through real integrated dispatch/Event Monitor/status-dot code | Temporary page removed; Chrome closed; Nuxt stopped; port free. |
+| APIE2E-LC-AUTOBYTEUS-R6 | Existing live standalone and two-member team suites with exact DeepSeek model | Blocked: provider HTTP 401 in both; lifecycle error-to-idle remained observable | Suite teardown removed owned data/processes; no secret retained. |
 
 ## Not Tested / Residual
 
 | Boundary | Reason | Residual Risk |
 | --- | --- | --- |
-| Production-scale unbounded runtime duration / retired turn-ID retention | Finite stress cannot establish an infinite lifetime bound; state is context-owned and stores normalized strings only. | Low operational memory-growth risk, not a semantic correctness gap. |
-| Actual Electron shell | No shell-specific change. | None material. |
+| Successful current-base AutoByteus standalone reconnect/restore | DeepSeek rejected the supplied key | Critical requested evidence gap; resume immediately after valid credential is available. |
+| Successful current-base AutoByteus team `send_message_to` | Same rejected DeepSeek key | Critical requested evidence gap. |
+| Production-scale unbounded retired-ID duration | Finite tests cannot establish an infinite lifetime bound | Low operational memory-growth risk; semantic behavior is directly covered. |
+| Actual Electron package/rebuild | Delivery-owned after API/E2E pass | No API/E2E claim is made for packaging. |
 
 ## Final Investigation Decision
 
 - Proceeded To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Added / Updated / Removed: `Updated eight files; removed none`
-- Post-repository confidence: `93.3%`
-- Broader validation: `Required and executed`
-- Final result: `Pass`, including the user-requested live AutoByteus standalone and team journeys.
-- Final confidence: `97.7%`
-- Reroute required: `No`; the only new failure was classified as stale provider-specific test setup and fixed locally in durable E2E coverage.
-- Next recipient: `code_reviewer` for proportional review of the newly updated AutoByteus team E2E test, then delivery refresh.
+- Repository-Resident Durable Coverage Added / Updated / Removed In Round 6: `No / No / No`
+- Post-repository confidence: `93.6%`
+- Broader validation: `Required and partially executed`
+- Final result: `Blocked`
+- Final confidence: `93.6%`
+- Blocking dependency: a DeepSeek API key accepted by `https://api.deepseek.com/v1/models`, supplied via the user-designated main-repository `.env.test` source.
+- Reroute required: `No`; per workflow, a blocked API/E2E round is reported to the user rather than handed to another specialist.
+- Resume action: rerun credential probe, AutoByteus standalone, AutoByteus team `send_message_to` (and projection/restore if desired), cleanup audit, then finalize/handoff if green.
+
+---
+
+## Round 7 Authoritative Repository Execution Checkpoint
+
+This section and the remaining Round 7 sections supersede the historical Round 6 checkpoint and blocked decision above. All cited results were produced on reviewed head `740bec4cd4f03a198e0cc7cd8e575351e607991f` with recorded base and merge base `6caf809303294252c109420b238588f0c68aca6a`.
+
+| Order | Current-Head Check | Boundary Proven | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Integrated-state and obsolete-symbol audit | Exact head/base, lifecycle-first pipeline, no activity repair/direct-pipeline resurrection, user app isolation | Pass | `execution-evidence/93-round7-v1428-integrated-head-audit.log` |
+| 2 | Focused Nuxt lifecycle/status/Event Monitor suite | Canonical status-only lifecycle and latest-base mutation/revision coexistence | Pass: 4 files / 44 tests | `execution-evidence/94-round7-web-lifecycle-event-monitor.log` |
+| 3 | Server lifecycle/Codex/token-pipeline selection | Replacement lifecycle; command/status/ACK; Codex reasoning and classified/unclassified error order; token enrichment, persistence, quiesce and close; team/external neutrality | Pass: 29 files / 348 tests | `execution-evidence/95-round7-server-lifecycle-codex-token-pipeline.log` |
+| 4 | SDK lifecycle tests and build | Stream/turn interruption fencing and package compilation | Pass: 3 files / 14 tests; build passed | `execution-evidence/96-round7-sdk-lifecycle-and-build.log` |
+| 5 | Server production build | TypeScript, assets, bootstrap and sanitized built-module smoke | Pass | `execution-evidence/97-round7-server-production-build.log` |
+| 6 | Nuxt production build | Client/SSR compilation and static prerender on v1.4.28 | Pass; existing chunk-size warning only | `execution-evidence/98-round7-web-production-build.log` |
+| 7 | Token-ledger idempotency focused recheck | Restore replay handles duplicate idempotency keys by returning the existing entry | Pass: 4/4 | `execution-evidence/102-round7-token-ledger-idempotency-recheck.log` |
+| 8 | Updated AutoByteus vault-fixture collection | Changed live E2E files and helper load/type-transform under the current secret-vault architecture | Pass: 2 files collected; 25 intentionally skipped behind live gates | `execution-evidence/106-round7-live-vault-fixture-collection.log` |
+
+### Round 7 Post-Repository Confidence
+
+| Confidence Category | Score | Support | Remaining Gap Before Broader Validation |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 97% | Exact late activity, canonical status/ACK, restore, Codex error order and latest-base Event Monitor cases pass. | Current provider timing and browser process pending. |
+| Changed-boundary execution directness | 97% | Real pipeline, transport, queue, reducer, production dispatcher and build paths are exercised. | Live provider callbacks pending. |
+| Cross-boundary integration realism and mock gap | 93% | Server, SDK and Nuxt integration boundaries pass together. | External runtimes and Chrome pending. |
+| Environment, configuration, identity, and fixture fidelity | 92% | Current migrations/builds/current secret-vault fixture and isolated repository setup execute. | Current credentials and remote services pending. |
+| Failure, edge-case, lifecycle, and recovery evidence | 98% | Retired-turn, duplicate, mismatch, error, interrupt, restore, queue and shutdown cases pass. | Production callback timing pending. |
+| User-surface, browser, and desktop-shell confidence | 90% | Production Nuxt build and focused production-dispatch tests pass; Electron shell is delivery-owned. | Real Chrome pending. |
+| Durable regression coverage quality and relevance | 97% | Requirement-linked suites cover the changed boundaries; the stale live fixture is repaired test-only. | Proportional review pending. |
+
+- Overall post-repository confidence: `94.9%` (`664 / 7`).
+- Calculation method: simple average; no category is hidden.
+- Every critical acceptance criterion directly proven at this checkpoint: `Yes deterministically`; realistic provider and browser risks remained.
+- Any applicable category below `90%`: `No`.
+- Default clean target met at checkpoint: `No`; broader validation was required.
+- Broader-validation decision: `Required — live Codex, Claude and AutoByteus standalone/team execution plus isolated real-Chrome lifecycle/Event Monitor convergence`.
+
+## Round 7 Broader Validation Result
+
+| Scenario ID | Realistic Surface | Result | Direct Evidence |
+| --- | --- | --- | --- |
+| `APIE2E-LC-CODEX-R7` | Live Codex standalone create/run/idle/terminate/restore/continue and two-member projection restore | Pass: 1/19 and 1/4 | `100-round7-live-codex-standalone.log`; `101-round7-live-codex-team-restore.log` |
+| `APIE2E-LC-CLAUDE-R7` | Live Claude Agent SDK standalone plus team `send_message_to` roundtrip and every-member terminate/restore/continue | Pass: 1/19 and 2/3 | `103-round7-live-claude-standalone.log`; `104-round7-live-claude-team.log` |
+| `APIE2E-LC-AUTOBYTEUS-R7` | Live AutoByteus standalone plus real two-member `send_message_to`, reference projection, and every-member terminate/restore/continue through an authorized configured AutoByteus remote model | Pass: 1/19 and 2/3 | `109-round7-live-autobyteus-remote-standalone.log`; `110-round7-live-autobyteus-remote-team.log` |
+| `APIE2E-LC-BROWSER-R7` | Local Chrome against isolated backend/Nuxt, using production `AgentStreamingService.dispatchMessage`, Event Monitor mutation/commit, reducer and status-dot component | Pass: 22/22 semantic observations; no console error or page error | `120`–`124`; isolated result JSON and screenshot |
+
+### Prior Blocker And Fixture Resolution
+
+1. The current DeepSeek assignment was rechecked without logging its value. Both supported model-list endpoints still returned HTTP 401 (`99-round7-deepseek-credential-recheck.log`).
+2. The first AutoByteus live attempt then exposed a separate current-base fixture problem: v1.4.28 requires the encrypted secret vault, but the old live tests did not initialize it (`105`). The test-only fixture was updated and its first database-location defect was corrected (`107`).
+3. With the vault fixture active, the direct DeepSeek model reached its real provider boundary but still received HTTP 401 (`108`). This remains a provider-specific credential residual, not lifecycle evidence.
+4. AutoByteus runtime coverage was completed through the currently configured and authorized AutoByteus remote provider. Both standalone and team journeys passed (`109`, `110`), so the runtime-family acceptance gate no longer depends on the rejected DeepSeek credential.
+5. Prisma `P2002` duplicate-idempotency messages seen during restore are expected catch-and-return-existing behavior, independently confirmed 4/4 in `102`; they are log-noise residuals, not failed assertions or data corruption.
+
+### Browser And Desktop Decision
+
+The isolated browser journey observed `offline -> error -> canonical running -> idle -> canonical running -> idle`. Tool start/log/result remained lifecycle-neutral; the late result stayed visible without reopening idle; Event Monitor revision advanced only for the retained visible summary. The final isolated run used an owned temporary database and backend on `18145`, Nuxt on `18144`, and local headless Chrome at 1280x800. It passed all 22 semantic assertions with no console error/page error. The temporary route, processes and data were removed. The user-owned listener on port `29695` remained untouched (`120`–`125`).
+
+Actual Electron execution/rebuild was not required here: no preload, IPC, native module, packaging or window-lifecycle boundary changed. The user-requested rebuild remains delivery-owned after this API/E2E result and proportional test review.
+
+## Round 7 Final Confidence Scorecard
+
+| Confidence Category | Final Score | Current-Head Support | Residual Uncertainty |
+| --- | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 99% | Deterministic matrix plus all three live runtime families and Chrome directly prove the lifecycle contract. | Production-duration retention is not time-accelerated. |
+| Changed-boundary execution directness | 99% | Real pipeline/WebSocket/provider callbacks/frontend dispatcher/reducer/component all executed. | None material. |
+| Cross-boundary integration realism and mock gap | 97% | Codex, Claude and AutoByteus standalone/team plus isolated browser/backend pass. | Browser messages are deterministic protocol inputs rather than a live provider stream; live provider boundaries were separately proven. |
+| Environment, configuration, identity, and fixture fidelity | 95% | Current migrations, vault, CLI/provider identities, remote AutoByteus provider, isolated backend and Chrome were real. | Direct DeepSeek assignment remains rejected with HTTP 401. |
+| Failure, edge-case, lifecycle, and recovery evidence | 99% | Error adjacency, reasoning close, delayed content, old/new turns, queues, restore, interrupt, duplicate and shutdown behaviors pass. | Unbounded production-duration retired-ID retention remains operationally bounded only by design/tests. |
+| User-surface, browser, and desktop-shell confidence | 98% | Isolated Chrome passes 22/22 and production Nuxt build passes. | Electron packaging itself is delivery-owned and unclaimed. |
+| Durable regression coverage quality and relevance | 98% | Current suites and narrow vault fixture are requirement-linked and green. | Changed test code awaits proportional review. |
+
+- Overall final confidence: `97.9%` (`685 / 7`).
+- Any applicable category below `90%`: `No`.
+- Default clean target met: `Yes`.
+- Every critical acceptance criterion directly proven: `Yes`.
+- Final broader-validation result: `Pass`.
+
+## Round 7 Durable Coverage Delta
+
+| Path | Decision | Purpose | Result |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/helpers/live-runtime-secret-vault-helpers.ts` | Added | Initialize/reset the current test database's encrypted vault and import only supported aliases from the already-authorized child environment without exposing values. | Collection passed; used by successful AutoByteus live runs. |
+| `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | Updated | Apply/close the vault fixture for AutoByteus standalone live suites. | AutoByteus standalone passed through authorized remote provider. |
+| `autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` | Updated | Apply/close the same fixture for AutoByteus team live suites. | Two live team cases passed. |
+
+No production source was changed during API/E2E. No stale scenario was removed. The three durable test paths require proportional test-code review.
+
+## Round 7 Cleanup And Residual-Risk Classification
+
+- Owned ports `18144` and `18145`: no listeners after cleanup.
+- User port `29695`: still listening and never stopped or reused.
+- Owned temporary route/runtime/database: removed.
+- Worktree credential copy: absent.
+- Full credential value matches in Round 7 artifacts: zero across the audited assignments.
+- Direct DeepSeek identity: still HTTP 401; provider-specific environment residual, not a missing runtime-family acceptance criterion because authorized AutoByteus provider execution passed.
+- Retired-turn-ID production-duration retention: low operational memory-growth residual; semantic isolation is directly tested.
+- Near-limit source files (`499`/`495`/`490` effective lines): maintainability observation from source review, not an execution failure.
+- Expected token-ledger duplicate-key error logging: bounded observability noise; behavior passed focused validation.
+- Electron package/rebuild: downstream delivery scope; no API/E2E claim.
+
+## Round 7 Final Investigation Decision
+
+- Proceeded To API/E2E Execution: `Yes`
+- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes / Yes / No`
+- Post-repository confidence: `94.9%`
+- Broader validation: `Required and completed`
+- Final result: `Pass`
+- Final confidence: `97.9%`
+- Critical acceptance criteria lacking direct proof: `None`
+- Reroute required: `No`
+- Required next recipient: `code_reviewer` for proportional review of the three changed durable test paths.

@@ -1,0 +1,216 @@
+# Round 7 v1.4.28 live Claude standalone lifecycle
+# Started: 2026-07-29T10:39:22Z
+# Command: RUN_CLAUDE_E2E=1 pnpm exec vitest run tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts -t "creates a run, restores it, and continues streaming on the same websocket" --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:12031) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-runtime-api-e2e-CiXsSZ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-runtime-api-e2e-CiXsSZ/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > terminates an active Codex approval run, restores it, reconnects, and continues streaming
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent Definition created successfully with ID: claude-agent-sdk-api-e2e-d7c2c46e-d60b-4dad-8c49-258772a28615
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-restore-workspace-BHzSUr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-restore-workspace-BHzSUr.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Created and registered workspace ID: agent_ws_448987cf76a31c9d75dbc22366d7e123d86cdbc88fda7778848cbd4b97f2b716
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent definition cache populated with 48 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-restore-workspace-BHzSUr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-restore-workspace-BHzSUr.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Reusing registered workspace ID: agent_ws_448987cf76a31c9d75dbc22366d7e123d86cdbc88fda7778848cbd4b97f2b716
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Successfully created claude_agent_sdk agent run 'claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent websocket attached for run claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b
+Created agent session 4fb6dda8-b9bb-4cf9-9ac1-26cdcc1f9dce for run claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b
+Agent WebSocket connected: session=4fb6dda8-b9bb-4cf9-9ac1-26cdcc1f9dce, run=claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Finished LM Studio discovery. Total models registered: 14
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Agent websocket attached for run claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b
+Created agent session 47ad7085-95a6-41af-ba16-f8bac9f365de for run claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b
+Agent WebSocket connected: session=47ad7085-95a6-41af-ba16-f8bac9f365de, run=claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Closed agent session 47ad7085-95a6-41af-ba16-f8bac9f365de
+Agent WebSocket disconnected: 47ad7085-95a6-41af-ba16-f8bac9f365de
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-restore-workspace-BHzSUr
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-restore-workspace-BHzSUr.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Reusing registered workspace ID: agent_ws_448987cf76a31c9d75dbc22366d7e123d86cdbc88fda7778848cbd4b97f2b716
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Successfully restored claude_agent_sdk agent run 'claude_agent_sdk_api_e2e_d7c2c46e_d60b_4dad_8c49_4e8a7477daf549709ba16ed47597421b'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+Closed agent session 4fb6dda8-b9bb-4cf9-9ac1-26cdcc1f9dce
+Agent WebSocket disconnected: 4fb6dda8-b9bb-4cf9-9ac1-26cdcc1f9dce
+
+ ✓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket 7270ms
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > terminates an active tool-approval run, restores it, reconnects, and continues streaming
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > auto-approves workspace and outside-scratch write/delete/shell operations without frontend approval prompts
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 19 skipped (20)
+   Start at  12:39:22
+   Duration  15.39s (transform 5.00s, setup 14ms, import 7.41s, tests 7.33s, environment 0ms)
+
+# Finished: 2026-07-29T10:39:38Z
+# Exit status: 0

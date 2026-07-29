@@ -1,0 +1,152 @@
+{
+  "result": "Pass",
+  "url": "http://127.0.0.1:18134/__validation-round6",
+  "observations": [
+    {
+      "label": "initial canonical status",
+      "actual": "offline"
+    },
+    {
+      "label": "initial Event Monitor revision",
+      "actual": "0"
+    },
+    {
+      "label": "canonical error status",
+      "actual": "error"
+    },
+    {
+      "label": "canonical error renders red dot",
+      "actual": true
+    },
+    {
+      "label": "status-only mutation is Event Monitor-neutral",
+      "actual": "0"
+    },
+    {
+      "label": "tool start cannot repair canonical error",
+      "actual": "error"
+    },
+    {
+      "label": "real tool summary advances Event Monitor revision",
+      "actual": "1"
+    },
+    {
+      "label": "tool start creates one retained Event Monitor visual",
+      "actual": "1"
+    },
+    {
+      "label": "tool log remains lifecycle-neutral",
+      "actual": "error"
+    },
+    {
+      "label": "tool log is Event Monitor revision-neutral",
+      "actual": "1"
+    },
+    {
+      "label": "tool log remains retained",
+      "actual": "1"
+    },
+    {
+      "label": "canonical running recovers from error",
+      "actual": "running"
+    },
+    {
+      "label": "canonical running renders blue dot",
+      "actual": true
+    },
+    {
+      "label": "running recovery retains Event Monitor revision",
+      "actual": "1"
+    },
+    {
+      "label": "canonical idle closes turn A",
+      "actual": "idle"
+    },
+    {
+      "label": "canonical idle renders green dot",
+      "actual": true
+    },
+    {
+      "label": "delayed tool result cannot reopen canonical idle",
+      "actual": "idle"
+    },
+    {
+      "label": "delayed tool result remains retained",
+      "actual": "{\"output\":\"round6-delayed-result-retained\"}"
+    },
+    {
+      "label": "delayed result preserves one Event Monitor visual",
+      "actual": "1"
+    },
+    {
+      "label": "new canonical turn B opens running",
+      "actual": "running"
+    },
+    {
+      "label": "new canonical turn B returns idle",
+      "actual": "idle"
+    },
+    {
+      "label": "final renderer state converges to idle green",
+      "actual": true
+    }
+  ],
+  "browserMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ]
+}

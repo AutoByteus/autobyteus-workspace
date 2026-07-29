@@ -24,6 +24,10 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
+import {
+  closeLiveRuntimeSecretVault,
+  initializeLiveRuntimeSecretVaultFromEnvironment,
+} from "../helpers/live-runtime-secret-vault-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
@@ -384,6 +388,9 @@ const defineRuntimeSuite = (input: {
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
       SkillService.resetInstance();
+      if (input.runtimeKind === "autobyteus") {
+        await initializeLiveRuntimeSecretVaultFromEnvironment();
+      }
       schema = await buildGraphqlSchema();
       const require = createRequire(import.meta.url);
       const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -399,6 +406,9 @@ const defineRuntimeSuite = (input: {
       createdWorkspaceRoots.clear();
 
       if (testDataDir) {
+        if (input.runtimeKind === "autobyteus") {
+          await closeLiveRuntimeSecretVault();
+        }
         await rm(testDataDir, { recursive: true, force: true });
         testDataDir = null;
       }
