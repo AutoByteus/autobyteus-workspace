@@ -12,11 +12,14 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A` — initial implementation followed authoritative architecture result `ARCH-REV-003` (`Pass`).
+- Triggering rework report, revision record, or evidence, when applicable:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
+  - Source-review result `CRR-001`: `Fail — Local Fix`; findings `CR-001` and `CR-002`.
 
 ## Current Implementation Summary
 
-The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on `codex/universal-application-framework-proposal-analysis`.
+The complete implementation spans the initial source commit `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` and the current local-fix source commit `0762cd7e37122e0c6c4e5d4ed463a28c9030d38f` on `codex/universal-application-framework-proposal-analysis`.
 
 - Replaced the iframe-specific application entry with one unversioned `startApplication` API, a strict host-neutral runtime bootstrap, and Studio-iframe and standalone-same-origin providers.
 - Added explicit graph-local application platform composition, readiness, recovery, lifecycle, gateway, engine, storage, orchestration, communication, streaming, notification, and run authorities.
@@ -26,16 +29,18 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
 - Migrated the starter, Brief Studio, and Socratic Math Teacher to the shared SDK/devkit owners; removed custom builders, source-root generated mirrors, vendor trees, and stale hosted-startup outputs.
 - Regenerated the two maintained importable packages through the devkit pack owner and refreshed directly affected docs.
 - Added cleanup/reset support needed for in-process standalone restart, including event-pipeline, worker, gateway, socket, notification, observer, streaming, vault, and Prisma boundaries.
+- Replaced the stateless OS URL launcher with one devkit-owned controlled Chrome/Edge page. Initial standalone start navigates once; a successful same-origin watched host restart explicitly invokes a full document reload, while an effective port change navigates that same page to the new host URL.
+- Made long-running project watching re-resolve and replace configured input subscriptions after every successful rebuild. Standalone and Studio rebuilds now re-read current config/manifest state; standalone uses the current manifest ID and non-overridden config port, while Studio reimports the current output root and resolves the current canonical application selection before reload.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -46,7 +51,7 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
 | DS-003 | Studio and standalone mounts delegate backend operations to one gateway/engine path. | `autobyteus-server-ts/src/compositions/{build-studio-server-composition,build-standalone-application-server-composition}.ts`; `src/api/rest/application-backend-route-handlers.ts`; `src/application-backend-api-gateway/**` | Implemented with explicit injected graph authorities and host-specific ingress cardinality. No host imports application business backend code. |
 | DS-004 | Resource resolution, run launch, events, artifacts, streaming, and communication remain shared runtime authorities. | `autobyteus-server-ts/src/application-platform/runtime/{create-application-orchestration-authorities,create-application-run-authorities}.ts`; `src/application-orchestration/**`; `src/application-agent-{communication,streaming}/**` | Implemented. Existing orchestration semantics are retained behind graph-local service construction; exact runtime execution remains a downstream executable-coverage target. |
 | DS-005 | Explicit reusable preparation/readiness/recovery/stop lifecycle for both compositions. | `autobyteus-server-ts/src/application-platform/runtime/{application-platform-lifecycle,application-definition-runtime-readiness,application-runtime-definition-validator,create-application-platform-runtime-graph}.ts`; `src/server-runtime.ts` | Implemented. Readiness includes the exact seven tool groups and definition/resource validation; selected-app diagnostics fail standalone and quarantine invalid Studio apps. Stop is idempotent and aggregates cleanup errors. |
-| DS-006 | Real native standalone and Studio development sessions use the shared pack owner and checked-in mappings. | `autobyteus-application-devkit/src/development/**`; `src/commands/dev.ts`; maintained `autobyteus-app.config.mjs`/`package.json`; starter templates | Implemented. Mock dev-server product files and custom maintained-app builders are deleted. A live Studio instance was not available for implementation-stage command execution. |
+| DS-006 | Real native standalone and Studio development sessions use the shared pack owner and checked-in mappings. | `autobyteus-application-devkit/src/development/{application-development-project-state,application-project-watch,development-browser-session,standalone-development-session,studio-development-session,studio-application-client}.ts`; `src/commands/dev.ts`; maintained `autobyteus-app.config.mjs`/`package.json`; starter templates | Implemented, including the `IR-002` local fixes. Standalone retains one controlled browser page and explicitly reloads it after successful same-host restart. Both session modes re-read current config/manifest state, replace resolved source subscriptions, and refresh identity/root/selection values. Mock dev-server product files and custom maintained-app builders remain deleted. A live Studio instance was not available for implementation-stage command execution. |
 | DS-007 | One current package remains directly consumable by both hosts without mutation or host-specific rebuild. | Devkit `packApplicationProject` output; Studio local-package client; standalone selection/start boundary; regenerated `applications/*/dist/importable-package` | Production paths consume the package read-only and `start` performs validation only. Durable digest-based dual-host conformance proof remains for API/E2E ownership. |
 | DS-008 | Standalone root/assets/eligible SPA fallback are confined to selected `ui/`; platform routes remain reserved. | `autobyteus-server-ts/src/standalone-application-host/api/{standalone-application-static-routes,register-standalone-application-rest,standalone-browser-websocket-origin}.ts` | Implemented. Live smoke returned root and HTML-navigation fallback, reserved-route 404, API-style asset 404, invalid-origin WebSocket close `1008`, and matching-origin connection. |
 | DS-009 | Studio launch/reload/teardown remains explicit and compatible with the new iframe provider. | `autobyteus-web/components/applications/{ApplicationSurface,ApplicationIframeHost}.vue`; `utils/application/applicationLaunchDescriptor.ts`; focused component tests | Implemented without adding implicit relaunch or runtime-run behavior. Existing launch-state owner remains authoritative. |
@@ -81,6 +86,7 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
 - Live `dev:studio`, dual-host immutable digest conformance, real Brief team execution, worker-crash recovery, and concurrent composition isolation were not exercised during implementation-scoped checks.
 - The rendered implementation check covered standalone Brief startup/empty state at the browser tool's narrow responsive viewport. Studio rendering, Socratic rendering, transient startup failure UI, and business mutations remain independently unverified.
 - Restart cleanup is proven for two sequential standalone graph generations in one process; broader long-running leak detection remains downstream coverage.
+- `IR-002` adds focused source-level and narrow live-browser evidence for config-driven watch replacement and explicit document reload. Full application-folder `dev`/`dev:studio` command execution across all maintained projects, including repeated edits and Studio presentation remount, remains downstream API/E2E ownership.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -99,7 +105,7 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: removed `startHostedApplication`, version-suffixed current-contract symbols, mock dev server product files, custom maintained-app builders, generated source-root mirrors/vendor trees, and broad application route registration. Large graph/orchestration/engine concerns were split; no changed source implementation file exceeds 500 effective lines.
+- Notes: removed `startHostedApplication`, version-suffixed current-contract symbols, mock dev server product files, custom maintained-app builders, generated source-root mirrors/vendor trees, broad application route registration, and the stateless `openDevelopmentBrowser` launcher. The current browser lifecycle, project-state resolution, watch replacement, and host sessions have distinct owners; no changed source implementation file exceeds 500 effective lines.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -114,9 +120,11 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
 
 - Node.js `v22.23.1`; pnpm `10.28.2`.
 - `pnpm install --no-frozen-lockfile` completed; existing peer-dependency warnings remained non-blocking.
-- Devkit now declares workspace `autobyteus-server-ts` plus `chokidar`; `pnpm-lock.yaml` is updated.
+- Devkit declares workspace `autobyteus-server-ts`, `chokidar`, and now direct `playwright-core` for the controlled development-browser lifecycle; `pnpm-lock.yaml` is updated.
+- Automatic browser opening requires an installed Chrome or Edge channel. `AUTOBYTEUS_DEVELOPMENT_BROWSER_EXECUTABLE` and `AUTOBYTEUS_DEVELOPMENT_BROWSER_CHANNEL` provide explicit selection, and `--no-open` disables browser control without changing the real host path.
 - Nuxt focused tests required the normal `pnpm -C autobyteus-web exec nuxt prepare` generated-type setup because `.nuxt/tsconfig.json` was initially absent.
-- Implementation commit: `247795f5f4fd9fda2e45347b7a9680b4c385e0a7`.
+- Initial implementation commit: `247795f5f4fd9fda2e45347b7a9680b4c385e0a7`.
+- Current local-fix source commit: `0762cd7e37122e0c6c4e5d4ed463a28c9030d38f`.
 
 ## Local Implementation Checks Run
 
@@ -124,7 +132,7 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
 - `pnpm -C autobyteus-application-sdk-contracts test` — 6/6 passed.
 - `pnpm -C autobyteus-application-frontend-sdk test` — 12/12 passed, including type tests.
-- `pnpm -C autobyteus-application-devkit test` — 16/16 passed.
+- `pnpm -C autobyteus-application-devkit test` after `IR-002` — 19/19 passed. The three added focused scenarios verify retained-page reload/navigation/cleanup, real chokidar subscription replacement plus current config/manifest/output resolution, and Studio reimport before current identity selection.
 - Focused server unit selection covering 19 current bundle/engine/orchestration/storage/config files — 19 files and 85 tests passed.
 - The two stale implicit-registrar REST files were run separately — 2 files and 6 tests failed as documented under Known Risks; no production-source failure was observed in the current explicit compositions.
 - Brief Studio and Socratic Math Teacher: `pnpm build`, `pnpm validate`, and `pnpm typecheck:backend` — all passed for both projects.
@@ -137,7 +145,9 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
   - invalid WebSocket origin closed with `1008`, matching origin connected;
   - close/restart succeeded and the isolated database/root key existed under the requested data root.
 - Direct `autobyteus-app start` CLI SIGTERM smoke — ready health observed, process exited `0`, listener closed, and isolated database/root key persisted.
-- `git diff --check`, obsolete application-facing identifier search, generated package-shape inspection, and changed-source effective-line guard — passed.
+- `IR-002` narrow real-browser smoke with the compiled browser owner and system Chrome in headless mode — initial navigation reached host generation one; after closing and replacing the server on the same port, explicit `reload()` reached generation two on the same retained page; controlled browser cleanup completed.
+- Brief Studio and Socratic Math Teacher `pnpm build` and `pnpm validate` were rerun after `IR-002` — passed for both configured package roots.
+- `git diff --check`, obsolete application-facing identifier search, generated package-shape inspection, and changed-source effective-line guard — passed; all `IR-002` changed implementation files remain under 500 effective non-empty lines.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -147,13 +157,13 @@ The implementation is committed at `247795f5f4fd9fda2e45347b7a9680b4c385e0a7` on
 - Project development / preview instructions and rendered surface used: built Brief package through real `pnpm start`; browser tab at `http://127.0.0.1:43246/`.
 - States, layouts, viewports, and interactions inspected: completed standalone bootstrap/business handoff, responsive narrow layout, form/button/list/detail empty state, hierarchy, spacing, typography, labels, and absence of startup-screen leakage or clipping. DOM snapshot showed the business UI under `#app-root`.
 - Visual or interaction issues found and corrected: no remaining in-scope visual defect was observed after the host-neutral startup migration.
-- Supporting evidence and remaining unverified states or limitations: screenshot `/Users/normy/.autobyteus/browser-artifacts/2b731a-1785320622629.png`; Studio-hosted rendering, Socratic, transient error/loading screens, keyboard/focus traversal, and business mutations remain for independent coverage. This is implementation self-validation, not API/E2E sign-off.
+- Supporting evidence and remaining unverified states or limitations: screenshot `/Users/normy/.autobyteus/browser-artifacts/2b731a-1785320622629.png`; `IR-002` changes only development-session browser lifecycle/watching and does not alter product layout or styling. Its narrow real-browser check confirmed a new document request after host replacement. Studio-hosted rendering, Socratic, transient error/loading screens, keyboard/focus traversal, and business mutations remain for independent coverage. This is implementation self-validation, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Update or replace the two stale REST tests against explicit Studio/standalone compositions; verify long canonical application IDs and execution-resource configuration routes through the current injected graph.
 - Prove two independent composition graphs do not share availability, gateway, engine, storage, run lookup, notification, WebSocket, or orchestration state.
-- Run `dev`, `dev:studio`, `build`, `validate`, and build-free `start` from the starter, Brief, and Socratic roots; mutate supported inputs and verify atomic rebuild/restart/remount behavior and cleanup.
+- Run `dev`, `dev:studio`, `build`, `validate`, and build-free `start` from the starter, Brief, and Socratic roots; mutate current source inputs, `application.json`, and `autobyteus-app.config.mjs` mappings/port/output root and verify subscription replacement, current selection, atomic rebuild/restart, standalone full document reload, Studio explicit remount, and cleanup.
 - Hash the generated package before Studio and standalone runs and after shutdown; require an unchanged package and identical relevant entry/backend digests.
 - Execute the real Brief team through `context.agentExecution` in both hosts with the same resource/launch profile and assert event/artifact/notification equivalence.
 - Exercise missing/ambiguous/invalid selection; invalid runtime/tool/skill/resource setup; worker crash followed by supported ensure-ready/recovery; pending event/binding recovery.
