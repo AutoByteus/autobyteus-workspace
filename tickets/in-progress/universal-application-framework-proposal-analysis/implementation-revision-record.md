@@ -14,6 +14,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-006 | Architecture reviewer; `design-review-report.md`; `ARCH-REV-005`, after `CRR-010` / `API-REV-004` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-BRIEF-003`, `APIE2E-F004`, `AR-007` | `Design Impact` | `SR-005`, `ARCH-REV-005`, `CRR-010`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
 | IR-007 | Code reviewer; `code-review-report.md`; `CRR-011` | `CR-009`, `CR-010`, `CR-011` | `Local Fix` | `SR-005`, `ARCH-REV-005`, `CRR-011`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
 | IR-008 | Architecture reviewer; `design-review-report.md`; `ARCH-REV-006`, after `CRR-012` | `CR-009`, `CR-012` | `Design Impact` | `SR-006`, `ARCH-REV-006`, `CRR-012`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
+| IR-009 | Code reviewer; `code-review-report.md`; `CRR-013` | `CR-009` | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-013`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
 
 ## Revision Entries
 
@@ -176,3 +177,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: source commit `25ad035ca126e789a9c233cf858d48ea3b41ea50`; contracts build, server build-config TypeScript no-emit, full server build, web boundary/localization guards, Brief validation after devkit build, diff/obsolete-symbol/source-size guards all passed. Disposable probes passed server semantics 2/2, rendered mixed-runtime editing 1/1, stale preview coordination 1/1, sparse field clearing 1/1, and positive/negative copied real-package portable cases. Full web typecheck remains globally red on existing diagnostics; the changed-area filter found no IR-008 production-source diagnostic.
 - Next recipient or routing: `code_reviewer` for complete implementation-source and structural re-review. After Pass, route through `api_e2e_engineer` for durable contract/test reconciliation and the full API/E2E rerun.
 - Remaining limitations or risks: implementation did not start the full live Studio stack, execute authenticated Luna, or create a real network preview/PUT race. API/E2E must replace obsolete no-context auto-repair coverage, add direct baseline/preview/policy/race coverage, validate the full Studio edit/save/clear/reset flow, and resume prompt/provider/events/artifacts, parity/digests, command, recovery, and cleanup scenarios. All API/E2E-owned dirty tests, reports, and evidence remain preserved.
+
+### IR-009 — Reject endpoint and credential semantic aliases in portable package data
+
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; source-review round `CRR-013`.
+- Triggering finding IDs: `CR-009`
+- Classification: `Local Fix`
+- Prior authoritative result: `Ready for source re-review` (`IR-008`); triggering source-review result `Fail — Local Fix` (`CRR-013`, `93/100`). `CR-012` passed and remains resolved.
+- Current authoritative result: `Ready for source re-review`
+- Related solution revision IDs: `SR-006`
+- Related architecture-review revision IDs: `ARCH-REV-006`
+- Related code-review revision IDs: `CRR-013`
+- Related API/E2E revision IDs: `API-REV-004` (retained downstream context; no new API/E2E round triggered this source review)
+- Related delivery revision IDs: `N/A`
+- Why this baseline or implementation revision is recorded: CRR-013 confirmed the selected-resource architecture and all other SR-006 behavior but proved that supported AutoByteus `extra_params` could still admit clear host endpoint/credential aliases such as `server_url`, `api_url`, `connection_string`, and `access_key` through documented package validation.
+- Approved behavior or requirement IDs affected: `BEH-006`; `REQ-006`, `REQ-007`; `UC-019`; `AC-014`; `DS-011`.
+- Implementation delta: extended the existing recursive semantic classifier to reject URL/URI fields, connection strings/DSNs, qualified endpoint addresses, access/account/client/subscription-key aliases, and authentication aliases. Existing endpoint/base/API-base/host, credential/secret/password/authorization/bearer/token-value/workspace/path rules remain. Exact token-count exceptions and typed pricing schemas are unchanged. No new policy family, runtime/app special case, fallback, compatibility path, contract, persistence, or migration change was added.
+- Changed files or areas: `autobyteus-server-ts/src/application-platform/launch-configuration/application-portable-launch-config-policy.ts` only.
+- Local validation and result: source commit `957b928b131d6953ffc5ace7000e1f954db90fdd`; server build-config TypeScript no-emit and full build passed. A disposable direct built-policy probe rejected eight endpoint/credential/auth alias forms recursively at exact paths without values while accepting token counts, typed pricing, and harmless nested parameters. A disposable copied real Brief package probe accepted the positive AutoByteus profile and rejected independent `server_url`, `api_url`, `connection_string`, and `access_key` packages through the real validator boundary. Temporary packages were removed; diff, ownership, file-size, and staging checks passed.
+- Next recipient or routing: `code_reviewer` for focused implementation-source re-review. After Pass, normal routing may resume to `api_e2e_engineer` for durable test reconciliation and the full API/E2E rerun.
+- Remaining limitations or risks: implementation-scoped probes are disposable and do not replace durable API/E2E coverage. API/E2E must add the alias matrix while preserving exact token-count/pricing positives, then complete the retained selected-baseline/preview/sparse/mixed-runtime and live dual-host scenarios. All API/E2E-owned dirty tests, reports, and evidence remain preserved.

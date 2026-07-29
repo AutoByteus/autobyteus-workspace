@@ -27,7 +27,7 @@
 
 ## Current Implementation Summary
 
-Source commit `25ad035ca126e789a9c233cf858d48ea3b41ea50` implements the architecture-approved `SR-006` / `ARCH-REV-006` correction. It supersedes the incomplete IR-007 treatment of `CR-009` and implements the selected-resource editing design added for `CR-012`.
+Source commit `25ad035ca126e789a9c233cf858d48ea3b41ea50` implements the architecture-approved `SR-006` / `ARCH-REV-006` correction. Local-fix source commit `957b928b131d6953ffc5ace7000e1f954db90fdd` closes the remaining `CR-009` semantic-alias gap from `CRR-013`; `CR-012` remains resolved.
 
 The current production implementation preserves the prior dual-host foundation and SR-005 launch authority while making four configuration meanings explicit: immutable manifest `packageBaseline`, current pre-overlay `selectedResourceBaseline`, sparse raw `savedOverride`, and post-overlay `effectiveConfiguration`.
 
@@ -38,19 +38,19 @@ The current production implementation preserves the prior dual-host foundation a
 - Studio obtains alternate-resource editing context only from a stored selected baseline or an exact identity-bound preview. It discards stale preview responses, blocks save while preview is pending/invalid, invalidates previews after definition/catalog/save/reset changes, and reloads authoritative state after a failed PUT.
 - Clearing a saved field persists its absence and reveals the current selected definition value. Team member runtime/model inheritance is per member; a mixed-runtime team has no implicit common runtime and keeps bulk model selection disabled until the user explicitly selects one.
 - The package/effective inheritance heuristic and Studio-side agent/team definition traversal were removed. Application setup model selection opts out of global AutoByteus runtime fallback.
-- `ApplicationPortableLaunchConfigPolicy` is one recursive, schema-aware package validator policy. It accepts the exact supported token-count fields and typed pricing schema, while rejecting nested credential/password/authorization/bearer/token-value/endpoint/base-URL/host/workspace/machine-path semantics with exact paths and without reporting values.
+- `ApplicationPortableLaunchConfigPolicy` is one recursive, schema-aware package validator policy. It accepts the exact supported token-count fields and typed pricing schema, while rejecting nested credential/password/authorization/bearer/token-value/endpoint/base-URL/host/workspace/machine-path semantics with exact paths and without reporting values. IR-009 extends the same classifier to URL/URI, connection-string/DSN, qualified endpoint-address, access/account/client/subscription-key, and authentication aliases; it does not add an app/runtime exception.
 - The former `ApplicationLaunchPackageBaselineBuilder` file and symbol were cleanly renamed to `ApplicationLaunchResourceBaselineBuilder`; no alias, wrapper, or parallel implementation remains.
 - Existing override rows remain directly usable. Selected baselines and previews are derived only; no persisted field, migration, compatibility reader, or dual write was added.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-008`
+- Current implementation revision ID: `IR-009`
 - Related solution revision IDs: `SR-006` (`SR-001`–`SR-005` retained as history)
 - Related architecture-review revision IDs: `ARCH-REV-006` (`ARCH-REV-001`–`ARCH-REV-005` retained as history)
-- Related code-review revision IDs: `CRR-012` trigger; `CRR-001`–`CRR-011` history
+- Related code-review revision IDs: `CRR-013` trigger; `CRR-001`–`CRR-012` history
 - Related API/E2E revision IDs: `API-REV-004` retained downstream context
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-009` (remaining recursive portable-policy gap), `CR-012`
+- Triggering finding IDs: `CR-009` (bounded semantic-alias gap; `CR-012` is source-resolved)
 
 ## Reviewed Behavior Implementation Trace
 
@@ -61,7 +61,7 @@ The current production implementation preserves the prior dual-host foundation a
 | `BEH-003` | Strict manifest v4 and stable package identity remain unchanged. | Existing package parser/selection and devkit source-only standalone metadata. | Preserved; baseline/preview projections are not manifest fields. |
 | `BEH-004` | Resolve manifest and selected-resource baselines server-side, preview unsaved selection without writes, overlay only sparse host fields, and launch only a complete runnable result. | `application-launch-{configuration-service,resource-baseline-builder,override-overlay,configuration-diagnostics}.ts`; contracts; REST preview route; Studio setup preview coordinator/editors. | Implemented. Package, selected, saved, and effective meanings stay distinct; no fallback or UI definition traversal. |
 | `BEH-005` | Preserve explicit Studio/standalone compositions and separate process health from application readiness. | Existing compositions/lifecycle; updated orchestration-authority injection. | Preserved. The baseline builder remains graph-local and the preview is available only through the Studio-facing route. |
-| `BEH-006` | Native package commands reject non-portable launch data while accepting exact runtime-portable tuning. | `application-portable-launch-config-{policy,schemas}.ts`; standalone package validator; devkit validate/build path. | Implemented. Recursive positive and negative real-package probes passed with exact path/no-value diagnostics. |
+| `BEH-006` | Native package commands reject non-portable launch data while accepting exact runtime-portable tuning. | `application-portable-launch-config-{policy,schemas}.ts`; standalone package validator; devkit validate/build path. | Implemented. Policy and real-package probes reject the CRR-013 URL/connection/key aliases at exact paths without values while preserving exact token-count/pricing positives. |
 | `BEH-007` | Current override rows remain directly usable; invalid rows stay visible and blocking until explicit replacement/reset. | Launch service/overlay, existing store, REST save/reset, Studio setup. | Preserved and strengthened. Selected baselines/previews are computed only, and PUT is the final resource/topology authority. |
 | `BEH-008` | Exact graph-local package-team definition authority reaches runtime prompts. | Existing SR-005 run authorities and `MemberTeamContextBuilder` path. | Preserved; SR-006 adds no global catalog lookup. |
 
@@ -123,9 +123,10 @@ The current production implementation preserves the prior dual-host foundation a
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis`
 - Branch: `codex/universal-application-framework-proposal-analysis`
 - SR-006 source commit: `25ad035ca126e789a9c233cf858d48ea3b41ea50`
+- IR-009 CR-009 local-fix source commit: `957b928b131d6953ffc5ace7000e1f954db90fdd`
 - Reviewed base `6caf809303294252c109420b238588f0c68aca6a` remains in history. Delivery owns final refresh/integration against the latest tracked base; implementation did not merge or rebase.
 - The devkit must be built before invoking a maintained application validation command in this worktree. After that normal prerequisite, Brief validation passed.
-- API/E2E-owned modified/untracked tests, reports, and evidence were preserved exactly; no durable API/E2E test was authored or committed in IR-008.
+- API/E2E-owned modified/untracked tests, reports, and evidence were preserved exactly; no durable API/E2E test was authored or committed in IR-008 or IR-009.
 
 ## Local Implementation Checks Run
 
@@ -142,8 +143,14 @@ The current production implementation preserves the prior dual-host foundation a
 - Disposable copied real Brief package positive case — Pass: exact AutoByteus `max_tokens`, `token_limit`, `safety_margin_tokens`, typed pricing tiers, and harmless nested extra parameters accepted.
 - Disposable copied real Brief package negative case — Pass: nested `extra_params.nested.authorization` rejected at the exact path without echoing its value. Copy removed afterward.
 - `git diff --check`, staged-diff check, obsolete builder symbol/path search, source-size/responsibility audit, and implementation-owned staging inventory — Pass.
+- IR-009 `pnpm exec tsc -p tsconfig.build.json --noEmit` and `pnpm build` in `autobyteus-server-ts` — Pass, including dependent shared builds, Prisma generation, managed assets, built-in bootstrap smoke, and sanitized built-module smoke.
+- IR-009 disposable direct built-policy probe — Pass: `server_url`, `api_url`, `connection_string`, `access_key`, `baseUri`, `service_address`, `client_key`, and `auth_config` were rejected recursively at exact paths without values; exact token counts, typed pricing tiers, and harmless nested response-format data remained accepted.
+- IR-009 disposable copied real Brief package probe — Pass: an AutoByteus package with exact token counts, typed pricing, and harmless extra params validated; four independent copies containing `server_url`, `api_url`, `connection_string`, or `access_key` failed through `validateStandaloneApplicationPackage` at exact paths without values. Temporary packages were removed.
+- IR-009 `git diff --check`, one-file implementation-owned staging audit, 232-effective-line cohesive policy audit, and scratch cleanup — Pass. The local delta is 34 lines and does not cross the 220-changed-line split trigger.
 
 ## Frontend Rendered-Result Check
+
+IR-009 is backend validation-policy only, so a new frontend rendered-result check is `Not Applicable`. The retained IR-008 frontend self-validation remains:
 
 - Affected surfaces / journeys: Studio application execution-resource selection; alternate agent/team editing; inherited per-member runtime/model display; mixed-runtime bulk edit; pending/invalid preview save gate.
 - Approved references: `requirements.md` AC-015/AC-016; `design-spec.md` BEH-004, DS-012, UC-020; `ARCH-REV-006`.
@@ -160,7 +167,7 @@ The current production implementation preserves the prior dual-host foundation a
 - Sparse editing: first-save alternate resource inherits its own runtime/model; clearing an override field omits it and reveals the current selected definition value; reset deletes only the row.
 - Mixed team: distinct member runtimes/models remain distinct; bulk model is disabled without an explicit common runtime; no AutoByteus/previous-result fallback.
 - Concurrency: delayed stale preview cannot replace a newer selection; definition/catalog change refreshes preview; preview/PUT resource or topology race rejects without write and reloads current state.
-- Portable package policy: positive exact token-count/typed-pricing cases plus nested credential/password/authorization/bearer/token-value/endpoint/base-URL/host/workspace/machine-path negatives; assert exact paths and absence of secret values.
+- Portable package policy: positive exact token-count/typed-pricing cases plus nested credential/password/authorization/bearer/token-value/endpoint/base-URL/host/workspace/machine-path negatives, including `server_url`, `api_url`, `connection_string`, `access_key`, URL/URI, DSN, qualified address, client/account/subscription key, and auth aliases; assert exact paths and absence of secret values.
 - Real Studio journey: select an alternate resource, observe preview, save sparse override, reload, clear a field, save, reset, and verify readiness/entry behavior throughout.
 - Resume the retained full dual-host matrix: authenticated Luna prompt/provider/events/artifacts journeys, real application-folder commands, Studio remount/reload, static/SPA/origin behavior, parity/digests, worker recovery, graph isolation, and cleanup/leak checks.
 
