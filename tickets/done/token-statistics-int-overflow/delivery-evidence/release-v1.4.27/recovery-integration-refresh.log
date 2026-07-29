@@ -1,0 +1,29 @@
+Delivery latest-base integration refresh
+Captured at: 2026-07-29T08:20:17+02:00
+Reviewed checkpoint commit: cc79c46dc5fac8879f45e376b2c44129eaa09568
+Integrated origin/personal: ca97fa2f537f5bf31c4adbddc3d094c5bd7c7e96
+Integration merge: b08ee8ed9669cc299a25ece0e1f4f4413b9e72cd
+Divergence vs origin/personal: 2	0
+
+Relevant base diff:
+M	package.json
+
+Root package diff:
+diff --git a/package.json b/package.json
+index 2120ff68f..018d1c45b 100644
+--- a/package.json
++++ b/package.json
+@@ -3,9 +3,8 @@
+   "private": true,
+   "scripts": {
+     "secrets:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
+-    "server:test": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-test-server.mjs",
+-    "web:test": "node test-support/live-e2e/run-test-web.mjs",
+-    "dev:test": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-test-dev.mjs",
++    "dev": "pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs",
++    "test:e2e": "pnpm --filter autobyteus-server-ts test --run tests/e2e",
+     "test:e2e:real:preflight": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs --preflight",
+     "test:e2e:real": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs",
+     "verify:android-profile": "bash scripts/verify-android-profile.sh",
+
+Result: clean merge; packaging inputs unchanged except root package script additions.
