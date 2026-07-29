@@ -1,0 +1,29 @@
+timestamp=2026-07-29T12:50:39Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle
+branch=codex/agent-idle-status-lifecycle
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+head=7e4b78d314b867c57723cee95d0cdd24be33a3cf
+origin_personal=6caf809303294252c109420b238588f0c68aca6a
+merge_base=6caf809303294252c109420b238588f0c68aca6a
+ahead_behind=0	17
+remote_ticket_branch:
+remote_release_tag_v1.4.29:
+versions:
+autobyteus-web/package.json=1.4.28
+autobyteus-message-gateway/package.json=1.4.28
+origin_url=git@github.com-ryan:AutoByteus/autobyteus-workspace.git
+main_worktree_status:
+## personal...origin/personal [behind 10]
+ M tickets/done/application-agent-streaming/api-e2e-test-review-report.md
+ M tickets/done/application-agent-streaming/docs-sync-report.md
+ M tickets/done/application-agent-streaming/handoff-summary.md
+ M tickets/done/application-agent-streaming/release-deployment-report.md
+?? .article-work/
+?? tickets/done/application-agent-streaming/post-delivery-api-e2e-coverage-investigation.md
+?? tickets/done/application-agent-streaming/post-delivery-api-e2e-execution-coverage-report.md
+?? tickets/done/application-agent-streaming/post-delivery-delivery-refresh.log
+?? tickets/done/application-agent-streaming/post-delivery-electron-mac-build.log
+?? tickets/done/application-agent-streaming/post-delivery-electron-mac-validation.log
+?? tickets/done/application-agent-streaming/post-delivery-verification-evidence/
+?? tickets/done/gemini-31-image-schema-dimensions/

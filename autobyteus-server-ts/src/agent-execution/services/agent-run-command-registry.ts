@@ -61,13 +61,61 @@ export class AgentRunCommandRegistry {
   markForwarded(input: {
     runId: string;
     messageId: string;
-    turnId?: string | null;
   }): AgentRunCommandRecord | null {
-    return this.update(input.runId, input.messageId, (record) => ({
+    return this.updateInFlight(input.runId, input.messageId, (record) => ({
       ...record,
       state: "FORWARDED",
-      turnId: input.turnId ?? record.turnId ?? null,
     }));
+  }
+
+  associateIdentified(input: {
+    runId: string;
+    messageId: string;
+    turnId: string;
+  }): AgentRunCommandRecord | null {
+    return this.updateInFlight(input.runId, input.messageId, (record) => {
+      if (
+        record.association.kind === "IDENTIFIED" &&
+        record.association.turnId !== input.turnId
+      ) {
+        return record;
+      }
+      return {
+        ...record,
+        turnId: input.turnId,
+        association: { kind: "IDENTIFIED", turnId: input.turnId },
+      };
+    });
+  }
+
+  awaitAnonymousStart(input: {
+    runId: string;
+    messageId: string;
+  }): AgentRunCommandRecord | null {
+    return this.updateInFlight(input.runId, input.messageId, (record) =>
+      record.association.kind === "PENDING_IDENTITY"
+        ? { ...record, association: { kind: "AWAITING_ANONYMOUS_START" } }
+        : record,
+    );
+  }
+
+  armAnonymous(input: {
+    runId: string;
+    messageId: string;
+    armedAtSequence: number;
+  }): AgentRunCommandRecord | null {
+    return this.updateInFlight(input.runId, input.messageId, (record) =>
+      record.association.kind === "IDENTIFIED"
+        ? record
+        : {
+            ...record,
+            turnId: null,
+            association: {
+              kind: "ANONYMOUS_ARMED",
+              armedAtSequence: input.armedAtSequence,
+            },
+          },
+    );
   }
 
   markCompleted(input: {
@@ -125,7 +173,7 @@ export class AgentRunCommandRegistry {
     turnId?: string | null;
   }): AgentRunCommandRecord | null {
     const terminalAt = nowIso();
-    return this.update(input.runId, input.messageId, (record) => ({
+    return this.updateInFlight(input.runId, input.messageId, (record) => ({
       ...record,
       state: input.state,
       terminalAt,
@@ -151,6 +199,18 @@ export class AgentRunCommandRegistry {
     };
     runRecords.set(messageId, next);
     return next;
+  }
+
+  private updateInFlight(
+    runId: string,
+    messageId: string,
+    mutate: (record: AgentRunCommandRecord) => AgentRunCommandRecord,
+  ): AgentRunCommandRecord | null {
+    const current = this.getRecord(runId, messageId);
+    if (!current || !IN_FLIGHT_STATES.has(current.state)) {
+      return current;
+    }
+    return this.update(runId, messageId, mutate);
   }
 
   private getRunRecords(runId: string): Map<string, AgentRunCommandRecord> {
@@ -182,6 +242,7 @@ export class AgentRunCommandRegistry {
       ...(input.code ? { code: input.code } : {}),
       ...(input.message ? { message: input.message } : {}),
       turnId: null,
+      association: { kind: "PENDING_IDENTITY" },
     };
   }
 

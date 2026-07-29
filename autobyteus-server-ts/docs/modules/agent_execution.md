@@ -133,6 +133,62 @@ authority once an `AgentRun` exists. Its runtime events are the source that
 replaces command overlays and drives later `running`, `idle`, `offline`, and
 `error` projections.
 
+## Canonical Turn Lifecycle And Failure Authority
+
+Runtime lifecycle projection is boundary-owned. A live run is `running` only
+while it has an authoritative active turn and is `idle` when it remains reusable
+with no active turn. `initializing` covers accepted activation/start work before
+an active turn opens, `offline` means that the runtime is unavailable, and
+`error` represents an accepted lifecycle failure. The public status vocabulary
+is unchanged.
+
+Provider adapters normalize their base events, then
+`AgentRunEventDispatchQueue` serializes pipeline processing and final listener
+dispatch for each run. Different runs remain concurrent. Within one run,
+`LifecycleStatusEventTransformer` and `AgentTurnLifecycleState` own the
+identified/anonymous/retired turn state:
+
+- `TURN_STARTED` opens the supplied `turn_id` and establishes `running` when an
+  accompanying explicit status is absent.
+- A matching `TURN_COMPLETED` or `TURN_INTERRUPTED` retires the current turn and
+  establishes `idle` when an accompanying explicit status is absent.
+- Duplicate boundaries and boundaries for an already retired turn are
+  idempotent lifecycle no-ops. A terminal boundary for turn A cannot close a
+  newer active turn B.
+- Ordinary segment, tool, inter-agent, todo, and system-task activity remains
+  observable but cannot establish or reopen a turn. Same-turn activity may only
+  recover an `error` projection when it carries the current identified, still
+  open turn id.
+- `AGENT_STATUS` is the only event shape that updates
+  `AgentRun.statusOverride`. Raw activity, `statusHint`, and unclassified error
+  events are not parallel lifecycle authorities.
+
+Turn correlation uses `payload.turn_id` as the canonical event field. The
+shared internal resolver tolerates `payload.turnId` while runtime/provider
+boundaries are normalized, but new publishers should emit `turn_id`. Runtime
+contexts retain retired identified turn ids for their lifetime so arbitrarily
+late content can still be delivered without reopening completed work.
+
+Canonical `ERROR` payloads add structured lifecycle evidence:
+
+```ts
+type AgentErrorLifecycleEvidence =
+  | { error_scope: "turn"; error_effect: "diagnostic"; turn_id: string }
+  | { error_scope: "turn"; error_effect: "terminal"; turn_id: string }
+  | { error_scope: "runtime"; error_effect: "terminal" };
+```
+
+A turn diagnostic is content-only for lifecycle purposes. A turn-terminal
+error can settle only its matching identified turn; an old turn error cannot
+settle a newer command/turn. A runtime-terminal error has no `turn_id`, clears
+the active runtime turn, and establishes `error`. Missing fields, an empty turn
+id, a runtime-scoped payload with a turn id, or any unsupported scope/effect
+combination has no lifecycle or command-settlement authority. Runtime adapters
+emit an authoritative `ERROR` before any companion `AGENT_STATUS error` so the
+transformer can validate that status against the same evidence. A status-only
+`AGENT_STATUS error` remains a valid runtime snapshot but cannot settle an
+identified command by itself.
+
 ## Runtime Segment Identity And Ordering
 
 Provider adapters own the stream segment identities they emit. Text segments must

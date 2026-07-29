@@ -3,6 +3,10 @@ import {
   isAgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import {
+  resolveAgentRunErrorEvidence,
+  type AgentRunErrorEvidence,
+} from "../../agent-execution/domain/agent-run-error-evidence.js";
+import {
   TeamRunEventSourceType,
   type TeamRunEvent,
 } from "../../agent-team-execution/domain/team-run-event.js";
@@ -10,6 +14,7 @@ import {
 export type ParsedChannelOutputEvent = {
   eventType: AgentRunEventType;
   statusHint: string | null;
+  errorEvidence: AgentRunErrorEvidence | null;
   agentRunId: string;
   teamRunId: string | null;
   memberRunId: string | null;
@@ -32,6 +37,7 @@ export const parseDirectChannelOutputEvent = (
   return {
     eventType: event.eventType,
     statusHint: event.statusHint ?? null,
+    errorEvidence: resolveAgentRunErrorEvidence(event),
     agentRunId: event.runId,
     teamRunId: null,
     memberRunId: null,

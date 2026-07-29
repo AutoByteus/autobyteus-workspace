@@ -24,6 +24,10 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
+import {
+  closeLiveRuntimeSecretVault,
+  initializeLiveRuntimeSecretVaultFromEnvironment,
+} from "../helpers/live-runtime-secret-vault-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
@@ -384,6 +388,9 @@ const defineRuntimeSuite = (input: {
       );
       appConfigProvider.config.setCustomAppDataDir(testDataDir);
       SkillService.resetInstance();
+      if (input.runtimeKind === "autobyteus") {
+        await initializeLiveRuntimeSecretVaultFromEnvironment();
+      }
       schema = await buildGraphqlSchema();
       const require = createRequire(import.meta.url);
       const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -399,6 +406,9 @@ const defineRuntimeSuite = (input: {
       createdWorkspaceRoots.clear();
 
       if (testDataDir) {
+        if (input.runtimeKind === "autobyteus") {
+          await closeLiveRuntimeSecretVault();
+        }
         await rm(testDataDir, { recursive: true, force: true });
         testDataDir = null;
       }
@@ -760,13 +770,44 @@ const defineRuntimeSuite = (input: {
           (message) => assistantTextMatches(message, firstToken),
           `assistant text containing ${firstToken}`,
         );
-        await waitForMessageAfter(
+        const firstIdle = await waitForMessageAfter(
           messages,
           firstStartIndex,
           (message) =>
             message.type === "AGENT_STATUS" && message.payload.status === "idle",
           "first AGENT_STATUS IDLE",
         );
+        const firstIdleIndex = messages.indexOf(firstIdle);
+        expect(
+          messages
+            .slice(firstStartIndex, firstIdleIndex + 1)
+            .some(
+              (message) =>
+                message.type === "AGENT_STATUS" && message.payload.status === "running",
+            ),
+        ).toBe(true);
+
+        await wait(750);
+        expect(
+          messages
+            .slice(firstIdleIndex + 1)
+            .filter((message) => message.type === "AGENT_STATUS")
+            .map((message) => message.payload.status),
+        ).not.toContain("running");
+
+        const reconnect = await openAgentSocket(runId);
+        try {
+          await waitForMessage(
+            reconnect.messages,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
+            "reconnected AGENT_STATUS IDLE before restore",
+            15_000,
+          );
+        } finally {
+          reconnect.socket.close();
+          await reconnect.app.close();
+        }
 
         await terminateAgentRun(runId);
         await restoreAgentRun(runId);

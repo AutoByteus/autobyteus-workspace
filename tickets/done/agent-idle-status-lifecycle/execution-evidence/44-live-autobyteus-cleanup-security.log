@@ -1,0 +1,31 @@
+# AutoByteus + DeepSeek cleanup and secret-retention audit
+# Started: 2026-07-16T08:08:21Z
+
+## Owned live-test processes
+owned_live_test_processes_present=false
+
+## Owned temporary directories named in round-5 logs
+temp_exists=false path=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-runtime-api-e2e-hUaHQT
+temp_exists=false path=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-2fNgr8
+temp_exists=false path=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-Jbksg3
+temp_exists=false path=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-runtime-api-e2e-gyORsC
+
+## Credential-file isolation
+worktree_env_test_file_count=0
+
+## Refreshed DeepSeek secret retained in evidence
+37-live-autobyteus-deepseek-lifecycle.log: full_secret_present=false
+38-deepseek-credential-probe.log: full_secret_present=false
+39-deepseek-credential-recheck.log: full_secret_present=false
+40-live-autobyteus-deepseek-lifecycle-rerun.log: full_secret_present=false
+41-live-autobyteus-deepseek-team-restore.log: full_secret_present=false
+42-live-autobyteus-deepseek-team-message.log: full_secret_present=false
+43-live-autobyteus-deepseek-team-message-rerun.log: full_secret_present=false
+44-live-autobyteus-cleanup-security.log: full_secret_present=false
+
+## User-owned application
+port_29695_listening=true
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 77867 TCP *:29695
+
+# Finished: 2026-07-16T08:08:24Z

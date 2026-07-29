@@ -32,6 +32,10 @@ import { CodexThreadEventName } from "./codex-thread-event-name.js";
 import { CodexOrderedToolBoundaryTracker } from "./codex-ordered-tool-boundary-tracker.js";
 import type { CodexReasoningLifecycleAction } from "./codex-reasoning-block-tracker.js";
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
+import {
+  deriveCodexAgentRunStatusHint,
+  resolveCodexAgentRunEventStatusHint,
+} from "./codex-status-projector.js";
 
 type RuntimeRunReference = {
   runtimeKind: RuntimeKind;
@@ -76,21 +80,6 @@ export const buildCodexAgentRunRuntimeReference = (
       sandbox: thread.config.sandbox,
     },
   };
-};
-
-export const deriveCodexAgentRunStatusHint = (
-  codexEventName: string,
-): "ACTIVE" | "IDLE" | "ERROR" | null => {
-  if (codexEventName === CodexThreadEventName.TURN_STARTED) {
-    return "ACTIVE";
-  }
-  if (codexEventName === CodexThreadEventName.TURN_COMPLETED) {
-    return "IDLE";
-  }
-  if (codexEventName === CodexThreadEventName.ERROR) {
-    return "ERROR";
-  }
-  return null;
 };
 
 export class CodexThreadEventConverter {
@@ -349,12 +338,14 @@ export class CodexThreadEventConverter {
             ...payload,
           }
         : payload;
-    return {
+    const event: AgentRunEvent = {
       eventType,
       runId: this.runId,
       payload: normalizedPayload,
-      statusHint,
+      statusHint: null,
     };
+    event.statusHint = resolveCodexAgentRunEventStatusHint(event, statusHint);
+    return event;
   }
 
   private createCodexProviderCompactionStatusEvent(

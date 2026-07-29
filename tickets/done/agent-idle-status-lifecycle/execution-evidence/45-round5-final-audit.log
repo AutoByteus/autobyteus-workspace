@@ -1,0 +1,34 @@
+# API/E2E round 5 final audit
+# Started: 2026-07-16T08:13:03Z
+
+## Diff whitespace
+git_diff_check=pass
+
+## Live evidence outcomes
+evidence_39=39-deepseek-credential-recheck.log
+evidence_39_expected=pass
+evidence_40=40-live-autobyteus-deepseek-lifecycle-rerun.log
+evidence_40_expected=pass
+evidence_41=41-live-autobyteus-deepseek-team-restore.log
+evidence_41_expected=pass
+evidence_42=42-live-autobyteus-deepseek-team-message.log
+evidence_42_expected=classified_stale_test_setup
+evidence_43=43-live-autobyteus-deepseek-team-message-rerun.log
+evidence_43_expected=pass
+evidence_44=44-live-autobyteus-cleanup-security.log
+evidence_44_expected=pass
+
+## Authoritative artifact assertions
+investigation_round_5=true
+investigation_pass_97_7=true
+execution_round_5=true
+execution_pass_97_7=true
+autobyteus_matrix_pass=true
+eight_durable_paths=true
+deepseek_forced_tool_fix_present=true
+next_recipient_code_reviewer=true
+
+## Changed round-5 durable path
+autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+
+# Finished: 2026-07-16T08:13:03Z

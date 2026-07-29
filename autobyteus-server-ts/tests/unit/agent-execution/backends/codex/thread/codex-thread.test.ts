@@ -1226,4 +1226,79 @@ describe("CodexThread token usage readiness", () => {
       }),
     ]);
   });
+
+  it("does not let an old completion or terminal error clear a newer active turn", () => {
+    const { thread } = createThread(true);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => messages.push(message));
+    thread.markTurnStarted("turn-b");
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-a" },
+    } as never);
+    expect(thread.activeTurnId).toBe("turn-b");
+    expect(thread.currentStatus).toBe("RUNNING");
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
+      turn: {},
+    } as never);
+    expect(thread.activeTurnId).toBe("turn-b");
+    expect(thread.currentStatus).toBe("RUNNING");
+
+    thread.handleAppServerNotification(CodexThreadEventName.ERROR, {
+      turnId: "turn-a",
+      code: "TURN_FAILED",
+      message: "old failure",
+    } as never);
+    expect(thread.activeTurnId).toBe("turn-b");
+    expect(thread.currentStatus).toBe("RUNNING");
+    expect(messages.at(-1)?.params).toMatchObject({
+      error_scope: "turn",
+      error_effect: "terminal",
+      turn_id: "turn-a",
+    });
+  });
+
+  it("classifies an error status change before clearing the matching active turn", () => {
+    const { thread } = createThread(true);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => messages.push(message));
+    thread.markTurnStarted("turn-b");
+
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_STATUS_CHANGED, {
+      status: { type: "failed" },
+      message: "provider status failed",
+    } as never);
+
+    expect(thread.activeTurnId).toBeNull();
+    expect(thread.currentStatus).toBe("ERROR");
+    expect(messages).toEqual([
+      expect.objectContaining({
+        method: CodexThreadEventName.ERROR,
+        params: expect.objectContaining({
+          message: "provider status failed",
+          error_scope: "turn",
+          error_effect: "terminal",
+          turn_id: "turn-b",
+        }),
+      }),
+    ]);
+  });
+
+  it("classifies client loss as runtime-global before clearing native identity", () => {
+    const { thread } = createThread(true);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => messages.push(message));
+    thread.markTurnStarted("turn-b");
+
+    thread.handleClientClosed(new Error("closed"));
+
+    expect(thread.activeTurnId).toBeNull();
+    expect(thread.currentStatus).toBe("ERROR");
+    expect(messages.at(-1)?.params).toMatchObject({
+      error_scope: "runtime",
+      error_effect: "terminal",
+    });
+    expect(messages.at(-1)?.params).not.toHaveProperty("turn_id");
+  });
 });

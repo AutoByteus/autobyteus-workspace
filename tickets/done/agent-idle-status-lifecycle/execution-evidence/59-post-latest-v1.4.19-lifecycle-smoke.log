@@ -1,0 +1,419 @@
+# Post-latest-v1.4.19 lifecycle smoke
+# Started: 2026-07-20T04:19:09Z
+# Head: 8052f9d777dcdb30443af068159760ed0c14ec7f
+# origin/personal: 8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+# Command: pnpm exec vitest run tests/integration/agent/agent-status-websocket.integration.test.ts tests/e2e/agent/agent-command-correlated-status.e2e.test.ts tests/integration/agent/agent-websocket.integration.test.ts tests/unit/agent-team-execution/team-command-start-status.test.ts tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:56741) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session 1d59b039-cb8d-468d-861d-5ab549244617 for run agent-e2e
+Agent WebSocket connected: session=1d59b039-cb8d-468d-861d-5ab549244617, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session 1d59b039-cb8d-468d-861d-5ab549244617
+Agent WebSocket disconnected: 1d59b039-cb8d-468d-861d-5ab549244617
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session 601cfd77-0005-4752-a2c2-0a4f9a217c89 for run agent-e2e
+Agent WebSocket connected: session=601cfd77-0005-4752-a2c2-0a4f9a217c89, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session 601cfd77-0005-4752-a2c2-0a4f9a217c89
+Agent WebSocket disconnected: 601cfd77-0005-4752-a2c2-0a4f9a217c89
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session e832b7b3-02b7-4071-8343-fce227f1288d for run agent-e2e
+Agent WebSocket connected: session=e832b7b3-02b7-4071-8343-fce227f1288d, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Closed agent session e832b7b3-02b7-4071-8343-fce227f1288d
+Agent WebSocket disconnected: e832b7b3-02b7-4071-8343-fce227f1288d
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Agent websocket attached for run agent-e2e
+Created agent session afeacf64-16e3-434b-9374-4abbf9170e5a for run agent-e2e
+Agent WebSocket connected: session=afeacf64-16e3-434b-9374-4abbf9170e5a, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+SEND_MESSAGE command not accepted for agent run agent-e2e: [RUN_COMMAND_IN_PROGRESS] Another command is already in progress for this run.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session afeacf64-16e3-434b-9374-4abbf9170e5a
+Agent WebSocket disconnected: afeacf64-16e3-434b-9374-4abbf9170e5a
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session aafa590e-488b-4057-b380-3d69855cb74c for run agent-e2e
+Agent WebSocket connected: session=aafa590e-488b-4057-b380-3d69855cb74c, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] activation exploded
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session aafa590e-488b-4057-b380-3d69855cb74c
+Agent WebSocket disconnected: aafa590e-488b-4057-b380-3d69855cb74c
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session e8ecbc72-4f26-429f-b404-41ada7c5f937 for run agent-e2e
+Agent WebSocket connected: session=e8ecbc72-4f26-429f-b404-41ada7c5f937, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket session 'e8ecbc72-4f26-429f-b404-41ada7c5f937' lost its active run subscription for run 'agent-e2e'.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session e8ecbc72-4f26-429f-b404-41ada7c5f937
+Agent WebSocket disconnected: e8ecbc72-4f26-429f-b404-41ada7c5f937
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts (7 tests) 255ms
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:56744) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle autobyteus single-agent status snapshot on reconnect without legacy fields
+Agent websocket attached for run run-autobyteus
+Created agent session f299d538-11be-4493-962a-3dfe23fac7c6 for run run-autobyteus
+Agent WebSocket connected: session=f299d538-11be-4493-962a-3dfe23fac7c6, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle codex_app_server single-agent status snapshot on reconnect without legacy fields
+Closed agent session f299d538-11be-4493-962a-3dfe23fac7c6
+Agent WebSocket disconnected: f299d538-11be-4493-962a-3dfe23fac7c6
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle codex_app_server single-agent status snapshot on reconnect without legacy fields
+Agent websocket attached for run run-codex_app_server
+Created agent session f84541a6-b627-49fd-a809-f8b918371c75 for run run-codex_app_server
+Agent WebSocket connected: session=f84541a6-b627-49fd-a809-f8b918371c75, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle claude_agent_sdk single-agent status snapshot on reconnect without legacy fields
+Closed agent session f84541a6-b627-49fd-a809-f8b918371c75
+Agent WebSocket disconnected: f84541a6-b627-49fd-a809-f8b918371c75
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle claude_agent_sdk single-agent status snapshot on reconnect without legacy fields
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session 13926281-7712-44b1-8aa1-e790b2a5ee2b for run run-claude_agent_sdk
+Agent WebSocket connected: session=13926281-7712-44b1-8aa1-e790b2a5ee2b, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Closed agent session 13926281-7712-44b1-8aa1-e790b2a5ee2b
+Agent WebSocket disconnected: 13926281-7712-44b1-8aa1-e790b2a5ee2b
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Agent websocket attached for run pipeline-late-tool-run
+Created agent session 2e9d2d36-a142-4f74-a0e1-a9519ab79b8b for run pipeline-late-tool-run
+Agent WebSocket connected: session=2e9d2d36-a142-4f74-a0e1-a9519ab79b8b, run=pipeline-late-tool-run
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Agent websocket attached for run pipeline-late-tool-run
+Created agent session 96c62f96-30f9-49e8-91ed-218b67bdad4a for run pipeline-late-tool-run
+Agent WebSocket connected: session=96c62f96-30f9-49e8-91ed-218b67bdad4a, run=pipeline-late-tool-run
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Closed agent session 96c62f96-30f9-49e8-91ed-218b67bdad4a
+Agent WebSocket disconnected: 96c62f96-30f9-49e8-91ed-218b67bdad4a
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live autobyteus AGENT_STATUS payloads over the real websocket
+Closed agent session 2e9d2d36-a142-4f74-a0e1-a9519ab79b8b
+Agent WebSocket disconnected: 2e9d2d36-a142-4f74-a0e1-a9519ab79b8b
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live autobyteus AGENT_STATUS payloads over the real websocket
+Agent websocket attached for run live-autobyteus
+Created agent session 2c432fab-0ba8-4745-bfee-23348cf59d71 for run live-autobyteus
+Agent WebSocket connected: session=2c432fab-0ba8-4745-bfee-23348cf59d71, run=live-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live codex_app_server AGENT_STATUS payloads over the real websocket
+Closed agent session 2c432fab-0ba8-4745-bfee-23348cf59d71
+Agent WebSocket disconnected: 2c432fab-0ba8-4745-bfee-23348cf59d71
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live codex_app_server AGENT_STATUS payloads over the real websocket
+Agent websocket attached for run live-codex_app_server
+Created agent session 6ebdf072-4c5f-43e5-a21a-ae89295f3517 for run live-codex_app_server
+Agent WebSocket connected: session=6ebdf072-4c5f-43e5-a21a-ae89295f3517, run=live-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live claude_agent_sdk AGENT_STATUS payloads over the real websocket
+Closed agent session 6ebdf072-4c5f-43e5-a21a-ae89295f3517
+Agent WebSocket disconnected: 6ebdf072-4c5f-43e5-a21a-ae89295f3517
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live claude_agent_sdk AGENT_STATUS payloads over the real websocket
+Agent websocket attached for run live-claude_agent_sdk
+Created agent session 5e839a3b-3132-4327-9a54-58a052547f3c for run live-claude_agent_sdk
+Agent WebSocket connected: session=5e839a3b-3132-4327-9a54-58a052547f3c, run=live-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing single-agent snapshots and normalizes startup live status over the real websocket
+Closed agent session 5e839a3b-3132-4327-9a54-58a052547f3c
+Agent WebSocket disconnected: 5e839a3b-3132-4327-9a54-58a052547f3c
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing single-agent snapshots and normalizes startup live status over the real websocket
+Agent websocket attached for run single-initializing-1
+Created agent session fd761370-e5f1-4c00-bd77-4553b05c7c2e for run single-initializing-1
+Agent WebSocket connected: session=fd761370-e5f1-4c00-bd77-4553b05c7c2e, run=single-initializing-1
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends team member AGENT_STATUS snapshots before aggregate TEAM_STATUS without legacy fields
+Closed agent session fd761370-e5f1-4c00-bd77-4553b05c7c2e
+Agent WebSocket disconnected: fd761370-e5f1-4c00-bd77-4553b05c7c2e
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends team member AGENT_STATUS snapshots before aggregate TEAM_STATUS without legacy fields
+Agent team websocket attached for team run team-status-1
+Created agent session 9d32d897-867b-4fab-8df1-44c0e94710e5 for run team-status-1
+Agent Team WebSocket connected: session=9d32d897-867b-4fab-8df1-44c0e94710e5, run=team-status-1
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing team member and aggregate statuses over the real websocket
+Closed agent session 9d32d897-867b-4fab-8df1-44c0e94710e5
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing team member and aggregate statuses over the real websocket
+Agent Team WebSocket disconnected: 9d32d897-867b-4fab-8df1-44c0e94710e5
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing team member and aggregate statuses over the real websocket
+Agent team websocket attached for team run team-status-1
+Created agent session f1919b9e-675e-47f4-adcd-ccb98ebe7cb8 for run team-status-1
+Agent Team WebSocket connected: session=f1919b9e-675e-47f4-adcd-ccb98ebe7cb8, run=team-status-1
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Closed agent session f1919b9e-675e-47f4-adcd-ccb98ebe7cb8
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Agent Team WebSocket disconnected: f1919b9e-675e-47f4-adcd-ccb98ebe7cb8
+
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts (10 tests) 219ms
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:56745) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Agent websocket attached for run agent-command-status-e2e
+Created agent session 0ff6fc25-45c1-42d8-be8c-55ee4fa8fd58 for run agent-command-status-e2e
+Agent WebSocket connected: session=0ff6fc25-45c1-42d8-be8c-55ee4fa8fd58, run=agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Agent websocket attached for run agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Created agent session 5b5e44c2-c1e4-433c-b478-a7673dc6e1a6 for run agent-command-status-e2e
+Agent WebSocket connected: session=5b5e44c2-c1e4-433c-b478-a7673dc6e1a6, run=agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Closed agent session 0ff6fc25-45c1-42d8-be8c-55ee4fa8fd58
+Agent WebSocket disconnected: 0ff6fc25-45c1-42d8-be8c-55ee4fa8fd58
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+Closed agent session 5b5e44c2-c1e4-433c-b478-a7673dc6e1a6
+Agent WebSocket disconnected: 5b5e44c2-c1e4-433c-b478-a7673dc6e1a6
+
+ ✓ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts (1 test) 155ms
+stdout | tests/unit/agent-team-execution/team-command-start-status.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:56746) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts (6 tests) 114ms
+stdout | tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:56747) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts (7 tests) 13ms
+stdout | tests/unit/external-channel/runtime/channel-team-run-facade.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:56748) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts (7 tests) 10ms
+
+ Test Files  6 passed (6)
+      Tests  38 passed (38)
+   Start at  06:19:10
+   Duration  10.56s (transform 3.06s, setup 60ms, import 8.65s, tests 765ms, environment 0ms)
+
+
+# Finished: 2026-07-20T04:19:21Z
+# Exit status: 0

@@ -33,6 +33,34 @@ The important ownership rule is:
 Bootstrap and shutdown are lifecycle work. They are not part of an agent turn,
 and normal generation interrupt does not run shutdown cleanup.
 
+### External Turn Boundaries And Error Classification
+
+`AgentExternalEventNotifier` publishes the native runtime's external lifecycle
+contract. Every started/completed/interrupted boundary carries the same
+canonical `turn_id` captured before terminal runtime state is cleared. A live
+runtime with an active turn projects as `running`; a live runtime with no active
+turn projects as `idle`. Ordinary segment/tool/progress publication is not a
+turn opener and must not be used as a lifecycle-recovery shortcut after a turn
+has settled.
+
+Error publication requires an explicit classification; there is no default
+terminal effect:
+
+```ts
+type AgentErrorNotificationClassification =
+  | { scope: 'turn'; effect: 'diagnostic' | 'terminal'; turnId: string }
+  | { scope: 'runtime'; effect: 'terminal' };
+```
+
+The notifier serializes this as additive `error_scope`, `error_effect`, and,
+for turn-scoped errors, `turn_id` payload fields. Use `turn/diagnostic` when the
+current turn can continue, `turn/terminal` only when that exact turn failed,
+and `runtime/terminal` only when the runtime as a whole failed. Runtime-global
+errors must not carry a turn id. Publishers must preserve the active turn id
+before mutating/clearing terminal state and should publish the classified error
+before any companion error status so downstream normalization can validate the
+effect monotonically.
+
 ## Turn Scheduling
 
 External user and inter-agent inputs enter the runtime through

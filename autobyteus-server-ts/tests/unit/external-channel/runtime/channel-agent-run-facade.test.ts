@@ -187,11 +187,11 @@ describe("ChannelAgentRunFacade", () => {
     expect(postUserMessage).toHaveBeenCalledOnce();
     expect(recordRunActivity).toHaveBeenCalledWith(
       activeRun,
-      expect.objectContaining({
+      {
         summary: "hello",
-        lastKnownStatus: "ACTIVE",
-      }),
+      },
     );
+    expect(recordRunActivity.mock.calls[0]?.[1]).not.toHaveProperty("lastKnownStatus");
     expect(publishExternalUserMessage).toHaveBeenCalledWith({
       runId: "agent-1",
       envelope: createEnvelope(),

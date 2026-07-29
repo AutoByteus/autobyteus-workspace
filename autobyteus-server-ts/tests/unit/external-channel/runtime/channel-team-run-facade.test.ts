@@ -112,11 +112,11 @@ describe("ChannelTeamRunFacade", () => {
     expect(teamRun.postMessage).toHaveBeenCalledOnce();
     expect(recordRunActivity).toHaveBeenCalledWith(
       teamRun,
-      expect.objectContaining({
+      {
         summary: "hello",
-        lastKnownStatus: "ACTIVE",
-      }),
+      },
     );
+    expect(recordRunActivity.mock.calls[0]?.[1]).not.toHaveProperty("lastKnownStatus");
     expect(teamRun.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         content: "hello",

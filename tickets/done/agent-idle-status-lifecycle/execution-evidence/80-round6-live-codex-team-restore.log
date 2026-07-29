@@ -1,0 +1,343 @@
+# Round 6 integrated-base live Codex two-member projection/restore lifecycle
+# Started: 2026-07-22T06:34:01Z
+# Command: RUN_CODEX_E2E=1 pnpm exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts -t "serves every team member projection after terminate, restore, and continue in codex team runtime" --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24406) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-VpkRPJ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-runtime-e2e-appdata-VpkRPJ/.env
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+[2026-07-22T06:34:07.299Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+ ↓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves send_message_to ping->pong->ping invariants with ultra reasoning
+ ↓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Codex inter-agent messaging between leaf members
+ ↓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime
+ ↓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=54
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=43
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent Definition created successfully with ID: codex-projection-professor-f04080b7-4faf-42cd-ac92-45aedf678d6f
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent Definition created successfully with ID: codex-projection-student-f04080b7-4faf-42cd-ac92-45aedf678d6f
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent Team Definition created successfully with ID: codex-projection-team-f04080b7-4faf-42cd-ac92-45aedf678d6f
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-ZW4aLL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-ZW4aLL.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Created and registered workspace ID: agent_ws_2cf90ceabe0fdcb21573fc75626ebb79e4f031039a3a59d4098cf592f167d07c
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+[2026-07-22T06:34:07.435Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+[2026-07-22T06:34:07.451Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Successfully created mixed team run 'codex_projection_team_f04080b7_4faf_42cd_ac92_45_fdce8c7927f044adaeed8a5fe215684e'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=147
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent team websocket attached for team run codex_projection_team_f04080b7_4faf_42cd_ac92_45_fdce8c7927f044adaeed8a5fe215684e
+Created agent session 832d57b0-cff9-4fe9-b929-d2758601d514 for run codex_projection_team_f04080b7_4faf_42cd_ac92_45_fdce8c7927f044adaeed8a5fe215684e
+Agent Team WebSocket connected: session=832d57b0-cff9-4fe9-b929-d2758601d514, run=codex_projection_team_f04080b7_4faf_42cd_ac92_45_fdce8c7927f044adaeed8a5fe215684e
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=239
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Finished Autobyteus audio model discovery. Total models registered: 8
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Successfully created codex_app_server agent run 'codex_projection_professor_f04080b7_4faf_42cd_ac_d36fbe5d34744ade8ab71ecc19d0a8ff'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'thread/started',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'thread' ]
+}
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Successfully created codex_app_server agent run 'codex_projection_student_f04080b7_4faf_42cd_ac92_cd3bdb38814649bcb718b7ba4a8fbaec'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-ZW4aLL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-ZW4aLL.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-ZW4aLL
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-team-projection-e2e-ZW4aLL.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Reusing registered workspace ID: agent_ws_2cf90ceabe0fdcb21573fc75626ebb79e4f031039a3a59d4098cf592f167d07c
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Reusing registered workspace ID: agent_ws_2cf90ceabe0fdcb21573fc75626ebb79e4f031039a3a59d4098cf592f167d07c
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Successfully restored mixed team run 'codex_projection_team_f04080b7_4faf_42cd_ac92_45_fdce8c7927f044adaeed8a5fe215684e'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Successfully restored codex_app_server agent run 'codex_projection_professor_f04080b7_4faf_42cd_ac_d36fbe5d34744ade8ab71ecc19d0a8ff'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Finished Autobyteus discovery. Total models registered: 74
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Finished Autobyteus discovery. Total models registered: 74
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Successfully restored codex_app_server agent run 'codex_projection_student_f04080b7_4faf_42cd_ac92_cd3bdb38814649bcb718b7ba4a8fbaec'.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Closed agent session 832d57b0-cff9-4fe9-b929-d2758601d514
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent Team WebSocket disconnected: 832d57b0-cff9-4fe9-b929-d2758601d514
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+[2026-07-22T06:34:26.174Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID codex-projection-team-f04080b7-4faf-42cd-ac92-45aedf678d6f.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent Team Definition with ID codex-projection-team-f04080b7-4faf-42cd-ac92-45aedf678d6f deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+In-memory cache: Removed agent definition with ID codex-projection-professor-f04080b7-4faf-42cd-ac92-45aedf678d6f.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent Definition with ID codex-projection-professor-f04080b7-4faf-42cd-ac92-45aedf678d6f deleted successfully.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+In-memory cache: Removed agent definition with ID codex-projection-student-f04080b7-4faf-42cd-ac92-45aedf678d6f.
+
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime
+Agent Definition with ID codex-projection-student-f04080b7-4faf-42cd-ac92-45aedf678d6f deleted successfully.
+
+ ✓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts > Codex team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in codex team runtime 18875ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  08:34:01
+   Duration  24.51s (transform 3.55s, setup 19ms, import 5.00s, tests 18.96s, environment 0ms)
+
+# Finished: 2026-07-22T06:34:26Z
+# Exit status: 0

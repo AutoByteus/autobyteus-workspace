@@ -121,6 +121,51 @@ than reconstructing it from durable task history.
 
 Status payloads expose only normalized `status` plus documented metadata. Native runtime transition-field names are not part of the server WebSocket status contract.
 
+### Turn Lifecycle And Error Evidence Contract
+
+Agent lifecycle is correlated by turn identity, not inferred from message
+activity or elapsed quiet time:
+
+- `TURN_STARTED` opens an authoritative turn and establishes `running` when no
+  accepted explicit status accompanies the boundary.
+- A matching `TURN_COMPLETED` or `TURN_INTERRUPTED` closes that turn and
+  establishes `idle` for a still-live runtime.
+- Runtime termination remains stronger than turn completion and establishes
+  `offline`.
+- Ordinary `SEGMENT_*`, tool, inter-agent, todo, and system-task events are
+  content/progress events. They cannot establish or reopen a turn.
+- A duplicate or late boundary for retired turn A is a lifecycle no-op and
+  cannot close newer active turn B. Late content for A is still forwarded.
+
+`turn_id` is the canonical transport identity for lifecycle correlation. New
+runtime/provider publishers should use it consistently; server internals may
+tolerate `turnId` while normalizing provider events.
+
+`ERROR` payloads preserve their existing message/source or code/details fields
+and may add this structured evidence:
+
+```ts
+type ErrorLifecycleFields =
+  | {
+      error_scope: "turn";
+      error_effect: "diagnostic" | "terminal";
+      turn_id: string;
+    }
+  | {
+      error_scope: "runtime";
+      error_effect: "terminal";
+    };
+```
+
+The fields are additive for transport consumers. A turn diagnostic is visible
+but does not settle status or a command. A turn-terminal error applies only to
+the matching identified turn. A runtime-terminal error has no `turn_id` and
+applies to the runtime as a whole. Missing/empty identity, a runtime-scoped
+payload that also carries a turn id, or any unsupported scope/effect
+combination is unclassified and has no lifecycle authority. Clients should
+render the error as appropriate but update lifecycle only from canonical
+`AGENT_STATUS`, matching turn boundaries, or valid terminal evidence.
+
 Segment payloads use snake-case `turn_id` as the canonical transport field for
 all `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` messages. Native
 AutoByteus segment conversion drops outbound camel-case `turnId` aliases from

@@ -1,0 +1,10 @@
+# Mid-build remote base advance
+observed_at_utc=2026-07-20T04:18:05Z
+attempt_head=9cffe5dd36279df7736c77058b83930636fb0eb4
+attempt_base=d5d601f043e84ceb2d4087c63f871b0f848f0410
+new_origin_personal=8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+build_attempt=57-electron-build-macos-v1.4.19-personal.log
+classification=intentionally_aborted_due_to_remote_base_advance
+product_failure=no
+artifact_candidate=no
+next_action=checkpoint_evidence_merge_latest_base_rerun_smoke_and_rebuild

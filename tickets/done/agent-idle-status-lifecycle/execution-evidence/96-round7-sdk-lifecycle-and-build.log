@@ -1,0 +1,151 @@
+# Round 7 v1.4.28 AutoByteus SDK lifecycle tests and build
+# Started: 2026-07-29T10:36:28Z
+# Command 1: pnpm exec vitest run tests/unit/agent/events/notifiers.test.ts tests/unit/agent/streaming/streams/agent-event-stream.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-ts
+
+ ✓ tests/unit/agent/events/notifiers.test.ts > AgentExternalEventNotifier > emits status updates with agent metadata 3ms
+ ✓ tests/unit/agent/events/notifiers.test.ts > AgentExternalEventNotifier > emits turn lifecycle payloads with turn identifiers 1ms
+ ✓ tests/unit/agent/events/notifiers.test.ts > AgentExternalEventNotifier > emits structured effect-aware error evidence without defaults 0ms
+ ✓ tests/unit/agent/events/notifiers.test.ts > AgentExternalEventNotifier > logs streaming details only when verbose agent event logs are enabled 1ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: c4c4e94e-9381-435a-a0b2-cd01fa02d851).
+AgentEventStream (ID: fff3e97b-2457-478f-b7f3-5cd719ac76df) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier (NotifierID: c4c4e94e-9381-435a-a0b2-cd01fa02d851, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentEventStream (ID: fff3e97b-2457-478f-b7f3-5cd719ac76df) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 4f6f7d77-5887-4d13-a6a0-9d3856bfa6bb).
+AgentEventStream (ID: a3e0ea51-5265-4018-a8a8-8d9fb0d4d973) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier (NotifierID: 4f6f7d77-5887-4d13-a6a0-9d3856bfa6bb, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentEventStream (ID: a3e0ea51-5265-4018-a8a8-8d9fb0d4d973) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 8124eae0-852e-49e0-98ac-e01649499acf).
+AgentEventStream (ID: e60c6dde-d057-481f-ae22-08313ae9251e) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 8124eae0-852e-49e0-98ac-e01649499acf, AgentID: stream_test_agent_001) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 8124eae0-852e-49e0-98ac-e01649499acf, AgentID: stream_test_agent_001) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses 47ms
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes 43ms
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not publish final LLM completion after an interrupt accepted at the post-LLM seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+ ✓ tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not publish final LLM completion after an interrupt accepted at the post-LLM seam 6ms
+ ✓ tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations 1ms
+ ✓ tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam 1ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentEventStream (ID: e60c6dde-d057-481f-ae22-08313ae9251e) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 85b52856-e707-482e-96a4-dd232b1eaa22).
+AgentEventStream (ID: 7a4b8142-0684-40d7-a805-8e0e516310e3) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentEventStream (ID: 7a4b8142-0684-40d7-a805-8e0e516310e3) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order 68ms
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads 45ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 94245cc9-228c-471c-8472-91aa2c0cd2ff).
+AgentEventStream (ID: 39726c13-afb4-48f7-800d-ab6899665163) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier (NotifierID: 94245cc9-228c-471c-8472-91aa2c0cd2ff, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentEventStream (ID: 39726c13-afb4-48f7-800d-ab6899665163) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 8933d63a-79de-4c6e-9da5-74cd63de01de).
+AgentEventStream (ID: 3f653617-602d-4e25-b093-55abe54e44c6) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier (NotifierID: 8933d63a-79de-4c6e-9da5-74cd63de01de, AgentID: stream_test_agent_001) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentEventStream (ID: 3f653617-602d-4e25-b093-55abe54e44c6) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 1b094413-91f5-419c-9402-b977a897cb0a).
+AgentEventStream (ID: ddba9501-5d61-4a2a-abdd-a4be3a695c15) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 1b094413-91f5-419c-9402-b977a897cb0a, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response 42ms
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event 42ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 1b094413-91f5-419c-9402-b977a897cb0a, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentEventStream (ID: ddba9501-5d61-4a2a-abdd-a4be3a695c15) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order 86ms
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  12:36:28
+   Duration  805ms (transform 680ms, setup 58ms, import 796ms, tests 391ms, environment 0ms)
+
+# Command 2: pnpm build
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+# Finished: 2026-07-29T10:36:34Z
+# Exit status: 0

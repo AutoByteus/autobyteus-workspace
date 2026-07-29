@@ -4,6 +4,10 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
+import {
+  resolveAgentRunErrorEvidence,
+  type AgentRunErrorEvidence,
+} from "../../../domain/agent-run-error-evidence.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import {
   buildAgentStatusPayload,
@@ -15,9 +19,12 @@ import { projectAutoByteusAgentStatus } from "./autobyteus-status-projector.js";
 const resolveStatusHint = (
   eventType: StreamEventType,
   statusPayload?: AgentStatusPayload,
+  errorEvidence?: AgentRunErrorEvidence | null,
 ): "ACTIVE" | "IDLE" | "ERROR" | null => {
   if (eventType === StreamEventType.ERROR_EVENT) {
-    return "ERROR";
+    return errorEvidence?.kind === "TURN_TERMINAL" || errorEvidence?.kind === "RUNTIME_GLOBAL"
+      ? "ERROR"
+      : null;
   }
   if (eventType === StreamEventType.TURN_STARTED) {
     return "ACTIVE";
@@ -91,7 +98,9 @@ const defaultStatusSnapshotProvider = (): AgentStatusPayload => ({
 });
 
 export class AutoByteusStreamEventConverter {
-  private hasActiveTurn = false;
+  private activeTurn: { kind: "none" } | { kind: "anonymous" } | { kind: "identified"; turnId: string } = {
+    kind: "none",
+  };
 
   constructor(
     private readonly runId: string,
@@ -99,13 +108,16 @@ export class AutoByteusStreamEventConverter {
   ) {}
 
   convert(event: StreamEvent): AgentRunEvent | null {
-    this.observeTurnLifecycle(event.event_type);
     const payload = serializePayload(event.data);
+    const errorEvidence = event.event_type === StreamEventType.ERROR_EVENT
+      ? this.resolveErrorEvidence(payload)
+      : null;
+    this.observeTurnLifecycle(event.event_type, payload, errorEvidence);
     const statusPayload =
       event.event_type === StreamEventType.AGENT_STATUS
         ? this.getCanonicalStatusPayload(payload.status)
         : undefined;
-    const statusHint = resolveStatusHint(event.event_type, statusPayload);
+    const statusHint = resolveStatusHint(event.event_type, statusPayload, errorEvidence);
 
     if (event.event_type === StreamEventType.SEGMENT_EVENT) {
       const eventType = resolveSegmentEventType(payload);
@@ -170,17 +182,31 @@ export class AutoByteusStreamEventConverter {
     };
   }
 
-  private observeTurnLifecycle(eventType: StreamEventType): void {
+  private observeTurnLifecycle(
+    eventType: StreamEventType,
+    payload: Record<string, unknown>,
+    errorEvidence: AgentRunErrorEvidence | null,
+  ): void {
+    const turnId = this.resolveTurnId(payload);
     if (eventType === StreamEventType.TURN_STARTED) {
-      this.hasActiveTurn = true;
+      this.activeTurn = turnId
+        ? { kind: "identified", turnId }
+        : { kind: "anonymous" };
       return;
     }
     if (
       eventType === StreamEventType.TURN_COMPLETED ||
-      eventType === StreamEventType.TURN_INTERRUPTED ||
-      eventType === StreamEventType.ERROR_EVENT
+      eventType === StreamEventType.TURN_INTERRUPTED
     ) {
-      this.hasActiveTurn = false;
+      this.clearMatchingTurn(turnId);
+      return;
+    }
+    if (eventType === StreamEventType.ERROR_EVENT) {
+      if (errorEvidence?.kind === "RUNTIME_GLOBAL") {
+        this.activeTurn = { kind: "none" };
+      } else if (errorEvidence?.kind === "TURN_TERMINAL") {
+        this.clearMatchingTurn(errorEvidence.turnId);
+      }
     }
   }
 
@@ -190,7 +216,7 @@ export class AutoByteusStreamEventConverter {
     const eventStatus = explicitStatus === undefined || explicitStatus === null
       ? snapshotStatus
       : this.projectExplicitStatus(explicitStatus, snapshotStatus);
-    const status = this.hasActiveTurn &&
+    const status = this.activeTurn.kind !== "none" &&
       (eventStatus === "idle" || eventStatus === "offline" || eventStatus === "initializing")
       ? "running"
       : eventStatus;
@@ -235,5 +261,39 @@ export class AutoByteusStreamEventConverter {
       isActive: true,
     }).status;
     return projected ?? fallbackStatus;
+  }
+
+  private resolveTurnId(payload: Record<string, unknown>): string | null {
+    const value = typeof payload.turn_id === "string"
+      ? payload.turn_id
+      : typeof payload.turnId === "string"
+        ? payload.turnId
+        : null;
+    const normalized = value?.trim() ?? "";
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  private resolveErrorEvidence(payload: Record<string, unknown>): AgentRunErrorEvidence | null {
+    return resolveAgentRunErrorEvidence({
+      eventType: AgentRunEventType.ERROR,
+      runId: this.runId,
+      payload,
+      statusHint: null,
+    });
+  }
+
+  private clearMatchingTurn(turnId: string | null): void {
+    if (this.activeTurn.kind === "anonymous") {
+      if (!turnId) {
+        this.activeTurn = { kind: "none" };
+      }
+      return;
+    }
+    if (
+      this.activeTurn.kind === "identified" &&
+      turnId === this.activeTurn.turnId
+    ) {
+      this.activeTurn = { kind: "none" };
+    }
   }
 }

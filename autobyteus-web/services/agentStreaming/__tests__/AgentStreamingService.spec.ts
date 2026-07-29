@@ -163,26 +163,41 @@ describe('AgentStreamingService', () => {
         });
     });
 
-    it('clears stale error when live non-error activity arrives for the same run', () => {
+    it.each([
+        ['TURN_STARTED', { turn_id: 'turn-a' }],
+        ['SEGMENT_START', { id: 'segment-1', turn_id: 'turn-a', segment_type: 'text' }],
+        ['SEGMENT_CONTENT', { id: 'segment-1', turn_id: 'turn-a', delta: 'late' }],
+        ['TOOL_APPROVAL_REQUESTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', arguments: {} }],
+        ['TOOL_EXECUTION_STARTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a' }],
+        ['TOOL_EXECUTION_SUCCEEDED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', result: 'done' }],
+        ['TOOL_EXECUTION_FAILED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', error: 'failed' }],
+        ['TOOL_EXECUTION_INTERRUPTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', reason: 'stopped' }],
+        ['TOOL_LOG', { log_entry: 'late log', tool_invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a' }],
+        ['TODO_LIST_UPDATE', { todos: [] }],
+        ['INTER_AGENT_MESSAGE', { content: 'late message' }],
+        ['SYSTEM_TASK_NOTIFICATION', { sender_id: 'system', content: 'late task' }],
+    ])('keeps canonical error for ordinary %s activity', (type, payload) => {
         mockAgentContext.state.currentStatus = AgentStatus.Error;
-        mockAgentContext.state.canInterrupt = true;
+        mockAgentContext.state.canInterrupt = false;
         mockAgentContext.isSending = false;
 
+        (service as any).dispatchMessage({ type, payload }, mockAgentContext);
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Error);
+        expect(mockAgentContext.state.canInterrupt).toBe(false);
+        expect(mockAgentContext.isSending).toBe(false);
+    });
+
+    it('recovers error only when canonical AGENT_STATUS running arrives', () => {
+        mockAgentContext.state.currentStatus = AgentStatus.Error;
+
         (service as any).dispatchMessage(
-            {
-                type: 'SEGMENT_START',
-                payload: {
-                    id: 'segment-1',
-                    turn_id: 'turn-1',
-                    segment_type: 'text',
-                },
-            },
+            { type: 'AGENT_STATUS', payload: { status: 'running', can_interrupt: true } },
             mockAgentContext,
         );
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
-        expect(mockAgentContext.state.canInterrupt).toBe(false);
-        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockAgentContext.state.canInterrupt).toBe(true);
     });
 
     it('keeps lifecycle status event-driven for non-error live activity', () => {

@@ -150,34 +150,23 @@ export class AgentRun {
   }
 
   private observeBackendEvent(event: AgentRunEvent): void {
-    const status = this.resolveStatusFromEvent(event);
-    if (!status) {
+    if (event.eventType !== AgentRunEventType.AGENT_STATUS) {
       return;
     }
+    const status = normalizeAgentApiStatus(event.payload.status);
     this.statusOverride = buildAgentStatusPayload({
       status,
-      canInterrupt:
-        status === "running" &&
-        event.eventType === AgentRunEventType.AGENT_STATUS &&
-        (event.payload as { can_interrupt?: unknown }).can_interrupt === true,
-      agentId: this.runId,
+      canInterrupt: status === "running" && event.payload.can_interrupt === true,
+      agentId: typeof event.payload.agent_id === "string" ? event.payload.agent_id : this.runId,
+      agentName: typeof event.payload.agent_name === "string" ? event.payload.agent_name : null,
+      memberRouteKey: typeof event.payload.member_route_key === "string" ? event.payload.member_route_key : null,
+      memberPath: Array.isArray(event.payload.member_path) ? event.payload.member_path as string[] : null,
+      sourceRouteKey: typeof event.payload.source_route_key === "string" ? event.payload.source_route_key : null,
+      sourcePath: Array.isArray(event.payload.source_path) ? event.payload.source_path as string[] : null,
+      taskAgentInstanceId: typeof event.payload.task_agent_instance_id === "string" ? event.payload.task_agent_instance_id : null,
+      taskAgentRunId: typeof event.payload.task_agent_run_id === "string" ? event.payload.task_agent_run_id : null,
+      taskId: typeof event.payload.task_id === "string" ? event.payload.task_id : null,
     });
-  }
-
-  private resolveStatusFromEvent(event: AgentRunEvent): AgentApiStatus | null {
-    if (event.eventType === AgentRunEventType.AGENT_STATUS) {
-      return normalizeAgentApiStatus((event.payload as { status?: unknown }).status);
-    }
-    if (event.statusHint === "ERROR" || event.eventType === AgentRunEventType.ERROR) {
-      return "error";
-    }
-    if (event.statusHint === "ACTIVE") {
-      return "running";
-    }
-    if (event.statusHint === "IDLE") {
-      return "idle";
-    }
-    return null;
   }
 
   private notifyUserMessageAccepted(

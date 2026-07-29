@@ -147,6 +147,20 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     });
   }
 
+  emitTurnCompleted(turnId: string): void {
+    this.statusPayload = buildAgentStatusPayload({
+      status: "idle",
+      canInterrupt: false,
+      agentId: this.runId,
+    });
+    this.emit({
+      runId: this.runId,
+      eventType: AgentRunEventType.TURN_COMPLETED,
+      payload: { turn_id: turnId, turnId },
+      statusHint: "IDLE",
+    });
+  }
+
   private emit(event: AgentRunEvent): void {
     for (const listener of this.listeners) {
       listener(event);
@@ -424,6 +438,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-first",
         "first command ACK",
       );
+      firstBackend.emitTurnCompleted("turn-first");
       firstBackend.emitStatus("idle", false);
       await waitForMessageAfter(
         firstMessages,
@@ -476,12 +491,13 @@ describe("Agent command-correlated status overlay e2e", () => {
       expect(harness.overlayStore.getOverlay(runId)?.status).toBe("initializing");
 
       restoredBackend.emitTurnStarted("turn-restored");
+      restoredBackend.emitStatus("running", true);
       expect(
         await waitForMessageAfter(
           secondMessages,
           restoredSendStart,
           (message) => message.type === "AGENT_STATUS" && message.payload.status === "running",
-          "running status after command-correlated TURN_STARTED",
+          "canonical running status after command-correlated TURN_STARTED",
         ),
       ).toMatchObject({
         type: "AGENT_STATUS",
@@ -491,8 +507,6 @@ describe("Agent command-correlated status overlay e2e", () => {
         "initializing",
         "running",
       ]);
-      expect(harness.overlayStore.getOverlay(runId)).toBeNull();
-
       restoredPost.resolve({ accepted: true, turnId: "turn-restored" });
       const restoredAck = await waitForMessageAfter(
         secondMessages,
@@ -509,6 +523,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         duplicate: false,
         status: { status: "running", agent_id: runId },
       });
+      expect(harness.overlayStore.getOverlay(runId)).toBeNull();
     } finally {
       firstSocket?.close();
       secondSocket?.close();

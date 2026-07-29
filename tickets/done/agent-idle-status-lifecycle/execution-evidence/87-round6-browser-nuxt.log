@@ -1,0 +1,20 @@
+# Round 6 isolated Nuxt browser harness
+# Started: 2026-07-22T06:46:31Z
+# Command: pnpm exec nuxt dev --host 127.0.0.1 --port 18134
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:18134/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Re-optimizing dependencies because lockfile has changed
+✔ Vite client built in 174ms
+✔ Vite server built in 151ms
+[nitro] ✔ Nuxt Nitro server built in 2414ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: crypto-js/sha256
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: @iconify/vue
+ℹ ✨ optimized dependencies changed. reloading

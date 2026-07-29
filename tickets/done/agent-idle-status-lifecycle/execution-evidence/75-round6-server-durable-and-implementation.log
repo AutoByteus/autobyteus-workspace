@@ -1,0 +1,874 @@
+# Round 6 integrated-base server durable API/E2E + implementation regression matrix
+# Started: 2026-07-22T06:30:45Z
+# Command: pnpm exec vitest run <24 directly relevant files> --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14621) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session 23354579-a63c-42c2-90bc-c30759448d7d for run agent-e2e
+Agent WebSocket connected: session=23354579-a63c-42c2-90bc-c30759448d7d, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session 23354579-a63c-42c2-90bc-c30759448d7d
+Agent WebSocket disconnected: 23354579-a63c-42c2-90bc-c30759448d7d
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session 9286c7eb-4254-4692-869c-85ec18ed0af6 for run agent-e2e
+Agent WebSocket connected: session=9286c7eb-4254-4692-869c-85ec18ed0af6, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session 9286c7eb-4254-4692-869c-85ec18ed0af6
+Agent WebSocket disconnected: 9286c7eb-4254-4692-869c-85ec18ed0af6
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session 61042427-0974-4f12-8c26-60b2226e7722 for run agent-e2e
+Agent WebSocket connected: session=61042427-0974-4f12-8c26-60b2226e7722, run=agent-e2e
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK 67ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing 20ms
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Closed agent session 61042427-0974-4f12-8c26-60b2226e7722
+Agent WebSocket disconnected: 61042427-0974-4f12-8c26-60b2226e7722
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Agent websocket attached for run agent-e2e
+Created agent session 5612fdc5-43db-4eaa-8a03-822042a39c63 for run agent-e2e
+Agent WebSocket connected: session=5612fdc5-43db-4eaa-8a03-822042a39c63, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+SEND_MESSAGE command not accepted for agent run agent-e2e: [RUN_COMMAND_IN_PROGRESS] Another command is already in progress for this run.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session 5612fdc5-43db-4eaa-8a03-822042a39c63
+Agent WebSocket disconnected: 5612fdc5-43db-4eaa-8a03-822042a39c63
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session 5662bccc-f29d-4550-bbf9-ba7e521ece6d for run agent-e2e
+Agent WebSocket connected: session=5662bccc-f29d-4550-bbf9-ba7e521ece6d, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] activation exploded
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session 5662bccc-f29d-4550-bbf9-ba7e521ece6d
+Agent WebSocket disconnected: 5662bccc-f29d-4550-bbf9-ba7e521ece6d
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session 9c04e6f4-78ff-4b8b-af13-b5b86e9a7b09 for run agent-e2e
+Agent WebSocket connected: session=9c04e6f4-78ff-4b8b-af13-b5b86e9a7b09, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket session '9c04e6f4-78ff-4b8b-af13-b5b86e9a7b09' lost its active run subscription for run 'agent-e2e'.
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect 29ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids 51ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails 17ms
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session 9c04e6f4-78ff-4b8b-af13-b5b86e9a7b09
+Agent WebSocket disconnected: 9c04e6f4-78ff-4b8b-af13-b5b86e9a7b09
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect 86ms
+ ✓ tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake 14ms
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14625) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle autobyteus single-agent status snapshot on reconnect without legacy fields
+Agent websocket attached for run run-autobyteus
+Created agent session b175af77-06e5-4918-a5cd-2c2fa73ecf4f for run run-autobyteus
+Agent WebSocket connected: session=b175af77-06e5-4918-a5cd-2c2fa73ecf4f, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle codex_app_server single-agent status snapshot on reconnect without legacy fields
+Closed agent session b175af77-06e5-4918-a5cd-2c2fa73ecf4f
+Agent WebSocket disconnected: b175af77-06e5-4918-a5cd-2c2fa73ecf4f
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle codex_app_server single-agent status snapshot on reconnect without legacy fields
+Agent websocket attached for run run-codex_app_server
+Created agent session 23ee77c6-50dd-471e-b980-3a8ed48ee6b5 for run run-codex_app_server
+Agent WebSocket connected: session=23ee77c6-50dd-471e-b980-3a8ed48ee6b5, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle claude_agent_sdk single-agent status snapshot on reconnect without legacy fields
+Closed agent session 23ee77c6-50dd-471e-b980-3a8ed48ee6b5
+Agent WebSocket disconnected: 23ee77c6-50dd-471e-b980-3a8ed48ee6b5
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle claude_agent_sdk single-agent status snapshot on reconnect without legacy fields
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session f349de7d-860e-4d13-980a-f97cc20c5f33 for run run-claude_agent_sdk
+Agent WebSocket connected: session=f349de7d-860e-4d13-980a-f97cc20c5f33, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Closed agent session f349de7d-860e-4d13-980a-f97cc20c5f33
+Agent WebSocket disconnected: f349de7d-860e-4d13-980a-f97cc20c5f33
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Agent websocket attached for run pipeline-late-tool-run
+Created agent session 04897d76-c58c-4914-8dda-a95b52e0559f for run pipeline-late-tool-run
+Agent WebSocket connected: session=04897d76-c58c-4914-8dda-a95b52e0559f, run=pipeline-late-tool-run
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Agent websocket attached for run pipeline-late-tool-run
+Created agent session 63682ce6-ccd6-47f8-9e5a-2afe265909b3 for run pipeline-late-tool-run
+Agent WebSocket connected: session=63682ce6-ccd6-47f8-9e5a-2afe265909b3, run=pipeline-late-tool-run
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect
+Closed agent session 63682ce6-ccd6-47f8-9e5a-2afe265909b3
+Agent WebSocket disconnected: 63682ce6-ccd6-47f8-9e5a-2afe265909b3
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live autobyteus AGENT_STATUS payloads over the real websocket
+Closed agent session 04897d76-c58c-4914-8dda-a95b52e0559f
+Agent WebSocket disconnected: 04897d76-c58c-4914-8dda-a95b52e0559f
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live autobyteus AGENT_STATUS payloads over the real websocket
+Agent websocket attached for run live-autobyteus
+Created agent session c5d4889c-07d4-45f2-99bd-c325b338660e for run live-autobyteus
+Agent WebSocket connected: session=c5d4889c-07d4-45f2-99bd-c325b338660e, run=live-autobyteus
+
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle autobyteus single-agent status snapshot on reconnect without legacy fields 28ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle codex_app_server single-agent status snapshot on reconnect without legacy fields 6ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends an idle claude_agent_sdk single-agent status snapshot on reconnect without legacy fields 4ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > keeps a completed run idle through late same-turn tool content and an actual websocket reconnect 46ms
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live codex_app_server AGENT_STATUS payloads over the real websocket
+Closed agent session c5d4889c-07d4-45f2-99bd-c325b338660e
+Agent WebSocket disconnected: c5d4889c-07d4-45f2-99bd-c325b338660e
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live codex_app_server AGENT_STATUS payloads over the real websocket
+Agent websocket attached for run live-codex_app_server
+Created agent session f5af2b71-e257-4e49-9cab-f0fb9e78bbee for run live-codex_app_server
+Agent WebSocket connected: session=f5af2b71-e257-4e49-9cab-f0fb9e78bbee, run=live-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live claude_agent_sdk AGENT_STATUS payloads over the real websocket
+Closed agent session f5af2b71-e257-4e49-9cab-f0fb9e78bbee
+Agent WebSocket disconnected: f5af2b71-e257-4e49-9cab-f0fb9e78bbee
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live claude_agent_sdk AGENT_STATUS payloads over the real websocket
+Agent websocket attached for run live-claude_agent_sdk
+Created agent session b690108e-258e-4f83-8511-b93f133246a6 for run live-claude_agent_sdk
+Agent WebSocket connected: session=b690108e-258e-4f83-8511-b93f133246a6, run=live-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing single-agent snapshots and normalizes startup live status over the real websocket
+Closed agent session b690108e-258e-4f83-8511-b93f133246a6
+Agent WebSocket disconnected: b690108e-258e-4f83-8511-b93f133246a6
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing single-agent snapshots and normalizes startup live status over the real websocket
+Agent websocket attached for run single-initializing-1
+Created agent session 2af318a1-2a91-4b0b-9d93-a63789606468 for run single-initializing-1
+Agent WebSocket connected: session=2af318a1-2a91-4b0b-9d93-a63789606468, run=single-initializing-1
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends team member AGENT_STATUS snapshots before aggregate TEAM_STATUS without legacy fields
+Closed agent session 2af318a1-2a91-4b0b-9d93-a63789606468
+Agent WebSocket disconnected: 2af318a1-2a91-4b0b-9d93-a63789606468
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends team member AGENT_STATUS snapshots before aggregate TEAM_STATUS without legacy fields
+Agent team websocket attached for team run team-status-1
+Created agent session 8c96218b-5948-471d-9fce-a578244d916f for run team-status-1
+Agent Team WebSocket connected: session=8c96218b-5948-471d-9fce-a578244d916f, run=team-status-1
+
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live autobyteus AGENT_STATUS payloads over the real websocket 28ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live codex_app_server AGENT_STATUS payloads over the real websocket 29ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > normalizes live claude_agent_sdk AGENT_STATUS payloads over the real websocket 27ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing single-agent snapshots and normalizes startup live status over the real websocket 18ms
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > sends team member AGENT_STATUS snapshots before aggregate TEAM_STATUS without legacy fields 17ms
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing team member and aggregate statuses over the real websocket
+Closed agent session 8c96218b-5948-471d-9fce-a578244d916f
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing team member and aggregate statuses over the real websocket
+Agent Team WebSocket disconnected: 8c96218b-5948-471d-9fce-a578244d916f
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing team member and aggregate statuses over the real websocket
+Agent team websocket attached for team run team-status-1
+Created agent session 09b59340-1b79-4610-b43c-7a647a5a6312 for run team-status-1
+Agent Team WebSocket connected: session=09b59340-1b79-4610-b43c-7a647a5a6312, run=team-status-1
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Closed agent session 09b59340-1b79-4610-b43c-7a647a5a6312
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Agent Team WebSocket disconnected: 09b59340-1b79-4610-b43c-7a647a5a6312
+
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status websocket contract integration > carries initializing team member and aggregate statuses over the real websocket 25ms
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Agent websocket attached for run agent-command-status-e2e
+Created agent session 5cc4238d-9fda-43fd-87ae-ed9135aa5bd7 for run agent-command-status-e2e
+Agent WebSocket connected: session=5cc4238d-9fda-43fd-87ae-ed9135aa5bd7, run=agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Agent websocket attached for run agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Created agent session f6da6681-6a30-4ffc-bf57-a03436d01cca for run agent-command-status-e2e
+Agent WebSocket connected: session=f6da6681-6a30-4ffc-bf57-a03436d01cca, run=agent-command-status-e2e
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot
+Closed agent session 5cc4238d-9fda-43fd-87ae-ed9135aa5bd7
+Agent WebSocket disconnected: 5cc4238d-9fda-43fd-87ae-ed9135aa5bd7
+
+stdout | tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+Closed agent session f6da6681-6a30-4ffc-bf57-a03436d01cca
+Agent WebSocket disconnected: f6da6681-6a30-4ffc-bf57-a03436d01cca
+
+ ✓ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts > Agent command-correlated status overlay e2e > preserves offline -> initializing -> running when a stopped standalone run restores with an already-running snapshot 157ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > auto-accepts MCP tool approvals when autoExecuteTools is enabled 3ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > auto-accepts MCP tool approvals for team members when autoExecuteTools is enabled 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > emits approval events for MCP tool calls and answers with the MCP elicitation action 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread MCP tool approval bridge > emits a local MCP completion event when a pending MCP tool call completes 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > auto-accepts terminal approvals when autoExecuteTools is enabled 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > auto-accepts Codex local runtime tools for team members while preserving dynamic-tool auto execution 54ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > gates file-change approvals in manual mode and returns decline on denial 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > gates dynamic tools in manual mode until approval 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > claims manual dynamic approvals before awaited handler execution 2ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > denies dynamic tools in manual mode without invoking the handler 0ms
+stdout | tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes open reasoning effort max to turn/start
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+AppConfig instance created.
+
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > executes dynamic tools immediately when autoExecuteTools is enabled 52ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > grants permission requests automatically in auto mode 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > grants permission requests automatically for team members in auto mode 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > queues permission requests in manual mode and grants only after approval 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread Codex approval surfaces > denies permission requests in manual mode with a no-grant response 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread approval identity > stores Codex terminal approvals by exact item id while keeping approvalId as metadata 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes open reasoning effort max to turn/start 2ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes open reasoning effort ultra to turn/start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes open reasoning effort Future-Custom to turn/start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes an unset reasoning effort as null to turn/start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread turn payload > passes the configured Codex serviceTier to turn/start 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > queues Codex cumulative snapshot updates immediately without waiting for idle 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > maps Codex app-server total fields into cumulative snapshots and last fields into provider-delta metadata 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > keeps absent Codex cache writes out of source records and null in reconciliation metadata 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > queues multiple same-turn cumulative advancements instead of overwriting by turn id 1ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > keeps late token usage as an immediately consumable cumulative snapshot after turn completion 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > flags provider-delta metadata missing when a Codex cumulative total has no last payload 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > does not let an old completion or terminal error clear a newer active turn 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > classifies an error status change before clearing the matching active turn 0ms
+ ✓ tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts > CodexThread token usage readiness > classifies client loss as runtime-global before clearing native identity 0ms
+stdout | tests/unit/agent-team-execution/team-command-start-status.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14629) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts > TeamCommandStatusOverlayStore > gates member initializing to offline or idle and stores applied snapshots 3ms
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts > TeamCommandStatusOverlayStore > replaces member failure and clears only matching replacement member status events 1ms
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts > TeamCommandStatusOverlayStore > keeps task-agent command overlays keyed by concrete task-agent identity 1ms
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts > TeamCommandStatusOverlayStore > keeps root and sub-team source-path overlays isolated and clears all on dispose 1ms
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts > team command-start status overlays > keeps mixed leaf member initializing while delayed agent run creation is pending 57ms
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts > team command-start status overlays > keeps mixed subteam initializing while delayed child team creation is pending 54ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14630) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects sending a new turn while another turn is already active
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects sending a new turn while another turn is already active
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+Claude runtime turn failed for run 'run-1': Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:503:13)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:168:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:484:17)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:168:9)
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > settles an interrupted active turn before emitting TURN_INTERRUPTED
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=49
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > settles an interrupted active turn before emitting TURN_INTERRUPTED
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=39
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects sending a new turn while another turn is already active 22ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > does not clear an identified active turn for missing or mismatched completion identity 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > caches and sends local context file reference paths in user content 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resolves finalized context-file locators before caching and sending user content 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > applies idle status before emitting normal turn completion 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode 10ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > keeps manual mode gated for a safe outside-scratch permission request until approval resolves 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics 4ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > settles an interrupted active turn before emitting TURN_INTERRUPTED 7ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > treats interrupt without an active turn execution as an idempotent cleanup no-op 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > delegates terminate to the session manager dependency 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > adopts a resolved Claude session id and migrates cached messages 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id 13ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > does not pass the local run id placeholder as a Claude resume id after interrupt 4ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume completed Claude turns with the adopted provider session id 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume restored Claude runs with the restored provider session id 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > emits provider-derived text segment ids and preserves text-tool-text order 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > coalesces partial stream_event text deltas by message and content block 2ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > projects authoritative command arguments for a result-first completed command 3ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > preserves explicit empty arguments for a result-first dynamic terminal 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > omits arguments for a genuinely argument-absent dynamic terminal 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > ignores codex-prefixed internal events at the dispatcher boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > does not map token-usage telemetry into AGENT_STATUS 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes thread/compacted into provider compaction boundary status 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes contextCompaction item start into a non-rotating provider compaction status 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes contextCompaction item completion into a rotating provider compaction boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > does not let contextCompaction start suppress the later completed boundary 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes raw context_compaction items into provider compaction boundaries 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes completed contextCompaction and raw context_compaction surfaces for the same item 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > ignores compaction_trigger items as non-boundary signals 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes raw compaction items when thread/compacted already reported the boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes raw no-stable compaction items when thread/compacted already reported the boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes later thread/compacted when a raw no-stable compaction item arrived first 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes repeated raw no-stable compaction items in the same converter window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes stable-id compaction boundaries when the raw item arrives before thread/compacted 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > keeps raw compaction items with a distinct stable id after thread/compacted in the same window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > keeps thread/compacted with a distinct stable id after a raw compaction item in the same window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps thread status changes into normalized AGENT_STATUS payloads 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > emits explicit turn lifecycle plus normalized agent-status events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > emits effect-aware Codex errors before their status companion 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > keeps unclassified Codex errors as content without a guessed status 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > does not emit a status companion for a terminal error rejected by native turn guards 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps local Agent Tools MCP approval requests into TOOL_APPROVAL_REQUESTED with canonical arguments 3ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps local permission approval requests into TOOL_APPROVAL_REQUESTED with requested profile context 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out mcpToolCall starts into tool_call segment and lifecycle start 3ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED with arguments 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes observed local MCP open_tab completion envelopes into direct browser results 2ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes Agent Tools MCP delegate_task completion envelopes into direct task results 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes Agent Tools MCP review_task_result completion envelopes into direct task results 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > projects generic Codex MCP JSON text envelopes into parsed results 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > projects generic Codex MCP plain text envelopes into text results 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > projects generic Codex MCP structuredContent before text fallback 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > projects generic Codex MCP multi-text envelopes with deterministic separators 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > projects generic Codex MCP rich content envelopes into sanitized items 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps Codex MCP isError result envelopes into failure events without result 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > does not project exact envelope-shaped non-MCP Codex dynamic tool results 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes aliased Browser MCP completion results without circular placeholders 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out webSearch starts into tool_call segment and lifecycle start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > omits arguments from the captured hosted webSearch placeholder start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > emits card-capable identity and name without inventing arguments for an unseen webSearch terminal 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out successful webSearch completions into terminal success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out failed webSearch completions into terminal failure and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out Agent Tools MCP send_message_to starts into tool_call segment and canonical lifecycle start 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps successful Agent Tools MCP send_message_to completions into canonical terminal success 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes non-send Agent Tools MCP completions into canonical tool lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > redacts prefixed free-form text and raw secret fields in Agent Tools MCP payloads 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps failed Agent Tools MCP send_message_to completions into canonical terminal failure 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > sanitizes Agent Tools MCP ITEM_COMPLETED segment-end payloads 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps generic dynamic tool completions into terminal success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > parses generic dynamic tool JSON text results from contentItems 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out fileChange start into segment and lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out fileChange completion into success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > preserves edit_file metadata when converting file-change segments 0ms
+stdout | tests/unit/agent-execution/agent-run-command-coordinator.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14944) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > keeps inactive-restore accepted-result running status aligned with the following ACK 6ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > does not downgrade an already-running active runtime to initializing 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > keeps active-idle accepted-result running status aligned with the following ACK 0ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > keeps active-runtime command rejection ACK status consistent without publishing lifecycle error 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > deduplicates same command id and rejects different id while command is in progress 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > clears command overlay when live runtime status arrives 0ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > does not let delayed terminal A settle identified command B before or after result capture 2ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > ignores diagnostics but fails once on matching turn-terminal evidence 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > replays a fast matching turn-terminal only after accepted result identity 2ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > does not reopen running when canonical completion wins before the accepted result 2ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > lets explicit runtime-global failure settle pending identity without result resurrection 2ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > arms an accepted anonymous command only on later positive active evidence 0ms
+ ✓ tests/unit/agent-execution/agent-run-command-coordinator.test.ts > AgentRunCommandCoordinator > keeps restored running snapshot internal until command-correlated execution event 2ms
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14946) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > returns an active team run without attempting restore 3ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > returns null when restore fails 0ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > uses canonical member error status rather than diagnostic error content 2ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > selects the mixed team backend when member runtimes span multiple runtimes 3ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > rejects public memberRunId before top-level or member run allocation 1ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > activates filesystem workspace metadata roots even when workspaceId is already present 2ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > activates each distinct team workspace root once per create request 1ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > rejects filesystem reference team launches when the root path is missing 0ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > restores mixed team runs using persisted member runtime metadata 1ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > preserves the existing default IDLE/empty history semantics on create 1ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > records summary through the team catalog boundary 0ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > builds launch member configs with shared and team-local agent ids 1ms
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts > TeamRunService > rejects a subteam node as the root coordinator 1ms
+stdout | tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14947) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts > ChannelAgentRunFacade > dispatches to agent run through the run launcher and command coordinator 7ms
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts > ChannelAgentRunFacade > maps inbound attachments to context files through the coordinator send path 1ms
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts > ChannelAgentRunFacade > subscribes for authoritative turn capture before posting the external message 0ms
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts > ChannelAgentRunFacade > throws when agent runtime rejects external dispatch 1ms
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts > ChannelAgentRunFacade > continues agent dispatch when live external-user publish fails 1ms
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts > ChannelAgentRunFacade > waits for the authoritative turn-start event when the runtime omits turn metadata 1ms
+ ✓ tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts > ChannelAgentRunFacade > captures the first turn signal through the dispatch-scoped listener when the backend response has no turn id 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > converts normal Claude tool segment lane metadata with arguments 2ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > converts a normal Claude tool lifecycle into TOOL_* events 1ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes Agent Tools MCP send_message_to segment and lifecycle events 1ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to segment and started lifecycle events 1ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to success and failure lifecycle events with arguments 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names to canonical browser tool names 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes Agent Tools MCP task-delegation envelopes to canonical task results 1ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > projects generic Claude MCP JSON text envelopes into parsed results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > projects generic Claude MCP plain text envelopes into text results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > projects generic Claude MCP structuredContent before text fallback 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > projects generic Claude MCP multi-text envelopes with deterministic separators 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > projects generic Claude MCP rich content envelopes into sanitized items 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > maps Claude MCP isError result envelopes into failure events without result 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > does not project exact envelope-shaped non-MCP Claude results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP content-block results to canonical browser result objects 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP content-envelope results to canonical browser result objects 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes media MCP tool names and content envelopes to canonical generated-output results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > strips the Agent Tools MCP provider from unknown migrated-provider names 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves non-Autobyteus MCP tools with browser-like suffixes and results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in segment start metadata and top-level payload 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in provided segment end metadata 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves arguments on failed Claude tool completion events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves arguments on denied Claude tool lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > emits explicit turn completed plus normalized agent-status events 1ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > emits explicit turn started before the running status event 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > emits classified terminal error before its post-mutation status 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > keeps unclassified Claude errors as content without a guessed status 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > maps Claude token usage session events to TOKEN_USAGE_UPDATED agent-run events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes compacting status without rotation eligibility 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes compact_boundary as rotation eligible 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > keeps compacting status and compact boundary keys distinct when provider uuid matches 0ms
+stdout | tests/unit/external-channel/runtime/channel-team-run-facade.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14950) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > uses an active team run when already present 5ms
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > resolves the team run through TeamRunService 1ms
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > continues team dispatch when live team external-user publish fails 1ms
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > subscribes for authoritative team turn capture before posting the external message 0ms
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > uses the binding route key when runtime member route metadata is absent 0ms
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > throws when TeamRunService cannot resolve the team run 1ms
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > captures the targeted member turn through the dispatch-scoped listener when the backend response has no turn id 1ms
+stdout | tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps turn_started to TURN_STARTED 1ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps turn_completed to TURN_COMPLETED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps agent_status to AGENT_STATUS 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps compaction_status to COMPACTION_STATUS 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps assistant_complete_response to ASSISTANT_COMPLETE 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps tool_approval_requested to TOOL_APPROVAL_REQUESTED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps tool_approved to TOOL_APPROVED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps tool_denied to TOOL_DENIED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps tool_execution_started to TOOL_EXECUTION_STARTED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps tool_execution_succeeded to TOOL_EXECUTION_SUCCEEDED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps tool_execution_failed to TOOL_EXECUTION_FAILED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps tool_interaction_log_entry to TOOL_LOG 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps system_task_notification to SYSTEM_TASK_NOTIFICATION 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps inter_agent_message to INTER_AGENT_MESSAGE 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps agent_todo_list_updated to TODO_LIST_UPDATE 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps artifact_persisted to ARTIFACT_PERSISTED 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps error_event to ERROR 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > preserves effect-aware errors and does not clear active state for diagnostics or old terminal ids 1ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > does not grant status or lifecycle authority to malformed terminal error payloads 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > uses explicit current status payloads before stale snapshots 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > normalizes explicit fine-grained native statuses through the AutoByteus status projector 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > preserves semantic compaction operation identity from native compaction statuses 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > preserves public running status for stale non-active snapshots while a turn is active 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > ignores deprecated artifact_updated stream events 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > maps segment events into start, content, and end events 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > canonicalizes native segment payloads to turn_id for all segment event variants 1ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > drops unknown segment types 0ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts > AutoByteusStreamEventConverter > keeps native turn lifecycle payloads intact 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > keeps the exact completed-turn plus late-tool sequence idle while preserving content 2ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > protects a newer identified turn from old terminal, status, and activity 1ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > derives boundary fallback without treating uncorrelated activity as a turn opener 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > keeps diagnostics content-only and filters their error companion 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > allows only exact current-turn activity to recover a status-only error 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > makes matching terminal error unrecoverable by later same-turn activity 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > keeps duplicate starts and terminals idempotent 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > accepts the explicit offline snapshot when no turn is active 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > accepts the explicit initializing snapshot when no turn is active 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > accepts the explicit idle snapshot when no turn is active 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > accepts the explicit running snapshot when no turn is active 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > accepts the explicit error snapshot when no turn is active 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > filters contradictory idle and initializing snapshots while an identified turn is active 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > keeps identified terminal evidence from closing anonymous work 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > applies runtime-global failure but keeps invalid errors content-only 0ms
+ ✓ tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts > LifecycleStatusEventTransformer > isolates lifecycle state by runtime context even when a restored run reuses the public id 0ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun > publishes backend-owned initializing status before a delayed accepted offline send resolves 2ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun > restores the prior terminal status when an early command-start send is rejected 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun > publishes error when a delayed command-start send throws 1ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts > AgentRun > ignores non-status hints and error content when updating the canonical snapshot 0ms
+stdout | tests/unit/agent-execution/agent-run-lifecycle-observation.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:14954) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/agent-run-lifecycle-observation.test.ts > AgentRunService lifecycle observation > ignores diagnostic content and fails only when canonical error status follows terminal evidence
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+ ✓ tests/unit/agent-execution/agent-run-lifecycle-observation.test.ts > AgentRunService lifecycle observation > ignores diagnostic content and fails only when canonical error status follows terminal evidence 5ms
+ ✓ tests/unit/agent-execution/agent-run-command-registry.test.ts > AgentRunCommandRegistry > returns duplicate_in_progress shape for the same in-flight command and rejects different ids 2ms
+ ✓ tests/unit/agent-execution/agent-run-command-registry.test.ts > AgentRunCommandRegistry > uses discriminated association transitions and never overwrites a terminal record 1ms
+ ✓ tests/unit/agent-execution/agent-run-command-registry.test.ts > AgentRunCommandRegistry > retains terminal records during ttl and purges them after ttl 0ms
+ ✓ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > collects AutoByteus assistant-complete output 1ms
+ ✓ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > collects Codex text segment deltas while ignoring reasoning 0ms
+ ✓ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > collects Claude text deltas and completes on idle status 0ms
+ ✓ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > keeps classified diagnostics as content-only before normal completion 1ms
+ ✓ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > fails immediately on classified terminal error evidence 1ms
+ ✓ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > fails clearly when the compactor asks for tool approval 0ms
+ ✓ tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts > CompactionRunOutputCollector > fails clearly when a run finishes without assistant output 0ms
+ ✓ tests/unit/agent-team-execution/task-delegation-settlement-coordinator.test.ts > TaskDelegationSettlementCoordinator > settles only from canonical idle status, not a lifecycle status hint 3ms
+ ✓ tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > parses direct assistant text from segment payload variants 2ms
+ ✓ tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > classifies segment end text as final text 0ms
+ ✓ tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > ignores non-text segment end payloads 0ms
+ ✓ tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > preserves strict diagnostic error evidence for downstream output collection 0ms
+ ✓ tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > parses team member events and filters to the coordinator member 0ms
+ ✓ tests/unit/external-channel/runtime/channel-output-event-parser.test.ts > channel output event parsing and eligibility > accepts restored coordinator links by route key and captures member run id 0ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > channel output text assembly > appends true delta fragments normally 1ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > channel output text assembly > uses the latest cumulative snapshot fragment 0ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > channel output text assembly > dedupes suffix/prefix-overlapping stream fragments 0ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > channel output text assembly > dedupes punctuation overlaps without rewriting one-character word splits 1ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > collects overlapping stream fragments without duplicated words 0ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > keeps cumulative stream snapshots clean 0ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > uses final text snapshots before accumulated stream fragments 0ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > preserves collected output across recoverable diagnostic errors 0ms
+ ✓ tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts > ChannelRunOutputEventCollector > does not clear newer-turn output for an older terminal error 0ms
+ ✓ tests/unit/agent-execution/events/agent-run-event-dispatch-queue.test.ts > AgentRunEventDispatchQueue > serializes same-run work while allowing different runs to proceed 1ms
+ ✓ tests/unit/agent-execution/events/agent-run-event-dispatch-queue.test.ts > AgentRunEventDispatchQueue > continues after a rejection and removes drained tails 1ms
+ ✓ tests/skill-improvement/improver-run-completion-watcher.test.ts > ImproverRunCompletionWatcher > rejects a pending waiter immediately when a classified terminal ERROR is observed 2ms
+ ✓ tests/skill-improvement/improver-run-completion-watcher.test.ts > ImproverRunCompletionWatcher > preserves diagnostic ERROR content and completes on a later terminal boundary 0ms
+ ✓ tests/unit/agent-execution/agent-run-error-evidence.test.ts > canonical agent run evidence > normalizes camel and snake turn identity while rejecting blanks 1ms
+ ✓ tests/unit/agent-execution/agent-run-error-evidence.test.ts > canonical agent run evidence > validates correlation and effect as a strict union 1ms
+ ✓ tests/unit/agent-execution/agent-run-error-evidence.test.ts > canonical agent run evidence > keeps invalid evidence non-authoritative: {} 0ms
+ ✓ tests/unit/agent-execution/agent-run-error-evidence.test.ts > canonical agent run evidence > keeps invalid evidence non-authoritative: {"error_scope":"turn","error_effect":"terminal"} 0ms
+ ✓ tests/unit/agent-execution/agent-run-error-evidence.test.ts > canonical agent run evidence > keeps invalid evidence non-authoritative: {"error_scope":"runtime","error_effect":"diagnostic"} 0ms
+ ✓ tests/unit/agent-execution/agent-run-error-evidence.test.ts > canonical agent run evidence > keeps invalid evidence non-authoritative: {"error_scope":"runtime","error_effect":"terminal","turn_id":"turn-1"} 0ms
+ ✓ tests/unit/agent-execution/agent-run-error-evidence.test.ts > canonical agent run evidence > keeps invalid evidence non-authoritative: {"error_scope":"turn","error_effect":"unknown","turn_id":"turn-1"} 0ms
+
+ Test Files  24 passed (24)
+      Tests  287 passed (287)
+   Start at  08:30:46
+   Duration  17.54s (transform 3.30s, setup 208ms, import 13.24s, tests 1.15s, environment 2ms)
+
+# Finished: 2026-07-22T06:31:04Z
+# Exit status: 0

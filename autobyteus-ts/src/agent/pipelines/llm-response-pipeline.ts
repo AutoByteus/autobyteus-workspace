@@ -48,7 +48,14 @@ export class LLMResponsePipeline {
           console.error(
             `Agent '${context.agentId}': Error while using LLMResponseProcessor '${processor.getName()}': ${error}.`
           );
-          notifier?.notifyAgentErrorOutputGeneration(`LLMResponseProcessor.${processor.getName()}`, String(error));
+          const turnId = options.turnId ?? context.state.activeTurn?.turnId ?? null;
+          if (turnId) {
+            notifier?.notifyAgentErrorOutputGeneration({
+              source: `LLMResponseProcessor.${processor.getName()}`,
+              message: String(error),
+              classification: { scope: 'turn', effect: 'diagnostic', turnId }
+            });
+          }
         }
       }
     }

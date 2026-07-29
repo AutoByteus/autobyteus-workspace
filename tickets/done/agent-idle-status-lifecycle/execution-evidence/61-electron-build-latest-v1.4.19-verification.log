@@ -1,0 +1,36 @@
+# Latest v1.4.19 Electron macOS build verification
+# Started: 2026-07-20T04:25:49Z
+
+## Artifact existence and sizes
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.19.dmg size_bytes=401785626
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.19.zip size_bytes=397456444
+1.2G	/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+## SHA-256
+5efa3ac536db50a53ce7e8ad649e9346a6bd282ab3e3063f811ef45205e627b4  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.19.dmg
+16643e30231f8b0d6c8a80916c16a916b18fbfc6b491ff316cb607e0fac31fbf  /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.19.zip
+
+## ZIP integrity
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.19.zip.
+
+## DMG metadata
+Format Description: UDIF, nur Lesen, komprimiert (zlib)
+Class Name: CUDIFDiskImage
+Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+		Checksum Type: CRC32
+Format: UDZO
+	Class Name: CUDIFEncoding
+		Class Name: CBSDBackingStore
+
+## App metadata
+Print: Entry, ":CFBundleShortVersionString", Does Not Exist
+
+# Finished: 2026-07-20T04:26:03Z
+# Exit status: 1

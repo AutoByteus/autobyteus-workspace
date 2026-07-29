@@ -1,0 +1,27 @@
+# Round 6 integrated-base audit
+# Started: 2026-07-22T06:29:56Z
+head=ac8712b828b3221962ddb68e82aa4d54ecacb240
+branch=codex/agent-idle-status-lifecycle
+recorded_base=965f97685c08569a98186b2a894243c0b3f602d3
+merge_commit_present=true
+base_is_ancestor=true
+
+## Uncommitted source/test paths
+uncommitted_source_or_test=false
+
+## Lifecycle/Event Monitor coexistence symbols
+event_monitor_begin_refs=1
+event_monitor_commit_refs=1
+LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES=absent
+isLiveRuntimeActivityMessage=absent
+applyLiveRuntimeActivityProjectionRepair=absent
+
+## Backend removed-path/bypass audit
+removed_or_bypass_symbol=absent
+
+## User-owned app isolation baseline
+port_29695_listening=true
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 82961 TCP *:29695
+
+# Finished: 2026-07-22T06:29:57Z

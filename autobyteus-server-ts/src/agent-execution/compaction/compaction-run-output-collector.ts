@@ -3,6 +3,7 @@ import {
   isAgentRunEvent,
   type AgentRunEvent,
 } from "../domain/agent-run-event.js";
+import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
 
 export type CompactionRunOutputCollectorOptions = {
   runId: string;
@@ -61,6 +62,7 @@ const isIdleStatusPayload = (payload: Record<string, unknown>): boolean => {
 
 export class CompactionRunOutputCollector {
   private readonly runId: string;
+  private readonly failureObserver = new AgentRunCanonicalFailureObserver();
   private readonly segmentTextById = new Map<string, string>();
   private assistantCompleteText: string | null = null;
   private terminal = false;
@@ -79,8 +81,11 @@ export class CompactionRunOutputCollector {
       return;
     }
 
-    if (event.eventType === AgentRunEventType.ERROR || event.statusHint === "ERROR") {
-      this.fail(new Error(`Compactor agent run '${this.runId}' failed: ${extractErrorMessage(event)}`));
+    const failure = this.failureObserver.observe(event);
+    if (failure) {
+      this.fail(new Error(
+        `Compactor agent run '${this.runId}' failed: ${failure.message ?? extractErrorMessage(event)}`,
+      ));
       return;
     }
 

@@ -1,0 +1,134 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-ts
+
+stdout | tests/unit/agent/events/notifiers.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/agent/events/notifiers.test.ts (4 tests) 6ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: d2ecc25d-26de-4059-830d-bcd0324a6342).
+AgentEventStream (ID: 1d142dc5-a686-4381-bc7c-52e2b8ad4a34) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier (NotifierID: d2ecc25d-26de-4059-830d-bcd0324a6342, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentEventStream (ID: 1d142dc5-a686-4381-bc7c-52e2b8ad4a34) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 70b8cf9a-9641-4d93-9c01-929d66de1682).
+AgentEventStream (ID: d313caa3-042b-4194-a53a-da45d65b54cf) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier (NotifierID: 70b8cf9a-9641-4d93-9c01-929d66de1682, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentEventStream (ID: d313caa3-042b-4194-a53a-da45d65b54cf) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 8571e304-dbfe-40a8-bc23-53aa193e7a6d).
+AgentEventStream (ID: ff1c0d8e-ee5d-4e89-8823-2e47a9ad651e) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 8571e304-dbfe-40a8-bc23-53aa193e7a6d, AgentID: stream_test_agent_001) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 8571e304-dbfe-40a8-bc23-53aa193e7a6d, AgentID: stream_test_agent_001) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentEventStream (ID: ff1c0d8e-ee5d-4e89-8823-2e47a9ad651e) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 1ac25eee-657f-4dcf-bc3d-27b240b9aaf8).
+AgentEventStream (ID: 342ff39b-dbd3-40ac-a68d-715c984f6ef0) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentEventStream (ID: 342ff39b-dbd3-40ac-a68d-715c984f6ef0) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 78ddb46f-b8ff-4be0-a877-8186d58771a9).
+AgentEventStream (ID: 5e606db1-8aba-474a-a612-7d91b34d9fcb) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier (NotifierID: 78ddb46f-b8ff-4be0-a877-8186d58771a9, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentEventStream (ID: 5e606db1-8aba-474a-a612-7d91b34d9fcb) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 9a888060-e6d0-4244-9ebe-3003e265afe5).
+AgentEventStream (ID: 039f317b-af31-465c-b4db-3a3061759949) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier (NotifierID: 9a888060-e6d0-4244-9ebe-3003e265afe5, AgentID: stream_test_agent_001) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentEventStream (ID: 039f317b-af31-465c-b4db-3a3061759949) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 7dc7a715-9eb1-45b9-b98f-d7899bc74b1e).
+AgentEventStream (ID: d3e53f86-05e2-46d0-81af-ebd28417c622) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 7dc7a715-9eb1-45b9-b98f-d7899bc74b1e, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 7dc7a715-9eb1-45b9-b98f-d7899bc74b1e, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentEventStream (ID: d3e53f86-05e2-46d0-81af-ebd28417c622) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts (7 tests) 375ms
+
+ Test Files  2 passed (2)
+      Tests  11 passed (11)
+   Start at  06:12:51
+   Duration  606ms (transform 148ms, setup 54ms, import 166ms, tests 380ms, environment 0ms)
+
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK

@@ -97,6 +97,20 @@ export const resolveClaudeTurnTerminalError = (
   };
 };
 
+export const buildClaudeTurnTerminalErrorEvent = (
+  turnId: string,
+  error: unknown,
+): ClaudeSessionEvent => ({
+  method: ClaudeSessionEventName.ERROR,
+  params: {
+    code: "CLAUDE_RUNTIME_TURN_FAILED",
+    message: String(error),
+    error_scope: "turn",
+    error_effect: "terminal",
+    turn_id: turnId,
+  },
+});
+
 export const buildClaudeProviderCompactionEvent = (input: {
   chunk: unknown;
   turnId: string;

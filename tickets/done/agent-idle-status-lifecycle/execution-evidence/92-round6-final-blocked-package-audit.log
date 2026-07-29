@@ -1,0 +1,25 @@
+# Round 6 final blocked-package audit
+# Timestamp: 2026-07-22T06:57:59Z
+head=ac8712b828b3221962ddb68e82aa4d54ecacb240
+expected_head_match=true
+coverage_report_blocked=true
+execution_report_blocked=true
+execution_round_6=true
+auto_standalone_401=true
+auto_team_401=true
+claude_focused_rerun_pass=true
+browser_result=Pass
+browser_observation_count=22
+browser_pageerror_count=0
+full_deepseek_secret_present_in_round6_logs=false
+owned_runtime_process_matches=0
+temporary_page_present=false
+worktree_env_test_present=false
+browser_port_18134_listening=false
+user_port_29695_listening=true
+
+--- diff check ---
+diff_check_exit=0
+
+--- uncommitted source/test paths ---
+none
