@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-001` | `N/A` | `Fail — Local Fix` | `CR-001`, `CR-002` |
 | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-002` | `Fail — Local Fix` | `Pass` | `CR-001`, `CR-002` |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail — Local Fix` | `CR-003`, `APIE2E-F001` |
 
 ## Revision Entries
 
@@ -57,3 +58,29 @@ None.
 - Material score or classification changes: score increased from `8.9/10` (`89/100`) to `9.2/10` (`92/100`); result changed from `Fail — Local Fix` to `Pass`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: stale REST assertion validity, broad live command/Studio coverage, graph isolation, immutable package proof, real team execution, recovery, and cleanup/leak evidence remain API/E2E-owned; delivery must document the controlled-browser prerequisite.
+
+### CRR-003 — API/E2E exposes duplicate-import source defect
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `3`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-007`, `APIE2E-F001`, new source finding `CR-003`
+- Relevant solution revision IDs: `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-002`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` (`CRR-002`)
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: real repeated Brief `dev:studio` edits and the corrected durable regression prove that IR-002 unconditionally imports the already registered local root. The server's unique-root contract rejects it before selection or backend reload. This is a bounded implementation defect and a source-review gap in the prior readiness decision.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `API-REV-001` | Real controlled Chrome standalone launch/reload/close and repeated standalone restarts passed. |
+| `CR-002` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `API-REV-001` | Dynamic watch/project-state refresh is not the failing boundary; the failure occurs afterward at unconditional duplicate package import. |
+
+- New or remaining finding IDs: `CR-003` linked to `APIE2E-F001`.
+- Material score or classification changes: the prior full source score is historical and was not recomputed; current result changes from `Pass` to `Fail — Local Fix` because API/E2E readiness and runtime fidelity are disproven on AC-011.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: the unexecuted remainder of the API/E2E live matrix, Studio remount, complete maintained-app command coverage, dual-host parity/digests, and proportional review of durable test changes remain pending after the fix and rerun.
