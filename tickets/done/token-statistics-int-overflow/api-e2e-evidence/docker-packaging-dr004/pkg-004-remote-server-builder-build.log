@@ -1,0 +1,508 @@
+# PKG-004 remote-server real repository-root builder build
+2026-07-29T08:00:26+02:00
+builder=api-e2e-dr004-20260729-0750 context=/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27 dockerfile=docker/Dockerfile.remote-server target=builder platform=linux/arm64 output=cacheonly
+#0 building with "api-e2e-dr004-20260729-0750" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.remote-server
+#1 transferring dockerfile: 2.63kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.7s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#3 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm
+#4 DONE 0.2s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 282B done
+#5 DONE 0.0s
+
+#6 [builder  1/18] FROM docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37
+#6 resolve docker.io/library/node:22-bookworm@sha256:5647be709086c696ff32edaaf1c70cd26d1da6ab2b39c32f3c7b4c4a31957e37 done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 523.47kB 0.5s done
+#7 DONE 0.5s
+
+#8 [builder  4/18] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#8 CACHED
+
+#9 [builder  5/18] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#9 CACHED
+
+#10 [builder  3/18] RUN corepack enable
+#10 CACHED
+
+#11 [builder  6/18] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#11 CACHED
+
+#12 [builder  7/18] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#12 CACHED
+
+#13 [builder  2/18] WORKDIR /app
+#13 CACHED
+
+#14 [builder  8/18] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#14 CACHED
+
+#15 [builder  9/18] COPY autobyteus-web/package.json ./autobyteus-web/
+#15 DONE 0.0s
+
+#16 [builder 10/18] COPY autobyteus-ts ./autobyteus-ts
+#16 DONE 0.2s
+
+#17 [builder 11/18] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#17 DONE 0.0s
+
+#18 [builder 12/18] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#18 DONE 0.0s
+
+#19 [builder 13/18] COPY autobyteus-server-ts ./autobyteus-server-ts
+#19 DONE 0.4s
+
+#20 [builder 14/18] COPY autobyteus-web ./autobyteus-web
+#20 DONE 0.4s
+
+#21 [builder 15/18] RUN pnpm install --no-frozen-lockfile
+#21 0.113 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#21 1.719 Scope: all 6 workspace projects
+#21 2.143
+#21 2.143    ╭───────────────────────────────────────────────╮
+#21 2.143    │                                               │
+#21 2.143    │     Update available! 10.28.2 → 11.17.0.      │
+#21 2.143    │     Changelog: https://pnpm.io/v/11.17.0      │
+#21 2.143    │   To update, run: corepack use pnpm@11.17.0   │
+#21 2.143    │                                               │
+#21 2.143    ╰───────────────────────────────────────────────╯
+#21 2.143
+#21 2.250 Progress: resolved 0, reused 0, downloaded 1, added 0
+#21 3.274 Progress: resolved 45, reused 0, downloaded 44, added 0
+#21 4.278 Progress: resolved 76, reused 0, downloaded 75, added 0
+#21 5.281 Progress: resolved 90, reused 0, downloaded 89, added 0
+#21 6.282 Progress: resolved 95, reused 0, downloaded 94, added 0
+#21 7.283 Progress: resolved 102, reused 0, downloaded 101, added 0
+#21 8.283 Progress: resolved 105, reused 0, downloaded 104, added 0
+#21 11.57 Progress: resolved 105, reused 0, downloaded 105, added 0
+#21 12.57 Progress: resolved 107, reused 0, downloaded 106, added 0
+#21 13.57 Progress: resolved 140, reused 0, downloaded 120, added 0
+#21 14.57 Progress: resolved 339, reused 0, downloaded 312, added 0
+#21 15.57 Progress: resolved 452, reused 0, downloaded 425, added 0
+#21 16.58 Progress: resolved 508, reused 0, downloaded 483, added 0
+#21 17.58 Progress: resolved 600, reused 0, downloaded 576, added 0
+#21 18.58 Progress: resolved 701, reused 0, downloaded 666, added 0
+#21 19.58 Progress: resolved 778, reused 0, downloaded 741, added 0
+#21 20.58 Progress: resolved 929, reused 0, downloaded 893, added 0
+#21 21.58 Progress: resolved 1050, reused 0, downloaded 987, added 0
+#21 22.58 Progress: resolved 1117, reused 0, downloaded 1024, added 0
+#21 23.59 Progress: resolved 1182, reused 0, downloaded 1059, added 0
+#21 24.59 Progress: resolved 1250, reused 0, downloaded 1088, added 0
+#21 25.59 Progress: resolved 1404, reused 0, downloaded 1238, added 0
+#21 26.60 Progress: resolved 1546, reused 0, downloaded 1381, added 0
+#21 27.62 Progress: resolved 1688, reused 0, downloaded 1524, added 0
+#21 28.62 Progress: resolved 1818, reused 0, downloaded 1655, added 0
+#21 29.62 Progress: resolved 1820, reused 0, downloaded 1657, added 0
+#21 30.62 Progress: resolved 1822, reused 0, downloaded 1659, added 0
+#21 31.63 Progress: resolved 1825, reused 0, downloaded 1663, added 0
+#21 32.63 Progress: resolved 1826, reused 0, downloaded 1664, added 0
+#21 35.63 Progress: resolved 1826, reused 0, downloaded 1665, added 0
+#21 36.64 Progress: resolved 1845, reused 0, downloaded 1683, added 0
+#21 37.64 Progress: resolved 1847, reused 0, downloaded 1685, added 0
+#21 38.43  WARN  23 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, @xmldom/xmldom@0.8.11, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+#21 38.47 Packages: +1676
+#21 38.47 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#21 38.80 Progress: resolved 1847, reused 0, downloaded 1685, added 1
+#21 39.65 Progress: resolved 1847, reused 0, downloaded 1685, added 1676, done
+#21 40.08 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+#21 40.08 .../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+#21 40.08 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#21 40.09 .../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+#21 40.18 .../node_modules/@parcel/watcher install: Done
+#21 40.22 .../node_modules/protobufjs postinstall: Done
+#21 40.23 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+#21 40.28 .../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+#21 40.28 .../node-pty@1.1.0/node_modules/node-pty install: [33m> Rebuilding because directory /app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/linux-arm64 does not exist[0m
+#21 40.29 .../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+#21 40.35 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+#21 40.43 .../sharp@0.33.5/node_modules/sharp install$ node install/check
+#21 40.47 .../node-pty@1.1.0/node_modules/node-pty install: gyp info it worked if it ends with ok
+#21 40.47 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node-gyp@11.5.0
+#21 40.47 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node@22.23.1 | linux | arm64
+#21 40.51 .../node_modules/vue-demi postinstall: Done
+#21 40.55 .../sharp@0.33.5/node_modules/sharp install: Done
+#21 40.56 .../node-pty@1.1.0/node_modules/node-pty install: gyp info find Python using Python version 3.11.2 found at "/usr/bin/python3"
+#21 40.68 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.23.1/node-v22.23.1-headers.tar.gz
+#21 40.88 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.23.1/node-v22.23.1-headers.tar.gz
+#21 42.54 .../node_modules/@prisma/engines postinstall: Done
+#21 45.22 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.23.1/SHASUMS256.txt
+#21 45.25 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.23.1/SHASUMS256.txt
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn /usr/bin/python3
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/gyp/gyp_main.py',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'binding.gyp',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-f',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'make',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/config.gypi',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/addon.gypi',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node-gyp/22.23.1/include/node/common.gypi',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dlibrary=shared_library',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dvisibility=default',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_root_dir=/root/.cache/node-gyp/22.23.1',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_gyp_dir=/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_lib_file=/root/.cache/node-gyp/22.23.1/<(target_arch)/node.lib',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dmodule_root_dir=/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_engine=v8',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--depth=.',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--no-parallel',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--generator-output',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'build',
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Goutput_dir=.'
+#21 45.99 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args ]
+#21 46.16 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn make
+#21 46.16 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
+#21 46.16 .../node-pty@1.1.0/node_modules/node-pty install: make: Entering directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#21 46.16 .../node-pty@1.1.0/node_modules/node-pty install:   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+#21 46.17 .../node-pty@1.1.0/node_modules/node-pty install:   CXX(target) Release/obj.target/pty/src/unix/pty.o
+#21 47.44 .../node-pty@1.1.0/node_modules/node-pty install:   SOLINK_MODULE(target) Release/obj.target/pty.node
+#21 47.50 .../node-pty@1.1.0/node_modules/node-pty install:   COPY Release/pty.node
+#21 47.51 .../node-pty@1.1.0/node_modules/node-pty install: make: Leaving directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#21 47.51 .../node-pty@1.1.0/node_modules/node-pty install: gyp info ok
+#21 47.52 .../node-pty@1.1.0/node_modules/node-pty install: Done
+#21 47.52 .../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+#21 47.56 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+#21 47.56 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+#21 47.56 .../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+#21 47.57 .../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+#21 47.79 .../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+#21 47.84 .../prisma@5.22.0/node_modules/prisma preinstall: Done
+#21 47.87 .../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+#21 48.32 .../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+#21 48.32 .../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+#21 48.32 .../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+#21 48.32 .../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+#21 48.34 .../node_modules/@prisma/client postinstall: Done
+#21 49.65 autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+#21 49.73 autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+#21 49.73 autobyteus-ts postinstall: Done
+#21 49.85  WARN  Issues with peer dependencies found
+#21 49.85 autobyteus-web
+#21 49.85 └─┬ nuxt 3.21.1
+#21 49.85   └─┬ @nuxt/cli 3.33.1
+#21 49.85     ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+#21 49.85     └─┬ @bomb.sh/tab 0.0.12
+#21 49.85       └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+#21 49.85
+#21 49.89 Done in 48.4s using pnpm v10.28.2
+#21 DONE 50.2s
+
+#22 [builder 16/18] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#22 1.336 Prisma schema loaded from prisma/schema.prisma
+#22 5.252
+#22 5.252 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 185ms
+#22 5.252
+#22 5.252 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#22 5.252
+#22 5.252 Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+#22 5.252
+#22 DONE 5.5s
+
+#23 [builder 17/18] RUN pnpm -C autobyteus-server-ts build
+#23 0.325
+#23 0.325 > autobyteus-server-ts@0.1.1 prebuild /app/autobyteus-server-ts
+#23 0.325 > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+#23 0.325
+#23 0.630
+#23 0.630 > autobyteus-server-ts@0.1.1 prepare:shared /app/autobyteus-server-ts
+#23 0.630 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+#23 0.630
+#23 0.941 Scope: 3 of 6 workspace projects
+#23 0.947 autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+#23 0.947 autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+#23 2.303 autobyteus-application-sdk-contracts build: Done
+#23 8.899 autobyteus-ts build: [verify:runtime-deps] OK
+#23 8.902 autobyteus-ts build: Done
+#23 8.903 autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+#23 9.751 autobyteus-application-backend-sdk build: Done
+#23 10.59 Prisma schema loaded from prisma/schema.prisma
+#23 11.32
+#23 11.32 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 181ms
+#23 11.32
+#23 11.32 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#23 11.32
+#23 11.32 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+#23 11.32
+#23 11.55
+#23 11.55 > autobyteus-server-ts@0.1.1 build /app/autobyteus-server-ts
+#23 11.55 > pnpm run build:full
+#23 11.55
+#23 11.84
+#23 11.84 > autobyteus-server-ts@0.1.1 build:full /app/autobyteus-server-ts
+#23 11.84 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+#23 11.84
+#23 26.48 Successfully registered tool definition: 'read_file'
+#23 26.48 Successfully registered tool definition: 'write_file'
+#23 26.48 Successfully registered tool definition: 'edit_file'
+#23 26.48 Successfully registered tool definition: 'replace_in_file'
+#23 26.48 Successfully registered tool definition: 'insert_in_file'
+#23 26.48 Successfully registered tool definition: 'run_bash'
+#23 26.48 Successfully registered tool definition: 'start_background_process'
+#23 26.48 Successfully registered tool definition: 'get_background_processes'
+#23 26.48 Successfully registered tool definition: 'get_process_output'
+#23 26.48 Successfully registered tool definition: 'stop_background_process'
+#23 26.48 Successfully registered tool definition: 'search_web'
+#23 26.48 Successfully registered tool definition: 'read_media_file'
+#23 26.48 Successfully registered tool definition: 'download_media'
+#23 26.48 Successfully registered tool definition: 'read_url'
+#23 26.49 Successfully registered tool definition: 'add_todo'
+#23 26.49 Successfully registered tool definition: 'create_todo_list'
+#23 26.49 Successfully registered tool definition: 'get_todo_list'
+#23 26.49 Successfully registered tool definition: 'update_todo_status'
+#23 26.49 AgentFactory (Singleton) initialized.
+#23 26.51 (node:209) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+#23 26.51 (Use `node --trace-warnings ...` to show where the warning was created)
+#23 26.54 Built-in agents bootstrap smoke check passed.
+#23 26.56 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+#23 DONE 26.7s
+
+#24 [builder 18/18] RUN pnpm -C autobyteus-web build:mobile-web
+#24 0.343
+#24 0.343 > autobyteus@1.4.27 build:mobile-web /app/autobyteus-web
+#24 0.343 > node ./scripts/build-mobile-web.mjs
+#24 0.343
+#24 0.430 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+#24 2.567
+#24 2.567 > autobyteus@1.4.27 generate /app/autobyteus-web
+#24 2.567 > nuxt generate
+#24 2.567
+#24 2.933 ┌  Building Nuxt for production...
+#24 3.616 │
+#24 3.616 ●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+#24 4.846 isElectronBuild false
+#24 4.891 [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+#24 5.798 │
+#24 5.798 ●  Nitro preset: static
+#24 7.215 ℹ Building client...
+#24 7.231 ℹ vite v7.3.1 building client environment for production...
+#24 7.288 ℹ transforming...
+#24 41.91 ℹ ✓ 3585 modules transformed.
+#24 43.38 ℹ rendering chunks...
+#24 44.30 ℹ computing gzip size...
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff              4.42 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2             4.93 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2             5.21 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2             5.47 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff              5.98 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff              6.19 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.C195tn64.woff              6.50 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2       6.91 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2          6.91 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf               7.59 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff        7.66 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff           7.72 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2            9.64 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2        10.34 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf              10.36 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D5yQViql.woff            10.59 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2          11.32 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2             11.35 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf              11.51 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2         12.03 kB
+#24 44.46 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2           12.22 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf              12.23 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff         12.32 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf        12.34 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf           12.37 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff           13.21 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff              13.30 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2       13.57 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff          14.11 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff            14.41 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff        16.03 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2          16.40 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2              16.44 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf             16.65 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2          16.78 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2              16.99 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff           18.67 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff               18.75 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff           19.41 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf          19.44 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf            19.57 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf               19.58 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff               19.68 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf           22.36 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf             24.50 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2                25.32 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2             26.27 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf         27.56 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2              28.08 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff                 29.91 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff              30.77 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf            31.20 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf                31.31 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf            32.97 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff               33.52 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf                33.58 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                  51.34 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf               53.58 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                63.63 kB
+#24 44.47 ℹ .nuxt/dist/client/manifest.json                                       65.88 kB │ gzip:     6.18 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.CJV_gWfn.css                 0.20 kB │ gzip:     0.12 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                             0.23 kB │ gzip:     0.13 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/AgentDefinitionForm.B4uhkLvJ.css               0.28 kB │ gzip:     0.15 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.aod6xn15.css              0.35 kB │ gzip:     0.17 kB
+#24 44.47 ℹ .nuxt/dist/client/_nuxt/default.DkOS1umL.css                           0.86 kB │ gzip:     0.35 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/settings.Rq5VaJW6.css                          1.58 kB │ gzip:     0.66 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.BrK5oVEn.css                  3.20 kB │ gzip:     1.02 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/useTeamRunRuntimeCatalogSync.Bm2otteo.css      3.51 kB │ gzip:     1.19 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/workspace.DrBQ9tPi.css                         9.99 kB │ gzip:     2.52 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/skills.hZg4z6X7.css                           14.02 kB │ gzip:     3.04 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.BK2VMqPO.css         50.71 kB │ gzip:    13.07 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/entry.CGJ6UWKe.css                           118.27 kB │ gzip:    18.58 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/WyE6IZ2V.js                                    0.09 kB │ gzip:     0.10 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/qmk1ly7T.js                                    0.10 kB │ gzip:     0.11 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/Gi6I4Gst.js                                    0.15 kB │ gzip:     0.13 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/MU2a79UA.js                                    0.18 kB │ gzip:     0.15 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/Cg4kl8Oq.js                                    0.21 kB │ gzip:     0.16 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/c6eJ06AR.js                                    0.22 kB │ gzip:     0.20 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/b0dH-aeN.js                                    0.23 kB │ gzip:     0.20 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/fndHc2F-.js                                    0.26 kB │ gzip:     0.21 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/tQZapDCh.js                                    0.35 kB │ gzip:     0.26 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/f8MtO2S7.js                                    0.39 kB │ gzip:     0.27 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/jRRP6ybM.js                                    0.41 kB │ gzip:     0.27 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DSXTz0Rj.js                                    0.41 kB │ gzip:     0.27 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BNJu08iJ.js                                    0.49 kB │ gzip:     0.35 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/ioGj6adm.js                                    0.69 kB │ gzip:     0.44 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CE1G-McA.js                                    0.76 kB │ gzip:     0.40 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BJusQvZr.js                                    0.80 kB │ gzip:     0.41 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/vX0vfb3P.js                                    0.94 kB │ gzip:     0.45 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BRdIntNu.js                                    0.94 kB │ gzip:     0.57 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CDzgOKwN.js                                    1.08 kB │ gzip:     0.58 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CmKTTxBW.js                                    1.18 kB │ gzip:     0.57 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/B2Z-Mwdw.js                                    1.42 kB │ gzip:     0.63 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/ISd2u543.js                                    1.82 kB │ gzip:     0.83 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/RbgmnY0J.js                                    2.03 kB │ gzip:     0.96 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/Bv4L8bhO.js                                    2.39 kB │ gzip:     1.01 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/D7kgWHRa.js                                    2.56 kB │ gzip:     1.27 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/v-PpjibZ.js                                    3.43 kB │ gzip:     1.48 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DPNEKguc.js                                    3.50 kB │ gzip:     1.41 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BEZHqT4E.js                                    3.57 kB │ gzip:     1.29 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CiR9511m.js                                    3.83 kB │ gzip:     1.50 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CL8sxwDP.js                                    4.29 kB │ gzip:     1.85 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DX6XiGOO.js                                    4.69 kB │ gzip:     2.18 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/8qUvaxwc.js                                    4.74 kB │ gzip:     1.85 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DioA38Qa.js                                    4.74 kB │ gzip:     1.88 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/g502Je6p.js                                    4.85 kB │ gzip:     1.46 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DIv4LU9T.js                                    4.95 kB │ gzip:     2.03 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CJ0u63a9.js                                    4.98 kB │ gzip:     1.87 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DsZDhc9H.js                                    5.21 kB │ gzip:     2.28 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/ztLp8x_c.js                                    5.27 kB │ gzip:     2.11 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/xYBn5Q9t.js                                    5.63 kB │ gzip:     2.31 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DIXmJRyS.js                                    5.63 kB │ gzip:     2.29 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/ZTRlnGoz.js                                    5.84 kB │ gzip:     2.33 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DM_DldK0.js                                    5.89 kB │ gzip:     2.46 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BjLB2-VP.js                                    5.90 kB │ gzip:     1.85 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/B80b4mPa.js                                    7.05 kB │ gzip:     1.84 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DRcKBGup.js                                    8.63 kB │ gzip:     1.79 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BdR-kJsk.js                                    9.24 kB │ gzip:     1.90 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/C6zam7a3.js                                   10.35 kB │ gzip:     3.60 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/Dajo8K1q.js                                   11.00 kB │ gzip:     4.10 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/g74Q4p1y.js                                   11.88 kB │ gzip:     4.64 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BKT-tY3-.js                                   13.22 kB │ gzip:     4.45 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/Ch7sqwWr.js                                   14.16 kB │ gzip:     4.43 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CETX7MD_.js                                   15.81 kB │ gzip:     5.61 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/BbwPLiQx.js                                   17.63 kB │ gzip:     5.17 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/DpCyL_rT.js                                   17.73 kB │ gzip:     4.52 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CCfMfhZW.js                                   18.47 kB │ gzip:     7.21 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/CAEfs8LO.js                                   20.05 kB │ gzip:     6.89 kB
+#24 44.48 ℹ .nuxt/dist/client/_nuxt/Do8xqMA8.js                                   20.23 kB │ gzip:     7.17 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DYK8_XPC.js                                   21.57 kB │ gzip:     6.32 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DzHShHM7.js                                   22.15 kB │ gzip:     8.13 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/Dto5RzYY.js                                   23.55 kB │ gzip:     8.31 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/CwvJEBlZ.js                                   23.63 kB │ gzip:     8.24 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/BuOEjUFY.js                                   24.10 kB │ gzip:     7.39 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/Cfu2L3T9.js                                   25.24 kB │ gzip:     8.81 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DgsB4xDJ.js                                   25.61 kB │ gzip:    10.06 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/bqOIcN6d.js                                   27.35 kB │ gzip:     9.70 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/CXcXihbp.js                                   28.19 kB │ gzip:     8.21 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/COAZgUPz.js                                   30.09 kB │ gzip:     9.41 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/j4KFna-j.js                                   32.10 kB │ gzip:    10.09 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DwIoaoDO.js                                   33.85 kB │ gzip:     9.94 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/Bkj8IWXd.js                                   36.30 kB │ gzip:    11.79 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DmPRcudH.js                                   36.41 kB │ gzip:     9.18 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DwYl8gVe.js                                   40.19 kB │ gzip:    11.34 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/COaDBX0B.js                                   45.25 kB │ gzip:    14.64 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/EgNALjBS.js                                   46.40 kB │ gzip:    10.15 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/JSJI6sXN.js                                   50.50 kB │ gzip:    13.44 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/CdNdvfkw.js                                   60.44 kB │ gzip:    19.40 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/D2DaQ1Uv.js                                   61.10 kB │ gzip:    15.78 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/CN26p4PV.js                                   67.26 kB │ gzip:    15.75 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/Dyb2Pq_p.js                                   68.32 kB │ gzip:    23.15 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DVsKbG9P.js                                   70.16 kB │ gzip:    19.68 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/BHqXDUl9.js                                   71.78 kB │ gzip:    20.48 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/C3C7qBes.js                                   74.04 kB │ gzip:    17.01 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DpJ9cy5b.js                                   74.80 kB │ gzip:    17.32 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/PLuPLEzn.js                                   81.73 kB │ gzip:    22.48 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/C34pZg5X.js                                   86.07 kB │ gzip:    25.11 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/D1QIVl2p.js                                   97.81 kB │ gzip:    26.84 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/CV1rDuqW.js                                  109.53 kB │ gzip:    29.51 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/B8r7czVj.js                                  146.24 kB │ gzip:    38.62 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/DKn9fr7s.js                                  148.60 kB │ gzip:    42.00 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/QU6Rb5Ff.js                                  151.29 kB │ gzip:    38.47 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/5J0xJHOV.js                                  441.64 kB │ gzip:   141.47 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/BSpzNsQm.js                                  452.84 kB │ gzip:   107.02 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/BBUr25b0.js                                  493.52 kB │ gzip:   129.56 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/F-yStVnU.js                                  657.33 kB │ gzip:   177.21 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/CYP72TT2.js                                  960.51 kB │ gzip:   262.87 kB
+#24 44.49 ℹ .nuxt/dist/client/_nuxt/CPJk7fcR.js                                3,764.11 kB │ gzip: 1,211.55 kB
+#24 44.49
+#24 44.49  WARN
+#24 44.49 (!) Some chunks are larger than 500 kB after minification. Consider:
+#24 44.49 - Using dynamic import() to code-split the application
+#24 44.49 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+#24 44.49 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#24 44.49
+#24 44.49 ℹ ✓ built in 37.26s
+#24 44.49 ✔ Client built in 37276ms
+#24 44.50 ℹ Building server...
+#24 44.50 ℹ vite v7.3.1 building ssr environment for production...
+#24 44.51 ℹ transforming...
+#24 44.51 ℹ ✓ 1 modules transformed.
+#24 44.52 ℹ rendering chunks...
+#24 44.52 ℹ ✓ built in 22ms
+#24 44.57 ✔ Server built in 73ms
+#24 44.58 [nitro] ℹ Initializing prerenderer
+#24 45.82 [nitro] ℹ Prerendering 15 initial routes with crawler
+#24 45.91 [nitro]   ├─ /nodes (75ms)
+#24 45.91 [nitro]   ├─ /media (75ms)
+#24 45.91 [nitro]   ├─ /skills (76ms)
+#24 45.91 [nitro]   ├─ /memory (77ms)
+#24 45.91 [nitro]   ├─ /agents (76ms)
+#24 45.91 [nitro]   ├─ /tools (76ms)
+#24 45.91 [nitro]   ├─ /workspace (78ms)
+#24 45.91 [nitro]   ├─ /agent-teams (80ms)
+#24 45.91 [nitro]   ├─ /applications (81ms)
+#24 45.92 [nitro]   ├─ / (75ms)
+#24 45.92 [nitro]   ├─ /settings (77ms)
+#24 45.92 [nitro]   ├─ /mobile (76ms)
+#24 45.92 [nitro]   ├─ /200.html (81ms)
+#24 45.92 [nitro]   ├─ /404.html (81ms)
+#24 45.92 [nitro]   ├─ /index.html (82ms)
+#24 45.92 [nitro] ℹ Prerendered 15 routes in 1.307 seconds
+#24 46.18 [nitro] ✔ Generated public dist/public
+#24 46.26 [nitro] ✔ You can preview this build using npx serve dist/public
+#24 46.26 │
+#24 46.26 ▲  HTML content not prerendered because ssr: false was set.
+#24 46.26 │
+#24 46.26 ●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+#24 46.27 │
+#24 46.27 └  ✨ You can now deploy dist/public to any static hosting!
+#24 46.95 Mobile web assets written to /app/autobyteus-web/dist-mobile/public
+#24 DONE 47.1s

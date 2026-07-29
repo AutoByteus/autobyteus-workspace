@@ -1,0 +1,31 @@
+# PKG-007 multi-platform release-file BuildKit check
+2026-07-29T08:02:48+02:00
+#0 building with "api-e2e-dr004-20260729-0750" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 4.09kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.9s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#4 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 done
+#4 CACHED
+
+#5 [auth] library/node:pull token for registry-1.docker.io
+#5 DONE 0.0s
+
+#6 [linux/arm64 internal] load metadata for docker.io/library/node:22-bookworm
+#6 DONE 0.4s
+
+#7 [internal] load .dockerignore
+#7 transferring context: 282B done
+#7 DONE 0.0s
+Check complete, no warnings found.

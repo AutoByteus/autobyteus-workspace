@@ -1,0 +1,8 @@
+# PKG-001 durable direct-source contract
+2026-07-29T07:49:12+02:00
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.009s
+
+OK

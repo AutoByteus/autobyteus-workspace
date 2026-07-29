@@ -1,0 +1,52 @@
+# PKG-006 final state and invariant audit
+2026-07-29T08:05:43+02:00
+## focused test rerun after Docker cleanup
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.014s
+
+OK
+## git and tag identities
+head=390307afb496eecdba43143c085cfde7a73fd3e2
+origin_personal_current=ca97fa2f537f5bf31c4adbddc3d094c5bd7c7e96
+tag_object=a89d7828fd05db8abfabbee25bcaa88cce39af18
+tag_peeled=2127840eeeb66dc4cce66b51e59fb7c6a5eff112
+## durable test hashes
+8de41e4923a8a776cb4ea3655f4fe1adcc0b889ca6c023331c9a9ff30651d1d0  scripts/tests/test_docker_build_context_sources.py
+patch_sha256=1d01b8833094455863a34361f885f0bcb53724874d4cf6f8dfc2186a5e0fca77
+## evidence files
+-rw-r--r--@ 1 normy  staff   2.3K Jul 29 07:50 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/docker-environment-preflight.log
+-rw-r--r--@ 1 normy  staff   1.7K Jul 29 08:03 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/focused-durable-docker-contracts.log
+-rw-r--r--@ 1 normy  staff    28B Jul 29 07:50 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/owned-builder-name.txt
+-rw-r--r--@ 1 normy  staff   1.7K Jul 29 07:50 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/owned-builder-setup.log
+-rw-r--r--@ 1 normy  staff   309B Jul 29 07:49 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-001-durable-source-contract.log
+-rw-r--r--@ 1 normy  staff   4.3K Jul 29 07:50 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-002-buildx-checks.log
+-rw-r--r--@ 1 normy  staff    51K Jul 29 07:55 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-003-monorepo-builder-build.log
+-rw-r--r--@ 1 normy  staff   1.6K Jul 29 07:57 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-003-monorepo-builder-inspection.log
+-rw-r--r--@ 1 normy  staff    40K Jul 29 08:00 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-004-allinone-builder-build.log
+-rw-r--r--@ 1 normy  staff    39K Jul 29 08:02 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-004-remote-server-builder-build.log
+-rw-r--r--@ 1 normy  staff   5.8K Jul 29 08:03 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-005-contract-audit.log
+-rw-r--r--@ 1 normy  staff   1.4K Jul 29 08:05 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-006-docker-cleanup.log
+-rw-r--r--@ 1 normy  staff   830B Jul 29 08:05 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-006-final-state.log
+-rw-r--r--@ 1 normy  staff   1.0K Jul 29 08:02 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/pkg-007-multiplatform-buildx-check.log
+-rw-r--r--@ 1 normy  staff   7.7K Jul 29 08:04 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/tracked-base-advancement.log
+-rw-r--r--@ 1 normy  staff   2.5K Jul 29 08:04 /Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/tracked-base-relevant-diff.log
+## status
+## release/token-statistics-int-overflow-v1.4.27...origin/personal [behind 14]
+ M autobyteus-server-ts/docker/Dockerfile.monorepo
+ M docker/Dockerfile.allinone
+ M docker/Dockerfile.remote-server
+ M tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md
+ M tickets/done/token-statistics-int-overflow/code-review-report.md
+ M tickets/done/token-statistics-int-overflow/code-review-revision-record.md
+ M tickets/done/token-statistics-int-overflow/implementation-handoff.md
+ M tickets/done/token-statistics-int-overflow/implementation-revision-record.md
+?? scripts/tests/test_docker_build_context_sources.py
+?? tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/
+## diff check
+## forbidden owned resources
+owned_image=absent
+owned_builder=absent
+## release safety
+image_push=not_performed workflow_invoke=not_performed manual_dispatch=not_performed tag_mutation=not_performed delivery_recovery=not_performed

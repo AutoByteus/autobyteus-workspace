@@ -2,211 +2,232 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/requirements-doc.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/design-spec.md`
-- Supplemental Task Artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/solution-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/code-review-revision-record.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: `2`
-- Trigger: source review passed after `SR-001`, `IR-001`, and `CRR-002`; API/E2E resumed to complete native AppConfig setup, Task query coverage, live API, and browser validation.
-- Prior Round Reviewed: `Yes` — prior provisional round stopped at 61% and rerouted the compact-primary display conflict.
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/requirements-doc.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/graphql-token-count-contract.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/solution-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/code-review-revision-record.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: `3`
+- Trigger: `CRR-004` passed `IR-002`, the bounded Docker packaging correction triggered by delivery revision `DR-004` and failed Server Docker Release run `30425051361`.
+- Prior Round Reviewed: `Yes` — `API-REV-001` passed the original token-statistics product/API/browser scope at 96% confidence. No prior API/E2E failure was unresolved.
 - Latest Authoritative Round: this report.
 
 ## Investigation And Execution Basis
 
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
-- Investigation completed before durable coverage changes/final execution: `Yes`.
-- Investigation plan followed: `Yes`, with two execution corrections: existing regression files required a temporary AppConfig harness, and Nuxt was restarted with an explicit live backend URL after the generic test script selected unused port 8000.
-- Existing coverage decisions revised during execution: the retained provider candidate was valid after adding native AppConfig and the missing `tokenUsageTaskStatisticsInPeriod` selection/assertion. No stale tests were removed.
-- Reroute required: `No`.
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-coverage-investigation.md`
+- Investigation completed before durable coverage changes or final execution: `Yes`.
+- Investigation plan followed: `Yes`.
+- Material execution refinements: the monorepo builder was loaded to a local owned image so the installed package and build outputs could be inspected; sibling builders used cache-only output because the changed context/install boundary did not require retained images.
+- Existing coverage decisions revised during execution: `No`. The two established Docker contract modules remained valid; a new generic direct-source contract was added.
+- Reroute required before or during execution: `No`.
+- API/E2E-owned command corrections: one initial inspection command failed only in its `awk` evidence formatter after already printing `repository_prisma_version=1.0.9`; the corrected inspection passed. One initial cleanup command rejected an unsupported `buildx inspect --format` option before any cleanup action; the corrected cleanup passed. Neither was an implementation or packaging failure.
 
 ## Compatibility / Legacy Scope Check
 
 - Requirements/design introduce or tolerate backward compatibility in scope: `No`.
 - Compatibility-only or legacy-retention behavior observed: `No`.
-- Approved persisted-data transition followed without unnecessary migration or runtime fallback: `Yes` — normal ledger rows were written and read in the current isolated SQLite database.
-- Durable coverage retained only for compatibility behavior: `No`.
-- Upstream recipient notified: `N/A`.
+- Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes` — `Not Affected`.
+- Durable coverage added or retained only for compatibility-only behavior: `No`.
+- Legacy cleanup result: no live root `patches/`, `COPY patches`, `patchedDependencies`, patch path, or lockfile `patch_hash` remains. The new test protects generic direct-source validity rather than prohibiting a legitimate future patch contract.
+- Upstream recipient notified: `N/A`; no invalid compatibility scope was found.
 
 ## Changed Boundary And Evidence Matrix
 
-| Scenario ID | Behavior / Acceptance Criteria | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence |
+| Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| API-001 | AC-001/AC-002/AC-005 exact overflow through Task, runtime/model, and run-summary paths | Ledger → provider → GraphQL | Native persistence-backed Vitest E2E; live HTTP GraphQL | Durable + Live | Pass | `server-provider-semantics.log`; `api-e2e-live-overflow-check.txt` |
-| API-002 | AC-003 smaller counts, recursive task/date/grouping semantics | Existing GraphQL projections | Native persistence-backed Vitest E2E with temporary AppConfig harness | Durable | Pass | `server-regressions-rerun.log` |
-| API-003 | AC-003 pricing/aggregate projection regression | Existing pricing GraphQL projections | Native persistence-backed Vitest E2E with temporary AppConfig harness | Durable | Pass | `server-regressions-rerun.log` |
-| CONTRACT-001 | SafeInt field inventory and `usageReportCount: Int` | Source schema → generated client | Source schema probe, live introspection, codegen | Durable + Live | Pass | `schema-codegen-contract.log`; `api-e2e-live-schema-check.txt` |
-| WEB-001 | AC-002/AC-004 large number retained in Pinia and error lifecycle preserved | GraphQL-shaped payload → store | Nuxt/Vitest store test | Durable | Pass | `web-focused.log` |
-| WEB-002 | AC-002 exact primary digits and compact explanatory sublines | Task table renderer | Nuxt/Vitest component test; live browser | Durable + Browser | Pass | `web-focused.log`; `api-e2e-browser-check.txt`; screenshot |
-| WEB-003 | AC-003/AC-004 Settings controls, date/grouping/fetch/empty state | Settings component | Nuxt/Vitest component test | Durable | Pass | `web-settings.log` |
+| `PKG-001` | `DR-004`; all supported direct build inputs exist | Dockerfile direct `COPY` → repository-root context | Python unittest | Durable | Pass — 1/1; 27/28/21 sources, zero missing | `pkg-001-durable-source-contract.log`, `focused-durable-docker-contracts.log`, added test file |
+| `PKG-002` | `DR-004`; corrected Dockerfiles remain BuildKit-valid | Dockerfile parsing/context metadata | Buildx `--check` for all three | Live | Pass — 3/3, no warnings | `pkg-002-buildx-checks.log` |
+| `PKG-003` | Release-server path proceeds through the formerly failing layer; unpatched current dependency installs | Repository root → monorepo builder → no-frozen install → server/mobile build | Real native BuildKit builder, loaded local image, ephemeral inspection | Live | Pass | `pkg-003-monorepo-builder-build.log`, `pkg-003-monorepo-builder-inspection.log` |
+| `PKG-004` | Sibling all-in-one and remote-server paths no longer require retired input | Repository root → sibling builders/install/build | Real native BuildKit builder, cache-only output | Live | Pass — both full builder targets | `pkg-004-allinone-builder-build.log`, `pkg-004-remote-server-builder-build.log` |
+| `PKG-005` | Current dependency/lock/history state is unpatched `repository_prisma@1.0.9` | Manifest, lock, Dockerfile, historical removal | Read-only contract/history inventory | Temporary | Pass | `pkg-005-contract-audit.log`, monorepo inspection |
+| `PKG-006` | No owned resources or release-state mutations remain | Docker and Git lifecycle/invariants | Cleanup and read-only final audit | Temporary | Pass | `pkg-006-docker-cleanup.log`, `pkg-006-final-state.log` |
+| `PKG-007` | Release Dockerfile remains valid for configured platform set | Multi-platform BuildKit definition/context | `--platform linux/amd64,linux/arm64 --target builder --check` | Live | Pass, no warnings | `pkg-007-multiplatform-buildx-check.log` |
+| `API-001`, `WEB-001`, `WEB-002`, `WEB-003` | Original token-statistics `REQ-001`–`REQ-004`, `AC-001`–`AC-005` | Product GraphQL/store/UI/browser | Prior source-built API/browser round | Live/Browser/Durable | Preserved prior Pass | `API-REV-001`; unchanged product source |
 
 ## Additional Repository Coverage Execution
 
-| Order | Command | Working Directory / Configuration | Boundary Proven | Result | Evidence |
-| --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts --no-watch` | Worktree; native Prisma global setup plus per-file temp AppConfig | API-001 | Pass — 1 file / 2 tests | `server-provider-semantics.log` |
-| 2 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts --no-watch` | Worktree; rerun under temporary native AppConfig harness | API-002/API-003 | Pass — 2 files / 4 tests | `server-regressions-rerun.log` |
-| 3 | `pnpm -C autobyteus-web test:nuxt stores/__tests__/tokenUsageStatistics.spec.ts components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts components/settings/__tests__/TokenUsageStatistics.spec.ts --run` | Worktree; Nuxt Vitest | WEB-001/WEB-002/WEB-003 | Pass — 3 files / 8 tests | `web-focused.log`, `web-settings.log` |
-| 4 | Source schema probe plus `BACKEND_GRAPHQL_BASE_URL=<live>/graphql pnpm -C autobyteus-web codegen` | Disposable SDL/probe and running source-built backend | CONTRACT-001 | Pass | `schema-codegen-contract.log`, `api-e2e-live-schema-check.txt` |
-| 5 | `pnpm -C autobyteus-server-ts build` | Worktree; Prisma/shared builds and built-in-agent smoke | Backend source/package build | Pass | source-review evidence; `server-build-typecheck-corrected.log` |
-| 6 | `pnpm -C autobyteus-web build` | Worktree; Nuxt production client/server/prerender | Frontend bundle | Pass; existing large-chunk warning only | `broader-checks.log` |
-| 7 | `git diff --check` | Worktree | Patch hygiene | Pass | `broader-checks.log` / source-review report |
+The coverage investigation contains the authoritative repository sequence. The following commands were the required broader Docker execution after the post-repository scorecard:
 
-The package `pnpm ... typecheck` command was also attempted and failed with repository-wide pre-existing `TS6059` errors because `tsconfig.json` includes tests outside `rootDir`. This does not fail the implementation source build, which passed; the exact output is retained in `broader-checks.log`.
+| Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `docker buildx build --builder api-e2e-dr004-20260729-0750 --progress=plain --platform linux/arm64 --target builder --load -t autobyteus-api-e2e-dr004-monorepo-builder:20260729 -f autobyteus-server-ts/docker/Dockerfile.monorepo .` | Worktree root; owned BuildKit | `PKG-003` full release builder | Pass | `pkg-003-monorepo-builder-build.log` |
+| 2 | Ephemeral `docker run --rm` package/lock/output inspection | Loaded owned builder image | `repository_prisma@1.0.9`, no patch metadata/path, server/mobile outputs | Pass | `pkg-003-monorepo-builder-inspection.log` |
+| 3 | `docker buildx build ... --platform linux/arm64 --target builder --output=type=cacheonly -f docker/Dockerfile.allinone .` | Worktree root; same owned builder | `PKG-004` all-in-one full builder | Pass | `pkg-004-allinone-builder-build.log` |
+| 4 | Same cache-only builder command for `docker/Dockerfile.remote-server` | Worktree root; same owned builder | `PKG-004` remote-server full builder | Pass | `pkg-004-remote-server-builder-build.log` |
+| 5 | Multi-platform `buildx --check` on monorepo builder | `linux/amd64,linux/arm64`; no output | `PKG-007` release platform definition/context | Pass | `pkg-007-multiplatform-buildx-check.log` |
+| 6 | Owned image deletion, builder deletion, resource/tag/status audit | Worktree root | `PKG-006` cleanup and release safety | Pass | `pkg-006-docker-cleanup.log`, `pkg-006-final-state.log` |
 
 ## Validation Confidence Scorecard
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
-| --- | ---: | ---: | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 95% | 100% | +5 | Native/live Task, model, run-summary, store, table, and browser evidence all use exact values. | Above `Number.MAX_SAFE_INTEGER` is out of scope. |
-| Changed-boundary execution directness | 95% | 100% | +5 | Live source-built GraphQL plus persistence-backed E2E and generated client inventory. | None in approved range. |
-| Cross-boundary integration realism and mock gap | 90% | 95% | +5 | Live DB → GraphQL → HTTP → Nuxt browser journey closes the major mock gap. | No production auth/session flow; unchanged boundary. |
-| Environment/configuration/identity/fixture fidelity | 90% | 95% | +5 | Native AppConfig, isolated SQLite, unique IDs, explicit backend URL, audited cleanup. | Initial inherited-env disposable probe was immediately deleted. |
-| Failure/edge/lifecycle/recovery evidence | 90% | 95% | +5 | Overflow boundary, smaller/pricing regressions, store error lifecycle, no-error browser assertion, process/database cleanup. | SafeInt rejection outside safe range not run. |
-| User-surface/browser/desktop-shell confidence | 90% | 95% | +5 | Chrome Settings journey verified exact digits; no shell-specific source changed. | Packaged Electron artifact not executed. |
-| Durable regression coverage quality and relevance | 95% | 95% | 0 | API Task query is durable; store/table/settings paths are narrow, deterministic, and passed. | Separate proportional review remains. |
+| --- | ---: | ---: | ---: | --- | --- |
+| Requirement and acceptance-criteria proof | 90% | 100% | +10 | Every current packaging scenario passed; original product criteria retain `API-REV-001` direct proof. | None for the approved current boundary. |
+| Changed-boundary execution directness | 75% | 100% | +25 | All three real Dockerfiles completed their actual builder targets from root context. | Runtime stages are unchanged and not needed to prove the deleted pre-install input. |
+| Cross-boundary integration realism and mock gap | 75% | 98% | +23 | Real context → base image → pnpm install → Prisma → server/mobile/gateway builds, no mocks. | Registry publication and runtime-stage launch were not executed. |
+| Environment, configuration, identity, and fixture fidelity | 85% | 97% | +12 | Exact reviewed worktree, root context, Docker daemon, owned BuildKit, native Linux arm64, package inspection, exact Git/tag identities. | Local Docker Desktop differs from GitHub-hosted Ubuntu; full amd64 emulated compile was not required. |
+| Failure, edge-case, lifecycle, and recovery evidence | 75% | 98% | +23 | Exact original failure evidence, corrected success across all affected files, immutable tag audit, complete owned-resource cleanup. | Delivery recovery itself is intentionally excluded. |
+| User-surface, browser, and desktop-shell confidence | 75% | 95% | +20 | Local release-equivalent builder path completed; prior browser/Electron evidence remains valid; no user-surface source changed. | No workflow/registry publication or runtime image launch, by scope and safety constraint. |
+| Durable regression coverage quality and relevance | 95% | 95% | 0 | Generic daemon-free direct-source test covers all three supported Dockerfiles and avoids pinning present dependency policy. | Proportional test-code review is the next stage. |
 
-- Overall post-repository confidence: `92%` (simple average, before live/browser validation).
-- Overall final confidence: `96%` (675 / 7 = 96.4%, rounded down conservatively).
-- Confidence change from broader validation: `+4 percentage points` overall; it removed the material live transport/proxy/rendering uncertainty.
-- Every critical acceptance criterion directly proven: `Yes`.
-- Any final applicable category below 90%: `No`.
-- Default final confidence target of 95% met: `Yes`.
-- Confidence-limiting residual risks: packaged Electron shell, authenticated deployment, and out-of-range SafeInt rejection were not tested; none is material to the approved changed boundary.
+- Overall post-repository confidence: `81%`.
+- Overall final confidence: `97%` (683 / 7 = 97.57%, rounded down conservatively).
+- Calculation method: simple average of all seven applicable categories; the average does not hide a weak category.
+- Confidence change produced by broader validation: `+16 percentage points` overall.
+- Every critical acceptance/current-round criterion directly proven: `Yes`.
+- Any final applicable category below `90%`: `No`.
+- Default final confidence target of `95%` met: `Yes`.
+- Confidence-limiting residual risks: no registry push/workflow rerun, no full amd64 compile, and no unchanged runtime-stage launch; these are bounded delivery/platform residuals, not gaps in the corrected build-context/install boundary.
 
 ## Broader Validation Decision And Execution
 
-- Decision: `Required` → completed.
-- Selected mode: built backend with owned live test runtime, direct HTTP GraphQL, live schema/codegen, and Chrome browser validation of Settings → Token Statistics.
-- Confidence gap addressed: mocked store/component tests did not prove source schema serialization, HTTP integration, proxy configuration, or the final user-visible decimal rendering.
-- Startup and readiness: `pnpm server:test` built and reported `TEST_SERVER_READY http://127.0.0.1:59864`; Nuxt dev server was started at `http://127.0.0.1:3000` with `BACKEND_NODE_BASE_URL=http://127.0.0.1:59864`.
-- Environment: test runtime root under `autobyteus-server-ts/tests/.tmp/live-e2e-runtime`, SQLite `autobyteus-server-ts/db/test.db`; unique dates/IDs; no credentials.
-- Seed: two ledger rows, `1_500_000_000 + 1_636_827_911`, expected gross input `3_136_827_911`, output `30`, total `3_136_827_941`, report count `2`.
+- Decision and selected mode: `Required — Other: isolated Docker/BuildKit packaging execution`.
+- Material deviation from plan: `None`.
+- Confidence gap addressed: static checks did not prove real context transfer, no-frozen install, package resolution, later builder stages, or cleanup.
+- Startup/readiness: existing Docker Desktop daemon passed version/info; uniquely named Docker-container builder bootstrapped successfully.
+- Environment choices: native `linux/arm64` builder execution; no registry credentials, no push, no release workflow, and no synthetic patch directory.
+- Seed data/fixtures/authentication/permissions: `N/A`.
 
-| Journey Step | Expected | Actual | Evidence | Result |
+| Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| Introspect live schema | SafeInt on scoped token outputs; report count remains Int | Exact schema inventory and empty queries had no GraphQL errors | `api-e2e-live-schema-check.txt` | Pass |
-| Query live Task aggregate | Task row returns exact numeric overflow aggregate | `grossInputTokens=3136827911`, `outputTokens=30`, `totalTokens=3136827941`, `usageReportCount=2` | `api-e2e-live-overflow-check.txt` | Pass |
-| Query live model/run summaries | Same exact aggregate on model and run summary paths | Exact values returned on both paths | `api-e2e-live-overflow-check.txt` | Pass |
-| Run Settings → Token Statistics in Chrome | Primary Task input cell shows full decimal digits and no GraphQL error | `3,136,827,911` visible; compact `3.14B` absent from primary cell; error absent | `api-e2e-browser-check.txt`, screenshot | Pass |
+| Monorepo direct-source/install boundary | BuildKit passes the old `COPY patches` position and runs real no-frozen install | Builder sequence had 19 steps instead of old 20; direct sources resolved and step 11 ran `pnpm install --no-frozen-lockfile` successfully | Monorepo build log | Pass |
+| Monorepo builder completion | Prisma, server, and mobile-web builds complete | Prisma generation, sanitized server build smoke, Nuxt mobile build, and builder export completed | Monorepo build log | Pass |
+| Installed package state | Exact unpatched `repository_prisma@1.0.9`; no `/app/patches` or patch metadata | Version `1.0.9`; path and metadata absent | Monorepo inspection log | Pass |
+| Current lock/install behavior | Real `--no-frozen-lockfile` consumes current lock state without host mutation | Host lock SHA `a5316d95…`; container-local lock SHA `89680741…` because partial manifest-only workspace prunes importer entries; both retain `repository_prisma@1.0.9`; host file unchanged | Monorepo inspection and contract audit | Pass |
+| All-in-one builder | Filtered no-frozen install and all builds complete | Lock reported up to date; server, mobile-web, and gateway builds completed | All-in-one build log | Pass |
+| Remote-server builder | No-frozen install and server/mobile builds complete | All steps completed | Remote-server build log | Pass |
+| Safety/cleanup | Owned resources removed; published tag unchanged; no delivery action | Builder/image/containers absent; tag still peels to `2127840…`; no push/workflow/dispatch/tag mutation | Cleanup/final state logs | Pass |
 
 ## Desktop Application Validation
 
-- Browser-tested shared web-equivalent renderer behavior: yes; Chrome semantic DOM assertions and screenshot are retained.
-- Electron shell-specific validation: not run; no preload, IPC, packaging, or shell lifecycle boundary changed.
-- Effect on already-running desktop applications: `None`.
-- Consequence: packaged artifacts may require delivery/rebuild to receive source changes; this is delivery-stage residual risk.
+- Validation approach: `Not Applicable for this round`.
+- Browser-tested web-equivalent behavior: prior `API-REV-001` remains authoritative.
+- Shell-specific or lifecycle behavior: no Electron source changed.
+- Effect on any already-running desktop application: `None`.
+- Behavior not directly proven: Docker runtime image launch, which does not materially reduce confidence in the deleted builder-context input.
 
 ## Platform / Runtime Targets
 
-- OS/platform: macOS, local worktree.
-- Runtime: Node `v22.23.1`; server Vitest `v4.0.18`; web Vitest `v3.2.4`; Nuxt `3.21.1`; Nitro `2.13.1`; Vite `7.3.1`; Vue `3.5.28`.
-- Browser: Google Chrome `150.0.7871.127`, Playwright Core `1.58.2`.
-- Browser URL/viewport: `http://127.0.0.1:3000/settings`; default local viewport; date inputs `2026-07-21` to `2026-07-28`.
+- Host: macOS arm64, Europe/Berlin execution environment.
+- Docker client/engine: `29.0.1`; Docker Desktop `4.52.0`; Linux arm64 VM.
+- Buildx: `v0.29.1-desktop.1`.
+- Owned BuildKit: `v0.31.2`, supporting `linux/arm64` and `linux/amd64` among other platforms.
+- Builder target runtime: Node `v22.23.1`, pnpm `10.28.2` at root install; web mobile build activated its declared pnpm `10.28.1`.
+- Browser/device/viewport/locale/accessibility: `N/A` for this packaging-only round.
 
-## Lifecycle / Persisted-Data Checks
+## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
 - Approved persisted-data decision: `Not Affected`.
-- Representative existing data: normal Prisma token ledger events written to isolated SQLite and read through the unchanged ledger provider and current GraphQL projections.
-- Result: direct use succeeded; no migration, rewrite, cap, compatibility branch, or dual read/write path observed.
-- Version-specific runtime fallback observed: `No`.
-- Residual persisted-data risk: none for the approved reader and field range; values outside JavaScript safe integer range remain out of scope.
+- Representative existing data exercised: `N/A` for packaging-only cleanup; prior persistence-backed `API-REV-001` remains passed.
+- Direct-use/discard/migration result: no migration or data action was required or performed.
+- Version-specific runtime branch, dual read/write, or compatibility fallback observed: `No`.
+- Residual persisted-data risk: `None` from this round.
+- Dependency transition evidence: historical patch to `repository_prisma@1.0.6` was retired at `3fdaf0c62`; current actual install is unpatched `1.0.9`.
 
 ## Tests Implemented Or Updated
 
 | Path / Scenario | Change | Requirement / Boundary | Execution Result | Notes |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts` / API-001 | Updated | AC-001/AC-002/AC-005; live GraphQL Task path | Pass, 2/2 | API/E2E-owned: native AppConfig setup, Task selection/assertion, unique fixture cleanup. |
-| `autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts` / WEB-001 | Updated upstream; independently executed | AC-002/AC-004; Pinia numeric state/error lifecycle | Pass, 2/2 | Source-reviewed upstream test change. |
-| `autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts` / WEB-002 | Updated upstream; independently executed | AC-002/AC-003; exact primary and compact secondary rendering | Pass, 3/3 | Source-reviewed upstream test change. |
-| `autobyteus-web/components/settings/__tests__/TokenUsageStatistics.spec.ts` / WEB-003 | Rechecked | AC-003/AC-004; Settings controls and empty state | Pass, 3/3 | No change needed this round. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/scripts/tests/test_docker_build_context_sources.py` (`PKG-001`) | Added | `DR-004`; direct repository-root source contract for three Dockerfiles | Pass alone 1/1; combined Docker contracts 10/10; cleanup rerun 1/1 | File SHA-256 `8de41e4923a8a776cb4ea3655f4fe1adcc0b889ca6c023331c9a9ff30651d1d0`; patch SHA-256 `1d01b8833094455863a34361f885f0bcb53724874d4cf6f8dfc2186a5e0fca77`. |
 
 ## Tests Removed As Stale Or Obsolete
 
-None. No stale assertion was removed.
+`None.`
 
 ## Durable Coverage Changed In The Codebase
 
-- Durable coverage changed: `Yes`.
-- Paths added/updated: `autobyteus-server-ts/tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts`; upstream-updated `autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts`; upstream-updated `autobyteus-web/components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts`.
-- Paths removed: none.
-- Added/updated paths attached for proportional test-code review: `Yes`.
-- Removed-path evidence: `N/A`.
+- Repository-resident durable coverage added, updated, or removed this round: `Yes`.
+- Paths added: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/scripts/tests/test_docker_build_context_sources.py`.
+- Paths updated: `None`.
+- Paths removed: `None`.
+- Added path attached for proportional test-code review: `Yes` in the handoff package.
+- Removed-path diff evidence: `N/A`.
 
 ## Other Execution Artifacts
 
-| Artifact Path | Purpose | Retained / Temporary | Notes |
+All retained evidence is under `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27/tickets/done/token-statistics-int-overflow/api-e2e-evidence/docker-packaging-dr004/`.
+
+| Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `tickets/done/token-statistics-int-overflow/api-e2e-live-schema-check.txt` | Live schema and empty-query assertions | Retained | Source-built GraphQL evidence. |
-| `tickets/done/token-statistics-int-overflow/api-e2e-live-overflow-check.txt` | Live HTTP exact aggregate assertions | Retained | Task/model/run-summary evidence and cleanup record. |
-| `tickets/done/token-statistics-int-overflow/api-e2e-browser-check.txt` | Browser semantic output | Retained | Exact decimal visible, compact primary absent, no GraphQL error. |
-| `tickets/done/token-statistics-int-overflow/api-e2e-settings-token-statistics.png` | Supporting browser screenshot | Retained | Supporting evidence, not sole assertion. |
-| `tickets/done/token-statistics-int-overflow/api-e2e-evidence/*.log` | Repository/live setup output | Retained | Includes initial setup failures and corrected reruns. |
+| `docker-environment-preflight.log` | Daemon, Buildx, platform, and disk preflight | Retained | Confirms environment before owned setup. |
+| `pkg-001-durable-source-contract.log` | New durable test | Retained | 1/1 pass. |
+| `focused-durable-docker-contracts.log` | New plus established Docker contracts | Retained | 10/10 pass. |
+| `pkg-002-buildx-checks.log` | All three BuildKit checks | Retained | No warnings. |
+| `pkg-003-monorepo-builder-build.log` | Full release-server builder | Retained | Critical execution evidence. |
+| `pkg-003-monorepo-builder-inspection.log` | Installed package, lock, patch, and output inspection | Retained | Critical dependency evidence. |
+| `pkg-004-allinone-builder-build.log` | Full all-in-one builder | Retained | Cache-only output. |
+| `pkg-004-remote-server-builder-build.log` | Full remote-server builder | Retained | Cache-only output. |
+| `pkg-005-contract-audit.log` | Dependency/history/source/hash/hygiene audit | Retained | Includes reviewer source patch hashes and test diff. |
+| `pkg-006-docker-cleanup.log`, `pkg-006-final-state.log` | Cleanup, Git/tag, release-safety audit | Retained | Owned resources absent. |
+| `pkg-007-multiplatform-buildx-check.log` | Release platform-set check | Retained | No warnings. |
+| `tracked-base-advancement.log`, `tracked-base-relevant-diff.log` | Delivery integration context | Retained | `origin/personal` advanced 14 commits; exact Docker/lock/server package inputs unchanged; root package scripts only changed. |
 
 ## Temporary Execution Methods / Scaffolding
 
-| Method | Why Needed | Result / Evidence | Cleanup |
+| Path / Method | Why Needed | Result / Evidence | Cleanup Result |
 | --- | --- | --- | --- |
-| Temporary AppConfig harness around unchanged regression E2E files | Existing files assume native AppConfig but do not initialize it in this direct invocation | Rerun passed 2 files / 4 tests | Harness/config/temp dirs removed; cleanup reports zero residual ticket rows. |
-| Live seed/query scripts and SQLite cleanup | Prove real HTTP transport and browser data without adding a permanent browser fixture | Live API and browser assertions passed | Scripts removed from `/tmp`; run IDs deleted; runtime/database removed. |
-| Nuxt custom dev invocation | Generic `pnpm web:test` selected backend port 8000 while live server used 59864 | Corrected browser journey passed | Nuxt process stopped cleanly. |
+| Buildx builder `api-e2e-dr004-20260729-0750` | Isolate cache/resources from shared builders | All Docker scenarios passed | Builder and container removed |
+| Local image `autobyteus-api-e2e-dr004-monorepo-builder:20260729` | Inspect installed dependency and outputs | `repository_prisma@1.0.9`, no patch state, outputs present | Image deleted |
+| Ephemeral inspection containers | Read builder filesystem | Inspection passed | `--rm`; none remain |
+| Container lock snapshot | Compare real no-frozen install result to host lock | Container-local importer pruning observed; current package retained | Snapshot deleted; summary retained |
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Store unit GraphQL client | Existing test mock | Unit test isolates Pinia state/error behavior | Live HTTP and browser probes separately covered the real transport. |
-| External LLM/provider services | Not used | Token ledger rows are sufficient and external services are outside the changed boundary | No provider-network behavior claimed. |
+| `linux/amd64` CPU execution | BuildKit platform metadata/check only; real full builder ran native arm64 | Full emulation was disproportionate for platform-independent missing-context correction | Low; actual release remains multi-arch delivery responsibility |
+| Registry publication / GitHub Actions | Not emulated or invoked | Explicit safety constraint and delivery ownership | No confidence gap for corrected pre-install build context; publication recovery remains unclaimed |
 
 ## Result Summary
 
-| Result | Scenario IDs | Summary |
+| Result | Scenario IDs | Summary / Reason |
 | --- | --- | --- |
-| Pass | API-001, API-002, API-003, CONTRACT-001, WEB-001, WEB-002, WEB-003 | Durable repository checks, live schema/HTTP overflow, codegen alignment, and browser Settings journey all passed. |
-| Not Tested / Out Of Scope | SAFEINT-OUT-OF-RANGE, ELECTRON-PACKAGED | Above-safe-integer rejection and packaged Electron artifact were not exercised; neither is a critical approved boundary for this ticket. |
+| `Pass` | `PKG-001`–`PKG-007` | New durable contract, all BuildKit checks, all three real builder targets, current unpatched dependency inspection, multi-platform definition check, safety invariants, and cleanup passed. |
+| `Preserved Pass` | `API-001`, `WEB-001`–`WEB-003` | Original product source is unchanged; `API-REV-001` remains authoritative. |
+| `Out Of Scope` | Release publication/recovery | No push, workflow rerun/dispatch, tag mutation, or recovery was permitted or performed. |
 
 ## Cleanup Performed
 
 | Resource / Process / Data | Ownership | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Focused/regression Vitest test DB | Test runner / owned worktree | Removed `tests/.tmp/autobyteus-server-test.db*` after residual-row audit | No residual test DB/files. |
-| Per-file AppConfig temp dirs | API/E2E run | `afterAll` reset provider and removed temp directories | `server-provider-cleanup.log`: none remaining. |
-| Live server | API/E2E run | Sent SIGINT after schema/API/browser checks | Closed cleanly. |
-| Nuxt dev server | API/E2E run | Sent SIGINT after browser check | Stopped; no owned process remains. |
-| Live ledger rows | API/E2E run | Deleted exact API and browser probe run IDs; audited counts | API cleanup completed; browser `before=2`, `after=0`; regression cleanup found zero residual rows. |
-| Live runtime root and DB | API/E2E run | Project `removeOwnedTestRuntime` helper | Removed owned runtime and `autobyteus-server-ts/db/test.db`. |
-| Temporary scripts | API/E2E run | Removed disposable `/tmp/token-statistics-*` probes | Removed. |
+| Owned Buildx builder and BuildKit container/cache | API/E2E | `docker buildx rm api-e2e-dr004-20260729-0750` | Removed; inspect and container filters confirm absent |
+| Owned loaded builder image | API/E2E | `docker image rm autobyteus-api-e2e-dr004-monorepo-builder:20260729` | Removed |
+| Inspection containers | API/E2E | `docker run --rm` | None remain |
+| Temporary lock snapshot | API/E2E | Deleted after summary comparison | Absent |
+| Shared Docker daemon/builders/images/volumes | Not owned | No stop, prune, or deletion | Preserved |
+| Git branch/tag/release state | Delivery-owned | Read only | HEAD unchanged; `v1.4.27` unchanged; no release action |
 
 ## Classification
 
-- API/E2E outcome: `Pass`.
-- No design impact, requirement gap, or implementation failure remains.
-- Non-product execution corrections were bounded `Local Fix` items owned by API/E2E and are documented above.
+- Result: `Pass`.
+- Failure classification: `N/A`; no implementation, design, requirement, or blocking environment failure remains.
+- Corrected local execution/reporting slips: two command-format issues were rerun successfully and do not affect packaging results.
 
 ## Recommended Recipient
 
-`code_reviewer` — successful API/E2E requires separate proportional review of changed durable test code.
+- `code_reviewer` for proportional review of the added durable test only.
+- After that review passes, the team flow routes to `delivery_engineer` for latest-base refresh, integrated-state validation, and the separately authorized recovery decision.
 
 ## Evidence / Notes
 
-- Exact live overflow evidence is independently backed by native repository E2E and live HTTP GraphQL.
-- `tokenUsageTaskStatisticsInPeriod` is explicitly selected and asserted in the durable API test, covering the primary Settings page path requested by the supplemental contract.
-- The browser result asserts full decimal digits rather than relying on a screenshot alone.
-- One initial disposable live-seeder invocation inherited production environment variables and was immediately cleaned by unique run ID (`before=2`, `after=0`); all subsequent execution explicitly unset inherited DB/server variables and used isolated test storage.
+- Source patch hashes match the CRR-004 handoff: monorepo `ec66d069…`, all-in-one `91c8f0f9…`, remote-server `742c2265…`.
+- During execution, `origin/personal` advanced from the reviewed `390307a…` base to `ca97fa2…` (14 commits). The Dockerfiles, lockfile, workspace manifest, server package manifest, and `.dockerignore` are unchanged across that advance. Root `package.json` changed scripts only, not package-manager/dependency policy. This does not reopen the API/E2E result, but delivery must perform its required refresh and integrated-state check.
+- `v1.4.27` remains annotated tag object `a89d7828…`, peeled target `2127840eeeb66dc4cce66b51e59fb7c6a5eff112`.
+- The API/E2E stage did not push an image, invoke/rerun a workflow, manually dispatch, mutate/delete/rewrite the tag, or perform delivery recovery.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`.
-- Final validation confidence: `96%`.
-- Default 95% confidence target met: `Yes`.
-- Any final applicable confidence category below 90%: `No`.
-- Broader validation decision: `Required` and completed.
-- Critical acceptance criteria lacking direct proof: none.
+- Final validation confidence: `97%`.
+- Default `95%` confidence target met: `Yes`.
+- Any final applicable confidence category below `90%`: `No`.
+- Broader validation decision: `Required` and completed through isolated real Docker/BuildKit builder execution.
+- Critical acceptance/current-round criteria lacking direct proof: `None`.
 - Required next recipient: `code_reviewer` for proportional test-code review.
+- Notes: one durable test was added and must receive separate proportional review; all owned Docker resources were cleaned up, and delivery/release state remains untouched.

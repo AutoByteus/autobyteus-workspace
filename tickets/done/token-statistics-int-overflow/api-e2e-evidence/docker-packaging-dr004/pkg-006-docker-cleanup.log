@@ -1,0 +1,30 @@
+# PKG-006 owned Docker cleanup (corrected after unsupported buildx-inspect formatter)
+2026-07-29T08:05:02+02:00
+## owned resources before cleanup
+Name:          api-e2e-dr004-20260729-0750
+Driver:        docker-container
+Last Activity: 2026-07-29 06:02:48 +0000 UTC
+
+Nodes:
+Name:                  api-e2e-dr004-20260729-07500
+Endpoint:              desktop-linux
+Status:                running
+BuildKit daemon flags: --allow-insecure-entitlement=network.host
+BuildKit version:      v0.31.2
+Platforms:             linux/arm64, linux/amd64, linux/amd64/v2, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+Labels:
+ org.mobyproject.buildkit.worker.executor:         oci
+ org.mobyproject.buildkit.worker.hostname:         03e1eafc8ead
+ org.mobyproject.buildkit.worker.network:          host
+ org.mobyproject.buildkit.worker.oci.process-mode: sandbox
+image=[autobyteus-api-e2e-dr004-monorepo-builder:20260729] id=sha256:02266a22681484fbfa94ce476e04c8b230c48ae624e6d94ef41c814685f47280 size=1016215934
+## cleanup actions
+Untagged: autobyteus-api-e2e-dr004-monorepo-builder:20260729
+Deleted: sha256:02266a22681484fbfa94ce476e04c8b230c48ae624e6d94ef41c814685f47280
+api-e2e-dr004-20260729-0750 removed
+## owned resources after cleanup
+owned_image=absent
+owned_builder=absent
+owned_builder_container=absent
+owned_validation_containers=absent
+shared_prune_performed=no

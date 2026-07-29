@@ -1,0 +1,17 @@
+# Focused durable Docker packaging and established Docker contracts
+2026-07-29T08:03:15+02:00
+test_direct_copy_sources_exist_in_repository_root_context (scripts.tests.test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_dockerfile_defaults_cli_versions_to_npm_latest (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_keeps_explicit_version_override_path (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_scripted_and_release_builds_bust_cli_install_cache (scripts.tests.test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_already_vncuser_opener_branch_skips_runuser_and_clears_browser (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_opener_source_uses_uid_aware_sanitized_system_xdg_open (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_and_non_root_wrappers_remain_thin_facades (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_opener_branch_switches_once_to_sanitized_vncuser_command (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_unsupported_uid_fails_without_runuser_or_opener_dispatch (scripts.tests.test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.401s
+
+OK

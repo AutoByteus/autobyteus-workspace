@@ -11,7 +11,6 @@ ENV ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
     PUPPETEER_SKIP_DOWNLOAD=1
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
-COPY patches ./patches
 COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
 COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
 COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
