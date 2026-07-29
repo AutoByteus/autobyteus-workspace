@@ -8,8 +8,8 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
+import { getStudioAgentDefinitionService } from "../studio-application-api-authorities.js";
 import {
   GraphqlDefaultLaunchConfig,
   GraphqlDefaultLaunchConfigInput,
@@ -214,7 +214,7 @@ export class AgentDefinitionResolver {
   @Query(() => AgentDefinition, { nullable: true })
   async agentDefinition(@Arg("id", () => String) id: string): Promise<AgentDefinition | null> {
     try {
-      const service = AgentDefinitionService.getInstance();
+      const service = getStudioAgentDefinitionService();
       const domainDefinition = await service.getAgentDefinitionById(id);
       if (!domainDefinition) {
         return null;
@@ -229,7 +229,7 @@ export class AgentDefinitionResolver {
   @Query(() => [AgentDefinition])
   async agentDefinitions(): Promise<AgentDefinition[]> {
     try {
-      const service = AgentDefinitionService.getInstance();
+      const service = getStudioAgentDefinitionService();
       const definitions = await service.getVisibleAgentDefinitions();
       return await Promise.all(
         definitions.map(async (definition) => AgentDefinitionConverter.toGraphql(definition)),
@@ -243,7 +243,7 @@ export class AgentDefinitionResolver {
   @Query(() => [AgentDefinition])
   async agentTemplates(): Promise<AgentDefinition[]> {
     try {
-      const service = AgentDefinitionService.getInstance();
+      const service = getStudioAgentDefinitionService();
       const templates = await service.getAgentTemplates();
       return await Promise.all(
         templates.map(async (definition) => AgentDefinitionConverter.toGraphql(definition)),
@@ -257,7 +257,7 @@ export class AgentDefinitionResolver {
   @Mutation(() => Boolean)
   async refreshAgentDefinitionCatalog(): Promise<boolean> {
     try {
-      const service = AgentDefinitionService.getInstance();
+      const service = getStudioAgentDefinitionService();
       await service.refreshCache();
       return true;
     } catch (error) {
@@ -271,7 +271,7 @@ export class AgentDefinitionResolver {
     @Arg("input", () => CreateAgentDefinitionInput) input: CreateAgentDefinitionInput,
   ): Promise<AgentDefinition> {
     try {
-      const service = AgentDefinitionService.getInstance();
+      const service = getStudioAgentDefinitionService();
       const domainDefinition = await service.createAgentDefinition({
         name: input.name,
         role: input.role ?? undefined,
@@ -301,7 +301,7 @@ export class AgentDefinitionResolver {
     @Arg("input", () => UpdateAgentDefinitionInput) input: UpdateAgentDefinitionInput,
   ): Promise<AgentDefinition> {
     try {
-      const service = AgentDefinitionService.getInstance();
+      const service = getStudioAgentDefinitionService();
       const { id, ...rest } = input;
       const updatePayload: Record<string, unknown> = {};
       const nullableKeys = new Set(["avatarUrl", "defaultLaunchConfig"]);
@@ -332,7 +332,7 @@ export class AgentDefinitionResolver {
     @Arg("id", () => String) id: string,
   ): Promise<DeleteAgentDefinitionResult> {
     try {
-      const service = AgentDefinitionService.getInstance();
+      const service = getStudioAgentDefinitionService();
       const success = await service.deleteAgentDefinition(id);
       const message = success
         ? "Agent definition deleted successfully."

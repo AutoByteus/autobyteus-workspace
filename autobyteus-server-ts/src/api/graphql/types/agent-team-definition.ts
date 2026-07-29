@@ -18,9 +18,11 @@ import {
   AgentTeamDefinitionUpdate,
   TeamMember as DomainTeamMember,
 } from "../../../agent-team-definition/domain/models.js";
-import { AgentTeamDefinitionService } from "../../../agent-team-definition/services/agent-team-definition-service.js";
-import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionConverter } from "../converters/agent-team-definition-converter.js";
+import {
+  getStudioAgentDefinitionService,
+  getStudioAgentTeamDefinitionService,
+} from "../studio-application-api-authorities.js";
 import {
   GraphqlDefaultLaunchConfig,
   GraphqlDefaultLaunchConfigInput,
@@ -209,7 +211,7 @@ export class AgentTeamDefinitionResolver {
     @Arg("id", () => String) id: string,
   ): Promise<AgentTeamDefinition | null> {
     try {
-      const service = AgentTeamDefinitionService.getInstance();
+      const service = getStudioAgentTeamDefinitionService();
       const domainDefinition = await service.getDefinitionById(id);
       if (!domainDefinition) {
         return null;
@@ -224,7 +226,7 @@ export class AgentTeamDefinitionResolver {
   @Query(() => [AgentTeamDefinition])
   async agentTeamDefinitions(): Promise<AgentTeamDefinition[]> {
     try {
-      const service = AgentTeamDefinitionService.getInstance();
+      const service = getStudioAgentTeamDefinitionService();
       const definitions = await service.getAllDefinitions();
       return definitions.map((definition) => AgentTeamDefinitionConverter.toGraphql(definition));
     } catch (error) {
@@ -236,7 +238,7 @@ export class AgentTeamDefinitionResolver {
   @Query(() => [AgentTeamDefinition])
   async agentTeamTemplates(): Promise<AgentTeamDefinition[]> {
     try {
-      const service = AgentTeamDefinitionService.getInstance();
+      const service = getStudioAgentTeamDefinitionService();
       const definitions = await service.getTemplateDefinitions();
       return definitions.map((definition) => AgentTeamDefinitionConverter.toGraphql(definition));
     } catch (error) {
@@ -248,8 +250,8 @@ export class AgentTeamDefinitionResolver {
   @Mutation(() => Boolean)
   async refreshAgentTeamDefinitionCatalog(): Promise<boolean> {
     try {
-      await AgentDefinitionService.getInstance().refreshCache();
-      await AgentTeamDefinitionService.getInstance().refreshCache();
+      await getStudioAgentDefinitionService().refreshCache();
+      await getStudioAgentTeamDefinitionService().refreshCache();
       return true;
     } catch (error) {
       logger.error(`Error refreshing agent team definition catalog: ${String(error)}`);
@@ -262,7 +264,7 @@ export class AgentTeamDefinitionResolver {
     @Arg("input", () => CreateAgentTeamDefinitionInput) input: CreateAgentTeamDefinitionInput,
   ): Promise<AgentTeamDefinition> {
     try {
-      const service = AgentTeamDefinitionService.getInstance();
+      const service = getStudioAgentTeamDefinitionService();
       const domainNodes = input.nodes.map(
         (node) =>
           new DomainTeamMember({
@@ -297,7 +299,7 @@ export class AgentTeamDefinitionResolver {
     @Arg("input", () => UpdateAgentTeamDefinitionInput) input: UpdateAgentTeamDefinitionInput,
   ): Promise<AgentTeamDefinition> {
     try {
-      const service = AgentTeamDefinitionService.getInstance();
+      const service = getStudioAgentTeamDefinitionService();
       const nodesUpdate =
         input.nodes === undefined || input.nodes === null
           ? null
@@ -335,7 +337,7 @@ export class AgentTeamDefinitionResolver {
     @Arg("id", () => String) id: string,
   ): Promise<DeleteAgentTeamDefinitionResult> {
     try {
-      const service = AgentTeamDefinitionService.getInstance();
+      const service = getStudioAgentTeamDefinitionService();
       const success = await service.deleteDefinition(id);
       const message = success
         ? "Agent team definition deleted successfully."

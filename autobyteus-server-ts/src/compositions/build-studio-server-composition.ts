@@ -23,8 +23,6 @@ import { FileApplicationBundleProvider } from "../application-bundles/providers/
 import { ApplicationBundleService } from "../application-bundles/services/application-bundle-service.js";
 import { createApplicationPlatformRuntimeGraph } from "../application-platform/runtime/create-application-platform-runtime-graph.js";
 import type { ApplicationPlatformRuntimeGraph } from "../application-platform/runtime/application-platform-runtime-graph.js";
-import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
-import { AgentTeamDefinitionService } from "../agent-team-definition/services/agent-team-definition-service.js";
 import { createApplicationDefinitionServices } from "../application-platform/runtime/create-application-definition-services.js";
 import { configureStudioApplicationApiAuthorities } from "../api/graphql/studio-application-api-authorities.js";
 import { stopMemorySyncWorker } from "../memory-sync/source/memory-sync-worker.js";
@@ -104,16 +102,32 @@ const createStudioApplicationAuthorities = (appConfig: AppConfig) => {
     bundleService,
     ...definitionServices,
   });
-  return { packageRegistryService, bundleService, applicationGraph };
+  return {
+    packageRegistryService,
+    bundleService,
+    applicationGraph,
+    ...definitionServices,
+  };
 };
 
 export const buildStudioServerComposition = async (input: {
   appConfig: AppConfig;
   loggingConfig: LoggingConfig;
 }): Promise<StudioServerComposition> => {
-  const { packageRegistryService, bundleService, applicationGraph } =
+  const {
+    packageRegistryService,
+    bundleService,
+    applicationGraph,
+    agentDefinitionService,
+    agentTeamDefinitionService,
+  } =
     createStudioApplicationAuthorities(input.appConfig);
-  configureStudioApplicationApiAuthorities({ bundleService, packageRegistryService });
+  configureStudioApplicationApiAuthorities({
+    bundleService,
+    packageRegistryService,
+    agentDefinitionService,
+    agentTeamDefinitionService,
+  });
 
   const app = fastify({
     logger: getFastifyLoggerOptions(input.loggingConfig),
