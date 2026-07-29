@@ -14,111 +14,111 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: implementation handoff at `6fcb46a57c2c531d5e43dc90e254b39507bce195`; production implementation commit `247795f5f4fd9fda2e45347b7a9680b4c385e0a7`; approved baseline `6caf809303294252c109420b238588f0c68aca6a`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: `IR-002` re-review handoff at clean task HEAD `14f1b3b8370dfbe9fe7b5eefcbaa5b58c224698a`; local-fix source commit `0762cd7e37122e0c6c4e5d4ed463a28c9030d38f`; prior review commit `caffbc754b7b5f85e59a86370497ef1792c255df`.
+- Prior Review Round Reviewed: round `1`, `CRR-001`, `Fail — Local Fix`
+- Latest Authoritative Round: `2`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
 - Relevant API/E2E Revision IDs: `N/A`
 - Delivery Revision Record Reviewed (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: `N/A` — this is a source-review result, not an API/E2E failure-origin review.
+- Failing Scenario IDs: `N/A` — this is a source re-review, not an API/E2E failure-origin review.
 - Exact Failing Commands / Execution Mode: `N/A`
-- Failure Evidence Paths: source evidence is recorded in `CR-001` and `CR-002` below.
+- Failure Evidence Paths: `N/A`; prior findings are resolved below.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: universal application startup/bootstrap, Studio and standalone providers, graph-local runtime authorities and lifecycle, Studio/standalone compositions and public server boundary, native devkit `dev`/`dev:studio`/`build`/`validate`/`start`, maintained application migrations, clean contract-symbol replacement, removal/cleanup, and next-stage readiness.
-- Files / areas reviewed: full production diff `6caf8093..247795f5` across contracts, frontend SDK, server, Studio web, devkit, starter templates, Brief Studio, and Socratic; all changed implementation-source files were included in the structural/size scan. The approved artifact chain and reported implementation checks were also reviewed.
-- Explicit exclusions: API/E2E environment setup and broad execution; durable API/E2E test correction; deployment/docs finalization. The six acknowledged obsolete assertions in two unchanged REST unit files remain an API/E2E validity decision rather than an implementation-source finding.
-- Reviewer checks: `git diff --check 6caf8093..247795f5`; `pnpm -C autobyteus-application-sdk-contracts test` (6 passed); `pnpm -C autobyteus-application-frontend-sdk test` (12 passed, including type tests); `pnpm -C autobyteus-application-devkit test` (16 passed). Reviewer-generated `dist`/`.tmp-tests` outputs were removed; the worktree was clean before report authoring.
+- Changed implementation and behavior reviewed: the `IR-002` devkit reload, watcher, current project-state, standalone-session, Studio-session/client, command/config, dependency, and focused-test delta; previously passing universal startup, dual-host composition, graph lifecycle, readiness, cleanup, and current-contract paths were revalidated for dependency and structural impact.
+- Files / areas reviewed: full local-fix diff `caffbc754..0762cd7e3`; current `implementation-handoff.md`/`implementation-revision-record.md`; prior `code-review-report.md`/`CRR-001`; relevant DS-006/BEH-006 production paths and current server Studio import semantics.
+- Explicit exclusions: broader API/E2E environment setup/execution, durable stale-test decisions, deployment, and final docs sync.
+- Reviewer checks: `git diff --check caffbc754..0762cd7e3`; `pnpm -C autobyteus-application-devkit test` (19/19 passed after build); obsolete production-symbol search (no matches); IR-002 source-size/delta guard (9 changed implementation files, all <=500 effective lines and <=220 changed-line delta). Reviewer-generated `dist`/`.tmp-tests` outputs were removed and the worktree was clean before report authoring.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. Requirements define one current manifest-v4 package and host-neutral app startup, two real host compositions, explicit graph-local platform lifecycle, clean removal of hosted-only/legacy paths, and a native real-host application command surface.
-- Design-spec behavior map verified against the implementation: Yes, as the governing map. The implementation realizes the mapped paths except for the two bounded DS-006 fidelity defects recorded below.
+- Approved requirements basis understood: Yes. `BEH-006`, `REQ-006`, `UC-015`, `AC-011`, and DS-006 require real standalone/Studio development, resolved-input/config watching, graceful atomic restart, deterministic standalone browser reload, and current Studio import/reload without mock/custom-builder fallback.
+- Design-spec behavior map verified against the implementation: Yes. The `IR-002` delta now completes both DS-006 lifecycle segments that failed round 1 and does not alter other approved spines.
 - Design review report and round confirmed: `ARCH-REV-003`, `Pass`, against `SR-003`.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None. `CR-001` and `CR-002` are implementation defects on approved `BEH-006`, not new behavior.
+- Changed or newly discovered behavior, if any: None.
 - Remaining material ambiguity, if any: None.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Shared pack/validation feeds current package roots; Studio and standalone composition/provider paths consume those packages without a host-specific app build. | N/A |
-| `BEH-002` | Confirmed | `startApplication` delegates through the runtime-bootstrap/startup coordinator to an installed Studio-iframe or standalone-same-origin provider; app code carries no host selection. | N/A |
-| `BEH-003` | Confirmed | Current manifest parser/validator and explicit standalone `{packageRoot, localApplicationId}` selection remain authoritative; no package-vNext or first-entry inference was added. | N/A |
-| `BEH-004` | Confirmed | Each composition constructs graph-local orchestration authorities, selected runtime adapters, execution resources, and application engine lifecycle behind one host composition. | N/A |
-| `BEH-005` | Confirmed | Studio builds the all-app composition; standalone builds the selected-app composition and exposes bootstrap/static/SPA/WebSocket-origin paths through its public host handle. | N/A |
-| `BEH-006` | Confirmed | Maintained project scripts and devkit command/config/pack/session owners establish the approved real-host path. The terminal standalone reload and live config/input re-resolution are incomplete; see `CR-001`, `CR-002`, `MP-CR-001`, and `MP-CR-002`. | N/A |
-| `BEH-007` | Confirmed | Graph-local lifecycle and current storage/migration owners are preserved; standalone selects a distinct data root and no schema migration/compatibility path was introduced. | N/A |
+| `BEH-001` | Confirmed | Shared pack/validation still feeds one current package to Studio and standalone without host-specific app builds. | N/A |
+| `BEH-002` | Confirmed | `startApplication` still crosses the host-neutral coordinator/provider boundary; IR-002 adds no host branch to app source. | N/A |
+| `BEH-003` | Confirmed | Current manifest validation and explicit standalone selection remain authoritative; sessions now reread the current source manifest. | N/A |
+| `BEH-004` | Confirmed | Graph-local orchestration/runtime authorities and lifecycle are unchanged by the local fix. | N/A |
+| `BEH-005` | Confirmed | Studio all-app and standalone selected-app compositions remain the exact host roots. | N/A |
+| `BEH-006` | Confirmed | `pnpm dev` now retains one controlled page, explicitly reloads it after same-host restart, navigates it when the effective URL changes, and closes it on session shutdown. Both development modes re-resolve project state; the watcher preserves manifest/config subscriptions and replaces configured input paths after successful rebuild; Studio reimports and resolves the current canonical selection. | N/A |
+| `BEH-007` | Confirmed | Storage, current migrations, data-root selection, and graph cleanup remain unchanged. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Approved package classifies a larger behavior/refactor change and names explicit owners/spines; implementation preserves that architecture. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | Most proposal/validation constraints are implemented, but DS-006/AC-011 requires deterministic standalone browser reload and current resolved-input watching. | Resolve `CR-001` and `CR-002`. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-001 through DS-005 and DS-007 through DS-010 remain clear; the DS-006 standalone spine stops at OS URL dispatch instead of browser full reload, and its watch lifecycle freezes initial resolution. | Complete the approved DS-006 terminal/lifecycle steps. |
-| Ownership boundary preservation and clarity | Pass | Providers own host adaptation; compositions own graph lifecycle; devkit sessions delegate to real host owners. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Selection, bootstrap, readiness, atomic packing, browser interaction, and Studio client concerns attach to named spine owners. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Current package parser, validation, Studio reload APIs, runtime services, and server startup owners are reused. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Bootstrap types, platform authorities, selected runtime adapters, process lifetime, and atomic pack utilities have coherent owners. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Host-neutral bootstrap is tight; host-specific providers adapt to it without parallel application models or new manifest flags. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Composition, readiness, lifecycle, and development-session coordination each has a single owner. The two findings are incomplete local lifecycle policy, not duplicated ownership. | Complete those owners per `CR-001`/`CR-002`. |
-| Empty indirection check (no pass-through-only boundary) | Pass | New coordinator/provider/composition boundaries own selection, normalization, lifecycle, or host translation. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Frontend bootstrap, server composition, selection, readiness, CLI, packing, and process lifetime stay separated. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | App source imports the frontend SDK only; devkit calls the narrow public server host surface; routes depend on composition-owned services. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No changed caller was found depending simultaneously on a public composition/service boundary and one of its owned internals. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Changed files are placed under contracts/bootstrap, server composition/readiness, devkit development/commands, or maintained application sources according to ownership. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | New folders correspond to real composition, startup, selection, readiness, or development concerns; no artificial one-line layer chain was found. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Public `startStandaloneApplicationHost`, runtime bootstrap, explicit selection, and command inputs have narrow subjects and explicit IDs/roots. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Current symbols are natural and unversioned; provider/session/composition names describe concrete roles. A few narrow composition port casts are locally less expressive but not ambiguous. | Prefer typed port adapters over casts when next touching those seams. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Shared startup/runtime contracts and authorities replace hosted/standalone duplication; maintained apps use the common pack owner. | None. |
-| Patch-on-patch complexity control | Pass | The implementation is a clean-cut replacement with explicit composition roots rather than layers of compatibility patches. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Hosted-only APIs, mock product paths, custom builders, vendor/source mirrors, and suffixed current-contract identifiers are absent from production scope. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Existing focused tests prove contracts, SDK providers, pack/config, and much server behavior, but no durable scenario proves the two new DS-006 lifecycle obligations exposed by `CR-001`/`CR-002`. | Implementation fixes source; API/E2E later owns durable scenario validity and additions. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Changed unit fixtures are boundary-focused and no incoherent test-only framework was added. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No new compatibility-only tests were added. Two unchanged REST files with six obsolete registrar expectations are explicitly identified for downstream API/E2E validity handling. | API/E2E must decide and durably update/remove those assertions before pass. |
-| API/E2E readiness for the next workflow stage | Fail | The production-reachable `pnpm dev`/`dev:studio` paths cannot yet satisfy AC-011 under supported changes. | Resolve `CR-001` and `CR-002`, then repeat source review before API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Approved architecture remains healthy; IR-002 is a bounded completion inside the existing devkit session/watch owners. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | The implementation now satisfies the validated proposal's one pack owner and real-host development lifecycle, including the exact DS-006/AC-011 outcomes. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Standalone path reaches retained-page reload/navigation after successful restart; Studio reaches current package import, selection, backend reload, and existing explicit UI remount. | None. |
+| Ownership boundary preservation and clarity | Pass | Browser lifecycle belongs to `DevelopmentBrowserSession`; project-state resolution, watcher subscriptions, host sessions, and Studio client boundaries are explicit. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Playwright control and project-state resolution serve development-session owners without competing with host or pack authority. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Atomic pack, current config/manifest loaders, real server host, and Studio import/reload APIs are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Shared development project state and watcher/browser contracts prevent duplicate re-resolution and control shapes. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Project state contains only config, manifest, and derived output root; browser contract exposes only reload and close. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Watch refresh/coalescing is centralized; standalone owns browser/host sequencing; Studio owns reimport/select/reload sequencing. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | New owners resolve state, replace subscriptions, control browser lifecycle, or coordinate Studio state; none merely forwards. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Browser control, project resolution, watch coordination, standalone lifecycle, and Studio transport/session responsibilities are separated without fragmentation. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Devkit depends on the narrow server host and Studio public APIs; `playwright-core` is confined to the browser-session boundary. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Development callers use the session/browser/watch boundaries only; no outer-plus-internal dependency was introduced. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | All IR-002 files live under devkit commands/config/package or development session concerns. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Two new development files represent distinct reusable state and browser owners; the layout remains navigable. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `DevelopmentBrowserSession`, `ApplicationProjectWatcher`, state resolution, and current package selection use explicit roots/IDs and narrow methods. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names distinguish reload, navigation-by-URL change, project state, watch refresh, package selection, and port override. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Current-state resolution and watch-path derivation each have one owner; sessions reuse them. | None. |
+| Patch-on-patch complexity control | Pass | The stateless opener is removed rather than wrapped; the correction strengthens the intended owners directly. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | `open-development-browser.ts` is deleted; no hosted, mock product, custom-builder, vendor-mirror, or suffixed current-symbol path returned. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Focused tests directly prove retained-page reload/navigation/cleanup, real chokidar subscription replacement/current state, and Studio reimport before current selection. | API/E2E should now provide the broader executable proof. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing devkit harness is extended with small condition/config helpers; tests remain organized by the behavior boundary. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | IR-002 adds no compatibility tests. The two unchanged old registrar files remain explicitly queued for API/E2E validity handling. | API/E2E owns their durable update/removal decision. |
+| API/E2E readiness for the next workflow stage | Pass | Both source blockers are resolved, focused execution passes, and remaining risks require broader runtime/environment evidence rather than more source correction. | Advance the cumulative package to `api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-Mechanical scan covered 106 changed implementation-source files (`.ts`, `.js`, `.mjs`, `.vue`), excluding tests, fixtures, generated `dist`, dependencies, and ticket artifacts. No changed implementation source exceeds 500 effective non-empty lines. The rows below include every file over 220 effective lines plus every file whose changed-line delta exceeds 220; the remaining 91 files are summarized in the final row.
+The current full implementation scan covers 109 changed implementation-source files from `6caf8093..0762cd7e3`; no file exceeds 500 effective non-empty lines. IR-002 changes nine implementation files, all <=107 effective lines and <=117 changed-line delta. The table retains every full-scope file above 220 effective lines or above the 220-line delta trigger; the other 94 current implementation files are summarized in the final row.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/application-engine/services/application-engine-host-service.ts` | 492 | Pass | Pass (42 delta) | Cohesive existing application-engine host owner | Pass | Accept; close to limit but this patch reduces/churns little | Avoid unrelated growth. |
+| `autobyteus-server-ts/src/application-engine/services/application-engine-host-service.ts` | 492 | Pass | Pass (42 delta) | Cohesive existing application-engine host owner | Pass | Accept; close to limit but local change is small | Avoid unrelated growth. |
 | `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | 463 | Pass | Pass (96 delta) | Cohesive existing orchestration owner | Pass | Accept; net simplification | None. |
-| `autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts` | 440 | Pass | Pass (14 delta) | Current manifest validation subject remains coherent | Pass | Accept | None. |
-| `applications/socratic-math-teacher/frontend-src/socratic-renderer.js` | 404 | Pass | Pass (34 delta) | Application renderer concern | Pass | Accept; maintained app source | None. |
+| `autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts` | 440 | Pass | Pass (14 delta) | Current manifest validation subject | Pass | Accept | None. |
+| `applications/socratic-math-teacher/frontend-src/socratic-renderer.js` | 404 | Pass | Pass (34 delta) | Application renderer concern | Pass | Accept | None. |
 | `autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts` | 398 | Pass | Pass (28 delta) | File-provider owner | Pass | Accept | None. |
 | `autobyteus-server-ts/src/agent-team-definition/providers/file-agent-team-definition-provider.ts` | 397 | Pass | Pass (24 delta) | File-provider owner | Pass | Accept | None. |
 | `applications/socratic-math-teacher/frontend-src/socratic-runtime.js` | 395 | Pass | Pass (10 delta) | Application runtime concern | Pass | Accept | None. |
-| `autobyteus-application-sdk-contracts/src/index.ts` | 339 | Pass | Pass (18 delta) | Public contract barrel | Pass | Accept for current package scale | None. |
-| `autobyteus-server-ts/src/application-orchestration/services/application-run-observer-service.ts` | 314 | Pass | Pass (6 delta) | Run observation owner | Pass | Accept | None. |
+| `autobyteus-application-sdk-contracts/src/index.ts` | 339 | Pass | Pass (18 delta) | Public contract barrel | Pass | Accept for package scale | None. |
+| `autobyteus-server-ts/src/application-orchestration/services/application-run-observer-service.ts` | 314 | Pass | Pass (6 delta) | Run-observation owner | Pass | Accept | None. |
 | `autobyteus-web/components/applications/ApplicationSurface.vue` | 294 | Pass | Pass (8 delta) | Application presentation/mount surface | Pass | Accept | None. |
-| `autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts` | 286 | Pass | Pass (34 delta) | Availability policy owner | Pass | Accept | None. |
-| `autobyteus-server-ts/src/application-agent-communication/services/application-agent-communication-session.ts` | 276 | Pass | Pass (4 delta) | Communication session owner | Pass | Accept | None. |
+| `autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts` | 286 | Pass | Pass (34 delta) | Availability-policy owner | Pass | Accept | None. |
+| `autobyteus-server-ts/src/application-agent-communication/services/application-agent-communication-session.ts` | 276 | Pass | Pass (4 delta) | Communication-session owner | Pass | Accept | None. |
 | `autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts` | 223 | Pass | Pass (15 delta) | Execution-event dispatch owner | Pass | Accept | None. |
-| `autobyteus-application-sdk-contracts/src/application-iframe-contract.ts` | 222 | Pass | Pass (74 delta) | One iframe contract subject | Pass | Accept | None. |
-| `autobyteus-server-ts/src/server-runtime.ts` | 154 | Pass | Triggered (303 delta) | Now a smaller composition facade rather than a mixed runtime container | Pass | Pass after manual review; refactor reduces responsibility | None. |
-| Remaining 91 changed implementation-source files | <=220 each | Pass | Pass (<=220 delta each) | No responsibility overload found | Pass | Accept | None. |
+| `autobyteus-application-sdk-contracts/src/application-iframe-contract.ts` | 222 | Pass | Pass (74 delta) | One iframe-contract subject | Pass | Accept | None. |
+| `autobyteus-server-ts/src/server-runtime.ts` | 154 | Pass | Triggered (303 delta) | Current result is a smaller composition facade | Pass | Pass after manual review; responsibility was reduced | None. |
+| Remaining 94 changed implementation-source files, including all 9 IR-002 files | <=220 each | Pass | Pass (<=220 delta each) | No responsibility overload found | Pass | Accept | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Clean current-contract replacements; no aliases, dual parsing, or compatibility wrapper. |
-| No legacy old-behavior retention in changed scope | Pass | Hosted startup and product mock/custom-builder paths are removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Searches found no production occurrences of removed hosted APIs, version-suffixed current symbols, custom app builders, or generated SDK mirrors. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing current data/package formats remain directly usable; isolated roots use current migrations only. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Serialized version values remain current protocol data; runtime code identifiers are unversioned. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Design decision was no new migration; implementation adds none. |
+| No backward-compatibility mechanisms in changed scope | Pass | Clean current-contract replacement remains intact. |
+| No legacy old-behavior retention in changed scope | Pass | IR-002 deletes the obsolete stateless opener and restores no hosted/mock/custom-builder behavior. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Targeted obsolete production-symbol search returned no matches. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Development-only rework changes no persisted schema or migration decision. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No current-runtime compatibility path was added. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Existing no-new-migration decision remains valid. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -127,8 +127,8 @@ None.
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: public application startup and native command semantics changed, hosted/mock instructions were removed, and real standalone/Studio development plus build-free start must remain accurately documented.
-- Files or areas likely affected: devkit README/starter README and scripts, server/frontend SDK documentation, custom-app guide, Studio iframe contract documentation, and Brief/Socratic project documentation. Implementation changed these areas; delivery must verify final integrated documentation after source fixes.
+- Why: the final public command documentation must describe deterministic controlled-browser reload, the Chrome/Edge/executable requirement and `--no-open`, dynamic project-state watching, Studio's explicit remount action, and unchanged build-free production start semantics.
+- Files or areas likely affected: devkit README/starter README, custom-app guide, maintained project instructions, and related server/frontend SDK documentation. Delivery owns final integrated docs sync; the implementation handoff already records the controlled-browser prerequisite.
 
 ## Material Premise Validation (Only When Needed)
 
@@ -136,101 +136,80 @@ None.
 
 | Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
 | --- | --- | --- |
-| `MP-AR-001` | Confirmed | Both compositions preserve the refreshed-base runtime prerequisites and explicit lifecycle owners. |
-| `MP-AR-005` | Confirmed | Starter, Brief, and Socratic now enter the shared devkit pack/config command path. |
+| `MP-AR-001` | Confirmed | Both host compositions still preserve refreshed runtime prerequisites and lifecycle owners. |
+| `MP-AR-005` | Confirmed | Maintained roots still enter the shared real devkit pack path. |
 
-### `MP-CR-001` — standalone development must reload the active browser document after a successful watched restart
+### Prior Code-Review Material-Premise Decisions
 
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-006`, `AC-011`, and the explicit DS-006 standalone terminal path.
-- Relevant behavior ID(s): `BEH-006`; `UC-015`.
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: a developer uses the application-folder `pnpm dev` product surface and saves a watched application source file.
-- Support evidence: `requirements.md` AC-011 and `design-spec.md` DS-006 explicitly define watched standalone rebuild/restart followed by browser full reload.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `pnpm dev` -> `runStandaloneDevelopmentSession` -> `watchApplicationProject` change callback -> close current host -> atomic pack -> start new real host -> `openDevelopmentBrowser(url)`.
-- Lifecycle preconditions and material consequence at the claimed point: the old browser document was loaded from the just-closed host. After the new host is ready, no implementation owner instructs that document to reload; OS URL dispatch is not an explicit document-reload lifecycle. The active app is therefore not deterministically remounted on the rebuilt host, and repeated changes can dispatch repeated opens.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: source-review finding `CR-001`; bounded implementation correction in the devkit development session/browser interaction owner.
+| Premise ID | Current Status | Re-review Evidence |
+| --- | --- | --- |
+| `MP-CR-001` | Confirmed | The same supported `pnpm dev` save/restart path now explicitly reaches retained `page.reload()` or same-page navigation before continuing. |
+| `MP-CR-002` | Confirmed | The supported config/manifest edit path now re-resolves state and replaces configured subscriptions/current selection values after successful rebuild. |
 
-### `MP-CR-002` — explicitly watched project configuration and manifest changes must update the live development session's resolved inputs and identity
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-006`, `AC-011`, and DS-006's resolved-input/config watch contract.
-- Relevant behavior ID(s): `BEH-006`; `UC-015`.
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: while `pnpm dev` or `pnpm dev:studio` is running, a developer edits the checked-in `autobyteus-app.config.mjs` source mapping or the explicitly watched `application.json`, then edits/uses the newly resolved application input.
-- Support evidence: `design-spec.md` lines 231-232 and 279 name resolved-input/config watching; AC-011 requires both commands to watch resolved application inputs. These are application-project authoring surfaces, not hidden runtime state.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: command -> session's one-time config/manifest resolution -> `watchApplicationProject` one-time `watchPaths` -> config/manifest change callback -> atomic pack reloads current config/manifest -> session continues with the initial watcher subscriptions and initial manifest/package selection values -> later newly mapped input change is not observed, or host/Studio reload uses the old application identity/package root.
-- Lifecycle preconditions and material consequence at the claimed point: the long-running session remains alive after the explicitly watched configuration change, but its watch and selection state no longer represents the current project. Supported edits can silently stop rebuilding the current inputs or fail/reload the wrong selection.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: source-review finding `CR-002`; bounded re-resolution/resubscription correction inside devkit development-session/watch ownership.
+New or reclassified material premises: None.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `8.9`
-- Overall score (`/100`): `89`
-- Score calculation note: simple average of the ten mandatory categories; the failing categories and findings control the decision.
+- Overall score (`/10`): `9.2`
+- Overall score (`/100`): `92`
+- Score calculation note: simple average of the ten mandatory categories, rounded to one decimal; every category meets the clean-pass threshold.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 8.8 | Major host/runtime spines are explicit and preserved. | DS-006's standalone terminal reload and long-running resolved-input lifecycle are missing (`MP-CR-001`, `MP-CR-002`). | Complete those two approved spine segments. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.2 | Composition, provider, selection, readiness, pack, and session owners are distinct; no boundary bypass found. | The development session owners do not yet own their full promised lifecycle. | Make reload and dynamic resolution explicit session-owned policy. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.0 | Startup/bootstrap, host, selection, and CLI inputs have narrow subjects and explicit identities. | A few narrow composition-port casts reduce type-level clarity. | Prefer typed adapters when revisiting those seams. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | Files align with bootstrap, composition, readiness, command, packing, and application concerns. | Development lifecycle behavior is split across a session and stateless OS opener without a full reload owner. | Put deterministic reload coordination behind the development-session-owned boundary. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.0 | Host-neutral contracts and graph authorities are tight and reused; no parallel manifest/application model. | No material defect; score reflects a large new public contract surface requiring downstream proof. | Preserve the current tight shapes during fixes. |
-| `6` | `Naming Quality and Local Readability` | 9.0 | Names generally identify concrete provider, composition, readiness, selection, and session roles. | Local casts and a stateless `openDevelopmentBrowser` name obscure that it does not reload an existing document. | Make the browser lifecycle contract explicit in naming/API. |
-| `7` | `API/E2E Readiness` | 7.8 | Focused packages pass and the handoff clearly names broad remaining coverage. | Two reachable DS-006 product paths are incomplete, and no durable test currently proves them. | Fix source, re-review, then exercise live development/config/reload scenarios in API/E2E. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.4 | Dual-host startup/composition/readiness and production start closely match approved behavior. | Standalone reload is not deterministic and live sessions freeze initial config/manifest resolution (`CR-001`, `CR-002`). | Implement the exact AC-011 lifecycle. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Clean replacement removed hosted APIs, product mocks, custom builders, mirrors, vendor trees, and suffixed current symbols. | Only unchanged obsolete REST assertions remain for downstream test validity; no production legacy remains. | API/E2E should remove/update invalid assertions. |
-| `10` | `Cleanup Completeness` | 9.1 | Production cleanup and regenerated package outputs are comprehensive; diff check is clean. | Docs/final integrated coverage still need downstream verification. | Preserve cleanup during local fixes and complete downstream verification. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | All approved host, runtime, pack, development, and cleanup spines now reach their named outcomes. | Broader live proof of several spines remains downstream rather than source-visible. | API/E2E should execute the retained full-path inventory. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Browser, watcher, project state, standalone session, Studio client/session, and host authorities have concrete non-overlapping ownership. | Browser availability is an external prerequisite owned only at the session boundary. | Document and exercise that prerequisite without leaking it into app source. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.1 | New browser/watcher/state APIs are narrow and explicit; port override semantics are clear. | Existing narrow composition port casts remain a small type-clarity drag. | Prefer typed adapters when those unrelated seams are next changed. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | IR-002 separates browser control, state resolution, watching, and host-specific sequencing in ownership-aligned files. | The development area has more files, though each owns a real concern. | Keep future additions within these owners rather than adding coordinators. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.1 | Shared project state and lifecycle contracts are minimal and reused by both sessions. | Full runtime contract breadth still needs executable integration proof. | Preserve tight structures while API/E2E validates them. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | Names accurately distinguish controlled browser session, watch refresh, current state, and current selection. | Playwright channel/environment behavior is clearer in handoff than durable docs. | Delivery should make the public prerequisite discoverable. |
+| `7` | `API/E2E Readiness` | 9.1 | Both source blockers are resolved and 19 focused devkit tests pass. | Live Studio, multi-project command loops, graph isolation, recovery, immutability, and leak checks remain. | Execute the recorded downstream coverage plan. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | Source now deterministically reloads/navigates one page and refreshes current watch/identity/root/selection state. | Real environment behavior beyond the narrow Chrome smoke remains unproven. | API/E2E should validate repeated live edits and Studio integration. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Clean replacements, current schemas, and comprehensive obsolete-path deletion remain intact. | Two unchanged obsolete REST assertions still await the downstream validity decision. | API/E2E should update/remove them based on current boundary behavior. |
+| `10` | `Cleanup Completeness` | 9.2 | Stateless browser code is removed; source and generated reviewer outputs are clean; no legacy symbols returned. | Final docs sync and broad lifecycle cleanup evidence remain. | Complete API/E2E cleanup proof and delivery docs verification. |
 
 ## Findings
 
-### `CR-001` — Standalone watch rebuild dispatches the URL but never owns the required browser full reload
+### `CR-001` — Resolved: standalone development owns deterministic full-document reload
 
-- Status: `Open`
-- Severity: `Major`
-- Confidence: `High`
-- Classification: `Local Fix`
+- Status: `Resolved`
+- Prior severity/confidence: `Major` / `High`
 - Affected behavior/requirement: `BEH-006`, `UC-015`, `REQ-006`, `AC-011`, DS-006.
-- Material premise: `MP-CR-001` (`Reachable`).
-- Evidence: `autobyteus-application-devkit/src/development/standalone-development-session.ts:27-50` closes, repacks, starts, then calls `openDevelopmentBrowser` after both the initial start and every change. `autobyteus-application-devkit/src/development/open-development-browser.ts:3-14` only spawns the platform URL opener (`open`, `xdg-open`, or `cmd start`) and retains no browser/document session or reload channel.
-- Consequence: the supported save/rebuild path cannot guarantee AC-011's browser full reload after the new host is ready; the old document remains stale unless external browser heuristics happen to reload/reuse it, and repeated rebuilds can dispatch repeated opens.
-- Required action: open/establish the development browser once, then make the standalone development-session owner explicitly trigger a full reload of the active application document only after successful host restart (or use another design-compliant deterministic reload boundary). Do not add host-specific application-source behavior or a mock path. Add implementation-scoped evidence suitable for source re-review; durable broad scenario coverage remains API/E2E-owned.
+- Material premise: `MP-CR-001` (`Confirmed`).
+- Verification evidence: `development-browser-session.ts:21-58,93-117` owns one Playwright browser/context/page, explicitly reloads the same host URL, navigates the retained page when URL changes, and closes idempotently. `standalone-development-session.ts:32-79` sequences host close -> atomic pack -> current-state start -> reload/navigation and closes watcher/browser/host together. The stateless opener is deleted. Focused unit coverage and the recorded real system-Chrome same-port replacement smoke both passed.
+- Resolution: the approved standalone DS-006 terminal lifecycle is implemented without adding host-specific application behavior or a mock path.
 
-### `CR-002` — Development sessions freeze initial watch/config/manifest resolution despite watching those files
+### `CR-002` — Resolved: live development sessions refresh current project inputs and selection state
 
-- Status: `Open`
-- Severity: `Moderate`
-- Confidence: `High`
-- Classification: `Local Fix`
+- Status: `Resolved`
+- Prior severity/confidence: `Moderate` / `High`
 - Affected behavior/requirement: `BEH-006`, `UC-015`, `REQ-006`, `AC-011`, DS-006.
-- Material premise: `MP-CR-002` (`Reachable`).
-- Evidence: `autobyteus-application-devkit/src/development/application-project-watch.ts:9-19,47-48` loads config once and creates a fixed watch subscription. `standalone-development-session.ts:25,35` freezes the initial manifest ID. `studio-development-session.ts:14-20,27-28` freezes the initial configured package root, manifest ID, and selected application across subsequent rebuilds. Atomic packing reloads current config/manifest, so the package can change while session subscriptions/selection remain stale.
-- Consequence: an explicitly watched config or manifest edit can leave the long-running session observing old directories or restarting/reloading an old identity/root; a subsequent edit under a newly mapped source directory is not observed.
-- Required action: when config/manifest changes, re-resolve the effective input set and dependent session values, safely replace/update watcher subscriptions (or restart the session under one owner), and update standalone/Studio package/selection state as required. Preserve atomic pack, real host delegation, and current explicit Studio reload authority. Add focused implementation-scoped checks; API/E2E owns durable live coverage after source review passes.
+- Material premise: `MP-CR-002` (`Confirmed`).
+- Verification evidence: `application-project-watch.ts:14-26,51-66,68-105` always includes manifest/config, derives current configured inputs, removes stale subscriptions, adds current paths, and refreshes after successful callbacks. `application-development-project-state.ts:17-33` rereads config/manifest. Standalone uses the current manifest and non-overridden config port; Studio repacks the current output root, reimports, resolves current package/local identity, then reloads. The 19-test devkit run includes real chokidar reconfiguration and current Studio selection coverage.
+- Resolution: the approved resolved-input/config watch lifecycle is implemented inside existing owners.
+
+No open implementation-source findings remain.
 
 ## Classification
 
-- `Local Fix` — both findings are bounded defects in implementation-owned devkit source. Approved behavior, owners, and architecture remain sufficient; no solution-design or requirements change is required.
+- `N/A` — the current implementation review passes.
 
 ## Recommended Recipient
 
-- `implementation_engineer`
-- After correction: return through implementation-source review, then API/E2E.
+- `api_e2e_engineer`
+- Perform coverage investigation, existing-test validity decisions, durable test changes where justified, and broad executable validation against the cumulative passed package.
 
 ## Residual Risks
 
-- Two unchanged REST test files contain six assertions for the removed broad implicit registrar and currently report old-boundary 404/500 results. API/E2E must perform the recorded current-behavior validity decision and durable update/removal after source review passes.
-- Concurrent graph isolation, live `dev:studio`, immutable dual-host digest proof, real Brief team execution, worker recovery, and long-running leak/cleanup coverage remain appropriately assigned to API/E2E.
-- These residuals do not change the current failure classification; `CR-001` and `CR-002` independently block next-stage readiness.
+- Two unchanged REST unit files contain six assertions for the removed broad implicit registrar and report old-boundary 404/500 results. API/E2E must decide current-behavior validity and durably update/remove them.
+- Full application-folder `dev`/`dev:studio` command loops across maintained apps, live Studio remount, immutable dual-host digests, real Brief team execution, concurrent graph isolation, worker recovery, and cleanup/leak evidence remain downstream.
+- Automatic browser control requires installed Chrome/Edge or an explicit executable/channel; `--no-open` preserves the real host path. API/E2E should validate the supported environment and delivery should document the prerequisite.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — both finding premises have independent supported triggers and complete forward production paths.
-- Score Summary: `8.9/10` (`89/100`); categories 1, 7, and 8 are below the clean-pass threshold.
-- Failure Origin (when applicable): `N/A` — source-review defects, not API/E2E failure-origin analysis.
-- Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: resolve `CR-001` and `CR-002`, append a new implementation revision, and return the cumulative package for source re-review. Do not advance to API/E2E yet.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
+- Score Summary: `9.2/10` (`92/100`); every mandatory category is >=9.0.
+- Failure Origin (when applicable): `N/A`
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: `CR-001` and `CR-002` are resolved. Advance the complete package to API/E2E; a successful execution returns for the separate proportional durable-test review, while a failure returns for focused origin analysis.
