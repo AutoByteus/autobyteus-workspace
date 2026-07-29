@@ -12,6 +12,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-
 | `DR-004` | API-REV-004/CRR-007 cleared the prior flake; latest target advanced again and fresh post-merge checks passed | `Blocked — DR-003` | `Validated — renewed user verification required before finalization` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/latest-target-post-merge-check.log`, `delivery-evidence/latest-target-root-test-e2e.log` |
 | `DR-005` | Explicit renewed finalization authorization; latest target refresh unchanged | `Validated — DR-004` | `Finalization in progress — archive and repository update executing` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 | `DR-006` | Ticket archive, ticket-branch push, target merge, and target push completed | `Finalization in progress — DR-005` | `Finalized — cleanup completing; no release executed` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
+| `DR-007` | Final report commit merged after initial target update; final target hash synchronized | `Finalized — DR-006` | `Finalized — canonical reports synchronized; cleanup completing` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/integration-refresh.txt` |
 
 ## Revision Entries
 
@@ -100,3 +101,16 @@ The latest `docs-sync-report.md`, `handoff-summary.md`, and `release-deployment-
 - Why this delivery revision was recorded: Makes the exact archive, branch, target merge, push, and no-release results authoritative for delivery handoff.
 - Next recipient/action: Complete the recorded temporary target-worktree and ticket-branch/worktree cleanup, then report final hashes and residual non-blocking test limits.
 - Remaining blockers, rollback concerns, or untested scope: No repository finalization blocker. Provider-gated live Claude behavior, browser/Electron shell execution, and Windows process semantics remain untested. No persisted-data migration or release rollback applies.
+
+### DR-007 — Final target hash synchronization
+
+- Delivery round and trigger: The final canonical report commit was pushed to the ticket branch and merged into the target after the initial repository finalization push.
+- Prior authoritative result: `Finalized — DR-006`.
+- Current authoritative result: `Finalized — canonical reports synchronized; cleanup completing.`
+- Final report commit: `8a95e4f74` (`docs(ticket): record finalization results`) pushed to `origin/codex/simplify-local-full-stack-development-startup`.
+- Final target report merge/push: `3b759e61b30e51b4f0bd36fbe0fa1db7d31e7855` merged the final report commit into `personal` and was pushed successfully.
+- Final target state: `origin/personal@3b759e61b30e51b4f0bd36fbe0fa1db7d31e7855`.
+- Docs/release/handoff state: Canonical delivery reports now record archive commit `e29a1b616`, ticket branch final report commit `8a95e4f74`, initial target merge `6fd7aff2b`, final report target merge `3b759e61b`, and explicit no-release scope.
+- Why this delivery revision was recorded: Ensures the final target hash and final report commit are durable and not left at the pre-report-update target revision.
+- Next recipient/action: Complete safe cleanup of the temporary target worktree and ticket worktree/branches, then report finalization and cleanup outcomes.
+- Remaining blockers, rollback concerns, or untested scope: No repository or release blocker. Provider-gated live Claude behavior, browser/Electron shell execution, and Windows process semantics remain untested.
