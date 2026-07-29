@@ -98,7 +98,11 @@ const {
   allowBlankRuntime: false,
 })
 
-const hasOverride = computed(() => Boolean(props.member.runtimeKind || props.member.llmModelIdentifier))
+const hasOverride = computed(() => Boolean(
+  props.member.runtimeKind
+  || props.member.llmModelIdentifier
+  || Object.prototype.hasOwnProperty.call(props.member, 'llmConfig'),
+))
 const isUnresolvedInheritedModel = computed(() => (
   Boolean(props.member.runtimeKind)
   && !props.member.llmModelIdentifier
@@ -117,16 +121,20 @@ const modelPlaceholder = computed(() => (
 ))
 
 const updateRuntimeKind = (value: string) => {
+  const member = { ...props.member }
+  delete member.llmConfig
   emit('update:member', {
-    ...props.member,
+    ...member,
     runtimeKind: value,
     llmModelIdentifier: '',
   })
 }
 
 const updateModel = (value: string) => {
+  const member = { ...props.member }
+  delete member.llmConfig
   emit('update:member', {
-    ...props.member,
+    ...member,
     llmModelIdentifier: value,
   })
 }

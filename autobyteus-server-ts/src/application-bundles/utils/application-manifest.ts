@@ -23,16 +23,19 @@ const DEFAULT_ALLOWED_EXECUTION_RESOURCE_SOURCES: ApplicationExecutionResourceSo
 const SUPPORTED_AGENT_LAUNCH_KEYS = new Set<keyof ApplicationSupportedAgentLaunchConfigDeclaration>([
   "llmModelIdentifier",
   "runtimeKind",
+  "llmConfig",
   "workspaceRootPath",
 ]);
 const SUPPORTED_TEAM_MEMBER_OVERRIDE_KEYS =
   new Set<keyof ApplicationSupportedTeamMemberOverrideDeclaration>([
     "llmModelIdentifier",
     "runtimeKind",
+    "llmConfig",
   ]);
 const SUPPORTED_TEAM_LAUNCH_KEYS = new Set<keyof ApplicationSupportedTeamLaunchConfigDeclaration>([
   "llmModelIdentifier",
   "runtimeKind",
+  "llmConfig",
   "workspaceRootPath",
   "memberOverrides",
 ]);

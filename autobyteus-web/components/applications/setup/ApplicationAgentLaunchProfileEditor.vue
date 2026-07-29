@@ -101,6 +101,7 @@ const { t: $t } = useLocalization()
 
 const supportsRuntimeKind = computed(() => props.slot.supportedLaunchConfig?.AGENT?.runtimeKind === true)
 const supportsModelIdentifier = computed(() => props.slot.supportedLaunchConfig?.AGENT?.llmModelIdentifier === true)
+const supportsLlmConfig = computed(() => props.slot.supportedLaunchConfig?.AGENT?.llmConfig === true)
 const supportsWorkspaceRootPath = computed(() => props.slot.supportedLaunchConfig?.AGENT?.workspaceRootPath === true)
 
 const {
@@ -116,13 +117,22 @@ const {
 })
 
 watch(
-  () => [supportsRuntimeKind.value, supportsModelIdentifier.value, supportsWorkspaceRootPath.value, props.draft] as const,
+  () => [
+    supportsRuntimeKind.value,
+    supportsModelIdentifier.value,
+    supportsLlmConfig.value,
+    supportsWorkspaceRootPath.value,
+    props.draft,
+  ] as const,
   () => {
     const sanitizedDraft: ApplicationAgentLaunchProfileDraft = {
       ...props.draft,
       runtimeKind: supportsRuntimeKind.value ? props.draft.runtimeKind : '',
       llmModelIdentifier: supportsModelIdentifier.value ? props.draft.llmModelIdentifier : '',
       workspaceRootPath: supportsWorkspaceRootPath.value ? props.draft.workspaceRootPath : '',
+    }
+    if (!supportsLlmConfig.value) {
+      delete sanitizedDraft.llmConfig
     }
     if (JSON.stringify(sanitizedDraft) !== JSON.stringify(props.draft)) {
       emit('update:draft', sanitizedDraft)
@@ -160,16 +170,20 @@ watch(
 )
 
 const updateRuntimeKind = (value: string) => {
+  const draft = { ...props.draft }
+  delete draft.llmConfig
   emit('update:draft', {
-    ...props.draft,
+    ...draft,
     runtimeKind: normalizeScopedRuntimeKind(value, true),
     llmModelIdentifier: '',
   })
 }
 
 const updateModel = (value: string) => {
+  const draft = { ...props.draft }
+  delete draft.llmConfig
   emit('update:draft', {
-    ...props.draft,
+    ...draft,
     llmModelIdentifier: value,
   })
 }

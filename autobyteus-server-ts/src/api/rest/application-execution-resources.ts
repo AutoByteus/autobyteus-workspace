@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import type { ApplicationConfiguredLaunchProfile } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationLaunchOverride } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
 import { sendApplicationRouteError } from "./application-route-error.js";
 
@@ -10,7 +10,7 @@ export async function registerApplicationExecutionResourceRoutes(
   app.get<{ Params: { applicationId: string } }>(
     "/applications/:applicationId/execution-resource-configurations",
     async (request, reply) => {
-      try { return reply.send(await orchestration.listExecutionResourceConfigurations(request.params.applicationId)); }
+      try { return reply.send(await orchestration.getApplicationLaunchConfigurationView(request.params.applicationId)); }
       catch (error) { return sendApplicationRouteError(reply, error); }
     },
   );
@@ -23,15 +23,29 @@ export async function registerApplicationExecutionResourceRoutes(
   );
   app.put<{
     Params: { applicationId: string; slotKey: string };
-    Body: { executionResourceRef?: unknown; launchProfile?: ApplicationConfiguredLaunchProfile | null };
+    Body: { executionResourceRef?: unknown; launchOverride?: ApplicationLaunchOverride | null };
   }>(
     "/applications/:applicationId/execution-resource-configurations/:slotKey",
     async (request, reply) => {
       try {
-        return reply.send(await orchestration.upsertExecutionResourceConfiguration(
+        return reply.send(await orchestration.upsertApplicationLaunchOverride(
           request.params.applicationId,
           request.params.slotKey,
-          { executionResourceRef: request.body?.executionResourceRef as never, launchProfile: request.body?.launchProfile ?? null },
+          {
+            executionResourceRef: request.body?.executionResourceRef as never,
+            launchOverride: request.body?.launchOverride ?? null,
+          },
+        ));
+      } catch (error) { return sendApplicationRouteError(reply, error); }
+    },
+  );
+  app.delete<{ Params: { applicationId: string; slotKey: string } }>(
+    "/applications/:applicationId/execution-resource-configurations/:slotKey",
+    async (request, reply) => {
+      try {
+        return reply.send(await orchestration.removeApplicationLaunchOverride(
+          request.params.applicationId,
+          request.params.slotKey,
         ));
       } catch (error) { return sendApplicationRouteError(reply, error); }
     },

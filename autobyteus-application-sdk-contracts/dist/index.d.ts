@@ -1,4 +1,4 @@
-import type { ApplicationConfiguredExecutionResource, ApplicationExecutionResourceKind, ApplicationExecutionResourceSource, ApplicationExecutionResourceRef, ApplicationExecutionResourceSummary } from "./execution-resources.js";
+import type { ApplicationEffectiveLaunchConfiguration, ApplicationExecutionResourceKind, ApplicationExecutionResourceSource, ApplicationExecutionResourceRef, ApplicationExecutionResourceSummary } from "./execution-resources.js";
 import type { ApplicationAgentEventStreamObserver, ApplicationAgentEventStreamOptions, ApplicationAgentEventStreamSubscription } from "./application-agent-communication.js";
 import type { ApplicationAgentBinding, ApplicationAgentBindingListFilter, ApplicationAgentInput, ApplicationAgentTeamBinding, ApplicationAgentTargetAddress, ApplicationExecutionProducer, ApplicationRuntimeInputContextFile } from "./application-agent-bindings.js";
 import type { ApplicationWebSocketRouteDefinition } from "./application-websockets.js";
@@ -168,7 +168,7 @@ export type ApplicationAgentResources = {
         source?: ApplicationExecutionResourceSource | null;
         kind?: ApplicationExecutionResourceKind | null;
     } | null) => Promise<ApplicationExecutionResourceSummary[]>;
-    getConfigured: (slotKey: string) => Promise<ApplicationConfiguredExecutionResource | null>;
+    requireRunnable: (slotKey: string) => Promise<ApplicationEffectiveLaunchConfiguration>;
 };
 export type ApplicationPublishedArtifactSummary = {
     id: string;

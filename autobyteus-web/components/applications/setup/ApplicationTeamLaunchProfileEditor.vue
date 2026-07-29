@@ -9,7 +9,7 @@
           :value="normalizedStoredRuntimeKind"
           :disabled="disabled"
           class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
-          @change="updateDefaults({ runtimeKind: ($event.target as HTMLSelectElement).value, llmModelIdentifier: '' })"
+          @change="updateDefaults({ runtimeKind: ($event.target as HTMLSelectElement).value, llmModelIdentifier: '' }, true)"
         >
           <option value="">
             {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime') }}
@@ -38,7 +38,7 @@
           :disabled="disabled || !availableProviderGroups.length"
           :placeholder="$t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
           search-placeholder="Search models..."
-          @update:model-value="updateDefaults({ llmModelIdentifier: $event })"
+          @update:model-value="updateDefaults({ llmModelIdentifier: $event }, true)"
         />
         <p class="mt-1 text-xs text-slate-500">
           {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.modelHelp') }}
@@ -141,9 +141,11 @@ const runtimeModelCatalogs = ref<TeamLaunchProfileRuntimeModelCatalogs>({})
 
 const supportsRuntimeKind = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.runtimeKind === true)
 const supportsModelIdentifier = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.llmModelIdentifier === true)
+const supportsLlmConfig = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.llmConfig === true)
 const supportsWorkspaceRootPath = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.workspaceRootPath === true)
 const supportsMemberRuntimeOverride = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.runtimeKind === true)
 const supportsMemberModelOverride = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.llmModelIdentifier === true)
+const supportsMemberLlmConfig = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.llmConfig === true)
 const requiresModelCatalogs = computed(() => supportsModelIdentifier.value || supportsMemberModelOverride.value)
 
 const {
@@ -170,6 +172,9 @@ const repairMemberProfiles = (
     agentDefinitionId: currentMember.agentDefinitionId,
     runtimeKind: exactMatch?.runtimeKind ?? '',
     llmModelIdentifier: exactMatch?.llmModelIdentifier ?? '',
+    ...(exactMatch && Object.prototype.hasOwnProperty.call(exactMatch, 'llmConfig')
+      ? { llmConfig: exactMatch.llmConfig ? structuredClone(exactMatch.llmConfig) : null }
+      : {}),
   }
 })
 
@@ -217,9 +222,11 @@ watch(
   () => [
     supportsRuntimeKind.value,
     supportsModelIdentifier.value,
+    supportsLlmConfig.value,
     supportsWorkspaceRootPath.value,
     supportsMemberRuntimeOverride.value,
     supportsMemberModelOverride.value,
+    supportsMemberLlmConfig.value,
     props.draft,
   ] as const,
   () => {
@@ -235,6 +242,14 @@ watch(
         runtimeKind: supportsMemberRuntimeOverride.value ? memberProfile.runtimeKind : '',
         llmModelIdentifier: supportsMemberModelOverride.value ? memberProfile.llmModelIdentifier : '',
       })),
+    }
+    if (!supportsLlmConfig.value) {
+      delete sanitizedDraft.defaults.llmConfig
+    }
+    if (!supportsMemberLlmConfig.value) {
+      sanitizedDraft.memberProfiles.forEach((memberProfile) => {
+        delete memberProfile.llmConfig
+      })
     }
     if (JSON.stringify(sanitizedDraft) !== JSON.stringify(props.draft)) {
       emit('update:draft', sanitizedDraft)
@@ -337,13 +352,20 @@ watch(
   { deep: true, immediate: true },
 )
 
-const updateDefaults = (patch: Partial<ApplicationTeamLaunchProfileDraft['defaults']>) => {
+const updateDefaults = (
+  patch: Partial<ApplicationTeamLaunchProfileDraft['defaults']>,
+  invalidatesLlmConfig = false,
+) => {
+  const defaults = {
+    ...props.draft.defaults,
+    ...patch,
+  }
+  if (invalidatesLlmConfig) {
+    delete defaults.llmConfig
+  }
   emit('update:draft', {
     ...props.draft,
-    defaults: {
-      ...props.draft.defaults,
-      ...patch,
-    },
+    defaults,
   })
 }
 

@@ -9,6 +9,7 @@ import { buildBackendBundle } from './backend-builder.js';
 import { writeBackendBundleManifest } from './backend-bundle-manifest-writer.js';
 import { buildFrontendAssets } from './frontend-builder.js';
 import { copyApplicationResources } from './resource-copier.js';
+import { validateStandaloneApplicationPackage } from 'autobyteus-server-ts';
 
 export type ApplicationSourceManifest = {
   id: string;
@@ -91,6 +92,12 @@ export const packApplicationProject = async (input: {
   if (!validation.valid) {
     const messages = validation.diagnostics.map((diagnostic) => diagnostic.message).join('; ');
     throw new Error(`Generated package failed validation: ${messages}`);
+  }
+  if (loadedConfig.config.standalone.enabled) {
+    await validateStandaloneApplicationPackage({
+      packageRoot: paths.outputPackageRoot,
+      localApplicationId: manifest.id,
+    });
   }
   return {
     packageRoot: paths.outputPackageRoot,

@@ -67,6 +67,18 @@
     </div>
 
     <div v-else class="mt-6 space-y-5">
+      <div
+        v-if="launchReadiness && launchReadiness.status !== 'RUNNABLE'"
+        data-testid="application-launch-readiness"
+        class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"
+      >
+        <p class="font-semibold">{{ launchReadiness.status }}</p>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          <li v-for="issue in launchReadiness.issues" :key="`${issue.slotKey}:${issue.scope}:${issue.code}`">
+            {{ issue.message }}
+          </li>
+        </ul>
+      </div>
       <article
         v-for="view in configurationViews"
         :key="view.slot.slotKey"
@@ -149,7 +161,18 @@
             :disabled="isSaving(view.slot.slotKey)"
             @click="resetDraft(view.slot.slotKey)"
           >
-            {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.reset') }}
+            {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.cancelChanges') }}
+          </button>
+          <button
+            v-if="view.canResetToPackageDefaults"
+            type="button"
+            :data-testid="`application-launch-setup-package-reset-${view.slot.slotKey}`"
+            class="inline-flex items-center rounded-md border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+            :class="secondaryActionButtonClasses"
+            :disabled="isSaving(view.slot.slotKey)"
+            @click="resetPackageDefaults(view)"
+          >
+            {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.resetToPackageDefaults') }}
           </button>
           <p
             v-if="saveMessages[view.slot.slotKey]"
@@ -172,7 +195,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type {
-  ApplicationExecutionResourceConfigurationView,
+  ApplicationLaunchConfigurationView,
+  ApplicationLaunchReadiness,
+  ApplicationLaunchSlotView,
   ApplicationExecutionResourceSummary,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationExecutionResourceSlotEditor from '~/components/applications/setup/ApplicationExecutionResourceSlotEditor.vue'
@@ -263,7 +288,8 @@ const secondaryActionButtonClasses = computed(() => (
 
 const loading = ref(false)
 const loadError = ref<string | null>(null)
-const configurationViews = ref<ApplicationExecutionResourceConfigurationView[]>([])
+const configurationViews = ref<ApplicationLaunchSlotView[]>([])
+const launchReadiness = ref<ApplicationLaunchReadiness | null>(null)
 const availableResources = ref<ApplicationExecutionResourceSummary[]>([])
 const drafts = ref<Record<string, ApplicationSlotDraft>>({})
 const slotReadinessByKey = ref<Record<string, ApplicationSlotEditorReadiness>>({})
@@ -295,6 +321,7 @@ const gateState = computed<ApplicationLaunchSetupGateState>(() => buildLaunchSet
   loading: loading.value,
   loadError: loadError.value,
   configurationViews: configurationViews.value,
+  launchReadiness: launchReadiness.value,
   drafts: drafts.value,
   slotReadinessByKey: slotReadinessByKey.value,
   savingSlotKeys: savingSlotKeys.value,
@@ -307,6 +334,7 @@ const loadSetup = async (): Promise<void> => {
   if (!normalizedApplicationId) {
     loadError.value = $t('applications.components.applications.ApplicationLaunchSetupPanel.applicationIdMissing')
     configurationViews.value = []
+    launchReadiness.value = null
     availableResources.value = []
     drafts.value = {}
     slotReadinessByKey.value = {}
@@ -318,8 +346,8 @@ const loadSetup = async (): Promise<void> => {
   resetTransientMessages()
 
   try {
-    const [views, resources] = await Promise.all([
-      fetchJson<ApplicationExecutionResourceConfigurationView[]>(
+    const [launchView, resources] = await Promise.all([
+      fetchJson<ApplicationLaunchConfigurationView>(
         `/applications/${encodeURIComponent(normalizedApplicationId)}/execution-resource-configurations`,
       ),
       fetchJson<ApplicationExecutionResourceSummary[]>(
@@ -327,19 +355,21 @@ const loadSetup = async (): Promise<void> => {
       ),
     ])
 
-    configurationViews.value = views
+    configurationViews.value = launchView.slots
+    launchReadiness.value = launchView.readiness
     availableResources.value = resources
     drafts.value = Object.fromEntries(
-      views.map((view) => [view.slot.slotKey, buildDraftFromView(view)]),
+      launchView.slots.map((view) => [view.slot.slotKey, buildDraftFromView(view)]),
     )
     slotReadinessByKey.value = Object.fromEntries(
-      views.map((view) => [view.slot.slotKey, {
+      launchView.slots.map((view) => [view.slot.slotKey, {
         isReady: false,
         blockingReason: null,
         hasEffectiveResource: false,
       }]),
     )
   } catch (error) {
+    launchReadiness.value = null
     loadError.value = error instanceof Error ? error.message : String(error)
   } finally {
     loading.value = false
@@ -389,7 +419,7 @@ const updateSlotReadiness = (slotKey: string, readiness: ApplicationSlotEditorRe
   }
 }
 
-const saveConfiguration = async (view: ApplicationExecutionResourceConfigurationView): Promise<void> => {
+const saveConfiguration = async (view: ApplicationLaunchSlotView): Promise<void> => {
   const draft = drafts.value[view.slot.slotKey]
   if (!draft) {
     return
@@ -406,7 +436,7 @@ const saveConfiguration = async (view: ApplicationExecutionResourceConfiguration
   }
 
   try {
-    const nextView = await fetchJson<ApplicationExecutionResourceConfigurationView>(
+    const nextLaunchView = await fetchJson<ApplicationLaunchConfigurationView>(
       `/applications/${encodeURIComponent(props.applicationId)}/execution-resource-configurations/${encodeURIComponent(view.slot.slotKey)}`,
       {
         method: 'PUT',
@@ -420,21 +450,45 @@ const saveConfiguration = async (view: ApplicationExecutionResourceConfiguration
             : draft.selection === MANIFEST_DEFAULT_SELECTION
               ? null
               : resolveSelectedResourceRef(draft.selection, availableResources.value),
-          launchProfile: buildLaunchProfile(draft.launchProfile),
+          launchOverride: buildLaunchProfile(draft.launchProfile),
         }),
       },
     )
 
-    configurationViews.value = configurationViews.value.map((candidate) => (
-      candidate.slot.slotKey === nextView.slot.slotKey ? nextView : candidate
-    ))
-    drafts.value = {
-      ...drafts.value,
-      [nextView.slot.slotKey]: buildDraftFromView(nextView),
-    }
+    configurationViews.value = nextLaunchView.slots
+    launchReadiness.value = nextLaunchView.readiness
+    drafts.value = Object.fromEntries(
+      nextLaunchView.slots.map((slotView) => [slotView.slot.slotKey, buildDraftFromView(slotView)]),
+    )
     saveMessages.value = {
       ...saveMessages.value,
-      [nextView.slot.slotKey]: $t('applications.components.applications.ApplicationLaunchSetupPanel.saved'),
+      [view.slot.slotKey]: $t('applications.components.applications.ApplicationLaunchSetupPanel.saved'),
+    }
+  } catch (error) {
+    saveErrors.value = {
+      ...saveErrors.value,
+      [view.slot.slotKey]: error instanceof Error ? error.message : String(error),
+    }
+  } finally {
+    savingSlotKeys.value = savingSlotKeys.value.filter((slotKey) => slotKey !== view.slot.slotKey)
+  }
+}
+
+const resetPackageDefaults = async (view: ApplicationLaunchSlotView): Promise<void> => {
+  savingSlotKeys.value = [...savingSlotKeys.value, view.slot.slotKey]
+  try {
+    const nextLaunchView = await fetchJson<ApplicationLaunchConfigurationView>(
+      `/applications/${encodeURIComponent(props.applicationId)}/execution-resource-configurations/${encodeURIComponent(view.slot.slotKey)}`,
+      { method: 'DELETE', headers: { accept: 'application/json' } },
+    )
+    configurationViews.value = nextLaunchView.slots
+    launchReadiness.value = nextLaunchView.readiness
+    drafts.value = Object.fromEntries(
+      nextLaunchView.slots.map((slotView) => [slotView.slot.slotKey, buildDraftFromView(slotView)]),
+    )
+    saveMessages.value = {
+      ...saveMessages.value,
+      [view.slot.slotKey]: $t('applications.components.applications.ApplicationLaunchSetupPanel.packageDefaultsRestored'),
     }
   } catch (error) {
     saveErrors.value = {
@@ -467,7 +521,7 @@ const resetDraft = (slotKey: string): void => {
 
 const isSaving = (slotKey: string): boolean => savingSlotKeys.value.includes(slotKey)
 
-const describeCurrentSelectionForView = (view: ApplicationExecutionResourceConfigurationView): string => (
+const describeCurrentSelectionForView = (view: ApplicationLaunchSlotView): string => (
   describeCurrentSelection(view, availableResources.value, $t)
 )
 

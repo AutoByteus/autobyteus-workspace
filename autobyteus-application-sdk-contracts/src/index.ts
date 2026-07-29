@@ -1,5 +1,5 @@
 import type {
-  ApplicationConfiguredExecutionResource,
+  ApplicationEffectiveLaunchConfiguration,
   ApplicationExecutionResourceKind,
   ApplicationExecutionResourceSource,
   ApplicationExecutionResourceRef,
@@ -233,7 +233,7 @@ export type ApplicationAgentResources = {
     source?: ApplicationExecutionResourceSource | null;
     kind?: ApplicationExecutionResourceKind | null;
   } | null) => Promise<ApplicationExecutionResourceSummary[]>;
-  getConfigured: (slotKey: string) => Promise<ApplicationConfiguredExecutionResource | null>;
+  requireRunnable: (slotKey: string) => Promise<ApplicationEffectiveLaunchConfiguration>;
 };
 
 export type ApplicationPublishedArtifactSummary = {

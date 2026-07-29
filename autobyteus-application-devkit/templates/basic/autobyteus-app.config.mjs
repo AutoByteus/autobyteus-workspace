@@ -9,6 +9,9 @@ export default {
   output: {
     packageRoot: 'dist/importable-package',
   },
+  standalone: {
+    enabled: true,
+  },
   frontend: {
     entryPoint: 'app.ts',
     entryHtml: 'index.html',

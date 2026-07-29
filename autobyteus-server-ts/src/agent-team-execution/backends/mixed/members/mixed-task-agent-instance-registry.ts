@@ -20,6 +20,7 @@ import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import { getMixedTaskAgentHandleRecoveryCache } from "./mixed-task-agent-handle-recovery-cache.js";
 import type { MixedTeamEventPublish, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
+import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
 
 export type TaskAgentInstanceDeliveryAccess = {
   deliverInterAgentMessageToTaskAgent(
@@ -40,6 +41,7 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
     teamContext: TeamRunContext<MixedTeamRunContext>;
     configResolver: MixedTeamMemberConfigResolver;
     agentRunManager?: AgentRunManager;
+    memberTeamContextBuilder: MemberTeamContextBuilder;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
@@ -80,6 +82,7 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
       }),
       config: this.buildTaskAgentRunConfig(logicalContext, request.identity.taskAgentRunId),
       agentRunManager: this.options.agentRunManager,
+      memberTeamContextBuilder: this.options.memberTeamContextBuilder,
       publish: this.options.publish,
       notifyStatusChange: this.options.notifyStatusChange,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
@@ -284,6 +287,7 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
       }),
       config: this.buildTaskAgentRunConfig(logicalContext, taskAgentRunId),
       agentRunManager: this.options.agentRunManager,
+      memberTeamContextBuilder: this.options.memberTeamContextBuilder,
       publish: this.options.publish,
       notifyStatusChange: this.options.notifyStatusChange,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,

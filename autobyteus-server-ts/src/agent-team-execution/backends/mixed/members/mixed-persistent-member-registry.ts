@@ -15,6 +15,7 @@ import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import { MixedSubTeamMemberHandle } from "./mixed-sub-team-member-handle.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
+import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
 
 export type PersistentMemberRegistryAccess = {
   resolveContext(selector: TeamMemberSelector): MixedTeamMemberContext | AgentOperationResult;
@@ -29,6 +30,7 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
     configResolver: MixedTeamMemberConfigResolver;
     subTeamRunFactory: import("../mixed-sub-team-run-factory.js").MixedSubTeamRunFactory;
     agentRunManager?: AgentRunManager;
+    memberTeamContextBuilder: MemberTeamContextBuilder;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
@@ -80,6 +82,7 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
           context,
           config: config as Extract<TeamRunMemberConfig, { memberKind: "agent" }>,
           agentRunManager: this.options.agentRunManager,
+          memberTeamContextBuilder: this.options.memberTeamContextBuilder,
           publish: this.options.publish,
           notifyStatusChange: this.options.notifyStatusChange,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,

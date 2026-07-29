@@ -36,6 +36,7 @@ import { TeamMemberDeliveryCoordinator } from "./delivery/team-member-delivery-c
 import { MixedConversationTargetRouter } from "./conversation-target/mixed-conversation-target-router.js";
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../task-delegation/task-agent-directory.js";
 import { disposeTaskTeamActiveRunDirectoryForParentTeamRun, getTaskTeamActiveRunDirectory } from "../../task-delegation/task-team-active-run-directory.js";
+import type { MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -86,7 +87,11 @@ export class MixedTeamManager implements TeamManager {
 
   constructor(
     context: TeamRunContext<MixedTeamRunContext>,
-    options: { subTeamRunFactory?: MixedSubTeamRunFactory; agentRunManager?: AgentRunManager } = {},
+    options: {
+      subTeamRunFactory?: MixedSubTeamRunFactory;
+      agentRunManager?: AgentRunManager;
+      memberTeamContextBuilder: MemberTeamContextBuilder;
+    },
   ) {
     this.teamContext = context;
     const subTeamRunFactory = options.subTeamRunFactory ?? new MixedSubTeamRunFactory({
@@ -109,12 +114,14 @@ export class MixedTeamManager implements TeamManager {
       configResolver,
       subTeamRunFactory,
       agentRunManager: options.agentRunManager,
+      memberTeamContextBuilder: options.memberTeamContextBuilder,
       ...sharedCallbacks,
     });
     this.taskAgentInstances = new MixedTaskAgentInstanceRegistry({
       teamContext: context,
       configResolver,
       agentRunManager: options.agentRunManager,
+      memberTeamContextBuilder: options.memberTeamContextBuilder,
       ...sharedCallbacks,
     });
     this.taskTeamInstances = new MixedTaskTeamInstanceRegistry({

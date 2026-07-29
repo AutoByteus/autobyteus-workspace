@@ -41,12 +41,17 @@ export const runStandaloneDevelopmentSession = async (input: {
     return closePromise;
   };
   const buildAndStart = async (reloadBrowser: boolean): Promise<void> => {
+    const state = await resolveApplicationDevelopmentProjectState(projectRoot);
+    if (!state.config.config.standalone.enabled) {
+      throw new Error(
+        'Standalone development is disabled. Set standalone.enabled to true in autobyteus-app.config.mjs.',
+      );
+    }
     if (hostHandle) {
       await closeWithinTimeout(hostHandle.close, 'Standalone development host');
       hostHandle = null;
     }
     await packApplicationProjectAtomically({ projectRoot, packageRoot });
-    const state = await resolveApplicationDevelopmentProjectState(projectRoot);
     hostHandle = await startStandaloneApplicationHost({
       packageRoot,
       localApplicationId: state.manifest.id,

@@ -17,6 +17,11 @@ export const runStartCommand = async (args: string[]): Promise<void> => {
     readStringFlag(options, 'project-root') ?? process.cwd(),
   );
   const config = await loadApplicationDevkitConfig(projectRoot);
+  if (!config.config.standalone.enabled) {
+    throw new Error(
+      'Standalone start is disabled. Set standalone.enabled to true in autobyteus-app.config.mjs.',
+    );
+  }
   const manifest = await readApplicationSourceManifest(projectRoot);
   const packageRoot = path.resolve(
     readStringFlag(options, 'package-root')

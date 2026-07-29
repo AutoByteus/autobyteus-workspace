@@ -10,7 +10,9 @@ import { ApplicationAvailabilityService } from "../../application-orchestration/
 import { ApplicationBoundRunLifecycleGateway } from "../../application-orchestration/services/application-bound-run-lifecycle-gateway.js";
 import { ApplicationExecutionEventDispatchService } from "../../application-orchestration/services/application-execution-event-dispatch-service.js";
 import { ApplicationExecutionEventIngressService } from "../../application-orchestration/services/application-execution-event-ingress-service.js";
-import { ApplicationExecutionResourceConfigurationService } from "../../application-orchestration/services/application-execution-resource-configuration-service.js";
+import { ApplicationLaunchConfigurationService } from "../launch-configuration/application-launch-configuration-service.js";
+import { ApplicationLaunchHostCapabilityValidator } from "../launch-configuration/application-launch-host-capability-validator.js";
+import { ApplicationLaunchPackageBaselineBuilder } from "../launch-configuration/application-launch-package-baseline-builder.js";
 import { ApplicationExecutionResourceResolver } from "../../application-orchestration/services/application-execution-resource-resolver.js";
 import { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationOrchestrationRecoveryService } from "../../application-orchestration/services/application-orchestration-recovery-service.js";
@@ -21,12 +23,22 @@ import { ApplicationRunBindingTerminalTransitionService } from "../../applicatio
 import { ApplicationRunObserverService } from "../../application-orchestration/services/application-run-observer-service.js";
 import { ApplicationAgentTargetAuthorizationService } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import { ApplicationExecutionEventJournalStore } from "../../application-orchestration/stores/application-execution-event-journal-store.js";
-import { ApplicationExecutionResourceConfigurationStore } from "../../application-orchestration/stores/application-execution-resource-configuration-store.js";
+import { ApplicationLaunchOverrideStore } from "../../application-orchestration/stores/application-launch-override-store.js";
 import { ApplicationRunBindingStore } from "../../application-orchestration/stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../../application-orchestration/stores/application-run-lookup-store.js";
 import type { ApplicationAvailabilityStateRegistry } from "./application-availability-state-registry.js";
 import type { DeferredApplicationEngineEventHandlerPort } from "./deferred-application-engine-event-handler-port.js";
 import { createApplicationRunAuthorities } from "./create-application-run-authorities.js";
+import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
+import { getModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
+import { getLlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
+import {
+  getCodexAppServerClientManager,
+} from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
+import { buildApplicationStorageLayout } from "../../application-storage/utils/application-storage-paths.js";
+import {
+  ApplicationProviderCredentialReadinessAdapter,
+} from "../launch-configuration/application-provider-credential-readiness-adapter.js";
 
 export const createApplicationOrchestrationAuthorities = (input: {
   appConfig: AppConfig;
@@ -44,7 +56,7 @@ export const createApplicationOrchestrationAuthorities = (input: {
   const bindingStore = new ApplicationRunBindingStore({
     platformStateStore: input.platformStateStore,
   });
-  const configurationStore = new ApplicationExecutionResourceConfigurationStore({
+  const overrideStore = new ApplicationLaunchOverrideStore({
     platformStateStore: input.platformStateStore,
   });
   const journalStore = new ApplicationExecutionEventJournalStore({
@@ -105,11 +117,25 @@ export const createApplicationOrchestrationAuthorities = (input: {
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
   });
-  const configurationService = new ApplicationExecutionResourceConfigurationService({
-    applicationBundleService: input.bundleService,
+  const baselineBuilder = new ApplicationLaunchPackageBaselineBuilder({
     executionResourceResolver,
-    configurationStore,
+    agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
+    resolveWorkspaceRootPath: (applicationId) =>
+      buildApplicationStorageLayout(input.appConfig, applicationId).runtimeDir,
+  });
+  const configurationService = new ApplicationLaunchConfigurationService({
+    applicationBundleService: input.bundleService,
+    overrideStore,
+    baselineBuilder,
+    hostCapabilityValidator: new ApplicationLaunchHostCapabilityValidator({
+      runtimeAvailabilityService: getRuntimeAvailabilityService(),
+      modelCatalogService: getModelCatalogService(),
+      providerCredentialReadiness: new ApplicationProviderCredentialReadinessAdapter({
+        llmProviderService: getLlmProviderService(),
+        codexClientManager: getCodexAppServerClientManager(),
+      }),
+    }),
   });
   const launchService = new ApplicationRunBindingLaunchService({
     executionResourceResolver,
@@ -130,7 +156,7 @@ export const createApplicationOrchestrationAuthorities = (input: {
     startupGate,
     availabilityService,
     executionResourceResolver,
-    executionResourceConfigurationService: configurationService,
+    launchConfigurationService: configurationService,
     runBindingLaunchService: launchService,
     bindingStore,
     lookupStore: runLookupStore,

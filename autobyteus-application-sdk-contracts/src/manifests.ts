@@ -9,17 +9,20 @@ export const APPLICATION_MANIFEST_VERSION = "4" as const;
 export type ApplicationSupportedAgentLaunchConfigDeclaration = {
   llmModelIdentifier?: boolean | null;
   runtimeKind?: boolean | null;
+  llmConfig?: boolean | null;
   workspaceRootPath?: boolean | null;
 };
 
 export type ApplicationSupportedTeamMemberOverrideDeclaration = {
   llmModelIdentifier?: boolean | null;
   runtimeKind?: boolean | null;
+  llmConfig?: boolean | null;
 };
 
 export type ApplicationSupportedTeamLaunchConfigDeclaration = {
   llmModelIdentifier?: boolean | null;
   runtimeKind?: boolean | null;
+  llmConfig?: boolean | null;
   workspaceRootPath?: boolean | null;
   memberOverrides?: ApplicationSupportedTeamMemberOverrideDeclaration | null;
 };

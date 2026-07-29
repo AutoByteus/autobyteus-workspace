@@ -219,12 +219,3 @@ export class MemberTeamContextBuilder {
     return this.teamDefinitionSummaryCache.get(teamDefinitionId)!;
   }
 }
-
-let cachedMemberTeamContextBuilder: MemberTeamContextBuilder | null = null;
-
-export const getMemberTeamContextBuilder = (): MemberTeamContextBuilder => {
-  if (!cachedMemberTeamContextBuilder) {
-    cachedMemberTeamContextBuilder = new MemberTeamContextBuilder();
-  }
-  return cachedMemberTeamContextBuilder;
-};

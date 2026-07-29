@@ -26,6 +26,9 @@ import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
 import {
   TokenUsageExecutionAddressBuilder,
 } from "../../services/token-usage-execution-address-builder.js";
+import {
+  MemberTeamContextBuilder,
+} from "../../services/member-team-context-builder.js";
 
 const normalizeRequiredRunId = (value: string | null | undefined, fieldName: string): string => {
   const normalized = typeof value === "string" ? value.trim() : "";
@@ -38,6 +41,7 @@ const normalizeRequiredRunId = (value: string | null | undefined, fieldName: str
 export type MixedTeamRunBackendFactoryOptions = {
   createTeamManager?: (context: TeamRunContext<MixedTeamRunContext>, subTeamRunFactory: MixedSubTeamRunFactory) => MixedTeamManager;
   memoryLocationService?: Pick<AgentMemoryLocationService, "getTeamAgentRunLocation">;
+  memberTeamContextBuilder?: MemberTeamContextBuilder;
 };
 
 export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
@@ -47,8 +51,13 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
   private readonly tokenUsageAddressBuilder = new TokenUsageExecutionAddressBuilder();
 
   constructor(options: MixedTeamRunBackendFactoryOptions = {}) {
+    const memberTeamContextBuilder =
+      options.memberTeamContextBuilder ?? new MemberTeamContextBuilder();
     this.createTeamManager =
-      options.createTeamManager ?? ((context, subTeamRunFactory) => new MixedTeamManager(context, { subTeamRunFactory }));
+      options.createTeamManager ?? ((context, subTeamRunFactory) => new MixedTeamManager(context, {
+        subTeamRunFactory,
+        memberTeamContextBuilder,
+      }));
     this.memoryLocationService = options.memoryLocationService ?? getAgentMemoryLocationService();
     this.subTeamRunFactory = new MixedSubTeamRunFactory({
       buildContext: (config, teamRunId, restoreRuntimeContext, parentBoundary, taskTeamInstance, tokenUsageTeamScope) =>

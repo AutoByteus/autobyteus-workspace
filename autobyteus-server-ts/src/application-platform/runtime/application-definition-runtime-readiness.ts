@@ -1,7 +1,7 @@
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
-import type { ApplicationExecutionResourceConfigurationService } from "../../application-orchestration/services/application-execution-resource-configuration-service.js";
+import type { ApplicationLaunchConfigurationService } from "../launch-configuration/application-launch-configuration-service.js";
 import type { ApplicationExecutionResourceResolver } from "../../application-orchestration/services/application-execution-resource-resolver.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import { ApplicationRuntimeDefinitionValidator } from "./application-runtime-definition-validator.js";
@@ -22,7 +22,7 @@ export class ApplicationDefinitionRuntimeReadiness {
     bundleService: ApplicationBundleService;
     agentDefinitionService: AgentDefinitionService;
     agentTeamDefinitionService: AgentTeamDefinitionService;
-    configurationService: ApplicationExecutionResourceConfigurationService;
+    configurationService: ApplicationLaunchConfigurationService;
     executionResourceResolver: ApplicationExecutionResourceResolver;
     skillService: Pick<SkillService, "resolveConfiguredSkillsForAgent">;
     activeApplicationIds?: ReadonlySet<string> | null;
@@ -54,22 +54,18 @@ export class ApplicationDefinitionRuntimeReadiness {
       }
 
       try {
-        const configurations =
-          await this.dependencies.configurationService.listConfigurations(application.id);
-        for (const view of configurations) {
-          if (view.status !== "READY" || !view.configuration) {
-            if (view.slot.required) {
-              diagnostics.push(
-                `${application.localApplicationId}: required slot '${view.slot.slotKey}' `
-                + `${view.issue?.message ?? "has no ready resource"}`,
-              );
-            }
-            continue;
-          }
+        const launchView = await this.dependencies.configurationService
+          .getApplicationLaunchConfigurationView(application.id);
+        if (launchView.readiness.status !== "RUNNABLE") {
+          diagnostics.push(...launchView.readiness.issues.map((entry) =>
+            `${application.localApplicationId}/slot:${entry.slotKey}: ${entry.message}`));
+        }
+        for (const view of launchView.slots) {
+          if (!view.effectiveConfiguration) continue;
           const resolved = await this.dependencies.executionResourceResolver
             .resolveExecutionResource(
               application.id,
-              view.configuration.executionResourceRef,
+              view.effectiveConfiguration.executionResourceRef,
             );
           await validator.validateResource(
             resolved.kind,
@@ -77,8 +73,8 @@ export class ApplicationDefinitionRuntimeReadiness {
             `${application.localApplicationId}/slot:${view.slot.slotKey}`,
             diagnostics,
           );
-          validator.validateLaunchProfile(
-            view.configuration.launchProfile,
+          validator.validateEffectiveLaunchConfiguration(
+            view.effectiveConfiguration,
             `${application.localApplicationId}/slot:${view.slot.slotKey}`,
             diagnostics,
           );

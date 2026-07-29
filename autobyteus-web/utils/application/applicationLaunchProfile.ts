@@ -1,9 +1,9 @@
 import type {
-  ApplicationConfiguredAgentLaunchProfile,
-  ApplicationConfiguredLaunchProfile,
-  ApplicationConfiguredTeamLaunchProfile,
-  ApplicationConfiguredTeamMemberProfile,
-  ApplicationExecutionResourceConfigurationView,
+  ApplicationAgentLaunchOverride,
+  ApplicationLaunchOverride,
+  ApplicationTeamLaunchOverride,
+  ApplicationTeamMemberLaunchOverride,
+  ApplicationLaunchSlotView,
   ApplicationExecutionResourceSlotDeclaration,
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
@@ -13,6 +13,7 @@ export type ApplicationAgentLaunchProfileDraft = {
   kind: 'AGENT'
   runtimeKind: string
   llmModelIdentifier: string
+  llmConfig?: Record<string, unknown> | null
   workspaceRootPath: string
 }
 
@@ -22,6 +23,7 @@ export type ApplicationTeamMemberProfileDraft = {
   agentDefinitionId: string
   runtimeKind: string
   llmModelIdentifier: string
+  llmConfig?: Record<string, unknown> | null
 }
 
 export type ApplicationTeamLaunchProfileDraft = {
@@ -29,6 +31,7 @@ export type ApplicationTeamLaunchProfileDraft = {
   defaults: {
     runtimeKind: string
     llmModelIdentifier: string
+    llmConfig?: Record<string, unknown> | null
     workspaceRootPath: string
   }
   memberProfiles: ApplicationTeamMemberProfileDraft[]
@@ -63,6 +66,14 @@ const normalizeOptionalString = (value: unknown): string => {
   }
   return value.trim()
 }
+
+const hasOwn = (value: object | null | undefined, key: string): boolean => (
+  Boolean(value) && Object.prototype.hasOwnProperty.call(value, key)
+)
+
+const cloneLlmConfig = (
+  value: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | null => value ? structuredClone(value) : null
 
 export const isSameResourceRef = (
   left: ApplicationExecutionResourceRef | null | undefined,
@@ -128,7 +139,7 @@ export const resolveSelectedResourceRef = (
 }
 
 export const resolveEffectiveResourceRef = (
-  view: ApplicationExecutionResourceConfigurationView,
+  view: ApplicationLaunchSlotView,
   draft: ApplicationSlotDraft | null | undefined,
   availableResources: ApplicationExecutionResourceSummary[],
 ): ApplicationExecutionResourceRef | null => {
@@ -142,37 +153,46 @@ export const resolveEffectiveResourceRef = (
 }
 
 export const hasEffectiveResourceSelection = (
-  view: ApplicationExecutionResourceConfigurationView,
+  view: ApplicationLaunchSlotView,
   draft: ApplicationSlotDraft | null | undefined,
   availableResources: ApplicationExecutionResourceSummary[],
 ): boolean => Boolean(resolveEffectiveResourceRef(view, draft, availableResources))
 
 const buildAgentLaunchProfileDraft = (
-  launchProfile: ApplicationConfiguredAgentLaunchProfile | null | undefined,
+  launchProfile: ApplicationAgentLaunchOverride | null | undefined,
 ): ApplicationAgentLaunchProfileDraft => ({
   kind: 'AGENT',
   runtimeKind: normalizeOptionalString(launchProfile?.runtimeKind),
   llmModelIdentifier: normalizeOptionalString(launchProfile?.llmModelIdentifier),
+  ...(hasOwn(launchProfile, 'llmConfig')
+    ? { llmConfig: cloneLlmConfig(launchProfile?.llmConfig) }
+    : {}),
   workspaceRootPath: normalizeOptionalString(launchProfile?.workspaceRootPath),
 })
 
 const buildTeamMemberProfileDraft = (
-  memberProfile: ApplicationConfiguredTeamMemberProfile,
+  memberProfile: ApplicationTeamMemberLaunchOverride,
 ): ApplicationTeamMemberProfileDraft => ({
   memberRouteKey: memberProfile.memberRouteKey,
   memberName: memberProfile.memberName,
   agentDefinitionId: memberProfile.agentDefinitionId,
   runtimeKind: normalizeOptionalString(memberProfile.runtimeKind),
   llmModelIdentifier: normalizeOptionalString(memberProfile.llmModelIdentifier),
+  ...(hasOwn(memberProfile, 'llmConfig')
+    ? { llmConfig: cloneLlmConfig(memberProfile.llmConfig) }
+    : {}),
 })
 
 const buildTeamLaunchProfileDraft = (
-  launchProfile: ApplicationConfiguredTeamLaunchProfile | null | undefined,
+  launchProfile: ApplicationTeamLaunchOverride | null | undefined,
 ): ApplicationTeamLaunchProfileDraft => ({
   kind: 'AGENT_TEAM',
   defaults: {
     runtimeKind: normalizeOptionalString(launchProfile?.defaults?.runtimeKind),
     llmModelIdentifier: normalizeOptionalString(launchProfile?.defaults?.llmModelIdentifier),
+    ...(hasOwn(launchProfile?.defaults, 'llmConfig')
+      ? { llmConfig: cloneLlmConfig(launchProfile?.defaults?.llmConfig) }
+      : {}),
     workspaceRootPath: normalizeOptionalString(launchProfile?.defaults?.workspaceRootPath),
   },
   memberProfiles: [...(launchProfile?.memberProfiles ?? [])]
@@ -181,7 +201,7 @@ const buildTeamLaunchProfileDraft = (
 })
 
 const buildLaunchProfileDraft = (
-  launchProfile: ApplicationConfiguredLaunchProfile | null | undefined,
+  launchProfile: ApplicationLaunchOverride | null | undefined,
 ): ApplicationLaunchProfileDraft => {
   if (!launchProfile) {
     return null
@@ -200,15 +220,33 @@ export const buildEmptyLaunchProfileDraft = (
 )
 
 export const buildDraftFromView = (
-  view: ApplicationExecutionResourceConfigurationView,
+  view: ApplicationLaunchSlotView,
 ): ApplicationSlotDraft => {
-  const candidateConfiguration = view.configuration ?? view.invalidSavedConfiguration ?? null
-  const currentResourceRef = candidateConfiguration?.executionResourceRef ?? null
+  const currentResourceRef = view.savedOverride?.executionResourceRef
+    ?? view.packageBaseline?.executionResourceRef
+    ?? null
   const usingManifestDefault = Boolean(
     view.slot.defaultExecutionResourceRef
     && currentResourceRef
     && isSameResourceRef(currentResourceRef, view.slot.defaultExecutionResourceRef)
   )
+
+  const launchProfile = view.savedOverride?.launchOverride
+    ? buildLaunchProfileDraft(view.savedOverride.launchOverride)
+    : (view.effectiveConfiguration ?? view.packageBaseline)?.resourceKind === 'AGENT_TEAM'
+      ? {
+          ...buildTeamLaunchProfileDraft(null),
+          memberProfiles: (view.effectiveConfiguration ?? view.packageBaseline)?.leaves.map((leaf) => ({
+            memberRouteKey: leaf.memberRouteKey ?? leaf.memberName,
+            memberName: leaf.memberName,
+            agentDefinitionId: leaf.agentDefinitionId,
+            runtimeKind: '',
+            llmModelIdentifier: '',
+          })) ?? [],
+        }
+      : (view.effectiveConfiguration ?? view.packageBaseline)?.resourceKind === 'AGENT'
+        ? buildAgentLaunchProfileDraft(null)
+        : null
 
   return {
     selection: usingManifestDefault
@@ -216,18 +254,19 @@ export const buildDraftFromView = (
       : currentResourceRef
         ? buildResourceRefKey(currentResourceRef)
         : '',
-    launchProfile: buildLaunchProfileDraft(candidateConfiguration?.launchProfile ?? null),
+    launchProfile,
   }
 }
 
 const buildAgentLaunchProfile = (
   draft: ApplicationAgentLaunchProfileDraft,
-): ApplicationConfiguredAgentLaunchProfile | null => {
+): ApplicationAgentLaunchOverride | null => {
   const llmModelIdentifier = normalizeOptionalString(draft.llmModelIdentifier)
   const runtimeKind = normalizeOptionalString(draft.runtimeKind)
   const workspaceRootPath = normalizeOptionalString(draft.workspaceRootPath)
+  const llmConfigExplicit = hasOwn(draft, 'llmConfig')
 
-  if (!llmModelIdentifier && !runtimeKind && !workspaceRootPath) {
+  if (!llmModelIdentifier && !runtimeKind && !workspaceRootPath && !llmConfigExplicit) {
     return null
   }
 
@@ -235,25 +274,33 @@ const buildAgentLaunchProfile = (
     kind: 'AGENT',
     ...(llmModelIdentifier ? { llmModelIdentifier } : {}),
     ...(runtimeKind ? { runtimeKind } : {}),
+    ...(llmConfigExplicit ? { llmConfig: cloneLlmConfig(draft.llmConfig) } : {}),
     ...(workspaceRootPath ? { workspaceRootPath } : {}),
   }
 }
 
 const buildTeamLaunchProfile = (
   draft: ApplicationTeamLaunchProfileDraft,
-): ApplicationConfiguredTeamLaunchProfile => {
+): ApplicationTeamLaunchOverride => {
   const defaults = {
     llmModelIdentifier: normalizeOptionalString(draft.defaults.llmModelIdentifier),
     runtimeKind: normalizeOptionalString(draft.defaults.runtimeKind),
     workspaceRootPath: normalizeOptionalString(draft.defaults.workspaceRootPath),
   }
+  const defaultLlmConfigExplicit = hasOwn(draft.defaults, 'llmConfig')
 
   return {
     kind: 'AGENT_TEAM',
-    defaults: defaults.llmModelIdentifier || defaults.runtimeKind || defaults.workspaceRootPath
+    defaults: defaults.llmModelIdentifier
+      || defaults.runtimeKind
+      || defaults.workspaceRootPath
+      || defaultLlmConfigExplicit
       ? {
           ...(defaults.llmModelIdentifier ? { llmModelIdentifier: defaults.llmModelIdentifier } : {}),
           ...(defaults.runtimeKind ? { runtimeKind: defaults.runtimeKind } : {}),
+          ...(defaultLlmConfigExplicit
+            ? { llmConfig: cloneLlmConfig(draft.defaults.llmConfig) }
+            : {}),
           ...(defaults.workspaceRootPath ? { workspaceRootPath: defaults.workspaceRootPath } : {}),
         }
       : null,
@@ -268,6 +315,9 @@ const buildTeamLaunchProfile = (
         ...(normalizeOptionalString(memberProfile.runtimeKind)
           ? { runtimeKind: normalizeOptionalString(memberProfile.runtimeKind) }
           : {}),
+        ...(hasOwn(memberProfile, 'llmConfig')
+          ? { llmConfig: cloneLlmConfig(memberProfile.llmConfig) }
+          : {}),
       }))
       .sort((left, right) => left.memberRouteKey.localeCompare(right.memberRouteKey)),
   }
@@ -275,7 +325,7 @@ const buildTeamLaunchProfile = (
 
 export const buildLaunchProfile = (
   draft: ApplicationLaunchProfileDraft,
-): ApplicationConfiguredLaunchProfile | null => {
+): ApplicationLaunchOverride | null => {
   if (!draft) {
     return null
   }
@@ -294,7 +344,7 @@ const normalizeDraft = (
 })
 
 export const hasUnsavedDraftChanges = (
-  view: ApplicationExecutionResourceConfigurationView,
+  view: ApplicationLaunchSlotView,
   draft: ApplicationSlotDraft | null | undefined,
 ): boolean => {
   if (!draft) {
@@ -331,11 +381,14 @@ export const describeResourceRef = (
 }
 
 export const describeCurrentSelection = (
-  view: ApplicationExecutionResourceConfigurationView,
+  view: ApplicationLaunchSlotView,
   availableResources: ApplicationExecutionResourceSummary[],
   t: ApplicationLaunchSetupTranslate,
 ): string => {
-  const candidateConfiguration = view.configuration ?? view.invalidSavedConfiguration ?? null
+  const candidateConfiguration = view.effectiveConfiguration
+    ?? view.savedOverride
+    ?? view.packageBaseline
+    ?? null
   if (candidateConfiguration?.executionResourceRef) {
     return describeResourceRef(candidateConfiguration.executionResourceRef, availableResources, t)
   }

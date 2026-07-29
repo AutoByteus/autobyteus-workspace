@@ -1,103 +1,45 @@
 export const APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE = "PRELOADED_ONLY";
-const normalizeOptionalString = (value) => {
-    const normalized = typeof value === "string" ? value.trim() : "";
-    return normalized.length > 0 ? normalized : null;
-};
-const requireNonEmptyString = (value, fieldName) => {
-    const normalized = normalizeOptionalString(value);
-    if (!normalized) {
-        throw new Error(`${fieldName} is required.`);
-    }
+const normalizeSkillAccessMode = (value) => value ?? APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
+const requireWorkspaceRootPath = (value, label) => {
+    const normalized = value?.trim() ?? "";
+    if (!normalized)
+        throw new Error(`workspaceRootPath is required for ${label}.`);
     return normalized;
 };
-const cloneExecutionResourceRef = (executionResourceRef) => structuredClone(executionResourceRef);
-const normalizeSkillAccessMode = (skillAccessMode) => {
-    if (skillAccessMode === undefined || skillAccessMode === null || skillAccessMode === APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE) {
-        return APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
+export const buildEffectiveAgentRunLaunch = (input) => {
+    if (input.configuration.resourceKind !== "AGENT" || input.configuration.leaves.length !== 1) {
+        throw new Error("Runnable AGENT configuration must contain exactly one effective leaf.");
     }
-    if (skillAccessMode === "NONE") {
-        return "NONE";
-    }
-    throw new Error(`Unsupported skillAccessMode '${skillAccessMode}'.`);
-};
-export const resolveConfiguredAgentLaunchProfile = (input) => {
-    const executionResourceRef = input.configuredResource?.executionResourceRef ?? input.fallbackExecutionResourceRef;
-    const launchProfile = input.configuredResource?.launchProfile?.kind === "AGENT"
-        ? input.configuredResource.launchProfile
-        : null;
+    const leaf = input.configuration.leaves[0];
     return {
-        executionResourceRef: cloneExecutionResourceRef(executionResourceRef),
-        launchProfile: launchProfile ? structuredClone(launchProfile) : null,
-    };
-};
-export const resolveConfiguredTeamLaunchProfile = (input) => {
-    const executionResourceRef = input.configuredResource?.executionResourceRef ?? input.fallbackExecutionResourceRef;
-    const launchProfile = input.configuredResource?.launchProfile?.kind === "AGENT_TEAM"
-        ? input.configuredResource.launchProfile
-        : null;
-    return {
-        executionResourceRef: cloneExecutionResourceRef(executionResourceRef),
-        launchProfile: launchProfile ? structuredClone(launchProfile) : null,
-    };
-};
-export const buildConfiguredAgentRunLaunch = (input) => ({
-    kind: "AGENT",
-    workspaceRootPath: input.workspaceRootPath,
-    llmModelIdentifier: input.llmModelIdentifier,
-    autoExecuteTools: true,
-    skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
-    runtimeKind: input.launchProfile?.runtimeKind ?? input.runtimeKind ?? null,
-});
-const resolveTeamWorkspaceRootPath = (input) => (normalizeOptionalString(input.launchProfile.defaults?.workspaceRootPath)
-    ?? requireNonEmptyString(input.workspaceRootPath, "workspaceRootPath"));
-export const buildConfiguredTeamMemberLaunchConfigs = (input) => {
-    const skillAccessMode = normalizeSkillAccessMode(input.skillAccessMode);
-    const defaultLlmModelIdentifier = normalizeOptionalString(input.launchProfile.defaults?.llmModelIdentifier)
-        ?? normalizeOptionalString(input.llmModelIdentifier);
-    const defaultRuntimeKind = normalizeOptionalString(input.launchProfile.defaults?.runtimeKind)
-        ?? normalizeOptionalString(input.runtimeKind);
-    const workspaceRootPath = resolveTeamWorkspaceRootPath({
-        launchProfile: input.launchProfile,
-        workspaceRootPath: input.workspaceRootPath,
-    });
-    return input.launchProfile.memberProfiles.map((memberProfile) => ({
-        llmModelIdentifier: requireNonEmptyString(normalizeOptionalString(memberProfile.llmModelIdentifier) ?? defaultLlmModelIdentifier, `llmModelIdentifier for team member '${memberProfile.memberName}'`),
-        memberName: memberProfile.memberName,
-        memberRouteKey: memberProfile.memberRouteKey,
-        agentDefinitionId: memberProfile.agentDefinitionId,
+        kind: "AGENT",
+        workspaceRootPath: requireWorkspaceRootPath(leaf.workspaceRootPath, leaf.agentDefinitionId),
+        llmModelIdentifier: leaf.llmModelIdentifier,
         autoExecuteTools: true,
-        skillAccessMode,
-        workspaceRootPath,
-        ...(input.llmConfig === undefined ? {} : { llmConfig: structuredClone(input.llmConfig) }),
-        runtimeKind: normalizeOptionalString(memberProfile.runtimeKind) ?? defaultRuntimeKind ?? null,
-    }));
+        skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
+        runtimeKind: leaf.runtimeKind,
+        ...(leaf.llmConfig === null ? {} : { llmConfig: structuredClone(leaf.llmConfig) }),
+    };
 };
-export const buildConfiguredTeamRunLaunch = (input) => {
-    if (!input.launchProfile) {
-        return {
-            kind: "AGENT_TEAM",
-            mode: "preset",
-            launchPreset: {
-                workspaceRootPath: requireNonEmptyString(input.workspaceRootPath, "workspaceRootPath"),
-                llmModelIdentifier: requireNonEmptyString(input.llmModelIdentifier, "llmModelIdentifier"),
-                autoExecuteTools: true,
-                skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
-                ...(input.llmConfig === undefined ? {} : { llmConfig: structuredClone(input.llmConfig) }),
-                runtimeKind: normalizeOptionalString(input.runtimeKind) ?? null,
-            },
-        };
+export const buildEffectiveTeamRunLaunch = (input) => {
+    if (input.configuration.resourceKind !== "AGENT_TEAM") {
+        throw new Error("Runnable AGENT_TEAM configuration is required.");
     }
+    const skillAccessMode = normalizeSkillAccessMode(input.skillAccessMode);
     return {
         kind: "AGENT_TEAM",
         mode: "memberConfigs",
-        memberConfigs: buildConfiguredTeamMemberLaunchConfigs({
-            launchProfile: input.launchProfile,
-            workspaceRootPath: input.workspaceRootPath,
-            llmModelIdentifier: input.llmModelIdentifier,
-            llmConfig: input.llmConfig,
-            runtimeKind: input.runtimeKind,
-            skillAccessMode: input.skillAccessMode,
-        }),
+        memberConfigs: input.configuration.leaves.map((leaf) => ({
+            memberName: leaf.memberName,
+            memberRouteKey: leaf.memberRouteKey ?? leaf.memberName,
+            agentDefinitionId: leaf.agentDefinitionId,
+            workspaceRootPath: requireWorkspaceRootPath(leaf.workspaceRootPath, leaf.memberRouteKey ?? leaf.memberName),
+            llmModelIdentifier: leaf.llmModelIdentifier,
+            autoExecuteTools: true,
+            skillAccessMode,
+            runtimeKind: leaf.runtimeKind,
+            ...(leaf.llmConfig === null ? {} : { llmConfig: structuredClone(leaf.llmConfig) }),
+        })),
     };
 };
 //# sourceMappingURL=launch-profile.js.map

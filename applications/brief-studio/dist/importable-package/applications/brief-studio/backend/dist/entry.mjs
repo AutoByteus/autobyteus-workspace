@@ -1,81 +1,31 @@
 // ../../autobyteus-application-backend-sdk/dist/launch-profile.js
 var APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE = "PRELOADED_ONLY";
-var normalizeOptionalString = (value) => {
-  const normalized = typeof value === "string" ? value.trim() : "";
-  return normalized.length > 0 ? normalized : null;
-};
-var requireNonEmptyString = (value, fieldName) => {
-  const normalized = normalizeOptionalString(value);
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
+var normalizeSkillAccessMode = (value) => value ?? APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
+var requireWorkspaceRootPath = (value, label) => {
+  const normalized = value?.trim() ?? "";
+  if (!normalized)
+    throw new Error(`workspaceRootPath is required for ${label}.`);
   return normalized;
 };
-var cloneExecutionResourceRef = (executionResourceRef) => structuredClone(executionResourceRef);
-var normalizeSkillAccessMode = (skillAccessMode) => {
-  if (skillAccessMode === void 0 || skillAccessMode === null || skillAccessMode === APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE) {
-    return APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
+var buildEffectiveTeamRunLaunch = (input) => {
+  if (input.configuration.resourceKind !== "AGENT_TEAM") {
+    throw new Error("Runnable AGENT_TEAM configuration is required.");
   }
-  if (skillAccessMode === "NONE") {
-    return "NONE";
-  }
-  throw new Error(`Unsupported skillAccessMode '${skillAccessMode}'.`);
-};
-var resolveConfiguredTeamLaunchProfile = (input) => {
-  const executionResourceRef = input.configuredResource?.executionResourceRef ?? input.fallbackExecutionResourceRef;
-  const launchProfile = input.configuredResource?.launchProfile?.kind === "AGENT_TEAM" ? input.configuredResource.launchProfile : null;
-  return {
-    executionResourceRef: cloneExecutionResourceRef(executionResourceRef),
-    launchProfile: launchProfile ? structuredClone(launchProfile) : null
-  };
-};
-var resolveTeamWorkspaceRootPath = (input) => normalizeOptionalString(input.launchProfile.defaults?.workspaceRootPath) ?? requireNonEmptyString(input.workspaceRootPath, "workspaceRootPath");
-var buildConfiguredTeamMemberLaunchConfigs = (input) => {
   const skillAccessMode = normalizeSkillAccessMode(input.skillAccessMode);
-  const defaultLlmModelIdentifier = normalizeOptionalString(input.launchProfile.defaults?.llmModelIdentifier) ?? normalizeOptionalString(input.llmModelIdentifier);
-  const defaultRuntimeKind = normalizeOptionalString(input.launchProfile.defaults?.runtimeKind) ?? normalizeOptionalString(input.runtimeKind);
-  const workspaceRootPath = resolveTeamWorkspaceRootPath({
-    launchProfile: input.launchProfile,
-    workspaceRootPath: input.workspaceRootPath
-  });
-  return input.launchProfile.memberProfiles.map((memberProfile) => ({
-    llmModelIdentifier: requireNonEmptyString(normalizeOptionalString(memberProfile.llmModelIdentifier) ?? defaultLlmModelIdentifier, `llmModelIdentifier for team member '${memberProfile.memberName}'`),
-    memberName: memberProfile.memberName,
-    memberRouteKey: memberProfile.memberRouteKey,
-    agentDefinitionId: memberProfile.agentDefinitionId,
-    autoExecuteTools: true,
-    skillAccessMode,
-    workspaceRootPath,
-    ...input.llmConfig === void 0 ? {} : { llmConfig: structuredClone(input.llmConfig) },
-    runtimeKind: normalizeOptionalString(memberProfile.runtimeKind) ?? defaultRuntimeKind ?? null
-  }));
-};
-var buildConfiguredTeamRunLaunch = (input) => {
-  if (!input.launchProfile) {
-    return {
-      kind: "AGENT_TEAM",
-      mode: "preset",
-      launchPreset: {
-        workspaceRootPath: requireNonEmptyString(input.workspaceRootPath, "workspaceRootPath"),
-        llmModelIdentifier: requireNonEmptyString(input.llmModelIdentifier, "llmModelIdentifier"),
-        autoExecuteTools: true,
-        skillAccessMode: normalizeSkillAccessMode(input.skillAccessMode),
-        ...input.llmConfig === void 0 ? {} : { llmConfig: structuredClone(input.llmConfig) },
-        runtimeKind: normalizeOptionalString(input.runtimeKind) ?? null
-      }
-    };
-  }
   return {
     kind: "AGENT_TEAM",
     mode: "memberConfigs",
-    memberConfigs: buildConfiguredTeamMemberLaunchConfigs({
-      launchProfile: input.launchProfile,
-      workspaceRootPath: input.workspaceRootPath,
-      llmModelIdentifier: input.llmModelIdentifier,
-      llmConfig: input.llmConfig,
-      runtimeKind: input.runtimeKind,
-      skillAccessMode: input.skillAccessMode
-    })
+    memberConfigs: input.configuration.leaves.map((leaf) => ({
+      memberName: leaf.memberName,
+      memberRouteKey: leaf.memberRouteKey ?? leaf.memberName,
+      agentDefinitionId: leaf.agentDefinitionId,
+      workspaceRootPath: requireWorkspaceRootPath(leaf.workspaceRootPath, leaf.memberRouteKey ?? leaf.memberName),
+      llmModelIdentifier: leaf.llmModelIdentifier,
+      autoExecuteTools: true,
+      skillAccessMode,
+      runtimeKind: leaf.runtimeKind,
+      ...leaf.llmConfig === null ? {} : { llmConfig: structuredClone(leaf.llmConfig) }
+    }))
   };
 };
 
@@ -519,7 +469,7 @@ var createPendingLaunchRequestRepository = (db) => ({
 });
 
 // backend-src/services/run-binding-correlation-service.ts
-var requireNonEmptyString2 = (value, fieldName) => {
+var requireNonEmptyString = (value, fieldName) => {
   const normalized = value.trim();
   if (!normalized) {
     throw new Error(`${fieldName} is required.`);
@@ -552,13 +502,13 @@ var ensureBindingConsistency = (pendingLaunchRequest, existingBinding, input) =>
     );
   }
 };
-var requireLaunchRequestId = (binding) => requireNonEmptyString2(binding.launchRequestId, "binding.launchRequestId");
+var requireLaunchRequestId = (binding) => requireNonEmptyString(binding.launchRequestId, "binding.launchRequestId");
 var createRunBindingCorrelationService = (context) => ({
   createPendingLaunchRequest(briefId) {
     const createdAt = (/* @__PURE__ */ new Date()).toISOString();
     const pendingLaunchRequest = {
       launchRequestId: `brief-launch-request-${randomUUID()}`,
-      briefId: requireNonEmptyString2(briefId, "briefId"),
+      briefId: requireNonEmptyString(briefId, "briefId"),
       status: "PENDING_START",
       bindingId: null,
       createdAt,
@@ -574,7 +524,7 @@ var createRunBindingCorrelationService = (context) => ({
   },
   finalizeBindingForBrief(input) {
     const launchRequestId = requireLaunchRequestId(input.binding);
-    const briefId = requireNonEmptyString2(input.briefId, "briefId");
+    const briefId = requireNonEmptyString(input.briefId, "briefId");
     const committedAt = input.committedAt ?? (/* @__PURE__ */ new Date()).toISOString();
     withAppDatabase(context.storage.appDatabasePath, (db) => {
       withTransaction(db, () => {
@@ -626,7 +576,7 @@ var createRunBindingCorrelationService = (context) => ({
     );
   },
   async reconcileLaunchRequest(launchRequestId) {
-    const normalizedLaunchRequestId = requireNonEmptyString2(launchRequestId, "launchRequestId");
+    const normalizedLaunchRequestId = requireNonEmptyString(launchRequestId, "launchRequestId");
     const pendingLaunchRequest = withAppDatabase(
       context.storage.appDatabasePath,
       (db) => createPendingLaunchRequestRepository(db).getByLaunchRequestId(normalizedLaunchRequestId)
@@ -648,7 +598,7 @@ var createRunBindingCorrelationService = (context) => ({
     };
   },
   listBindingIdsByBriefId(briefId) {
-    const normalizedBriefId = requireNonEmptyString2(briefId, "briefId");
+    const normalizedBriefId = requireNonEmptyString(briefId, "briefId");
     return withAppDatabase(
       context.storage.appDatabasePath,
       (db) => createBriefBindingRepository(db).listByBriefId(normalizedBriefId).map((binding) => binding.bindingId)
@@ -1107,13 +1057,8 @@ var createBriefReviewService = (context) => ({
 
 // backend-src/services/brief-run-launch-service.ts
 import { randomUUID as randomUUID3 } from "node:crypto";
-var BRIEF_STUDIO_TEAM_RESOURCE = {
-  source: "bundle",
-  kind: "AGENT_TEAM",
-  localId: "brief-studio-team"
-};
 var DRAFTING_TEAM_SLOT_KEY = "draftingTeam";
-var requireNonEmptyString3 = (value, fieldName) => {
+var requireNonEmptyString2 = (value, fieldName) => {
   const normalized = typeof value === "string" ? value.trim() : "";
   if (!normalized) {
     throw new Error(`${fieldName} is required.`);
@@ -1150,15 +1095,9 @@ var resolveLaunchProjection = (input) => {
     lastErrorMessage: currentBindingProjection?.lastErrorMessage ?? null
   };
 };
-var resolveDraftingTeamConfiguration = async (context) => {
-  return resolveConfiguredTeamLaunchProfile({
-    configuredResource: await context.agentResources.getConfigured(DRAFTING_TEAM_SLOT_KEY),
-    fallbackExecutionResourceRef: BRIEF_STUDIO_TEAM_RESOURCE
-  });
-};
 var createBriefRunLaunchService = (context) => ({
   async createBrief(input) {
-    const title = requireNonEmptyString3(input.title, "title");
+    const title = requireNonEmptyString2(input.title, "title");
     const briefId = `brief-${randomUUID3()}`;
     const createdAt = (/* @__PURE__ */ new Date()).toISOString();
     const brief = withAppDatabase(context.storage.appDatabasePath, (db) => {
@@ -1186,7 +1125,7 @@ var createBriefRunLaunchService = (context) => ({
     return brief;
   },
   async launchDraftRun(input) {
-    const briefId = requireNonEmptyString3(input.briefId, "briefId");
+    const briefId = requireNonEmptyString2(input.briefId, "briefId");
     const correlationService = createRunBindingCorrelationService(context);
     const launchContext = withAppDatabase(context.storage.appDatabasePath, (db) => {
       const briefRepository = createBriefRepository(db);
@@ -1207,16 +1146,13 @@ var createBriefRunLaunchService = (context) => ({
     });
     const launchedAt = (/* @__PURE__ */ new Date()).toISOString();
     const pendingLaunchRequest = correlationService.createPendingLaunchRequest(briefId);
-    const draftingTeam = await resolveDraftingTeamConfiguration(context);
-    const workspaceRootPath = draftingTeam.launchProfile?.defaults?.workspaceRootPath ?? context.storage.runtimePath;
+    const draftingTeam = await context.agentResources.requireRunnable(DRAFTING_TEAM_SLOT_KEY);
     try {
       const binding = await context.agentExecution.startAgentTeam({
         launchRequestId: pendingLaunchRequest.launchRequestId,
         executionResourceRef: draftingTeam.executionResourceRef,
-        launch: buildConfiguredTeamRunLaunch({
-          launchProfile: draftingTeam.launchProfile,
-          workspaceRootPath,
-          llmModelIdentifier: input.llmModelIdentifier
+        launch: buildEffectiveTeamRunLaunch({
+          configuration: draftingTeam
         }),
         initialInput: {
           text: buildInitialInputText({
@@ -1371,8 +1307,7 @@ var executeBriefStudioGraphql = async (request, context) => {
       return toGraphqlResult("launchDraftRun", () => {
         const input = requireObject(variables.input, "input");
         return runLaunchService.launchDraftRun({
-          briefId: typeof input.briefId === "string" ? input.briefId : "",
-          llmModelIdentifier: typeof input.llmModelIdentifier === "string" ? input.llmModelIdentifier : null
+          briefId: typeof input.briefId === "string" ? input.briefId : ""
         });
       });
     case "ApproveBriefMutation":

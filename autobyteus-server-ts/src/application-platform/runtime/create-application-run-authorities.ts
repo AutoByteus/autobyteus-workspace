@@ -21,6 +21,7 @@ import { TeamRunMetadataService } from "../../run-history/services/team-run-meta
 import { PublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
+import { MemberTeamContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 
 export const createApplicationRunAuthorities = (input: {
   appConfig: AppConfig;
@@ -39,6 +40,9 @@ export const createApplicationRunAuthorities = (input: {
     bindingStore: input.bindingStore,
     engineHostService: input.deferredEnginePort as never,
   });
+  const memberTeamContextBuilder = new MemberTeamContextBuilder(
+    input.agentTeamDefinitionService,
+  );
   const agentRunManager = new AgentRunManager({
     autoByteusBackendFactory: new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: input.agentDefinitionService,
@@ -49,10 +53,12 @@ export const createApplicationRunAuthorities = (input: {
   });
   const agentTeamRunManager = new AgentTeamRunManager({
     mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
+      memberTeamContextBuilder,
       createTeamManager: (context, subTeamRunFactory) =>
         new MixedTeamManager(context, {
           subTeamRunFactory,
           agentRunManager,
+          memberTeamContextBuilder,
         }),
     }),
     teamCommunicationService: new TeamCommunicationService({ memoryDir }),

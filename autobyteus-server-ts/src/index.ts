@@ -12,3 +12,6 @@ export type {
   StandaloneApplicationHostConfig,
   StandaloneApplicationHostConfigInput,
 } from "./standalone-application-host/config/standalone-application-host-config.js";
+export {
+  validateStandaloneApplicationPackage,
+} from "./application-platform/launch-configuration/application-standalone-package-validator.js";

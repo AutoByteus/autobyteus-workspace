@@ -1,22 +1,22 @@
 import type { DatabaseSync } from "node:sqlite";
 import type {
-  ApplicationConfiguredLaunchProfile,
   ApplicationExecutionResourceRef,
+  ApplicationLaunchOverride,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
 
-export type LegacyApplicationConfiguredLaunchDefaults = {
+export type StoredLegacyApplicationLaunchDefaults = {
   llmModelIdentifier?: string | null;
   runtimeKind?: string | null;
   workspaceRootPath?: string | null;
   autoExecuteTools?: boolean | null;
 };
 
-export type ApplicationPersistedExecutionResourceConfiguration = {
+export type StoredApplicationLaunchOverride = {
   slotKey: string;
   executionResourceRef: ApplicationExecutionResourceRef | null;
-  launchProfile: ApplicationConfiguredLaunchProfile | null;
-  legacyLaunchDefaults: LegacyApplicationConfiguredLaunchDefaults | null;
+  launchOverride: ApplicationLaunchOverride | null;
+  legacyLaunchDefaults: StoredLegacyApplicationLaunchDefaults | null;
   updatedAt: string;
 };
 
@@ -36,13 +36,6 @@ const STALE_RESOURCE_REF_JSON_PREDICATE = `
   )
 `;
 
-const resetStaleOldShapeConfigurations = (db: DatabaseSync): void => {
-  db.prepare(
-    `DELETE FROM ${TABLE_NAME}
-      WHERE ${STALE_RESOURCE_REF_JSON_PREDICATE}`,
-  ).run();
-};
-
 const ensureTables = (db: DatabaseSync): void => {
   db.exec(`
     CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
@@ -53,32 +46,30 @@ const ensureTables = (db: DatabaseSync): void => {
       updated_at TEXT NOT NULL
     );
   `);
-
   if (!hasColumn(db, "launch_profile_json")) {
     db.exec(`ALTER TABLE ${TABLE_NAME} ADD COLUMN launch_profile_json TEXT`);
   }
   if (!hasColumn(db, "launch_defaults_json")) {
     db.exec(`ALTER TABLE ${TABLE_NAME} ADD COLUMN launch_defaults_json TEXT`);
   }
-
-  resetStaleOldShapeConfigurations(db);
+  db.prepare(`DELETE FROM ${TABLE_NAME} WHERE ${STALE_RESOURCE_REF_JSON_PREDICATE}`).run();
 };
 
-const hydrateRecord = (row: Record<string, unknown>): ApplicationPersistedExecutionResourceConfiguration => ({
+const hydrateRecord = (row: Record<string, unknown>): StoredApplicationLaunchOverride => ({
   slotKey: String(row.slot_key),
   executionResourceRef: row.resource_ref_json
     ? JSON.parse(String(row.resource_ref_json)) as ApplicationExecutionResourceRef
     : null,
-  launchProfile: row.launch_profile_json
-    ? JSON.parse(String(row.launch_profile_json)) as ApplicationConfiguredLaunchProfile
+  launchOverride: row.launch_profile_json
+    ? JSON.parse(String(row.launch_profile_json)) as ApplicationLaunchOverride
     : null,
   legacyLaunchDefaults: row.launch_defaults_json
-    ? JSON.parse(String(row.launch_defaults_json)) as LegacyApplicationConfiguredLaunchDefaults
+    ? JSON.parse(String(row.launch_defaults_json)) as StoredLegacyApplicationLaunchDefaults
     : null,
   updatedAt: String(row.updated_at),
 });
 
-export class ApplicationExecutionResourceConfigurationStore {
+export class ApplicationLaunchOverrideStore {
   constructor(
     private readonly dependencies: {
       platformStateStore?: ApplicationPlatformStateStore;
@@ -89,10 +80,10 @@ export class ApplicationExecutionResourceConfigurationStore {
     return this.dependencies.platformStateStore ?? new ApplicationPlatformStateStore();
   }
 
-  async getConfiguration(
+  async getOverride(
     applicationId: string,
     slotKey: string,
-  ): Promise<ApplicationPersistedExecutionResourceConfiguration | null> {
+  ): Promise<StoredApplicationLaunchOverride | null> {
     return this.platformStateStore.withDatabase(applicationId, (db) => {
       ensureTables(db);
       const row = db.prepare(
@@ -105,7 +96,7 @@ export class ApplicationExecutionResourceConfigurationStore {
     });
   }
 
-  async listConfigurations(applicationId: string): Promise<ApplicationPersistedExecutionResourceConfiguration[]> {
+  async listOverrides(applicationId: string): Promise<StoredApplicationLaunchOverride[]> {
     return this.platformStateStore.withDatabase(applicationId, (db) => {
       ensureTables(db);
       const rows = db.prepare(
@@ -113,23 +104,19 @@ export class ApplicationExecutionResourceConfigurationStore {
            FROM ${TABLE_NAME}
           ORDER BY slot_key ASC`,
       ).all() as Record<string, unknown>[];
-      return rows.map((row) => hydrateRecord(row));
+      return rows.map(hydrateRecord);
     });
   }
 
-  async upsertConfiguration(
+  async upsertOverride(
     applicationId: string,
-    input: ApplicationPersistedExecutionResourceConfiguration,
-  ): Promise<ApplicationPersistedExecutionResourceConfiguration> {
+    input: StoredApplicationLaunchOverride,
+  ): Promise<StoredApplicationLaunchOverride> {
     return this.platformStateStore.withTransaction(applicationId, (db) => {
       ensureTables(db);
       db.prepare(
         `INSERT INTO ${TABLE_NAME} (
-           slot_key,
-           resource_ref_json,
-           launch_profile_json,
-           launch_defaults_json,
-           updated_at
+           slot_key, resource_ref_json, launch_profile_json, launch_defaults_json, updated_at
          ) VALUES (?, ?, ?, ?, ?)
          ON CONFLICT(slot_key) DO UPDATE SET
            resource_ref_json = excluded.resource_ref_json,
@@ -139,7 +126,7 @@ export class ApplicationExecutionResourceConfigurationStore {
       ).run(
         input.slotKey,
         input.executionResourceRef ? JSON.stringify(input.executionResourceRef) : null,
-        input.launchProfile ? JSON.stringify(input.launchProfile) : null,
+        input.launchOverride ? JSON.stringify(input.launchOverride) : null,
         input.legacyLaunchDefaults ? JSON.stringify(input.legacyLaunchDefaults) : null,
         input.updatedAt,
       );
@@ -147,7 +134,7 @@ export class ApplicationExecutionResourceConfigurationStore {
     });
   }
 
-  async removeConfiguration(applicationId: string, slotKey: string): Promise<void> {
+  async removeOverride(applicationId: string, slotKey: string): Promise<void> {
     await this.platformStateStore.withTransaction(applicationId, (db) => {
       ensureTables(db);
       db.prepare(`DELETE FROM ${TABLE_NAME} WHERE slot_key = ?`).run(slotKey.trim());

@@ -464,8 +464,8 @@ export class ApplicationEngineHostService {
         switch (input.operation) {
           case "listAvailable":
             return this.orchestrationHostService.listAvailableExecutionResources(applicationId, input.input);
-          case "getConfigured":
-            return this.orchestrationHostService.getConfiguredExecutionResource(
+          case "requireRunnable":
+            return this.orchestrationHostService.requireRunnableExecutionResource(
               applicationId,
               input.input.slotKey,
             );

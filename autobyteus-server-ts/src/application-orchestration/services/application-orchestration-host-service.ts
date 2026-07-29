@@ -1,6 +1,6 @@
 import { toPublicApplicationAgentBinding, type ApplicationAgentBindingRecord } from "../domain/models.js";
 import type {
-  ApplicationConfiguredExecutionResource,
+  ApplicationEffectiveLaunchConfiguration,
   ApplicationAgentBinding,
   ApplicationAgentInput,
   ApplicationAgentTeamBinding,
@@ -22,7 +22,7 @@ import {
 import { ApplicationExecutionResourceResolver } from "./application-execution-resource-resolver.js";
 import { ApplicationRunBindingLaunchService } from "./application-run-binding-launch-service.js";
 import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "./application-availability-service.js";
-import { ApplicationExecutionResourceConfigurationService } from "./application-execution-resource-configuration-service.js";
+import { ApplicationLaunchConfigurationService } from "../../application-platform/launch-configuration/application-launch-configuration-service.js";
 import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
@@ -78,7 +78,7 @@ export class ApplicationOrchestrationHostService {
       startupGate?: ApplicationOrchestrationStartupGate;
       availabilityService?: ApplicationAvailabilityService;
       executionResourceResolver?: ApplicationExecutionResourceResolver;
-      executionResourceConfigurationService?: ApplicationExecutionResourceConfigurationService;
+      launchConfigurationService?: ApplicationLaunchConfigurationService;
       runBindingLaunchService?: ApplicationRunBindingLaunchService;
       bindingStore?: ApplicationRunBindingStore;
       lookupStore?: ApplicationRunLookupStore;
@@ -106,10 +106,11 @@ export class ApplicationOrchestrationHostService {
     return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver();
   }
 
-  private get executionResourceConfigurationService(): ApplicationExecutionResourceConfigurationService {
-    return this.dependencies.executionResourceConfigurationService ?? new ApplicationExecutionResourceConfigurationService({
-      executionResourceResolver: this.executionResourceResolver,
-    });
+  private get launchConfigurationService(): ApplicationLaunchConfigurationService {
+    if (!this.dependencies.launchConfigurationService) {
+      throw new Error("Application launch configuration authority is not configured.");
+    }
+    return this.dependencies.launchConfigurationService;
   }
 
   private get runBindingLaunchService(): ApplicationRunBindingLaunchService {
@@ -191,35 +192,44 @@ export class ApplicationOrchestrationHostService {
     return this.executionResourceResolver.listAvailableExecutionResources(applicationId, filter);
   }
 
-  async getConfiguredExecutionResource(
+  async requireRunnableExecutionResource(
     applicationId: string,
     slotKey: string,
-  ): Promise<ApplicationConfiguredExecutionResource | null> {
+  ): Promise<ApplicationEffectiveLaunchConfiguration> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.executionResourceConfigurationService.getConfiguredExecutionResource(applicationId, slotKey);
+    return this.launchConfigurationService.requireRunnableConfiguration(applicationId, slotKey);
   }
 
-  async listExecutionResourceConfigurations(applicationId: string) {
+  async getApplicationLaunchConfigurationView(applicationId: string) {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.executionResourceConfigurationService.listConfigurations(applicationId);
+    return this.launchConfigurationService.getApplicationLaunchConfigurationView(applicationId);
   }
 
-  async upsertExecutionResourceConfiguration(
+  async upsertApplicationLaunchOverride(
     applicationId: string,
     slotKey: string,
     input: Parameters<
-      ApplicationExecutionResourceConfigurationService["upsertConfiguration"]
+      ApplicationLaunchConfigurationService["upsertOverride"]
     >[2],
   ) {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.executionResourceConfigurationService.upsertConfiguration(
+    return this.launchConfigurationService.upsertOverride(
       applicationId,
       slotKey,
       input,
     );
+  }
+
+  async removeApplicationLaunchOverride(
+    applicationId: string,
+    slotKey: string,
+  ) {
+    await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
+    return this.launchConfigurationService.removeOverride(applicationId, slotKey);
   }
 
   async startAgent(

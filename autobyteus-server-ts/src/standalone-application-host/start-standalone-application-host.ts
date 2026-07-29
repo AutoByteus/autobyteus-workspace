@@ -21,8 +21,8 @@ import {
   type StandaloneApplicationHostConfigInput,
 } from "./config/standalone-application-host-config.js";
 import { materializeStandaloneHostConfig } from "./config/standalone-host-config-materializer.js";
-import { StandaloneApplicationSelectionService } from "./services/standalone-application-selection-service.js";
 import { createApplicationDefinitionServices } from "../application-platform/runtime/create-application-definition-services.js";
+import { validateStandaloneApplicationPackage } from "../application-platform/launch-configuration/application-standalone-package-validator.js";
 
 export type StandaloneApplicationHostHandle = Readonly<{
   config: StandaloneApplicationHostConfig;
@@ -128,12 +128,15 @@ export const startStandaloneApplicationHost = async (
   input: StandaloneApplicationHostConfigInput,
 ): Promise<StandaloneApplicationHostHandle> => {
   const config = resolveStandaloneApplicationHostConfig(input);
+  const validatedPackage = await validateStandaloneApplicationPackage({
+    packageRoot: config.packageRoot,
+    localApplicationId: config.localApplicationId,
+  });
   let app: FastifyInstance | null = null;
   let processResources: StandaloneProcessResources | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
-    const { selection, bundleService } =
-      await new StandaloneApplicationSelectionService().resolve(config);
+    const { selection, bundleService } = validatedPackage;
     const definitionServices = createApplicationDefinitionServices({
       appConfig: processResources.appConfig,
       bundleService,

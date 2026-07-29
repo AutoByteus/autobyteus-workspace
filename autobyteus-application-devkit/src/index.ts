@@ -10,6 +10,7 @@ export type {
   ApplicationDevkitFrontendConfig,
   ApplicationDevkitOutputConfig,
   ApplicationDevkitSourceConfig,
+  ApplicationDevkitStandaloneConfig,
   ResolvedApplicationDevkitConfig,
 } from './config/application-devkit-config.js';
 export { loadApplicationDevkitConfig } from './config/load-application-devkit-config.js';

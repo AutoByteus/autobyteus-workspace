@@ -1,5 +1,5 @@
 import type {
-  ApplicationConfiguredLaunchProfile,
+  ApplicationEffectiveLaunchConfiguration,
 } from "@autobyteus/application-sdk-contracts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
@@ -76,23 +76,15 @@ export class ApplicationRuntimeDefinitionValidator {
     }
   }
 
-  validateLaunchProfile(
-    profile: ApplicationConfiguredLaunchProfile | null | undefined,
+  validateEffectiveLaunchConfiguration(
+    configuration: ApplicationEffectiveLaunchConfiguration,
     label: string,
     diagnostics: string[],
   ): void {
-    if (!profile) {
-      return;
-    }
-    if (profile.kind === "AGENT") {
-      validateRuntimeKind(profile.runtimeKind, label, diagnostics);
-      return;
-    }
-    validateRuntimeKind(profile.defaults?.runtimeKind, `${label}/defaults`, diagnostics);
-    for (const member of profile.memberProfiles) {
+    for (const member of configuration.leaves) {
       validateRuntimeKind(
         member.runtimeKind,
-        `${label}/${member.memberRouteKey}`,
+        `${label}/${member.memberRouteKey ?? member.agentDefinitionId}`,
         diagnostics,
       );
     }

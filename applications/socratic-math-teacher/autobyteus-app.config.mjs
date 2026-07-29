@@ -7,6 +7,7 @@ export default {
     agentTeamsDir: "agent-teams",
   },
   output: { packageRoot: "dist/importable-package" },
+  standalone: { enabled: true },
   frontend: { entryPoint: "app.js", entryHtml: "index.html" },
   backend: {
     entryPoint: "index.ts",

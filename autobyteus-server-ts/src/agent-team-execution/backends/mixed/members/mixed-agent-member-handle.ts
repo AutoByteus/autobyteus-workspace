@@ -24,7 +24,6 @@ import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
 import type { TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
 import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import {
-  getMemberTeamContextBuilder,
   type MemberTeamContextBuilder,
   type MemberTeamContextMemberInput,
 } from "../../../services/member-team-context-builder.js";
@@ -52,7 +51,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     context: MixedAgentMemberContext;
     config: TeamMemberRunConfig;
     agentRunManager?: AgentRunManager;
-    memberTeamContextBuilder?: MemberTeamContextBuilder;
+    memberTeamContextBuilder: MemberTeamContextBuilder;
     interAgentMessageRouter?: InterAgentMessageRouter;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
@@ -258,7 +257,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
 
   private async buildMemberRunConfig(): Promise<AgentRunConfig> {
     this.assertRecordableMemberMemoryDir();
-    const memberTeamContext = await (this.options.memberTeamContextBuilder ?? getMemberTeamContextBuilder()).build({
+    const memberTeamContext = await this.options.memberTeamContextBuilder.build({
       teamRunId: this.options.teamContext.runId,
       teamDefinitionId: this.options.teamContext.config?.teamDefinitionId ?? "",
       teamBackendKind: TeamBackendKind.MIXED,
