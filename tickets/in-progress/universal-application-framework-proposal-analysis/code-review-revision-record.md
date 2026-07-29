@@ -16,6 +16,7 @@
 | `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Review clarification / user-confirmed package-default contract | `Fail — Design Impact` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
 | `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-006` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011` |
 | `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-007` | `Fail — Local Fix` | `Fail — Design Impact` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
+| `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-008` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
 
 ## Revision Entries
 
@@ -344,3 +345,32 @@ None.
 - Material score or classification changes: full score changes from `8.9/10` (`89/100`) to `8.8/10` (`88/100`). The dominant classification returns to `Design Impact` because the approved Studio sparse-override path needs an authoritative selected-resource baseline/read-preview contract; it cannot be corrected cleanly inside the current web-only boundary.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: revised design must cover selected-resource baseline identity/provenance, unsaved candidate preview, saved alternate edits, invalid resource/topology states, and mixed-runtime team semantics without duplicating server precedence in the UI. After architecture review and implementation, API/E2E must reconcile durable tests and rerun the complete SR-005 matrix.
+
+### CRR-013 — IR-008 restores the selected-resource authority; one portable-policy under-match remains
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `13`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-008`; prior `CR-009`–`CR-012`
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-008`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Design Impact` (`CRR-012`, `88/100`)
+- Current authoritative result: `Fail — Local Fix` (`CRR-013`, `93/100`)
+- What changed in the review result and why: IR-008 resolves the structural selected-resource gap through one graph-local builder, four distinct view meanings, a no-write exact-identity preview, sparse Studio editing, mixed-runtime semantics, and PUT re-resolution. It also rejects the previously observed password/authorization/access-token fields. A real supported AutoByteus-package trace found that the recursive classifier still accepts clear endpoint/credential aliases such as nested `server_url` and `access_key`, so CR-009 remains open as a bounded policy fix rather than Design Impact.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-008` | Resolved in source / applicable rerun pending | Remain Resolved | `IR-002`–`IR-006`, `API-REV-001`–`API-REV-004` | IR-008 does not alter the confirmed development/browser, package refresh, graph authority, launch identity, package-default/readiness, or prompt paths. |
+| `CR-009` | Partially resolved — Local Fix | Partially resolved; remains Open — Local Fix | `IR-007`, `IR-008`, `CRR-012`, `CRR-013` | Approved token-count/pricing fields and prior password/authorization/access-token negatives now behave correctly. `MP-CR-009C` proves a supported AutoByteus package still passes with `extra_params.transport.server_url`; direct probes also accept `api_url`, `connection_string`, and `access_key`. |
+| `CR-010` | Resolved in source; API/E2E rerun pending | Remains Resolved in source | `IR-007`, `IR-008`, `CRR-012`, `CRR-013` | Application setup opts out of global runtime fallback; selected baseline supplies agent/team/member inherited context. |
+| `CR-011` | Resolved in source; API/E2E update/rerun pending | Remains Resolved in source | `IR-007`, `IR-008`, `CRR-012`, `CRR-013` | Invalid/stale rows remain visible/locked until explicit replacement or Reset; selected baseline is exposed only when resolvable. |
+| `CR-012` | Open — Design Impact | Resolved in design and source; API/E2E rerun pending | `SR-006`, `ARCH-REV-006`, `IR-008`, `CRR-013` | GET exposes current `selectedResourceBaseline`; preview returns a closed exact-identity projection without store/overlay/host work; Studio discards stale results and uses only selected projections; PUT re-resolves before write. |
+
+- New or remaining finding IDs: `CR-009` only.
+- Material score or classification changes: score rises from `8.8/10` (`88/100`) to `9.3/10` (`93/100`). The prior Design Impact is resolved; the current result is `Fail — Local Fix` because API/E2E readiness and runtime fidelity remain below 9.0 on one explicit package-portability contract.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: after CR-009 correction and source re-review, API/E2E must add durable recursive policy and selected-resource coverage, rerun clean standalone first, then complete real Studio/standalone Luna provider/artifact parity, commands, digests, recovery, and cleanup.

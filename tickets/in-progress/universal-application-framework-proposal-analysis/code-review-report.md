@@ -8,236 +8,193 @@
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md` in the same ticket directory
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-005`
+- Relevant Solution Revision IDs: `SR-006`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-005`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-006`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-007` (`IR-006` retained as the architecture-impact implementation baseline)
+- Relevant Implementation Revision IDs: `IR-008`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-012`
-- Current Review Round: `12`
-- Trigger: source and structural re-review of IR-007 source commit `3c38ca7e6f4d32e281b6af07e8bf046ef7cc253a` and handoff HEAD `52a1d4b75955c9de8576c38b15017c244c8a3cac` after `CRR-011`.
-- Prior Review Round Reviewed: `11` / `CRR-011`
-- Latest Authoritative Round: `12`
-- Coverage Investigation Reviewed: API/E2E round 4 context remains relevant; this round is implementation review, not failure-origin review.
+- Current Code Review Revision ID: `CRR-013`
+- Current Review Round: `13`
+- Trigger: full source and structural re-review of IR-008 source commit `25ad035ca126e789a9c233cf858d48ea3b41ea50` and handoff HEAD `3a348a0de` after SR-006 / ARCH-REV-006 corrected CRR-012.
+- Prior Review Round Reviewed: `12` / `CRR-012`
+- Latest Authoritative Round: `13`
+- Coverage Investigation Reviewed: API/E2E round 4 remains downstream context; this is not a failure-origin review.
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: `API-REV-004`
 - Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: `N/A` for this source-review entry point; `APIE2E-F004` remains the resolved upstream trigger awaiting rerun.
+- Failing Scenario IDs: `N/A` for this source review; `APIE2E-F004` remains the resolved upstream trigger awaiting rerun.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-007 portable package tuning validation; Studio sparse agent/team/member inheritance and readiness; stale-topology diagnosis, raw-row preservation, explicit topology/resource replacement, and Reset separation. The complete SR-005 launch-configuration authority and prior CR-006–CR-008 resolutions were rechecked where these changes touch their boundaries.
-- Files / areas reviewed: the nine IR-007 production files; the server selected-resource baseline/effective-configuration path needed to verify Studio inheritance; the setup panel/draft/PUT path; the relevant SDK view contract; the known stale durable UI test; and the cumulative requirements/design/review package.
-- Explicit exclusions: successful API/E2E execution, durable API/E2E test maintenance, live authenticated Luna execution, and delivery-owned documentation/integration remain downstream. API/E2E-owned dirty tests/reports/evidence and upstream SR-005/ARCH-REV-005 artifacts were preserved.
+- Changed implementation and behavior reviewed: the full IR-008 selected-resource baseline/preview contract, sparse Studio editing and mixed-runtime behavior, PUT re-resolution, recursive portable launch policy, and preservation of the SR-005 launch/readiness/prompt authority.
+- Files / areas reviewed: all 26 changed non-generated implementation-source files; SDK contracts and generated declarations; launch configuration service/builder/overlay/policy/validator; orchestration and REST adapters; Studio setup coordinator/editors/composables/utilities; relevant requirements/design/architecture artifacts; prior findings and API/E2E context.
+- Explicit exclusions: durable API/E2E test maintenance, full live Studio/browser execution, real authenticated Luna parity, and delivery integration/docs remain downstream. Existing API/E2E-owned dirty tests/reports/evidence and upstream SR-006 artifacts were preserved.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. Packages own complete portable defaults; host credentials/capabilities remain external; Studio stores sparse optional overrides; exact per-field inheritance and explicit replacement/reset govern editing.
-- Design-spec behavior map verified against the implementation: Partially. The main package/readiness/run authority is present. IR-007 resolves the maintained package-runtime sparse case and stale-row interaction, but the reviewed Studio view contract lacks the pre-overlay baseline for an alternate selected resource (`CR-012`).
-- Design review report and round confirmed: `ARCH-REV-005`, decision `Pass`.
-- Behavior-basis status: `Confirmed`. Requirements are clear; the design projection is incomplete for a supported sparse-edit path.
-- Changed or newly discovered behavior, if any: None. `CR-012` is a newly discovered design inadequacy on existing `UC-020`/`AC-015`, not a new product behavior.
-- Remaining material ambiguity, if any: The intended behavior is unambiguous, but the revised design must decide the authoritative read/preview contract for a selected resource’s baseline before host override.
+- Approved requirements basis understood: Yes. The package owns complete portable launch defaults; Studio may persist sparse overrides over the exact selected definition baseline; one server authority owns preview, overlay, readiness, and guarded launch.
+- Design-spec behavior map verified against the implementation: Mostly. IR-008 correctly supplies the missing selected-resource authority boundary and mixed-runtime editing behavior. The recursive portable policy still under-matches actual endpoint/credential aliases within the supported AutoByteus `extra_params` container (`CR-009`).
+- Design review report and round confirmed: `ARCH-REV-006`, decision `Pass`.
+- Behavior-basis status: `Contradicted` for the remaining bounded portion of `BEH-006`; otherwise `Confirmed`.
+- Changed or newly discovered behavior, if any: None. The rejected endpoint/credential semantics are already explicit in AC-014/DS-011.
+- Remaining material ambiguity, if any: None. The remaining correction fits the approved portable-policy owner and does not require design change.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| `BEH-001`–`BEH-003` | Confirmed | Dual-host package/bootstrap paths remain unchanged by IR-007. | None. |
-| `BEH-004` | Contradicted in portable-secret validation and alternate-resource sparse editing | Package-default and saved/effective authorities exist; IR-007 adds inherited runtime/model inputs. | The validator accepts clear secret-bearing nested fields (`CR-009`), and Studio has no authoritative selected-resource baseline for an unsaved or edited alternate resource (`CR-012`). |
-| `BEH-005` | Confirmed | Standalone still validates and requires readiness before listen; Studio retains host diagnostics. | None. |
-| `BEH-006` | Contradicted in one invalid package-authoring case | Pack/validate reuse the pure validator and accepted the three supported token-count tuning fields. | A package can still pass with `extra_params.password`, bearer authorization, or a credential token value (`CR-009`). |
-| `BEH-007` | Confirmed in source | Invalid topology detail is rendered, the raw draft remains locked, current-topology/resource replacement is explicit, and DELETE Reset remains separate. | Durable API/E2E test reconciliation remains downstream. |
-| `BEH-008` | Confirmed | Graph-local prompt authority remains intact and unaffected by IR-007. | None. |
+| `BEH-001`–`BEH-003` | Confirmed | Dual-host package/bootstrap and strict identity paths are unchanged; no manifest or package mutation was added. | None. |
+| `BEH-004` | Confirmed | `ApplicationLaunchConfigurationService` projects package, selected, saved, and effective meanings; one graph-local builder serves GET/preview/PUT; Studio uses only selected projections and sparse PUT. | None. |
+| `BEH-005` | Confirmed | Existing explicit Studio/standalone compositions and separate platform/application readiness remain intact. | None. |
+| `BEH-006` | Contradicted in one portable-policy branch | Devkit pack/validate calls the pure validator and the policy accepts approved token-count/pricing fields. | A supported AutoByteus package with nested `extra_params.transport.server_url` or `extra_params.access_key` passes, contrary to AC-014/DS-011 (`CR-009`, `MP-CR-009C`). |
+| `BEH-007` | Confirmed | Existing rows remain sparse/direct-use; invalid/stale rows remain blocking; preview/selected baselines are derived; PUT re-resolves before write and DELETE is Reset. | None. |
+| `BEH-008` | Confirmed | Graph-local prompt/context authority from SR-005 is unchanged and no singleton/catalog fallback was reintroduced. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved | Pass | IR-007 preserves the larger-requirement/boundary posture and the SR-005 authority model. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | CR-010/CR-011 target cases now match; `CR-009` and `CR-012` still violate portable-package and exact sparse-override behavior. | Revise design for the missing selected-baseline projection and correct validation. |
-| Data-flow spine inventory clarity and preservation | Fail | Runtime launch is clear, but Studio edit flow jumps from resource summary plus old view to draft without a pre-overlay selected-resource baseline. | Add the missing authoritative edit/preview node to DS-012. |
-| Ownership boundary preservation and clarity | Fail | The server baseline builder owns resource-definition traversal, but the view boundary exposes only manifest package baseline and post-overlay effective state. The web cannot correctly derive the missing state without bypass/duplication. | Strengthen the server authority contract; do not duplicate baseline construction in the web. |
-| Off-spine concern clarity | Pass | Validator, model catalog, and editor concerns remain attached to clear owners. | None. |
-| Existing capability/subsystem reuse check | Pass | Current baseline builder and launch authority are the correct capabilities to extend. | Reuse them in the revised projection. |
-| Reusable owned structures check | Pass | Shared launch view/leaf/provenance types are centralized. | Add any selected-baseline shape to the same SDK-owned contract. |
-| Shared-structure/data-model tightness check | Fail | `packageBaseline`, `savedOverride`, and `effectiveConfiguration` are distinct, but they cannot express the selected alternate resource before host overlay. | Add one non-overlapping selected-resource baseline/edit projection; avoid overloading `effectiveConfiguration`. |
-| Repeated coordination ownership check | Pass | Precedence and readiness remain centralized server-side. | Preserve that owner. |
-| Empty indirection check | Pass | No new pass-through-only layer was added. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | IR-007 files remain cohesive; the design gap is at the cross-boundary contract, not file placement. | None. |
-| Ownership-driven dependency check | Fail | `ApplicationExecutionResourceSlotEditor` necessarily substitutes old `effectiveConfiguration` for the absent selected baseline. This is a mixed semantic dependency, not an authoritative edit input. | Supply the correct server-owned projection. |
-| Authoritative Boundary Rule check | Fail | The UI is above the launch authority but lacks enough API to use that authority for candidate/alternate resource inheritance; a correct local-only fix would require recreating authority internals. | Redesign the boundary rather than adding web-side definition traversal. |
-| File placement check | Pass | All IR-007 files sit under their owning capability areas. | None. |
-| Flat-vs-over-split layout judgment | Pass | The existing launch/editor decomposition remains readable. | None. |
-| Interface/API/query/command/service-method boundary clarity | Fail | The read model has manifest baseline and post-overlay effective output but no selected-resource pre-overlay baseline or candidate preview. | Define an explicit authoritative query/view for that subject. |
-| Naming quality and naming-to-responsibility alignment | Pass | Stored/effective/inherited names are locally clear. | Name the new baseline by its selected-resource semantics, not “effective.” |
-| No unjustified duplication of code / repeated structures | Pass | No new baseline parser or overlay engine was duplicated. | Keep it that way. |
-| Patch-on-patch complexity control | Pass | IR-007 changes are focused and do not add compatibility paths. | None. |
-| Dead/obsolete code cleanup completeness | Pass for implementation-owned production scope | No obsolete production path was added. The known stale durable assertion is explicitly API/E2E-owned and not treated as correctness evidence. | API/E2E must replace it after source/design pass. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Implementation probes cover maintained Codex inheritance and stale replacement, but no durable proof covers secret rejection or alternate-resource sparse inheritance. | Add coverage after design/source correction. |
-| Test fixtures/helpers are reasonably reusable and coherent | Pass | Existing focused fixtures remain navigable. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass for IR-007-owned scope | IR-007 changed no durable tests; the known stale API/E2E-owned test remains queued for its owner. | Downstream replacement remains mandatory. |
-| API/E2E readiness for the next workflow stage | Fail | API/E2E would encounter an unresolved security/package contract and cannot truthfully test general alternate-resource sparse editing against an absent authority projection. | Return through solution/architecture review first. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-008 follows SR-006’s boundary/ownership correction rather than adding UI inference or a second resolver. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | Selected-resource editing matches; AC-014/DS-011 endpoint/credential rejection is incomplete. | Close the remaining CR-009 semantic aliases. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | `definition graph -> selected baseline -> sparse override -> effective configuration -> host validation -> guarded run` and `selection -> preview -> sparse draft -> PUT recheck` are explicit. | None. |
+| Ownership boundary preservation and clarity | Pass | `ApplicationLaunchConfigurationService` remains the outer authority; callers do not traverse definitions or read the store. | None. |
+| Off-spine concern clarity | Pass | Portable policy, host capability validation, presentation, and catalog selection serve clear owners off the main launch line. | None. |
+| Existing capability/subsystem reuse check | Pass | GET/preview/PUT/package validation reuse the same graph-local builder and existing resolver/definition services. | None. |
+| Reusable owned structures check | Pass | Baseline/provenance/preview contracts are SDK-owned; preview coordination and presentation helpers are centralized. | None. |
+| Shared-structure/data-model tightness check | Pass | Package baseline, selected baseline, saved override, effective result, selection preview, and readiness have non-overlapping meanings. | None. |
+| Repeated coordination ownership check | Pass | Definition precedence and sparse overlay are not repeated in web callers. | None. |
+| Empty indirection check | Pass | REST/orchestration methods are narrow host adapters with readiness/active gates, not unexplained pass-through layers. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The large launch service owns one approved domain subject; policy/schema and frontend coordination were separated coherently. | Continue monitoring the two 500-line files. |
+| Ownership-driven dependency check | Pass | Studio consumes contracts rather than definition/store internals; graph-local service instances remain injected. | None. |
+| Authoritative Boundary Rule check | Pass | No caller depends simultaneously on the launch authority and its builder/store/definition internals. | None. |
+| File placement check | Pass | New/renamed files sit under launch configuration, REST, SDK contract, or Studio setup owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | The change avoids both a monolithic cross-layer file and excessive wrappers. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | The preview is a closed exact app/slot/ref resolved-or-invalid projection and PUT remains the write/concurrency authority. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `ApplicationLaunchResourceBaselineBuilder` replaces the package-only misnomer without an alias. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No second baseline traversal, policy family, or UI inheritance heuristic remains. | None. |
+| Patch-on-patch complexity control | Pass | IR-008 removes old inference/builder names rather than layering compatibility branches. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Old package-baseline builder and Studio definition traversal are absent; no compatibility alias remains. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass for implementation scope | Handoff probes cover preview identity, no-write behavior, GET/preview/PUT reuse, mixed runtimes, sparse clearing, and positive/negative policy. | API/E2E must add durable coverage after source pass. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No implementation-owned durable fixture churn; existing API/E2E-owned files were preserved. | None in implementation scope. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass for implementation ownership | The known obsolete API/E2E fixture remains explicitly owned downstream and was not used as correctness evidence. | API/E2E must reconcile it later. |
+| API/E2E readiness for the next workflow stage | Fail | The selected-resource path is ready, but a documented pack/validate path still accepts host endpoint/credential material. | Apply CR-009 locally and return through source review. |
 
 ## Source File Size And Structure Audit
 
-No changed implementation source exceeds `500` effective non-empty lines. Files over `220` lines remain cohesive and do not require splitting for size alone.
+No changed implementation source exceeds the `500` effective-line hard limit. Files over `220` remain cohesive, but the two files at exactly `500` are at the structural ceiling.
 
-| Source File | Effective Lines | `>500` | `>220` Delta Check | SoC / Ownership Check | Placement | Preliminary Classification | Required Action |
+| Source File | Effective Lines | `>500` | `>220` Delta Check | SoC / Ownership | Placement | Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `application-standalone-package-validator.ts` | 203 | Pass | Pass | Cohesive validator; sensitive-key policy remains incomplete (`CR-009`). | Pass | Local Fix | Make secret rejection schema-aware or allow only exact portable tuning exceptions. |
-| `ApplicationAgentLaunchProfileEditor.vue` | 195 | Pass | Pass | Cohesive agent editor; maintained baseline inheritance is correct. | Pass | Accept | None locally. |
-| `ApplicationExecutionResourceSlotEditor.vue` | 332 | Pass | Pass | Cohesive slot editor, but its inherited input is semantically incomplete for alternate resources (`CR-012`). | Pass | Design Impact | Consume a revised authoritative projection. |
-| `ApplicationTeamLaunchProfileEditor.vue` | 418 | Pass | Pass | Cohesive team editor; explicit stale replacement and per-member inheritance are clear. | Pass | Accept | Preserve current stale behavior. |
-| `ApplicationTeamMemberOverrideItem.vue` | 134 | Pass | Pass | Cohesive member editor. | Pass | Accept | None. |
-| `useRuntimeScopedModelSelection.ts` | 210 | Pass | Pass | Correctly separates stored blank from inherited effective runtime. | Pass | Accept | Continue receiving authoritative inherited input. |
-| `teamLaunchReadinessCore.ts` | 105 | Pass | Pass | Cohesive pure readiness function. | Pass | Accept | None. |
-| English / Simplified Chinese application localization files | 203 / 202 | Pass | Pass | Existing localization owner. | Pass | Accept | None. |
+| `application-launch-configuration-service.ts` | 500 | Pass | Pass | One approved launch-configuration domain owner | Pass | Accept / pressure | Avoid adding unrelated responsibilities. |
+| `ApplicationLaunchSetupPanel.vue` | 500 | Pass | Pass | One page-level workflow coordinator; presentation extracted | Pass | Accept / pressure | Avoid additional inline concerns. |
+| `application-orchestration-host-service.ts` | 486 | Pass | Pass | Existing orchestration facade; IR-008 delta is one gated method | Pass | Accept | None. |
+| `ApplicationExecutionResourceSlotEditor.vue` | 414 | Pass | Pass | One slot edit/projection concern | Pass | Accept | None. |
+| `ApplicationTeamLaunchProfileEditor.vue` | 392 | Pass | Pass | Team sparse editor/readiness only | Pass | Accept | None. |
+| `applicationLaunchProfile.ts` | 380 | Pass | Pass | Shared launch draft/serialization utilities | Pass | Accept | None. |
+| `MemberOverrideItem.vue` | 386 | Pass | Pass | Existing workspace member editor; two-line nullability adaptation | Pass | Accept | None. |
+| `application-launch-resource-baseline-builder.ts` | 273 | Pass | Pass | Exact graph traversal/definition precedence owner | Pass | Accept | None. |
+| `useRuntimeScopedModelSelection.ts` | 216 | Pass | N/A | Shared runtime/model selection with explicit fallback control | Pass | Accept | None. |
+| `RuntimeModelConfigFields.vue` | 214 | Pass | N/A | Existing runtime config component; bounded nullability change | Pass | Accept | None. |
+| `application-portable-launch-config-policy.ts` | 204 | Pass | N/A | One recursive policy; CR-009 is local semantic incompleteness | Pass | Local Fix | Reject actual endpoint/credential aliases recursively. |
+| `ApplicationAgentLaunchProfileEditor.vue` | 199 | Pass | N/A | Agent sparse editor | Pass | Accept | None. |
+| `execution-resources.ts` | 187 | Pass | N/A | Tight SDK contract family | Pass | Accept | None. |
+| `application-launch-override-overlay.ts` | 185 | Pass | N/A | Pure sparse overlay | Pass | Accept | None. |
+| Remaining 12 changed source files | 29–205 each | Pass | N/A | Cohesive REST, diagnostics, schema, validator, wiring, editor, composable, readiness, and localization owners | Pass | Accept | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No alias/fallback family was introduced. |
-| No legacy old-behavior retention in changed production scope | Pass | Raw stale data is preserved by current semantics, not a compatibility branch. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete production path in IR-007. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing rows remain directly usable; reads do not rewrite them. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | One current contract remains. |
-| Approved transition mechanics match the reviewed design | Pass | Explicit PUT replacement and DELETE reset remain separate. |
+| No backward-compatibility mechanisms in changed scope | Pass | No aliases, fallback family, dual contract, or compatibility branch was added. |
+| No legacy old-behavior retention in changed scope | Pass | Old web inference and package-only builder semantics were removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete production symbols/paths are absent. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing rows are directly usable; selected baselines/previews are never persisted. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | One current contract and one store shape remain. |
+| Approved transition mechanics match the reviewed design | Pass | PUT is explicit replacement/save; DELETE is Reset; reads never rewrite. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None in IR-007 production source. The previously identified API/E2E-owned stale test assertion remains outside implementation ownership and must be replaced before successful API/E2E handoff.
+None in IR-008 implementation-owned production source.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: the public package security boundary and Studio alternate-resource override/inheritance contract require durable documentation after the design is corrected.
-- Files or areas likely affected: application authoring/devkit validation docs, backend SDK launch-view docs, Studio setup docs, and maintained application READMEs. Delivery owns final sync.
+- Why: selected-resource sparse override semantics and recursive portable configuration are public developer/Studio behavior.
+- Files or areas likely affected: application authoring/devkit validation docs, Studio launch setup docs, SDK launch-view contract docs, and maintained application READMEs. Delivery owns final sync after implementation/API/E2E pass.
 
 ## Material Premise Validation
 
 ### Upstream Design-Review Material-Premise Decisions
 
-| Premise ID | Current Status | Changed Evidence / Reason |
-| --- | --- | --- |
-| `MPR-ARCH-004-001` | Confirmed | Supported Studio topology changes still reach stale saved rows; IR-007 now handles that source path correctly. |
+No upstream premise is reclassified. `ARCH-REV-006` remains valid; the remaining defect is inside its approved portable-policy owner.
 
-### Prior Code-Review Material-Premise Decisions
+### `MP-CR-009C` — A standalone-enabled AutoByteus application can package a host endpoint or credential alias inside supported extra parameters
 
-| Premise ID | Current Status | Changed Evidence / Reason |
-| --- | --- | --- |
-| `MP-CR-009` | Confirmed; positive tuning consequence resolved | A real Brief package now accepts `max_tokens`, `token_limit`, and `safety_margin_tokens`; the remaining finding concerns actual secret-bearing fields, recorded separately below. |
-| `MP-CR-010` | Confirmed; original maintained-package consequence resolved | Blank stored runtime now receives the matching package/effective inherited runtime for agent, team-default, and member catalogs. |
-
-### `MP-CR-009B` — A standalone package author can place a host secret in a runtime tuning container
-
-- Origin: `New refinement of CR-009`
-- Related approved requirement or established contract: `REQ-007`, `AC-014`; package defaults must not contain credentials, secrets, host endpoints, or machine paths.
-- Relevant behavior ID(s): `BEH-004`, `BEH-006`.
-- Initiating basis kind: `Contract` plus supported developer action.
-- Independent product-supported initiating trigger or applicable governing contract: an application developer authors a standalone-enabled AutoByteus leaf and puts a provider password, bearer authorization value, or access-token value under the runtime-supported `llmConfig.extra_params`, then runs documented build/validate.
-- Support evidence: package authoring explicitly accepts optional runtime tuning and `extra_params`; the security contract independently forbids secret values in the package. Repository secret-redaction policies also classify password/access/auth tokens as sensitive.
-- Forward production path: `agent-config.json -> devkit build/validate -> validateStandaloneApplicationPackage -> validatePortableDefaultConfigFile/validatePortableLlmConfig -> assertNoForbiddenPortableKeys`.
-- Lifecycle preconditions and material consequence: the package is otherwise complete. Current normalized-key checks do not reject `password`, `authorization`, or `access_token_value`, so validation accepts and packages host-only secret material.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: keeps `CR-009` open. Retain exact positive exceptions for portable token-count tuning while rejecting actual credential/secret names recursively, preferably from a narrow schema-aware policy.
-
-### `MP-CR-012` — Studio supports selecting an alternate resource and storing a sparse override over that resource’s own defaults
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-007`, `UC-020`, `AC-015`; Studio is the supported alternate runtime/model/resource experiment surface and host overrides are sparse with exact per-field inheritance.
-- Relevant behavior ID(s): `BEH-004`.
-- Initiating basis kind: `User`.
-- Independent product-supported initiating trigger or applicable governing contract: in Studio’s Application Launch Setup panel, a user selects an allowed shared/bundle alternate resource, leaves one or more launch fields on the exposed application/default inheritance option, and saves; or later clears a previously saved runtime/model override while retaining the alternate resource.
-- Support evidence: the slot selector exposes allowed alternate resources; the editor exposes blank inherited fields; `ApplicationLaunchConfigurationService` explicitly builds a `selectedBaseline` for an alternate saved resource and overlays sparse host fields.
-- Forward production path: `Studio setup GET + available-resource summaries -> buildDraftFromView -> SlotEditor selection -> agent/team editor catalog/readiness -> PUT sparse override -> ApplicationLaunchConfigurationService builds selectedBaseline -> overlay -> capability validation`.
-- Lifecycle preconditions and material consequence: the alternate resource has valid definition-owned defaults. Before the first save the web receives no selected baseline; after a save it receives only the manifest package baseline plus an effective result already containing the old override. The editor therefore falls back to AutoByteus/no inheritance or reuses the old overridden runtime/model as if it were the baseline, so its catalog/readiness cannot represent the server’s actual sparse overlay.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: drives `CR-012` and Design Impact. Add an authoritative selected-resource pre-overlay/edit projection or preview boundary owned by the launch service; do not reproduce definition traversal/precedence in the web.
+- Origin: `New refinement of MP-CR-009B`
+- Related approved requirement or established contract: `REQ-006`, `REQ-007`, `AC-014`, DS-011; package launch data must reject actual credential and endpoint fields recursively while accepting only portable tuning/pricing.
+- Relevant behavior ID(s): `BEH-006`.
+- Initiating basis kind: `Operational` plus governing `Contract`.
+- Independent product-supported initiating trigger or applicable governing contract: an application developer authors a standalone-enabled application with the supported `autobyteus` runtime and `llmConfig.extra_params`, places a provider/server endpoint such as `transport.server_url` (or credential alias such as `access_key`) there, then runs documented `build`/`validate`.
+- Support evidence: the AutoByteus runtime schema explicitly supports `extra_params`; DS-011 permits portable extra parameters but independently forbids endpoint/credential semantics at every depth.
+- Forward production path: `agent-config.json -> autobyteus-app pack/validate -> validateStandaloneApplicationPackage -> validatePortableDefaultConfigFile -> ApplicationPortableLaunchConfigPolicy.assertPortableLlmConfig -> portable-extra-params traversal`.
+- Lifecycle preconditions and material consequence: the package otherwise has a bundled required resource and complete runtime/model defaults. `forbiddenReason()` recognizes `endpoint`, `baseurl`, `apibase`, explicit `host`, and selected key names, but not `server_url`, `api_url`, `connection_string`, or `access_key`; the package passes and can embed host-local endpoint/credential material in the immutable artifact.
+- Reachability: `Reachable`. An independent reviewer probe copied the real Brief package, changed its two leaf defaults to supported AutoByteus profiles, inserted `extra_params.transport.server_url`, and the real pure package validator returned success. Direct policy probes also accepted `server_url`, `api_url`, `connection_string`, and `access_key` while correctly rejecting `endpoint` and accepting the three approved token-count fields.
+- Review consequence / proportionate response: keep `CR-009` open as a bounded implementation-owned Local Fix. Extend the recursive semantic classifier/closed schema to reject actual endpoint and credential aliases, preserve approved token/pricing positives, report exact paths without values, and add durable positive/negative cases.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `8.8`
-- Overall score (`/100`): `88`
-- Score calculation note: simple average of the ten categories, rounded. Any category below `9.0` remains a blocker.
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93`
+- Score calculation note: simple average rounded for trend visibility; the two categories below `9.0` independently prevent Pass.
 
-| Priority | Category | Score | Why This Score | What Is Weak | What Should Improve |
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | Data-Flow Spine Inventory and Clarity | 8.7 | Runtime launch is clear and IR-007 repairs stale/edit edges for the default resource. | The alternate-resource edit spine omits pre-overlay baseline resolution. | Extend DS-012 from selection through authoritative baseline preview to draft/save. |
-| `2` | Ownership Clarity and Boundary Encapsulation | 8.6 | Server launch authority remains strong. | Its web-facing boundary does not expose enough state for a supported sparse edit without semantic substitution. | Strengthen the authority boundary rather than adding web traversal. |
-| `3` | API / Interface / Query / Command Clarity | 8.5 | Existing view names are precise for manifest baseline, saved row, and final effective result. | No API subject represents candidate/current selected-resource baseline before host overlay. | Add a single explicit query/view contract for it. |
-| `4` | Separation of Concerns and File Placement | 9.2 | IR-007 files are cohesive and correctly placed. | The next change must not push baseline construction into UI. | Preserve server ownership. |
-| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 8.4 | Existing shapes do not overlap. | The necessary selected-baseline meaning is absent, causing `effectiveConfiguration` to be misused as inheritance input. | Add one distinct non-overlapping representation. |
-| `6` | Naming Quality and Local Readability | 9.2 | Local code is readable and names track stored/inherited/effective roles. | Sensitive-key policy is still less exact than its security intent. | Use explicit/schema-aware secret policy names and rules. |
-| `7` | API/E2E Readiness | 8.2 | Server typecheck, web guards, positive tuning, and stale interaction checks are strong. | One package security defect and one design boundary gap remain; durable tests are pending. | Revise, implement, source-review, then rerun API/E2E. |
-| `8` | Runtime Correctness And Behavioral Fidelity | 8.5 | Maintained Codex/Luna sparse inheritance and stale replacement now align. | Secrets can pass package validation; alternate-resource sparse editor context is not authoritative. | Resolve `CR-009` and `CR-012`. |
-| `9` | No Backward-Compatibility / No Legacy Retention | 9.5 | IR-007 adds no compatibility or fallback path. | None in production scope. | Preserve. |
-| `10` | Cleanup Completeness | 9.1 | Production cleanup is complete and shared dirty evidence is preserved. | Durable API/E2E test reconciliation remains pending by ownership. | Complete after source/design pass. |
+| `1` | Data-Flow Spine Inventory and Clarity | 9.5 | Selected baseline, preview, sparse overlay, readiness, and guarded launch are explicit and traceable. | Live evidence remains downstream. | Preserve the spine during test completion. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.5 | One launch authority and one graph-local baseline builder own the relevant semantics. | Two owner files sit at 500 lines. | Keep future concerns out of them. |
+| `3` | API / Interface / Query / Command Clarity | 9.3 | Closed exact-identity preview and distinct view stages are clear. | Malformed transport validation is not strengthened in this round but is not a supported-path blocker. | Add durable contract coverage downstream. |
+| `4` | Separation of Concerns and File Placement | 9.1 | Policy/schema, preview coordination, presentation, and server owners are well placed. | Large coordinator/service files create pressure. | Avoid unrelated growth. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | No overlapping baseline/effective meanings or duplicated resolver shapes remain. | None material. | Preserve tight unions/provenance. |
+| `6` | Naming Quality and Local Readability | 9.4 | Resource-baseline naming and sparse projection names match responsibility. | Some dense nested UI/service code remains. | Prefer small owned extractions only when responsibility warrants. |
+| `7` | API/E2E Readiness | 8.7 | Main alternate-resource path is ready for realistic execution. | AC-014 negative package coverage would fail for real endpoint/credential aliases. | Fix CR-009, source re-review, then resume API/E2E. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 8.7 | Selected-resource and mixed-runtime behavior matches SR-006. | Supported package validation admits forbidden host endpoint/credential data (`MP-CR-009C`). | Close the semantic under-match and prove exact diagnostics. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 9.8 | Clean rename/removal, no fallback or dual read/write. | None. | Preserve clean-cut behavior. |
+| `10` | Cleanup Completeness | 9.6 | No implementation residue or obsolete production path; checks are clean. | Durable downstream tests are intentionally outstanding. | API/E2E owns reconciliation after source pass. |
 
 ## Findings
 
-### `CR-001`–`CR-008` — Resolved in source; applicable API/E2E proof retained
+### `CR-009` — Recursive portable policy still admits actual endpoint/credential aliases
 
-- Status: Remain resolved. IR-007 does not reopen browser/watch/package refresh, Studio definition authority, graph-local run identity, package-default/readiness authority, or prompt authority.
-
-### `CR-009` — Portable validator still admits actual secret-bearing fields
-
-- Status: `Open` (positive token-count tuning half resolved)
-- Severity / confidence: `High` / `High`
-- Classification: `Local Fix` within the revised package
-- Affected approved behavior: `BEH-004`, `BEH-006`; `REQ-007`; `AC-014`; package security constraint.
-- Material premise: `MP-CR-009B` (`Reachable`).
-- Evidence: IR-007 correctly accepts `max_tokens`, `token_limit`, and `safety_margin_tokens` and rejects `api_token`/`endpoint`. Independent real-package execution against the built validator showed `llmConfig.extra_params.password`, `authorization: "Bearer …"`, and `access_token_value` are accepted. The policy checks a small fragment list plus keys ending exactly in `token`; these clear credential fields evade it.
-- Consequence: a package declared portable/valid can persist host-only credentials, contradicting the immutable portable package boundary.
-- Required action: retain exact portable token-count tuning exceptions while rejecting actual credential/secret/token/authorization/password fields recursively. Prefer a schema-aware allowlist/denylist with durable positive and negative cases rather than another broad substring that re-breaks tuning.
-
-### `CR-010` — Maintained package-runtime sparse inheritance
-
-- Status: `Resolved in source; API/E2E rerun pending`
-- Verification: stored runtime remains blank; `useRuntimeScopedModelSelection` accepts separate inherited runtime; agent, team-default, and member editors/readiness receive applicable leaf profiles. Static trace and implementation rendered probes cover Codex/Luna without a draft write or AutoByteus fallback.
-
-### `CR-011` — Stale topology diagnosis and explicit replacement
-
-- Status: `Resolved in source; API/E2E durable-test update/rerun pending`
-- Verification: all issues and structured stale member route/name/old/current definition details render; the raw invalid team draft remains locked while identical to the server row; automatic sanitization/repair is suppressed; alternate-resource selection or explicit current-topology action changes the draft and unlocks editing; DELETE Reset remains separate.
-
-### `CR-012` — Studio lacks an authoritative selected-resource baseline for sparse editing
-
-- Status: `Open`
-- Severity / confidence: `High` / `High`
-- Classification: `Design Impact`
-- Affected approved behavior: `BEH-004`; `REQ-007`; `UC-020`; `AC-015`; DS-012 exact per-field precedence.
-- Material premise: `MP-CR-012` (`Reachable`).
-- Evidence: `ApplicationLaunchConfigurationService.evaluateStoredOverride()` correctly computes `selectedBaseline` before overlay, but `ApplicationLaunchSlotView` returns only the manifest `packageBaseline`, `savedOverride`, and post-overlay `effectiveConfiguration`. `ApplicationExecutionResourceSlotEditor.inheritedConfiguration` therefore uses the package baseline only when resource IDs match, otherwise substitutes the old effective configuration. A newly selected alternate resource has neither; an already saved alternate resource’s effective values include the very override being edited.
-- Consequence: selecting an alternate resource with valid own defaults cannot inherit those defaults in the editor before save, and clearing/changing a saved sparse runtime/model can load the wrong old runtime catalog or readiness context. The server remains authoritative on PUT, but the supported Studio edit surface cannot truthfully construct or validate the draft.
-- Required design action: extend the launch-configuration authority/read model with the selected resource’s pre-host-overlay baseline (and an authoritative preview/resolve path for an unsaved selection). Define identity, provenance, invalid-resource behavior, and refresh semantics. Studio must consume this projection; it must not traverse agent/team definitions or duplicate precedence locally.
+- Status: `Open — Local Fix` (IR-008 resolves the earlier password/authorization/access-token cases but not the full approved semantic set).
+- Affected approved behavior: `BEH-006`, `UC-019`, `AC-014`, DS-011.
+- Material premise: `MP-CR-009C` (`Reachable`).
+- Source evidence: `application-portable-launch-config-policy.ts:37-55` uses a bounded key regex; `portable-extra-params` at lines 108-120 delegates to it. `server_url`, `api_url`, `connection_string`, and `access_key` receive no forbidden reason. `application-standalone-package-validator.ts:35-56,59-123` routes supported package configs through this policy.
+- Production consequence: documented pack/validate can accept immutable standalone package data containing a host-local endpoint or credential alias, contrary to the explicit package portability/security contract.
+- Required action: within `ApplicationPortableLaunchConfigPolicy`, recursively reject the approved actual endpoint/base-URL/host and credential semantic aliases at exact paths without echoing values; retain exact token-count and typed-pricing positives. Add durable real-policy/package cases for the corrected aliases. No design or migration change is required.
 
 ## Classification
 
-- `Design Impact` (dominant) plus one bounded `Local Fix` (`CR-009`).
-- The SR-005 runtime authority is sound, but its Studio read/edit boundary is incomplete for approved alternate-resource sparse overrides. That boundary requires solution/design revision and architecture review before implementation resumes.
+- Failure classification: `Local Fix`
+- Owner: `implementation_engineer`
+- Rationale: the intended behavior, owner, schema boundary, persistence decision, and diagnostic contract are fully specified. The defect is a bounded under-match inside the newly approved policy.
 
 ## Recommended Recipient
 
-- `solution_designer`
-- Revise the cumulative solution package for `CR-012`, include the narrow remaining package-secret rule from `CR-009`, and return through `architecture_reviewer`. Do not advance to API/E2E yet.
+`implementation_engineer`
 
 ## Residual Risks
 
-- After redesign/implementation/source review, API/E2E must add durable positive/negative portable-validator cases; default-resource and alternate-resource sparse override cases; invalid resource/topology diagnosis/replacement/reset; clean standalone Luna execution; graph-local final prompt proof; both-host parity/digests; command matrix; recovery; and cleanup.
-- Host runtime/model/credential availability remains an environment fact and must continue to produce `HOST_REQUIREMENT_MISSING`, never package fallback.
-- Mixed-runtime team-wide sparse model editing should be explicitly addressed by the revised selected-baseline/edit projection rather than implicitly defaulting to AutoByteus.
-- The shared worktree intentionally contains API/E2E-owned tests/reports/evidence and upstream solution/architecture documents; no reviewer cleanup may discard them.
+- After CR-009 source correction, API/E2E must add durable policy, preview, sparse clearing, mixed-runtime, race, stale/deleted selection, prompt, and dual-host live coverage.
+- The full Studio browser flow, authenticated Luna provider/artifact parity, maintained command matrix, recovery, digests, and cleanup remain unproven after API-REV-004 and must be rerun.
+- The launch service and setup panel are exactly at the 500-line hard ceiling; this is pressure, not a current finding.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Fail — Local Fix`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass` — `MP-CR-009B` and `MP-CR-012` have independent supported developer/user triggers and forward production paths.
-- Score Summary: `8.8/10` (`88/100`); data-flow, ownership, API/data-model clarity, API/E2E readiness, and runtime fidelity are below clean-pass threshold.
-- Failure Origin: incomplete reviewed Studio authority/read-model boundary for alternate-resource sparse editing, plus an incomplete implementation-level package secret policy.
-- Recommended Recipient: `solution_designer`
-- Notes: `CRR-012` supersedes `CRR-011`. CR-010 and CR-011 are resolved in source; CR-009 remains partially open; new CR-012 requires design revision and architecture review before implementation and API/E2E resume.
+- Material-Premise Gate: `Pass` — the sole finding has an independently supported operational/contract trigger and forward production trace.
+- Score Summary: `9.3/10` (`93/100`); API/E2E readiness and runtime fidelity are each `8.7` due to `CR-009`.
+- Failure Origin: bounded implementation defect in `ApplicationPortableLaunchConfigPolicy`.
+- Recommended Recipient: `implementation_engineer`
+- Notes: `CR-012`, `CR-010`, and `CR-011` are resolved in source. Do not advance to API/E2E until CR-009 is corrected and source-reviewed again.
