@@ -1,0 +1,30 @@
+timestamp=2026-07-29T13:28:35Z
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+current_head=29cf67fdaf04ad3e0e7e08f9a31bb75c5c8031a2
+origin_personal=29cf67fdaf04ad3e0e7e08f9a31bb75c5c8031a2
+tag_commit=2abcd1601b9908ddee16164b87b75ec224f13798
+branch=
+status=## HEAD (no branch)
+local_ticket_branch_exists=no
+remote_ticket_branch_exists=no
+temp_worktree_exists=no
+temp_branch_exists=no
+retained_ticket_worktree_registered=yes
+retained_ticket_worktree_detached=yes
+user_build_dmg_exists=yes
+user_build_zip_exists=yes
+main_personal_worktree_status:
+## personal...origin/personal [behind 32]
+ M tickets/done/application-agent-streaming/api-e2e-test-review-report.md
+ M tickets/done/application-agent-streaming/docs-sync-report.md
+ M tickets/done/application-agent-streaming/handoff-summary.md
+ M tickets/done/application-agent-streaming/release-deployment-report.md
+?? .article-work/
+?? tickets/done/application-agent-streaming/post-delivery-api-e2e-coverage-investigation.md
+?? tickets/done/application-agent-streaming/post-delivery-api-e2e-execution-coverage-report.md
+?? tickets/done/application-agent-streaming/post-delivery-delivery-refresh.log
+?? tickets/done/application-agent-streaming/post-delivery-electron-mac-build.log
+?? tickets/done/application-agent-streaming/post-delivery-electron-mac-validation.log
+?? tickets/done/application-agent-streaming/post-delivery-verification-evidence/
+?? tickets/done/gemini-31-image-schema-dimensions/

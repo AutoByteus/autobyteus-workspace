@@ -12,8 +12,8 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
-- Notes: User verification, ticket archival, target integration, v1.4.29 release, and publication verification are complete; safe local cleanup remains.
+- Current delivery revision ID: `DR-004`
+- Notes: User verification, ticket archival, target integration, v1.4.29 release, publication verification, and safe ticket/integration branch cleanup are complete.
 
 ## Initial Delivery Integration Refresh
 
@@ -107,11 +107,14 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle`
-- Worktree cleanup result: `Pending post-publication safe cleanup`.
-- Worktree prune result: `Pending post-publication safe cleanup`.
-- Local ticket branch cleanup result: `Pending post-publication safe cleanup`.
-- Remote branch cleanup result: `Pending deletion`; the ticket branch was pushed and is fully contained in `origin/personal`.
-- Blocker: N/A
+- Worktree cleanup result: `Partially retained by design` — the temporary integration worktree was removed. The original user-test worktree is retained detached at the delivered target snapshot to preserve its local Electron package and the terminal handoff's absolute artifact paths; it no longer owns a ticket branch.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed`; `codex/agent-idle-status-lifecycle` was deleted after the retained worktree detached at current `origin/personal`.
+- Remote branch cleanup result: `Completed`; `origin/codex/agent-idle-status-lifecycle` was deleted after containment in `origin/personal`.
+- Temporary integration branch cleanup result: `Completed`; `delivery/agent-idle-status-lifecycle-v1.4.29` and its worktree were removed.
+- Unrelated local target-worktree handling: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` remains dirty with unrelated work and was not modified, stashed, reset, or cleaned.
+- Evidence: `execution-evidence/155-dr004-post-finalization-cleanup-audit.log`.
+- Blocker: N/A; detached worktree retention is intentional and non-blocking.
 
 ## Escalation / Reroute
 
@@ -165,4 +168,4 @@ Reroute or stop finalization if user testing shows delayed old-turn activity reo
 
 ## Final Status
 
-`Repository finalized and v1.4.29 released; publication verified`. The user completed verification; the ticket was archived and merged on current `origin/personal`; integrated smoke passed 38/38; release commit/tag `2abcd1601b9908ddee16164b87b75ec224f13798` / `v1.4.29` were pushed; all five release workflows succeeded; the GitHub Release has 21 audited assets; and the multi-architecture Docker image is public. Only safe local/remote ticket-branch cleanup remains.
+`Complete — repository finalized, v1.4.29 released, publication verified, and safe cleanup completed`. The user completed verification; the ticket was archived and merged on current `origin/personal`; integrated smoke passed 38/38; release commit/tag `2abcd1601b9908ddee16164b87b75ec224f13798` / `v1.4.29` were pushed; all five release workflows succeeded; the GitHub Release has 21 audited assets; the multi-architecture Docker image is public; and local/remote ticket plus temporary integration branches were removed. The user-test worktree remains only as a detached artifact snapshot.

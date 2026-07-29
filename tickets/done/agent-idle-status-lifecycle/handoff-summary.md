@@ -4,10 +4,10 @@
 
 - Ticket: `agent-idle-status-lifecycle`
 - Date: `2026-07-29`
-- Current status: `Repository finalized and v1.4.29 released; publication verified`
+- Current status: `Complete — repository finalized, v1.4.29 released, publication verified, and safe branch cleanup completed`
 - Ticket branch: `codex/agent-idle-status-lifecycle`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle`
-- Delivery revision: `DR-003`
+- Delivery revision: `DR-004`
 
 ## Latest-Base Delivery State
 
@@ -89,6 +89,22 @@
 - Release selection: `v1.4.29`, the next patch version after current `v1.4.28`.
 - Finalization status: `Completed`. The ticket was archived, the ticket branch was pushed, its conflict-free merge and final integration smoke passed, `origin/personal` was updated, and v1.4.29 was released and verified.
 - Safety note: the existing local `personal` worktree has unrelated uncommitted files. It will not be stashed, reset, cleaned, or otherwise modified; target integration/release will use a clean temporary worktree from `origin/personal`.
+
+## Post-Finalization Cleanup
+
+- Remote ticket branch `origin/codex/agent-idle-status-lifecycle`: `Deleted`.
+- Local ticket branch `codex/agent-idle-status-lifecycle`: `Deleted`; this retained user-test worktree is detached at the current delivered `origin/personal` snapshot.
+- Temporary integration worktree and branch `delivery/agent-idle-status-lifecycle-v1.4.29`: `Removed`.
+- Worktree metadata prune: `Completed`.
+- The original user-test worktree is intentionally retained in detached state so the local Electron package and absolute canonical artifact paths remain available. It no longer owns a ticket branch and does not affect repository finalization.
+- The unrelated dirty local `personal` worktree was not modified, stashed, reset, or cleaned.
+- Cleanup evidence: `execution-evidence/155-dr004-post-finalization-cleanup-audit.log`.
+
+## Terminal Result
+
+- Final result: `Pass / released`.
+- Required user action: `None`.
+- External follow-up only: Apple controls final public App Store review/release after the successful App Store Connect upload.
 
 ## Cumulative Artifact Package
 
