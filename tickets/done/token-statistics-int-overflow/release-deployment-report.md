@@ -128,12 +128,14 @@
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/token-statistics-int-overflow`
-- Worktree cleanup result: `Completed`
-- Worktree prune result: `Completed`
-- Local ticket branch cleanup result: `Completed`
-- Remote branch cleanup result: `Completed`
-- Blocker (if applicable): `N/A`
+- Original ticket worktree/branch cleanup: `Completed`; dedicated token-statistics worktree and local/remote ticket branches were removed after repository finalization.
+- Recovery worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-token-statistics-int-overflow-v1.4.27` — `Removed`.
+- Local recovery branch `release/token-statistics-int-overflow-v1.4.27`: `Removed` after its head was contained by `personal`.
+- Remote recovery branch: `Not required / absent`; it was never pushed.
+- Worktree prune: `Completed`.
+- Local main `personal` refresh: fast-forwarded to the final delivery audit while preserving unrelated dirty `application-agent-streaming` and `.article-work` state; checksum/status comparison remained unchanged.
+- Cleanup evidence: `delivery-evidence/release-v1.4.27/recovery-cleanup.log`.
+- Blocker: `None`.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 

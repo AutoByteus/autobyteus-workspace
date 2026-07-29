@@ -5,6 +5,7 @@
 - Ticket: `token-statistics-int-overflow`
 - Canonical archived path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/token-statistics-int-overflow`
 - Original ticket branch/worktree: removed after repository finalization.
+- Recovery branch/worktree: removed after successful release recovery; no remote recovery branch was created.
 - Finalization target: `personal` / `origin/personal`.
 - Release: stable `v1.4.27` at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.27`.
 - Current status: `Complete`; repository finalization, local Electron verification, product release, packaging repair, and Server Docker recovery all passed.
@@ -149,3 +150,4 @@ All ticket artifacts below are under:
 - Recovery key log: `delivery-evidence/release-v1.4.27/server-docker-recovery-key-log.txt`
 - Final release verification: `delivery-evidence/release-v1.4.27/release-final-verification.log`
 - Compact release validation: `delivery-evidence/release-v1.4.27/release-validation-summary.txt`
+- Recovery cleanup: `delivery-evidence/release-v1.4.27/recovery-cleanup.log`
