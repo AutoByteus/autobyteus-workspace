@@ -66,6 +66,51 @@ describe('ImageClientFactory', () => {
   });
 
   it.each([
+    {
+      modelId: 'gemini-2.5-flash-image',
+      aspectRatios: ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'],
+      imageSizes: undefined,
+    },
+    {
+      modelId: 'gemini-3.1-flash-lite-image',
+      aspectRatios: ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'],
+      imageSizes: ['1K'],
+    },
+    {
+      modelId: 'gemini-3.1-flash-image',
+      aspectRatios: ['1:1', '1:4', '1:8', '2:3', '3:2', '3:4', '4:1', '4:3', '4:5', '5:4', '8:1', '9:16', '16:9', '21:9'],
+      imageSizes: ['512', '1K', '2K', '4K'],
+    },
+    {
+      modelId: 'gemini-3-pro-image',
+      aspectRatios: ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'],
+      imageSizes: ['1K', '2K', '4K'],
+    },
+  ])('exposes the documented schema for $modelId', ({ modelId, aspectRatios, imageSizes }) => {
+    const model = ImageClientFactory.listModels().find(
+      (listedModel) => listedModel.modelIdentifier === modelId,
+    );
+
+    expect(model?.parameterSchema.parameters.map((parameter) => parameter.name)).toEqual(
+      imageSizes ? ['aspect_ratio', 'image_size'] : ['aspect_ratio'],
+    );
+    expect(model?.parameterSchema.getParameter('aspect_ratio')?.enumValues).toEqual(aspectRatios);
+    expect(model?.parameterSchema.getParameter('image_size')?.enumValues).toEqual(imageSizes);
+    expect(model?.parameterSchema.toJsonSchema()).toMatchObject({
+      type: 'object',
+      required: [],
+    });
+  });
+
+  it('does not expose the Gemini schema on the separate Imagen catalog entry', () => {
+    const model = ImageClientFactory.listModels().find(
+      (listedModel) => listedModel.modelIdentifier === 'imagen-4',
+    );
+
+    expect(model?.parameterSchema.parameters).toEqual([]);
+  });
+
+  it.each([
     'gemini-3.1-flash-lite-image',
     'gemini-3.1-flash-image',
     'gemini-3-pro-image',

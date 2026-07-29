@@ -13,6 +13,82 @@ import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../../utils/gemini-runtime.js';
 
+type GeminiImageConfigField = 'aspect_ratio' | 'image_size';
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const readImageConfigValue = (
+  config: Record<string, unknown>,
+  field: GeminiImageConfigField,
+  enumValues: string[] | undefined,
+): string | undefined => {
+  const value = config[field];
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  if (
+    typeof value !== 'string' ||
+    (enumValues && enumValues.length > 0 && !enumValues.includes(value))
+  ) {
+    const allowedValues = enumValues && enumValues.length > 0
+      ? ` one of: ${enumValues.join(', ')}`
+      : ' a string';
+    throw new Error(`generation_config.${field} must be${allowedValues}.`);
+  }
+
+  return value;
+};
+
+const normalizeImageGenerationConfig = (
+  baseConfig: Record<string, unknown>,
+  generationConfig: Record<string, unknown> | undefined,
+  model: ImageModel,
+): Record<string, unknown> => {
+  const configDict: Record<string, unknown> = {
+    ...baseConfig,
+    ...(generationConfig ?? {}),
+  };
+  const modelSchema = model.parameterSchema;
+  const aspectRatioParameter = modelSchema?.getParameter('aspect_ratio');
+  const imageSizeParameter = modelSchema?.getParameter('image_size');
+  const aspectRatio = aspectRatioParameter
+    ? readImageConfigValue(configDict, 'aspect_ratio', aspectRatioParameter.enumValues)
+    : undefined;
+  const imageSize = imageSizeParameter
+    ? readImageConfigValue(configDict, 'image_size', imageSizeParameter.enumValues)
+    : undefined;
+
+  if (aspectRatioParameter) {
+    delete configDict.aspect_ratio;
+  }
+  if (imageSizeParameter) {
+    delete configDict.image_size;
+  }
+
+  if (aspectRatio === undefined && imageSize === undefined) {
+    return configDict;
+  }
+
+  const responseFormat = isRecord(configDict.responseFormat)
+    ? { ...configDict.responseFormat }
+    : {};
+  const existingImageConfig = isRecord(responseFormat.image)
+    ? { ...responseFormat.image }
+    : {};
+  configDict.responseFormat = {
+    ...responseFormat,
+    image: {
+      ...existingImageConfig,
+      ...(aspectRatio === undefined ? {} : { aspectRatio }),
+      ...(imageSize === undefined ? {} : { imageSize }),
+    },
+  };
+
+  return configDict;
+};
+
 function guessMimeType(source: string): string {
   const mimeType = mime.lookup(source);
   return mimeType || 'image/png';
@@ -65,10 +141,11 @@ export class GeminiImageClient extends BaseImageClient {
         }
       }
 
-      const configDict: Record<string, unknown> = { ...(this.config?.params ?? {}) };
-      if (generationConfig) {
-        Object.assign(configDict, generationConfig);
-      }
+      const configDict = normalizeImageGenerationConfig(
+        this.config?.params ?? {},
+        generationConfig,
+        this.model,
+      );
 
       if (!configDict.responseModalities) {
         if (runtimeInfo.runtime === 'vertex') {

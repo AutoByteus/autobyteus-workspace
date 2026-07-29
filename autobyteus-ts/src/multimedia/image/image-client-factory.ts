@@ -10,6 +10,56 @@ import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
+const GEMINI_STANDARD_IMAGE_ASPECT_RATIOS = [
+  '1:1',
+  '2:3',
+  '3:2',
+  '3:4',
+  '4:3',
+  '4:5',
+  '5:4',
+  '9:16',
+  '16:9',
+  '21:9',
+];
+
+const GEMINI_31_FLASH_IMAGE_ASPECT_RATIOS = [
+  '1:1',
+  '1:4',
+  '1:8',
+  '2:3',
+  '3:2',
+  '3:4',
+  '4:1',
+  '4:3',
+  '4:5',
+  '5:4',
+  '8:1',
+  '9:16',
+  '16:9',
+  '21:9',
+];
+
+const buildGeminiImageParameterSchema = (
+  aspectRatios: string[],
+  imageSizes?: string[],
+): ParameterSchema => new ParameterSchema([
+  new ParameterDefinition({
+    name: 'aspect_ratio',
+    type: ParameterType.ENUM,
+    enumValues: aspectRatios,
+    description: 'The aspect ratio of the generated image.',
+  }),
+  ...(imageSizes
+    ? [new ParameterDefinition({
+      name: 'image_size',
+      type: ParameterType.ENUM,
+      enumValues: imageSizes,
+      description: 'The output size of the generated image.',
+    })]
+    : []),
+]);
+
 export class ImageClientFactory extends Singleton {
   protected static instance?: ImageClientFactory;
 
@@ -135,7 +185,7 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-2.5-flash-image',
       provider: MultimediaProvider.GEMINI,
       clientClass: GeminiImageClient,
-      parameterSchema: null,
+      parameterSchema: buildGeminiImageParameterSchema(GEMINI_STANDARD_IMAGE_ASPECT_RATIOS),
       description: 'Fast conversational multimodal image model.'
     });
 
@@ -144,7 +194,7 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-3.1-flash-lite-image',
       provider: MultimediaProvider.GEMINI,
       clientClass: GeminiImageClient,
-      parameterSchema: null,
+      parameterSchema: buildGeminiImageParameterSchema(GEMINI_STANDARD_IMAGE_ASPECT_RATIOS, ['1K']),
       description:
         'Fast, cost-efficient Gemini 3.1 Flash-Lite Image model with 1K output; best for lightweight image generation and edits, not multiple references or multi-turn editing.'
     });
@@ -154,7 +204,10 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-3.1-flash-image',
       provider: MultimediaProvider.GEMINI,
       clientClass: GeminiImageClient,
-      parameterSchema: null,
+      parameterSchema: buildGeminiImageParameterSchema(
+        GEMINI_31_FLASH_IMAGE_ASPECT_RATIOS,
+        ['512', '1K', '2K', '4K'],
+      ),
       description: 'GA Nano Banana 2 / Gemini 3.1 Flash Image model for versatile image generation and editing.'
     });
 
@@ -163,7 +216,10 @@ export class ImageClientFactory extends Singleton {
       value: 'gemini-3-pro-image',
       provider: MultimediaProvider.GEMINI,
       clientClass: GeminiImageClient,
-      parameterSchema: null,
+      parameterSchema: buildGeminiImageParameterSchema(
+        GEMINI_STANDARD_IMAGE_ASPECT_RATIOS,
+        ['1K', '2K', '4K'],
+      ),
       description: 'GA Nano Banana Pro / Gemini 3 Pro Image model for high-quality complex image tasks.'
     });
 
