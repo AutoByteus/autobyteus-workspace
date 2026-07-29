@@ -1,0 +1,13 @@
+Delivery finalization refresh — 2026-07-29
+
+Recorded base: origin/personal 63e3990181c9e384956319b07f1671b11b655b62
+User verification: received; finalization and release of next patch version authorized.
+Ticket branch: codex/gemini-31-image-schema-dimensions
+Ticket branch final commit: 0b698c0e0de61c758bd21d219820c80ff75957f3
+Ticket branch push: passed; origin/codex/gemini-31-image-schema-dimensions points to 0b698c0e0.
+Target integration: clean personal checkout fast-forwarded 63e399018 -> 0b698c0e0; origin/personal push passed.
+Release script: bash scripts/desktop-release.sh release 1.4.28 --branch personal --release-notes tickets/done/gemini-31-image-schema-dimensions/release-notes.md
+Release commit: a5ad63bb92aacab21cb7a63be4614fcc6481a7d2
+Annotated tag object: 9bfc96424bd54ea78f26d91948ecfd704f37fa51; tag v1.4.28 target commit a5ad63bb9.
+Release branch/tag push: passed; origin/personal and origin/v1.4.28 verified.
+Desktop release workflow: run 30433935933 completed successfully; GitHub Release publication completed.

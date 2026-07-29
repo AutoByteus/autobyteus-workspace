@@ -1,0 +1,6 @@
+Delivery cleanup — 2026-07-29
+Remote ticket branch deletion: passed; origin/codex/gemini-31-image-schema-dimensions no longer exists after merge into personal.
+Dedicated ticket worktree removal: passed; /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/../autobyteus-worktrees/gemini-31-image-schema-dimensions was removed.
+Worktree metadata prune: passed; git worktree list no longer registers the ticket worktree.
+Ignored runtime copies (.env, db, root key): discarded with the dedicated worktree; they were never attached or committed.
+Temporary release clone: retained until final artifact copy and verification, then removed.

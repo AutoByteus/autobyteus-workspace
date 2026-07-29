@@ -1,0 +1,10 @@
+v1.4.28 Desktop Release workflow 30433935933: success
+Resolve Release Metadata: success
+Build Linux x64: success
+Build Linux ARM64: success
+Build Windows x64: success
+Build macOS ARM64: success
+Build macOS Intel x64: success
+Publish GitHub Release: success
+Workflow URL: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30433935933
+Release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.28
