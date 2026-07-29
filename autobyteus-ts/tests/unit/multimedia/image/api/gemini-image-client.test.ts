@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { GoogleGenAI } from '@google/genai';
 import { GeminiImageClient } from '../../../../../src/multimedia/image/api/gemini-image-client.js';
 import { ImageClientFactory } from '../../../../../src/multimedia/image/image-client-factory.js';
 import { MultimediaConfig } from '../../../../../src/multimedia/utils/multimedia-config.js';
@@ -75,7 +76,7 @@ describe('GeminiImageClient', () => {
     expect(request.config).toEqual({ responseModalities: ['IMAGE'] });
   });
 
-  it('translates supported image controls into the Gemini response format', async () => {
+  it('translates supported image controls into the SDK image config', async () => {
     generateContentMock.mockResolvedValue({
       candidates: [{ content: { parts: [{ inlineData: { mimeType: 'image/png', data: 'abcd' } }] } }],
     });
@@ -89,13 +90,12 @@ describe('GeminiImageClient', () => {
     const request = generateContentMock.mock.calls[0]?.[0];
     expect(request.config).toMatchObject({
       responseModalities: ['IMAGE'],
-      responseFormat: {
-        image: {
-          aspectRatio: '16:9',
-          imageSize: '2K',
-        },
+      imageConfig: {
+        aspectRatio: '16:9',
+        imageSize: '2K',
       },
     });
+    expect(request.config).not.toHaveProperty('responseFormat');
     expect(request.config).not.toHaveProperty('aspect_ratio');
     expect(request.config).not.toHaveProperty('image_size');
   });
@@ -112,7 +112,7 @@ describe('GeminiImageClient', () => {
     });
 
     const request = generateContentMock.mock.calls[0]?.[0];
-    expect(request.config.responseFormat.image).toEqual({
+    expect(request.config.imageConfig).toEqual({
       aspectRatio: '4:5',
       imageSize: '4K',
     });
@@ -127,28 +127,28 @@ describe('GeminiImageClient', () => {
     ]);
   });
 
-  it('preserves provider response-format fields while applying per-call controls', async () => {
+  it('preserves unrelated config fields while applying per-call controls', async () => {
     generateContentMock.mockResolvedValue({
       candidates: [{ content: { parts: [{ inlineData: { mimeType: 'image/png', data: 'abcd' } }] } }],
     });
 
     const client = createClient('gemini-3.1-flash-image', new MultimediaConfig({
       aspect_ratio: '1:1',
-      responseFormat: {
+      unrelatedConfig: {
         mediaResolution: 'high',
-        image: { existing: true },
       },
+      imageConfig: { existing: true },
     }));
     await client.generateImage('draw a cat', undefined, { image_size: '1K' });
 
     const request = generateContentMock.mock.calls[0]?.[0];
-    expect(request.config.responseFormat).toEqual({
+    expect(request.config.unrelatedConfig).toEqual({
       mediaResolution: 'high',
-      image: {
-        existing: true,
-        aspectRatio: '1:1',
-        imageSize: '1K',
-      },
+    });
+    expect(request.config.imageConfig).toEqual({
+      existing: true,
+      aspectRatio: '1:1',
+      imageSize: '1K',
     });
   });
 
@@ -158,5 +158,46 @@ describe('GeminiImageClient', () => {
     await expect(client.generateImage('draw a cat', undefined, {
       aspect_ratio: '2:1',
     })).rejects.toThrow('generation_config.aspect_ratio must be one of');
+  });
+
+  it('serializes the supported SDK image config into the raw Generate Content request', async () => {
+    let requestBody: Record<string, any> | undefined;
+    const fetchMock = vi.fn(async (_input: any, init: any) => {
+      requestBody = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({ candidates: [] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const ai = new GoogleGenAI({
+      apiKey: 'synthetic-gemini-key',
+    });
+
+    try {
+      await ai.models.generateContent({
+        model: 'gemini-3.1-flash-image',
+        contents: 'raw serializer probe',
+        config: {
+          responseModalities: ['IMAGE'],
+          imageConfig: {
+            aspectRatio: '1:4',
+            imageSize: '2K',
+          },
+        },
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    expect(requestBody?.generationConfig).toMatchObject({
+      responseModalities: ['IMAGE'],
+      imageConfig: {
+        aspectRatio: '1:4',
+        imageSize: '2K',
+      },
+    });
+    expect(requestBody?.generationConfig).not.toHaveProperty('responseFormat');
   });
 });

@@ -71,19 +71,13 @@ const normalizeImageGenerationConfig = (
     return configDict;
   }
 
-  const responseFormat = isRecord(configDict.responseFormat)
-    ? { ...configDict.responseFormat }
+  const imageConfig = isRecord(configDict.imageConfig)
+    ? { ...configDict.imageConfig }
     : {};
-  const existingImageConfig = isRecord(responseFormat.image)
-    ? { ...responseFormat.image }
-    : {};
-  configDict.responseFormat = {
-    ...responseFormat,
-    image: {
-      ...existingImageConfig,
-      ...(aspectRatio === undefined ? {} : { aspectRatio }),
-      ...(imageSize === undefined ? {} : { imageSize }),
-    },
+  configDict.imageConfig = {
+    ...imageConfig,
+    ...(aspectRatio === undefined ? {} : { aspectRatio }),
+    ...(imageSize === undefined ? {} : { imageSize }),
   };
 
   return configDict;
