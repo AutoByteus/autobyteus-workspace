@@ -1,7 +1,6 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
-import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
@@ -33,6 +32,10 @@ import { CodexThreadEventName } from "./codex-thread-event-name.js";
 import { CodexOrderedToolBoundaryTracker } from "./codex-ordered-tool-boundary-tracker.js";
 import type { CodexReasoningLifecycleAction } from "./codex-reasoning-block-tracker.js";
 import { serializeCodexItemEventPayload } from "../agent-tools-mcp/codex-agent-tools-mcp-event-payload.js";
+import {
+  deriveCodexAgentRunStatusHint,
+  resolveCodexAgentRunEventStatusHint,
+} from "./codex-status-projector.js";
 
 type RuntimeRunReference = {
   runtimeKind: RuntimeKind;
@@ -77,21 +80,6 @@ export const buildCodexAgentRunRuntimeReference = (
       sandbox: thread.config.sandbox,
     },
   };
-};
-
-export const deriveCodexAgentRunStatusHint = (
-  codexEventName: string,
-): "ACTIVE" | "IDLE" | "ERROR" | null => {
-  if (codexEventName === CodexThreadEventName.TURN_STARTED) {
-    return "ACTIVE";
-  }
-  if (codexEventName === CodexThreadEventName.TURN_COMPLETED) {
-    return "IDLE";
-  }
-  if (codexEventName === CodexThreadEventName.ERROR) {
-    return "ERROR";
-  }
-  return null;
 };
 
 export class CodexThreadEventConverter {
@@ -354,16 +342,9 @@ export class CodexThreadEventConverter {
       eventType,
       runId: this.runId,
       payload: normalizedPayload,
-      statusHint: eventType === AgentRunEventType.ERROR ? null : statusHint,
+      statusHint: null,
     };
-    if (eventType !== AgentRunEventType.ERROR) {
-      return event;
-    }
-
-    const evidence = resolveAgentRunErrorEvidence(event);
-    event.statusHint = evidence?.kind === "TURN_TERMINAL" || evidence?.kind === "RUNTIME_GLOBAL"
-      ? "ERROR"
-      : null;
+    event.statusHint = resolveCodexAgentRunEventStatusHint(event, statusHint);
     return event;
   }
 
