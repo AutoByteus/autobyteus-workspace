@@ -10,6 +10,7 @@
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-003` | `Fail — Local Fix` | `Pass` | `CR-003`, `APIE2E-F001` |
 | `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-002` | `Pass` | `Fail — Local Fix` | `CR-004`, `APIE2E-F002` |
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `APIE2E-F002` |
+| `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` | `Pass` | `Fail — Local Fix` | `CR-005`, `APIE2E-F003` |
 
 ## Revision Entries
 
@@ -169,3 +170,31 @@ None.
 - Material score or classification changes: full implementation score returns to `9.2/10` (`92/100`); result changes from `Fail — Local Fix` to `Pass`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must replace two stale singleton-spy definition refresh tests, rerun the exact Studio bundled-team gate first, and then complete iframe remount, in-Studio Brief execution, parity/digests, and the remaining command matrix before any delivery route.
+
+### CRR-007 — API/E2E exposes team-member identity allocator authority bypass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `7`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-002`, `APIE2E-F003`, new source finding `CR-005`
+- Relevant solution revision IDs: `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` (`CRR-006`)
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: API/E2E proved CR-004 resolved through real setup, entry, iframe, and remount, then the supported Brief `Generate draft` path failed before provider invocation. The application run-authority owner passes its graph-local agent definition service to the backend factory but omits it from the team identity allocator, which falls back to a global catalog and cannot resolve the package-owned team-local researcher. This is a bounded implementation defect and earlier source-review gap.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains Resolved | `IR-002`, `API-REV-001`, `API-REV-003` | Unchanged standalone browser boundary. |
+| `CR-002` | Resolved | Remains Resolved | `IR-002`, `IR-003`, `API-REV-003` | Current package/identity reaches real team launch. |
+| `CR-003` | Resolved | Remains Resolved and API/E2E-confirmed | `IR-003`, `API-REV-002`, `API-REV-003` | Repeated Studio refresh remains successful. |
+| `CR-004` | Resolved in source | Resolved and API/E2E-confirmed | `IR-004`, `CRR-006`, `API-REV-003` | Durable test 3/3; exact team visible; setup/entry/iframe/remount pass. |
+
+- New or remaining finding IDs: `CR-005` linked to `APIE2E-BRIEF-002` / `APIE2E-F003`.
+- Material score or classification changes: the prior full score remains historical; Authoritative Boundary Rule, API/E2E readiness, and runtime fidelity are disproven for real team identity allocation. Current result is `Fail — Local Fix`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: after bounded source correction/re-review, API/E2E must add a direct non-fake allocator regression, rerun the real Brief team journey first, then complete both-host parity/digests and the remaining maintained-app command matrix.

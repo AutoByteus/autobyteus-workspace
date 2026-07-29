@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `API/E2E Failure-Origin Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
@@ -14,199 +14,134 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`, `IR-002`, `IR-003`, `IR-004`
+- Relevant Implementation Revision IDs: `IR-001`–`IR-004`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
-- Current Review Round: `6`
-- Trigger: `IR-004` re-review handoff at task HEAD `637e8915ab5c9b10ca3cee359f4a369758091fc0`; source commit `b14dee08fecf42beb8cb5eb78cccea3f149215ee`; triggering focused-review commit `f6269df7f30ebe33bfb4b02376287739a93048b5`.
-- Prior Review Round Reviewed: round `5`, `CRR-005`, `Fail — Local Fix`
-- Latest Authoritative Round: `6`
-- Coverage Investigation Reviewed (rework trigger): `api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed (rework trigger): `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed (rework trigger): `api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-002`
-- Delivery Revision Record Reviewed (delivery re-entry only): `N/A`
+- Current Code Review Revision ID: `CRR-007`
+- Current Review Round: `7`
+- Trigger: `API-REV-003` at reviewed HEAD `d612e794b1b5c6912eea6615db7f2131f8c843da`; API/E2E round 3 resolved the Studio definition gate/remount failure and exposed a different real team-member identity-allocation failure.
+- Prior Review Round Reviewed: round `6`, `CRR-006`, `Pass`
+- Latest Authoritative Round: `7`
+- Coverage Investigation Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed (failure-origin entry point): `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-003`
+- Delivery Revision Record Reviewed: `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: `APIE2E-STUDIO-001`, `APIE2E-F002` — source correction reviewed; API/E2E rerun pending.
-- Exact Failing Commands / Execution Mode: real root Studio `pnpm dev`; Brief `pnpm -C applications/brief-studio dev:studio`; exact REST/GraphQL probes; system-Chrome navigation to the exact Studio application route.
-- Failure Evidence Paths: `evidence/api-e2e/api-rev-002-studio-bundle-team-api-mismatch.log`; `evidence/api-e2e/api-rev-002-studio-bundle-team-gate-failure.log`; `.png`; `evidence/api-e2e/api-rev-002-studio-root-dev.log`.
+- Failing Scenario IDs: `APIE2E-BRIEF-002`, `APIE2E-F003`
+- Exact Failing Commands / Execution Mode: real root Studio via `pnpm dev`; real Brief via `pnpm dev:studio`; supported Studio setup with an available local model; real iframe UI `Create brief` then `Generate draft`; Playwright Core with installed Chrome 150; correlated application API state.
+- Failure Evidence Paths: `evidence/api-e2e/api-rev-003-brief-real-team-run.log`; `api-rev-003-brief-real-team-failure-api.json`; `api-rev-003-brief-real-team-failure-browser.log`; `api-rev-003-brief-real-team-failure.png`; correlated root server log.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: IR-004's correction for `CR-004`: the Studio composition now exports its exact graph-local agent/team definition services into the existing GraphQL authority holder, and every direct agent/team definition resolver operation uses those configured services.
-- Files / areas reviewed: source diff `f6269df7f..b14dee08f`; `studio-application-api-authorities.ts`; `agent-definition.ts`; `agent-team-definition.ts`; `build-studio-server-composition.ts`; `create-application-definition-services.ts`; the package-registry refresh callbacks; Studio setup store/editor; `IR-004`; `CRR-005`; `API-REV-002`; preserved API/E2E state; existing `definition-catalog-refresh.test.ts`.
-- Explicit exclusions: live Studio/API/browser rerun, API/E2E-owned durable test edits, proportional test-code review, deployment, and final docs sync.
-- Reviewer checks: server build-config TypeScript no-emit passed; direct singleton guard passed; a disposable 1/1 resolver-authority probe verified exact configured service identity, coherent list reads, and agent-before-team refresh ordering; source diff and repository `git diff --check` passed; all four IR-004 source files are below 500 effective non-empty lines and their local deltas are below 220; disposable probe removed; API/E2E-owned dirty files preserved.
+- Changed implementation and behavior reviewed: no production source changed during API/E2E. This focused review classified the team-member identity-allocation failure after a real package-owned Brief team launch.
+- Files / areas reviewed: UC-009 and AC-005/006; DS-003/DS-004 and explicit composition-dependency rules; API-REV-003 reports/evidence; `create-application-platform-runtime-graph.ts`; `create-application-orchestration-authorities.ts`; `create-application-run-authorities.ts`; `application-run-binding-launch-service.ts`; `team-run-service.ts`; `team-run-launch-identity-assignment.ts`; `agent-run-identity-allocator.ts`; `AutoByteusAgentRunBackendFactory`; the existing Brief imported-package integration's fake team seam.
+- Explicit exclusions: no full source scorecard/audit was repeated; no proportional test-code review; no general review of the 14-file API/E2E durable package; provider behavior was not investigated because the failure occurs before provider invocation.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `BEH-001`, `BEH-004`, `BEH-006`; `UC-002`, `UC-003`, `UC-009`, `UC-015`; `AC-003`, `AC-005`, `AC-006`, `AC-011`; DS-001/DS-009/P9 require the real imported package's supported bundled team to be visible through Studio setup and continue into entry/iframe execution.
-- Design-spec behavior map verified against the implementation: IR-004 now follows the approved explicit composition-authority path and removes the source-visible route-level singleton bypass identified by CR-004.
-- Design review report and round confirmed: `ARCH-REV-003`, `Pass`, against `SR-003`.
+- Approved requirements basis understood: UC-009 and AC-005/006 explicitly require a real Brief bundled team to start through `context.agentExecution` and complete the binding/run/event/artifact path without mock substitution.
+- Design-spec behavior map verified against the implementation: DS-003/DS-004 require the application orchestration/run path to use the selected graph's exact resource/definition authorities. The design explicitly prohibits composition-critical global singleton lookups and requires chosen low-level run/runtime instances to be injected into graph-owned run services/factories.
+- Design review report and round confirmed: `ARCH-REV-003` passed this explicit-authority design; no new requirement or architecture decision is needed.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None.
-- Remaining material ambiguity, if any: None.
+- Changed or newly discovered behavior, if any: None. The failure is an implementation violation on the approved real Brief execution path.
+- Remaining material ambiguity, if any: None for origin or ownership.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | The Studio composition creates the application graph, configures GraphQL with the graph's exact definition authorities, and retains the existing setup/entry/iframe lifecycle. | N/A |
-| `BEH-002` | Confirmed | Host-neutral `startApplication` and bootstrap providers are unchanged by IR-004. | N/A |
-| `BEH-003` | Confirmed | One current read-only package and explicit application identity remain authoritative. | N/A |
-| `BEH-004` | Confirmed | The same graph-local definition pair now serves runtime readiness, package-refresh callbacks, and Studio GraphQL definition operations. | N/A |
-| `BEH-005` | Confirmed | Exact Studio and standalone compositions remain unchanged; only the Studio composition's API adapter wiring is corrected. | N/A |
-| `BEH-006` | Confirmed | API-REV-002 already confirms initial plus repeated `dev:studio` refresh; IR-004 makes the resulting current package catalog visible to the supported setup surface. | N/A |
-| `BEH-007` | Confirmed | Storage, migrations, data-root selection, lifecycle, and graph cleanup are unchanged. | N/A |
-
-## Structural / Design Checks
-
-| Check | Result | Evidence | Required Action |
-| --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | CR-004 was an implementation deviation from a healthy explicit-authority design; IR-004 corrects it without reopening architecture. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | One package and one composition-owned definition catalog now feed Studio setup/runtime as required by the validated proposal. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Package import/refresh -> bundle refresh -> exact agent/team service refresh -> GraphQL list -> setup lookup is one coherent spine. | API/E2E should execute the complete path live. |
-| Ownership boundary preservation and clarity | Pass | The composition owns service construction; the authority holder exposes exact API dependencies; resolvers adapt rather than construct competing services. | None. |
-| Off-spine concern clarity | Pass | GraphQL conversion/error handling remains adapter-local and does not assume catalog ownership. | None. |
-| Existing capability/subsystem reuse check | Pass | IR-004 extends the established Studio API authority holder instead of introducing another registry or service. | None. |
-| Reusable owned structures check | Pass | One typed authority record supplies bundle, package, agent, and team API adapters without repeated configuration shapes. | None. |
-| Shared-structure/data-model tightness check | Pass | Exact service references are added; no catalog DTO, merge representation, or parallel model is introduced. | None. |
-| Repeated coordination ownership check | Pass | Package refresh callbacks and GraphQL team refresh operate on the same service pair; agent-before-team ordering remains explicit. | None. |
-| Empty indirection check | Pass | The authority holder enforces one-time configuration and rejects unconfigured access; it is the existing composition-to-GraphQL boundary, not a new pass-through layer. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Composition, authority holder, and subject resolvers each retain one clear responsibility. | None. |
-| Ownership-driven dependency check | Pass | Resolvers depend on configured outer authorities rather than static domain-service construction/access. | None. |
-| Authoritative Boundary Rule check | Pass | `buildStudioServerComposition` configures GraphQL with the same `AgentDefinitionService`/`AgentTeamDefinitionService` instances passed to the runtime graph; all direct definition resolver reads/refreshes/mutations use those getters. No dual authority remains on this supported path. | Rerun the exact real Studio setup path. |
-| File placement check | Pass | Authority wiring stays in `api/graphql`; graph construction stays in `compositions`; domain services are not moved. | None. |
-| Flat-vs-over-split layout judgment | Pass | Four existing files are changed; no unnecessary layer or folder is added. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | Getter names identify the exact Studio agent/team authorities; GraphQL subjects and operation shapes remain unchanged. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | `getStudioAgentDefinitionService` and `getStudioAgentTeamDefinitionService` accurately identify scope and subject. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | The fix removes repeated singleton selection and centralizes service identity in the existing holder. | None. |
-| Patch-on-patch complexity control | Pass | No catalog merge, fallback, duplicate registration, compatibility branch, or package-uniqueness exception was added. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Resolver imports and calls to both definition-service singletons are removed. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Reviewer probe directly proves exact authority identity, coherent reads, and refresh order. The two existing singleton-spy tests assert the removed boundary and are correctly identified for API/E2E-owned update. | API/E2E should replace singleton spies with configured-authority assertions and add live exact-ID proof. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No durable test helper was added by implementation; the existing focused test file can be updated at its owning stage without production test hooks. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Implementation changed no durable test. `definition-catalog-refresh.test.ts` has two stale singleton-spy cases; they are preserved for the already-required API/E2E validity/update decision rather than hidden or made production-compatible. | API/E2E owns the durable correction before rerun. |
-| API/E2E readiness for the next workflow stage | Pass | CR-004 is corrected in source; compile, source guard, exact-service probe, ordering, size, and diff checks pass. | Return to API/E2E for the durable test update and exact failing scenario first. |
-
-## Source File Size And Structure Audit
-
-The prior full implementation audit remains valid and found no current implementation-source file over 500 effective non-empty lines. IR-004 changes four existing source files only; all local deltas remain below the 220-line split trigger.
-
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/api/graphql/studio-application-api-authorities.ts` | 44 | Pass | Pass (18-line delta) | Cohesive Studio GraphQL authority boundary | Pass | Accept | None. |
-| `autobyteus-server-ts/src/api/graphql/types/agent-definition.ts` | 279 | Pass | Pass (16-line replacement delta) | One GraphQL subject; service acquisition corrected uniformly | Pass | Accept | None. |
-| `autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts` | 293 | Pass | Pass (22-line replacement delta) | One GraphQL subject; exact paired refresh remains local | Pass | Accept | None. |
-| `autobyteus-server-ts/src/compositions/build-studio-server-composition.ts` | 162 | Pass | Pass (24-line delta) | Exact composition construction/configuration owner | Pass | Accept | None. |
-| Previously audited task implementation source | <=500 each | Pass | Previously reviewed | No new responsibility pressure from IR-004 | Pass | Accept | Preserve existing boundaries. |
-
-## Legacy / Backward-Compatibility Verdict
-
-| Check | Result | Notes |
-| --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Clean authority replacement; no singleton fallback. |
-| No legacy old-behavior retention in changed scope | Pass | Direct definition-resolver singleton access is removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete imports/accessors are absent from both resolvers. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | IR-004 changes no persisted data or migration. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No compatibility path exists. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Existing `Directly Usable — No Migration` decision remains valid. |
-
-## Dead / Obsolete / Legacy Items Requiring Removal
-
-None.
-
-## Docs-Impact Verdict
-
-- Docs impact: `Yes`
-- Why: final public documentation still needs the supported dual-host command/start/import/refresh/remount behavior and controlled-browser prerequisites; the definition-authority correction itself is internal and adds no public documentation surface.
-- Files or areas likely affected: devkit/starter README, custom-app guide, maintained-app instructions, and related SDK/server documentation. Delivery owns final integrated docs sync.
+| `BEH-001` / `UC-002` | Confirmed | API-REV-003 proves exact team visibility, saved setup, enabled entry, iframe mount, and fresh explicit remount. | N/A; prior `APIE2E-F002` is resolved. |
+| `BEH-004` / `UC-009` | Confirmed | User creates a real Brief and invokes `Generate draft`; the application backend resolves the bundled team and reaches team-run launch/member identity assignment. | The member allocator cannot load the exact package-owned `researcher`, so no binding/run/artifact is produced. |
+| `BEH-006` / `UC-015` | Confirmed | The real current-worktree package reaches the Studio iframe through supported `dev:studio`; no mock product path is used. | N/A. |
 
 ## Material Premise Validation
 
-### Upstream Design-Review Material-Premise Decisions
-
-| Premise ID | Current Status | Changed Evidence / Reason |
-| --- | --- | --- |
-| `MP-AR-001` | Confirmed | Both host compositions retain explicit runtime prerequisites and lifecycle owners. |
-| `MP-AR-005` | Confirmed | Maintained roots still enter the shared real devkit/package path. |
-
-### Prior Code-Review Material-Premise Decisions
+### Upstream And Prior Premises
 
 | Premise ID | Current Status | Re-review Evidence |
 | --- | --- | --- |
-| `MP-CR-001` | Confirmed | Supported standalone restart/browser path is unchanged and API/E2E-backed. |
-| `MP-CR-002` | Confirmed | Current config/manifest/package values still reach the refreshed application selection. |
-| `MP-CR-003` | Confirmed | API-REV-002 proves import once, repeated refresh, current identity, and backend reload without duplicate registration. |
-| `MP-CR-004` | Confirmed | The supported Studio route/setup path remains reachable; IR-004 now traces from the composition's exact definition pair through GraphQL getters to the editor's exact-ID lookup. Live result remains for API/E2E rerun. |
+| `MP-AR-001` | Confirmed | The real Studio graph reaches setup, entry, and runtime launch. |
+| `MP-AR-005` | Confirmed | Brief enters the real maintained application/devkit path. |
+| `MP-CR-001` | Confirmed | Standalone browser lifecycle is unrelated and unchanged. |
+| `MP-CR-002` | Confirmed | Current package/config identity reaches the real run path. |
+| `MP-CR-003` | Confirmed | Repeated Studio package refresh remains resolved. |
+| `MP-CR-004` | Confirmed | API-REV-003 proves exact GraphQL catalog visibility, entry, iframe, and remount; CR-004 is resolved. |
 
-New or reclassified material premises: None.
+### `MP-CR-005` — A supported real Brief team launch allocates identities for package-owned team-local agents
 
-## Review Scorecard
+- Origin: `New`
+- Related approved requirement or established contract: UC-009; AC-005 and AC-006; DS-003/DS-004; explicit composition-dependency rule.
+- Relevant behavior ID(s): `BEH-004`, `BEH-006`
+- Initiating basis kind: `User`
+- Independent product-supported initiating trigger or applicable governing contract: in the exposed Brief application UI mounted inside Studio, a user creates a brief and clicks the supported `Generate draft` action after completing Studio setup.
+- Support evidence: UC-009 and AC-005 name real bundled-team execution; API-REV-003 reaches the actual Brief UI and records the created brief plus the generated-draft request. The bundled team and local model were selected through supported setup.
+- Forward production caller/event path: Brief iframe `Generate draft` -> application backend `context.agentExecution` -> application orchestration host -> `ApplicationRunBindingLaunchService.startTeamBinding()` -> `TeamRunService.createTeamRun()` -> `TeamRunLaunchIdentityAssignment.assignRunIdsForLaunch()` -> `AgentRunIdentityAllocator.allocateForAgentDefinition(package-owned researcher ID)` -> definition lookup -> team run/binding/artifact continuation.
+- Lifecycle preconditions and material consequence: the exact bundled team is ready and its member descriptor reaches identity assignment. `createApplicationRunAuthorities()` has the graph-local `AgentDefinitionService` but does not supply an allocator to `TeamRunService`; its default allocator uses `AgentDefinitionService.getInstance()`. That global catalog lacks the team-local member, so allocation throws before a team run or binding exists; the brief becomes blocked and artifacts remain empty.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: attribute `APIE2E-F003` to the application run-authority construction and open `CR-005` as an implementation-owned Local Fix. Inject an allocator built from the composition's exact authorities, then require source re-review and API/E2E rerun with a direct non-fake regression.
 
-- Overall score (`/10`): `9.2`
-- Overall score (`/100`): `92`
-- Score calculation note: simple average of the ten mandatory categories, rounded to one decimal; every category meets the clean-pass target.
+## Affected Structural Finding
 
-| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Studio package refresh, graph definition services, GraphQL, and setup lookup now form one explicit path. | The corrected path has not yet been rerun live. | Execute the exact real Studio scenario first. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | The composition owns exact services; the authority holder exposes them; resolvers no longer select globals. | The process-wide authority holder assumes the reviewed one-Studio-composition-per-process model. | Keep that governing constraint explicit and test the configured boundary. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Narrow scope-specific getters preserve existing GraphQL operations while making service identity explicit. | Durable tests still model old singleton acquisition. | Update tests to configure and assert exact authorities. |
-| `4` | `Separation of Concerns and File Placement` | 9.2 | Changes stay within composition, API authority, and subject resolvers. | Resolver files remain moderately sized. | Avoid adding unrelated policies to them. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.1 | Exact references reuse one authority record; no parallel catalog/model exists. | Full cross-boundary behavior still depends on live proof. | Preserve the single catalog during test updates. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | Getter names clearly state Studio scope and definition subject. | Repeated getter calls in resolvers are simple but not request-context injection. | Retain the bounded existing pattern unless a reviewed broader refactor is needed. |
-| `7` | `API/E2E Readiness` | 9.0 | Source, compile, identity, read, ordering, and cleanup checks pass. | Two durable singleton-spy tests are stale and the real failing scenario is pending. | API/E2E must update them and rerun `APIE2E-STUDIO-001` first. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | GraphQL now reaches the same services whose cache contains package-owned definitions. | No new live browser success claim is made. | Prove exact bundled-team visibility, entry, iframe, and remount live. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Singleton fallback and catalog merge are absent; package uniqueness remains intact. | Historical failure evidence remains pending supersession. | Preserve clean replacement through rerun. |
-| `10` | `Cleanup Completeness` | 9.2 | Obsolete resolver singleton imports/calls are removed; scratch probe was deleted; API-owned state preserved. | Durable test/report cleanup remains downstream. | Complete API/E2E update/evidence and delivery docs sync. |
+| Check | Current Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Authoritative Boundary Rule / ownership-driven dependency | `Fail` | `createApplicationRunAuthorities.ts:24-30` receives the graph-local definition services and correctly passes the agent service to `AutoByteusAgentRunBackendFactory` at `:41-44`, but constructs `TeamRunService` without an allocator at `:62-71`. `TeamRunService.ts:130-133` creates one with only `memoryDir`; `AgentRunIdentityAllocator.ts:52-58` then selects global definition/run/metadata defaults. | Construct the application team-run allocator in the run-authority owner with the exact graph-local agent definition service and the composition's corresponding run/collision authorities, then inject it into `TeamRunService`. Do not add a singleton fallback, catalog merge, special package-ID branch, or compatibility path. |
+| API/E2E readiness / runtime fidelity | `Fail` | The real user journey reaches allocator lookup but produces `FAILED`, null binding/run IDs, and no artifacts. Passing fake-team integration coverage bypasses this boundary. | After source re-review, add a direct durable regression exercising package-owned team-local member allocation without faking `TeamRunService`, rerun `APIE2E-BRIEF-002` first, then resume the remaining matrix. |
 
 ## Findings
 
-### `CR-001` — Resolved: standalone development owns deterministic full-document reload
+### `CR-001` — Resolved: standalone deterministic reload
 
 - Status: `Remains Resolved`
-- Verification: IR-004 does not alter the standalone browser/restart path; prior live evidence remains valid.
+- Verification: unchanged and unrelated to APIE2E-F003.
 
-### `CR-002` — Resolved: live development sessions refresh current project inputs and selection state
+### `CR-002` — Resolved: current development project state
 
 - Status: `Remains Resolved`
-- Verification: current package/catalog state still feeds the corrected definition authority.
+- Verification: the current package and exact identities reach real execution.
 
-### `CR-003` — Resolved: repeated Studio edits refresh the registered package instead of re-importing it
+### `CR-003` — Resolved: repeated Studio package refresh
+
+- Status: `Remains Resolved and API/E2E-confirmed`
+
+### `CR-004` — Resolved: Studio GraphQL uses composition-owned definition authorities
 
 - Status: `Resolved and API/E2E-confirmed`
-- Verification: API-REV-002 reports devkit 19/19 plus initial and two repeated real Brief Studio refresh generations with no duplicate import.
+- Verification: focused durable coverage passes 3/3; exact bundled team appears among 29 definitions; setup saves; entry enables; iframe mounts; explicit reload replaces launch 1 with launch 2 while maintaining one iframe.
 
-### `CR-004` — Resolved in source: Studio GraphQL uses composition-owned application definition authorities
+### `CR-005` — Team-member identity allocation bypasses the application graph's definition authority
 
-- Status: `Resolved; API/E2E rerun pending`
-- Prior severity / confidence: `Major` / `High`
-- Affected approved behavior: `BEH-001`, `BEH-004`, `BEH-006`; `UC-002`, `UC-003`, `UC-009`, `UC-015`; `AC-003`, `AC-005`, `AC-006`, `AC-011`; DS-001/DS-009/P9.
-- Material premise: `MP-CR-004` (`Confirmed`).
-- Verification evidence: `createStudioApplicationAuthorities()` returns the exact `definitionServices` given to `createApplicationPlatformRuntimeGraph`; `buildStudioServerComposition()` passes those same references to `configureStudioApplicationApiAuthorities`; the holder exposes typed getters; every direct agent/team definition resolver read, refresh, create, update, and delete uses the configured getter. Team refresh awaits agent then team on the same pair. Direct definition-service singleton calls are absent. Reviewer no-emit, singleton guard, exact-identity/list/refresh probe, diff, size, and cleanup checks pass.
-- Resolution: the source-visible 29-versus-28 authority split is removed without a merge, fallback, duplicate registration, compatibility path, or package-uniqueness change.
-
-No open implementation-source findings remain.
+- Status: `Open`
+- Severity / confidence: `Major` / `High`
+- Failure links: `APIE2E-BRIEF-002`, `APIE2E-F003`
+- Affected approved behavior: `BEH-004`, `BEH-006`; UC-009; AC-005/006; DS-003/DS-004.
+- Material premise: `MP-CR-005` (`Reachable`).
+- Product trigger and consequence: a user clicks `Generate draft` for a real Brief in the mounted application. Team launch reaches identity allocation for the exact package-owned `researcher`, but the allocator reads a different process-global catalog and throws. The application records a failed/blocked attempt without a binding, run, provider invocation, or artifact.
+- Source evidence: `createApplicationRunAuthorities.ts:28` already owns the exact `agentDefinitionService`; `:42-44` uses it for the eventual agent backend, while `:62-71` omits an allocator from `TeamRunService`. `TeamRunService.ts:130-133` constructs `AgentRunIdentityAllocator({ memoryDir })`; `AgentRunIdentityAllocator.ts:54-58` falls back to global definition/run/metadata services. `TeamRunLaunchIdentityAssignment.ts:74-80` invokes that allocator for every agent member before `AgentTeamRunManager.createTeamRun()`.
+- Runtime evidence: the exact error names the package-owned team-local researcher. The API state records `blocked`, `latestBindingStatus=FAILED`, null binding/run IDs, and no artifacts; browser evidence shows the same failure. The configured local model is never invoked.
+- Existing-test validity: `brief-studio-imported-package.integration.test.ts` remains valid for its stated package/gateway/storage/event/artifact boundaries, but its fake team-run seam cannot prove real member identity allocation and does not refute this failure.
+- Review-gap attribution: this was reasonably source-detectable in the initial implementation review. The newly introduced `createApplicationRunAuthorities()` visibly passed the graph-local agent definition service to one consumer but let the team identity allocator select a global service, directly violating the approved hidden-singleton/explicit-dependency rule. Later passes inherited that missed construction invariant; IR-004 did not create the defect.
+- Required action: create and inject the `AgentRunIdentityAllocator` at the application run-authority boundary using the exact graph-local agent definition service and coherent composition-owned run/metadata collision collaborators. Preserve general allocator semantics and graph isolation; do not special-case bundled IDs or weaken uniqueness checks.
 
 ## Classification
 
-- `N/A` — the current implementation review passes.
+- `Local Fix` — implementation-owned source defect.
+- This is not a design problem: the approved design already requires explicit composition-critical dependencies and real package-owned team execution. The allocator already supports dependency injection, and the run-authority owner already has the missing graph service; no upstream decision is required.
 
 ## Recommended Recipient
 
-- `api_e2e_engineer`
-- Update durable definition-catalog coverage to configure/assert the exact Studio authorities, rerun `APIE2E-STUDIO-001` first, then resume iframe remount, real in-Studio Brief execution, parity/digests, and the remaining command matrix. Do not route to delivery before API/E2E Pass and proportional test-code review.
+- `implementation_engineer`
+- Implement the bounded run-authority correction, append the implementation revision record, preserve the API/E2E-owned dirty package, and return for source re-review. A source pass must return to API/E2E rather than delivery.
 
 ## Residual Risks
 
-- The existing `definition-catalog-refresh.test.ts` result is 1/3 because two cases spy on removed singleton acquisition. Source inspection confirms those assertions are stale rather than proof of a production regression; API/E2E owns their durable replacement and execution.
-- Exact live bundled-team visibility, enabled entry, iframe mount/remount, real in-Studio team execution, complete dual-host parity/digests, and the remaining maintained-app command matrix still require API/E2E.
-- API/E2E-owned durable tests, reports, screenshots, and evidence remain intentionally uncommitted and preserved.
+- Successful real Brief team execution, binding/run creation, provider invocation, and published artifacts remain unproven until CR-005 is fixed and rerun.
+- Complete both-host parity/digests and the remaining starter/Brief/Socratic command matrix remain pending after the critical stop.
+- API/E2E's updated definition-catalog test and cumulative 14 durable paths remain preserved for later proportional review only after a successful execution result.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `9.2/10` (`92/100`); every category is >=9.0.
-- Failure Origin (when applicable): `APIE2E-F002` source defect is resolved by `IR-004`; live rerun pending.
-- Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: `CR-004` is resolved in source. Return the cumulative package to API/E2E for the durable test correction and full execution; only a successful API/E2E result returns for separate proportional test-code review.
+- Review Decision: `Fail`
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Material-Premise Gate: `Pass` — MP-CR-005 establishes the supported user trigger and complete forward path.
+- Score Summary: prior full source score `9.2/10` (`92/100`) is historical and was not recomputed; its Authoritative Boundary Rule, API/E2E readiness, and runtime-fidelity conclusions are superseded for this path by CR-005.
+- Failure Origin: implementation defect and earlier source-review gap; application team identity allocation selects a global agent-definition authority instead of the graph-local authority.
+- Recommended Recipient: `implementation_engineer`
+- Notes: CR-004/APIE2E-F002 is resolved. CR-005/APIE2E-F003 is a bounded Local Fix, not a design issue. Source re-review and API/E2E rerun are mandatory.
