@@ -5,22 +5,22 @@
 - Review Entry Point: `Implementation Review`
 - Review round: `4`
 - Trigger: Fresh implementation-source review after `API-FAIL-001` rework, commit `650d6afd7af99a306f7b8a59191b9088db3aa9fc` on `codex/gemini-31-image-schema-dimensions`.
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/requirements.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/design-spec.md`
-- Supplemental Task Artifact Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/gemini-image-schema-matrix.md`
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/solution-revision-record.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/requirements.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/design-spec.md`
+- Supplemental Task Artifact Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/gemini-image-schema-matrix.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-002`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-003`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-revision-record.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-004`
 - Prior Review Round Reviewed: `CRR-003` / `API-FAIL-001`
 - Latest Authoritative Round: `CRR-004`
-- Coverage Investigation Reviewed (downstream context): `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed (downstream context): `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed (downstream context): `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
+- Coverage Investigation Reviewed (downstream context): `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed (downstream context): `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed (downstream context): `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
 - Relevant API/E2E Revision ID: `API-REV-001`
 - Failing Scenario IDs Rechecked From Prior Round: `GEMINI-API-E2E-003`, `GEMINI-API-E2E-004`, `GEMINI-API-E2E-005`
 - Exact Current Review Checks:
@@ -30,8 +30,8 @@
   - `pnpm -C autobyteus-server-ts build`
   - `git diff --check 41f1150a2 650d6afd7af99a306f7b8a59191b9088db3aa9fc --`
 - Prior Failure Evidence Rechecked:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/evidence/gemini-sdk-serialization-probe.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/evidence/database-backed-gemini-boundary-probe.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/evidence/gemini-sdk-serialization-probe.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/evidence/database-backed-gemini-boundary-probe.log`
 - Current Implementation Evidence: fresh local checks above and the raw serializer assertion in `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/autobyteus-ts/tests/unit/multimedia/image/api/gemini-image-client.test.ts:163-202`.
 
 ## Review Scope

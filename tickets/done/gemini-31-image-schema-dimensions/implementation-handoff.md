@@ -9,20 +9,20 @@ claim API/E2E sign-off.
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/design-spec.md`
-- Supplemental schema matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/gemini-image-schema-matrix.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/solution-revision-record.md`
-- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`
-- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-revision-record.md`
-- Triggering API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md`
-- Triggering API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`
-- Triggering API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
-- API/E2E SDK serializer evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/evidence/gemini-sdk-serialization-probe.json`
-- API/E2E real-client boundary evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/evidence/database-backed-gemini-boundary-probe.log`
-- API/E2E real schema evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/evidence/real-media-schema-projection.json`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-revision-record.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/design-spec.md`
+- Supplemental schema matrix: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/gemini-image-schema-matrix.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/solution-revision-record.md`
+- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md`
+- Triggering code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-revision-record.md`
+- Triggering API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md`
+- Triggering API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`
+- Triggering API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
+- API/E2E SDK serializer evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/evidence/gemini-sdk-serialization-probe.json`
+- API/E2E real-client boundary evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/evidence/database-backed-gemini-boundary-probe.log`
+- API/E2E real schema evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/evidence/real-media-schema-projection.json`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-revision-record.md`
 
 ## What Changed
 

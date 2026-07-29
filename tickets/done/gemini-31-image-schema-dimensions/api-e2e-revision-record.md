@@ -11,7 +11,7 @@
 
 ### API-REV-001 — Real Gemini schema and provider-boundary validation
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`; API/E2E round `1`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md`; API/E2E round `1`.
 - Triggering finding or scenario IDs: `CR-001` resolved upstream; API/E2E scenarios `GEMINI-API-E2E-001` through `GEMINI-API-E2E-008`.
 - Related solution, implementation, or code-review revision IDs: `SR-002`, `IR-002`, `CRR-002`.
 - Why this baseline or coverage/execution revision was recorded: First completed API/E2E validation result. It independently verified Flash/Lite server projections, repository media paths, official provider documentation, actual `@google/genai` serialization, and the database-backed Gemini client boundary.
@@ -24,9 +24,9 @@
 None. `API-REV-001` is the initial API/E2E result and prior result/confidence are `N/A`.
 
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
 - Prior result and confidence: `N/A`.
 - Current result and confidence: `Fail` / `60.8%`.
 - New or remaining failure IDs: `API-FAIL-001` — current `GeminiImageClient` emits `responseFormat.image`, but `@google/genai` Generate Content serializes only `imageConfig`; image controls are absent from both raw generation/edit requests.
@@ -38,7 +38,7 @@ None. `API-REV-001` is the initial API/E2E result and prior result/confidence ar
 
 ## API-REV-002 — Corrected Gemini SDK mapping and live Flash/Lite validation
 
-- Triggering role, report path, and round: code_reviewer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md; API/E2E round 2.
+- Triggering role, report path, and round: code_reviewer; /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md; API/E2E round 2.
 - Triggering finding or scenario IDs: CRR-004 Pass; prior API-FAIL-001; rerun scenarios GEMINI-API-E2E-003, GEMINI-API-E2E-004, and GEMINI-API-E2E-005 plus GEMINI-API-E2E-001 through GEMINI-API-E2E-007 regression coverage.
 - Related solution, implementation, or code-review revision IDs: SR-002, IR-003, CRR-004.
 - Why this revision was recorded: It is the completed API/E2E rerun after implementation rework changed GeminiImageClient from responseFormat.image to imageConfig, as required by the installed @google/genai 1.42.0 Generate Content serializer.
@@ -55,9 +55,9 @@ None. `API-REV-001` is the initial API/E2E result and prior result/confidence ar
 - Resolution result: Resolved. All rerun scenarios passed.
 
 - Canonical artifacts and sections updated:
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-revision-record.md
+  - /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-coverage-investigation.md
+  - /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md
+  - /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-revision-record.md
 - Prior result and confidence: Fail / 60.8%.
 - Current result and confidence: Pass / 94.2%.
 - New or remaining failure IDs: None. Residual documentation issue: official Lite documentation says 14 ratios while its visible model-page bullet enumerates ten; REQ-007 provider documentation synchronization remains delivery-owned.

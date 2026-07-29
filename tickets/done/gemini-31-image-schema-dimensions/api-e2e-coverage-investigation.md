@@ -2,16 +2,16 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/gemini-image-schema-matrix.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/solution-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-revision-record.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/gemini-image-schema-matrix.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/solution-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-revision-record.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-002`
 - Current Investigation Round: `2`
 - Trigger: `code-reviewer` `CRR-004` source-review `Pass` for commit `650d6afd7`.

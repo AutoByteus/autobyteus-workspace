@@ -4,19 +4,19 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md` | Implementation Review / implementation handoff for `cb8cfe196` | `N/A` | `Fail` | `CR-001` |
-| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md` | Implementation Review / CR-001 rework handoff for `41f1150a2` | `Fail` | `Pass` | `CR-001` (resolved) |
-| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail` / `Local Fix` | `API-FAIL-001` |
-| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md` | Implementation Review / `API-FAIL-001` rework for `650d6afd7af99a306f7b8a59191b9088db3aa9fc` | `Fail` / `Local Fix` | `Pass` | `API-FAIL-001` (resolved) |
-| `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-002` | `N/A` | `Not Applicable` | `None` |
+| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md` | Implementation Review / implementation handoff for `cb8cfe196` | `N/A` | `Fail` | `CR-001` |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md` | Implementation Review / CR-001 rework handoff for `41f1150a2` | `Fail` | `Pass` | `CR-001` (resolved) |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-001` | `Pass` | `Fail` / `Local Fix` | `API-FAIL-001` |
+| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md` | Implementation Review / `API-FAIL-001` rework for `650d6afd7af99a306f7b8a59191b9088db3aa9fc` | `Fail` / `Local Fix` | `Pass` | `API-FAIL-001` (resolved) |
+| `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-002` | `N/A` | `Not Applicable` | `None` |
 
 ## Revision Entries
 
 ### CRR-001 — Initial implementation-source review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-handoff.md`; `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-handoff.md`; `CR-001`
 - Relevant solution revision IDs: `SR-001`
 - Relevant implementation revision IDs: `IR-001`
 - Relevant API/E2E revision IDs: `N/A`
@@ -35,9 +35,9 @@
 
 ### CRR-002 — CR-001 Lite allowlist rework review
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `2`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-handoff.md`; `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-handoff.md`; `CR-001`
 - Relevant solution revision IDs: `SR-002`
 - Relevant implementation revision IDs: `IR-002`
 - Relevant API/E2E revision IDs: `N/A`
@@ -58,9 +58,9 @@
 
 ### CRR-003 — API/E2E failure-origin review for SDK request-shape failure
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md`
 - Review entry point and round: `API/E2E Failure-Origin Review`, round `3`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`; `API-FAIL-001`, `GEMINI-API-E2E-003`, `GEMINI-API-E2E-004`, `GEMINI-API-E2E-005`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`; `API-FAIL-001`, `GEMINI-API-E2E-003`, `GEMINI-API-E2E-004`, `GEMINI-API-E2E-005`
 - Relevant solution revision IDs: `SR-002`
 - Relevant implementation revision IDs: `IR-002`
 - Relevant API/E2E revision IDs: `API-REV-001`
@@ -89,9 +89,9 @@
 
 ### CRR-004 — Fresh implementation-source review after API-FAIL-001 rework
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `4`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/implementation-handoff.md`; `API-FAIL-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/implementation-handoff.md`; `API-FAIL-001`
 - Relevant solution revision IDs: `SR-002`
 - Relevant implementation revision IDs: `IR-003`
 - Relevant API/E2E revision IDs: `API-REV-001`
@@ -114,9 +114,9 @@
 
 ### CRR-005 — Proportional API/E2E test-code review
 
-- Canonical test-review report created: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-test-review-report.md`
+- Canonical test-review report created: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional API/E2E Test-Code Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/in-progress/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`; `API-REV-002`, `GEMINI-API-E2E-001` through `GEMINI-API-E2E-008`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-31-image-schema-dimensions/tickets/done/gemini-31-image-schema-dimensions/api-e2e-execution-coverage-report.md`; `API-REV-002`, `GEMINI-API-E2E-001` through `GEMINI-API-E2E-008`
 - Relevant solution revision IDs: `SR-002`
 - Relevant implementation revision IDs: `IR-003`
 - Relevant API/E2E revision IDs: `API-REV-002`
