@@ -18,6 +18,7 @@
 | `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-007` | `Fail — Local Fix` | `Fail — Design Impact` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
 | `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-008` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
 | `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-009` | `Fail — Local Fix` | `Pass` | `CR-009` |
+| `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-005` | `Pass` | `Fail — Design Impact` | `CR-013`, `APIE2E-F005` |
 
 ## Revision Entries
 
@@ -403,3 +404,29 @@ None.
 - Material score or classification changes: score rises from `9.3/10` (`93/100`) to `9.4/10` (`94/100`); result changes from `Fail — Local Fix` to `Pass`, with every scorecard category >=9.0.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must reconcile/add durable policy and selected-resource tests, rerun the clean standalone failure first, then complete real Studio/standalone Luna provider/artifact parity, commands, digests, recovery, graph isolation, and cleanup.
+
+### CRR-015 — standalone Agent Tools transport exposes an incomplete reviewed route boundary
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `15`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-003`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`; new finding `CR-013`
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-001`–`IR-009`
+- Relevant API/E2E revision IDs: `API-REV-005`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` (`CRR-014`, `94/100`)
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: API-REV-005 confirms the prior package-default failure is resolved and reaches a real attached standalone Luna team run. That supported run then cannot call any configured application tools because its descriptor advertises `/mcp/agent-tools/:sessionId` while the standalone composition does not register the route. Focused review found that this is not safely only a missing source line: the authoritative design's exact standalone route inventory and construction sequence also omit this required internal transport while AC-005/006 require the real tool-dependent flow.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-005` | Resolved | Remain Resolved | `IR-002`–`IR-005`, `API-REV-001`–`API-REV-004` | API-REV-005 reaches clean standalone application readiness, binding, and real team execution; F005 is a later transport-boundary failure. |
+| `CR-006`–`CR-012` | Resolved in source / applicable API/E2E rerun pending | Remain Resolved for their owned behavior | `SR-005`, `SR-006`, `ARCH-REV-005`, `ARCH-REV-006`, `IR-006`–`IR-009`, `CRR-011`–`CRR-014` | Portable package defaults now launch the real standalone Codex/Luna run; selected-resource and policy matrices pass before F005. The new route-boundary defect is distinct. |
+
+- New or remaining finding IDs: `CR-013`, linked to `APIE2E-F005` and `APIE2E-STANDALONE-MCP-001`.
+- Material score or classification changes: the prior full score remains historical and is not recomputed. API/E2E-readiness and runtime-fidelity conclusions are superseded for this path; result changes from `Pass` to `Fail — Design Impact`.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: revise the standalone real-run spine, route inventory, internal-versus-external MCP distinction, exact session/dispatcher authority, security/base-URL/lifecycle contract, and validation plan. The broad-suite `APIE2E-REPO-005` result remains unattributed and cannot drive a separate defect yet.
