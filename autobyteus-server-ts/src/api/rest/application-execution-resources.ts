@@ -1,5 +1,8 @@
 import type { FastifyInstance } from "fastify";
-import type { ApplicationLaunchOverride } from "@autobyteus/application-sdk-contracts";
+import type {
+  ApplicationExecutionResourceRef,
+  ApplicationLaunchOverride,
+} from "@autobyteus/application-sdk-contracts";
 import type { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
 import { sendApplicationRouteError } from "./application-route-error.js";
 
@@ -12,6 +15,21 @@ export async function registerApplicationExecutionResourceRoutes(
     async (request, reply) => {
       try { return reply.send(await orchestration.getApplicationLaunchConfigurationView(request.params.applicationId)); }
       catch (error) { return sendApplicationRouteError(reply, error); }
+    },
+  );
+  app.post<{
+    Params: { applicationId: string; slotKey: string };
+    Body: { executionResourceRef: ApplicationExecutionResourceRef };
+  }>(
+    "/applications/:applicationId/execution-resource-configurations/:slotKey/selection-preview",
+    async (request, reply) => {
+      try {
+        return reply.send(await orchestration.previewSelectedApplicationResource(
+          request.params.applicationId,
+          request.params.slotKey,
+          request.body.executionResourceRef,
+        ));
+      } catch (error) { return sendApplicationRouteError(reply, error); }
     },
   );
   app.get<{ Params: { applicationId: string } }>(

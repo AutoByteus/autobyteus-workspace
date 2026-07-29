@@ -149,6 +149,12 @@ export const resolveEffectiveResourceRef = (
   if (draft.selection === MANIFEST_DEFAULT_SELECTION) {
     return view.slot.defaultExecutionResourceRef ?? null
   }
+  if (
+    view.savedOverride
+    && buildResourceRefKey(view.savedOverride.executionResourceRef) === draft.selection
+  ) {
+    return structuredClone(view.savedOverride.executionResourceRef)
+  }
   return resolveSelectedResourceRef(draft.selection, availableResources)
 }
 
@@ -223,7 +229,7 @@ export const buildDraftFromView = (
   view: ApplicationLaunchSlotView,
 ): ApplicationSlotDraft => {
   const currentResourceRef = view.savedOverride?.executionResourceRef
-    ?? view.packageBaseline?.executionResourceRef
+    ?? view.selectedResourceBaseline?.executionResourceRef
     ?? null
   const usingManifestDefault = Boolean(
     view.slot.defaultExecutionResourceRef
@@ -233,10 +239,10 @@ export const buildDraftFromView = (
 
   const launchProfile = view.savedOverride?.launchOverride
     ? buildLaunchProfileDraft(view.savedOverride.launchOverride)
-    : (view.effectiveConfiguration ?? view.packageBaseline)?.resourceKind === 'AGENT_TEAM'
+    : view.selectedResourceBaseline?.resourceKind === 'AGENT_TEAM'
       ? {
           ...buildTeamLaunchProfileDraft(null),
-          memberProfiles: (view.effectiveConfiguration ?? view.packageBaseline)?.leaves.map((leaf) => ({
+          memberProfiles: view.selectedResourceBaseline.leaves.map((leaf) => ({
             memberRouteKey: leaf.memberRouteKey ?? leaf.memberName,
             memberName: leaf.memberName,
             agentDefinitionId: leaf.agentDefinitionId,
@@ -244,7 +250,7 @@ export const buildDraftFromView = (
             llmModelIdentifier: '',
           })) ?? [],
         }
-      : (view.effectiveConfiguration ?? view.packageBaseline)?.resourceKind === 'AGENT'
+      : view.selectedResourceBaseline?.resourceKind === 'AGENT'
         ? buildAgentLaunchProfileDraft(null)
         : null
 
@@ -385,8 +391,8 @@ export const describeCurrentSelection = (
   availableResources: ApplicationExecutionResourceSummary[],
   t: ApplicationLaunchSetupTranslate,
 ): string => {
-  const candidateConfiguration = view.effectiveConfiguration
-    ?? view.savedOverride
+  const candidateConfiguration = view.savedOverride
+    ?? view.selectedResourceBaseline
     ?? view.packageBaseline
     ?? null
   if (candidateConfiguration?.executionResourceRef) {

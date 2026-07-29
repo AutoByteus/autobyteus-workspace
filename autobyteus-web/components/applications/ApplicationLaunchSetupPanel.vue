@@ -130,6 +130,7 @@
             :view="view"
             :draft="drafts[view.slot.slotKey]"
             :available-resources="availableResources"
+            :selection-preview-state="selectionPreviewBySlot[view.slot.slotKey] ?? null"
             :disabled="isSaving(view.slot.slotKey)"
             @update:selection="updateSelection(view.slot.slotKey, $event)"
             @update:launch-profile="updateLaunchProfile(view.slot.slotKey, $event)"
@@ -198,11 +199,15 @@ import type {
   ApplicationLaunchConfigurationView,
   ApplicationLaunchReadiness,
   ApplicationLaunchSlotView,
+  ApplicationLaunchSelectionPreview,
+  ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationExecutionResourceSlotEditor from '~/components/applications/setup/ApplicationExecutionResourceSlotEditor.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { useApplicationLaunchSelectionPreviews } from '~/composables/useApplicationLaunchSelectionPreviews'
+import { useApplicationLaunchSetupPresentation } from '~/composables/useApplicationLaunchSetupPresentation'
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport'
 import {
   MANIFEST_DEFAULT_SELECTION,
@@ -232,59 +237,13 @@ const emit = defineEmits<{
 const { t: $t } = useLocalization()
 const windowNodeContextStore = useWindowNodeContextStore()
 
-const isPanelPresentation = computed(() => props.presentation === 'panel')
-
-const panelClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5'
-    : 'mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8'
-))
-
-const headerClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'flex flex-col gap-3'
-    : 'flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'
-))
-
-const slotArticleClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'rounded-2xl border border-slate-200 bg-slate-50/60 p-4'
-    : 'rounded-2xl border border-slate-200 bg-slate-50/60 p-5'
-))
-
-const slotHeaderClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'flex flex-col gap-3'
-    : 'flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between'
-))
-
-const slotSelectionCardClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'w-full min-w-0 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700'
-    : 'rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700'
-))
-
-const currentSelectionTextClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'mt-1 break-words'
-    : 'mt-1 max-w-xs break-words'
-))
-
-const slotEditorGridClasses = computed(() => 'mt-5 grid gap-5')
-
-const slotActionRowClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'mt-5 flex flex-col gap-3'
-    : 'mt-5 flex flex-wrap items-center gap-3'
-))
-
-const primaryActionButtonClasses = computed(() => (
-  isPanelPresentation.value ? 'w-full justify-center' : ''
-))
-
-const secondaryActionButtonClasses = computed(() => (
-  isPanelPresentation.value ? 'w-full justify-center' : ''
-))
+const {
+  panelClasses, headerClasses,
+  slotArticleClasses, slotHeaderClasses,
+  slotSelectionCardClasses, currentSelectionTextClasses,
+  slotEditorGridClasses, slotActionRowClasses,
+  primaryActionButtonClasses, secondaryActionButtonClasses,
+} = useApplicationLaunchSetupPresentation(computed(() => props.presentation))
 
 const loading = ref(false)
 const loadError = ref<string | null>(null)
@@ -312,9 +271,28 @@ const fetchJson = async <T>(path: string, init?: RequestInit): Promise<T> => {
   return await response.json() as T
 }
 
+const {
+  stateBySlot: selectionPreviewBySlot,
+  clearAll: clearSelectionPreviews,
+  clearSlot: clearSelectionPreview,
+  requestForSelection,
+} = useApplicationLaunchSelectionPreviews({
+  applicationId: computed(() => props.applicationId),
+  fetchPreview: (applicationId, slotKey, executionResourceRef) =>
+    fetchJson<ApplicationLaunchSelectionPreview>(
+      `/applications/${encodeURIComponent(applicationId)}/execution-resource-configurations/${encodeURIComponent(slotKey)}/selection-preview`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({ executionResourceRef } satisfies {
+          executionResourceRef: ApplicationExecutionResourceRef
+        }),
+      },
+    ),
+})
+
 const resetTransientMessages = (): void => {
-  saveMessages.value = {}
-  saveErrors.value = {}
+  saveMessages.value = {}; saveErrors.value = {}
 }
 
 const gateState = computed<ApplicationLaunchSetupGateState>(() => buildLaunchSetupGateState({
@@ -343,6 +321,7 @@ const loadSetup = async (): Promise<void> => {
 
   loading.value = true
   loadError.value = null
+  clearSelectionPreviews()
   resetTransientMessages()
 
   try {
@@ -396,10 +375,17 @@ const updateDraft = (slotKey: string, updater: (draft: ApplicationSlotDraft) => 
 }
 
 const updateSelection = (slotKey: string, selection: string): void => {
-  updateDraft(slotKey, (draft) => ({
-    ...draft,
+  const currentDraft = drafts.value[slotKey]
+  const view = configurationViews.value.find((candidate) => candidate.slot.slotKey === slotKey)
+  if (!currentDraft || !view) return
+  const nextDraft = {
+    ...currentDraft,
     selection,
+  }
+  updateDraft(slotKey, () => ({
+    ...nextDraft,
   }))
+  void requestForSelection(view, nextDraft, availableResources.value)
 }
 
 const updateLaunchProfile = (
@@ -457,6 +443,7 @@ const saveConfiguration = async (view: ApplicationLaunchSlotView): Promise<void>
 
     configurationViews.value = nextLaunchView.slots
     launchReadiness.value = nextLaunchView.readiness
+    clearSelectionPreviews()
     drafts.value = Object.fromEntries(
       nextLaunchView.slots.map((slotView) => [slotView.slot.slotKey, buildDraftFromView(slotView)]),
     )
@@ -465,9 +452,11 @@ const saveConfiguration = async (view: ApplicationLaunchSlotView): Promise<void>
       [view.slot.slotKey]: $t('applications.components.applications.ApplicationLaunchSetupPanel.saved'),
     }
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    await loadSetup()
     saveErrors.value = {
       ...saveErrors.value,
-      [view.slot.slotKey]: error instanceof Error ? error.message : String(error),
+      [view.slot.slotKey]: message,
     }
   } finally {
     savingSlotKeys.value = savingSlotKeys.value.filter((slotKey) => slotKey !== view.slot.slotKey)
@@ -483,6 +472,7 @@ const resetPackageDefaults = async (view: ApplicationLaunchSlotView): Promise<vo
     )
     configurationViews.value = nextLaunchView.slots
     launchReadiness.value = nextLaunchView.readiness
+    clearSelectionPreviews()
     drafts.value = Object.fromEntries(
       nextLaunchView.slots.map((slotView) => [slotView.slot.slotKey, buildDraftFromView(slotView)]),
     )
@@ -509,6 +499,7 @@ const resetDraft = (slotKey: string): void => {
     ...drafts.value,
     [slotKey]: buildDraftFromView(view),
   }
+  clearSelectionPreview(slotKey)
   saveMessages.value = {
     ...saveMessages.value,
     [slotKey]: null,

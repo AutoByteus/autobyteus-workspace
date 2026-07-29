@@ -3,6 +3,8 @@ import type {
   ApplicationEffectiveLeafLaunchProfile,
   ApplicationLaunchOverride,
   ApplicationLaunchValueSource,
+  ApplicationResolvedLaunchBaselineLeaf,
+  ApplicationResolvedResourceLaunchBaseline,
   ApplicationTeamLaunchOverrideDefaults,
   ApplicationTeamMemberLaunchOverride,
 } from "@autobyteus/application-sdk-contracts";
@@ -18,48 +20,79 @@ const memberSource = (memberRouteKey: string): ApplicationLaunchValueSource => (
   kind: "HOST_MEMBER_OVERRIDE",
   memberRouteKey,
 });
-
 const slotSource = (): ApplicationLaunchValueSource => ({ kind: "HOST_SLOT_OVERRIDE" });
 
-const applyAgentOverride = (
-  leaf: ApplicationEffectiveLeafLaunchProfile,
-  override: Extract<ApplicationLaunchOverride, { kind: "AGENT" }>,
-): ApplicationEffectiveLeafLaunchProfile => {
-  const changesRuntime = Boolean(override.runtimeKind);
-  const changesModel = Boolean(override.llmModelIdentifier);
+export class ApplicationLaunchOverrideResolutionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ApplicationLaunchOverrideResolutionError";
+  }
+}
+
+const requireValue = (
+  value: string | null,
+  source: ApplicationLaunchValueSource | null,
+  label: string,
+): { value: string; source: ApplicationLaunchValueSource } => {
+  if (!value?.trim() || !source) {
+    throw new ApplicationLaunchOverrideResolutionError(`${label} is not configured.`);
+  }
+  return { value: value.trim(), source: structuredClone(source) };
+};
+
+const applyAgentOverride = (input: {
+  leaf: ApplicationResolvedLaunchBaselineLeaf;
+  override: Extract<ApplicationLaunchOverride, { kind: "AGENT" }> | null;
+  workspaceRootPath: string;
+}): ApplicationEffectiveLeafLaunchProfile => {
+  const { leaf, override } = input;
+  const changesRuntime = Boolean(override?.runtimeKind?.trim());
+  const changesModel = Boolean(override?.llmModelIdentifier?.trim());
   const llmConfigExplicit = hasOwn(override, "llmConfig");
+  const runtime = requireValue(
+    override?.runtimeKind?.trim() || leaf.runtimeKind,
+    changesRuntime ? slotSource() : leaf.provenance.runtimeKind,
+    `Agent '${leaf.agentDefinitionId}' runtimeKind`,
+  );
+  const model = requireValue(
+    override?.llmModelIdentifier?.trim() || leaf.llmModelIdentifier,
+    changesModel ? slotSource() : leaf.provenance.llmModelIdentifier,
+    `Agent '${leaf.agentDefinitionId}' llmModelIdentifier`,
+  );
   return {
-    ...structuredClone(leaf),
-    runtimeKind: override.runtimeKind?.trim() || leaf.runtimeKind,
-    llmModelIdentifier: override.llmModelIdentifier?.trim() || leaf.llmModelIdentifier,
+    memberRouteKey: leaf.memberRouteKey,
+    memberName: leaf.memberName,
+    agentDefinitionId: leaf.agentDefinitionId,
+    runtimeKind: runtime.value,
+    llmModelIdentifier: model.value,
     llmConfig: llmConfigExplicit
-      ? cloneConfig(override.llmConfig)
+      ? cloneConfig(override?.llmConfig)
       : changesRuntime || changesModel
         ? null
         : cloneConfig(leaf.llmConfig),
-    workspaceRootPath: override.workspaceRootPath?.trim() || leaf.workspaceRootPath,
+    workspaceRootPath: override?.workspaceRootPath?.trim() || input.workspaceRootPath,
     provenance: {
-      runtimeKind: changesRuntime ? slotSource() : structuredClone(leaf.provenance.runtimeKind),
-      llmModelIdentifier: changesModel
-        ? slotSource()
-        : structuredClone(leaf.provenance.llmModelIdentifier),
+      runtimeKind: runtime.source,
+      llmModelIdentifier: model.source,
       llmConfig: llmConfigExplicit
         ? slotSource()
         : changesRuntime || changesModel
           ? null
           : structuredClone(leaf.provenance.llmConfig),
-      workspaceRootPath: override.workspaceRootPath?.trim()
+      workspaceRootPath: override?.workspaceRootPath?.trim()
         ? "HOST_OVERRIDE"
-        : leaf.provenance.workspaceRootPath,
+        : "APPLICATION_RUNTIME",
     },
   };
 };
 
-const applyTeamLeafOverride = (
-  leaf: ApplicationEffectiveLeafLaunchProfile,
-  defaults: ApplicationTeamLaunchOverrideDefaults | null,
-  member: ApplicationTeamMemberLaunchOverride | null,
-): ApplicationEffectiveLeafLaunchProfile => {
+const applyTeamLeafOverride = (input: {
+  leaf: ApplicationResolvedLaunchBaselineLeaf;
+  defaults: ApplicationTeamLaunchOverrideDefaults | null;
+  member: ApplicationTeamMemberLaunchOverride | null;
+  workspaceRootPath: string;
+}): ApplicationEffectiveLeafLaunchProfile => {
+  const { leaf, defaults, member } = input;
   const memberRuntime = member?.runtimeKind?.trim() || null;
   const defaultRuntime = defaults?.runtimeKind?.trim() || null;
   const memberModel = member?.llmModelIdentifier?.trim() || null;
@@ -70,9 +103,27 @@ const applyTeamLeafOverride = (
   const defaultLlmConfigExplicit = hasOwn(defaults, "llmConfig");
   const memberOverridesLowerConfig = Boolean(memberRuntime || memberModel);
   const routeKey = leaf.memberRouteKey ?? member?.memberRouteKey ?? "";
+  const runtime = requireValue(
+    memberRuntime || defaultRuntime || leaf.runtimeKind,
+    memberRuntime
+      ? memberSource(routeKey)
+      : defaultRuntime
+        ? slotSource()
+        : leaf.provenance.runtimeKind,
+    `Team member '${routeKey}' runtimeKind`,
+  );
+  const model = requireValue(
+    memberModel || defaultModel || leaf.llmModelIdentifier,
+    memberModel
+      ? memberSource(routeKey)
+      : defaultModel
+        ? slotSource()
+        : leaf.provenance.llmModelIdentifier,
+    `Team member '${routeKey}' llmModelIdentifier`,
+  );
 
   let llmConfig = cloneConfig(leaf.llmConfig);
-  let llmConfigSource = structuredClone(leaf.provenance.llmConfig);
+  let llmConfigSource = structuredClone(leaf.provenance.llmConfig) as ApplicationLaunchValueSource | null;
   if (memberLlmConfigExplicit) {
     llmConfig = cloneConfig(member?.llmConfig);
     llmConfigSource = memberSource(routeKey);
@@ -85,57 +136,60 @@ const applyTeamLeafOverride = (
   }
 
   return {
-    ...structuredClone(leaf),
-    runtimeKind: memberRuntime || defaultRuntime || leaf.runtimeKind,
-    llmModelIdentifier: memberModel || defaultModel || leaf.llmModelIdentifier,
+    memberRouteKey: leaf.memberRouteKey,
+    memberName: leaf.memberName,
+    agentDefinitionId: leaf.agentDefinitionId,
+    runtimeKind: runtime.value,
+    llmModelIdentifier: model.value,
     llmConfig,
-    workspaceRootPath: defaults?.workspaceRootPath?.trim() || leaf.workspaceRootPath,
+    workspaceRootPath: defaults?.workspaceRootPath?.trim() || input.workspaceRootPath,
     provenance: {
-      runtimeKind: memberRuntime
-        ? memberSource(routeKey)
-        : defaultRuntime
-          ? slotSource()
-          : structuredClone(leaf.provenance.runtimeKind),
-      llmModelIdentifier: memberModel
-        ? memberSource(routeKey)
-        : defaultModel
-          ? slotSource()
-          : structuredClone(leaf.provenance.llmModelIdentifier),
+      runtimeKind: runtime.source,
+      llmModelIdentifier: model.source,
       llmConfig: llmConfigSource,
       workspaceRootPath: defaults?.workspaceRootPath?.trim()
         ? "HOST_OVERRIDE"
-        : leaf.provenance.workspaceRootPath,
+        : "APPLICATION_RUNTIME",
     },
   };
 };
 
 export const applyApplicationLaunchOverride = (input: {
-  baseline: ApplicationEffectiveLaunchConfiguration;
+  baseline: ApplicationResolvedResourceLaunchBaseline;
   launchOverride: ApplicationLaunchOverride | null;
+  workspaceRootPath: string;
 }): ApplicationEffectiveLaunchConfiguration => {
-  if (!input.launchOverride) return structuredClone(input.baseline);
   if (input.baseline.resourceKind === "AGENT") {
-    if (input.launchOverride.kind !== "AGENT" || input.baseline.leaves.length !== 1) {
-      throw new Error("Agent launch override does not match its selected resource.");
+    if (input.launchOverride?.kind === "AGENT_TEAM" || input.baseline.leaves.length !== 1) {
+      throw new ApplicationLaunchOverrideResolutionError(
+        "Agent launch override does not match its selected resource.",
+      );
     }
     return {
       ...structuredClone(input.baseline),
-      leaves: [applyAgentOverride(input.baseline.leaves[0]!, input.launchOverride)],
+      leaves: [applyAgentOverride({
+        leaf: input.baseline.leaves[0]!,
+        override: input.launchOverride,
+        workspaceRootPath: input.workspaceRootPath,
+      })],
     };
   }
-  if (input.launchOverride.kind !== "AGENT_TEAM") {
-    throw new Error("Team launch override does not match its selected resource.");
+  if (input.launchOverride?.kind === "AGENT") {
+    throw new ApplicationLaunchOverrideResolutionError(
+      "Team launch override does not match its selected resource.",
+    );
   }
+  const defaults = input.launchOverride?.defaults ?? null;
   const memberByRoute = new Map(
-    input.launchOverride.memberProfiles.map((member) => [member.memberRouteKey, member]),
+    (input.launchOverride?.memberProfiles ?? []).map((member) => [member.memberRouteKey, member]),
   );
   return {
     ...structuredClone(input.baseline),
-    leaves: input.baseline.leaves.map((leaf) =>
-      applyTeamLeafOverride(
-        leaf,
-        input.launchOverride?.kind === "AGENT_TEAM" ? input.launchOverride.defaults : null,
-        memberByRoute.get(leaf.memberRouteKey ?? "") ?? null,
-      )),
+    leaves: input.baseline.leaves.map((leaf) => applyTeamLeafOverride({
+      leaf,
+      defaults,
+      member: memberByRoute.get(leaf.memberRouteKey ?? "") ?? null,
+      workspaceRootPath: input.workspaceRootPath,
+    })),
   };
 };

@@ -1,6 +1,6 @@
 import { ApplicationUnavailableError } from "../../application-orchestration/services/application-availability-service.js";
 import { ApplicationLaunchOverrideValidationError } from "../../application-platform/launch-configuration/application-launch-override-normalizer.js";
-import { ApplicationLaunchConfigurationError } from "../../application-platform/launch-configuration/application-launch-configuration-service.js";
+import { ApplicationLaunchConfigurationError } from "../../application-platform/launch-configuration/application-launch-configuration-diagnostics.js";
 
 export const sendApplicationRouteError = (
   reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } },

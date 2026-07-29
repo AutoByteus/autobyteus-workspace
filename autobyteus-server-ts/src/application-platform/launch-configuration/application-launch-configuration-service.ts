@@ -8,77 +8,69 @@ import type {
   ApplicationLaunchIssue,
   ApplicationLaunchOverride,
   ApplicationLaunchReadiness,
+  ApplicationLaunchSelectionIssue,
+  ApplicationLaunchSelectionPreview,
   ApplicationLaunchSlotView,
+  ApplicationResolvedResourceLaunchBaseline,
 } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import type {
   ApplicationLaunchOverrideStore,
   StoredApplicationLaunchOverride,
 } from "../../application-orchestration/stores/application-launch-override-store.js";
+import { ApplicationLaunchHostCapabilityValidator } from "./application-launch-host-capability-validator.js";
 import {
-  ApplicationLaunchHostCapabilityValidator,
-} from "./application-launch-host-capability-validator.js";
-import {
-  ApplicationLaunchPackageBaselineBuilder,
-  ApplicationLaunchPackageBaselineError,
-} from "./application-launch-package-baseline-builder.js";
+  ApplicationLaunchResourceBaselineBuilder,
+  ApplicationLaunchResourceBaselineError,
+} from "./application-launch-resource-baseline-builder.js";
 import {
   ApplicationLaunchOverrideValidationError,
   buildLegacyApplicationLaunchOverride,
   normalizeApplicationLaunchOverride,
 } from "./application-launch-override-normalizer.js";
-import { applyApplicationLaunchOverride } from "./application-launch-override-overlay.js";
+import {
+  ApplicationLaunchOverrideResolutionError,
+  applyApplicationLaunchOverride,
+} from "./application-launch-override-overlay.js";
+import {
+  ApplicationLaunchConfigurationError,
+  buildApplicationLaunchIssue as issue,
+} from "./application-launch-configuration-diagnostics.js";
 
 type SlotBaselineResult = {
-  baseline: ApplicationEffectiveLaunchConfiguration | null;
+  baseline: ApplicationResolvedResourceLaunchBaseline | null;
   issue: ApplicationLaunchIssue | null;
 };
 
 type StoredEvaluation = {
   savedOverride: ApplicationExecutionResourceOverride | null;
   state: ApplicationHostOverrideState;
+  selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline | null;
   effectiveConfiguration: ApplicationEffectiveLaunchConfiguration | null;
   issues: ApplicationLaunchIssue[];
 };
 
-export class ApplicationLaunchConfigurationError extends Error {
-  readonly code = "APPLICATION_SETUP_REQUIRED";
+const cloneSlot = (slot: ApplicationExecutionResourceSlotDeclaration) => structuredClone(slot);
 
-  constructor(readonly readiness: ApplicationLaunchReadiness) {
-    super(
-      readiness.status === "RUNNABLE"
-        ? "The requested application launch slot has no runnable configuration."
-        : readiness.issues.map((issue) => issue.message).join("; "),
-    );
-    this.name = "ApplicationLaunchConfigurationError";
-  }
-}
-
-const cloneSlot = (
-  slot: ApplicationExecutionResourceSlotDeclaration,
-): ApplicationExecutionResourceSlotDeclaration => structuredClone(slot);
-
-const issue = (input: {
-  slotKey: string;
-  scope: ApplicationLaunchIssue["scope"];
-  code: ApplicationLaunchIssue["code"];
-  message: string;
-  staleMembers?: ApplicationLaunchIssue["staleMembers"];
-}): ApplicationLaunchIssue => ({
-  severity: "blocking",
-  slotKey: input.slotKey,
-  scope: input.scope,
-  code: input.code,
-  message: input.message,
-  ...(input.staleMembers ? { staleMembers: structuredClone(input.staleMembers) } : {}),
-});
+const isSameResourceRef = (
+  left: ApplicationExecutionResourceRef | null | undefined,
+  right: ApplicationExecutionResourceRef | null | undefined,
+): boolean => {
+  if (!left || !right || left.source !== right.source || left.kind !== right.kind) return false;
+  return left.source === "bundle" && right.source === "bundle"
+    ? left.localId === right.localId
+    : left.source === "shared" && right.source === "shared"
+      ? left.definitionId === right.definitionId
+      : false;
+};
 
 export class ApplicationLaunchConfigurationService {
   constructor(private readonly dependencies: {
     applicationBundleService: ApplicationBundleService;
     overrideStore: ApplicationLaunchOverrideStore;
-    baselineBuilder: ApplicationLaunchPackageBaselineBuilder;
+    baselineBuilder: ApplicationLaunchResourceBaselineBuilder;
     hostCapabilityValidator: ApplicationLaunchHostCapabilityValidator;
+    resolveWorkspaceRootPath: (applicationId: string) => string;
   }) {}
 
   async getApplicationLaunchConfigurationView(
@@ -92,8 +84,9 @@ export class ApplicationLaunchConfigurationService {
       baselineBySlot.set(slot.slotKey, await this.buildPackageBaseline(applicationId, slot));
     }
 
-    const packageIssues = [...baselineBySlot.values()]
-      .flatMap((result) => result.issue ? [result.issue] : []);
+    const packageIssues = [...baselineBySlot.values()].flatMap(
+      (result) => result.issue ? [result.issue] : [],
+    );
     const hasInvalidPackage = packageIssues.length > 0;
     const views: ApplicationLaunchSlotView[] = [];
     for (const slot of slots) {
@@ -115,6 +108,9 @@ export class ApplicationLaunchConfigurationService {
         slot: cloneSlot(slot),
         packageBaseline: baselineResult.baseline
           ? structuredClone(baselineResult.baseline)
+          : null,
+        selectedResourceBaseline: storedEvaluation.selectedResourceBaseline
+          ? structuredClone(storedEvaluation.selectedResourceBaseline)
           : null,
         savedOverride: storedEvaluation.savedOverride,
         savedOverrideState: storedEvaluation.state,
@@ -147,9 +143,57 @@ export class ApplicationLaunchConfigurationService {
     return { applicationId, slots: views, readiness };
   }
 
-  async evaluateApplicationReadiness(
+  async previewSelectedResourceBaseline(
     applicationId: string,
-  ): Promise<ApplicationLaunchReadiness> {
+    slotKey: string,
+    executionResourceRef: ApplicationExecutionResourceRef,
+  ): Promise<ApplicationLaunchSelectionPreview> {
+    const slot = await this.requireDeclaredSlot(applicationId, slotKey);
+    const ref = structuredClone(executionResourceRef);
+    try {
+      const baseline = await this.dependencies.baselineBuilder.build({
+        applicationId,
+        slot,
+        executionResourceRef: ref,
+        provenance: isSameResourceRef(ref, slot.defaultExecutionResourceRef)
+          ? "PACKAGE"
+          : "SELECTED_RESOURCE",
+      });
+      return {
+        status: "RESOLVED",
+        applicationId,
+        slotKey: slot.slotKey,
+        executionResourceRef: ref,
+        selectedResourceBaseline: baseline,
+        issues: [],
+      };
+    } catch (error) {
+      const baselineError = error instanceof ApplicationLaunchResourceBaselineError ? error : null;
+      const code: ApplicationLaunchSelectionIssue["code"] =
+        baselineError?.code === "PACKAGE_RESOURCE_UNAVAILABLE"
+          ? "SELECTION_UNAVAILABLE"
+          : baselineError?.code === "PACKAGE_RESOURCE_NOT_ALLOWED"
+            ? "SELECTION_NOT_ALLOWED"
+            : "SELECTION_TOPOLOGY_INVALID";
+      return {
+        status: "INVALID_SELECTION",
+        applicationId,
+        slotKey: slot.slotKey,
+        executionResourceRef: ref,
+        selectedResourceBaseline: null,
+        issues: [{
+          scope: "SELECTION",
+          code,
+          applicationId,
+          slotKey: slot.slotKey,
+          executionResourceRef: structuredClone(ref),
+          message: error instanceof Error ? error.message : String(error),
+        }],
+      };
+    }
+  }
+
+  async evaluateApplicationReadiness(applicationId: string): Promise<ApplicationLaunchReadiness> {
     return (await this.getApplicationLaunchConfigurationView(applicationId)).readiness;
   }
 
@@ -265,18 +309,26 @@ export class ApplicationLaunchConfigurationService {
       };
     }
     try {
-      return {
-        baseline: await this.dependencies.baselineBuilder.build({
-          applicationId,
-          slot,
-          executionResourceRef: ref,
-        }),
-        issue: null,
-      };
+      const baseline = await this.dependencies.baselineBuilder.build({
+        applicationId,
+        slot,
+        executionResourceRef: ref,
+        provenance: "PACKAGE",
+      });
+      const incomplete = baseline.leaves.find(
+        (leaf) => !leaf.runtimeKind?.trim() || !leaf.llmModelIdentifier?.trim(),
+      );
+      if (incomplete) {
+        throw new ApplicationLaunchResourceBaselineError(
+          "PACKAGE_DEFAULT_INCOMPLETE",
+          `Application slot '${slot.slotKey}' has an incomplete package launch default.`,
+        );
+      }
+      return { baseline, issue: null };
     } catch (error) {
-      const baselineError = error instanceof ApplicationLaunchPackageBaselineError
+      const baselineError = error instanceof ApplicationLaunchResourceBaselineError
         ? error
-        : new ApplicationLaunchPackageBaselineError(
+        : new ApplicationLaunchResourceBaselineError(
             "PACKAGE_DEFAULT_INCOMPLETE",
             error instanceof Error ? error.message : String(error),
           );
@@ -295,11 +347,12 @@ export class ApplicationLaunchConfigurationService {
   private notEvaluatedStored(
     stored: StoredApplicationLaunchOverride | null,
     slot: ApplicationExecutionResourceSlotDeclaration,
-    baseline: ApplicationEffectiveLaunchConfiguration | null,
+    baseline: ApplicationResolvedResourceLaunchBaseline | null,
   ): StoredEvaluation {
     return {
       savedOverride: this.toRawSavedOverride(stored, slot, baseline),
       state: stored ? "NOT_EVALUATED" : "ABSENT",
+      selectedResourceBaseline: stored ? null : baseline ? structuredClone(baseline) : null,
       effectiveConfiguration: null,
       issues: [],
     };
@@ -308,14 +361,21 @@ export class ApplicationLaunchConfigurationService {
   private async evaluateStoredOverride(
     applicationId: string,
     slot: ApplicationExecutionResourceSlotDeclaration,
-    packageBaseline: ApplicationEffectiveLaunchConfiguration | null,
+    packageBaseline: ApplicationResolvedResourceLaunchBaseline | null,
     stored: StoredApplicationLaunchOverride | null,
   ): Promise<StoredEvaluation> {
     if (!stored) {
       return {
         savedOverride: null,
         state: "ABSENT",
-        effectiveConfiguration: packageBaseline ? structuredClone(packageBaseline) : null,
+        selectedResourceBaseline: packageBaseline ? structuredClone(packageBaseline) : null,
+        effectiveConfiguration: packageBaseline
+          ? applyApplicationLaunchOverride({
+              baseline: packageBaseline,
+              launchOverride: null,
+              workspaceRootPath: this.dependencies.resolveWorkspaceRootPath(applicationId),
+            })
+          : null,
         issues: [],
       };
     }
@@ -326,6 +386,7 @@ export class ApplicationLaunchConfigurationService {
     if (!selectedRef) {
       return this.invalidStored(
         null,
+        null,
         issue({
           slotKey: slot.slotKey,
           scope: "HOST_OVERRIDE",
@@ -334,19 +395,20 @@ export class ApplicationLaunchConfigurationService {
         }),
       );
     }
-    let selectedBaseline: ApplicationEffectiveLaunchConfiguration;
+
+    let selectedBaseline: ApplicationResolvedResourceLaunchBaseline;
     try {
-      selectedBaseline = stored.executionResourceRef
-        ? await this.dependencies.baselineBuilder.build({
+      selectedBaseline = isSameResourceRef(selectedRef, slot.defaultExecutionResourceRef)
+        && packageBaseline
+        ? structuredClone(packageBaseline)
+        : await this.dependencies.baselineBuilder.build({
             applicationId,
             slot,
             executionResourceRef: selectedRef,
-          })
-        : packageBaseline!;
+            provenance: "SELECTED_RESOURCE",
+          });
     } catch (error) {
-      const baselineError = error instanceof ApplicationLaunchPackageBaselineError
-        ? error
-        : null;
+      const baselineError = error instanceof ApplicationLaunchResourceBaselineError ? error : null;
       const code = baselineError?.code === "PACKAGE_RESOURCE_UNAVAILABLE"
         ? "SAVED_RESOURCE_UNAVAILABLE"
         : baselineError?.code === "PACKAGE_RESOURCE_NOT_ALLOWED"
@@ -354,6 +416,7 @@ export class ApplicationLaunchConfigurationService {
           : "SAVED_OVERRIDE_MALFORMED";
       return this.invalidStored(
         this.toRawSavedOverride(stored, slot, packageBaseline),
+        null,
         issue({
           slotKey: slot.slotKey,
           scope: "HOST_OVERRIDE",
@@ -362,6 +425,7 @@ export class ApplicationLaunchConfigurationService {
         }),
       );
     }
+
     try {
       const rawOverride = stored.launchOverride
         ?? buildLegacyApplicationLaunchOverride({
@@ -391,9 +455,11 @@ export class ApplicationLaunchConfigurationService {
       return {
         savedOverride,
         state: "VALID",
+        selectedResourceBaseline: structuredClone(selectedBaseline),
         effectiveConfiguration: applyApplicationLaunchOverride({
           baseline: selectedBaseline,
           launchOverride: normalized,
+          workspaceRootPath: this.dependencies.resolveWorkspaceRootPath(applicationId),
         }),
         issues: [],
       };
@@ -402,10 +468,13 @@ export class ApplicationLaunchConfigurationService {
         ? error
         : new ApplicationLaunchOverrideValidationError(
             "SAVED_OVERRIDE_MALFORMED",
-            error instanceof Error ? error.message : String(error),
+            error instanceof ApplicationLaunchOverrideResolutionError
+              ? error.message
+              : error instanceof Error ? error.message : String(error),
           );
       return this.invalidStored(
         this.toRawSavedOverride(stored, slot, packageBaseline),
+        selectedBaseline,
         issue({
           slotKey: slot.slotKey,
           scope: "HOST_OVERRIDE",
@@ -419,11 +488,15 @@ export class ApplicationLaunchConfigurationService {
 
   private invalidStored(
     savedOverride: ApplicationExecutionResourceOverride | null,
+    selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline | null,
     validationIssue: ApplicationLaunchIssue,
   ): StoredEvaluation {
     return {
       savedOverride,
       state: "INVALID",
+      selectedResourceBaseline: selectedResourceBaseline
+        ? structuredClone(selectedResourceBaseline)
+        : null,
       effectiveConfiguration: null,
       issues: [validationIssue],
     };
@@ -432,7 +505,7 @@ export class ApplicationLaunchConfigurationService {
   private toRawSavedOverride(
     stored: StoredApplicationLaunchOverride | null,
     slot: ApplicationExecutionResourceSlotDeclaration,
-    baseline: ApplicationEffectiveLaunchConfiguration | null,
+    baseline: ApplicationResolvedResourceLaunchBaseline | null,
   ): ApplicationExecutionResourceOverride | null {
     if (!stored) return null;
     const ref = stored.executionResourceRef

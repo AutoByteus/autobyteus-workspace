@@ -1,9 +1,9 @@
 import type {
-  ApplicationEffectiveLaunchConfiguration,
-  ApplicationEffectiveLeafLaunchProfile,
+  ApplicationLaunchDefinitionValueSource,
+  ApplicationResolvedLaunchBaselineLeaf,
+  ApplicationResolvedResourceLaunchBaseline,
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSlotDeclaration,
-  ApplicationLaunchValueSource,
 } from "@autobyteus/application-sdk-contracts";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -18,21 +18,25 @@ import type { ApplicationExecutionResourceResolver } from "../../application-orc
 
 type LaunchLayer = {
   config: DefaultLaunchConfig | null;
-  source: ApplicationLaunchValueSource;
+  source: ApplicationLaunchDefinitionValueSource;
 };
 
 const definitionValueSource = (input: {
-  refSource: ApplicationExecutionResourceRef["source"];
+  provenance: "PACKAGE" | "SELECTED_RESOURCE";
   definitionKind: "AGENT" | "AGENT_TEAM";
   definitionId: string;
-}): ApplicationLaunchValueSource => {
-  if (input.refSource === "shared") return { kind: "HOST_SLOT_OVERRIDE" };
+}): ApplicationLaunchDefinitionValueSource => {
+  if (input.provenance === "PACKAGE") {
+    return input.definitionKind === "AGENT"
+      ? { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: input.definitionId }
+      : { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: input.definitionId };
+  }
   return input.definitionKind === "AGENT"
-    ? { kind: "PACKAGE_AGENT_DEFAULT", agentDefinitionId: input.definitionId }
-    : { kind: "PACKAGE_TEAM_DEFAULT", teamDefinitionId: input.definitionId };
+    ? { kind: "SELECTED_RESOURCE_AGENT_DEFAULT", agentDefinitionId: input.definitionId }
+    : { kind: "SELECTED_RESOURCE_TEAM_DEFAULT", teamDefinitionId: input.definitionId };
 };
 
-export class ApplicationLaunchPackageBaselineError extends Error {
+export class ApplicationLaunchResourceBaselineError extends Error {
   constructor(
     readonly code:
       | "PACKAGE_DEFAULT_MISSING"
@@ -43,7 +47,7 @@ export class ApplicationLaunchPackageBaselineError extends Error {
     message: string,
   ) {
     super(message);
-    this.name = "ApplicationLaunchPackageBaselineError";
+    this.name = "ApplicationLaunchResourceBaselineError";
   }
 }
 
@@ -54,7 +58,7 @@ const cloneConfig = (
 const resolveStringValue = (
   layers: LaunchLayer[],
   field: "runtimeKind" | "llmModelIdentifier",
-): { value: string; source: ApplicationLaunchValueSource } | null => {
+): { value: string; source: ApplicationLaunchDefinitionValueSource } | null => {
   for (const layer of layers) {
     const value = layer.config?.[field]?.trim();
     if (value) return { value, source: structuredClone(layer.source) };
@@ -66,7 +70,7 @@ const resolveAtomicLlmConfig = (input: {
   layers: LaunchLayer[];
   runtimeKind: string;
   llmModelIdentifier: string;
-}): { value: Record<string, unknown> | null; source: ApplicationLaunchValueSource | null } => {
+}): { value: Record<string, unknown> | null; source: ApplicationLaunchDefinitionValueSource | null } => {
   const layer = input.layers.find((candidate) => candidate.config?.llmConfig != null) ?? null;
   if (!layer?.config?.llmConfig) return { value: null, source: null };
   const configuredRuntime = layer.config.runtimeKind?.trim() || null;
@@ -83,60 +87,49 @@ const resolveAtomicLlmConfig = (input: {
   };
 };
 
-const requireCompleteLeaf = (input: {
-  slotKey: string;
+const buildBaselineLeaf = (input: {
   memberRouteKey: string | null;
   memberName: string;
   agentDefinitionId: string;
   layers: LaunchLayer[];
-  workspaceRootPath: string;
-}): ApplicationEffectiveLeafLaunchProfile => {
+}): ApplicationResolvedLaunchBaselineLeaf => {
   const runtime = resolveStringValue(input.layers, "runtimeKind");
   const model = resolveStringValue(input.layers, "llmModelIdentifier");
-  const label = input.memberRouteKey
-    ? `member '${input.memberRouteKey}'`
-    : `agent '${input.agentDefinitionId}'`;
-  if (!runtime || !model) {
-    throw new ApplicationLaunchPackageBaselineError(
-      "PACKAGE_DEFAULT_INCOMPLETE",
-      `Application slot '${input.slotKey}' ${label} must define package runtimeKind and llmModelIdentifier defaults.`,
-    );
-  }
-  const llmConfig = resolveAtomicLlmConfig({
-    layers: input.layers,
-    runtimeKind: runtime.value,
-    llmModelIdentifier: model.value,
-  });
+  const llmConfig = runtime && model
+    ? resolveAtomicLlmConfig({
+        layers: input.layers,
+        runtimeKind: runtime.value,
+        llmModelIdentifier: model.value,
+      })
+    : { value: null, source: null };
   return {
     memberRouteKey: input.memberRouteKey,
     memberName: input.memberName,
     agentDefinitionId: input.agentDefinitionId,
-    runtimeKind: runtime.value,
-    llmModelIdentifier: model.value,
+    runtimeKind: runtime?.value ?? null,
+    llmModelIdentifier: model?.value ?? null,
     llmConfig: llmConfig.value,
-    workspaceRootPath: input.workspaceRootPath,
     provenance: {
-      runtimeKind: runtime.source,
-      llmModelIdentifier: model.source,
+      runtimeKind: runtime?.source ?? null,
+      llmModelIdentifier: model?.source ?? null,
       llmConfig: llmConfig.source,
-      workspaceRootPath: "APPLICATION_RUNTIME",
     },
   };
 };
 
-export class ApplicationLaunchPackageBaselineBuilder {
+export class ApplicationLaunchResourceBaselineBuilder {
   constructor(private readonly dependencies: {
     executionResourceResolver: ApplicationExecutionResourceResolver;
     agentDefinitionService: AgentDefinitionService;
     agentTeamDefinitionService: AgentTeamDefinitionService;
-    resolveWorkspaceRootPath: (applicationId: string) => string;
   }) {}
 
   async build(input: {
     applicationId: string;
     slot: ApplicationExecutionResourceSlotDeclaration;
     executionResourceRef: ApplicationExecutionResourceRef;
-  }): Promise<ApplicationEffectiveLaunchConfiguration> {
+    provenance: "PACKAGE" | "SELECTED_RESOURCE";
+  }): Promise<ApplicationResolvedResourceLaunchBaseline> {
     this.assertSelectionAllowed(input.slot, input.executionResourceRef);
     let resource;
     try {
@@ -145,33 +138,28 @@ export class ApplicationLaunchPackageBaselineBuilder {
         input.executionResourceRef,
       );
     } catch (error) {
-      throw new ApplicationLaunchPackageBaselineError(
+      throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_RESOURCE_UNAVAILABLE",
         error instanceof Error ? error.message : String(error),
       );
     }
-    const workspaceRootPath = this.dependencies.resolveWorkspaceRootPath(input.applicationId);
     const leaves = resource.kind === "AGENT"
       ? [await this.buildAgentLeaf({
-          slotKey: input.slot.slotKey,
           agentDefinitionId: resource.definitionId,
           memberRouteKey: null,
           memberName: resource.name,
           parentLayers: [],
-          refSource: input.executionResourceRef.source,
-          workspaceRootPath,
+          provenance: input.provenance,
         })]
       : await this.buildTeamLeaves({
-          slotKey: input.slot.slotKey,
           teamDefinitionId: resource.definitionId,
           memberPath: [],
           parentLayers: [],
-          refSource: input.executionResourceRef.source,
+          provenance: input.provenance,
           visited: new Set(),
-          workspaceRootPath,
         });
     if (leaves.length === 0) {
-      throw new ApplicationLaunchPackageBaselineError(
+      throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_TEAM_TOPOLOGY_INVALID",
         `Application slot '${input.slot.slotKey}' selected team has no leaf agents.`,
       );
@@ -191,14 +179,14 @@ export class ApplicationLaunchPackageBaselineBuilder {
     ref: ApplicationExecutionResourceRef,
   ): void {
     if (!slot.allowedExecutionResourceKinds.includes(ref.kind)) {
-      throw new ApplicationLaunchPackageBaselineError(
+      throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_RESOURCE_NOT_ALLOWED",
         `Application slot '${slot.slotKey}' does not allow resource kind '${ref.kind}'.`,
       );
     }
     const allowedSources = slot.allowedExecutionResourceSources ?? ["bundle", "shared"];
     if (!allowedSources.includes(ref.source)) {
-      throw new ApplicationLaunchPackageBaselineError(
+      throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_RESOURCE_NOT_ALLOWED",
         `Application slot '${slot.slotKey}' does not allow resource source '${ref.source}'.`,
       );
@@ -206,23 +194,21 @@ export class ApplicationLaunchPackageBaselineBuilder {
   }
 
   private async buildAgentLeaf(input: {
-    slotKey: string;
     agentDefinitionId: string;
     memberRouteKey: string | null;
     memberName: string;
     parentLayers: LaunchLayer[];
-    refSource: ApplicationExecutionResourceRef["source"];
-    workspaceRootPath: string;
-  }): Promise<ApplicationEffectiveLeafLaunchProfile> {
+    provenance: "PACKAGE" | "SELECTED_RESOURCE";
+  }): Promise<ApplicationResolvedLaunchBaselineLeaf> {
     const definition = await this.dependencies.agentDefinitionService
       .getAgentDefinitionById(input.agentDefinitionId);
     if (!definition) {
-      throw new ApplicationLaunchPackageBaselineError(
+      throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_TEAM_TOPOLOGY_INVALID",
         `Agent definition '${input.agentDefinitionId}' was not found.`,
       );
     }
-    return requireCompleteLeaf({
+    return buildBaselineLeaf({
       ...input,
       memberName: input.memberName || definition.name,
       layers: [
@@ -230,7 +216,7 @@ export class ApplicationLaunchPackageBaselineBuilder {
         {
           config: definition.defaultLaunchConfig,
           source: definitionValueSource({
-            refSource: input.refSource,
+            provenance: input.provenance,
             definitionKind: "AGENT",
             definitionId: input.agentDefinitionId,
           }),
@@ -240,16 +226,14 @@ export class ApplicationLaunchPackageBaselineBuilder {
   }
 
   private async buildTeamLeaves(input: {
-    slotKey: string;
     teamDefinitionId: string;
     memberPath: string[];
     parentLayers: LaunchLayer[];
-    refSource: ApplicationExecutionResourceRef["source"];
+    provenance: "PACKAGE" | "SELECTED_RESOURCE";
     visited: Set<string>;
-    workspaceRootPath: string;
-  }): Promise<ApplicationEffectiveLeafLaunchProfile[]> {
+  }): Promise<ApplicationResolvedLaunchBaselineLeaf[]> {
     if (input.visited.has(input.teamDefinitionId)) {
-      throw new ApplicationLaunchPackageBaselineError(
+      throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_TEAM_TOPOLOGY_INVALID",
         `Circular team topology includes '${input.teamDefinitionId}'.`,
       );
@@ -258,7 +242,7 @@ export class ApplicationLaunchPackageBaselineBuilder {
     const team = await this.dependencies.agentTeamDefinitionService
       .getDefinitionById(input.teamDefinitionId);
     if (!team) {
-      throw new ApplicationLaunchPackageBaselineError(
+      throw new ApplicationLaunchResourceBaselineError(
         "PACKAGE_TEAM_TOPOLOGY_INVALID",
         `Team definition '${input.teamDefinitionId}' was not found.`,
       );
@@ -267,7 +251,7 @@ export class ApplicationLaunchPackageBaselineBuilder {
       {
         config: team.defaultLaunchConfig,
         source: definitionValueSource({
-          refSource: input.refSource,
+          provenance: input.provenance,
           definitionKind: "AGENT_TEAM",
           definitionId: input.teamDefinitionId,
         }),
@@ -275,28 +259,24 @@ export class ApplicationLaunchPackageBaselineBuilder {
       ...input.parentLayers,
     ];
     const resolutionContext = buildScopedMemberResolutionContext(team, input.teamDefinitionId);
-    const leaves: ApplicationEffectiveLeafLaunchProfile[] = [];
+    const leaves: ApplicationResolvedLaunchBaselineLeaf[] = [];
     for (const member of team.nodes) {
       const memberPath = [...input.memberPath, member.memberName.trim()];
       if (member.refType === "agent") {
         leaves.push(await this.buildAgentLeaf({
-          slotKey: input.slotKey,
           agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, member),
           memberRouteKey: normalizeMemberRouteKey(memberPath.join("/")),
           memberName: member.memberName.trim(),
           parentLayers: teamLayers,
-          refSource: input.refSource,
-          workspaceRootPath: input.workspaceRootPath,
+          provenance: input.provenance,
         }));
       } else {
         leaves.push(...await this.buildTeamLeaves({
-          slotKey: input.slotKey,
           teamDefinitionId: resolveScopedTeamMemberRef(resolutionContext, member),
           memberPath,
           parentLayers: teamLayers,
-          refSource: input.refSource,
+          provenance: input.provenance,
           visited,
-          workspaceRootPath: input.workspaceRootPath,
         }));
       }
     }

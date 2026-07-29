@@ -100,6 +100,7 @@ const {
   runtimeKind: selectedRuntimeKind,
   inheritedRuntimeKind: computed(() => props.inheritedRuntimeKind),
   allowBlankRuntime: false,
+  useDefaultRuntimeFallback: false,
 })
 
 const hasOverride = computed(() => Boolean(
@@ -116,7 +117,7 @@ const isUnresolvedInheritedModel = computed(() => (
 const unresolvedInheritedModelMessage = computed(() => buildUnavailableInheritedModelMessage({
   globalLlmModelIdentifier:
     props.globalLlmModelIdentifier || props.inheritedLlmModelIdentifier,
-  runtimeKind: effectiveRuntimeKind.value,
+  runtimeKind: effectiveRuntimeKind.value ?? '',
   memberName: props.member.memberName,
 }))
 const modelPlaceholder = computed(() => (

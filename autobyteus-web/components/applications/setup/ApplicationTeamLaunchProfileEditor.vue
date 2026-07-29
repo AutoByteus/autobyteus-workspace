@@ -12,7 +12,9 @@
           @change="updateDefaults({ runtimeKind: ($event.target as HTMLSelectElement).value, llmModelIdentifier: '' }, true)"
         >
           <option value="">
-            {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime') }}
+            {{ hasMixedInheritedRuntimes
+              ? $t('applications.components.applications.ApplicationLaunchSetupPanel.mixedInheritedRuntime')
+              : $t('applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime') }}
           </option>
           <option
             v-for="option in runtimeOptions"
@@ -35,8 +37,10 @@
         <SearchableGroupedSelect
           :model-value="draft.defaults.llmModelIdentifier"
           :options="groupedModelOptions"
-          :disabled="disabled || preserveInvalidSavedOverride || !availableProviderGroups.length"
-          :placeholder="$t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
+          :disabled="disabled || preserveInvalidSavedOverride || !canSelectTeamModel || !availableProviderGroups.length"
+          :placeholder="hasMixedInheritedRuntimes && !draft.defaults.runtimeKind
+            ? $t('applications.components.applications.ApplicationLaunchSetupPanel.mixedInheritedRuntime')
+            : $t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
           search-placeholder="Search models..."
           @update:model-value="updateDefaults({ llmModelIdentifier: $event }, true)"
         />
@@ -60,12 +64,8 @@
       </p>
     </div>
 
-    <div v-if="teamDefinitionError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-      {{ teamDefinitionError }}
-    </div>
-
     <div
-      v-else-if="preserveInvalidSavedOverride"
+      v-if="preserveInvalidSavedOverride"
       data-testid="application-stale-team-override-lock"
       class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
     >
@@ -122,13 +122,10 @@ import ApplicationWorkspaceRootSelector from '~/components/applications/setup/Ap
 import { useLocalization } from '~/composables/useLocalization'
 import {
   loadRuntimeProviderGroupsForSelection,
-  normalizeScopedRuntimeKind,
   useRuntimeScopedModelSelection,
 } from '~/composables/useRuntimeScopedModelSelection'
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import type {
-  ApplicationEffectiveLeafLaunchProfile,
-  ApplicationExecutionResourceSummary,
+  ApplicationResolvedLaunchBaselineLeaf,
 } from '@autobyteus/application-sdk-contracts'
 import type {
   ApplicationSlotEditorReadiness,
@@ -139,13 +136,11 @@ import {
   evaluateTeamLaunchProfileReadiness,
   type TeamLaunchProfileRuntimeModelCatalogs,
 } from '~/utils/teamLaunchReadinessCore'
-import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 
 const props = withDefaults(defineProps<{
   slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
-  selectedResource: ApplicationExecutionResourceSummary | null
   draft: ApplicationTeamLaunchProfileDraft
-  inheritedProfiles?: ApplicationEffectiveLeafLaunchProfile[]
+  inheritedProfiles?: ApplicationResolvedLaunchBaselineLeaf[]
   preserveInvalidSavedOverride?: boolean
   disabled?: boolean
 }>(), {
@@ -160,9 +155,6 @@ const emit = defineEmits<{
 }>()
 
 const { t: $t } = useLocalization()
-const teamDefinitionStore = useAgentTeamDefinitionStore()
-const teamDefinitionError = ref<string | null>(null)
-const resolvedMembers = ref<Array<{ memberName: string; memberRouteKey: string; agentDefinitionId: string }>>([])
 const runtimeModelCatalogs = ref<TeamLaunchProfileRuntimeModelCatalogs>({})
 
 const supportsRuntimeKind = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.runtimeKind === true)
@@ -173,10 +165,25 @@ const supportsMemberRuntimeOverride = computed(() => props.slot.supportedLaunchC
 const supportsMemberModelOverride = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.llmModelIdentifier === true)
 const supportsMemberLlmConfig = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.memberOverrides?.llmConfig === true)
 const requiresModelCatalogs = computed(() => supportsModelIdentifier.value || supportsMemberModelOverride.value)
+const resolvedMembers = computed(() => props.inheritedProfiles.map((profile) => ({
+  memberName: profile.memberName,
+  memberRouteKey: profile.memberRouteKey ?? props.slot.slotKey,
+  agentDefinitionId: profile.agentDefinitionId,
+})))
+const inheritedRuntimeKinds = computed(() => new Set(
+  props.inheritedProfiles.map((profile) => profile.runtimeKind?.trim() ?? ''),
+))
 const inheritedTeamRuntimeKind = computed(() => {
-  const runtimeKinds = new Set(props.inheritedProfiles.map((profile) => profile.runtimeKind))
-  return runtimeKinds.size === 1 ? [...runtimeKinds][0] ?? '' : ''
+  return inheritedRuntimeKinds.value.size === 1
+    ? [...inheritedRuntimeKinds.value][0] ?? ''
+    : ''
 })
+const hasMixedInheritedRuntimes = computed(() => (
+  inheritedRuntimeKinds.value.size > 1
+))
+const canSelectTeamModel = computed(() => Boolean(
+  props.draft.defaults.runtimeKind.trim() || inheritedTeamRuntimeKind.value,
+))
 
 const {
   availableProviderGroups,
@@ -187,11 +194,12 @@ const {
   runtimeKind: computed(() => props.draft.defaults.runtimeKind),
   inheritedRuntimeKind: inheritedTeamRuntimeKind,
   allowBlankRuntime: true,
+  useDefaultRuntimeFallback: false,
 })
 
 const inheritedProfileForMember = (
   member: ApplicationTeamMemberProfileDraft,
-): ApplicationEffectiveLeafLaunchProfile | null => (
+): ApplicationResolvedLaunchBaselineLeaf | null => (
   props.inheritedProfiles.find((profile) => (
     profile.memberRouteKey === member.memberRouteKey
     && profile.agentDefinitionId === member.agentDefinitionId
@@ -218,36 +226,15 @@ const repairMemberProfiles = (
   }
 })
 
-const resolveCurrentMembers = async () => {
-  teamDefinitionError.value = null
-  const definitionId = props.selectedResource?.definitionId?.trim() || ''
-  if (!definitionId) {
-    resolvedMembers.value = []
-    return
-  }
-
-  try {
-    await teamDefinitionStore.fetchAllAgentTeamDefinitions()
-    const teamDefinition = teamDefinitionStore.getAgentTeamDefinitionById(definitionId)
-    if (!teamDefinition) {
-      throw new Error(`Team definition '${definitionId}' was not found.`)
-    }
-    resolvedMembers.value = resolveLeafTeamMembers(teamDefinition, {
-      getTeamDefinitionById: (id) => teamDefinitionStore.getAgentTeamDefinitionById(id),
-    })
-  } catch (error) {
-    resolvedMembers.value = []
-    teamDefinitionError.value = error instanceof Error ? error.message : String(error)
-  }
-}
-
 const catalogRuntimeKinds = computed(() => Array.from(new Set([
-  ...props.draft.memberProfiles.map((memberProfile) => normalizeScopedRuntimeKind(
-    memberProfile.runtimeKind
-      || props.draft.defaults.runtimeKind
-      || inheritedProfileForMember(memberProfile)?.runtimeKind,
-    false,
-  )),
+  ...props.draft.memberProfiles
+    .map((memberProfile) => (
+      memberProfile.runtimeKind
+        || props.draft.defaults.runtimeKind
+        || inheritedProfileForMember(memberProfile)?.runtimeKind
+        || ''
+    ).trim())
+    .filter(Boolean),
 ])))
 
 const memberProfilesAlignedToCurrentMembers = computed(() => (
@@ -303,14 +290,6 @@ watch(
 )
 
 watch(
-  () => props.selectedResource?.definitionId,
-  () => {
-    void resolveCurrentMembers()
-  },
-  { immediate: true },
-)
-
-watch(
   () => [resolvedMembers.value, props.draft.memberProfiles] as const,
   ([currentMembers]) => {
     if (props.preserveInvalidSavedOverride || !currentMembers.length) {
@@ -357,21 +336,11 @@ watch(
     resolvedMembers.value,
     memberProfilesAlignedToCurrentMembers.value,
     runtimeModelCatalogs.value,
-    teamDefinitionError.value,
     requiresModelCatalogs.value,
     props.preserveInvalidSavedOverride,
     props.inheritedProfiles,
   ] as const,
   () => {
-    if (teamDefinitionError.value) {
-      emit('readiness-change', {
-        isReady: false,
-        blockingReason: teamDefinitionError.value,
-        hasEffectiveResource: true,
-      })
-      return
-    }
-
     if (props.preserveInvalidSavedOverride) {
       emit('readiness-change', {
         isReady: false,

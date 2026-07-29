@@ -7,6 +7,7 @@ import type {
   ApplicationAgentTargetAddress,
   ApplicationAgentBindingListFilter,
   ApplicationRuntimeInput,
+  ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
@@ -205,6 +206,20 @@ export class ApplicationOrchestrationHostService {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
     return this.launchConfigurationService.getApplicationLaunchConfigurationView(applicationId);
+  }
+
+  async previewSelectedApplicationResource(
+    applicationId: string,
+    slotKey: string,
+    executionResourceRef: ApplicationExecutionResourceRef,
+  ) {
+    await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
+    return this.launchConfigurationService.previewSelectedResourceBaseline(
+      applicationId,
+      slotKey,
+      executionResourceRef,
+    );
   }
 
   async upsertApplicationLaunchOverride(

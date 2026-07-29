@@ -12,7 +12,7 @@ import { ApplicationExecutionEventDispatchService } from "../../application-orch
 import { ApplicationExecutionEventIngressService } from "../../application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationLaunchConfigurationService } from "../launch-configuration/application-launch-configuration-service.js";
 import { ApplicationLaunchHostCapabilityValidator } from "../launch-configuration/application-launch-host-capability-validator.js";
-import { ApplicationLaunchPackageBaselineBuilder } from "../launch-configuration/application-launch-package-baseline-builder.js";
+import { ApplicationLaunchResourceBaselineBuilder } from "../launch-configuration/application-launch-resource-baseline-builder.js";
 import { ApplicationExecutionResourceResolver } from "../../application-orchestration/services/application-execution-resource-resolver.js";
 import { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationOrchestrationRecoveryService } from "../../application-orchestration/services/application-orchestration-recovery-service.js";
@@ -117,17 +117,17 @@ export const createApplicationOrchestrationAuthorities = (input: {
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
   });
-  const baselineBuilder = new ApplicationLaunchPackageBaselineBuilder({
+  const baselineBuilder = new ApplicationLaunchResourceBaselineBuilder({
     executionResourceResolver,
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
-    resolveWorkspaceRootPath: (applicationId) =>
-      buildApplicationStorageLayout(input.appConfig, applicationId).runtimeDir,
   });
   const configurationService = new ApplicationLaunchConfigurationService({
     applicationBundleService: input.bundleService,
     overrideStore,
     baselineBuilder,
+    resolveWorkspaceRootPath: (applicationId) =>
+      buildApplicationStorageLayout(input.appConfig, applicationId).runtimeDir,
     hostCapabilityValidator: new ApplicationLaunchHostCapabilityValidator({
       runtimeAvailabilityService: getRuntimeAvailabilityService(),
       modelCatalogService: getModelCatalogService(),

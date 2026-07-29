@@ -1,4 +1,4 @@
-import { DEFAULT_AGENT_RUNTIME_KIND, runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import { buildUnavailableInheritedModelMessage } from '~/utils/teamRunConfigUtils'
 
 export type TeamLaunchProfileMemberReadinessInput = {
@@ -11,6 +11,7 @@ export type TeamLaunchProfileMemberReadinessInput = {
 
 export type TeamLaunchReadinessBlockingIssueCode =
   | 'MODEL_CATALOG_PENDING'
+  | 'RUNTIME_REQUIRED'
   | 'MODEL_REQUIRED'
   | 'MODEL_UNAVAILABLE'
   | 'UNRESOLVED_INHERITED_MODEL'
@@ -31,7 +32,7 @@ export type TeamLaunchProfileRuntimeModelCatalogs = Record<string, string[]>
 
 const normalizeRuntimeKind = (value: string | null | undefined): string => {
   const normalized = (value || '').trim()
-  return normalized || DEFAULT_AGENT_RUNTIME_KIND
+  return normalized
 }
 
 const normalizeOptionalString = (value: string | null | undefined): string => (
@@ -67,6 +68,16 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
     const effectiveModelIdentifier = explicitModelIdentifier
       || defaultLlmModelIdentifier
       || normalizeOptionalString(memberProfile.inheritedLlmModelIdentifier)
+
+    if (!effectiveRuntimeKind) {
+      blockingIssues.push({
+        code: 'RUNTIME_REQUIRED',
+        memberName: memberProfile.memberName,
+        runtimeKind: '',
+        message: `${memberProfile.memberName} needs a runtime before this team setup can be saved.`,
+      })
+      return
+    }
 
     if (!runtimeCatalog) {
       blockingIssues.push({

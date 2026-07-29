@@ -87,7 +87,7 @@ import type {
 const props = withDefaults(defineProps<{
   slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
   draft: ApplicationAgentLaunchProfileDraft
-  inheritedProfile: import('@autobyteus/application-sdk-contracts').ApplicationEffectiveLeafLaunchProfile | null
+  inheritedProfile: import('@autobyteus/application-sdk-contracts').ApplicationResolvedLaunchBaselineLeaf | null
   disabled?: boolean
 }>(), {
   disabled: false,
@@ -107,6 +107,7 @@ const supportsWorkspaceRootPath = computed(() => props.slot.supportedLaunchConfi
 
 const {
   availableProviderGroups,
+  effectiveRuntimeKind,
   groupedModelOptions,
   hasModelIdentifier,
   normalizedStoredRuntimeKind,
@@ -116,6 +117,7 @@ const {
   runtimeKind: computed(() => props.draft.runtimeKind),
   inheritedRuntimeKind: computed(() => props.inheritedProfile?.runtimeKind),
   allowBlankRuntime: true,
+  useDefaultRuntimeFallback: false,
 })
 
 watch(
@@ -165,9 +167,11 @@ watch(
     }
 
     const effectiveModelIdentifier = props.draft.llmModelIdentifier.trim()
-      || props.inheritedProfile?.llmModelIdentifier.trim()
+      || props.inheritedProfile?.llmModelIdentifier?.trim()
       || ''
-    const isReady = !supportsModelIdentifier.value || effectiveModelIdentifier.length > 0
+    const hasRuntime = !supportsRuntimeKind.value || Boolean(effectiveRuntimeKind.value)
+    const isReady = hasRuntime
+      && (!supportsModelIdentifier.value || effectiveModelIdentifier.length > 0)
     emit('readiness-change', {
       isReady,
       blockingReason:

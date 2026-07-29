@@ -58,11 +58,38 @@ export type ApplicationExecutionResourceOverride = {
   launchOverride: ApplicationLaunchOverride | null;
 };
 
-export type ApplicationLaunchValueSource =
-  | { kind: "HOST_MEMBER_OVERRIDE"; memberRouteKey: string }
-  | { kind: "HOST_SLOT_OVERRIDE" }
+export type ApplicationLaunchDefinitionValueSource =
   | { kind: "PACKAGE_TEAM_DEFAULT"; teamDefinitionId: string }
-  | { kind: "PACKAGE_AGENT_DEFAULT"; agentDefinitionId: string };
+  | { kind: "PACKAGE_AGENT_DEFAULT"; agentDefinitionId: string }
+  | { kind: "SELECTED_RESOURCE_TEAM_DEFAULT"; teamDefinitionId: string }
+  | { kind: "SELECTED_RESOURCE_AGENT_DEFAULT"; agentDefinitionId: string };
+
+export type ApplicationLaunchValueSource =
+  | ApplicationLaunchDefinitionValueSource
+  | { kind: "HOST_MEMBER_OVERRIDE"; memberRouteKey: string }
+  | { kind: "HOST_SLOT_OVERRIDE" };
+
+export type ApplicationResolvedLaunchBaselineLeaf = {
+  memberRouteKey: string | null;
+  memberName: string;
+  agentDefinitionId: string;
+  runtimeKind: string | null;
+  llmModelIdentifier: string | null;
+  llmConfig: Record<string, unknown> | null;
+  provenance: {
+    runtimeKind: ApplicationLaunchDefinitionValueSource | null;
+    llmModelIdentifier: ApplicationLaunchDefinitionValueSource | null;
+    llmConfig: ApplicationLaunchDefinitionValueSource | null;
+  };
+};
+
+export type ApplicationResolvedResourceLaunchBaseline = {
+  slotKey: string;
+  executionResourceRef: ApplicationExecutionResourceRef;
+  resourceDefinitionId: string;
+  resourceKind: ApplicationExecutionResourceKind;
+  leaves: ApplicationResolvedLaunchBaselineLeaf[];
+};
 
 export type ApplicationEffectiveLeafLaunchProfile = {
   memberRouteKey: string | null;
@@ -124,6 +151,36 @@ export type ApplicationLaunchIssue = {
   }> | null;
 };
 
+export type ApplicationLaunchSelectionIssue = {
+  scope: "SELECTION";
+  code:
+    | "SELECTION_UNAVAILABLE"
+    | "SELECTION_NOT_ALLOWED"
+    | "SELECTION_TOPOLOGY_INVALID";
+  applicationId: string;
+  slotKey: string;
+  executionResourceRef: ApplicationExecutionResourceRef;
+  message: string;
+};
+
+export type ApplicationLaunchSelectionPreview =
+  | {
+      status: "RESOLVED";
+      applicationId: string;
+      slotKey: string;
+      executionResourceRef: ApplicationExecutionResourceRef;
+      selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline;
+      issues: [];
+    }
+  | {
+      status: "INVALID_SELECTION";
+      applicationId: string;
+      slotKey: string;
+      executionResourceRef: ApplicationExecutionResourceRef;
+      selectedResourceBaseline: null;
+      issues: ApplicationLaunchSelectionIssue[];
+    };
+
 export type ApplicationLaunchReadiness =
   | { status: "RUNNABLE"; issues: [] }
   | { status: "INVALID_PACKAGE"; issues: ApplicationLaunchIssue[] }
@@ -137,7 +194,8 @@ export type ApplicationHostOverrideState =
 
 export type ApplicationLaunchSlotView = {
   slot: ApplicationExecutionResourceSlotDeclaration;
-  packageBaseline: ApplicationEffectiveLaunchConfiguration | null;
+  packageBaseline: ApplicationResolvedResourceLaunchBaseline | null;
+  selectedResourceBaseline: ApplicationResolvedResourceLaunchBaseline | null;
   savedOverride: ApplicationExecutionResourceOverride | null;
   savedOverrideState: ApplicationHostOverrideState;
   effectiveConfiguration: ApplicationEffectiveLaunchConfiguration | null;
