@@ -303,45 +303,54 @@ pnpm --filter autobyteus-server-ts build
 pnpm --filter autobyteus-message-gateway build
 ```
 
-## Live API/E2E development
+## Local full-stack development
 
-Start the real built backend and Nuxt frontend together from the workspace
-root:
+Start the real built backend and Nuxt development frontend with the one
+canonical development command:
 
 ```bash
-pnpm dev:test
+pnpm dev
 ```
 
-The command validates the committed non-secret
-`autobyteus-server-ts/.env.test` template, automatically materializes
-`autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env`, and then starts:
+The launcher validates the credential-free
+`autobyteus-server-ts/.env.development` template, creates an owner-private
+runtime environment, and reports readiness only after both exact endpoints are
+available:
 
 - Backend: `http://127.0.0.1:8000`
 - Frontend: `http://127.0.0.1:3000`
 
-Open the frontend URL in a browser for web-equivalent desktop journeys. Press
-`Ctrl+C` in the owning terminal to stop both processes.
+Development state persists under
+`<repo>/.autobyteus/development/server-data/` (database, vault key, logs,
+memory, workspaces, and runtime `.env`). It is separate from test state and
+packaged Electron state. The launcher does not read `.env`, `.env.test`,
+`.env.example`, or a home-directory environment file. Press `Ctrl+C` in the
+owning terminal to stop both owned processes.
 
-This starts the actual built server, not a mock. The server reads the generated
-runtime `.env` because the runner passes its directory as `--data-dir`;
-developers do not create that file manually. The template selects the
-project-local SQLite test application database under
-`autobyteus-server-ts/db/`. Managed provider credentials remain encrypted in
-that database's vault and must not be placed in `.env.test` or the generated
-runtime `.env`.
-
-To run the two processes in separate terminals:
+Configure development credentials through the existing Settings UI, or use
+the existing importer with the displayed absolute development database URL:
 
 ```bash
-pnpm server:test
+pnpm secrets:import -- \
+  --source /absolute/path/to/assignments \
+  --database-url file:/absolute/path/to/.autobyteus/development/server-data/db/development.db
 ```
+
+To reset only development state, stop `pnpm dev` and run this from the
+repository root:
 
 ```bash
-pnpm web:test
+rm -rf .autobyteus/development
 ```
 
-To inspect or execute code-owned real-provider capabilities against the same
-test runtime:
+Deterministic E2E assertions are separate from the manual development stack:
+
+```bash
+pnpm test:e2e
+```
+
+The command runs the existing server Vitest E2E suite with its test-owned
+isolated database/runtime. External-provider capabilities remain explicit:
 
 ```bash
 pnpm test:e2e:real:preflight
@@ -349,9 +358,8 @@ pnpm test:e2e:real
 ```
 
 Preflight and execution report unconfigured or unavailable external
-capabilities explicitly; they must not be represented as passed. See
-[`autobyteus-server-ts/README.md`](autobyteus-server-ts/README.md#start-the-real-backend-and-frontend-for-live-apie2e-testing)
-for the detailed runtime behavior.
+capabilities explicitly; they must not be represented as passed. See the
+server README for server-specific test and credential details.
 
 ## Testing (Codex Runtime)
 

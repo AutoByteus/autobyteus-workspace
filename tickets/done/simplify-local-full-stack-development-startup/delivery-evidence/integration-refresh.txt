@@ -1,0 +1,51 @@
+Delivery integration refresh — 2026-07-28
+
+Bootstrap base: origin/personal (recorded in investigation-notes.md)
+Fetch: git fetch origin personal — passed
+Latest tracked remote base: 7d3a34250d592aa3440f1da79cb627ef51210126 (origin/personal)
+Pre-refresh ticket state: 0f836c992; working tree contained the API/E2E-reviewed changes and evidence.
+Base advanced since ticket branch bootstrap: Yes — ticket branch was ahead 2, behind 30 before refresh.
+Local checkpoint: 89c0a24b455c040472771cdd48a072c29c2cd315 chore(ticket): checkpoint reviewed startup package before delivery integration — completed.
+Integration: git merge --no-edit origin/personal — passed; no conflicts.
+Integrated ticket HEAD: a4040047b44da5e1cf7208251f0ca8efe0fa0dcf
+Integrated parents: 89c0a24b455c040472771cdd48a072c29c2cd315 (reviewed ticket checkpoint), 7d3a34250d592aa3440f1da79cb627ef51210126 (latest origin/personal)
+
+Post-integration executable checks:
+  node --test scripts/development/run-dev.test.mjs
+  Result: passed, 4 tests / 4 passed.
+  pnpm --filter autobyteus-server-ts build
+  Result: passed; workspace dependency builds, Prisma generation, TypeScript build, managed messaging asset copy, and sanitized built-in-agent bootstrap smoke passed.
+Full output: delivery-evidence/post-integration-check.log
+
+Delivery-owned edits began only after the integrated check passed. The branch was current with the latest tracked origin/personal at this refresh.
+
+Finalization-target refresh after user verification — 2026-07-29
+
+Fetch: git fetch origin personal — passed
+Target advanced from: 7d3a34250d592aa3440f1da79cb627ef51210126
+Latest tracked remote target: 4b1d2332b314346f6f08676853f4de3567b55327 (origin/personal)
+Delivery-owned uncommitted artifacts: protected with stash `delivery: protect user-verified handoff before target refresh`, then restored.
+Integration: git merge --no-edit origin/personal — conflicts resolved, merge intentionally not committed pending required validation.
+Conflict resolution: five token-usage E2E files took target repository-Prisma-adoption versions; obsolete `autobyteus-server-ts/tests/setup/initialize-test-app-config.ts` removed.
+Environment alignment: pnpm install --frozen-lockfile — passed; repository_prisma aligned to 1.0.9.
+Build: pnpm --filter autobyteus-server-ts build — passed after dependency alignment.
+Exact root E2E: pnpm test:e2e — failed; 62 files (47 passed, 1 failed, 14 skipped), 214 tests (164 passed, 1 failed, 49 skipped), exit 1.
+Failing scenario: tests/e2e/messaging/managed-messaging-gateway-update-graphql.e2e.test.ts > Managed messaging gateway update GraphQL e2e > rolls back to the previous active version when update activation fails; expected activeVersion 0.1.0, received 0.2.0 at line 320.
+Focused retry: pnpm --filter autobyteus-server-ts exec vitest --run tests/e2e/messaging/managed-messaging-gateway-update-graphql.e2e.test.ts -t 'rolls back to the previous active version when update activation fails' — passed; 1 passed, 2 skipped.
+Evidence: delivery-evidence/latest-base-root-test-e2e.log and delivery-evidence/latest-base-managed-gateway-focused.log
+Disposition: delivery blocked; route to code_reviewer for focused failure-origin analysis. No archive, push, target merge/push, release, deployment, or cleanup performed.
+
+Final target refresh and validation — 2026-07-29
+
+Latest target before refresh: 4b1d2332b314346f6f08676853f4de3567b55327
+Latest tracked origin/personal: 390307afb496eecdba43143c085cfde7a73fd3e2
+New target commits integrated: 2127840ee (workspace release version 1.4.27) and 390307afb (separate release Docker-blocker delivery record).
+Local ticket checkpoint before refresh: b7ea162cb
+Integration result: git merge --no-edit origin/personal — passed automatically; integrated candidate HEAD 0cd1aff6474e17b1bfe1148466a586983052f28f, no conflicts.
+Delivery-owned artifacts: protected with stash before refresh and restored after merge.
+Launcher unit: node --test scripts/development/run-dev.test.mjs — passed 4/4.
+Build: pnpm --filter autobyteus-server-ts build — passed; dependency builds, Prisma generation, TypeScript build, managed messaging asset copy, sanitized built-in-agent bootstrap smoke.
+Exact root E2E: pnpm test:e2e — passed; 62 files (48 passed, 14 skipped), 214 tests (165 passed, 49 skipped), exit 0.
+API/E2E review: API-REV-004 passed; CRR-007 passed; durable test-code review Not Applicable because no durable API/E2E tests, fixtures, helpers, or implementation source changed.
+Disposition: latest target-integrated candidate validated. Renewed user verification is required before archive, ticket push, final target merge/push, release, publication, deployment, or cleanup. No release work executed for this ticket.
+Evidence: delivery-evidence/latest-target-post-merge-check.log and delivery-evidence/latest-target-root-test-e2e.log

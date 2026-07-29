@@ -281,11 +281,18 @@ through normal Settings/API behavior and are preserved in the ignored runtime
 Useful commands from the workspace root are:
 
 ```bash
-pnpm server:test
-pnpm web:test
-pnpm dev:test
+pnpm dev
+pnpm test:e2e
 pnpm test:e2e:real:preflight
+pnpm test:e2e:real
 ```
+
+`pnpm dev` owns persistent repository-local development state below
+`.autobyteus/development/server-data/`; deterministic and real-provider E2E
+remain test-owned and use separate ignored test roots. Development credentials
+are configured through Settings or the explicit importer target. Stop the
+development stack before removing `.autobyteus/development/` to reset only
+development state.
 
 To target the persistent test application database, an operator passes its
 canonical absolute SQLite URL to the same `pnpm secrets:import` command. There
