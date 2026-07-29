@@ -13,7 +13,7 @@
 - Integrated base before finalization refresh: `origin/personal@7d3a34250d592aa3440f1da79cb627ef51210126`, merged into ticket HEAD `a4040047b44da5e1cf7208251f0ca8efe0fa0dcf`.
 - Latest finalization-target base: `origin/personal@390307afb496eecdba43143c085cfde7a73fd3e2`.
 - Integrated candidate HEAD: `0cd1aff6474e17b1bfe1148466a586983052f28f`.
-- Current status: `Finalized — ticket archived, canonical reports synchronized, target branch updated. No release executed.`
+- Current status: `Finalized — ticket archived, target branch updated, and cleanup completed. No release executed.`
 
 ## Integrated-State Refresh
 
@@ -78,7 +78,7 @@
 - Renewed verification reference: User message — `Finalize it. no need to release a new version thanks`.
 - Finalization-target refresh after renewed verification: `git fetch origin personal` passed; `origin/personal@390307afb496eecdba43143c085cfde7a73fd3e2` remained unchanged.
 
-Repository finalization is complete. The ticket is archived under `tickets/done`; archive commit `e29a1b616`, final report commit `8a95e4f74`, target merge `3b759e61b`, and target push succeeded. Cleanup is completing. No release, publication, or deployment work ran.
+Repository finalization is complete. The ticket is archived under `tickets/done`; archive commit `e29a1b616`, final report commit `8a95e4f74`, target updates through `f5ce226ce`, and target push succeeded. Ticket worktree and branches were cleaned up. No release, publication, or deployment work ran.
 
 ## Cumulative Artifact Package
 
