@@ -14,6 +14,8 @@
 | `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-005`, `APIE2E-F003` |
 | `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / `API-REV-004` + user-requested full audit | `Pass` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
 | `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Review clarification / user-confirmed package-default contract | `Fail — Design Impact` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
+| `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-006` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011` |
+| `CRR-012` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-007` | `Fail — Local Fix` | `Fail — Design Impact` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
 
 ## Revision Entries
 
@@ -314,3 +316,31 @@ None.
 - Material score or classification changes: current full score improves from historical `8.1/10` (`81/100`) to `8.9/10` (`89/100`). The package no longer has Design Impact; the remaining failures are bounded implementation-owned Local Fixes.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: after source fixes and re-review, API/E2E must update durable coverage (including removal of the stale topology-repair assertion), rerun the prior clean standalone failure first, then validate package tuning, sparse Studio model override, invalid resource/topology diagnosis/reset, graph-local prompt semantics, both-host parity/digests, full maintained commands, recovery, and cleanup.
+
+### CRR-012 — IR-007 resolves default-resource editing but exposes an alternate-resource authority gap
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `12`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-007`; prior `CR-009`–`CR-011`; new `CR-012`
+- Relevant solution revision IDs: `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-007`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Local Fix` (`CRR-011`, `89/100`)
+- Current authoritative result: `Fail — Design Impact` (`CRR-012`, `88/100`)
+- What changed in the review result and why: IR-007 correctly accepts the approved token-count tuning fields, supplies inherited Codex/Luna context to blank sparse fields, and preserves/diagnoses stale topology until an explicit replacement/reset. Independent package validation found the sensitive-key policy still accepts clear password/authorization/access-token-value fields. Full boundary tracing also showed the deeper cause of general alternate-resource sparse editing: the launch authority computes a selected resource baseline internally but exposes only the manifest package baseline and post-overlay effective result, so Studio has no authoritative pre-overlay input for a newly selected or edited alternate resource.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-008` | Resolved in source / applicable rerun pending | Remain Resolved | `IR-002`–`IR-006`, `API-REV-001`–`API-REV-004` | IR-007 does not alter their supported production paths. |
+| `CR-009` | Open — Local Fix | Partially resolved; remains Open — Local Fix | `CRR-011`, `IR-007`, `CRR-012` | Real-package probe accepts `max_tokens`, `token_limit`, and `safety_margin_tokens` and rejects `api_token`/`endpoint`, but accepts nested `password`, bearer `authorization`, and `access_token_value`. |
+| `CR-010` | Open — Local Fix | Resolved in source; API/E2E rerun pending | `IR-007`, `CRR-012` | Blank stored runtime remains blank while package/effective Codex runtime and Luna model reach agent, team-default, member catalog, and readiness inputs. |
+| `CR-011` | Open — Local Fix | Resolved in source; API/E2E durable-test update/rerun pending | `IR-007`, `CRR-012` | Structured stale details render; raw topology is locked from automatic repair; explicit current-topology/resource replacement and DELETE Reset remain distinct. |
+
+- New or remaining finding IDs: `CR-009` (partial), `CR-012` (new Design Impact).
+- Material score or classification changes: full score changes from `8.9/10` (`89/100`) to `8.8/10` (`88/100`). The dominant classification returns to `Design Impact` because the approved Studio sparse-override path needs an authoritative selected-resource baseline/read-preview contract; it cannot be corrected cleanly inside the current web-only boundary.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: revised design must cover selected-resource baseline identity/provenance, unsaved candidate preview, saved alternate edits, invalid resource/topology states, and mixed-runtime team semantics without duplicating server precedence in the UI. After architecture review and implementation, API/E2E must reconcile durable tests and rerun the complete SR-005 matrix.
