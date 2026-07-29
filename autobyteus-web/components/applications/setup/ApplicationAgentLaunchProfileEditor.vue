@@ -87,6 +87,7 @@ import type {
 const props = withDefaults(defineProps<{
   slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
   draft: ApplicationAgentLaunchProfileDraft
+  inheritedProfile: import('@autobyteus/application-sdk-contracts').ApplicationEffectiveLeafLaunchProfile | null
   disabled?: boolean
 }>(), {
   disabled: false,
@@ -113,6 +114,7 @@ const {
   selectedRuntimeUnavailableReason,
 } = useRuntimeScopedModelSelection({
   runtimeKind: computed(() => props.draft.runtimeKind),
+  inheritedRuntimeKind: computed(() => props.inheritedProfile?.runtimeKind),
   allowBlankRuntime: true,
 })
 
@@ -142,10 +144,17 @@ watch(
 )
 
 watch(
-  () => [props.draft.runtimeKind, props.draft.llmModelIdentifier],
+  () => [
+    props.draft.runtimeKind,
+    props.draft.llmModelIdentifier,
+    props.inheritedProfile?.runtimeKind,
+    props.inheritedProfile?.llmModelIdentifier,
+    availableProviderGroups.value,
+  ],
   () => {
     if (
       props.draft.llmModelIdentifier
+      && availableProviderGroups.value.length > 0
       && !hasModelIdentifier(props.draft.llmModelIdentifier)
     ) {
       emit('update:draft', {
@@ -155,10 +164,14 @@ watch(
       return
     }
 
+    const effectiveModelIdentifier = props.draft.llmModelIdentifier.trim()
+      || props.inheritedProfile?.llmModelIdentifier.trim()
+      || ''
+    const isReady = !supportsModelIdentifier.value || effectiveModelIdentifier.length > 0
     emit('readiness-change', {
-      isReady: !supportsModelIdentifier.value || props.draft.llmModelIdentifier.trim().length > 0,
+      isReady,
       blockingReason:
-        supportsModelIdentifier.value && props.draft.llmModelIdentifier.trim().length === 0
+        !isReady
           ? $t('applications.components.applications.ApplicationLaunchSetupPanel.requiredModelBeforeEntry', {
             slot: props.slot.name,
           })

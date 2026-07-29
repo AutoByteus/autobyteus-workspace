@@ -18,7 +18,6 @@ const DEFAULT_CONFIG_KEYS = new Set([
   "llmModelIdentifier",
   "llmConfig",
 ]);
-const FORBIDDEN_PORTABLE_KEY = /(credential|secret|token|api.?key|endpoint|base.?url|workspace)/i;
 const CODEX_CONFIG_KEYS = new Set(["reasoning_effort", "service_tier"]);
 const CLAUDE_CONFIG_KEYS = new Set(["thinking_enabled", "reasoning_effort"]);
 const AUTOBYTEUS_CONFIG_KEYS = new Set([
@@ -36,6 +35,14 @@ const AUTOBYTEUS_CONFIG_KEYS = new Set([
   "extra_params",
   "pricing_config",
 ]);
+const FORBIDDEN_PORTABLE_KEY_FRAGMENTS = [
+  "credential",
+  "secret",
+  "apikey",
+  "endpoint",
+  "baseurl",
+  "workspace",
+];
 
 const createReadOnlyDefinitionConfig = (packageRoot: string): AppConfig => ({
   getAgentsDir: () => path.join(packageRoot, ".validation-only", "agents"),
@@ -66,7 +73,11 @@ const assertNoForbiddenPortableKeys = (value: unknown, fieldName: string): void 
   }
   if (!value || typeof value !== "object") return;
   for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
-    if (FORBIDDEN_PORTABLE_KEY.test(key)) {
+    const normalizedKey = key.replace(/[^a-z0-9]/gi, "").toLowerCase();
+    if (
+      FORBIDDEN_PORTABLE_KEY_FRAGMENTS.some((fragment) => normalizedKey.includes(fragment))
+      || normalizedKey.endsWith("token")
+    ) {
       throw new Error(`${fieldName} contains host-only field '${key}'.`);
     }
     assertNoForbiddenPortableKeys(entry, `${fieldName}.${key}`);

@@ -72,6 +72,8 @@ const props = withDefaults(defineProps<{
   member: ApplicationTeamMemberProfileDraft
   globalRuntimeKind: string
   globalLlmModelIdentifier: string
+  inheritedRuntimeKind: string
+  inheritedLlmModelIdentifier: string
   allowRuntimeOverride?: boolean
   allowModelOverride?: boolean
   disabled?: boolean
@@ -87,14 +89,16 @@ const emit = defineEmits<{
 
 const { t: $t } = useLocalization()
 
-const effectiveRuntimeKind = computed(() => props.member.runtimeKind || props.globalRuntimeKind)
+const selectedRuntimeKind = computed(() => props.member.runtimeKind || props.globalRuntimeKind)
 const {
+  effectiveRuntimeKind,
   groupedModelOptions,
   hasModelIdentifier,
   runtimeOptions,
   selectedRuntimeUnavailableReason,
 } = useRuntimeScopedModelSelection({
-  runtimeKind: effectiveRuntimeKind,
+  runtimeKind: selectedRuntimeKind,
+  inheritedRuntimeKind: computed(() => props.inheritedRuntimeKind),
   allowBlankRuntime: false,
 })
 
@@ -106,11 +110,12 @@ const hasOverride = computed(() => Boolean(
 const isUnresolvedInheritedModel = computed(() => (
   Boolean(props.member.runtimeKind)
   && !props.member.llmModelIdentifier
-  && Boolean(props.globalLlmModelIdentifier)
-  && !hasModelIdentifier(props.globalLlmModelIdentifier)
+  && Boolean(props.globalLlmModelIdentifier || props.inheritedLlmModelIdentifier)
+  && !hasModelIdentifier(props.globalLlmModelIdentifier || props.inheritedLlmModelIdentifier)
 ))
 const unresolvedInheritedModelMessage = computed(() => buildUnavailableInheritedModelMessage({
-  globalLlmModelIdentifier: props.globalLlmModelIdentifier,
+  globalLlmModelIdentifier:
+    props.globalLlmModelIdentifier || props.inheritedLlmModelIdentifier,
   runtimeKind: effectiveRuntimeKind.value,
   memberName: props.member.memberName,
 }))

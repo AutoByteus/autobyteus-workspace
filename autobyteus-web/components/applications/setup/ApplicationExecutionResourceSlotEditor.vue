@@ -1,7 +1,38 @@
 <template>
   <div class="space-y-4">
-    <div v-if="view.issues.length" class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-      <p class="font-medium">{{ view.issues[0]?.message }}</p>
+    <div
+      v-if="view.issues.length"
+      data-testid="application-launch-slot-issues"
+      class="space-y-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+    >
+      <div
+        v-for="(issue, issueIndex) in view.issues"
+        :key="`${issue.scope}:${issue.code}:${issueIndex}`"
+      >
+        <p class="font-medium">{{ issue.scope }} / {{ issue.code }}</p>
+        <p class="mt-1">{{ issue.message }}</p>
+        <ul
+          v-if="issue.staleMembers?.length"
+          data-testid="application-stale-team-members"
+          class="mt-2 space-y-2"
+        >
+          <li
+            v-for="member in issue.staleMembers"
+            :key="`${member.memberRouteKey}:${member.agentDefinitionId}`"
+            class="rounded-lg border border-amber-200 bg-white/70 px-3 py-2"
+          >
+            <span class="font-semibold">{{ member.memberRouteKey }}</span>
+            <span class="block">{{ member.memberName }} · {{ member.agentDefinitionId }}</span>
+            <span class="block text-xs">
+              {{ formatStaleMemberReason(member.reason) }}
+              <template v-if="member.currentAgentDefinitionId">
+                · {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.currentAgentDefinition') }}:
+                {{ member.currentAgentDefinitionId }}
+              </template>
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div
@@ -92,8 +123,10 @@
       v-if="selectedResource?.kind === 'AGENT' && agentDraft"
       :slot="view.slot"
       :draft="agentDraft"
+      :inherited-profile="agentInheritedProfile"
       :disabled="disabled"
       @update:draft="emit('update:launchProfile', $event)"
+      @readiness-change="emit('readiness-change', $event)"
     />
 
     <ApplicationTeamLaunchProfileEditor
@@ -101,8 +134,11 @@
       :slot="view.slot"
       :selected-resource="selectedResource"
       :draft="teamDraft"
+      :inherited-profiles="inheritedConfiguration?.leaves ?? []"
+      :preserve-invalid-saved-override="preserveInvalidSavedTeamOverride"
       :disabled="disabled"
       @update:draft="emit('update:launchProfile', $event)"
+      @readiness-change="emit('readiness-change', $event)"
     />
 
     <p
@@ -128,11 +164,14 @@ import { useLocalization } from '~/composables/useLocalization'
 import {
   MANIFEST_DEFAULT_SELECTION,
   buildEmptyLaunchProfileDraft,
+  buildDraftFromView,
   buildResourceRefKey,
   describeResourceRef,
   describeResourceSummary,
+  isSameResourceRef,
   resourcesForSlot,
   resolveEffectiveResourceRef,
+  resolveSelectedResourceRef,
   summaryToResourceRef,
   type ApplicationAgentLaunchProfileDraft,
   type ApplicationSlotDraft,
@@ -166,6 +205,44 @@ const selectedResource = computed(() => {
 })
 const agentDraft = computed(() => props.draft.launchProfile?.kind === 'AGENT' ? props.draft.launchProfile as ApplicationAgentLaunchProfileDraft : null)
 const teamDraft = computed(() => props.draft.launchProfile?.kind === 'AGENT_TEAM' ? props.draft.launchProfile as ApplicationTeamLaunchProfileDraft : null)
+const inheritedConfiguration = computed(() => {
+  const selectedRef = selectedResourceRef.value
+  if (!selectedRef) {
+    return null
+  }
+  if (
+    props.view.packageBaseline
+    && isSameResourceRef(props.view.packageBaseline.executionResourceRef, selectedRef)
+  ) {
+    return props.view.packageBaseline
+  }
+  if (
+    props.view.effectiveConfiguration
+    && isSameResourceRef(props.view.effectiveConfiguration.executionResourceRef, selectedRef)
+  ) {
+    return props.view.effectiveConfiguration
+  }
+  return null
+})
+const agentInheritedProfile = computed(() => inheritedConfiguration.value?.leaves[0] ?? null)
+const preserveInvalidSavedOverride = computed(() => {
+  if (
+    props.view.savedOverrideState !== 'INVALID'
+    || !props.view.savedOverride
+  ) {
+    return false
+  }
+  const originalDraft = buildDraftFromView(props.view)
+  return (
+    props.draft.selection === originalDraft.selection
+    && JSON.stringify(props.draft.launchProfile) === JSON.stringify(originalDraft.launchProfile)
+  )
+})
+const preserveInvalidSavedTeamOverride = computed(() => (
+  preserveInvalidSavedOverride.value
+  && props.view.savedOverride?.launchOverride?.kind === 'AGENT_TEAM'
+  && props.view.issues.some((issue) => issue.code === 'SAVED_MEMBER_TOPOLOGY_STALE')
+))
 const hasKindSpecificEditor = computed(() => {
   if (!selectedResource.value) {
     return false
@@ -179,7 +256,7 @@ watch(
   () => selectedResource.value?.kind ?? null,
   (resourceKind) => {
     if (!resourceKind) {
-      if (props.draft.launchProfile) {
+      if (props.draft.launchProfile && !preserveInvalidSavedOverride.value) {
         emit('update:launchProfile', null)
       }
       return
@@ -213,17 +290,32 @@ watch(
       return
     }
 
-    emit('readiness-change', {
-      isReady: true,
-      blockingReason: null,
-      hasEffectiveResource: true,
-    })
+    if (!hasKindSpecificEditor.value) {
+      emit('readiness-change', {
+        isReady: true,
+        blockingReason: null,
+        hasEffectiveResource: true,
+      })
+    }
   },
   { deep: true, immediate: true },
 )
 
 const updateSelection = (value: string) => {
   emit('update:selection', value)
+  const nextResourceRef = value === MANIFEST_DEFAULT_SELECTION
+    ? props.view.slot.defaultExecutionResourceRef ?? null
+    : resolveSelectedResourceRef(value, props.availableResources)
+  emit(
+    'update:launchProfile',
+    nextResourceRef && (
+      nextResourceRef.kind === 'AGENT'
+        ? Boolean(props.view.slot.supportedLaunchConfig?.AGENT)
+        : Boolean(props.view.slot.supportedLaunchConfig?.AGENT_TEAM)
+    )
+      ? buildEmptyLaunchProfileDraft(nextResourceRef.kind)
+      : null,
+  )
 }
 
 const describeResourceRefForView = (executionResourceRef: ApplicationExecutionResourceRef): string => (
@@ -246,5 +338,13 @@ const formatProvenance = (source: ApplicationLaunchValueSource): string => (
 
 const formatOptionalProvenance = (source: ApplicationLaunchValueSource | null): string => (
   source ? formatProvenance(source) : 'none'
+)
+
+const formatStaleMemberReason = (
+  reason: 'MISSING_FROM_TEAM' | 'AGENT_CHANGED',
+): string => (
+  reason === 'AGENT_CHANGED'
+    ? $t('applications.components.applications.ApplicationLaunchSetupPanel.staleMemberAgentChanged')
+    : $t('applications.components.applications.ApplicationLaunchSetupPanel.staleMemberMissing')
 )
 </script>

@@ -5,6 +5,8 @@ export type TeamLaunchProfileMemberReadinessInput = {
   memberName: string
   runtimeKind?: string | null
   llmModelIdentifier?: string | null
+  inheritedRuntimeKind?: string | null
+  inheritedLlmModelIdentifier?: string | null
 }
 
 export type TeamLaunchReadinessBlockingIssueCode =
@@ -32,7 +34,7 @@ const normalizeRuntimeKind = (value: string | null | undefined): string => {
   return normalized || DEFAULT_AGENT_RUNTIME_KIND
 }
 
-const normalizeModelIdentifier = (value: string | null | undefined): string => (
+const normalizeOptionalString = (value: string | null | undefined): string => (
   typeof value === 'string' ? value.trim() : ''
 )
 
@@ -50,15 +52,21 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
     }
   }
 
-  const defaultRuntimeKind = normalizeRuntimeKind(input.defaultRuntimeKind)
-  const defaultLlmModelIdentifier = normalizeModelIdentifier(input.defaultLlmModelIdentifier)
+  const defaultRuntimeKind = normalizeOptionalString(input.defaultRuntimeKind)
+  const defaultLlmModelIdentifier = normalizeOptionalString(input.defaultLlmModelIdentifier)
   const blockingIssues: TeamLaunchReadinessBlockingIssue[] = []
 
   input.memberProfiles.forEach((memberProfile) => {
-    const effectiveRuntimeKind = normalizeRuntimeKind(memberProfile.runtimeKind || defaultRuntimeKind)
+    const effectiveRuntimeKind = normalizeRuntimeKind(
+      memberProfile.runtimeKind
+      || defaultRuntimeKind
+      || memberProfile.inheritedRuntimeKind,
+    )
     const runtimeCatalog = input.runtimeModelCatalogs[effectiveRuntimeKind] ?? null
-    const explicitModelIdentifier = normalizeModelIdentifier(memberProfile.llmModelIdentifier)
-    const effectiveModelIdentifier = explicitModelIdentifier || defaultLlmModelIdentifier
+    const explicitModelIdentifier = normalizeOptionalString(memberProfile.llmModelIdentifier)
+    const effectiveModelIdentifier = explicitModelIdentifier
+      || defaultLlmModelIdentifier
+      || normalizeOptionalString(memberProfile.inheritedLlmModelIdentifier)
 
     if (!runtimeCatalog) {
       blockingIssues.push({

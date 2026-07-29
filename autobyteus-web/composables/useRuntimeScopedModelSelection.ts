@@ -59,6 +59,7 @@ export const loadRuntimeProviderGroupsForSelection = async (
 
 export const useRuntimeScopedModelSelection = (params: {
   runtimeKind: Ref<string | null | undefined>
+  inheritedRuntimeKind?: Ref<string | null | undefined>
   allowBlankRuntime?: boolean
 }) => {
   const llmStore = useLLMProviderConfigStore()
@@ -75,7 +76,9 @@ export const useRuntimeScopedModelSelection = (params: {
     normalizeScopedRuntimeKind(params.runtimeKind.value, allowBlankRuntime.value),
   )
   const effectiveRuntimeKind = computed(() =>
-    resolveEffectiveScopedRuntimeKind(params.runtimeKind.value),
+    resolveEffectiveScopedRuntimeKind(
+      params.runtimeKind.value || params.inheritedRuntimeKind?.value,
+    ),
   )
 
   const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind): Promise<void> => {
