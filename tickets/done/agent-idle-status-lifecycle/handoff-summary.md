@@ -4,7 +4,7 @@
 
 - Ticket: `agent-idle-status-lifecycle`
 - Date: `2026-07-29`
-- Current status: `User verification complete; repository finalization and v1.4.29 release in progress`
+- Current status: `Repository finalized and v1.4.29 released; publication verified`
 - Ticket branch: `codex/agent-idle-status-lifecycle`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle`
 - Delivery revision: `DR-003`
@@ -18,6 +18,8 @@
 - Relationship after the post-build fetch: ahead 17 / behind 0; merge base equals current `origin/personal`.
 - Finalization integration method/result: clean temporary branch `delivery/agent-idle-status-lifecycle-v1.4.29` was created directly from current `origin/personal@6caf809303294252c109420b238588f0c68aca6a`; ticket commit `0febb53a136f8d4bb183edd3015db97a98ecb550` merged without conflicts as merge commit `318e2847eb083517c40aaf3c7fcd5df3d7c440b4`.
 - Integrated-state smoke: `Pass`, 6 files / 38 tests, after building shared workspace packages and generating the clean worktree's Prisma client. Evidence `144`–`147`. The initial evidence `145` failed before test collection because those clean-worktree prerequisites had not yet run; evidence `146` corrected setup and unchanged rerun `147` passed. This is environment setup history, not a product failure.
+- Finalization target commit before release: `b95c90e92f532414fb6b9598cc8a51252148e642`; pushed to `origin/personal`.
+- Release commit/tag: `2abcd1601b9908ddee16164b87b75ec224f13798` / annotated `v1.4.29`; both resolve on the remote and package versions/managed messaging manifest match.
 - Current rebuild evidence: `execution-evidence/136-dr002-readme-latest-base-prebuild.log` and `140-dr002-post-build-base-and-checksums.log`.
 
 ## Electron User-Test Build
@@ -51,6 +53,19 @@
 - Isolated backend + Nuxt + real Chrome: 22/22 lifecycle/Event Monitor assertions passed with no console/page errors.
 - Electron packaging: `Pass` on the current reviewed package, as recorded above.
 - Final integrated-state smoke: `Pass`, 6 files / 38 tests at merge commit `318e2847eb083517c40aaf3c7fcd5df3d7c440b4`.
+- Release workflows: desktop, Android, iOS App Store Connect, messaging gateway, and multi-architecture server Docker all completed successfully.
+
+## v1.4.29 Release Result
+
+- GitHub Release: `Published`, non-draft, non-prerelease — https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.29
+- Release assets: `21` audited assets, including macOS ARM64/x64 DMG and ZIP, Linux ARM64/x64 AppImage, Windows installer, signed Android APK, updater metadata, and managed messaging runtime package/checksums/manifest.
+- Desktop workflow: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815447
+- Android workflow: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815449
+- iOS workflow: `Success`; build/test, publish-secret validation, archive, and App Store Connect upload passed — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453819412
+- Messaging gateway workflow: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453819481
+- Server Docker workflow: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815643
+- Docker publication: `autobyteus/autobyteus-server:1.4.29`, OCI index digest `sha256:5892ae0bcf8dd6b707a5baa75f0ad85d3199fcb77653ecaf5c9cfca1155a9d52`, with `linux/amd64` and `linux/arm64`.
+- Publication evidence: `execution-evidence/149-dr003-v1429-release-preparation.log` through `153-dr003-v1429-publication-audit.log`.
 
 ## Documentation Sync
 
@@ -72,7 +87,7 @@
 - Explicit user completion/verification received: `Yes`, on `2026-07-29`.
 - Verification reference: the user stated, “the task is done. lets finalize and release a new version.”
 - Release selection: `v1.4.29`, the next patch version after current `v1.4.28`.
-- Finalization status: authorized and in progress. The post-verification fetch confirmed that the verified candidate still contains latest `origin/personal@6caf809303294252c109420b238588f0c68aca6a`.
+- Finalization status: `Completed`. The ticket was archived, the ticket branch was pushed, its conflict-free merge and final integration smoke passed, `origin/personal` was updated, and v1.4.29 was released and verified.
 - Safety note: the existing local `personal` worktree has unrelated uncommitted files. It will not be stashed, reset, cleaned, or otherwise modified; target integration/release will use a clean temporary worktree from `origin/personal`.
 
 ## Cumulative Artifact Package

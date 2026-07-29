@@ -1,0 +1,167 @@
+timestamp=2026-07-29T13:23:34Z
+remote_state:
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+origin_personal=2abcd1601b9908ddee16164b87b75ec224f13798
+remote_tag_commit=2abcd1601b9908ddee16164b87b75ec224f13798
+d5cd1a76141c8b5b88a5edc4f47a809ee1617104	refs/tags/v1.4.29
+2abcd1601b9908ddee16164b87b75ec224f13798	refs/tags/v1.4.29^{}
+release:
+{
+  "name": "v1.4.29",
+  "tagName": "v1.4.29",
+  "isDraft": false,
+  "isPrerelease": false,
+  "publishedAt": "2026-07-29T13:00:09Z",
+  "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.29",
+  "targetCommitish": "2abcd1601b9908ddee16164b87b75ec224f13798",
+  "body": "# Reliable Idle/Running Status Across Agent Turns\n\n## Fixes\n\n- Keeps completed standalone agents and team members `Idle` when delayed tool or content events from an older turn arrive.\n- Prevents delayed completion/error events for an older turn from closing or reopening a newer active turn.\n- Preserves late tool results and transcript content without letting that activity rewrite lifecycle status.\n- Keeps live status, team-member status, focused headers, and reconnect snapshots aligned with the same backend-owned turn state.\n\n## Runtime And Integration Improvements\n\n- Uses authoritative turn start/completion/interruption boundaries across AutoByteus, Codex, and Claude runtime adapters instead of guessing status from activity or quiet periods.\n- Adds structured `error_scope`, `error_effect`, and turn identity to runtime error events so diagnostics remain visible without incorrectly terminalizing a turn.\n- Keeps accepted command acknowledgements and visible running/idle transitions correlated with the command's exact turn.\n\n## Compatibility And Data\n\n- Public status labels and colors are unchanged.\n- Existing run history, transcripts, team/member identities, and delayed activity remain directly usable.\n- No data migration or historical rewrite is required.\n\n## Validation\n\n- Deterministic lifecycle, WebSocket reconnect, command acknowledgement, team status, and external-channel coverage passed.\n- Independent live Codex and Claude Agent SDK runs verified running-to-idle settlement, no post-idle reopen, reconnect snapshots, runtime restore, and a later reusable turn.\n- Live two-member Claude teams verified bidirectional inter-agent status/receipt handling and retained both member projections across terminate, restore, and continued turns.\n- Live AutoByteus runs through the configured authorized remote provider verified standalone lifecycle/reconnect/restore, two-member status/projection restore, and real `send_message_to` delivery with reference-file projection and reviewer response.\n- Isolated real-browser validation confirmed that agent and team status surfaces remain idle while delayed content stays visible, and the pre-release macOS ARM64 Electron candidate passed native-terminal and embedded-server startup verification.\n",
+  "assetCount": 21,
+  "assets": [
+    {
+      "name": "autobyteus-message-gateway-1.4.29-node-generic.tar.gz",
+      "size": 46422358,
+      "contentType": "application/gzip",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/autobyteus-message-gateway-1.4.29-node-generic.tar.gz"
+    },
+    {
+      "name": "autobyteus-message-gateway-1.4.29-node-generic.tar.gz.json",
+      "size": 429,
+      "contentType": "application/json",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/autobyteus-message-gateway-1.4.29-node-generic.tar.gz.json"
+    },
+    {
+      "name": "autobyteus-message-gateway-1.4.29-node-generic.tar.gz.sha256",
+      "size": 120,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/autobyteus-message-gateway-1.4.29-node-generic.tar.gz.sha256"
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.29-release.apk",
+      "size": 1846691,
+      "contentType": "application/vnd.android.package-archive",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_android-1.4.29-release.apk"
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.29-release.apk.sha256",
+      "size": 113,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_android-1.4.29-release.apk.sha256"
+    },
+    {
+      "name": "AutoByteus_personal_linux-arm64-1.4.29.AppImage",
+      "size": 356909606,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_linux-arm64-1.4.29.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_linux-x64-1.4.29.AppImage",
+      "size": 368536214,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_linux-x64-1.4.29.AppImage"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.29.dmg",
+      "size": 433794478,
+      "contentType": "application/x-apple-diskimage",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-arm64-1.4.29.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.29.dmg.blockmap",
+      "size": 454000,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-arm64-1.4.29.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.29.zip",
+      "size": 429809489,
+      "contentType": "application/zip",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-arm64-1.4.29.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-arm64-1.4.29.zip.blockmap",
+      "size": 439871,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-arm64-1.4.29.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.29.dmg",
+      "size": 456125033,
+      "contentType": "application/x-apple-diskimage",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-x64-1.4.29.dmg"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.29.dmg.blockmap",
+      "size": 478704,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-x64-1.4.29.dmg.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.29.zip",
+      "size": 451449187,
+      "contentType": "application/zip",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-x64-1.4.29.zip"
+    },
+    {
+      "name": "AutoByteus_personal_macos-x64-1.4.29.zip.blockmap",
+      "size": 461920,
+      "contentType": "application/octet-stream",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_macos-x64-1.4.29.zip.blockmap"
+    },
+    {
+      "name": "AutoByteus_personal_windows-1.4.29.exe",
+      "size": 301676094,
+      "contentType": "application/x-msdos-program",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/AutoByteus_personal_windows-1.4.29.exe"
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "size": 417,
+      "contentType": "text/yaml",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/latest-linux-arm64.yml"
+    },
+    {
+      "name": "latest-linux.yml",
+      "size": 413,
+      "contentType": "text/yaml",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/latest-linux.yml"
+    },
+    {
+      "name": "latest-mac.yml",
+      "size": 897,
+      "contentType": "text/yaml",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/latest-mac.yml"
+    },
+    {
+      "name": "latest.yml",
+      "size": 354,
+      "contentType": "text/yaml",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/latest.yml"
+    },
+    {
+      "name": "release-manifest.json",
+      "size": 904,
+      "contentType": "application/json",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/release-manifest.json"
+    }
+  ]
+}
+workflow_jobs:
+{"databaseId":30453815447,"workflowName":"Desktop Release","event":"push","status":"completed","conclusion":"success","headBranch":"v1.4.29","headSha":"2abcd1601b9908ddee16164b87b75ec224f13798","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815447","jobs":[{"name":"Resolve Release Metadata","status":"completed","conclusion":"success"},{"name":"Build macOS Intel x64","status":"completed","conclusion":"success"},{"name":"Build macOS ARM64","status":"completed","conclusion":"success"},{"name":"Build Linux ARM64","status":"completed","conclusion":"success"},{"name":"Build Linux x64","status":"completed","conclusion":"success"},{"name":"Build Windows x64","status":"completed","conclusion":"success"},{"name":"Publish GitHub Release","status":"completed","conclusion":"success"}]}
+{"databaseId":30453815449,"workflowName":"Android APK Release","event":"push","status":"completed","conclusion":"success","headBranch":"v1.4.29","headSha":"2abcd1601b9908ddee16164b87b75ec224f13798","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815449","jobs":[{"name":"Resolve Android Release Metadata","status":"completed","conclusion":"success"},{"name":"Build Android APK","status":"completed","conclusion":"success"},{"name":"Publish Android APK To GitHub Release","status":"completed","conclusion":"success"}]}
+{"databaseId":30453819412,"workflowName":"iOS App Store Connect Release","event":"push","status":"completed","conclusion":"success","headBranch":"v1.4.29","headSha":"2abcd1601b9908ddee16164b87b75ec224f13798","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453819412","jobs":[{"name":"Resolve iOS Release Metadata","status":"completed","conclusion":"success"},{"name":"Build And Test iOS App","status":"completed","conclusion":"success"},{"name":"Validate iOS Publish Secrets","status":"completed","conclusion":"success"},{"name":"Archive And Upload To App Store Connect","status":"completed","conclusion":"success"}]}
+{"databaseId":30453819481,"workflowName":"Release Messaging Gateway","event":"push","status":"completed","conclusion":"success","headBranch":"v1.4.29","headSha":"2abcd1601b9908ddee16164b87b75ec224f13798","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453819481","jobs":[{"name":"Resolve Release Metadata","status":"completed","conclusion":"success"},{"name":"Build Runtime Package","status":"completed","conclusion":"success"},{"name":"Publish GitHub Release","status":"completed","conclusion":"success"}]}
+{"databaseId":30453815643,"workflowName":"Server Docker Release","event":"push","status":"completed","conclusion":"success","headBranch":"v1.4.29","headSha":"2abcd1601b9908ddee16164b87b75ec224f13798","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815643","jobs":[{"name":"Resolve Release Metadata","status":"completed","conclusion":"success"},{"name":"Build And Push Server Image","status":"completed","conclusion":"success"}]}
+docker_manifest_1.4.29:
+Name:      docker.io/autobyteus/autobyteus-server:1.4.29
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:5892ae0bcf8dd6b707a5baa75f0ad85d3199fcb77653ecaf5c9cfca1155a9d52
+           
+Manifests: 
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.29@sha256:2aa13a576c3abd2254813f4c485c76e4fe8997017b140da030cc0b8f56d85d41
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+             
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.29@sha256:4dc1f91cf2f32a1b321587b86b8920bbe71ffbebccb897944e133e10b9a38958
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64

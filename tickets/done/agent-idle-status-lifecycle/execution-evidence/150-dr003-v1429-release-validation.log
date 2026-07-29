@@ -1,0 +1,46 @@
+timestamp=2026-07-29T12:56:59Z
+release_commit=2abcd1601b9908ddee16164b87b75ec224f13798
+tag_object=d5cd1a76141c8b5b88a5edc4f47a809ee1617104
+tag_commit=2abcd1601b9908ddee16164b87b75ec224f13798
+tag
+v1.4.29         Release v1.4.29
+versions:
+autobyteus-web/package.json=1.4.29
+autobyteus-message-gateway/package.json=1.4.29
+manifest:
+{
+  "schemaVersion": 1,
+  "releases": [
+    {
+      "serverVersion": "0.1.1",
+      "releaseTag": "v1.4.29",
+      "artifactVersion": "1.4.29",
+      "platformKey": "node-generic",
+      "archiveType": "tar.gz",
+      "downloadUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/autobyteus-message-gateway-1.4.29-node-generic.tar.gz",
+      "sha256Url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/autobyteus-message-gateway-1.4.29-node-generic.tar.gz.sha256",
+      "metadataUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.29/autobyteus-message-gateway-1.4.29-node-generic.tar.gz.json",
+      "supportedProviders": [
+        "WHATSAPP",
+        "WECOM",
+        "DISCORD",
+        "TELEGRAM"
+      ],
+      "excludedProviders": [
+        "WHATSAPP",
+        "WECOM",
+        "WECHAT"
+      ]
+    }
+  ]
+}
+release_notes_sync=PASS
+release_commit_files:
+M	.github/release-notes/release-notes.md
+M	autobyteus-message-gateway/package.json
+M	autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+M	autobyteus-web/package.json
+remote_tag:
+origin_personal=b95c90e92f532414fb6b9598cc8a51252148e642
+worktree_status:
+## delivery/agent-idle-status-lifecycle-v1.4.29...origin/personal [ahead 1]

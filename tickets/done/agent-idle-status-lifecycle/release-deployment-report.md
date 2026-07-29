@@ -3,9 +3,9 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `agent-idle-status-lifecycle`
-- Current scope: user-authorized repository finalization and v1.4.29 release/publication.
+- Current scope: completed repository finalization and v1.4.29 release/publication.
 - Repository finalization target: `origin/personal`, integrated through a clean temporary worktree because the existing local `personal` worktree contains unrelated uncommitted work.
-- Release/publication/deployment: authorized and in progress through the repository-documented release helper.
+- Release/publication/deployment: `Completed` through the repository-documented release helper and tag-triggered workflows.
 
 ## Handoff Summary
 
@@ -13,7 +13,7 @@
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/delivery-revision-record.md`
 - Current delivery revision ID: `DR-003`
-- Notes: User verification is complete; ticket archival, target integration, v1.4.29 release, and publication verification are in progress.
+- Notes: User verification, ticket archival, target integration, v1.4.29 release, and publication verification are complete; safe local cleanup remains.
 
 ## Initial Delivery Integration Refresh
 
@@ -64,7 +64,12 @@
 
 ## Version / Tag / Release Commit
 
-Planned release is `v1.4.29`, the next patch after current `v1.4.28`. The release commit and annotated tag have not yet been created.
+- Release version: `1.4.29`
+- Release commit: `2abcd1601b9908ddee16164b87b75ec224f13798`
+- Annotated tag: `v1.4.29` (tag object `d5cd1a76141c8b5b88a5edc4f47a809ee1617104`)
+- Version sync: `autobyteus-web/package.json=1.4.29` and `autobyteus-message-gateway/package.json=1.4.29`.
+- Managed messaging manifest: synchronized to tag/artifact version `v1.4.29` / `1.4.29`.
+- Curated release notes: synchronized from the archived ticket and verified byte-for-byte before push.
 
 ## Repository Finalization
 
@@ -79,43 +84,52 @@ Planned release is `v1.4.29`, the next patch after current `v1.4.28`. The releas
 - Re-integration before final merge result: `Completed`; clean temporary branch started directly at latest `origin/personal@6caf809303294252c109420b238588f0c68aca6a`.
 - Target branch update result: `Completed` in clean temporary worktree without touching the unrelated dirty local `personal` worktree.
 - Merge into target result: `Completed without conflicts` at merge commit `318e2847eb083517c40aaf3c7fcd5df3d7c440b4`.
-- Push target branch result: `Pending`
-- Repository finalization status: `Integrated checks passed; target push pending`
+- Push target branch result: `Completed`; finalization/report commit `b95c90e92f532414fb6b9598cc8a51252148e642` was pushed, followed by release commit `2abcd1601b9908ddee16164b87b75ec224f13798`.
+- Repository finalization status: `Completed`
 - Blocker: N/A
 
 ## Release / Publication / Deployment
 
-- Applicable: `Conditional`
+- Applicable: `Yes`
 - Method: `Release Script`
-- Method reference / command: root `pnpm release <version> -- --release-notes tickets/done/agent-idle-status-lifecycle/release-notes.md`, only after archival/finalization if explicitly requested.
-- Release/publication/deployment result: `In progress`; v1.4.29 explicitly authorized.
-- Release notes handoff result: `Prepared`; the archived release notes will be passed to the release helper.
+- Method reference / command: `pnpm release 1.4.29 -- --release-notes tickets/done/agent-idle-status-lifecycle/release-notes.md --branch delivery/agent-idle-status-lifecycle-v1.4.29 --no-push`, followed by verified pushes of `HEAD:personal` and `v1.4.29`. `--no-push` was used only to preserve the unrelated dirty local `personal` worktree; the same documented helper created the release commit/tag.
+- Release/publication/deployment result: `Completed`.
+- Release notes handoff result: `Completed`; the archived ticket notes are the published GitHub Release body.
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.29 — published, non-draft, non-prerelease, 21 audited assets.
+- Desktop Release: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815447
+- Android APK Release: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815449
+- iOS App Store Connect Release: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453819412
+- Messaging Gateway Release: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453819481
+- Server Docker Release: `Success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30453815643
+- Docker image verification: `autobyteus/autobyteus-server:1.4.29`, digest `sha256:5892ae0bcf8dd6b707a5baa75f0ad85d3199fcb77653ecaf5c9cfca1155a9d52`, manifests for `linux/amd64` and `linux/arm64`.
 - Blocker: N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle`
-- Worktree cleanup result: `Pending finalization/publication`.
-- Worktree prune result: `Pending finalization/publication`.
-- Local ticket branch cleanup result: `Pending finalization/publication`.
-- Remote branch cleanup result: `Pending`; the ticket branch will first be pushed for auditable finalization.
+- Worktree cleanup result: `Pending post-publication safe cleanup`.
+- Worktree prune result: `Pending post-publication safe cleanup`.
+- Local ticket branch cleanup result: `Pending post-publication safe cleanup`.
+- Remote branch cleanup result: `Pending deletion`; the ticket branch was pushed and is fully contained in `origin/personal`.
 - Blocker: N/A
 
 ## Escalation / Reroute
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A; the test package is ready for the user-verification gate.
+- Why final handoff could not complete: N/A; repository finalization and publication succeeded.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/release-notes.md`
-- Archived release notes artifact used for release/publication: N/A
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-No deployment was performed.
+- Published the v1.4.29 GitHub Release and desktop/Linux/Windows/Android/messaging assets.
+- Uploaded the iOS archive to App Store Connect/TestFlight; final public App Store review/release remains external by repository policy.
+- Published the stable multi-architecture Docker image `autobyteus/autobyteus-server:1.4.29` and updated `latest`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -134,6 +148,9 @@ No deployment was performed.
 - Final base confirmation: `origin/personal@6caf809303294252c109420b238588f0c68aca6a`; ahead 17 / behind 0 at package head `7e4b78d314b867c57723cee95d0cdd24be33a3cf`.
 - Finalization merge/smoke: merge commit `318e2847eb083517c40aaf3c7fcd5df3d7c440b4`; frozen install evidence `144`; clean-worktree prerequisite miss evidence `145`; shared-package/Prisma preparation evidence `146`; unchanged rerun evidence `147`, `Pass` with 6 files / 38 tests.
 - Evidence `145` classification: delivery execution-environment setup, not product failure. The clean worktree had not yet generated Prisma client or built shared workspace packages; no implementation or test code changed before the successful rerun.
+- Release preparation/version/tag validation: evidence `149`–`151`.
+- Tag-triggered workflow monitor: evidence `152`; all five workflows completed successfully.
+- Public release, 21-asset inventory, per-job conclusions, and Docker manifest audit: evidence `153`.
 - Verification-script history: `130` used the wrong Electron plist key; `131` incorrectly expected no signature instead of an ad-hoc linker signature. Package bytes were unchanged and both are classified as delivery-script issues, not product failures.
 
 ## Remaining Risks / Residuals
@@ -148,4 +165,4 @@ Reroute or stop finalization if user testing shows delayed old-turn activity reo
 
 ## Final Status
 
-`Finalization authorized; v1.4.29 release in progress`. The user completed verification, the post-verification fetch confirms the candidate still contains current `origin/personal@6caf809303294252c109420b238588f0c68aca6a`, and API/E2E, proportional review, and Electron packaging evidence remain passed. Ticket archival, repository finalization, release publication, and cleanup results will be recorded before the terminal handoff.
+`Repository finalized and v1.4.29 released; publication verified`. The user completed verification; the ticket was archived and merged on current `origin/personal`; integrated smoke passed 38/38; release commit/tag `2abcd1601b9908ddee16164b87b75ec224f13798` / `v1.4.29` were pushed; all five release workflows succeeded; the GitHub Release has 21 audited assets; and the multi-architecture Docker image is public. Only safe local/remote ticket-branch cleanup remains.

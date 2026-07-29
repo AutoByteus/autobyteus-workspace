@@ -6,7 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-011 Pass on API-REV-002; current-base Electron rebuild requested | N/A | Ready for explicit user verification | `docs-sync-report.md`, `handoff-summary.md`, `electron-build-report.md`, `release-notes.md`, `release-deployment-report.md` |
 | DR-002 | User explicitly requested a fresh README-guided Electron rebuild | Ready for explicit user verification | Ready for explicit user verification | `docs-sync-report.md`, `handoff-summary.md`, `electron-build-report.md`, `release-deployment-report.md` |
-| DR-003 | User declared the task done and requested finalization plus a new release | Ready for explicit user verification | Finalization authorized; v1.4.29 release in progress | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+| DR-003 | User declared the task done and requested finalization plus a new release | Ready for explicit user verification | Repository finalized and v1.4.29 released; cleanup pending | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 
 ## Revision Entries
 
@@ -47,7 +47,7 @@
 - Delivery round and trigger: The user explicitly stated, “the task is done. lets finalize and release a new version,” completing the verification hold and authorizing repository finalization and release.
 - Triggering upstream report, verification, or evidence: User completion signal on `2026-07-29`, DR-002 Electron candidate, `CRR-011` (`Pass`), and `API-REV-002` (`Pass`, 97.9%).
 - Prior authoritative result: `DR-002 — Ready for explicit user verification`.
-- Current authoritative result: `Finalization authorized; v1.4.29 release in progress`.
+- Current authoritative result: `Repository finalized and v1.4.29 released; publication verified; safe cleanup pending`.
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/docs-sync-report.md`
 - Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/handoff-summary.md`
 - Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/release-deployment-report.md`
@@ -55,5 +55,7 @@
 - User verification/finalization state: Verification received and the hold is lifted. The ticket is archived. The existing local `personal` worktree's unrelated uncommitted work was not modified; target integration/release uses a clean temporary worktree based directly on current `origin/personal`.
 - Release selection: `v1.4.29`, the next patch after current `v1.4.28`, using the repository-documented release helper and the archived ticket release notes.
 - Why this delivery revision was recorded: It distinguishes the explicit authorization and release round from the prior user-test build rounds and keeps finalization actions auditable.
-- Next action: Commit/archive the ticket branch, push it, merge it into current `origin/personal`, run integrated checks, push the target, execute the v1.4.29 release workflow, verify publication, and update this entry with the completed result.
+- Repository finalization result: Archived ticket commit `0febb53a136f8d4bb183edd3015db97a98ecb550` was pushed; conflict-free merge `318e2847eb083517c40aaf3c7fcd5df3d7c440b4` passed 6 files / 38 tests; target finalization/report commit `b95c90e92f532414fb6b9598cc8a51252148e642` was pushed.
+- Release/publication result: Release commit/tag `2abcd1601b9908ddee16164b87b75ec224f13798` / `v1.4.29` were pushed. Desktop, Android, iOS App Store Connect, messaging gateway, and server Docker workflows all succeeded. The public GitHub Release contains 21 audited assets, and the Docker OCI index contains `linux/amd64` and `linux/arm64`.
+- Next action: Complete safe temporary/ticket branch cleanup, preserve the unrelated dirty `personal` worktree, and record the cleanup result as a later delivery revision.
 - Remaining blockers, rollback concerns, or untested scope: No finalization blocker at preflight. Direct DeepSeek HTTP 401 remains provider-specific; production-duration retired-turn retention was not stress-tested.
