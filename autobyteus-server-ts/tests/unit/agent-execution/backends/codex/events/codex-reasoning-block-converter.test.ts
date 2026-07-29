@@ -225,14 +225,23 @@ describe("Codex reasoning block conversion", () => {
     [
       "terminal error",
       CodexThreadEventName.ERROR,
-      { message: "boom" },
-      [AgentRunEventType.AGENT_STATUS, AgentRunEventType.ERROR],
+      {
+        message: "boom",
+        error_scope: "runtime",
+        error_effect: "terminal",
+      },
+      [AgentRunEventType.ERROR, AgentRunEventType.AGENT_STATUS],
       "ERROR",
     ],
   ] as Array<[string, string, JsonObject, AgentRunEventType[], "ACTIVE" | "IDLE" | "ERROR"]>) (
     "keeps the reasoning end neutral before status-bearing %s outputs",
     (_label, method, params, boundaryEventTypes, expectedHint) => {
-      const converter = new CodexThreadEventConverter("run-1");
+      const converter = method === CodexThreadEventName.ERROR
+        ? new CodexThreadEventConverter("run-1", null, () => ({
+            status: "error",
+            can_interrupt: false,
+          }))
+        : new CodexThreadEventConverter("run-1");
       emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
 
       const events = converter.convert({ method, params });
