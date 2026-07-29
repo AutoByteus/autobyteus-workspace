@@ -2,17 +2,17 @@
 
 ## Upstream Artifact Package
 
-- **Requirements doc:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/requirements.md`
-- **Investigation notes:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/investigation-notes.md`
-- **Design spec:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/design-spec.md`
-- **Supplemental task artifacts:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/development-startup-contract.md`
-- **Solution revision record:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/solution-revision-record.md`
-- **Triggering rework report, revision record, or evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md` (`CR-001`), `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-revision-record.md` (`CRR-002`), and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md` (`API-REV-001`). Current implementation revision record is `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md` (`IR-002`).
+- **Requirements doc:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/requirements.md`
+- **Investigation notes:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/investigation-notes.md`
+- **Design spec:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/design-spec.md`
+- **Supplemental task artifacts:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/development-startup-contract.md`
+- **Solution revision record:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/solution-revision-record.md`
+- **Triggering rework report, revision record, or evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-report.md` (`CR-001`), `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-revision-record.md` (`CRR-002`), and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md` (`API-REV-001`). Current implementation revision record is `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/implementation-revision-record.md` (`IR-002`).
 
 ## Current Implementation Summary
 
 - **Implementation cycle:** Rework.
-- **Implementation revision record:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md`
+- **Implementation revision record:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/implementation-revision-record.md`
 - **Current implementation revision ID:** `IR-002`.
 - **Related solution revision ID:** `SR-001`.
 - **Related code review revision IDs:** `CRR-002` (prior baseline: `CRR-001`).

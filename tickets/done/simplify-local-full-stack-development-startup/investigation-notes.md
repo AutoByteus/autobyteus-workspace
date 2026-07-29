@@ -20,7 +20,7 @@ The exact intended behavior is captured in [Development Startup Contract](./deve
 
 - Project Type: `Git` superrepository workspace.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup`.
 - Current Branch: `codex/simplify-local-full-stack-development-startup`.
 - Current Worktree / Working Directory: dedicated task worktree above.
 - Bootstrap Base Branch: refreshed `origin/personal`.

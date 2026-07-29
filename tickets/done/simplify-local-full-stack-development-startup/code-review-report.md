@@ -3,23 +3,23 @@
 ## Review Round Meta
 
 - Review Entry Point: `Focused API/E2E Failure-Origin Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/requirements.md`
 - Supplemental Task Artifacts Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/development-startup-contract.md`
-- Current Review Round: `4`
-- Trigger: `api_e2e_engineer` API/E2E revision `API-REV-002`; exact root E2E execution failed after the `CR-001` command fix.
-- Prior Review Round Reviewed: Round `3` (`Pass` — implementation source re-review after `IR-002`)
-- Latest Authoritative Round: `4`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/development-startup-contract.md`
+- Current Review Round: `7`
+- Trigger: `api_e2e_engineer` API/E2E revision `API-REV-004`; fresh latest-base root E2E revalidation passed after the Round 6 full-suite-only failure.
+- Prior Review Round Reviewed: Round `6` (failure-origin classification after delivery `DR-003`); the separate proportional test review for this recheck is `Not Applicable` because no durable test code changed.
+- Latest Authoritative Round: `7`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/design-spec.md`
 - Design Review Report Reviewed As Context: `N/A — the design spec contains the completed design-health and implementation-readiness checks; no separate report was supplied.`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-handoff.md`
-- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`
-- Failing Scenario IDs: `DEV-007` / `REQ-009` / `AC-008`; eight unchanged E2E files and sixteen tests failed in API/E2E `API-REV-002`.
-- Exact Failing Commands / Execution Mode: From this worktree, exact root `pnpm test:e2e`; status `1`; 61 files (`39` passed, `8` failed, `14` skipped) and 213 tests (`148` passed, `16` failed, `49` skipped). The effective command was confirmed as `vitest --run tests/e2e`; the prior malformed forwarding is not current evidence.
-- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/06-root-test-e2e-rerun.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/package.json`
-- Full-review comparison basis: base `153f3409cd90207f9219cbe20242606271b36104` through current implementation commit `0f836c992` (Round 3 re-review focused on the IR-002 delta and prior CR-001 resolution).
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/implementation-handoff.md`
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`
+- Failing Scenario IDs: `N/A` in the current API/E2E recheck. Historical Round 6 `CR-006` was the unrelated managed-messaging full-suite-only failure; its fresh root rerun passed.
+- Exact Failing Commands / Execution Mode: Fresh exact root `pnpm test:e2e` on candidate `a4040047b44da5e1cf7208251f0ca8efe0fa0dcf`; status `0`; 62 files (`48` passed, `14` skipped) and 214 tests (`165` passed, `49` skipped). The effective command remained deterministic `vitest --run tests/e2e`, and the managed-messaging file plus rollback scenario passed.
+- Failure Evidence Paths: Historical `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-base-root-test-e2e.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-base-managed-gateway-focused.log`; current `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-base-root-test-e2e-rerun-20260729.log`.
+- Full-review comparison basis: reviewed ticket candidate `0f836c992`; current latest-base delivery integration candidate `a4040047b` with `origin/personal` at `4b1d2332b314346f6f08676853f4de3567b55327`. The failing managed-messaging test and its production source path have no diff from the reviewed ticket candidate to the current integration candidate.
 
 ## Round History
 
@@ -29,6 +29,8 @@
 | 2 | API/E2E `API-REV-001` failure-origin report for `DEV-007` | Round 1 had no findings | `CR-001` | **Fail — Local Fix** | **Yes** | Root `test:e2e` forwards an extra `--`, producing `vitest -- --run tests/e2e`; unit/integration scope ran instead of deterministic E2E-only scope. |
 | 3 | `implementation_engineer` `IR-002` bounded command-packaging fix | `CR-001` rechecked | None; `CR-001` resolved | **Pass** | **Yes** | Current script yields `vitest --run tests/e2e` while preserving server `pretest`; full root E2E execution remains API/E2E-owned. |
 | 4 | API/E2E `API-REV-002` exact root E2E failure | `CR-001` remains resolved | `CR-002`–`CR-005` failure-origin classifications | **Fail — baseline/test setup; no ticket implementation route** | **Yes** | The exact E2E-only scope is now proven, but eight unchanged files fail for fixture/API mismatch, stale team fake, and missing direct-test AppConfig initialization. |
+| 6 | Delivery `DR-003` latest-base revalidation plus user scope clarification | `CR-001` remains resolved; prior `CR-002`–`CR-005` are not recurring | `CR-006` | **Failure-origin classified — unrelated baseline/flaky test; required repository gate remains unresolved** | **Yes** | Managed-messaging gateway is outside this ticket's used functionality and unchanged by the ticket. The full root E2E command is nevertheless an explicit `REQ-009` / `AC-008` gate; its full-suite-only failure cannot be recorded as a delivery pass without repair or an explicit approved exception. |
+| 7 | API/E2E `API-REV-004` fresh latest-base root E2E recheck | `CR-006` rechecked and cleared as a current gate failure; `CR-001` remains resolved | None | **Pass — proportional test review Not Applicable** | **Yes** | Exact root E2E passes on the refreshed candidate; no durable tests, fixtures, helpers, or implementation source changed. Route the cumulative package to delivery. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -36,6 +38,9 @@
 | --- | --- | --- | --- | --- | --- |
 | 1 | None | N/A | No prior findings existed to recheck. | Round 1 report recorded a clean source-review pass. | The Round 2 issue was new runtime evidence. |
 | 2 | `CR-001` | High | **Resolved** | Current root `package.json` uses `pnpm --filter autobyteus-server-ts test --run tests/e2e`; reviewer help probe showed `vitest --run tests/e2e` and active `pretest` preparation. | Exact root `pnpm test:e2e` execution is still required downstream; this re-review does not claim it. |
+| 4 | `CR-002`–`CR-005` | Medium | **No recurrence in current failure** | API/E2E `API-REV-003` repaired those fixture/setup issues and passed the root suite before the latest-base refresh; the current failure is a different unchanged managed-messaging scenario. | The latest-base root result is still not a pass. |
+| 5 | None — separate proportional test review | N/A | **Pass retained as historical pre-delivery result** | `CRR-005` reviewed the durable test changes after `API-REV-003`; no current managed-messaging test change was made. | This round is failure-origin, not a proportional test-code review. |
+| 6 | `CR-006` | Medium | **Resolved for the current gate** | Fresh `API-REV-004` exact root E2E rerun passed; the managed-messaging file and rollback scenario passed without durable test or source changes. | Preserve the earlier full-suite-only failure as historical flakiness evidence; it does not invalidate the current pass. |
 
 ## Review Scope
 
@@ -49,7 +54,7 @@
   - removed `test-support/live-e2e/run-test-{dev,server,web}.mjs`
   - relevant README and secret-management documentation changes
   - existing server CLI/AppConfig, server readiness route, and Nuxt endpoint configuration needed to verify the production path
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/06-root-test-e2e-rerun.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/evidence/06-root-test-e2e-rerun.log`
   - API/E2E coverage/execution reports and revision record for `API-REV-002`
   - current `IR-002` implementation handoff and revision record
 - Explicit exclusions: no durable API/E2E test code changed; this failure-origin review does not repeat the full implementation scorecard, prescribe fixes for unchanged product subsystems, or claim browser validation/delivery integration. The exact launcher live checks passed in the API/E2E package; remaining test-fixture validity and clean reruns remain with `api_e2e_engineer`.
@@ -79,7 +84,7 @@
 - **Production path to failure:** root `package.json` `test:e2e` script -> `pnpm --filter autobyteus-server-ts test -- --run tests/e2e` -> server package `test: vitest` -> actual child command `vitest -- --run tests/e2e`.
 - **Expected behavior:** only deterministic `autobyteus-server-ts/tests/e2e` assertions execute through the existing test-owned setup.
 - **Observed behavior:** the extra forwarded `--` causes Vitest to treat the intended selector as non-effective; the run visibly includes `tests/unit/**` and `tests/integration/**`, and was interrupted with SIGINT after the wrong scope was established (shell exit 130).
-- **Evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/evidence/03-root-test-e2e.log` and the current root `package.json` script.
+- **Evidence:** `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/evidence/03-root-test-e2e.log` and the current root `package.json` script.
 - **Material-premise gate:** `Pass`. The command trigger and required assertion scope are approved and product-supported; no hypothetical lifecycle or test-only premise is needed to attribute this defect.
 
 ### `CR-001` — Root deterministic E2E command forwards malformed Vitest arguments
@@ -193,6 +198,44 @@ The unrelated occupied-port and lifecycle results remain valid evidence for the 
 | Failing files are in the ticket's changed source path | Rejected | All eight failing test paths are unchanged from the recorded base; ticket implementation changes are launcher/package command files only. |
 | Fixture/configuration failures prove production-source defects | Rejected | The model/media/team failures are directly explained by incomplete test doubles/seams; token failures stop at missing direct-test AppConfig initialization; the remaining Claude timeouts lack an independent product-supported trigger. |
 
+## Failure-Origin Review — Round 6 — Latest-Base Delivery Revalidation
+
+- **Current API/E2E result:** `Fail` on the refreshed candidate: exact root `pnpm test:e2e` produced 62 files (`47` passed, `1` failed, `14` skipped), 214 tests (`164` passed, `1` failed, `49` skipped), exit `1`. The focused rerun of the same managed-messaging rollback scenario passed (`1` passed, `2` skipped).
+- **Approved scenario and ticket-scope validity:** The root command remains an approved repository contract. `REQ-009` and `AC-008` require `pnpm test:e2e` to execute deterministic E2E assertions against test-owned state, so the command result is a required delivery gate. Separately, the user clarified that managed-messaging gateway functionality is not used by this ticket. The failing gateway behavior is therefore outside the ticket's product behavior scope and cannot be used to claim a defect in the development launcher, its package boundary, or any ticket acceptance behavior.
+- **Independent trigger and reachability:** The supported operational trigger for the gate is a developer invoking root `pnpm test:e2e`. The failing scenario then exercises a test-owned GraphQL fixture with a fake managed-gateway archive. That establishes a repository test execution failure, not a ticket-feature production failure. The failing test and managed-gateway implementation path are unchanged from ticket candidate `0f836c992` through the latest-base integration candidate; the ticket's implementation delta remains the development launcher and root command boundary.
+- **Full-suite versus focused evidence:** The full run failed only in the managed-gateway rollback assertion (`expected activeVersion 0.1.0, received 0.2.0` at line 320). The same scenario passed in the focused rerun. This full-suite-only divergence supports a baseline test isolation, fixture, environment, or execution flake, but does not identify a specific source mechanism. The focused pass cannot convert the failed full-suite gate into `Pass`.
+
+### `CR-006` — Unrelated managed-gateway full-suite-only failure on the latest-base candidate
+
+- **Affected behavior / requirements:** `DEV-007` / `REQ-009` / `AC-008` as a repository execution gate only. The managed-messaging gateway feature itself is outside the functionality used by this ticket.
+- **Severity:** Delivery-blocking validation failure, not a ticket implementation defect. The scope distinction is material: the failure is non-blocking to the ticket's product behavior, but the required root E2E command remains unresolved.
+- **Failure origin:** **Unrelated baseline/flaky API/E2E test or execution issue; no implementation-owned defect confirmed.** The only changed execution context is the full suite versus the passing focused rerun; the test and managed-gateway source path are unchanged from the reviewed ticket candidate. A failing test cannot self-prove a production defect, and no independent ticket-supported product trigger reaches the gateway feature because the user has excluded that functionality from this task.
+- **Required action / owner:** Route to `api_e2e_engineer` for bounded repository-gate investigation. In the current latest-base candidate, rerun the exact root `pnpm test:e2e`; if it fails again, rerun the managed-gateway file and exact scenario in fresh workers/processes and capture first-failure timing, worker isolation, child/runtime logs, and persisted status evidence. Repair test isolation/fixture/execution only if reproduced. If the full root command passes, retain the failure as a documented flaky baseline but do not claim the failed run was a pass. If it cannot be made reliable, delivery needs an explicit, recorded user-approved exception before treating the gate as non-blocking; this review does not grant that waiver.
+- **Implementation route:** None. Do not send `implementation_engineer` rework unless independent evidence later shows a changed ticket-owned command/launcher path is responsible, which current evidence rejects.
+
+### Current Finding / Routing Verdict — Round 6
+
+- `CR-001` remains **resolved**; the root command still selects deterministic `tests/e2e` scope.
+- `CR-006` is **non-blocking to ticket feature scope** but **blocking to the required repository validation gate**. It is classified as an unrelated baseline/flaky API/E2E execution issue, not as a ticket implementation failure.
+- The required next owner is `api_e2e_engineer`. No proportional test-code review applies unless durable tests are changed; if durable tests change and the gate then passes, the separate proportional review path is required.
+
+### Material-Premise Gate — Round 6
+
+| Premise | Status | Basis |
+| --- | --- | --- |
+| Managed-messaging gateway behavior is used by this ticket | **Rejected** | User scope clarification; the ticket requirements and design concern local development startup, isolated state, readiness, and command ownership, not managed messaging. |
+| The failing gateway test proves a ticket implementation defect | **Rejected** | The failing test/source path is unchanged from `0f836c992`; the focused rerun passed; no ticket launcher or package-command path participates in the gateway lifecycle. |
+| Root `pnpm test:e2e` is a required repository gate | **Confirmed** | `REQ-009` and `AC-008` explicitly require deterministic E2E assertions through this command. |
+| The full-suite failure is explained enough to waive the gate | **Rejected** | Focused pass supports flakiness but does not establish reproducibility, root cause, or an approved exception. |
+
+## API/E2E Recheck — Round 7 — API-REV-004
+
+- **Current API/E2E result:** `Pass` on the latest-base integrated candidate `a4040047b44da5e1cf7208251f0ca8efe0fa0dcf`. Fresh exact root `pnpm test:e2e` exited `0`: 62 files (`48` passed, `14` skipped) and 214 tests (`165` passed, `49` skipped). The effective command remained `vitest --run tests/e2e`.
+- **CR-006 resolution:** The previously failing managed-messaging file and rollback scenario passed in the fresh full-suite worker. The earlier full-suite-only failure remains historical evidence of flakiness, not a current gate failure and not a ticket implementation defect.
+- **Changed-scope check:** No durable API/E2E tests, fixtures, helpers, or implementation source changed in API-REV-004. No implementation source re-review is reopened. The managed-messaging functionality remains outside the ticket's used product scope.
+- **Proportional test-code review:** `Not Applicable` for API-REV-004 because no durable test code changed. The prior `CRR-005` report remains the historical review of API-REV-003's durable test changes; this recheck introduces no new test review findings.
+- **Routing decision:** Acknowledge the passed cumulative package and send it to `delivery_engineer` for delivery-owned finalization gates. No implementation or API/E2E rework is requested.
+
 ## Structural / Design Checks — Round 1 Historical Record
 
 Round 2 is a focused failure-origin review and does not repeat the full implementation scorecard or source audit below. These sections remain the authoritative historical record for the completed Round 1 source review.
@@ -303,10 +346,10 @@ No blocking implementation-source findings in Round 1.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Failure-origin classified — no ticket implementation route`
-- Review Entry Point: `Focused API/E2E Failure-Origin Review`
-- Material-Premise Gate: `Pass` for the classification boundary; no unsupported source attribution accepted.
-- Score Summary: `N/A` for Round 4; the Round 3 implementation scorecard remains historical (`9.3/10`).
-- Failure Origin: `CR-001` resolved. Current E2E failures classify as `CR-002` stale model fixture, `CR-003` stale media mock, `CR-004` stale/insufficient Claude test harness with single-agent timeout still Unclear, and `CR-005` missing direct-test AppConfig initialization.
-- Recommended Recipient: `api_e2e_engineer`
-- Notes: No confirmed implementation-owned issue is routed to `implementation_engineer`. API/E2E must repair or explicitly classify the bounded fixture/setup gaps and rerun under the exact conditions in Round 4; no proportional test-code review applies unless durable tests change.
+- Review Decision: `Pass — API/E2E package acknowledged; proportional test-code review Not Applicable`
+- Review Entry Point: `Successful API/E2E Recheck / Proportional Test-Code Review`
+- Material-Premise Gate: `Pass`; the refreshed candidate's exact root E2E gate passes, and no unsupported source attribution remains.
+- Score Summary: `N/A` for Round 7; the Round 3 implementation scorecard remains historical (`9.3/10`).
+- Failure Origin: Historical `CR-006` is cleared as a current gate blocker by API-REV-004's fresh full-suite pass. It remains recorded as an unrelated full-suite-only flake in managed-messaging functionality outside this ticket's used scope; no ticket implementation defect was identified.
+- Recommended Recipient: `delivery_engineer`
+- Notes: No durable test code, fixtures, helpers, or implementation source changed in API-REV-004. The separate proportional test-code review is `Not Applicable`; no implementation or API/E2E rework is requested. Delivery may resume its own finalization gates.

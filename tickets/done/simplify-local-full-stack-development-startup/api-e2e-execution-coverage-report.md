@@ -2,31 +2,31 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/development-startup-contract.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/solution-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-revision-record.md`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Execution Round: `3`
-- Trigger: `code_reviewer` focused failure-origin review classified CR-002..CR-005 as stale test fixtures/setup and requested bounded API/E2E-owned repairs followed by an exact root rerun.
-- Prior Round Reviewed: API-REV-002; prior command-scope and fixture/setup failures were rechecked.
-- Latest Authoritative Round: Round 3; result `Pass` after durable fixture/setup repairs, with launcher/full-stack scenarios passing.
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/development-startup-contract.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/solution-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-revision-record.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Execution Round: `4`
+- Trigger: `code_reviewer` latest-base failure-origin review classified CR-006 as an unrelated full-suite-only managed-messaging failure and requested an exact root rerun on the refreshed candidate.
+- Prior Round Reviewed: API-REV-003; the latest-base full-suite-only failure was rechecked.
+- Latest Authoritative Round: Round 4; result `Pass` after a fresh latest-base exact root E2E rerun, with launcher/full-stack scenarios passing.
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: canonical investigation updated for Round 3.
+- Coverage investigation artifact: canonical investigation updated for Round 4.
 - Investigation completed before durable coverage changes or final execution: `Yes`.
-- Investigation plan followed: `Yes`. The focused stale-fixture/setup repairs were executed first, then the exact root E2E command was rerun, with the retained fixed-port startup, readiness, restart, alternate-cwd, hostile-environment, and cleanup evidence rechecked.
-- Existing coverage decisions revised during execution: CR-002..CR-005 are resolved as API/E2E-owned fixture/setup updates. Effective command is `vitest --run tests/e2e`; no `tests/unit` or `tests/integration` file appeared in the rerun, and all collected assertions passed.
-- Reroute required before or during execution: `No`; the focused failure-origin review was completed before this round and the repaired suite passed.
-- Notes: Durable E2E/test-setup code changed only for current contract fidelity and isolated AppConfig setup. No production source changed. Earlier occupied-port and lifecycle evidence remains valid.
+- Investigation plan followed: `Yes`. The exact root E2E command was rerun on the refreshed latest-base candidate after the focused failure-origin classification; prior launcher startup, readiness, restart, alternate-cwd, hostile-environment, and cleanup evidence remains retained.
+- Existing coverage decisions revised during execution: CR-006 is resolved for the current candidate by a fresh exact root pass. Effective command is `vitest --run tests/e2e`; no `tests/unit` or `tests/integration` file appeared, and all collected assertions passed.
+- Reroute required before or during execution: `No`; the focused failure-origin review was completed before this round and the fresh exact root suite passed.
+- Notes: No durable E2E/test-setup or production source changed in this recheck. Earlier occupied-port, lifecycle, live full-stack, and focused fixture evidence remains valid.
 
 ## Compatibility / Legacy Scope Check
 
@@ -34,7 +34,7 @@
 - Compatibility-only or legacy-retention behavior observed in implementation: `No`.
 - Approved persisted-data transition followed without unnecessary migration or version-specific runtime fallback: `Yes`.
 - Durable coverage added or retained only for compatibility-only behavior: `No`.
-- Upstream recipient notified: `code_reviewer` is the next recipient for proportional durable test-code review.
+- Upstream recipient notified: `code_reviewer` is the next recipient for API/E2E package acknowledgement; proportional test-code review is not applicable because no durable test changed in this recheck.
 
 ## Changed Boundary And Evidence Matrix
 
@@ -46,7 +46,7 @@
 | `DEV-004` | `REQ-004`–`REQ-006`; `AC-004`, `AC-006`, `AC-011` | Env/template/path/symlink isolation | Prior temporary harness plus live hostile parent env | Temporary / Live | `Pass` | `evidence/05-lifecycle-harness.log`, `07-development-before-stop.txt`, `08-live-checks.txt`; hostile values absent. |
 | `DEV-005` | `REQ-007`, `REQ-008`; `AC-009` | Port and child failure propagation | Prior exact occupied-port CLI + real-child harness | Live / Temporary | `Pass` | `evidence/04-occupied-port.log`, `evidence/05-lifecycle-harness.log`. |
 | `DEV-006` | `REQ-008`; `AC-010` | Signals/repeat stop/owned cleanup | Prior real-child process-group harness + two live SIGINT stops | Live / Temporary | `Pass` | `evidence/05-lifecycle-harness.log`, `07-pnpm-dev-live.log`, `08-pnpm-dev-alternate-cwd.log`; no listeners/launcher children after stop. |
-| `DEV-007` | `REQ-009`, `REQ-010`; `AC-008` | Root deterministic E2E command and test isolation | Exact root `pnpm test:e2e` | Live repository command | `Pass` | `evidence/12-root-test-e2e-fixed-fixtures.log`; `vitest --run tests/e2e`, 47 files passed / 14 skipped, 164 tests passed / 49 skipped, exit 0. |
+| `DEV-007` | `REQ-009`, `REQ-010`; `AC-008` | Root deterministic E2E command and test isolation | Exact root `pnpm test:e2e` | Live repository command | `Pass` | `delivery-evidence/latest-base-root-test-e2e-rerun-20260729.log`; `vitest --run tests/e2e`, 48 files passed / 14 skipped, 165 tests passed / 49 skipped, exit 0. |
 | `DEV-008` | `REQ-014`; `AC-007`, `AC-012` | Production/test isolation | Final metadata/hash/symlink scan | Temporary / Structural | `Pass` | `evidence/09-final-isolation.txt`; production-root metadata unchanged, no content read, no final listeners. |
 | `DEV-009` | `REQ-012`, `REQ-013`; `AC-011`, `AC-013` | Credential-free templates/docs/command separation | Source/template scan | Structural | `Pass` | Tracked template hashes unchanged; no automatic import path used. |
 
@@ -54,7 +54,7 @@
 
 | Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm test:e2e` | repo root; IR-002 plus API-REV-003 fixture/setup repairs | Exact deterministic E2E command scope and assertions. | `Pass` | `evidence/12-root-test-e2e-fixed-fixtures.log`: 61 files, 47 passed / 14 skipped; 213 tests, 164 passed / 49 skipped; exit 0. |
+| 1 | `pnpm test:e2e` | repo root; integrated latest-base HEAD `a4040047b` | Exact deterministic E2E command scope and assertions. | `Pass` | `delivery-evidence/latest-base-root-test-e2e-rerun-20260729.log`: 62 files, 48 passed / 14 skipped; 214 tests, 165 passed / 49 skipped; exit 0. |
 | 2 | `pnpm dev` | repo root; hostile launcher-owned parent env | Real build, backend/frontend readiness, live HTTP, graceful stop. | `Pass` | `evidence/07-pnpm-dev-live.log`, `07-backend-health.json`, `07-frontend-headers.txt`. |
 | 3 | `pnpm --dir <repo> dev` from `/tmp` | hostile parent env and same fixed endpoints | Alternate-cwd path resolution, restart persistence, readiness, clean stop. | `Pass` | `evidence/08-pnpm-dev-alternate-cwd.log`, `08-live-checks.txt`. |
 | 4 | Final listener/template/production scan | after all owned processes stopped | Cleanup and isolation. | `Pass` | `evidence/09-final-isolation.txt`. |
@@ -63,17 +63,17 @@
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 96% | 98% | +2 | Exact root E2E passes, and all material launcher scenarios have direct live/focused evidence. | Provider-gated tests remain skipped. |
-| Changed-boundary execution directness | 98% | 98% | 0 | Exact root and alternate-cwd `pnpm dev` exercised real built backend/Nuxt processes and fixed endpoints. | No Windows run. |
-| Cross-boundary integration realism and mock gap | 94% | 96% | +2 | Real `/rest/health` and Nuxt HTTP passed; repaired test doubles match current contracts; broad E2E passed. | No browser DOM journey. |
-| Environment, configuration, identity, and fixture fidelity | 96% | 98% | +2 | Hostile env/path/template/symlink matrix, isolated AppConfig/SQLite fixtures, restart identity, and final isolation passed. | No external provider credentials. |
-| Failure, edge-case, lifecycle, and recovery evidence | 97% | 97% | 0 | Occupied-port fail-closed, child failure, signals, repeat stop, cleanup, restart, and E2E recovery passed. | Windows process-tree semantics untested. |
+| Requirement and acceptance-criteria proof | 96% | 98% | +2 | Fresh exact root E2E gate passes on latest-base candidate; prior launcher scenarios remain directly proven. | Provider-gated tests remain skipped. |
+| Changed-boundary execution directness | 98% | 98% | 0 | Exact root and alternate-cwd `pnpm dev` exercised the real launcher; latest-base build and root E2E passed. | No Windows run. |
+| Cross-boundary integration realism and mock gap | 94% | 96% | +2 | Full latest-base E2E passes, including managed-messaging files; real backend/Nuxt readiness passed previously. | No browser DOM journey. |
+| Environment, configuration, identity, and fixture fidelity | 96% | 98% | +2 | Latest-base test reset/build/install checks passed; prior hostile env/path/template/symlink matrix and restart identity passed. | No external provider credentials. |
+| Failure, edge-case, lifecycle, and recovery evidence | 97% | 97% | 0 | Fresh full-suite rerun resolves the prior CR-006 observation; occupied-port, child failure, signals, repeat stop, cleanup, and restart evidence remain passed. | Windows process-tree semantics untested. |
 | User-surface, browser, and desktop-shell confidence | 90% | 92% | +2 | Live Nuxt HTTP readiness passed; no UI/renderer/shell source changed. | No browser DOM or Electron shell run. |
-| Durable regression coverage quality and relevance | 94% | 95% | +1 | Narrow durable fixture/setup repairs pass focused checks and exact root suite. | No durable fixed-port lifecycle fixture by design. |
+| Durable regression coverage quality and relevance | 94% | 95% | +1 | Current latest-base E2E suite passes; no durable test changed in this API/E2E recheck. | No durable fixed-port lifecycle fixture by design. |
 
-- Overall post-repository confidence: `95%` after focused fixture/setup checks and source-only TypeScript validation.
+- Overall post-repository confidence: `95%` after the latest-base exact root rerun.
 - Overall final confidence: `96%` simple average of final scores `(98+98+96+98+97+92+95)/7 = 96.3%`, rounded.
-- Confidence change produced by broader validation: fixture/setup validity was repaired and exact root E2E now passes; retained live launcher evidence directly proves process/data ownership and lifecycle.
+- Confidence change produced by broader validation: the prior latest-base full-suite-only failure is no longer present in the fresh rerun; prior live launcher evidence remains directly applicable.
 - Every critical acceptance criterion directly proven: `Yes` for the changed launcher scope.
 - Any final applicable category below `90%`: `No`.
 - Default final confidence target of `95%` met: `Yes`.
@@ -152,6 +152,7 @@ None by API/E2E. Obsolete manual wrappers were removed upstream under `REQ-011`.
 | `evidence/11-typecheck.log` | Repository typecheck result | Retained | Baseline TS6059 rootDir/include mismatch; not changed-source failure. |
 | `evidence/12-root-test-e2e-fixed-fixtures.log` | Exact root E2E final result | Retained | E2E-only scope; 47 passed / 14 skipped files; exit 0. |
 | `evidence/13-build-typecheck.log` | Source-only TypeScript validation | Retained | `tsconfig.build.json` no-emit passes. |
+| `delivery-evidence/latest-base-root-test-e2e-rerun-20260729.log` | Latest-base exact root E2E gate | Retained | 62 files: 48 passed / 14 skipped; 214 tests: 165 passed / 49 skipped; exit 0. |
 
 ## Temporary Execution Methods / Scaffolding
 
@@ -169,8 +170,8 @@ The temporary `/tmp/api-e2e-dev-harness.mjs` from API-REV-001 was not changed or
 
 | Result | Scenario IDs | Summary |
 | --- | --- | --- |
-| `Pass` | `DEV-001`–`DEV-009` | Real full-stack startup/readiness, restart, alternate cwd, hostile isolation, lifecycle, cleanup, production/template preservation, and exact deterministic E2E all passed. |
-| `Fail` | None | No current API/E2E failures remain after bounded fixture/setup repairs. |
+| `Pass` | `DEV-001`–`DEV-009` | Real full-stack startup/readiness, restart, alternate cwd, hostile isolation, lifecycle, cleanup, production/template preservation, and exact deterministic E2E all passed, including the latest-base gate. |
+| `Fail` | None | No current API/E2E failures remain on the refreshed candidate. |
 | `Not Tested` / `Out Of Scope` | Browser/Electron/provider credentials | No changed UI/shell/provider boundary and no browser binary/secrets. |
 
 ## Cleanup Performed
@@ -185,19 +186,19 @@ The temporary `/tmp/api-e2e-dev-harness.mjs` from API-REV-001 was not changed or
 
 ## Classification
 
-- Current preliminary failure classification: `Resolved` — code review classified CR-002..CR-005 as stale test fixtures/direct-test setup defects; focused repairs and the exact root rerun pass. No implementation-source defect was found.
-- The prior command-forwarding failure `DEV-007` and the Round 2 fixture/setup failures are resolved and are not current failures.
+- Current preliminary failure classification: `Resolved` — CR-006 was a full-suite-only unrelated managed-messaging failure; the fresh latest-base exact root rerun passes. No implementation-source defect or current API/E2E failure remains.
+- The prior command-forwarding failure `DEV-007`, Round 2 fixture/setup failures, and latest-base CR-006 gate failure are resolved and are not current failures.
 
 ## Recommended Recipient
 
-`code_reviewer` for proportional review of the durable fixture/setup changes in API-REV-003. No implementation rework is requested.
+`code_reviewer` for API/E2E package acknowledgement. Proportional test-code review is `Not Applicable` for API-REV-004 because no durable test changed.
 
 ## Evidence / Notes
 
 - The exact root command now logs `vitest --run tests/e2e` and only `tests/e2e/**` files; no unit/integration leakage occurred.
 - Full-stack real runtime now has direct success evidence: root startup, backend health, Nuxt HTTP readiness, clean signal stop, same DB/key across restart, alternate cwd, and hostile parent-variable isolation.
 - No browser validation is claimed; direct HTTP is the relevant changed boundary and no UI source changed.
-- Durable API/E2E test/setup code changed in API-REV-003; proportional test-code review is required.
+- No durable API/E2E test/setup code changed in API-REV-004; proportional test-code review is `Not Applicable` for this recheck.
 
 ## Latest Authoritative Result
 
@@ -206,8 +207,8 @@ The temporary `/tmp/api-e2e-dev-harness.mjs` from API-REV-001 was not changed or
 - Default 95% confidence target met: `Yes`; no applicable category is below 90%.
 - Broader validation decision: `Required` and completed for the launcher/live stack; direct HTTP was appropriate instead of browser/Electron because no UI/shell source changed and no browser binary is installed.
 - Critical acceptance criteria lacking direct proof: none for the changed launcher scope. Provider-gated tests, browser DOM, Electron shell, and Windows process semantics remain explicitly untested/out of scope.
-- Required next recipient: `code_reviewer` for proportional durable test-code review.
-- Notes: API-REV-003 supersedes the Round 2 fixture/setup failures while retaining the occupied-port, lifecycle, and live full-stack evidence. No production source changed.
+- Required next recipient: `code_reviewer` for API/E2E package acknowledgement; proportional test-code review is not applicable for API-REV-004.
+- Notes: API-REV-004 supersedes the latest-base CR-006 failure for the current candidate while retaining the occupied-port, lifecycle, and live full-stack evidence. No production source changed in this recheck.
 
 
 ## Round 3 Authoritative Execution Addendum (API-REV-003)
@@ -261,3 +262,26 @@ The root log proves the command boundary `pnpm test:e2e` → `pnpm --filter auto
 ### Cleanup And Residual Risk
 
 All launcher children and listeners were stopped, development runtime state was removed after hashes/metadata were captured, and unrelated occupied-port processes were never touched. Residual non-blocking limits are provider-gated live Claude tests, browser DOM/Electron shell execution, and Windows process semantics.
+
+
+## Round 4 Authoritative Execution Addendum (API-REV-004)
+
+### Latest-Base Exact Root Gate
+
+- Integrated candidate: `a4040047b44da5e1cf7208251f0ca8efe0fa0dcf` (latest-base merge candidate after delivery refresh).
+- Command: `pnpm test:e2e` from the worktree root.
+- Effective command chain: `pnpm --filter autobyteus-server-ts test --run tests/e2e` -> `vitest --run tests/e2e`.
+- Result: `Pass`, exit `0`.
+- Collection: `62` files total; `48` passed, `14` skipped.
+- Assertions: `214` total; `165` passed, `49` skipped.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/delivery-evidence/latest-base-root-test-e2e-rerun-20260729.log`.
+- Managed-messaging gateway rollback scenario: passed in the fresh full-suite worker; no focused rerun was required after the exact root pass.
+
+### Round 4 Coverage And Routing
+
+- No durable API/E2E test, fixture, helper, or implementation source changed in this recheck.
+- The prior CR-006 failure is retained as historical evidence but is not a current failure on the refreshed candidate.
+- Previous real launcher/live evidence remains valid: fixed-port startup/readiness, backend/frontend HTTP, alternate-cwd restart, state persistence, hostile isolation, occupied-port fail-closed, child-failure propagation, signal/repeat-stop, and owned cleanup.
+- Result: `Pass`.
+- Proportional test-code review: `Not Applicable` for API-REV-004 because no durable test changed in this round.
+- Next recipient: `code_reviewer` for package acknowledgement, then delivery may resume after its own finalization gates.

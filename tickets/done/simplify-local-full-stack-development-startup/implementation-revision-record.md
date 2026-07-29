@@ -8,13 +8,13 @@ This record indexes implementation rounds only.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `implementation_engineer`, initial implementation round | N/A | `Initial Baseline` | `SR-001`; `CRR-*` N/A; `API-REV-*` N/A | Implementation complete; ready for source review |
-| IR-002 | `code_reviewer`, focused API/E2E failure-origin review Round 2; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md` | `CR-001` / `DEV-007` / `REQ-009` / `AC-008` | `Local Fix` | `SR-001`; `CRR-002`; `API-REV-001` | Root E2E command packaging corrected; ready for source review |
+| IR-002 | `code_reviewer`, focused API/E2E failure-origin review Round 2; `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-report.md` | `CR-001` / `DEV-007` / `REQ-009` / `AC-008` | `Local Fix` | `SR-001`; `CRR-002`; `API-REV-001` | Root E2E command packaging corrected; ready for source review |
 
 ## Revision Entries
 
 ### IR-001 — Initial development startup implementation
 
-- **Triggering role, report path, and round:** `solution_designer`; implementation-ready package at `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/design-spec.md`; initial implementation round.
+- **Triggering role, report path, and round:** `solution_designer`; implementation-ready package at `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/design-spec.md`; initial implementation round.
 - **Triggering finding IDs:** N/A — initial baseline.
 - **Classification:** Initial Baseline.
 - **Prior authoritative result:** N/A.
@@ -32,7 +32,7 @@ This record indexes implementation rounds only.
 
 ### IR-002 — Correct root deterministic E2E argument forwarding
 
-- **Triggering role, report path, and round:** `code_reviewer`; focused failure-origin review Round 2 in `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md`; supporting API/E2E result `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`.
+- **Triggering role, report path, and round:** `code_reviewer`; focused failure-origin review Round 2 in `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-report.md`; supporting API/E2E result `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/api-e2e-execution-coverage-report.md`.
 - **Triggering finding IDs:** `CR-001`, `DEV-007`, `REQ-009`, `AC-008`.
 - **Classification:** `Local Fix`.
 - **Prior authoritative result:** Implementation complete; source review passed, followed by API/E2E failure on root E2E command scope.

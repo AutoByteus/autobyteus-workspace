@@ -2,21 +2,21 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/development-startup-contract.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/solution-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/code-review-revision-record.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/in-progress/simplify-local-full-stack-development-startup/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Investigation Round: `3`
-- Trigger: `code_reviewer` focused failure-origin review classified CR-002..CR-005 as stale test fixtures/setup and requested bounded API/E2E-owned repair followed by an exact root rerun.
-- Prior Investigation Reviewed: Round 2 and `API-REV-002`; the prior root command-scope failure and its eight fixture/setup failures were rechecked.
-- Latest Authoritative Investigation: This file after Round 3 durable fixture/setup repairs, focused checks, exact root E2E execution, and retained live full-stack validation.
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/development-startup-contract.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/solution-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/code-review-revision-record.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-local-full-stack-development-startup/tickets/done/simplify-local-full-stack-development-startup/api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Investigation Round: `4`
+- Trigger: `code_reviewer` latest-base failure-origin review classified CR-006 as an unrelated full-suite-only managed-messaging failure and requested an exact root rerun on the refreshed candidate.
+- Prior Investigation Reviewed: Round 3 and `API-REV-003`; the latest-base candidate was rechecked without changing durable tests or implementation source.
+- Latest Authoritative Investigation: This file after the latest-base exact root E2E rerun passed on integrated HEAD `a4040047b44da5e1cf7208251f0ca8efe0fa0dcf`.
 
 
 
@@ -323,3 +323,46 @@ Round 3 evidence: `evidence/10-fixture-runtime-focused.log`, `evidence/10-token-
 - Proportional test-code review: required from `code_reviewer` for the changed durable test/setup files.
 - Broader validation: `Required` and completed; direct live HTTP was used instead of browser/Electron because the changed boundary is process startup/routing and no browser engine is installed.
 - Next recipient: `code_reviewer` for the separate proportional test-code review, not failure-origin review.
+
+## Round 4 Current State (API-REV-004) — Latest-Base Gate Recheck
+
+The latest-base candidate had one full-suite-only failure in the managed-messaging gateway rollback scenario (`CR-006`). `code_reviewer` classified it as unrelated to this ticket's used functionality and requested a fresh exact root rerun before delivery could proceed. No API/E2E durable test or implementation source changed for this recheck.
+
+The exact command was rerun on integrated HEAD `a4040047b44da5e1cf7208251f0ca8efe0fa0dcf`:
+
+```text
+pnpm test:e2e
+  -> pnpm --filter autobyteus-server-ts test --run tests/e2e
+  -> vitest --run tests/e2e
+Test Files 62 passed | 14 skipped (62)
+Tests      165 passed | 49 skipped (214)
+Duration   147.23s
+exit       0
+```
+
+The managed-messaging file, including the previously failing rollback scenario, passed in the fresh full-suite workers. Because the exact root gate passed, the requested focused failure rerun was not needed. The prior focused evidence remains valid as failure-origin context, but it is superseded for the current gate result by `delivery-evidence/latest-base-root-test-e2e-rerun-20260729.log`.
+
+Post-integration build and launcher checks had already passed after the latest target refresh (`delivery-evidence/post-integration-check.log`); prior real full-stack launcher/readiness/restart/lifecycle evidence remains applicable because the ticket-owned launcher/package boundary was unchanged. No browser/Electron or provider-gated live validation was added in this recheck.
+
+### Round 4 Decision
+
+- Proceed to API/E2E execution: `Yes`; exact root deterministic E2E gate passes on latest-base candidate.
+- Result: `Pass`.
+- Durable coverage changes in this round: `No`.
+- Proportional test-code review: `Not Applicable` for this recheck; no durable API/E2E test changed.
+- CR-006 status: `Resolved for the current candidate` by a fresh exact root pass; retain the prior flake evidence as historical context, not as a current failure.
+- Delivery gate: `REQ-009` / `AC-008` is no longer blocked by the observed latest-base run.
+- Next recipient: `code_reviewer` for package acknowledgement; no implementation or test rework is requested.
+
+### Round 4 Confidence
+
+- Requirement and acceptance-criteria proof: `98%` — exact root gate passes and prior launcher-specific scenarios remain directly proven.
+- Changed-boundary execution directness: `98%` — exact root command and prior live `pnpm dev` checks exercise the real changed boundary.
+- Cross-boundary integration realism/mock gap: `96%` — full latest-base E2E passes; prior real backend/Nuxt readiness passed.
+- Environment/configuration/identity/fixture fidelity: `98%` — test-owned state reset, latest-base build/install checks, and prior hostile-isolation/restart evidence pass.
+- Failure/edge-case/lifecycle/recovery evidence: `97%` — latest-base full-suite gate passes after the prior full-suite-only failure, with prior lifecycle and cleanup evidence retained.
+- User-surface/browser/desktop-shell confidence: `92%` — direct Nuxt HTTP passed; no UI/shell change and no browser/Electron run.
+- Durable regression coverage quality/relevance: `95%` — no new test changes in this recheck; existing current suite passes.
+- Overall Round 4 confidence: `96%` simple average, rounded from `96.3%`.
+- Any applicable category below `90%`: `No`.
+- Default clean-confidence target of `95%` met: `Yes`.
