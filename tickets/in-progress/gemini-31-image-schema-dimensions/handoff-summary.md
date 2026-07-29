@@ -8,7 +8,7 @@
 - Ticket branch: `codex/gemini-31-image-schema-dimensions`
 - Finalization target recorded at bootstrap: `personal` / `origin/personal`.
 - Integrated candidate revision: `924cb27ba384f4b0b3559c8bb6ac8a9bc6dfecf9` (merge of refreshed `origin/personal` `63e3990181c9e384956319b07f1671b11b655b62`).
-- Local delivery edits: docs sync, ticket terminology reconciliation, and handoff artifacts are prepared in this worktree; they have not been pushed or merged.
+- Local delivery checkpoint commit: `3dd816b85e3db7f273d9c58512655e43a763e470` (`docs(delivery): sync Gemini image control contract`); it has not been pushed or merged.
 - User verification: Explicit completion/verification not received.
 
 ## Delivered Behavior
