@@ -12,6 +12,7 @@
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-004` | `Fail — Local Fix` | `Pass` | `CR-004`, `APIE2E-F002` |
 | `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-003` | `Pass` | `Fail — Local Fix` | `CR-005`, `APIE2E-F003` |
 | `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-005` | `Fail — Local Fix` | `Pass` | `CR-005`, `APIE2E-F003` |
+| `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / `API-REV-004` + user-requested full audit | `Pass` | `Fail — Design Impact` | `CR-006`, `CR-007`, `CR-008`, `APIE2E-F004` |
 
 ## Revision Entries
 
@@ -228,3 +229,32 @@ None.
 - Material score or classification changes: full implementation score restored to `9.2/10` (`92/100`) with every category >=9.0; `Local Fix` failure classification clears for source review.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must add the durable direct non-fake allocator regression, rerun `APIE2E-BRIEF-002` first, and then complete provider/artifact proof, both-host parity/digests, and the remaining command matrix.
+
+### CRR-009 — Fresh full review exposes missing standalone configuration spine and prompt-authority bypass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `9` (explicit full refresh rather than bounded failure-origin only)
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `APIE2E-BRIEF-003`, `APIE2E-F004`; explicit user request to reload the design principles and repeat the complete review; new findings `CR-006`, `CR-007`, `CR-008`
+- Relevant solution revision IDs: `SR-003`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-001`–`IR-005`
+- Relevant API/E2E revision IDs: `API-REV-004` (with prior `API-REV-001`–`API-REV-003` rechecked)
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` (`CRR-008`)
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: API-REV-004 proves the graph-local allocator correction and full real Studio journey, then the supported clean standalone command/UI journey fails before binding/provider invocation because no supported surface supplies the required launch profile. A fresh base-to-HEAD review reloaded the canonical Spine Span Sufficiency and Authoritative Boundary rules, audited all 118 changed implementation-source/config files plus composition defaults, and found that the reviewed design omitted the standalone configuration-acquisition spine/owner, split runnable readiness across Studio/lifecycle/SDK, and also left package team prompt construction on a process-global definition fallback.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Remains Resolved | `IR-002`, `API-REV-001`, `API-REV-004` | Real standalone root/browser flow starts and reaches the supported business UI; F004 is unrelated to browser reload ownership. |
+| `CR-002` | Resolved | Remains Resolved | `IR-002`, `IR-003`, `API-REV-004` | Current package/config identity reaches both real hosts. |
+| `CR-003` | Resolved and API/E2E-confirmed | Remains Resolved | `IR-003`, `API-REV-002`, `API-REV-004` | Repeated Studio package refresh continues to pass. |
+| `CR-004` | Resolved and API/E2E-confirmed | Remains Resolved | `IR-004`, `API-REV-003`, `API-REV-004` | Exact package team is visible through Studio setup and completes the real run. |
+| `CR-005` | Resolved in source; rerun pending | Resolved and API/E2E-confirmed | `IR-005`, `CRR-008`, `API-REV-004` | Direct non-fake graph-authority regression passes; real package researcher/writer allocate, invoke LM Studio, publish artifacts, and reach `in_review`. |
+
+- New or remaining finding IDs: `CR-006` (missing standalone launch-configuration spine/owner), `CR-007` (false runnable readiness), `CR-008` (package team instruction uses global definition fallback); linked API/E2E failure `APIE2E-F004`.
+- Material score or classification changes: refreshed full score changes from `9.2/10` (`92/100`) to `8.1/10` (`81/100`). Result changes from `Pass` to `Fail — Design Impact`; the prior design-completeness, data-flow, ownership, authoritative-boundary, API/readiness, and runtime-fidelity conclusions are superseded for these paths.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: the exact standalone setup/configuration product contract must be decided upstream; after architecture review and implementation, API/E2E must reprove clean standalone configuration/execution, package team prompt semantics, both-host parity/digests, and the remaining command/remount matrix. General singleton/default seams remain watchlist items only where no supported path has been established.
