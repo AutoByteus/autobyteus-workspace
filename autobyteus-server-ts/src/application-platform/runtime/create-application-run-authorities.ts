@@ -30,6 +30,7 @@ import { MemberTeamContextBuilder } from "../../agent-team-execution/services/me
 import type {
   ApplicationAgentToolsSessionAuthority,
 } from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
+import { ApplicationRunShutdownAuthority } from "./application-run-shutdown-authority.js";
 
 export const createApplicationRunAuthorities = (input: {
   appConfig: AppConfig;
@@ -137,10 +138,15 @@ export const createApplicationRunAuthorities = (input: {
     agentRunManager,
     metadataService: agentRunMetadataService,
   });
+  const runShutdownAuthority = new ApplicationRunShutdownAuthority(
+    agentTeamRunManager,
+    agentRunManager,
+  );
   return {
     agentRunService,
     teamRunService,
     teamRunMetadataService,
+    runShutdownAuthority,
     publicationService,
     publishedArtifactProjectionService,
     memoryLocationService,

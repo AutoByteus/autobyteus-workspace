@@ -127,6 +127,7 @@ export const createApplicationPlatformRuntimeGraph = (input: {
     notificationHub,
     runObserverService: authorities.runObserverService,
     engineHostService,
+    runShutdownAuthority: authorities.runShutdownAuthority,
     streamingService: authorities.agentStreamingService,
   });
 

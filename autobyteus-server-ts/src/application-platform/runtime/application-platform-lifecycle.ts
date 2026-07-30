@@ -163,6 +163,7 @@ export class ApplicationPlatformLifecycle {
     await runStep(() => this.dependencies.notificationHub.closeAll());
     await runStep(() => this.dependencies.runObserverService.dispose());
     await runStep(() => this.dependencies.engineHostService.stopAllApplicationEngines());
+    await runStep(() => this.dependencies.runShutdownAuthority.stopAllRuns());
     await runStep(() =>
       this.dependencies.preparation.agentToolsSessionAuthority.close());
     await runStep(() =>

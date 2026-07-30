@@ -187,6 +187,7 @@ export const createApplicationOrchestrationAuthorities = (input: {
     startupGate,
     eventDispatchService,
     runObserverService,
+    runShutdownAuthority: runAuthorities.runShutdownAuthority,
     recoveryService,
     availabilityService,
     configurationService,

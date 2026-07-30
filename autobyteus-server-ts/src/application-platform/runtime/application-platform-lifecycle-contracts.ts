@@ -19,6 +19,9 @@ import type {
 import type {
   DeferredPublishedArtifactPublicationPort,
 } from "./deferred-published-artifact-publication-port.js";
+import type {
+  ApplicationRunShutdownAuthority,
+} from "./application-run-shutdown-authority.js";
 
 export type ApplicationPlatformLifecycleState =
   | "constructed"
@@ -55,5 +58,6 @@ export type ApplicationPlatformLifecycleDependencies = {
   notificationHub: ApplicationBackendNotificationHub;
   runObserverService: ApplicationRunObserverService;
   engineHostService: ApplicationEngineHostService;
+  runShutdownAuthority: ApplicationRunShutdownAuthority;
   streamingService: ApplicationAgentStreamingService;
 };
