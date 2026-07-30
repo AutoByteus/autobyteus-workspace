@@ -4,9 +4,9 @@
 
 - Ticket: `token-statistics-custom-provider-model`
 - Date: `2026-07-30`
-- Current status: `User-verified; finalization and v1.4.31 release in progress`
+- Current status: `Finalized and released as v1.4.31`
 - Task worktree: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model`
-- Ticket branch: `codex/token-statistics-custom-provider-model` (finalization push pending)
+- Ticket branch: `codex/token-statistics-custom-provider-model` (pushed to `origin`)
 - Bootstrap base: `origin/personal@596094be191f6aecba6ef37abcda342a20e9af64`
 - Integrated tracked base: `origin/personal@1b8d8c2f22c5f846dd82cdd706f594103d1b4e1e`
 - Integration method: checkpoint commit `c4f3cccd4`, then merge commit `a503a6920`
@@ -27,7 +27,7 @@
 ## Integrated-State / Verification Summary
 
 - Latest-base refresh: `git fetch origin personal --prune` succeeded; `origin/personal` advanced from the bootstrap `596094be1` to `1b8d8c2f2`.
-- Current delivery refresh: after user verification, `git fetch origin personal --prune` again confirmed `origin/personal@1b8d8c2f2` remains unchanged and already integrated; no additional merge or base-triggered rerun was required.
+- Current delivery refresh: after user verification, `git fetch origin personal --prune` again confirmed `origin/personal@1b8d8c2f2` remained unchanged and already integrated; no additional merge or base-triggered rerun was required. Final target contains release commit `3d31bf31e` plus post-release delivery metadata commits.
 - Candidate protection: completed local checkpoint commit `c4f3cccd4` before integration because the reviewed/API-validated candidate had uncommitted durable test and evidence changes.
 - Integration: merged `origin/personal` into the ticket branch without conflicts at `a503a6920`.
 - Post-integration executable check:
@@ -37,7 +37,7 @@
 - Local Electron test build:
   - Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= CSC_IDENTITY_AUTO_DISCOVERY=false AUTOBYTEUS_BUILD_FLAVOR=personal pnpm -C autobyteus-web build:electron:mac`
   - Result: **Passed** — web/localization guards, localization audit, server packaging, Prisma generation, native Electron rebuild, Nuxt Electron generation, Electron transpilation, icon generation, and electron-builder packaging completed successfully.
-  - Packaging: personal macOS ARM64 DMG and ZIP generated; macOS code signing/notarization intentionally skipped for local testing.
+  - Packaging: personal macOS ARM64 DMG and ZIP generated; macOS code signing/notarization intentionally skipped for local testing. The user confirmed the package works.
   - DMG integrity: `hdiutil verify` **VALID**; ZIP integrity: `unzip -tq` **passed**.
   - Build log: `/tmp/token-statistics-custom-provider-model-electron-build-20260730.log`
   - Test artifacts:
@@ -46,7 +46,16 @@
 - Upstream API/E2E result: `API-REV-001` **Pass**, final confidence **96%**. Live GraphQL, migration lifecycle, and Chrome browser validation passed.
 - Current upstream API/E2E result: `API-REV-002` **Pass**, final confidence **96%**. Live startup/GraphQL/browser validation passed; final token-usage E2E passed 9 files / 18 tests and web checks passed 3 files / 6 tests.
 - Current upstream proportional test-code review: `CRR-006` **Pass**, no findings. The intermediate missing-column failure was a stale fixture setup and was corrected before the final successful reruns.
-- Planned release: `v1.4.31`, using the repository release helper and the archived ticket release notes.
+- Release `v1.4.31`: tag, GitHub Release, desktop/Android/iOS/messaging-gateway workflows, and Server Docker workflow all completed successfully.
+
+## Finalization / Release
+
+- Ticket archive commit: `56f78d2ba` (`chore(delivery): finalize token statistics provider metadata`) pushed to `origin/codex/token-statistics-custom-provider-model`.
+- Target merge: `a05f293777ad3d9ef4d81e387ae8a787ed120272` merged the ticket branch into `personal` and was pushed to `origin/personal`.
+- Release commit/tag: `3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d`, annotated tag `v1.4.31`; tag peels to the release commit.
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.31
+- Release workflows: Desktop `30558616029`, Android `30558615894`, iOS `30558616039`, Messaging Gateway `30558615897`, Server Docker `30558615908` — all `success`.
+- Docker image verification: `autobyteus/autobyteus-server:1.4.31` and `:latest` resolve to multi-arch index digest `sha256:dde43ac59db13baa4d8bee7661b36235aecedec5051de501c1d8508c18e3b326`.
 
 ## Docs Sync
 
@@ -61,7 +70,7 @@
 
 - External provider network/credential behavior was not exercised; no external provider call is required for this display/migration boundary.
 - Electron shell/preload/package lifecycle was not launched; the changed UI path was validated in Chrome against the live Nuxt/backend journey, and no shell-specific code changed.
-- The packaged Electron app has been built and artifact-verified but has not been launched in this environment; user launch/testing remains the next behavioral check.
+- The packaged Electron app was launched and confirmed working by the user; the local package remains an unsigned test build while the signed release assets are published in GitHub Release `v1.4.31`.
 - The repository-wide server typecheck retains the known baseline `rootDir=src` plus `include=tests` TS6059 limitation; production build and focused checks passed.
 - Rows with a populated `provider_name` retain the ingestion-time historical name after provider rename/deletion. Legacy rows without a snapshot may still depend on current provider lookup/fallback; deleted-provider legacy rows cannot be recovered automatically and are reported rather than guessed.
 
@@ -69,9 +78,9 @@
 
 - Explicit user completion/verification received: `Yes` — user reported the Electron package is working and authorized finalization plus a new release.
 - Release authorization: `Yes` — next patch version selected from current `1.4.30` is `v1.4.31`.
-- Finalization state: archive, ticket-branch push, target-branch merge/push, release tag, and workflow publication are in progress.
-- Finalization refresh: the latest `origin/personal` remained unchanged at `1b8d8c2f2`, so the verified user-facing state required no renewed behavioral check before finalization.
-- If a release workflow fails, preserve the tag and finalization state, record the exact failure, and stop recovery until the failure is classified.
+- Finalization result: completed. Ticket archived, ticket branch pushed, `personal` merged/pushed, release tag pushed, and all tag-driven workflows passed.
+- Finalization refresh: the latest `origin/personal` remained unchanged at `1b8d8c2f2` before merge, so the verified user-facing state required no renewed behavioral check.
+- Release result: GitHub Release `v1.4.31` is published with 21 assets; Server Docker published `autobyteus/autobyteus-server:1.4.31` and `:latest`.
 
 ## Canonical Artifact Package
 
