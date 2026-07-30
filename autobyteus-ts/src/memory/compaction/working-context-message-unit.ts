@@ -42,7 +42,6 @@ export type WorkingContextMessageUnit =
 
 export type MessageCompactionPlan = {
   units: WorkingContextMessageUnit[];
-  headMessages: Message[];
   compactableUnits: WorkingContextMessageUnit[];
   retainedUnits: WorkingContextMessageUnit[];
   protectedSuffixUnits: WorkingContextMessageUnit[];

@@ -8,7 +8,10 @@ import type {
   AppDataMigrationStatusSnapshot,
   AppDataMigrationSummary,
 } from "./domain/app-data-migration-types.js";
-import { AppDataMigrationDuplicateRunError } from "./domain/app-data-migration-types.js";
+import {
+  AppDataMigrationDuplicateRunError,
+  RequiredAppDataMigrationError,
+} from "./domain/app-data-migration-types.js";
 import {
   AppDataMigrationRegistry,
   getAppDataMigrationRegistry,
@@ -86,6 +89,11 @@ export class AppDataMigrationRunner {
         const failedRecord = await this.repository.getRecord(definition.id);
         results.push(this.toStatusSnapshot(definition, failedRecord));
       }
+    }
+    if (results.some(
+      ({ status }) => status !== "SUCCEEDED" && status !== "SUCCEEDED_WITH_WARNINGS",
+    )) {
+      throw new RequiredAppDataMigrationError(results);
     }
     return results;
   }

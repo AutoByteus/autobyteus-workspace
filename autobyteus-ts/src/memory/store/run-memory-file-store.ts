@@ -4,12 +4,12 @@ import path from 'node:path';
 
 import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
+import { EpisodicItem } from '../models/episodic-item.js';
+import { SemanticItem } from '../models/semantic-item.js';
 import { WorkingContext } from '../working-context.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
 import type { SnapshotMetadata } from '../working-context-snapshot-serializer.js';
-import type { CompactedMemoryManifest } from './compacted-memory-manifest.js';
 import {
-  COMPACTED_MEMORY_MANIFEST_FILE_NAME,
   EPISODIC_MEMORY_FILE_NAME,
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
@@ -18,6 +18,7 @@ import {
 import type { RawTraceArchiveManifest, RawTraceArchiveSegmentEntry } from './raw-trace-archive-manifest.js';
 import {
   RawTraceArchiveManager,
+  type CompletedRawTraceArchiveDescriptor,
   type RawTraceArchiveBoundaryInput,
   type RawTraceArchiveResult,
 } from './raw-trace-archive-manager.js';
@@ -113,10 +114,6 @@ export class RunMemoryFileStore {
     return this.archiveManager.getRevisionInfo();
   }
 
-  getManifestPath(): string {
-    return path.join(this.runDir, COMPACTED_MEMORY_MANIFEST_FILE_NAME);
-  }
-
   getWorkingContextSnapshotPath(): string {
     return path.join(this.runDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
   }
@@ -150,28 +147,32 @@ export class RunMemoryFileStore {
     return this.readMemoryDicts(MemoryType.RAW_TRACE);
   }
 
-  readSemanticDicts(): Record<string, unknown>[] {
+  private readEpisodicRecords(): Record<string, unknown>[] {
+    return this.readMemoryDicts(MemoryType.EPISODIC);
+  }
+
+  private readSemanticRecords(): Record<string, unknown>[] {
     return this.readMemoryDicts(MemoryType.SEMANTIC);
   }
 
-  replaceSemanticDicts(items: Iterable<Record<string, unknown>>): void {
-    writeJsonl(this.getFilePath(MemoryType.SEMANTIC), Array.from(items));
+  findEpisodicItemsByIds(ids: readonly string[]): EpisodicItem[] {
+    return this.findExactItemsByIds(ids, this.readEpisodicRecords(), (record) =>
+      EpisodicItem.fromDict(record), 'episode');
   }
 
-  clearSemanticItems(): void {
-    writeJsonl(this.getFilePath(MemoryType.SEMANTIC), []);
+  findSemanticItemsByIds(ids: readonly string[]): SemanticItem[] {
+    return this.findExactItemsByIds(ids, this.readSemanticRecords(), (record) =>
+      SemanticItem.fromDict(record), 'semantic');
   }
 
-  readCompactedMemoryManifest(): CompactedMemoryManifest | null {
-    const filePath = this.getManifestPath();
-    if (!fs.existsSync(filePath)) {
-      return null;
-    }
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as CompactedMemoryManifest;
-  }
-
-  writeCompactedMemoryManifest(manifest: CompactedMemoryManifest): void {
-    writeJson(this.getManifestPath(), manifest as Record<string, unknown>);
+  hasMemoryArtifactIds(input: {
+    episodeIds: readonly string[];
+    semanticIds: readonly string[];
+  }): boolean {
+    const episodeIds = new Set(input.episodeIds);
+    const semanticIds = new Set(input.semanticIds);
+    return this.readEpisodicRecords().some((record) => episodeIds.has(String(record.id ?? '')))
+      || this.readSemanticRecords().some((record) => semanticIds.has(String(record.id ?? '')));
   }
 
   readRawTraceArchiveManifest(): RawTraceArchiveManifest {
@@ -272,6 +273,51 @@ export class RunMemoryFileStore {
     writeJsonl(this.getRawTracesPath(), keep);
   }
 
+  archiveExactRawTraces(
+    traceIds: readonly string[],
+    compactionId: string,
+  ): CompletedRawTraceArchiveDescriptor {
+    const ids = traceIds.map((id) => id.trim()).filter(Boolean);
+    if (!ids.length || new Set(ids).size !== ids.length) {
+      throw new Error('Exact raw-trace archive requires unique non-empty selected IDs.');
+    }
+    const active = this.listRawTraceDicts();
+    const activeById = new Map<string, Record<string, unknown>>();
+    for (const record of active) {
+      const id = traceId(record);
+      if (!id) continue;
+      if (activeById.has(id)) throw new Error(`Active raw traces contain duplicate ID '${id}'.`);
+      activeById.set(id, record);
+    }
+    const missing = ids.filter((id) => !activeById.has(id));
+    if (missing.length) {
+      throw new Error(`Selected raw traces are missing from active storage: ${missing.join(', ')}.`);
+    }
+    const selected = active.filter((record) => ids.includes(traceId(record) ?? ''));
+    if (selected.length !== ids.length) {
+      throw new Error('Exact raw-trace archive membership validation failed.');
+    }
+    const result = this.archiveAndRewriteActive(
+      selected,
+      active.filter((record) => !ids.includes(traceId(record) ?? '')),
+      {
+        boundaryType: 'native_compaction',
+        boundaryKey: `native_compaction:${compactionId}`,
+        runtimeKind: 'AUTOBYTEUS',
+        sourceEvent: 'native_compaction',
+      },
+    );
+    if (!result) throw new Error('Exact raw-trace archive did not create a completed file.');
+    return {
+      fileName: result.file_name,
+      recordCount: result.record_count,
+      firstTraceId: result.first_trace_id ?? null,
+      lastTraceId: result.last_trace_id ?? null,
+      firstObservedAt: result.first_ts ?? null,
+      lastObservedAt: result.last_ts ?? null,
+    };
+  }
+
   workingContextSnapshotExists(): boolean {
     return fs.existsSync(this.getWorkingContextSnapshotPath());
   }
@@ -308,13 +354,6 @@ export class RunMemoryFileStore {
     );
   }
 
-  deleteWorkingContextSnapshot(): void {
-    const filePath = this.getWorkingContextSnapshotPath();
-    if (fs.existsSync(filePath)) {
-      fs.rmSync(filePath, { force: true });
-    }
-  }
-
   private archiveAndRewriteActive(
     moveSet: Record<string, unknown>[],
     keepSet: Record<string, unknown>[],
@@ -337,5 +376,23 @@ export class RunMemoryFileStore {
       this.getRawTracesPath(),
       this.listRawTraceDicts().filter((item) => !traceIds.has(traceId(item) ?? '')),
     );
+  }
+
+  private findExactItemsByIds<T>(
+    ids: readonly string[],
+    records: Record<string, unknown>[],
+    deserialize: (record: Record<string, unknown>) => T,
+    label: string,
+  ): T[] {
+    const requested = ids.map((id) => id.trim());
+    const result: T[] = [];
+    for (const id of requested) {
+      const matches = records.filter((record) => record.id === id);
+      if (matches.length !== 1) {
+        throw new Error(`Expected exactly one ${label} row '${id}', found ${matches.length}.`);
+      }
+      result.push(deserialize(matches[0]!));
+    }
+    return result;
   }
 }

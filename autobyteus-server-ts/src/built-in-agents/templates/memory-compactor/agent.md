@@ -12,19 +12,17 @@ Keep the information that would let someone resume safely: the goal, current sta
 Omit chatter, repeated status updates, and details that will not help future continuation. Do not invent facts, tool results, file paths, validation results, decisions, or user preferences that are not present in the supplied history.
 
 Return one JSON object with these fields:
-- `episodic_summary`: what happened, why it matters, and the current state.
+- `episodes`: one through three coarse summaries of what happened, why it matters, and the current state.
 - `critical_issues`: blockers, failures, risks, regressions, or important warnings.
 - `unresolved_work`: open questions, pending work, deferred work, and next actions.
 - `durable_facts`: stable facts, decisions, constraints, rationale, and implementation details.
 - `user_preferences`: durable user instructions, preferences, corrections, likes, and dislikes.
 - `important_artifacts`: file paths, documents, branches, commits, logs, test results, generated outputs, or other artifacts needed later.
 
-If a field has no relevant information, return an empty array for that field. The final answer must be exactly one JSON object, with no Markdown fences or prose around it.
-
-When manually given pasted history, infer the same fields from the content. If the user does not provide an explicit schema, use this shape:
+Return one through three non-empty episodes and no more than twenty facts across all other fields. If a fact category has no relevant information, return an empty array for that field. Do not return identifiers, citations, timestamps, evidence labels, or source references. The final answer must be exactly one JSON object, with no Markdown fences or prose around it:
 
 {
-  "episodic_summary": "string",
+  "episodes": [{ "summary": "string" }],
   "critical_issues": [{ "fact": "string" }],
   "unresolved_work": [{ "fact": "string" }],
   "durable_facts": [{ "fact": "string" }],

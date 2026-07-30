@@ -133,7 +133,7 @@ export class LlmPhase {
           selected_block_count: details.selectedUnitCount,
           compacted_block_count: details.compactedUnitCount,
           raw_trace_count: details.rawTraceCount,
-          episodic_summary_length: details.episodicSummaryLength,
+          episode_summary_length: details.episodeSummaryLength,
           semantic_fact_count: details.semanticFactCount,
           compaction_agent_definition_id: metadata?.compactionAgentDefinitionId ?? null,
           compaction_agent_name: metadata?.compactionAgentName ?? null,
@@ -152,7 +152,6 @@ export class LlmPhase {
       settingsResolver: runtimeSettingsResolver,
       constructionContext: {
         agentId,
-        memoryStore: memoryManager.store,
         compactionAgentRunner: context.config.compactionAgentRunner,
         inputBudgetTokens: requestTokenBudget?.inputBudget ?? null,
         maxItemChars: memoryManager.compactionPolicy.maxItemChars,

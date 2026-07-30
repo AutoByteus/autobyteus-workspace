@@ -91,3 +91,16 @@ export class AppDataMigrationDuplicateRunError extends Error {
     this.name = "AppDataMigrationDuplicateRunError";
   }
 }
+
+export class RequiredAppDataMigrationError extends Error {
+  readonly code = "REQUIRED_APP_DATA_MIGRATION_FAILED";
+
+  constructor(readonly results: AppDataMigrationStatusSnapshot[]) {
+    const blocked = results
+      .filter(({ status }) => status !== "SUCCEEDED" && status !== "SUCCEEDED_WITH_WARNINGS")
+      .map(({ migrationId, status }) => `${migrationId}:${status}`)
+      .join(", ");
+    super(`Required app data migrations are not startable: ${blocked}.`);
+    this.name = "RequiredAppDataMigrationError";
+  }
+}

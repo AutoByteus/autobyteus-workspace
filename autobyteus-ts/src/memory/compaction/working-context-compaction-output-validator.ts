@@ -10,6 +10,7 @@ import { WorkingContext } from '../working-context.js';
 
 export type WorkingContextCompactionOutputInvariantCode =
   | 'aliased-context'
+  | 'mutated-strategy-input'
   | 'changed-required-head'
   | 'invalid-message-shape'
   | 'invalid-tool-protocol';
@@ -44,8 +45,17 @@ export class WorkingContextCompactionOutputValidator {
     }
 
     const baselineMessages = baseline.buildMessages();
+    if (!isDeepStrictEqual(
+      baselineMessages.map((message) => message.toDict()),
+      strategyInput.buildMessages().map((message) => message.toDict()),
+    )) {
+      throw new WorkingContextCompactionOutputValidationError(
+        'mutated-strategy-input',
+        'Compaction strategy mutated its WorkingContext input.',
+      );
+    }
     const nextMessages = next.buildMessages();
-    nextMessages.forEach((message, index) => assertValidMessage(message, index));
+    assertWorkingContextMessagesStructurallyValid(nextMessages);
 
     const requiredHead = takeLeadingSystemMessages(baselineMessages);
     const returnedHead = nextMessages.slice(0, requiredHead.length);
@@ -61,9 +71,15 @@ export class WorkingContextCompactionOutputValidator {
       );
     }
 
-    assertCompleteToolProtocol(nextMessages);
   }
 }
+
+export const assertWorkingContextMessagesStructurallyValid = (
+  messages: readonly Message[],
+): void => {
+  messages.forEach((message, index) => assertValidMessage(message, index));
+  assertCompleteToolProtocol(messages);
+};
 
 const takeLeadingSystemMessages = (messages: Message[]): Message[] => {
   const leading: Message[] = [];
@@ -151,7 +167,7 @@ const assertValidToolResult = (
   }
 };
 
-const assertCompleteToolProtocol = (messages: Message[]): void => {
+const assertCompleteToolProtocol = (messages: readonly Message[]): void => {
   let openCalls: Map<string, string> | null = null;
   for (let index = 0; index < messages.length; index += 1) {
     const message = messages[index]!;

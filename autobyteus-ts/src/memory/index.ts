@@ -35,6 +35,8 @@ export type { WorkingContextCompactionOutputInvariantCode } from './compaction/w
 
 export { CompactedMemoryContextProjector } from './projection/compacted-memory-context-projector.js';
 export { CompactedMemoryMessageBuilder } from './projection/compacted-memory-message-builder.js';
+export { CurrentCompactionOutputLoader } from './projection/current-compaction-output-loader.js';
+export type { CompactedMemoryProjectionBundle } from './projection/compacted-memory-projection-bundle.js';
 
 export { MemoryType } from './models/memory-types.js';
 export { RawTraceItem } from './models/raw-trace-item.js';
@@ -50,12 +52,27 @@ export { Retriever } from './retrieval/retriever.js';
 export { MemoryStore } from './store/base-store.js';
 export { FileMemoryStore } from './store/file-store.js';
 export { RunMemoryFileStore } from './store/run-memory-file-store.js';
-export { COMPACTED_MEMORY_MANIFEST_FILE_NAME, EPISODIC_MEMORY_FILE_NAME, MEMORY_FILE_NAMES, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME, SEMANTIC_MEMORY_FILE_NAME, WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from './store/memory-file-names.js';
+export { COMPACTION_LINEAGE_FILE_NAME, EPISODIC_MEMORY_FILE_NAME, MEMORY_FILE_NAMES, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME, SEMANTIC_MEMORY_FILE_NAME, WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from './store/memory-file-names.js';
 export { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
-export { COMPACTED_MEMORY_SCHEMA_VERSION } from './store/compacted-memory-manifest.js';
-export type { CompactedMemoryManifest } from './store/compacted-memory-manifest.js';
+export { FileCompactionLineageStore } from './store/file-compaction-lineage-store.js';
 export { resolveMemoryBaseDir, resolveAgentMemoryDir } from './path-resolver.js';
-export { CompactedMemorySchemaGate } from './restore/compacted-memory-schema-gate.js';
 export { WorkingContextRecoveryProjector } from './restore/working-context-recovery-projector.js';
-export { setMessageProvenance, getMessageProvenance, collectMessageRawTraceIds } from './message-provenance.js';
-export type { MessageProvenance } from './message-provenance.js';
+export {
+  buildSingleMessageProvenance,
+  collectMessageRawTraceIds,
+  getMessageRawTraceIds,
+  getWorkingContextMessageProvenance,
+  setWorkingContextMessageProvenance,
+} from './working-context-provenance.js';
+export type {
+  UserConstituent,
+  WorkingContextMessageProvenance,
+} from './working-context-provenance.js';
+export { WorkingContextFinalizer } from './working-context-finalizer.js';
+export { CompactionLineageResolver } from './lineage/compaction-lineage-resolver.js';
+export type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
+export type { CompactionLineageRecord } from './lineage/compaction-lineage-record.js';
+export { MemoryOriginIntegrityError } from './lineage/memory-origin-resolution.js';
+export type { MemoryOriginResolution, MemoryArtifactRef } from './lineage/memory-origin-resolution.js';
+export { CondensedToolCallRenderer } from './presentation/condensed-tool-call-renderer.js';
+export { ReadableValueRenderer } from './presentation/readable-value-renderer.js';

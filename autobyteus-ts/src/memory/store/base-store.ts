@@ -1,7 +1,9 @@
 import type { MemoryItem } from '../models/memory-types.js';
 import { MemoryType } from '../models/memory-types.js';
 import type { RawTraceItem } from '../models/raw-trace-item.js';
-import type { CompactedMemoryManifest } from './compacted-memory-manifest.js';
+import type { EpisodicItem } from '../models/episodic-item.js';
+import type { SemanticItem } from '../models/semantic-item.js';
+import type { CompletedRawTraceArchiveDescriptor } from './raw-trace-archive-manager.js';
 
 export abstract class MemoryStore {
   abstract add(items: Iterable<MemoryItem>): void;
@@ -13,19 +15,25 @@ export abstract class MemoryStore {
     return this.listRawTracesOrdered(limit);
   }
 
-  readSemanticDicts(): Record<string, unknown>[] {
-    throw new Error(`${this.constructor.name} does not support semantic schema-gate reads.`);
+  findEpisodicItemsByIds(_ids: readonly string[]): EpisodicItem[] {
+    throw new Error(`${this.constructor.name} does not support exact episodic lookup.`);
   }
 
-  clearSemanticItems(): void {
-    throw new Error(`${this.constructor.name} does not support semantic schema-gate resets.`);
+  findSemanticItemsByIds(_ids: readonly string[]): SemanticItem[] {
+    throw new Error(`${this.constructor.name} does not support exact semantic lookup.`);
   }
 
-  readCompactedMemoryManifest(): CompactedMemoryManifest | null {
-    throw new Error(`${this.constructor.name} does not support compacted-memory manifest reads.`);
+  hasMemoryArtifactIds(_input: {
+    episodeIds: readonly string[];
+    semanticIds: readonly string[];
+  }): boolean {
+    throw new Error(`${this.constructor.name} does not support artifact-ID collision checks.`);
   }
 
-  writeCompactedMemoryManifest(_manifest: CompactedMemoryManifest): void {
-    throw new Error(`${this.constructor.name} does not support compacted-memory manifest writes.`);
+  archiveExactRawTraces(
+    _traceIds: readonly string[],
+    _compactionId: string,
+  ): CompletedRawTraceArchiveDescriptor {
+    throw new Error(`${this.constructor.name} does not support exact raw-trace archiving.`);
   }
 }

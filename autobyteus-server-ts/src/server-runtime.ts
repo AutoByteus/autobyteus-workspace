@@ -191,6 +191,7 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     await getAppDataMigrationRunner().runPending();
   } catch (error) {
     logger.error(`Failed to run app data migrations: ${String(error)}`);
+    throw error;
   }
 
   try {
