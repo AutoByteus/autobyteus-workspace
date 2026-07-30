@@ -23,6 +23,7 @@
 | `CRR-017` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-010` | `Fail — Local Fix` | `Pass` | `CR-013`, `APIE2E-F005` |
 | `CRR-018` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-006` | `Pass` | `Fail — Local Fix` | `CR-014`, `APIE2E-F006` |
 | `CRR-019` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-011` | `Fail — Local Fix` | `Pass` | `CR-014`, `APIE2E-F006` |
+| `CRR-020` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-007` | `Pass` | `Fail — Design Impact` | `CR-015`, `APIE2E-F007` |
 
 ## Revision Entries
 
@@ -539,3 +540,30 @@ None.
 - Material score or classification changes: result changes from `Fail — Local Fix` to `Pass`; current full source score is `9.6/10` (`96/100`) with every category `>=9.0`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must rerun the actual descriptor/tools-list/eligible dispatch/writer/projection path first and reject the direct SQLite workaround, then resume the retained dual-host matrix. No Claude/native-tool/transport/gateway expansion is authorized. `APIE2E-REPO-005` remains independently unattributed.
+
+### CRR-020 — default publication execution escapes the application graph
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `20`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-007`; `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`; new finding `CR-015`
+- Relevant solution revision IDs: `SR-009` and `SR-008`; `SR-007` withdrawn
+- Relevant architecture-review revision IDs: `ARCH-REV-006`; `ARCH-REV-007` withdrawn with no decision
+- Relevant implementation revision IDs: cumulative `IR-001`–`IR-011`
+- Relevant API/E2E revision IDs: `API-REV-007`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` (`CRR-019`, `96/100`)
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: API-REV-007 confirms IR-011 completely repairs the graph-local Codex definition path: both actual package-member threads receive non-null descriptors, list the eligible server tools, complete real `send_message_to` calls, and create the writer run. The now-reachable `publish_artifacts` adapter instead uses the cached default publication service and process-global run manager, while the active members and correct publication service belong to the application graph. DS-014 had explicitly treated this provider/catalog/dispatcher family as already correct and unchanged, but it does not define how graph-local publication authority reaches session creation and route execution or how the construction cycle is broken.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-013` | Resolved in source / applicable API/E2E rerun pending | Remain Resolved for their owned behavior | `IR-002`–`IR-010`, `CRR-002`–`CRR-017`, `API-REV-001`–`API-REV-007` | Round 7 reaches the real route, package launch, descriptor, tool list, and communication path; F007 is a later publication-authority failure. |
+| `CR-014` | Resolved in source; API/E2E rerun pending | Resolved and API/E2E-confirmed | `IR-011`, `CRR-018`, `CRR-019`, `API-REV-007` | Exact authority test passes; both real Codex members list `publish_artifacts` and `send_message_to`; real roster handoff creates and reaches the writer. |
+| `CR-015` | `N/A` | Open — Design Impact | `CRR-020`, `API-REV-007`, `APIE2E-F007` | Five real publication calls reach the default adapter but fail because its process-global manager cannot see graph-local runs; the correct graph publication service is not connected to the MCP execution authority. |
+
+- New or remaining finding IDs: `CR-015`.
+- Material score or classification changes: focused failure-origin review does not recompute the full score. CRR-019's source approval of IR-011 remains valid, but its publication-boundary/API/E2E-readiness conclusion is superseded. Current result is `Fail — Design Impact`.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: define one coherent session/route/provider authority and explicit cycle-breaking lifecycle; do not apply mutable global replacement, mismatched catalogs, package branches, or a request-time compatibility fallback. Preserve the passing descriptor, tool list, `send_message_to`, native tools, route security, and external-gateway separation. `APIE2E-REPO-005` remains independently `Unclear`.
