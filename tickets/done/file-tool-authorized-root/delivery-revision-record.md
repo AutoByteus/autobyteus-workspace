@@ -81,7 +81,7 @@
 - Docs sync report: No new behavior documentation was required; durable docs remain current.
 - Handoff summary: Updated with release commit, tag, package versions, and workflow status.
 - Release/publication/deployment report: Updated with finalization and release results.
-- Integration and post-integration verification: Local `personal` matches `origin/personal` at `ca2ccb499`; release helper exited `0`.
+- Integration and post-integration verification: Local `personal` matches `origin/personal` at `b1a4293e2`; release helper exited `0` at release commit `ca2ccb499`.
 - User verification/finalization state: User authorization was received and honored; repository finalization and release trigger are complete.
 - Why this delivery revision was recorded: Records the release boundary separately from the earlier repository merge and preserves the asynchronous CI publication state.
 - Next recipient/action: Remote release workflows — complete desktop, Android, iOS, messaging-gateway, and server-Docker publication. No manual-dispatch was run because the documented release push already triggered them.

@@ -65,7 +65,7 @@ Release `v1.4.30` completed through the documented `personal`-branch helper. Rel
 - Re-integration before final merge result: `Completed` (`651feadfe`); no conflicts.
 - Target branch update result: `Refreshed` from `origin/personal` at `596094be191f6aecba6ef37abcda342a20e9af64` after the user's release authorization.
 - Merge into target result: `Completed` (`aecbdb818` — `Merge file-tool authorized-root into personal`).
-- Push target branch result: `Completed` — `origin/personal` at `ca2ccb49993db0f3f028bd8472c48515eff81c4e`.
+- Push target branch result: `Completed` — `origin/personal` at final delivery-docs commit `b1a4293e2fbe52d6cd52dbfc9e3afe080afac843`; release commit remains `ca2ccb49993db0f3f028bd8472c48515eff81c4e`.
 - Repository finalization status: `Completed` — ticket branch merged and target branch pushed.
 - Blocker (if applicable): `N/A`.
 
@@ -113,7 +113,7 @@ Release workflow is in scope after repository finalization. The release tag push
 ## Verification Checks
 
 - `git fetch origin --prune`: passed; tracked `origin/personal` is `596094be191f6aecba6ef37abcda342a20e9af64`.
-- `git rev-list --left-right --count origin/personal...HEAD`: `0 0` after the release push; local `personal` matches `origin/personal` at `ca2ccb49993db0f3f028bd8472c48515eff81c4e`.
+- `git rev-list --left-right --count origin/personal...HEAD`: `0 0` after the final delivery-docs push; local `personal` matches `origin/personal` at `b1a4293e2fbe52d6cd52dbfc9e3afe080afac843`.
 - `git diff --check`: passed after docs edits and delivery artifacts were written.
 - Upstream API/E2E: Pass at 96% confidence, including macOS arm64 Electron packaging and packaged CLI/runtime probes.
 - Upstream proportional durable-test review CRR-002: Pass; 1 file / 11 tests passed; no findings.
