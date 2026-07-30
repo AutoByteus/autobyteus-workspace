@@ -11,7 +11,10 @@ import { initializeServerAppLogger } from "../logging/server-app-logger.js";
 import { runMigrations } from "../startup/migrations.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import { getAppDataMigrationRunner } from "../app-data-migrations/app-data-migration-runner.js";
-import { stopDefaultAgentRunEventPipeline } from "../agent-execution/events/default-agent-run-event-pipeline.js";
+import {
+  resetDefaultAgentRunEventPipeline,
+  stopDefaultAgentRunEventPipeline,
+} from "../agent-execution/events/default-agent-run-event-pipeline.js";
 import { seedInternalServerBaseUrlFromListenAddress } from "../config/server-runtime-endpoints.js";
 import { createApplicationPlatformRuntimeGraph } from "../application-platform/runtime/create-application-platform-runtime-graph.js";
 import { buildStandaloneApplicationServerComposition } from "../compositions/build-standalone-application-server-composition.js";
@@ -150,6 +153,7 @@ export const startStandaloneApplicationHost = async (
     GeneralProcessRunAuthority | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
+    await resetDefaultAgentRunEventPipeline();
     const { selection, bundleService } = validatedPackage;
     const definitionServices = createApplicationDefinitionServices({
       appConfig: processResources.appConfig,
