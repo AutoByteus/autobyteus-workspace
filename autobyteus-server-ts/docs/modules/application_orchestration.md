@@ -7,7 +7,7 @@ Owns application-authored runtime orchestration after an application backend is 
 ## TS Source
 
 - `src/application-orchestration`
-- `src/application-platform/runtime`
+- `src/application-platform`
 - `src/startup/agent-tool-loader.ts`
 - `src/compositions/build-studio-server.ts`
 - `src/compositions/build-standalone-application-server.ts`
@@ -16,9 +16,11 @@ Owns application-authored runtime orchestration after an application backend is 
 
 - `src/application-orchestration/services/application-orchestration-host-service.ts`
 - `src/application-orchestration/services/application-run-binding-launch-service.ts`
-- `src/application-orchestration/services/application-execution-resource-configuration-service.ts`
-- `src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts`
 - `src/application-orchestration/services/application-execution-resource-resolver.ts`
+- `src/application-platform/launch-configuration/application-launch-configuration-service.ts`
+- `src/application-platform/launch-configuration/application-launch-resource-baseline-builder.ts`
+- `src/application-platform/launch-configuration/application-launch-host-capability-validator.ts`
+- `src/application-platform/launch-configuration/application-portable-launch-config-policy.ts`
 - `src/application-orchestration/services/application-run-observer-service.ts`
 - `src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts`
 - `src/application-orchestration/services/application-execution-event-ingress-service.ts`
@@ -26,7 +28,7 @@ Owns application-authored runtime orchestration after an application backend is 
 - `src/application-orchestration/services/application-orchestration-recovery-service.ts`
 - `src/application-orchestration/services/application-orchestration-startup-gate.ts`
 - `src/application-orchestration/services/application-published-artifact-relay-service.ts`
-- `src/application-orchestration/stores/application-execution-resource-configuration-store.ts`
+- `src/application-orchestration/stores/application-launch-override-store.ts`
 - `src/application-orchestration/stores/application-run-binding-store.ts`
 - `src/application-orchestration/stores/application-run-lookup-store.ts`
 - `src/application-orchestration/stores/application-execution-event-journal-store.ts`
@@ -76,28 +78,70 @@ The orchestration host validates the resource choice and explicit start kind, la
 
 ## Resource Configuration And Availability
 
-The orchestration boundary also owns persisted application launch setup for manifest-declared `executionResourceSlots[]`:
+The application-platform launch-configuration boundary owns portable package
+defaults and optional Studio overrides for manifest-declared
+`executionResourceSlots[]`. Every slot view keeps four meanings separate:
 
-- per-application saved resource selections and kind-aware `launchProfile` records are stored in platform-owned state,
-- agent-backed selections can persist `runtimeKind`, `llmModelIdentifier`, and `workspaceRootPath` only when the slot declares those fields,
-- agent-team-backed selections can persist shared defaults plus current member runtime/model overrides, with `workspaceRootPath` stored on the shared defaults record,
-- old execution-resource configuration keys such as `resourceRef` or `owner` are not accepted as current configuration; stale configured-resource rows are reset/deleted so setup becomes `NOT_CONFIGURED`,
-- the older flat `launch_defaults_json` to `launchProfile` normalization is separate from the execution-resource rename and does not permit old execution-resource refs,
-- read-time validation is authoritative: malformed profiles, kind mismatches, unsupported fields, or stale team topology are surfaced as `INVALID_SAVED_CONFIGURATION` together with `invalidSavedConfiguration` and issue detail instead of silently launching stale state, and
-- host-managed application flows keep `autoExecuteTools` enabled for the application-owned teaching workflows.
+- `packageBaseline`: the bundle-owned resource choice and complete kind-aware
+  launch configuration shipped in the package;
+- `selectedResourceBaseline`: a no-write preview of defaults for a resource the
+  user is considering;
+- `savedOverride`: a sparse, host-owned Studio override, when one exists; and
+- `effectiveConfiguration`: the package baseline with a valid saved override
+  overlaid on top.
+
+The absence of a saved override means the package baseline is effective. A
+saved override that becomes invalid is preserved and surfaced with
+`savedOverrideState = INVALID`, issue detail, and no effective configuration;
+the platform does not silently repair or delete it. Explicit reset removes the
+override and reveals the package baseline again.
+
+Package baselines must be bundle-owned, complete for every required slot, and
+portable across Studio and standalone. Host validation re-resolves current
+definitions and credentials before accepting an override or declaring a launch
+runnable. Agent configurations can include `runtimeKind`,
+`llmModelIdentifier`, and `workspaceRootPath` only when the slot supports them.
+Team configurations use shared defaults plus current member runtime/model
+overrides, with `workspaceRootPath` on the shared defaults.
 
 Application agent-execution launch inputs carry an optional `skillAccessMode`
 field. It has a narrow value set: `PRELOADED_ONLY` is the
 host-managed default and means "use the configured skills on the target
 definition"; `NONE` suppresses AutoByteus skill exposure when an
 internal/application flow intentionally needs that. The saved setup
-`launchProfile` editors do not expose a skill-access selector, and the removed
+launch-configuration editors do not expose a skill-access selector, and the removed
 `GLOBAL_DISCOVERY` value is not a valid saved setup, backend SDK, or
 `agentExecution` input.
 
-`ApplicationExecutionResourceConfigurationService` is the semantic owner for `GET /applications/:applicationId/execution-resource-configurations` and `PUT /applications/:applicationId/execution-resource-configurations/:slotKey`. It validates and normalizes current-shape writes, resets stale old execution-resource rows instead of migrating them, maps invalid write attempts to HTTP 400, and returns `READY`, `NOT_CONFIGURED`, or `INVALID_SAVED_CONFIGURATION` views for the frontend setup gate.
+`ApplicationLaunchConfigurationService` is the semantic owner behind the
+legacy-named launch-setup routes:
 
-Application backends still keep business launch timing app-owned. They consume the saved `launchProfile` through the shared helpers in `@autobyteus/application-backend-sdk` to expand the persisted selection into the concrete runtime launch input each app needs.
+- `GET /applications/:applicationId/execution-resource-configurations`
+- `POST /applications/:applicationId/execution-resource-configurations/:slotKey/selection-preview`
+- `PUT /applications/:applicationId/execution-resource-configurations/:slotKey`
+- `DELETE /applications/:applicationId/execution-resource-configurations/:slotKey`
+- `GET /applications/:applicationId/available-execution-resources`
+
+The preview route is read-only. `PUT` validates and re-resolves current
+definitions before storing a sparse override. `DELETE` is the explicit reset
+operation. Application readiness is reported as `RUNNABLE`,
+`INVALID_PACKAGE`, or `HOST_REQUIREMENT_MISSING`; saved-override validity is
+reported separately so an invalid override cannot be confused with a missing
+package default.
+
+Application backends still keep business launch timing app-owned. They consume
+the resolved effective configuration through the shared helpers in
+`@autobyteus/application-backend-sdk` to build the concrete runtime launch
+input each app needs.
+
+`createApplicationOrchestrationServices` and
+`createApplicationRunServices` construct named runtime services around the
+exact runtime-local definition services and injected `MemberTeamContextBuilder`.
+They prepare managers and factories only. `ApplicationRunBindingLaunchService`
+is the business-demand boundary that creates a new agent or team run; startup
+recovery only restores runs represented by recorded nonterminal bindings. No
+service locator or process-global team-definition fallback participates in
+either path.
 
 `ApplicationAvailabilityService` owns app-scoped liveness for applications discovered by the bundle layer:
 
@@ -155,15 +199,8 @@ Runtime-visible lifecycle events use the application-owned orchestration journal
 
 ## Startup Recovery And Gating
 
-`createApplicationOrchestrationServices` and
-`createApplicationRunServices` construct named runtime services around the
-exact runtime-local definitions and run managers. They prepare services,
-managers, and factories only. `ApplicationRunBindingLaunchService` is the
-business-demand boundary that creates a new agent or team run; startup recovery
-only restores runs represented by recorded nonterminal bindings.
-
 The Studio and standalone server assembly roots run orchestration startup recovery
-after the HTTP/WebSocket stack is listening:
+after their HTTP/WebSocket stack is listening:
 
 1. `ApplicationOrchestrationStartupGate.runStartupRecovery(...)` enters the `RECOVERING` state.
 2. `ApplicationOrchestrationRecoveryService.resumeBindings()` enumerates all installed applications, reloads nonterminal bindings, rebuilds global run lookups, and reattaches lifecycle observers when possible.

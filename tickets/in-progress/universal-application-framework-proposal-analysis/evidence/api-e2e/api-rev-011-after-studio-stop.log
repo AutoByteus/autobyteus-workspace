@@ -1,0 +1,10 @@
+2026-07-30T18:49:55Z
+port_43125=CLEAR
+port_8000=CLEAR
+port_3000=CLEAR
+port_9229=CLEAR
+--- API-owned paths/processes after Studio stop ---
+87027 20471 /bin/bash -lc sleep 2\012{\012 date -u +%FT%TZ\012 for port in 43125 8000 3000 9229; do if lsof -nP -iTCP:$port -sTCP:LISTEN; then echo "port_$port=BUSY"; else echo "port_$port=CLEAR"; fi; done\012 echo '--- API-owned paths/processes after Studio stop ---'\012 ps -axo pid,ppid,command | rg '/tmp/api-rev011-standalone-data|\.autobyteus/development' || true\012 echo '--- user-owned preexisting port preserved ---'\012 lsof -nP -iTCP:43124 -sTCP:LISTEN || true\012} | tee tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-011-after-studio-stop.log
+87351 87027 /bin/bash -lc sleep 2\012{\012 date -u +%FT%TZ\012 for port in 43125 8000 3000 9229; do if lsof -nP -iTCP:$port -sTCP:LISTEN; then echo "port_$port=BUSY"; else echo "port_$port=CLEAR"; fi; done\012 echo '--- API-owned paths/processes after Studio stop ---'\012 ps -axo pid,ppid,command | rg '/tmp/api-rev011-standalone-data|\.autobyteus/development' || true\012 echo '--- user-owned preexisting port preserved ---'\012 lsof -nP -iTCP:43124 -sTCP:LISTEN || true\012} | tee tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-011-after-studio-stop.log
+87364 87351 rg /tmp/api-rev011-standalone-data|\.autobyteus/development
+--- user-owned preexisting port preserved ---

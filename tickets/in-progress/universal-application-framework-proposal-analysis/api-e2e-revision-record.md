@@ -10,6 +10,11 @@
 | API-REV-004 | `code_reviewer` `CRR-008`; API/E2E round 4 | `IR-005`; `CRR-008`; `API-REV-003` | **Fail / 88%** | **Fail / 89%** |
 | API-REV-005 | `code_reviewer` `CRR-014`; API/E2E round 5 | `SR-005`; `SR-006`; `ARCH-REV-005`; `ARCH-REV-006`; `IR-006`–`IR-009`; `CRR-009`–`CRR-014`; `API-REV-004` | **Fail / 89%** | **Fail / 87%** |
 | API-REV-006 | `code_reviewer` `CRR-017`; API/E2E round 6 | `SR-008`; `SR-009`; `IR-010`; `CRR-015`–`CRR-017`; `API-REV-005` | **Fail / 87%** | **Fail / 88%** |
+| API-REV-007 | `code_reviewer` `CRR-019`; API/E2E round 7 | `IR-011`; `CRR-018`–`CRR-019`; `API-REV-006` | **Fail / 88%** | **Fail / 88%** |
+| API-REV-008 | `code_reviewer` `CRR-022`; API/E2E round 8 | `SR-010`; `ARCH-REV-008`; `IR-012`–`IR-013`; `CRR-020`–`CRR-022`; `API-REV-007` | **Fail / 88%** | **Pass / 97%** |
+| API-REV-009 | `code_reviewer` `CRR-024`; delivery re-entry `DR-001`; API/E2E round 9 | `IR-014`; `CRR-024`; `API-REV-008`; `CRR-023`; `DR-001` | **Pass / 97%** | **Fail / 94%** |
+| API-REV-010 | `code_reviewer` `CRR-026`; API/E2E round 10 | `IR-015`; `CRR-025`–`CRR-026`; `API-REV-009`; `DR-001` | **Fail / 94%** | **Pass / 98%** |
+| API-REV-011 | `code_reviewer` `CRR-029`; API/E2E round 11 | `SR-011`; `ARCH-REV-009`; `IR-016`; `CRR-028`–`CRR-029`; `API-REV-010` | **Pass / 98%** | **Pass / 99%** |
 
 ## Revision Entries
 
@@ -219,3 +224,76 @@ None.
 - New or remaining failure IDs: none for the current requirement-linked scope. `APIE2E-REPO-005` remains a separate historical `Unclear` whole-suite diagnostic and is not attributed to IR-012/IR-013 or used as pass evidence.
 - Residual risks: a raw old bearer descriptor was deliberately not retained for live replay; exact application revocation/general-process survival/process clear is covered directly against the real registry authority. Nuxt warmup emitted transient `#app-manifest` diagnostics but the ready signals and full Studio journey passed.
 - Recommended recipient: `code_reviewer` for the separate proportional durable-test review before delivery.
+
+### API-REV-009 — Integrated lifecycle passes; atomic development package metadata mutates
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; delivery re-entry from `DR-001`; API/E2E round 9 after `CRR-024` source-review Pass for `IR-014`.
+- Triggering finding or scenario IDs: `DR-001`; new `APIE2E-PARITY-005` / `APIE2E-F008`; historical `APIE2E-REPO-005` remains separate `Unclear`.
+- Related revision IDs: `IR-014`; `CRR-024`; `API-REV-008`; `CRR-023`; `DR-001`.
+- Why recorded: performed mandatory post-integration execution of the latest-base event-pipeline lifecycle, the supported same-process standalone watch restart, proportional real dual-host journeys, maintained commands, cleanup, and package-integrity gates.
+- Durable coverage delta: updated `autobyteus-application-devkit/tests/application-devkit.test.mjs` with one non-fake atomic-pack metadata regression. It currently fails at the exact canonical-path assertion (`19 pass / 1 fail`). No test was removed.
+- Execution delta: exact lifecycle `3/3`; integrated server `25 files / 90 tests`; server no-emit/full build; selected Nuxt `3 files / 7 tests`; Brief/Socratic build/validate/typecheck; real same-process active stop/restart and token persistence; real standalone and Studio publication/handoff/projection; Studio iframe remount; 73-path pre/post digest comparison; cleanup.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-001` integrated event-pipeline lifecycle failure | latest-base integration failure; implementation local fix | **Resolved**: exact unchanged unit/SQLite lifecycle tests pass; real public host watch restart drains accepted work and creates a fresh accepting pipeline only at the next start | `api-rev-009-latest-base-lifecycle.log`, watch restart/token evidence |
+
+- Expected versus observed: expected all 73 package/authoring paths to retain identical bytes after supported standalone watch and Studio development loops. Observed 72/73 identical; the canonical package README changes its absolute path from `dist/importable-package` to randomized `dist/.pack-staging-<uuid>`.
+- Source correlation: atomic packaging builds with the staging root as `outputPackageRootOverride`; the package assembler serializes that temporary root into README before rename.
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this revision record.
+- Prior result and confidence: `Pass / 97%` (`API-REV-008`).
+- Current result and confidence: **Fail / 94%**.
+- New or remaining failure IDs: `APIE2E-PARITY-005` / `APIE2E-F008` against AC-001/AC-011. `APIE2E-REPO-005` remains separately `Unclear`.
+- Recommended recipient: `code_reviewer` for focused failure-origin review; preliminary bounded `Local Fix`, implementation owner.
+- Remaining risks / untested scope: the failed exact package-integrity gate blocks delivery. All selected lifecycle, repository, dual-host real publication/remount, maintained-command, and cleanup paths otherwise pass.
+
+### API-REV-010 — Canonical atomic metadata restores exact dual-host package parity
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 10 after `CRR-026` source-review Pass for `IR-015`.
+- Triggering finding or scenario IDs: prior `APIE2E-PARITY-005` / `APIE2E-F008` against AC-001/AC-011; historical `APIE2E-REPO-005` remains separate `Unclear`.
+- Related revision IDs: `API-REV-009`; `CRR-025`; `IR-015`; `CRR-026`; delivery `DR-001` remains execution-confirmed resolved.
+- Why recorded: rechecked the exact atomic metadata failure first, then proved the canonical/final root distinction through the real maintained standalone and Studio development pack loops, proportional normal/failure probes, and final cleanup.
+- Coverage decisions or durable paths changed: no new round-10 test edit. The API-REV-009 addition in `autobyteus-application-devkit/tests/application-devkit.test.mjs` remains the cumulative API/E2E-owned durable delta and now passes. No test was removed.
+- Scenarios rechecked: atomic regression first; `APIE2E-PARITY-005` / `APIE2E-F008`; default pack; explicit `pack --out`; validation-before-rename; injected publish rollback; scratch/process/data cleanup. Unchanged API-REV-009 runtime/browser/publication evidence was retained proportionately.
+- Execution delta: atomic 1/1; full devkit 20/20; Brief baseline build/validate; real repeated standalone `dev` and Studio `dev:studio`; five 73-path comparisons; normal/explicit CLI pack/validate; pre-rename and rollback probes; final cleanup/diff audit.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `APIE2E-PARITY-005` / `APIE2E-F008` | bounded implementation-owned atomic metadata defect; README serialized randomized staging root | **Resolved**: durable atomic regression passes and standalone initial/repeated plus Studio initial/repeated comparisons are each 73/73 byte-identical; README always identifies the canonical final root | `api-rev-010-atomic-metadata-regression-first.log`; `api-rev-010-parity-comparison-summary.log`; baseline and four post-host hash logs; full-suite log |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this revision record.
+- Prior result and confidence: `Fail / 94%` (`API-REV-009`).
+- Current result and confidence: **Pass / 98%** (`98.3%`).
+- Broader validation: `Required — completed` through supported maintained standalone and Studio command loops.
+- New or remaining failure IDs: none for the current requirement-linked scope. `APIE2E-REPO-005` remains a separate historical `Unclear` diagnostic and is not attributed or used as pass evidence.
+- Residual risk: failure-only uniquely named staging scratch persists until caller/harness cleanup; the probe recorded and removed it, while canonical validation-before-rename and rollback were exact. No successful command path left scratch.
+- Recommended recipient: `code_reviewer` for separate proportional review of the changed durable devkit test before delivery resumes.
+
+### API-REV-011 — Corrected framework vocabulary preserves complete real dual-host behavior
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 11 after `CRR-029` source-review Pass for `IR-016`.
+- Triggering finding or scenario IDs: `CR-018`; new validation IDs `APIE2E-RENAME-001`, `APIE2E-EXPORT-001`, `APIE2E-ROUTE-011`, `APIE2E-STANDALONE-011`, `APIE2E-STANDALONE-RESTART-011`, `APIE2E-STUDIO-011`, `APIE2E-STUDIO-REMOUNT-011`, `APIE2E-STUDIO-RECOVERY-011`, `APIE2E-PARITY-011`, and `APIE2E-CLEANUP-011`. Historical `APIE2E-REPO-005` remains separate `Unclear`.
+- Related revision IDs: `SR-011`; `ARCH-REV-009`; `IR-016`; `CRR-028`–`CRR-029`; `API-REV-010`; delivery artifacts retained but no new delivery re-entry finding.
+- Why recorded: reconciled every IR-016 durable test rename/update, verified the strengthened zero-run runtime-build assertion, and performed the architecture-required proportionate executable proof across both production hosts, internal/external MCP separation, real publication/handoff, restart/recovery, parity and cleanup.
+- Coverage decisions or durable paths changed: no API/E2E-owned durable file changed in round 11. IR-016 modifies eleven server test paths: updates six current paths; cleanly renames four role files; and replaces runtime-graph-isolation with runtime-isolation while strengthening zero agent/team run creation during two runtime builds. The complete IR-016 durable test delta is the required proportional-review surface.
+- Repository execution: server TypeScript no-emit and full build pass; exact renamed/adjacent selection passes `11 files / 34 tests`; built root export smoke exposes current builders and excludes the retired Studio export; maintained devkit/Brief build and Brief validation pass.
+- Real standalone execution: internal route retains `401 unauthorized` / `404 session_unavailable`, external `/mcp/gateway` remains absent, exact package Codex/Luna team completes two real Briefs across a host stop/restart, actual researcher publication and recipient-name writer handoff succeed twice, writer publication succeeds twice, and application projection reaches `in_review`, two outputs and one final.
+- Real Studio execution: internal route behavior remains intact and Studio-only `/mcp/gateway` initializes; exact package team/setup/iframe completes a real Brief with publication/handoff/projection; a corrected semantic probe changes the explicit remount launch ID while retaining one iframe; stop/restart restores the mixed team and persisted Brief projection.
+- Harness note: the first combined Studio probe passed the business-run assertion but timed out because it searched directly for a Reload button hidden behind the immersive-controls trigger. The failure was preserved. A targeted corrected probe opened the panel and passed the exact remount assertion; no production or durable test change was required.
+- Package and cleanup: exact 73-path SHA-256 parity passes after standalone, after Studio/remount, and after both restart/recovery cycles. Ports 43125/8000/3000/9229, API-owned data/temp roots and matching processes are clear; `git diff --check` passes. A pre-existing user-owned 43124 process/data set was excluded and ended independently before the final audit.
+
+#### Prior Failure Resolution
+
+No prior API/E2E failure was open. `CR-018` was source-resolved by IR-016 and is now execution-confirmed across the complete changed dual-host boundary.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this revision record.
+- Prior result and confidence: `Pass / 98%` (`98.3%`, API-REV-010).
+- Current result and confidence: **Pass / 99%** (`98.9%`).
+- Broader validation: **Required — completed** with real isolated standalone and Studio browser journeys.
+- New or remaining failure IDs: none for the requirement-linked IR-016 scope. `APIE2E-REPO-005` remains separately `Unclear`, unconnected and unused as pass evidence.
+- Residual risks: one transient real-model `run_bash` failure recovered before required publication/handoff completion. The initial Studio reload locator error was isolated to temporary harness setup and corrected with direct semantic proof. Neither is a product blocker.
+- Recommended recipient: `code_reviewer` for the separate proportional review of the IR-016 durable test rename/update delta before delivery resumes.

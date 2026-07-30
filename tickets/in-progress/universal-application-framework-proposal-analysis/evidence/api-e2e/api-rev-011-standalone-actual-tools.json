@@ -1,0 +1,224 @@
+[
+  {
+    "ts": 1785436863.967,
+    "trace_type": "tool_call",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-b9c14386-82ab-4dfe-954b-52ca512f63af",
+    "tool_args": {
+      "artifacts": [
+        {
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+          "description": "Concise research checkpoint for the standalone post-restart API REV 011 brief."
+        }
+      ]
+    },
+    "tool_result": null,
+    "tool_error": null
+  },
+  {
+    "ts": 1785436863.974,
+    "trace_type": "tool_result",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-b9c14386-82ab-4dfe-954b-52ca512f63af",
+    "tool_args": null,
+    "tool_result": {
+      "success": true,
+      "artifacts": [
+        {
+          "id": "brief_studio_researcher_9d7edce0b8f64098ab929a75e98fb9e6:/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+          "runId": "brief_studio_researcher_9d7edce0b8f64098ab929a75e98fb9e6",
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise research checkpoint for the standalone post-restart API REV 011 brief.",
+          "revisionId": "8c7f16a4-ff41-41b5-89f8-2df8e7e81d2d",
+          "createdAt": "2026-07-30T18:41:03.969Z",
+          "updatedAt": "2026-07-30T18:41:03.969Z"
+        }
+      ]
+    },
+    "tool_error": null
+  },
+  {
+    "ts": 1785436869.782,
+    "trace_type": "tool_call",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "send_message_to",
+    "tool_call_id": "exec-726682b6-31d4-49b6-8433-b41d5405e9e5",
+    "tool_args": {
+      "recipient_name": "writer",
+      "message_type": "research_handoff",
+      "content": "Research checkpoint is ready at /private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md. Key findings: frame API REV 011 as a standalone post-restart revision; make the restart boundary explicit (preserved vs reinitialized state and replay/reconciliation); retain 1785436820 verbatim as the run/reference marker; support reviewability with revision, scope, evidence, and validation status. Open questions are endpoint-level changes, compatibility, recovery/idempotency behavior, owner/environment, and acceptance criteria. Please review this file before drafting.",
+      "reference_files": [
+        "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+      ]
+    },
+    "tool_result": null,
+    "tool_error": null
+  },
+  {
+    "ts": 1785436869.945,
+    "trace_type": "tool_result",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "send_message_to",
+    "tool_call_id": "exec-726682b6-31d4-49b6-8433-b41d5405e9e5",
+    "tool_args": null,
+    "tool_result": "Delivered message to writer.",
+    "tool_error": null
+  },
+  {
+    "ts": 1785436902.118,
+    "trace_type": "tool_call",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-c27da0ba-2f3b-4f77-b263-2179b4064ec1",
+    "tool_args": {
+      "artifacts": [
+        {
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+          "description": "Concise writer checkpoint for API REV 011 post-restart release review."
+        }
+      ]
+    },
+    "tool_result": null,
+    "tool_error": null
+  },
+  {
+    "ts": 1785436902.125,
+    "trace_type": "tool_result",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-c27da0ba-2f3b-4f77-b263-2179b4064ec1",
+    "tool_args": null,
+    "tool_result": {
+      "success": true,
+      "artifacts": [
+        {
+          "id": "brief_studio_writer_04b992053e2e4839a35eb130862dda61:/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_writer_04b992053e2e4839a35eb130862dda61",
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise writer checkpoint for API REV 011 post-restart release review.",
+          "revisionId": "85a7b56b-7215-4ade-8eaa-c60dcbdf1a56",
+          "createdAt": "2026-07-30T18:41:42.121Z",
+          "updatedAt": "2026-07-30T18:41:42.121Z"
+        }
+      ]
+    },
+    "tool_error": null
+  },
+  {
+    "ts": 1785436684.754,
+    "trace_type": "tool_call",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-0cc05d6c-e2e4-4e5d-a1a9-5f075c143c62",
+    "tool_args": {
+      "artifacts": [
+        {
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+          "description": "Concise research checkpoint for standalone rename parity."
+        }
+      ]
+    },
+    "tool_result": null,
+    "tool_error": null
+  },
+  {
+    "ts": 1785436684.765,
+    "trace_type": "tool_result",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-0cc05d6c-e2e4-4e5d-a1a9-5f075c143c62",
+    "tool_args": null,
+    "tool_result": {
+      "success": true,
+      "artifacts": [
+        {
+          "id": "brief_studio_researcher_9fd0421ef89d47359e413ca41739a39a:/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+          "runId": "brief_studio_researcher_9fd0421ef89d47359e413ca41739a39a",
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise research checkpoint for standalone rename parity.",
+          "revisionId": "9f6341d0-6b50-4249-9507-27fd85e12c73",
+          "createdAt": "2026-07-30T18:38:04.757Z",
+          "updatedAt": "2026-07-30T18:38:04.757Z"
+        }
+      ]
+    },
+    "tool_error": null
+  },
+  {
+    "ts": 1785436684.776,
+    "trace_type": "tool_call",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "send_message_to",
+    "tool_call_id": "exec-f9c11771-8c64-4f08-a8c5-67d18c3aa8ff",
+    "tool_args": {
+      "recipient_name": "writer",
+      "content": "Research checkpoint is ready at brief-studio/research.md. Key findings: standalone rename parity must preserve canonical names, references, metadata, links, exports, and visible labels across source/generated/review surfaces; acceptance needs a before/after matrix, alias policy, and idempotent repeated-rename tests. Risks: rename matrix/source of truth and historical alias behavior are unspecified, and partial layer updates may drift. Please review the file and draft the brief.",
+      "reference_files": [
+        "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+      ],
+      "message_type": "research-handoff"
+    },
+    "tool_result": null,
+    "tool_error": null
+  },
+  {
+    "ts": 1785436684.925,
+    "trace_type": "tool_result",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "send_message_to",
+    "tool_call_id": "exec-f9c11771-8c64-4f08-a8c5-67d18c3aa8ff",
+    "tool_args": null,
+    "tool_result": "Delivered message to writer.",
+    "tool_error": null
+  },
+  {
+    "ts": 1785436714.108,
+    "trace_type": "tool_call",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-7e6a9f0c-b87f-4a2f-8f10-95d4bf185fd4",
+    "tool_args": {
+      "artifacts": [
+        {
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+          "description": "Concise writer checkpoint and final brief for standalone API revision rename parity."
+        }
+      ]
+    },
+    "tool_result": null,
+    "tool_error": null
+  },
+  {
+    "ts": 1785436714.115,
+    "trace_type": "tool_result",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "publish_artifacts",
+    "tool_call_id": "exec-7e6a9f0c-b87f-4a2f-8f10-95d4bf185fd4",
+    "tool_args": null,
+    "tool_result": {
+      "success": true,
+      "artifacts": [
+        {
+          "id": "brief_studio_writer_b6387adacd634876bc9ed865019c3b8c:/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+          "runId": "brief_studio_writer_b6387adacd634876bc9ed865019c3b8c",
+          "path": "/private/tmp/api-rev011-standalone-data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md",
+          "type": "file",
+          "status": "available",
+          "description": "Concise writer checkpoint and final brief for standalone API revision rename parity.",
+          "revisionId": "f6e0349f-3501-4a4d-9e76-7b37cf7bf3ce",
+          "createdAt": "2026-07-30T18:38:34.110Z",
+          "updatedAt": "2026-07-30T18:38:34.110Z"
+        }
+      ]
+    },
+    "tool_error": null
+  }
+]

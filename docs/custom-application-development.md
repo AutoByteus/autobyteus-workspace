@@ -75,6 +75,14 @@ dist/importable-package/applications/<app-id>/backend/dist/entry.mjs
 
 Import `dist/importable-package` into AutoByteus. Do not import the source repository root.
 
+Packing publishes atomically. The devkit assembles and validates into a
+uniquely named staging directory, writes generated metadata such as the package
+README using the final canonical package-root name, and only then swaps the
+validated directory into place. A failed build or validation leaves the
+previous package intact, and successful publication removes staging/previous
+scratch directories. Runtime hosts treat the resulting package as immutable
+input.
+
 ## Validate before distribution
 
 ```bash
@@ -97,6 +105,9 @@ autobyteus-app dev --host studio --studio-url http://127.0.0.1:8000
 
 Studio mode packs the configured output, imports or finds that exact local package through Studio's public API, and requests package reload after rebuild. Use Studio's explicit **Reload application** action to remount the current view.
 
+Both development modes use the same atomic package publication path. A watched
+rebuild never exposes a partially assembled package to either host.
+
 ## Run an existing build standalone
 
 ```bash
@@ -114,6 +125,15 @@ demand creates new runs, and post-listen recovery may restore recorded runs.
 The process-owned `AgentToolsMcpRuntime` and scoped session managers preserve
 the internal `/mcp/agent-tools/:sessionId` callback; Studio-only `/mcp/gateway`
 is a separate external-client surface.
+
+## Portable launch defaults
+
+Distributable applications declare complete bundle-owned launch defaults for
+every required execution-resource slot. Standalone uses those package defaults
+directly and does not copy Studio settings. Studio may store a sparse,
+host-owned override; resetting it reveals the original package default.
+Invalid saved overrides remain visible for correction rather than being
+silently repaired or deleted.
 
 ## Agent-published artifacts
 

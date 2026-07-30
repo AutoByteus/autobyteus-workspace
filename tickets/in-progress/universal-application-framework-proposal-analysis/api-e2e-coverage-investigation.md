@@ -16,15 +16,194 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): `N/A`
-- Relevant Delivery Revision IDs: `N/A`
+- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-001`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-008`
-- Current Investigation Round: `8` (`API-REV-008` complete)
-- Trigger: `code_reviewer` source-review result `CRR-022` (`Pass`) for `IR-013`; reviewed HEAD `235be4529bf4c34e3047632453ca80adf25e1972`.
-- Prior Investigation Reviewed: `API-REV-007` (`Fail / 88%`), including unresolved `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`, resolved descriptor/tool-list boundary `APIE2E-F006`, and independent `APIE2E-REPO-005` (`Unclear`).
-- Current Result: `Pass / 97%`; the prior publication failure is resolved, live dual-host publication/remount and stop/restart pass, and cleanup is complete.
+- Current API/E2E Revision ID: `API-REV-011`
+- Current Investigation Round: `11` (`API-REV-011` complete)
+- Trigger: `code_reviewer` source-review result `CRR-029` (`Pass`) for behavior-neutral vocabulary correction `IR-016`; reviewed HEAD `d29ac0397a318e92e08ee882a3c20415ff3d8fee`; proportional executable confirmation of `CR-018`.
+- Prior Investigation Reviewed: `API-REV-010` (`Pass / 98.3%`), proportional test review `CRR-027`, design re-entry `SR-011` / `ARCH-REV-009`, implementation `IR-016`, and source-review `CRR-029`.
+- Current Result: **Pass / 99%** (`98.9%`); all IR-016 renamed durable boundaries pass, both real hosts complete publication/handoff/projection and restart/recovery, route separation is preserved, 73/73 bytes remain identical, and cleanup is complete.
 - Latest Authoritative Investigation: `Yes`
+
+## Round 11 Pre-Execution Coverage Reconciliation
+
+`IR-016` is a reviewed behavior-neutral clean rename across the two server builders, application runtime, process Agent Tools runtime, scoped session manager, general-process supervisor, application shutdown coordinator, bind-once publisher/handler, their consumers, root exports, tests, and current docs. It changes no wire contract, package, schema, persistence, launch profile, frontend production source, runtime branch, or dependency. Because these renamed owners sit on the real execution spine, repository-only source equivalence is insufficient: a proportionate real dual-host pass is required.
+
+### Round-11 Changed-Surface And Validity Decisions
+
+| Surface / coverage | Decision | Planned evidence |
+| --- | --- | --- |
+| `application-platform-runtime-graph-isolation.test.ts` -> `application-platform-runtime-isolation.test.ts` | `Valid clean rename + strengthened assertion` | require graph/runtime isolation and zero `createAgentRun` / zero `createTeamRun` calls during two runtime builds |
+| `application-run-authorities.test.ts` -> `application-run-services.test.ts` | `Valid clean rename` | exact graph-local definition/run/metadata/service ownership remains intact |
+| `application-run-shutdown-authority.test.ts` -> `application-run-shutdown-coordinator.test.ts` | `Valid clean rename` | idempotent team-before-agent stop, continuation, and aggregation |
+| `agent-tools-mcp-process-authority.test.ts` -> `agent-tools-mcp-runtime.test.ts` | `Valid clean rename` | process runtime and scoped session behavior/security remain intact |
+| `standalone-application-composition.integration.test.ts` -> `standalone-application-server.integration.test.ts` | `Valid clean rename` | exact package selection, internal Agent Tools route, fallback order, recovery, and close |
+| lifecycle, route, launch, recovery, application capabilities, imported Brief tests | `Still Valid; rerun` | current names preserve demand-driven launch, recorded recovery, publication, route/auth, and package APIs |
+| internal `/mcp/agent-tools/:sessionId` | `Mandatory real/API rerun` | unauthenticated 401; unknown/revoked 404; actual authenticated tools/list and publication/handoff in both hosts |
+| Studio-only external `/mcp/gateway` | `Mandatory separation check` | present only in Studio; absent from standalone without changing internal Agent Tools behavior |
+| real standalone/Studio Brief | `Mandatory broader validation` | both start, package-owned Codex/Luna business run, `publish_artifacts`, recipient-name `send_message_to`, writer publication/projection, stop/restart |
+| package integrity | `Mandatory proportional parity` | 73 package/authoring paths unchanged before/after both hosts |
+| historical `APIE2E-REPO-005` | `Unclear; separate` | do not rerun, attribute, or use as current pass evidence |
+
+No API/E2E-owned durable edit is planned before execution because IR-016 already performs the approved durable file renames and strengthens the zero-run assertion. The entire IR-016 durable test delta must be returned to `code_reviewer` for proportional test-code review on Pass.
+
+## Round 11 Repository And Live Result
+
+- Server build-config TypeScript no-emit and full build pass. The exact renamed/adjacent selection passes `11 files / 34 tests`, including the strengthened guarantee that constructing two application runtimes creates zero agent runs and zero team runs. Built root exports expose callable `buildStudioServer` and `startStandaloneApplicationHost`; the retired Studio composition export is absent.
+- The standalone host starts on isolated port `43125` with isolated data. Its internal Agent Tools path returns established `401 unauthorized` without a bearer and `404 session_unavailable` for an invalid session, while Studio-only `/mcp/gateway` is absent. A real Chrome Brief run reaches `in_review`, two outputs and one final. Actual traces prove researcher `publish_artifacts`, recipient-name `send_message_to` to `writer`, and writer `publish_artifacts` all succeed; SQLite contains the attached binding and both revisions.
+- Standalone stop clears the listener. Restart with the same isolated data restores the prior mixed team and a second fresh real Brief run reaches the same terminal state with a second successful publication/handoff/publication sequence. One intermediate model `run_bash` error recovered and did not affect the required result.
+- Root Studio plus Brief `dev:studio` exposes the exact package team with Luna, enables entry and mounts one iframe. A real Brief run reaches `in_review`, two outputs and one final with successful researcher publication, named writer handoff, writer publication and application projection. The internal route retains `401`/`404` behavior and Studio external `/mcp/gateway` initializes successfully as `autobyteus_mcp_gateway`.
+- The first combined Studio browser probe completed the business assertion but used an incorrect locator for the hidden Reload control and timed out. The recorded harness failure was corrected in a focused semantic probe that opened the immersive controls, changed `iframe-launch-1` to `iframe-launch-2`, and retained exactly one iframe. This is a test-harness correction, not a product reroute or hidden failure.
+- After stopping and restarting both Studio processes, the server restores the real mixed team and the browser reopens the persisted Brief as `in_review` with two outputs and one final.
+- Exact package/authoring parity passes `73/73` after standalone, after Studio/remount, and after both restart/recovery cycles. Cleanup removes every API-owned listener, data root and temporary probe; no matching owned process remains; `git diff --check` passes. The pre-existing user-owned port `43124` was excluded throughout and ended independently before final audit.
+- No API/E2E-owned durable test changed in round 11. The eleven-path IR-016 test delta remains the correct proportional review surface. Historical `APIE2E-REPO-005` remains separately `Unclear` and was not used as current evidence.
+
+### Round-11 Final Coverage Decisions
+
+| Boundary / scenario | Final decision | Evidence |
+| --- | --- | --- |
+| renamed runtime/service/shutdown/Agent Tools boundaries | `Pass` | 11 files / 34 tests plus full build and root-export smoke |
+| zero run creation during runtime build | `Pass` | strengthened durable runtime-isolation assertions |
+| standalone real business/publication/handoff/projection | `Pass` | Chrome JSON/PNG, actual-tools JSON and app-projection log |
+| standalone stop/restart | `Pass` | listener clear, graph restore, second complete real run |
+| Studio exact setup/business/publication | `Pass` | setup/iframe/business JSON, actual tools and app DB |
+| Studio explicit remount/restart/recovery | `Pass` | launch ID 1 -> 2 with one iframe; persisted Brief recovered after restart |
+| internal route / Studio gateway separation | `Pass` | standalone and Studio route logs plus authenticated route integration |
+| package integrity | `Pass` | exact 73/73 SHA-256 parity at all checkpoints |
+| cleanup | `Pass` | owned ports/paths/processes clear; pre-existing user state respected |
+| cumulative durable test delta | `Pass; proportional review pending` | IR-016 eleven-path rename/update set; no round-11 API-owned edit |
+| `APIE2E-REPO-005` | `Unclear; separate` | no supported connection to IR-016 |
+
+### Round-11 Confidence And Broader-Validation Decision
+
+| Category | Post-Repository | Final |
+| --- | ---: | ---: |
+| Requirement and acceptance-criteria proof | 96% | 99% |
+| Changed-boundary execution directness | 98% | 99% |
+| Cross-boundary integration realism and mock gap | 95% | 99% |
+| Environment, configuration, identity and fixture fidelity | 98% | 99% |
+| Failure, edge-case, lifecycle and recovery evidence | 96% | 98% |
+| User-surface/browser confidence | 96% | 99% |
+| Durable regression coverage quality and relevance | 98% | 99% |
+
+Overall post-repository confidence: **97%** (`96.7%`). Overall final confidence: **99%** (`98.9%`), calculated as a simple mean. No category is below 90%, every critical changed-boundary criterion has direct proof, and no material broader-validation risk remains.
+
+Broader validation was **Required — completed** because the renamed owners lie on real host construction, Agent Tools/session, publication, shutdown and recovery boundaries that repository checks alone cannot prove. Real dual-host execution closed that gap.
+
+## Round 10 Pre-Execution Coverage Reconciliation
+
+`IR-015` is a bounded correction to the exact `API-REV-009` failure origin. Physical assembly/validation remains at the staging root, while `metadataPackageRoot` represents the canonical final package root emitted by the existing sole README writer. Ordinary pack and explicit output keep physical and represented roots equal. No runtime, server, Studio UI, event-pipeline, publication, or persisted-data source changed.
+
+### Round-10 Changed-Surface And Validity Decisions
+
+| Surface / coverage | Decision | Planned evidence |
+| --- | --- | --- |
+| Preserved atomic metadata regression | `Still Valid; rerun first` | Must pass before broader execution; directly invokes real atomic pack and rejects staging metadata |
+| `APIE2E-PARITY-005` / `APIE2E-F008` | `Mandatory real rerun` | Compare the same 73 package/authoring hashes before and after maintained `dev` watch restart and `dev:studio` initial/repeated pack |
+| Default `pack` | `Proportional probe` | README must name its actual configured final package root |
+| Explicit `pack --out` | `Proportional CLI probe` | README must name the explicit final output, not default/staging |
+| Validation before publish/rename | `Temporary failure probe` | Invalid generated package must fail before any canonical replacement |
+| Atomic publish rollback | `Temporary injected failure probe` | Existing canonical bytes must be restored after a publish-rename failure |
+| Scratch lifecycle | `Temporary filesystem audit` | Repeated success must leave no staging/previous residue; failure probes will record and clean any scratch truthfully |
+| API-REV-009 server/lifecycle and real run matrices | `Still Valid; no broad rerun` | IR-015 changes only devkit path/metadata assembly; DR-001 remains execution-confirmed resolved |
+| `APIE2E-REPO-005` | `Unclear; separate` | No reclassification or attribution |
+
+One API/E2E-owned durable test remains modified from round 9. No additional durable test change is planned unless execution exposes a distinct stable regression. On Pass, the cumulative package must return to `code_reviewer` for proportional review of that changed devkit test.
+
+## Round 10 Repository And Live Result
+
+- The mandatory first gate passes: the preserved non-fake atomic regression passes `1/1` at current reviewed HEAD. The complete devkit suite then passes `20/20` without the previously observed watcher timeout.
+- Brief default `pack` and `validate` pass and the README identifies the actual canonical `dist/importable-package` root. Explicit `pack --out /tmp/api-rev010-explicit-package` and its validator pass, and its README identifies that exact explicit final root.
+- The baseline contains exactly 73 package/authoring files. Real maintained standalone `dev -- --port 43124 --no-open` completes its initial atomic pack and repeated watched packs; both comparisons are `73/73` identical. Real root Studio plus Brief `dev:studio` completes its initial registration and two watched reload-ready packs; both comparisons are `73/73` identical. The final post-suite check remains `73/73` identical and the maintained Brief package/authoring status is clean.
+- A disposable non-fake validation probe changes a materialized source manifest from v4 to v3. Generation fails with the exact manifest diagnostic before any rename (`0` calls) and the existing canonical README digest remains unchanged.
+- A disposable publish fault injects failure on the second atomic rename. The helper performs three calls (move existing package, fail publish, restore existing package), restores the exact prior README digest, and leaves no `.pack-previous-*` backup. Expected failure-only `.pack-staging-*` roots are recorded and removed by the owned harness; all successful paths leave no staging/previous scratch.
+- The first temporary probe setup placed the generated project directly under `/tmp`, so esbuild could not resolve the workspace frontend SDK and exited before the product behavior ran. The corrected disposable project lived beneath the devkit, used normal workspace resolution, and passed. Both facts are retained in the same evidence log; the setup attempt is not attributed to production.
+- Cleanup is complete: ports 43124/8000/3000/9229 are clear; owned root/Brief data, devkit build/temp roots, explicit output, scripts, and failure scratch are absent; `git diff --check` passes.
+- Historical `APIE2E-REPO-005` remains separately `Unclear`. IR-015 changes no server/runtime/UI source, so the successful API-REV-009 publication, remount, lifecycle, recovery, and browser evidence remains valid and was not rerun.
+
+### Round-10 Final Coverage Decisions
+
+| Boundary / scenario | Final decision | Evidence |
+| --- | --- | --- |
+| atomic canonical metadata durable regression | `Pass` | 1/1 first; 20/20 full devkit |
+| `APIE2E-PARITY-005` / `APIE2E-F008` | **Pass / resolved** | `api-rev-010-parity-comparison-summary.log` proves the baseline vs standalone initial/repeated and Studio initial/repeated comparisons are each 73/73 identical |
+| default and explicit output package roots | `Pass` | real CLI outputs/validators serialize the exact final roots |
+| validation-before-rename | `Pass` | invalid v3 generation fails with zero rename calls; prior canonical digest retained |
+| publish rollback | `Pass` | exact prior canonical bytes restored; no previous-root backup remains |
+| scratch/process/data cleanup | `Pass` | no successful-path scratch; expected failure scratch recorded and owned cleanup confirmed; all listeners/data/temp roots clear |
+| cumulative durable coverage | `Pass; review pending` | one API/E2E-owned devkit test remains modified and must return to `code_reviewer` |
+| `APIE2E-REPO-005` | `Unclear; separate` | no reclassification or attribution |
+
+### Round-10 Confidence And Broader-Validation Decision
+
+| Category | Post-Repository | Final |
+| --- | ---: | ---: |
+| Requirement and acceptance-criteria proof | 96% | 99% |
+| Changed-boundary execution directness | 98% | 100% |
+| Cross-boundary integration realism and mock gap | 95% | 98% |
+| Environment, configuration, identity, and fixture fidelity | 97% | 99% |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | 97% |
+| User-surface/browser confidence | 95% | 97% |
+| Durable regression coverage quality and relevance | 95% | 98% |
+
+Overall post-repository confidence: **96%** (`95.9%`). Overall final confidence: **98%** (`98.3%`), calculated as the simple mean. No category is below 90%, every critical changed-boundary criterion has direct proof, and no material broader-validation risk remains.
+
+Broader validation was **Required — completed**. Repository evidence proved the function, but the round-9 failure arose in the real atomic development path. Therefore maintained standalone and Studio command loops were necessary and closed the exact mock/integration gap. Browser rerun was not required for a README metadata-only source delta; API-REV-009 already directly proved the unchanged user/runtime surface.
+
+## Round 9 Pre-Execution Coverage Reconciliation
+
+The latest-base merge added the quiescent token-event pipeline lifecycle and exposed a semantic conflict in the ticket-side stop behavior. `IR-014` retains the stopped pipeline/composition and moves reopening to one explicit `resetDefaultAgentRunEventPipeline()` call owned by the public standalone host start. Studio and all close/failure paths remain stop-only. This is a cross-process lifecycle and persistence boundary, so post-integration execution is mandatory even though source review and the unchanged exact tests pass.
+
+### Round-9 Changed-Surface And Validity Decisions
+
+| Surface / coverage | Decision | Round-9 evidence |
+| --- | --- | --- |
+| `default-agent-run-event-pipeline-lifecycle.test.ts` | `Still Valid; rerun first` | Stopped getter identity, no lazy construction after pre-stop, explicit reset-only accepting composition |
+| SQLite lifecycle integration | `Still Valid; rerun first` | Accepted persistence drains before close; late token event is rejected; getter does not reopen |
+| API-REV-008 durable package | `Still Valid; proportional rerun` | IR-014 changes two production files and no API/E2E durable test; rerun affected integrated matrix rather than edit tests |
+| Supported standalone dev watch close/start | `Use temporary executable probe / real host` | Execute real `dev`, trigger one same-process watched rebuild/restart, then require a new real run and token persistence only after public start |
+| Real standalone/Studio publication | `Refresh proportionately` | Recheck authenticated publication/handoff/projection after integrated base; preserve exact package identity |
+| Active shutdown/cleanup | `Refresh proportionately` | Stop owned hosts; verify ports/worker/Codex/browser cleanup and package hashes |
+| `APIE2E-REPO-005` | `Unclear; separate` | No new supported-origin evidence; do not mix the historical whole-suite diagnostic into IR-014 |
+
+Execution exposed a new supported-origin package-metadata mutation. One API/E2E-owned durable regression was added to `autobyteus-application-devkit/tests/application-devkit.test.mjs`; it currently fails 1/20 at the exact staging-path assertion and must be preserved for the implementation rerun.
+
+## Round 9 Repository And Live Result
+
+- The exact latest-base lifecycle rerun passes `2 files / 3 tests`; the affected integrated server matrix passes `25 files / 90 tests`. Server TypeScript no-emit/full build, selected Nuxt coverage (`3 files / 7 tests`), the pre-discovery devkit suite (`19/19`), and Brief/Socratic build/validate/backend typecheck all pass.
+- The supported Brief `pnpm dev -- --port 43124 --no-open` watch path runs in one process (`PID 80791`). A real active Codex/Luna team accumulates 16 token events; a watched `styles.css` mtime change closes the graph, drains one already-accepted event to 17, removes worker/Codex children, and starts the next public host generation in the same process. A new team then completes and contributes 15 fresh token events, proving reset-to-accepting only at the next public host start. Exact unchanged tests separately prove stopped getters retain identity, remain quiescent, and reject late work.
+- The post-restart standalone journey passes actual authenticated researcher publication, recipient-name writer handoff, writer publication, token persistence, application projection, browser `in_review` / two outputs / one final, and leak-free close.
+- Studio exposes the exact bundled Brief Studio Team with Codex/Luna defaults, enables entry, mounts exactly one iframe, explicitly remounts to a new launch ID while retaining one iframe, and completes real researcher/writer publication/handoff/projection with 19 token events.
+- `APIE2E-PARITY-005` / `APIE2E-F008` fails the final digest gate: `72/73` package/authoring hashes are identical, but `dist/importable-package/README.md` changes from the canonical package path to a randomized `.pack-staging-<uuid>` path after the supported atomic `dev:studio` pack. Source correlation is exact: `packApplicationProjectAtomically()` builds at the staging root, while `writePackageReadme()` serializes `paths.outputPackageRoot` before rename.
+- A durable non-fake regression now invokes `packApplicationProjectAtomically()` on a materialized project and requires canonical package metadata after rename. The devkit result is `19 pass / 1 fail`; the failure prints the actual temporary staging path. This is valid current-behavior coverage, not a stale assertion.
+- Cleanup is complete: ports 43124/9229/8000/3000 are clear; owned root/app data, worker/Codex children, browser state, temporary scripts, devkit dist, and test temp roots are removed. The tracked generated README was restored to HEAD only after its mutated bytes were captured.
+- Historical `APIE2E-REPO-005` remains the separate whole-server-suite diagnostic and was not reclassified. The new failure has an independent supported origin and distinct IDs.
+
+### Round-9 Final Coverage Decisions
+
+| Boundary / scenario | Final decision | Evidence |
+| --- | --- | --- |
+| Latest-base quiescent pipeline / explicit reset | `Pass` | exact 3/3 plus same-process live watch restart and token ledger |
+| Integrated server/build/frontend/maintained matrix | `Pass` | 25/90 server; 3/7 Nuxt; builds/typechecks/validators pass |
+| Real standalone publication and restart | `Pass` | actual tools, app DB/browser, 15 post-reset token events |
+| Studio remount and real publication parity | `Pass` | exact package gate, one fresh iframe, real 2-artifact projection |
+| `APIE2E-PARITY-005` / `APIE2E-F008` | **Fail** | README digest changes to `.pack-staging-<uuid>`; durable 1/20 devkit failure |
+| `APIE2E-REPO-005` | `Unclear; separate` | no reclassification or attribution |
+
+### Round-9 Confidence
+
+| Category | Final |
+| --- | ---: |
+| Requirement and acceptance-criteria proof | 85% |
+| Changed-boundary execution directness | 98% |
+| Cross-boundary integration realism and mock gap | 95% |
+| Environment, configuration, identity, and fixture fidelity | 97% |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% |
+| User-surface/browser confidence | 95% |
+| Durable regression coverage quality and relevance | 95% |
+
+Overall: **94%** (`94.3%`). The applicable requirement-proof category is below 90%, and AC-001/AC-011 has a directly observed critical failure; therefore the result is `Fail` regardless of the strong lifecycle evidence. Broader validation was `Required — completed`. Preliminary classification: implementation-owned bounded `Local Fix`; route to `code_reviewer` for focused failure-origin review.
 
 ## Round 8 Pre-Execution Coverage Reconciliation
 

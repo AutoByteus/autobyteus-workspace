@@ -1,0 +1,8 @@
+{
+  "exactPackageTeam": true,
+  "lunaMentions": 6,
+  "currentSelection": "CURRENT SELECTION\n\nBrief Studio Team · Bundled · Agent team\n\nUsing manifest defaults only\n\nPACKAGE BASELINE\n\nresearcher · codex_app_server · gpt-5.6-luna\n\nwriter · codex_app_server · gpt-5.6-luna\n\nSELECTED RESOURCE BA",
+  "packageBaseline": "PACKAGE BASELINE\n\nresearcher · codex_app_server · gpt-5.6-luna\n\nwriter · codex_app_server · gpt-5.6-luna\n\nSELECTED RESOURCE BASELINE\n\nresearcher · codex_app_server · gpt-5.6-luna\n\nwriter · codex_app_server · gpt-5.6-",
+  "enterEnabled": true,
+  "saveEnabled": false
+}

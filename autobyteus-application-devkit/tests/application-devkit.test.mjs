@@ -71,6 +71,28 @@ test('pack emits a valid importable package under dist/importable-package', asyn
   ]);
 });
 
+test('atomic development pack keeps generated package metadata canonical after staging rename', async () => {
+  const { packApplicationProjectAtomically } = await import(
+    '../dist/development/atomic-application-pack.js'
+  );
+  const target = path.join(await createTempDirectory('atomic-pack-metadata'), 'sample-app');
+  await materializeApplicationTemplate({
+    targetDirectory: target,
+    applicationId: 'sample-app',
+    applicationName: 'Sample App',
+  });
+  const canonicalPackageRoot = path.join(target, 'dist/importable-package');
+
+  await packApplicationProjectAtomically({
+    projectRoot: target,
+    packageRoot: canonicalPackageRoot,
+  });
+
+  const readme = await fs.readFile(path.join(canonicalPackageRoot, 'README.md'), 'utf8');
+  assert.match(readme, new RegExp(`- ${escapeRegExp(canonicalPackageRoot)}(?:\\r?\\n)`));
+  assert.doesNotMatch(readme, /[/\\]\.pack-staging-[^/\\\r\n]+/);
+});
+
 test('validator rejects stale manifests, nested exposure authority, and six-flag backend bundles', async (t) => {
   const cases = [
     {
@@ -481,3 +503,5 @@ const waitForCondition = async (condition, label, timeoutMs = 5000) => {
   }
   assert.fail(`Timed out waiting for ${label}.`);
 };
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

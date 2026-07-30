@@ -31,6 +31,15 @@ The server package owns `startStandaloneApplicationHost` and its
 build, validation, watch, and host-process orchestration; it does not construct
 the server's `ApplicationPlatformRuntime` or start agent/team runs itself.
 
+## Atomic package publication
+
+`pack` and both `dev` host modes assemble and validate a package in a uniquely
+named staging directory before publishing it by rename. Generated metadata,
+including the package README, names the final canonical package root rather than
+the temporary staging root. Failed assembly or validation preserves the
+previous package; successful publication removes staging/previous scratch
+directories. Hosts treat the published package as immutable input.
+
 ## Safety boundary
 
 User import of `dist/importable-package` remains prebuilt-only: AutoByteus validates package files and does not run app install/build/lifecycle scripts during import. Backend code from the package is still executed when the application launches in the existing worker runtime; this devkit is not an arbitrary-code sandbox.

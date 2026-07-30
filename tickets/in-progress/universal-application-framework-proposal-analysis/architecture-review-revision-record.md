@@ -14,6 +14,7 @@ The latest [design-review-report.md](design-review-report.md) is authoritative. 
 | ARCH-REV-006 | Round 6 / SR-006 after CRR-012 | SR-006 | `Pass`, then downstream `Fail — Design Impact` | `Pass` | CR-009, CR-012 |
 | ARCH-REV-007 | Round 7 / withdrawn SR-007 after CRR-016 superseded CRR-015 | SR-007 (withdrawn) | `Pass`, then downstream correction | `Withdrawn — No Decision` | CR-013, APIE2E-F005 |
 | ARCH-REV-008 | Round 8 / SR-010 after CRR-020 and API-REV-007 | SR-010 | `ARCH-REV-006 Pass`; round 7 withdrawn; downstream `Fail — Design Impact` | `Pass` | CR-015, APIE2E-F007 |
+| ARCH-REV-009 | Round 9 / SR-011 after CRR-028 naming audit | SR-011 | `Pass`, then downstream `Fail — Design Impact` | `Pass` | CR-018 |
 
 ## Revision Entries
 
@@ -206,3 +207,27 @@ None.
 - Material classification changes: downstream `Fail — Design Impact` -> architecture `Pass`; CR-015 is resolved in design. The round-7 withdrawal remains historical and is not converted into a pass.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Source review must verify exact process-family identity, explicit general-process construction, removal of application/default global lookups, and bounded scope revoke/port close. API/E2E must prove deliberately distinct global-versus-graph publication, negative port states, scope restart, unchanged route/security/tool boundaries, and real standalone plus Studio publication/message/handoff/journal/projection. `APIE2E-REPO-005` remains separately `Unclear`.
+
+### ARCH-REV-009 — SR-011 behavior-neutral framework vocabulary passes
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 9; `SR-011` Design Impact re-entry after the user-requested developer-comprehension audit `CRR-028` / `CR-018`, following the functional source, API/E2E, and proportional test-review passes through `CRR-027`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-018`.
+- Relevant solution revision IDs: `SR-011`; `SR-010` remains the functional architecture basis.
+- Prior authoritative decision: `ARCH-REV-008` / `SR-010` `Pass`, followed by downstream `CRR-028 Fail — Design Impact` for naming/readability only.
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: Verified a small responsibility-based role vocabulary and a complete dependency-ordered current-name/file-to-target-name/file map for the central Studio/standalone framework spine. The clean private rename removes old files, exports, tests, and current documentation without aliases; preserves exact object identity, route/session families, readiness, recovery, execution triggers, shutdown, wire/data/package contracts, and host surfaces; and explicitly establishes that building `ApplicationPlatformRuntime` starts no new agent/team run. The private package and repository consumer graph do not establish a supported old-name consumer, so compatibility machinery is not warranted.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-007 | Resolved through `ARCH-REV-006` | Remain Resolved | SR-002–SR-006, SR-010, SR-011; ARCH-REV-002–ARCH-REV-008 | SR-011 changes terminology and private source organization only; it preserves all reviewed lifecycle, package, host, launch/readiness/editing, portable-policy, prompt, Agent Tools, and publication decisions. |
+| CR-001–CR-017 | Resolved in prior design/source/API-E2E rounds | Remain Resolved | IR-015, CRR-026, API-REV-010, CRR-027, SR-011 | The exact rename map preserves existing instance identity, run triggers, recovery, routes, data, package behavior, provider behavior, and shutdown order; no functional correction or new product behavior is introduced. |
+| CR-018 | Open — Design Impact | Resolved in design; implementation and source proof pending | CRR-028, SR-011, SV-016, ARCH-REV-009 | BEH-009/REQ-009/AC-018 define the concrete role vocabulary, exact ownership/scope/lifecycle map, clean no-alias rename, zero-run-on-runtime-build invariant, retired-name/export/doc checks, and proportional regression obligations. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | API-REV-010, CRR-028 | No supported origin connects the diagnostic to the naming change; SR-011 does not use it as a premise. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: downstream `Fail — Design Impact` -> architecture `Pass`; CR-018 is resolved in design without reopening the passed functional architecture.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Implementation/source review must verify a clean dependency-ordered rename, exact object identity and lifecycle preservation, zero new runs from runtime construction, removal of retired private exports/files/tests, and synchronized current documentation. Focused dual-host start/run/publication/handoff/stop regression is expected; broader API/E2E is proportionate only if the source change ceases to be behavior-neutral. Delivery still owns tracked-base integration, and `APIE2E-REPO-005` remains separately `Unclear`.

@@ -48,9 +48,16 @@ The same REST module also exposes the host launch-setup surfaces outside the bac
 
 - `GET /rest/applications/:applicationId/available-execution-resources`
 - `GET /rest/applications/:applicationId/execution-resource-configurations`
+- `POST /rest/applications/:applicationId/execution-resource-configurations/:slotKey/selection-preview`
 - `PUT /rest/applications/:applicationId/execution-resource-configurations/:slotKey`
+- `DELETE /rest/applications/:applicationId/execution-resource-configurations/:slotKey`
 
-Those setup routes feed the authoritative pre-entry setup gate on `/applications/:id` before the iframe host is allowed to enter the application.
+Those setup routes feed the authoritative pre-entry setup gate on
+`/applications/:id` before the iframe host is allowed to enter the
+application. Reads keep `packageBaseline`, `selectedResourceBaseline`,
+`savedOverride`, and `effectiveConfiguration` distinct. Selection preview does
+not write state, `PUT` stores a validated sparse Studio override, and `DELETE`
+resets that override so the bundle-owned package baseline becomes effective.
 
 ### Internal Agent Tools route is separate
 

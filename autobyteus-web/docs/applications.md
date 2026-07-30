@@ -112,19 +112,23 @@ This keeps host-launch identity tied to route visit and explicit reload/exit sem
 
 That gate:
 
-- loads the application's declared `executionResourceSlots[]` contract and current saved setup,
+- loads the application's declared `executionResourceSlots[]` contract,
+  bundle-owned package baselines, and any current Studio overrides,
 - keeps technical metadata hidden behind an explicit toggle by default,
 - lets the user save required execution-resource and launch-profile selections before entry,
 - keeps `Enter application` disabled while setup is loading, saving, dirty, or missing required saved state, and
 - only allows host launch after the setup panel reports `launch-ready`.
 
-Studio consumes the server's launch-configuration service through the host API
+Studio consumes `ApplicationLaunchConfigurationService` through the host API
 and shares one server-owned `ApplicationPlatformRuntime` across installed
-applications. Loading setup constructs no runtime and starts no agent/team run
-in the browser; execution begins only when application business behavior
-requests it after entry.
+applications. The browser does not traverse definitions or start agent/team
+runs while loading setup; a run begins only when application business behavior
+requests execution after entry.
 
-`ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It loads the saved slot state, owns refresh/save/reset actions, and surfaces:
+`ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It
+keeps `packageBaseline`, no-write `selectedResourceBaseline`, sparse
+`savedOverride`, and `effectiveConfiguration` distinct; owns
+refresh/preview/save/reset actions; and surfaces:
 
 - required vs optional slots, and
 - bundled vs shared execution-resource choices,
@@ -133,11 +137,21 @@ requests it after entry.
 
 `ApplicationExecutionResourceSlotEditor.vue` owns the slot-local editor choice:
 
-- `ApplicationAgentLaunchProfileEditor.vue` saves the agent-shaped `launchProfile` fields (`runtimeKind`, `llmModelIdentifier`, `workspaceRootPath`) only when the selected slot declares them under `supportedLaunchConfig.AGENT`.
-- `ApplicationTeamLaunchProfileEditor.vue` saves the team-shaped `launchProfile`: shared defaults plus the current member override rows for runtime/model when the slot declares them under `supportedLaunchConfig.AGENT_TEAM`.
+- `ApplicationAgentLaunchProfileEditor.vue` edits the agent-shaped override fields (`runtimeKind`, `llmModelIdentifier`, `workspaceRootPath`) only when the selected slot declares them under `supportedLaunchConfig.AGENT`.
+- `ApplicationTeamLaunchProfileEditor.vue` edits the team-shaped override: shared defaults plus the current member override rows for runtime/model when the slot declares them under `supportedLaunchConfig.AGENT_TEAM`.
 - `ApplicationWorkspaceRootSelector.vue` keeps workspace-root path selection consistent across the agent and team editors.
 
-The persisted contract is now `launchProfile`, not the older flat `launchDefaults` record. The launch-profile editors do not expose a skill-access selector; runtime skill exposure remains the configured skills on the selected agent definition, or each selected team member's definition. The frontend draft helpers in `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate aligned with that kind-aware contract. For the execution-resource rename itself, stale saved refs using old `resourceRef`/`owner` shapes are not migrated: the server resets those setup rows so the host gate returns to setup/reconfigure state.
+Editor writes use a sparse `launchOverride`, not a copied full launch profile.
+Changing the selected resource requests a no-write preview before save. A saved
+override that becomes invalid stays visible with issue detail and cannot launch;
+the server does not silently repair or delete it. Explicit reset deletes only
+the Studio override, revealing the package baseline again.
+
+The launch-configuration editors do not expose a skill-access selector; runtime
+skill exposure remains the configured skills on the selected agent definition,
+or each selected team member's definition. The frontend draft helpers in
+`applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate
+aligned with the kind-aware configuration contract.
 
 ## Immersive Control Panel
 

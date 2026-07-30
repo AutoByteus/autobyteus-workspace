@@ -140,6 +140,10 @@ recorded runs after the server listens.
   bootstrap plus application backend/WebSocket surfaces under
   `/_autobyteus/*`. It includes the internal Agent Tools route but not the
   Studio external gateway.
+- Standalone does not copy Studio launch overrides or platform state. A complete
+  bundle-owned package baseline is sufficient to start the same package.
+- Both hosts treat package bytes as immutable input; mutable storage, logs,
+  credentials, and runtime state live outside the package root.
 - Each process owns one `AgentToolsMcpRuntime`. The application runtime receives
   one `ScopedAgentToolMcpSessionManager` for its explicit scope and exact
   `PublishedArtifactPublisher`; `/mcp/agent-tools/:sessionId` remains distinct
