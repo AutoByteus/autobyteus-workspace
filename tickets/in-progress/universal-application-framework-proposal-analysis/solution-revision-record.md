@@ -13,7 +13,8 @@ The latest [requirements.md](requirements.md), [investigation-notes.md](investig
 | SR-005 | `architecture_reviewer` round 4 / `ARCH-REV-004` | AR-007; SV-010 | `Design Impact` | Invalid/stale saved-override semantics corrected within DS-012 and ready for architecture re-review |
 | SR-006 | `code_reviewer` `CRR-012` after IR-007 | CR-009, CR-012; SV-011 | `Design Impact` plus bounded policy correction | Selected-resource edit projection and recursive portable-field policy corrected; ready for architecture re-review |
 | SR-007 | `code_reviewer` `CRR-015` after `API-REV-005` / IR-009 / CRR-014 | CR-013, APIE2E-F005, APIE2E-STANDALONE-MCP-001; SV-012 | `Design Impact` | **Withdrawn before architecture decision; superseded by CRR-016/SR-008 and not current authority** |
-| SR-008 | `code_reviewer` corrective `CRR-016` | CR-013, APIE2E-F005, APIE2E-STANDALONE-MCP-001; SV-013 | `Local Fix` | Native/server tool boundary restored; only existing standalone route registration remains; routed to implementation |
+| SR-008 | `code_reviewer` corrective `CRR-016` | CR-013, APIE2E-F005, APIE2E-STANDALONE-MCP-001; SV-013 | `Local Fix` | Correct Agent Tools projection restored; only existing standalone route registration remains; routed to implementation |
+| SR-009 | User MCP ownership and scope clarification after SR-008 | CR-013; SV-014 | `Clarification — No Design Or Source-Scope Change` | Studio MCP state/general gateway excluded from standalone; runtime-internal tooling explicitly outside this ticket |
 
 ## Revision Entries
 
@@ -175,7 +176,9 @@ The latest [requirements.md](requirements.md), [investigation-notes.md](investig
 - Next recipient or routing: `architecture_reviewer`.
 - Remaining gaps or risks: API/E2E must rerun the exact standalone route and real Brief configured-tool/team/artifact cases, prove Studio and standalone paired-port identity/security/revocation/cleanup, and preserve prior affected regressions. `APIE2E-REPO-005` remains separately unattributed. Optimized distribution, user authentication, public-internet operation, marketplace isolation, persisted sessions, and repository-wide DI remain out of scope.
 
-### SR-008 — Restore native/server tool boundaries and reroute CR-013 as a Local Fix
+### SR-008 — Restore the correct Agent Tools projection and reroute CR-013 as a Local Fix
+
+> **Scope clarified by SR-009:** runtime-internal file-tool behavior appears below only as historical failure-origin context. It is not an application-framework requirement, change, or acceptance target.
 
 - Triggering role, report path, and round: `code_reviewer` corrective failure-origin result `CRR-016` in [code-review-report.md](code-review-report.md), indexed by [code-review-revision-record.md](code-review-revision-record.md), superseding `CRR-015` before SR-007 architecture approval.
 - Triggering finding IDs: `CR-013` (`Local Fix`), `APIE2E-BRIEF-003` / `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`, and self-validation correction `SV-013`. `APIE2E-REPO-005` remains separately `Unclear` and does not drive this revision.
@@ -197,3 +200,23 @@ The latest [requirements.md](requirements.md), [investigation-notes.md](investig
 - Downstream and architecture-review impact: No architecture-review round is needed because CRR-016 classifies the defect as `Local Fix` and leaves `ARCH-REV-006` authoritative. Implementation may change only the standalone composition registration and implementation-owned focused coverage, then return through full source review and API/E2E. API/E2E owns correction of its durable gateway-tool expectations and the real rerun.
 - Next recipient or routing: `implementation_engineer`.
 - Remaining gaps or risks: Implementation must prove route registration precedes static fallback, missing bearer reaches 401 rather than generic 404, unknown/unavailable session remains 404, and external `/mcp/gateway` remains absent. API/E2E must then prove native file output separately from actual gateway `publish_artifacts`/`send_message_to`, team handoff, events, artifacts, and cleanup. `APIE2E-REPO-005` remains separately unattributed. Optimized distribution, user authentication, public-internet operation, marketplace isolation, persisted sessions, and repository-wide DI remain out of scope.
+
+### SR-009 — Clarify MCP ownership and exclude runtime-internal tooling
+
+- Triggering role, report path, and round: User design discussion after SR-008 and the bounded implementation commit `e8e06afdd`; supporting review authority remains `CRR-016` in [code-review-report.md](code-review-report.md), indexed by [code-review-revision-record.md](code-review-revision-record.md).
+- Triggering finding IDs: `CR-013` remains the same bounded `Local Fix`; self-validation clarification `SV-014`. No new architecture finding or requirement is introduced.
+- Prior authoritative result: SR-008 preserved `ARCH-REV-006`, corrected the over-broad `CRR-015` premise, and routed only standalone registration of the existing Agent Tools route to implementation. Its references to runtime file-tool behavior were failure-origin context, not an approved application-framework requirement.
+- Current authoritative result: Both hosts register the existing run-scoped `/mcp/agent-tools/:sessionId` transport. General `/mcp/gateway` and Studio MCP Server Management remain Studio/platform integration surfaces and are not standalone application dependencies. A future application-owned MCP declaration/provisioning capability is separate work. Codex/Claude runtime-internal tooling is outside this ticket: it is not designed, modified, or tested here, so the branch simply retains the untouched `origin/personal` behavior.
+- Why this revision entry is recorded: The user confirmed that applications need the platform-provided run-scoped Agent Tools callback, but do not inherit Studio-configured MCP servers or Studio's general external-client gateway. The user then clarified that runtime-internal Codex/Claude file tools must not become part of this ticket merely to explain the prior review error.
+- Resolution:
+  - Kept CR-013 strictly at the standalone composition boundary: mount the existing Agent Tools registrar before static fallback.
+  - Defined the general gateway precisely as the Studio process surface that exposes current host-registered `ToolOrigin.MCP` tools to external MCP clients; it is not the per-run application callback and does not provision MCP servers.
+  - Confirmed standalone does not expose the general gateway and does not copy or inherit Studio MCP configuration.
+  - Deferred application-owned MCP declarations, host-secret binding, provisioning, lifecycle/readiness, and application-scoped registration to a separate design/ticket.
+  - Removed runtime-internal file-tool behavior from application-framework requirements, acceptance criteria, implementation scope, and API/E2E proof. Historical SR-007/SR-008 text remains chronology only and is superseded by this scope statement.
+- Approved behavior or requirement IDs affected: Clarifies BEH-004–BEH-006, REQ-004–REQ-005, AC-005, AC-006, AC-009, and AC-010 without changing their product behavior. DS-014 remains the same bounded route-parity map.
+- Canonical artifacts and sections updated: [requirements.md](requirements.md) scope/behavior/acceptance boundaries; [investigation-notes.md](investigation-notes.md) source evidence, MCP ownership, and current branch state; [design-spec.md](design-spec.md) terminology, DS-014 boundaries, file/change map, and validation ownership; this record.
+- Supplemental artifacts updated, added, or removed: Updated approved [proposal-critical-analysis.md](proposal-critical-analysis.md) with the exact general-gateway/application-MCP decision; updated evidence-only [design-self-validation.md](design-self-validation.md) with `SV-014`. No new supplement is required.
+- Downstream and architecture-review impact: No architecture re-review is required because no architecture, public contract, source file, or source-scope decision changes. Commit `e8e06afdd` contains only the already-routed composition fix and remains subject to the normal implementation/source-review/API-E2E flow. Implementation and API/E2E must not add runtime-internal tool changes or assertions for this ticket.
+- Next recipient or routing: `implementation_engineer`, as a clarification to the existing Local Fix handoff.
+- Remaining gaps or risks: Implementation/source review must confirm the bounded registrar change and route-order/negative-surface behavior. API/E2E must inspect the real Agent Tools descriptor/`tools/list` and prove eligible `publish_artifacts`/`send_message_to`, handoff, events, artifacts, and cleanup. The future application-owned MCP provisioning capability remains intentionally unimplemented and must not be approximated by copying Studio state or exposing `/mcp/gateway`.

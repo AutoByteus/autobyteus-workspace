@@ -2,11 +2,11 @@
 
 ## Status
 
-- **Validation round:** `SV-013`, correcting the withdrawn SV-012 interpretation after `CRR-016` superseded `CRR-015`.
-- **Conclusion:** **Pass — bounded Local Fix under the architecture-approved SR-006 foundation.** `ARCH-REV-006` remains the design authority. The reachable defect is only the missing standalone registration of the existing Agent Tools MCP route; no new runtime, port set, publication bridge, base-URL phase, or architecture review is required. This is not an implementation or API/E2E pass.
-- **Current implementation evidence:** SR-006 passed as `ARCH-REV-006`; IR-008/IR-009 and `CRR-014` implement/pass selected-resource editing, recursive portable policy, complete Codex/Luna launch, and prompt semantics. `API-REV-005` proves standalone binding/team/session descriptor creation but reaches generic 404 at the unregistered existing route. `CRR-016` verifies the existing Agent Tools subsystem is already coherent, corrects the expected tool projection, and classifies only the standalone route omission as `Local Fix`. The implementation engineer removed all unapproved SR-007 production drafts before this correction.
+- **Validation round:** `SV-014`, clarifying MCP ownership and removing Codex/Claude runtime-internal tooling from the application-framework acceptance scope after the user’s final discussion.
+- **Conclusion:** **Pass — documentation/traceability clarification only.** `ARCH-REV-006` remains the design authority and CR-013 remains the same bounded Local Fix. Both hosts require the run-scoped Agent Tools route; standalone does not expose the general external-client MCP gateway or inherit Studio MCP configuration. No architecture review or source-scope expansion is required. This is not an implementation or API/E2E pass.
+- **Current implementation evidence:** SR-006 passed as `ARCH-REV-006`; IR-008/IR-009 and `CRR-014` implement/pass selected-resource editing, recursive portable policy, complete Codex/Luna launch, and prompt semantics. `API-REV-005` proves standalone binding/team/session descriptor creation but reaches generic 404 at the unregistered existing route. `CRR-016` verifies the existing Agent Tools subsystem is coherent and classifies only the standalone route omission as `Local Fix`. Commit `e8e06afdd` now contains the bounded registrar change, but its owning implementation/source-review result is not presumed here. Runtime-internal tooling is outside this ticket.
 - **Authoritative product decision:** a standalone-capable package is self-contained for runtime/model selection. Studio overrides are optional host-owned overlays. Credentials, provider endpoints, installed runtime/model availability, and comparable machine-local prerequisites remain host-owned.
-- **Routing:** send the corrected cumulative package directly to `implementation_engineer` for the bounded CR-013 composition fix; then resume normal source review and API/E2E.
+- **Routing:** send the clarified cumulative package to `implementation_engineer` so the already-bounded CR-013 registrar commit can continue through its owning implementation handoff, full source review, and API/E2E without any runtime-internal scope.
 
 ## Inputs
 
@@ -35,7 +35,7 @@
 11. **Native project experience:** application folders retain `pnpm dev`, `pnpm dev:studio`, `pnpm build`, `pnpm validate`, and `pnpm start`, with standalone `dev`/`start` requiring a standalone-enabled, valid package.
 12. **Clean cut:** no version suffix in code symbols, manifest-vNext, compatibility alias, package-builder alias, baseline fallback, broad-server fallback, custom builder, mock product mode, second standalone profile model, or second top-level server project is introduced.
 13. **Portable package data only:** one recursive schema-aware policy accepts exact runtime-supported token-count/pricing fields and rejects credential/password/authorization/token-value/endpoint/workspace semantics at any depth without logging values.
-14. **Existing Agent Tools boundary, route parity, and correct projection:** both hosts register the existing `/mcp/agent-tools/:sessionId` route before static fallback, while only Studio registers external `/mcp/gateway`. Codex/Claude native file tools remain native. The internal gateway projects eligible server-owned adapters such as `publish_artifacts` and `send_message_to`, plus configured `ToolOrigin.MCP` tools; it does not project native `write_file` or other ordinary non-MCP native tools.
+14. **Existing Agent Tools boundary, route parity, and correct projection:** both hosts register the existing `/mcp/agent-tools/:sessionId` route before static fallback. The run descriptor projects eligible server-owned adapters such as `publish_artifacts` and `send_message_to` plus selected available `ToolOrigin.MCP` tools. Only Studio registers general `/mcp/gateway`, which exposes host-configured MCP-origin tools to external clients; standalone neither exposes it nor inherits Studio MCP state. Runtime-internal tools are outside validation scope.
 
 ## Scenario Validation Matrix
 
@@ -53,7 +53,7 @@ Every row has a supported action, system event, or governing package/host contra
 | SV-C08 | Standalone bootstrap is unavailable, malformed, or contradicts selected identity/readiness | DS-002, DS-012 | Standalone provider rejects; coordinator reaches startup failure; no Studio/mock fallback exists | Pass |
 | SV-C09 | Named workspace, tool, definition, runtime, database, or vault platform prerequisite fails | DS-005 | Named lifecycle phase fails truthfully; platform does not become healthy; ingress does not claim application runnable | Pass |
 | SV-C10 | Frontend invokes query, command, route, GraphQL, notification, custom WebSocket, or direct agent communication | DS-003, DS-004 | Shared client -> host mount -> exact shared gateway/communication owner -> result/event/socket; host imports no backend business modules | Pass |
-| SV-C11 | Backend requests the required package resource and starts a real team run | DS-003, DS-004, DS-012, DS-014 | `requireRunnable` supplies a non-null effective configuration; Codex keeps native file tools; the existing descriptor/route exposes eligible server tools and configured MCP-origin tools; handoff/events/artifacts complete through existing authorities | Pass after bounded CR-013 Local Fix; executable rerun required |
+| SV-C11 | Backend requests the required package resource and starts a real team run | DS-003, DS-004, DS-012, DS-014 | `requireRunnable` supplies a non-null effective configuration; the existing descriptor/route exposes eligible server tools and selected available MCP-origin tools; handoff/events/artifacts complete through existing authorities | Pass after bounded CR-013 Local Fix; executable rerun required |
 | SV-C12 | Host restarts with the same selected application and data root | DS-004, DS-005 | Current schemas open directly; selected known-state intersection recovers bindings/availability/pending events; package remains immutable | Pass |
 | SV-C13 | Standalone data root contains dormant state for a previously selected different local application | DS-005 | Recovery activates only `known IDs ∩ {selected canonical ID}`; other records remain dormant and unmodified | Pass |
 | SV-C14 | Worker exits after readiness and frontend later invokes or reloads | DS-003, DS-005 | Existing engine/availability owners retain recovery and ensure-ready responsibility; hosts do not create a second restart policy | Pass structurally; executable verification retained |
@@ -78,9 +78,9 @@ Every row has a supported action, system event, or governing package/host contra
 | SV-C33 | Studio user selects an allowed alternate agent/team before any save, then changes selection while a preview is in flight or the resource disappears before PUT | DS-012 | Identity-bound no-write preview returns the exact selected-resource definition baseline or structured invalid-selection issue; stale responses are discarded; Save is blocked pending/invalid; PUT re-resolves and rejects catalog/topology drift without writing/fallback | Pass after SV-011 |
 | SV-C34 | Studio edits a saved alternate team, clears a model/runtime field, and encounters homogeneous then mixed inherited member runtimes | DS-012 | Editor inherits only from the selected pre-overlay baseline, omits cleared fields from persistence, reloads after change, preserves per-member values, disables bulk model for mixed runtime, and requires an explicit common runtime before bulk model override | Pass after SV-011 |
 | SV-C35 | Developer validates package tuning containing approved token counts/pricing plus nested password, bearer authorization, access-token value, endpoint, or workspace fields | DS-011 | Recursive policy accepts exact typed token-count/pricing inputs; rejects each secret/host-local path as `PACKAGE_FORBIDDEN_HOST_FIELD` without exposing values; no app-specific/compatibility exception | Pass after SV-011 |
-| SV-C36 | Fresh standalone Brief creates a real Codex/Luna team run and the researcher uses native and server-owned tools | DS-003, DS-004, DS-012, DS-014 | Native `write_file` succeeds through Codex rather than the MCP gateway; the actual descriptor/`tools/list` exposes eligible `publish_artifacts` and `send_message_to`; the registered route dispatches them under the issued session; writer handoff, lifecycle events, and projected artifacts complete | Pass after bounded CR-013 Local Fix; rerun APIE2E-BRIEF-003/APIE2E-F005 with corrected expectations |
-| SV-C37 | Existing internal Agent Tools route receives no bearer, an unknown session, or a request for a tool outside the session projection | DS-014, DS-005 | No bearer reaches the established 401 authorization gate; unknown/unavailable session remains 404; the route cannot elevate native file tools into MCP or expose tools outside the issued descriptor; existing cleanup semantics remain unchanged | Pass after bounded CR-013 Local Fix; focused durable/API route proof required |
-| SV-C38 | Studio and standalone compose existing Agent Tools transport while only Studio owns the external MCP gateway | DS-005, DS-014 | Both compositions call the same existing internal route registrar before static fallback; standalone still omits `/mcp/gateway`; no new runtime/ports/path builder/configured-source resolver/publication bridge is introduced | Pass after bounded CR-013 Local Fix; focused composition proof required |
+| SV-C36 | Fresh standalone Brief creates a real Codex/Luna team run and invokes its selected server-owned Agent Tools | DS-003, DS-004, DS-012, DS-014 | The actual descriptor/`tools/list` exposes eligible `publish_artifacts` and `send_message_to`; the registered route dispatches them under the issued session; writer handoff, lifecycle events, and projected artifacts complete | Pass after bounded CR-013 Local Fix; rerun APIE2E-BRIEF-003/APIE2E-F005 with corrected expectations |
+| SV-C37 | Existing internal Agent Tools route receives no bearer, an unknown session, or a request for a tool outside the session projection | DS-014, DS-005 | No bearer reaches the established 401 authorization gate; unknown/unavailable session remains 404; the route cannot expose tools outside the issued descriptor; existing cleanup semantics remain unchanged | Pass after bounded CR-013 Local Fix; focused durable/API route proof required |
+| SV-C38 | Studio and standalone compose existing Agent Tools transport while only Studio owns the general external MCP gateway and host MCP configuration | DS-005, DS-014 | Both compositions call the same existing internal route registrar before static fallback; standalone omits `/mcp/gateway` and does not inherit Studio MCP state; no new runtime/ports/path builder/configured-source resolver/publication bridge or application MCP provisioner is introduced | Pass after bounded CR-013 Local Fix; focused composition proof required |
 
 ## Reachable Product Use-Case Completeness Audit
 
@@ -182,17 +182,17 @@ Code symbols remain unversioned. Existing serialized manifest/iframe numeric ver
 
 ### SV-012 — Withdrawn broad Agent Tools reinterpretation
 
-SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames` should all be MCP gateway tools and therefore expected native `write_file` in the gateway. That premise led to an unapproved proposal for a new aggregate runtime, port set, publication bridge, readiness phase, base-URL phase, and shutdown authority.
+SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames` should all be MCP gateway tools and pulled unrelated runtime-internal tooling into the application-framework acceptance boundary. That premise led to an unapproved proposal for a new aggregate runtime, port set, publication bridge, readiness phase, base-URL phase, and shutdown authority.
 
 `CRR-016` supersedes that review result. Architecture review of SR-007 was stopped, the broad production drafts were removed, and SV-012 is retained only as chronological evidence. It is not part of the current design authority and must not be implemented.
 
-### SV-013 — Restore the native/server tool boundary and narrow CR-013
+### SV-013 — Restore the correct Agent Tools projection and narrow CR-013
 
 **Corrected evidence from CRR-016 and reviewed source:**
 
-1. Codex and Claude keep their native file tools. The server Agent Tools MCP gateway does not provide a native `read_file`/`write_file` adapter.
+1. Runtime-internal tools are outside this ticket. Their implementation cannot be used to infer the Agent Tools descriptor from package `toolNames`.
 2. `buildDefaultAgentToolMcpAdapterProviders()` already projects eligible server-owned adapters, including `publish_artifacts` and `send_message_to`.
-3. `ConfiguredMcpAgentToolSourceResolver` forwards only configured `ToolOrigin.MCP` tools; it intentionally ignores ordinary non-MCP native tools.
+3. `ConfiguredMcpAgentToolSourceResolver` forwards only selected configured `ToolOrigin.MCP` tools that are available in the current registry.
 4. Studio already calls `registerAgentToolsMcpRoutes(app)`. Standalone constructs the existing session/descriptor stack but omits only that same registrar, so the advertised path reaches generic 404 instead of the route's established authorization gate.
 5. The external `/mcp/gateway` is a different Studio-only integration surface and remains absent in standalone.
 
@@ -200,10 +200,23 @@ SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames`
 
 - In `build-standalone-application-server-composition.ts`, import the existing `registerAgentToolsMcpRoutes` and `await registerAgentToolsMcpRoutes(app)` before registering static/SPA fallback.
 - Reuse the existing route, session service, catalog, dispatcher, adapters, descriptor issuance, auth semantics, base-URL behavior, and cleanup unchanged.
-- Keep Codex/Claude native file tools native. Do not add file adapters to the Agent Tools MCP gateway or infer gateway exposure from package `toolNames`.
+- Do not infer Agent Tools exposure from package `toolNames`; runtime-internal source and tests remain outside the changed boundary.
 - Keep eligible server-owned gateway tools and configured MCP-origin tools governed by the existing descriptor and `tools/list`.
 - Do not add a second route, alias, compatibility fallback, external gateway, runtime aggregate, ports, path builder, configured-source resolver, publication bridge, readiness phase, or shutdown owner.
-- Correct API/E2E expectations to inspect the actual issued descriptor and `tools/list`, then prove native file output plus server-owned publication/message dispatch through the registered route.
+- Correct API/E2E expectations to inspect the actual issued descriptor and `tools/list`, then prove server-owned publication/message dispatch through the registered route without adding runtime-tool acceptance scope.
+
+### SV-014 — Separate Studio MCP management, the general gateway, and application MCP ownership
+
+**User-confirmed boundary and source validation:**
+
+1. Studio MCP Server Management provisions/imports host-configured external MCP servers into the Studio process registry.
+2. General `/mcp/gateway` exposes that process’s current `ToolOrigin.MCP` tools to external MCP clients. It does not provision MCP servers, expose AutoByteus run-dependent tools, or scope tools to an application.
+3. `/mcp/agent-tools/:sessionId` is the per-run callback used in both Studio and standalone. It exposes only the session’s eligible server-owned adapters and selected available MCP-origin tools.
+4. Standalone neither exposes `/mcp/gateway` nor inherits Studio MCP configuration. The current Brief/Socratic proof does not require custom MCP provisioning.
+5. A future focused application may declare its own MCP resources for shared platform provisioning, but package schema, secret binding, lifecycle/readiness, and application-scoped registration require a separate design.
+6. Codex/Claude runtime-internal tooling is not a requirement, implementation delta, or acceptance target in this ticket. No related source or test file belongs in the change.
+
+This clarification changes no route, source file, readiness state, package schema, test ownership, or architecture decision.
 
 ## Data-Flow Coverage Check
 
@@ -225,9 +238,9 @@ SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames`
 
 | Principle / Derived Check | Result | Validation |
 | --- | --- | --- |
-| Approved behavior and production reality | Pass after SV-013 | BEH-004–BEH-006 incorporate the exact standalone 404/stalled-run evidence while CRR-016 restores the verified native/server/configured-MCP tool projection. All architecture-approved launch/edit/prompt behavior remains unchanged. |
-| Spine span sufficiency | Pass after SV-013 | DS-014 covers native file work, existing authenticated server-tool dispatch, handoff, events, and artifacts. The only missing main-line node is standalone registration of the existing route. DS-011–DS-013 remain complete. |
-| Ownership clarity and boundary encapsulation | Pass after SV-013 | Existing session, route, catalog, dispatcher, adapter, and cleanup owners remain authoritative. Standalone composition only exposes the already-owned route; external gateway and native runtime tools stay in their distinct owners. |
+| Approved behavior and production reality | Pass after SV-014 | BEH-004–BEH-006 incorporate the exact standalone 404/stalled-run evidence while SR-009 clarifies the run-scoped Agent Tools/general-gateway/application-MCP boundary. All architecture-approved launch/edit/prompt behavior remains unchanged. |
+| Spine span sufficiency | Pass after SV-013 | DS-014 covers existing authenticated server-tool dispatch, handoff, events, and artifacts. The only missing main-line node is standalone registration of the existing route. DS-011–DS-013 remain complete. |
+| Ownership clarity and boundary encapsulation | Pass after SV-014 | Existing session, route, catalog, dispatcher, adapter, and cleanup owners remain authoritative. Standalone composition only exposes the already-owned run route; Studio MCP management/general gateway and deferred application-owned provisioning have distinct meanings. |
 | Off-spine support remains subordinate | Pass | Existing bearer auth/redaction, origin gate, descriptors, diagnostics, and cleanup remain unchanged and do not become an alternate orchestrator, user-auth system, or external gateway. |
 | Current-schema persisted-data transition | Pass after SV-011 | Valid rows are sparse overlays; invalid rows are preserved diagnostics; computed selected baselines/previews are not stored; reset deletes explicitly; no schema or migration is required. |
 | Product-reachability gate | Pass | All 23 use cases and 38 scenarios are supported actions, current failures, or governing contracts. DS-014 is exercised by the maintained Brief real run; marketplace, multi-node, and public-internet modes remain excluded. |
@@ -243,12 +256,12 @@ SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames`
 1. Implementation coverage must prove standalone calls the existing registrar before static fallback: no bearer reaches the route's 401 gate rather than generic 404, and an unknown/unavailable session retains established 404 behavior.
 2. The same composition coverage must prove external `/mcp/gateway` remains absent in standalone.
 3. API/E2E must rerun `APIE2E-STANDALONE-MCP-001`, `APIE2E-BRIEF-003`, and `APIE2E-F005` with corrected expectations derived from the actual descriptor and `tools/list`.
-4. Fresh-root standalone Brief must prove Codex native `write_file` separately from gateway-owned `publish_artifacts` and `send_message_to`, followed by writer handoff, lifecycle events, projected artifacts, and cleanup. Route presence alone is insufficient.
-5. API/E2E must not infer gateway tools from package `toolNames`, add a file adapter, or require native `write_file` in MCP `enabled_tools`.
+4. Fresh-root standalone Brief must prove gateway-owned `publish_artifacts` and `send_message_to`, followed by writer handoff, lifecycle events, projected artifacts, and cleanup. Route presence alone is insufficient.
+5. API/E2E must not infer gateway tools from package `toolNames`; runtime-internal tools are not part of its ticket proof.
 6. Existing selected-resource, portable policy, invalid override, package defaults, and prompt semantics passed focused coverage and must remain in the affected regression set.
 7. `APIE2E-REPO-005` remains an `Unclear` unattributed broad server-suite diagnostic. API/E2E/code review must reconcile it separately; DS-014 does not claim to fix it.
 8. Model/runtime credentials remain host requirements. A host without Codex/Luna must produce `HOST_REQUIREMENT_MISSING`, never substitute another runtime/model.
-9. Optimized distribution, offline dependency packaging, mandatory standalone override UI/CLI, public-internet hosting, user authentication, marketplace isolation, and repository-wide singleton removal remain out of scope.
+9. Application-owned MCP declaration/provisioning/scoping, optimized distribution, offline dependency packaging, mandatory standalone override UI/CLI, public-internet hosting, user authentication, marketplace isolation, and repository-wide singleton removal remain out of scope.
 
 ## Self-Validation Decision
 
@@ -256,6 +269,6 @@ The major architecture remains:
 
 > One immutable application package supplies its complete standalone launch baseline; two thin hosts may overlay host-owned configuration and normalize their ingress, then use one authoritative application-platform runtime and business stack.
 
-The corrected design keeps the established Agent Tools subsystem unchanged. Codex/Claude native file operations remain runtime-native; the existing internal route carries eligible server-owned tools and configured MCP-origin tools. Standalone only adds the missing call to the existing registrar, while the external MCP gateway remains Studio-only.
+The corrected design keeps the established Agent Tools subsystem. The existing internal route carries eligible server-owned tools and selected available MCP-origin tools. Standalone only adds the missing call to the existing registrar, while the general external-client MCP gateway and Studio MCP state remain Studio-only. Application-owned MCP provisioning is deferred. Runtime-internal tooling remains outside the design and validation scope.
 
 All 23 reachable use cases map to DS-001–DS-014 and at least one of 38 validation cases. The design does not require a new readiness status, project, mandatory standalone setup UI, persisted Agent Tools session/baseline/preview, migration, manifest change, user-authentication subsystem, host-specific build, compatibility route, fallback, external gateway expansion, runtime aggregate, port layer, publication bridge, or duplicated server/tool system. `ARCH-REV-006` remains authoritative; the bounded CR-013 fix is ready for `implementation_engineer`. No implementation or API/E2E pass is presumed.
