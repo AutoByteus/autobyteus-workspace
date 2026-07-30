@@ -2,13 +2,15 @@
 
 ## Status
 
-- Current status: `Finalization authorized; in progress`
+- Current status: `Finalized`
 - Delivery round: `DR-002`
 - Last updated: `2026-07-30`
 - Ticket: `event-monitor-markdown-link-clickability`
 - Ticket branch: `codex/event-monitor-markdown-link-clickability`
 - Current reviewed source: `f809c765ddc2807bfc2a1c154fb906d92e24ea2a`
 - Pre-verification delivery checkpoint: `aa2070124332a4aac9fbcf2d342a8832a39fbc46` (`chore(ticket): checkpoint delivery package`).
+- Final ticket archive commit: `75bea4fe2b946a8b395bc71bec103c61915feff2` (`chore(ticket): archive event monitor markdown link clickability`).
+- Finalization merge commit on `personal`: `6bb72ea289e6e041ddf109b1277fc8cae27f0fab`.
 
 ## Delivered Change
 
@@ -29,7 +31,7 @@
 - Proportional durable test-code review: `CRR-002 Pass`; no findings and no rerun required.
 - User verification: `Received on 2026-07-30`; user confirmed the task is done and requested finalization without a new version release.
 - Delivery base check: `git fetch origin personal` succeeded; latest `origin/personal` is `34f3fe97a281a9b85e02409bd753ad132df13d20`, already the ticket branch merge-base. No new base commits required integration and no additional post-integration rerun was required.
-- Checkpoint state: The cumulative ticket package and delivery artifacts are preserved locally; finalization now proceeds from the verified state without a release.
+- Checkpoint state: The cumulative ticket package and delivery artifacts are preserved in the archived ticket and target branch; finalization completed without a release.
 - Delivery docs sync: `Pass`; long-lived docs were reviewed and remain accurate, with no edits required.
 
 ## Delivery Artifacts
@@ -70,9 +72,12 @@ Retained execution evidence is in the same ticket folder: focused/adjacent test 
 
 ## Repository Finalization
 
-- User verification authorizes the ticket archive move, ticket-branch push, merge into `personal`, and cleanup.
+- User verification authorized the ticket archive move, ticket-branch push, merge into `personal`, and cleanup.
 - Release/publication/deployment remains explicitly skipped.
-- Finalization operations are in progress; exact commit, merge, push, archive, and cleanup results will be recorded in the final delivery artifacts.
+- Ticket moved to `tickets/done/event-monitor-markdown-link-clickability/`.
+- Ticket branch `codex/event-monitor-markdown-link-clickability` was committed as `75bea4fe2b946a8b395bc71bec103c61915feff2` and pushed to `origin/codex/event-monitor-markdown-link-clickability`.
+- Latest target `origin/personal` was refreshed at `34f3fe97a`; the ticket branch was merged without conflict as `6bb72ea289e6e041ddf109b1277fc8cae27f0fab` and pushed to `origin/personal`.
+- Final integrated source remained the reviewed source; no additional rerun was required because the final target refresh introduced no new base commits or source changes.
 
 ## Residual Risks
 
@@ -82,11 +87,6 @@ Retained execution evidence is in the same ticket folder: focused/adjacent test 
 
 ## Finalization Plan After Verification
 
-1. Re-fetch `origin/personal` and verify it has not advanced beyond this handoff state.
-2. If unchanged, move this ticket folder to `tickets/done/event-monitor-markdown-link-clickability/`.
-3. Commit and push the finalized ticket branch.
-4. Refresh local `personal`, merge the ticket branch into it, and push `origin/personal`.
-5. Skip release/publication/deployment as recorded above.
-6. Remove the dedicated worktree and ticket branches only after successful target-branch finalization.
+`Completed.` The ticket was archived, the reviewed branch was pushed, the change was merged to `origin/personal`, and release/publication/deployment was skipped per user instruction. Dedicated worktree and branch cleanup is recorded in the delivery report.
 
 If the finalization target advances and the user-facing state changes, re-integrate, rerun the required checks, refresh this summary, and obtain renewed verification before finalization.
