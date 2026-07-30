@@ -71,6 +71,7 @@ const createLaunchResolver = () => ({
     agentName: "Memory Compactor",
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     llmModelIdentifier: "codex:gpt-5",
+    provider: "openai",
     llmConfig: { reasoning_effort: "medium" },
     skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   })),
@@ -134,6 +135,7 @@ describe("ServerCompactionAgentRunner", () => {
         compactionAgentName: "Memory Compactor",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         modelIdentifier: "codex:gpt-5",
+        provider: "openai",
         compactionRunId: "compaction-run-1",
         taskId: "task-1",
       },
@@ -184,7 +186,14 @@ describe("ServerCompactionAgentRunner", () => {
     {
       name: "runtime error event",
       events: [
-        createEvent(AgentRunEventType.ERROR, { message: "provider exploded" }, "ERROR"),
+        createEvent(AgentRunEventType.ERROR, {
+          message: "provider exploded",
+          error_scope: "runtime",
+          error_effect: "terminal",
+        }, "ERROR"),
+        createEvent(AgentRunEventType.AGENT_STATUS, {
+          status: "ERROR",
+        }, "ERROR"),
       ],
       timeoutMs: 1_000,
       expectedMessage: /provider exploded/,

@@ -3,55 +3,62 @@ import { CompactionResult } from '../../../src/memory/compaction/compaction-resu
 import { CompactionResultNormalizer } from '../../../src/memory/compaction/compaction-result-normalizer.js';
 
 describe('CompactionResultNormalizer', () => {
-  it('preserves typed categories, deduplicates by highest priority, and assigns deterministic salience', () => {
-    const normalizer = new CompactionResultNormalizer();
-    const result = new CompactionResult('Summary', {
+  it('normalizes bounded episodes, preserves categories, and deduplicates by priority', () => {
+    const normalized = new CompactionResultNormalizer().normalize(new CompactionResult({
+      episodes: [
+        { summary: '  First   complete replacement episode.  ' },
+        { summary: 'Second episode.' },
+        { summary: 'Third episode.' },
+        { summary: 'Fourth is deterministically ignored.' },
+      ],
       criticalIssues: [{ fact: 'Pinia getter reads undefined products.value' }],
-      unresolvedWork: [{ fact: 'Revise design spec v3 for price-storage pattern' }],
+      unresolvedWork: [{ fact: 'Revise design spec for price storage' }],
       durableFacts: [
         { fact: 'Pinia getter reads undefined products.value' },
         { fact: 'Team uses pnpm exec vitest' },
       ],
       userPreferences: [{ fact: 'User prefers concise answers' }],
-      importantArtifacts: [{ fact: 'Important artifact path remains in fact text: /tmp/design-spec.md' }],
-    });
+      importantArtifacts: [{ fact: 'Artifact path: /tmp/design-spec.md' }],
+    }));
 
-    const normalized = normalizer.normalize(result);
-
-    expect(normalized.semanticEntries.map((entry) => entry.category)).toEqual([
+    expect(normalized.episodes).toEqual([
+      { summary: 'First complete replacement episode.' },
+      { summary: 'Second episode.' },
+      { summary: 'Third episode.' },
+    ]);
+    expect(normalized.semanticEntries.map(({ category }) => category)).toEqual([
       'critical_issue',
       'unresolved_work',
       'user_preference',
       'durable_fact',
       'important_artifact',
     ]);
-    expect(normalized.semanticEntries[0]?.salience).toBeGreaterThan(normalized.semanticEntries[3]?.salience ?? 0);
-    expect(normalized.semanticEntries.filter((entry) => entry.fact.includes('Pinia getter'))).toHaveLength(1);
-    expect(normalized.semanticEntries.find((entry) => entry.category === 'important_artifact')).toMatchObject({
-      fact: 'Important artifact path remains in fact text: /tmp/design-spec.md',
-      salience: 100,
-    });
-    expect(Object.keys(normalized.semanticEntries[0] ?? {})).not.toContain('reference');
-    expect(Object.keys(normalized.semanticEntries[0] ?? {})).not.toContain('tags');
+    expect(normalized.semanticEntries.filter(({ fact }) =>
+      fact.includes('Pinia getter'))).toHaveLength(1);
+    expect(normalized.semanticEntries[0]?.salience)
+      .toBeGreaterThan(normalized.semanticEntries[3]?.salience ?? 0);
+    expect(Object.keys(normalized.semanticEntries[0] ?? {})).toEqual([
+      'category',
+      'fact',
+      'salience',
+    ]);
   });
 
-  it('drops low-value operational noise outside critical/unresolved categories', () => {
-    const normalizer = new CompactionResultNormalizer();
-    const result = new CompactionResult('Summary', {
+  it('drops low-value operational noise outside critical and unresolved categories', () => {
+    const normalized = new CompactionResultNormalizer().normalize(new CompactionResult({
+      episodes: [{ summary: 'A valid episode remains required.' }],
       durableFacts: [
         { fact: 'Dev server running on localhost:3000 (multiple Nuxt processes detected)' },
         { fact: 'Docs status updated for README inventory' },
       ],
       unresolvedWork: [{ fact: 'Need to fix the compaction status banner typing' }],
-    });
-
-    const normalized = normalizer.normalize(result);
+    }));
 
     expect(normalized.semanticEntries).toEqual([
       expect.objectContaining({
         category: 'unresolved_work',
         fact: 'Need to fix the compaction status banner typing',
-      })
+      }),
     ]);
   });
 });

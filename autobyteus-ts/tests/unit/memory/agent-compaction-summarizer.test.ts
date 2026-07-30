@@ -18,7 +18,7 @@ class FakeRunner implements CompactionAgentRunner {
   calls: CompactionAgentTask[] = [];
   outputText = [
     '```json',
-    '{"episodic_summary":"Durable summary","critical_issues":[{"fact":"Keep this"}],"unresolved_work":[],"durable_facts":[],"user_preferences":[],"important_artifacts":[]}',
+    '{"episodes":[{"summary":"Durable summary"}],"critical_issues":[{"fact":"Keep this"}],"unresolved_work":[],"durable_facts":[],"user_preferences":[],"important_artifacts":[]}',
     '```',
   ].join('\n');
 
@@ -30,6 +30,7 @@ class FakeRunner implements CompactionAgentRunner {
         compactionAgentDefinitionId: 'memory-compactor',
         compactionAgentName: 'Memory Compactor',
         runtimeKind: 'codex_app_server',
+        provider: 'openai',
         modelIdentifier: 'gpt-5.4-codex',
         compactionRunId: 'compaction-run-1',
       },
@@ -49,7 +50,7 @@ describe('AgentCompactionSummarizer', () => {
 
     const result = await summarizer.summarizeMessageUnits([makeUnit('a very long trace that should appear in the prompt')]);
 
-    expect(result.episodicSummary).toBe('Durable summary');
+    expect(result.episodes).toEqual([{ summary: 'Durable summary' }]);
     expect(result.criticalIssues).toEqual([
       { fact: 'Keep this' },
     ]);
@@ -61,16 +62,19 @@ describe('AgentCompactionSummarizer', () => {
       blockCount: 1,
       traceCount: 1,
     });
-    expect(runner.calls[0]?.prompt).toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
-    expect(runner.calls[0]?.prompt).toContain('Your final answer must be one JSON object with this shape');
-    expect(summarizer.getLastCompactionExecutionMetadata()).toEqual({
+    expect(runner.calls[0]?.prompt).toContain('<conversation_history>');
+    expect(runner.calls[0]?.prompt).toContain('Your final answer must be one JSON object with this exact shape');
+    expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
       compactionAgentDefinitionId: 'memory-compactor',
       compactionAgentName: 'Memory Compactor',
       runtimeKind: 'codex_app_server',
+      provider: 'openai',
       modelIdentifier: 'gpt-5.4-codex',
       compactionRunId: 'compaction-run-1',
       taskId: 'task-1',
     });
+    expect(summarizer.getLastCompactionExecutionMetadata()?.renderedInputSha256)
+      .toMatch(/^[a-f0-9]{64}$/);
   });
 
   it('raises when the compaction agent response is invalid', async () => {
@@ -89,6 +93,7 @@ describe('AgentCompactionSummarizer', () => {
           compactionAgentDefinitionId: 'memory-compactor',
           compactionAgentName: 'Memory Compactor',
           runtimeKind: 'codex_app_server',
+          provider: 'openai',
           modelIdentifier: 'gpt-5.4-codex',
           compactionRunId: 'compaction-run-1',
           taskId: task.taskId,
@@ -102,14 +107,17 @@ describe('AgentCompactionSummarizer', () => {
     });
 
     await expect(summarizer.summarizeMessageUnits([makeUnit('trace')])).rejects.toThrow('tool approval requested');
-    expect(summarizer.getLastCompactionExecutionMetadata()).toEqual({
+    expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
       compactionAgentDefinitionId: 'memory-compactor',
       compactionAgentName: 'Memory Compactor',
       runtimeKind: 'codex_app_server',
+      provider: 'openai',
       modelIdentifier: 'gpt-5.4-codex',
       compactionRunId: 'compaction-run-1',
       taskId: 'task-1',
     });
+    expect(summarizer.getLastCompactionExecutionMetadata()?.renderedInputSha256)
+      .toMatch(/^[a-f0-9]{64}$/);
   });
 
 });

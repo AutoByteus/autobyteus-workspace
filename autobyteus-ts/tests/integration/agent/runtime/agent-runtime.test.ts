@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { AgentFactory } from '../../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
@@ -12,12 +15,19 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
-import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+import {
+  Message,
+  MessageRole,
+  ToolCallPayload,
+  ToolResultPayload,
+} from '../../../../src/llm/utils/messages.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { EventType } from '../../../../src/events/event-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
+import { WorkingContextSnapshotSerializer } from '../../../../src/memory/working-context-snapshot-serializer.js';
+import { getWorkingContextMessageProvenance } from '../../../../src/memory/working-context-provenance.js';
 import { BaseTool, type ToolExecutionOptions } from '../../../../src/tools/base-tool.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
@@ -752,6 +762,155 @@ describe('Agent runtime integration', () => {
     }
   }, 20000);
 
+  it('preserves only the trusted raw interruption fence through required-reset bootstrap and a successful follow-up', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'runtime-reset-bootstrap-'));
+    const agentId = `runtime_reset_interrupt_${Date.now()}`;
+    const firstLlm = new ControllableLLM(makeModel(), new LLMConfig());
+    const firstConfig = new AgentConfig(
+      'RuntimeResetInterruptAgent',
+      'Tester',
+      'Interrupt/reset/bootstrap integration agent',
+      firstLlm,
+      'BASE SYSTEM PROMPT',
+    );
+    firstConfig.memoryDir = tempDir;
+    const factory = new AgentFactory();
+    const firstAgent = factory.createAgentWithId(agentId, firstConfig);
+    let secondAgent: ReturnType<AgentFactory['restoreAgent']> | null = null;
+    let secondLlm: ControllableLLM | null = null;
+
+    try {
+      firstAgent.start();
+      expect(await waitForStatus(
+        firstAgent.context,
+        (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR,
+      )).toBe(true);
+      expect(firstAgent.context.currentStatus).toBe(AgentStatus.IDLE);
+
+      await firstAgent.postUserMessage(new AgentInputUserMessage('cancel this work'));
+      await firstLlm.waitForFirstRequestStart();
+      const interruptedTurnId = firstAgent.context.state.activeTurn?.turnId;
+      expect(interruptedTurnId).toBeTruthy();
+
+      const interrupted = await firstAgent.interrupt({
+        turnId: interruptedTurnId,
+        reason: 'required-reset-test',
+        timeoutMs: 1_000,
+      });
+      expect(interrupted).toMatchObject({
+        accepted: true,
+        status: 'accepted',
+        turnId: interruptedTurnId,
+      });
+      firstLlm.unblockFirstResponse();
+
+      const firstManager = firstAgent.context.memoryManager!;
+      const trustedBoundary = firstManager.listRawTracesOrdered().find((item) =>
+        item.traceType === 'operation_boundary'
+        && item.sourceEvent === 'AgentTurnInterruptedEvent'
+        && item.content?.includes('required-reset-test'));
+      expect(trustedBoundary).toBeDefined();
+      firstManager.appendRawTrace({
+        id: 'untrusted-boundary',
+        ts: Date.now() / 1_000 + 1,
+        turnId: interruptedTurnId!,
+        seq: 900,
+        traceType: 'operation_boundary',
+        content: 'UNTRUSTED WRONG SOURCE BOUNDARY',
+        sourceEvent: 'OtherEvent',
+      });
+      firstManager.appendRawTrace({
+        id: 'blank-trusted-boundary',
+        ts: Date.now() / 1_000 + 2,
+        turnId: interruptedTurnId!,
+        seq: 901,
+        traceType: 'operation_boundary',
+        content: '   ',
+        sourceEvent: 'AgentTurnInterruptedEvent',
+      });
+
+      expect(await factory.removeAgent(agentId, 2)).toBe(true);
+
+      for (const fileName of [
+        'working_context_snapshot.json',
+        'episodic.jsonl',
+        'semantic.jsonl',
+        'compaction_lineage.jsonl',
+      ]) {
+        fs.rmSync(path.join(tempDir, fileName), { force: true });
+      }
+      expect(fs.existsSync(path.join(tempDir, 'raw_traces_active.jsonl'))).toBe(true);
+
+      secondLlm = new ControllableLLM(makeModel(), new LLMConfig());
+      const secondConfig = new AgentConfig(
+        'RuntimeResetInterruptAgent',
+        'Tester',
+        'Interrupt/reset/bootstrap integration agent',
+        secondLlm,
+        'BASE SYSTEM PROMPT',
+      );
+      secondAgent = factory.restoreAgent(agentId, secondConfig, tempDir);
+      secondAgent.start();
+      expect(await waitForStatus(
+        secondAgent.context,
+        (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR,
+      )).toBe(true);
+      expect(secondAgent.context.currentStatus).toBe(AgentStatus.IDLE);
+
+      const restoredManager = secondAgent.context.memoryManager!;
+      const restoredMessages = restoredManager.getWorkingContextMessages();
+      const restoredFence = restoredMessages.find((message) =>
+        typeof message.content === 'string'
+        && message.content.includes('required-reset-test'));
+      expect(restoredMessages[0]).toMatchObject({
+        role: MessageRole.SYSTEM,
+        content: 'BASE SYSTEM PROMPT',
+      });
+      expect(restoredFence?.role).toBe(MessageRole.SYSTEM);
+      expect(getWorkingContextMessageProvenance(restoredFence!)).toEqual({
+        kind: 'single',
+        rawTraceIds: [trustedBoundary!.id],
+        turnId: interruptedTurnId,
+      });
+      expect(JSON.stringify(restoredMessages)).not.toContain('UNTRUSTED WRONG SOURCE BOUNDARY');
+      expect(restoredMessages.some(({ content }) => content === 'cancel this work')).toBe(true);
+      const resetSnapshot = JSON.parse(
+        fs.readFileSync(path.join(tempDir, 'working_context_snapshot.json'), 'utf-8'),
+      );
+      expect(WorkingContextSnapshotSerializer.validate(resetSnapshot)).toBe(true);
+      expect(fs.existsSync(path.join(tempDir, 'compaction_lineage.jsonl'))).toBe(false);
+
+      await secondAgent.postUserMessage(new AgentInputUserMessage('follow up safely'));
+      await secondLlm.waitForFirstRequestStart();
+      const followUpRequest = secondLlm.requestMessages[0]!;
+      expect(followUpRequest[0]).toMatchObject({
+        role: MessageRole.SYSTEM,
+        content: 'BASE SYSTEM PROMPT',
+      });
+      expect(followUpRequest.some(({ content }) =>
+        typeof content === 'string' && content.includes('required-reset-test'))).toBe(true);
+      expect(followUpRequest.some(({ content }) =>
+        typeof content === 'string' && content.includes('cancel this work'))).toBe(true);
+      expect(followUpRequest.some(({ content }) =>
+        typeof content === 'string' && content.includes('follow up safely'))).toBe(true);
+      expect(JSON.stringify(followUpRequest)).not.toContain('UNTRUSTED WRONG SOURCE BOUNDARY');
+      secondLlm.unblockFirstResponse();
+      expect(await waitForCondition(
+        () => secondAgent!.context.currentStatus === AgentStatus.IDLE
+          && secondAgent!.context.state.activeTurn === null,
+      )).toBe(true);
+    } finally {
+      firstLlm.unblockFirstResponse();
+      secondLlm?.unblockFirstResponse();
+      if (factory.getAgent(agentId)) {
+        await factory.removeAgent(agentId, 2);
+      }
+      await firstLlm.cleanup();
+      await secondLlm?.cleanup();
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  }, 30000);
+
   it('retains interrupted streamed assistant text while fencing partial native tool payloads', async () => {
     const llm = new SegmentInterruptLLM(makeModel(), new LLMConfig());
     const approvalTool = new ApprovalTool();
@@ -997,7 +1156,17 @@ describe('Agent runtime integration', () => {
         message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
         message.content.includes('user_interrupt')
       )).toBe(true);
-      expect(finalizedMessages.some((message) => message.tool_payload)).toBe(false);
+      expect(finalizedMessages.some((message) =>
+        message.tool_payload instanceof ToolCallPayload)).toBe(true);
+      const finalizedApprovalResult = finalizedMessages.find((message) =>
+        message.tool_payload instanceof ToolResultPayload)?.tool_payload as ToolResultPayload;
+      expect(finalizedApprovalResult).toMatchObject({
+        toolCallId: 'call_approval_1',
+        toolName: ApprovalTool.getName(),
+      });
+      expect(String(
+        finalizedApprovalResult.toolError ?? finalizedApprovalResult.toolResult,
+      )).toMatch(/interrupt/i);
 
       const lateApproval = await runtime.postToolApprovalEvent(
         new ToolExecutionApprovalEvent('call_approval_1', true)
@@ -1018,7 +1187,11 @@ describe('Agent runtime integration', () => {
         message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
         message.content.includes('user_interrupt')
       )).toBe(true);
-      expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
+      expect(nextMessages.some((message) =>
+        message.tool_payload instanceof ToolCallPayload)).toBe(true);
+      expect(nextMessages.some((message) =>
+        message.tool_payload instanceof ToolResultPayload &&
+        message.tool_payload.toolCallId === 'call_approval_1')).toBe(true);
     } finally {
       if (runtime.isRunning) {
         await runtime.stop(2);
@@ -1086,16 +1259,24 @@ describe('Agent runtime integration', () => {
       const nextMessages = llm.requestMessages[1];
       expect(nextMessages.some((message) => message.content === 'run two tools')).toBe(true);
       expect(nextMessages.some((message) =>
-        typeof message.content === 'string' &&
-        message.content.includes('SAFE_FACT') &&
-        message.content.includes(SafeFactTool.getName())
+        message.tool_payload instanceof ToolResultPayload &&
+        message.tool_payload.toolName === SafeFactTool.getName() &&
+        message.tool_payload.toolResult === 'SAFE_FACT'
+      )).toBe(true);
+      expect(nextMessages.some((message) =>
+        message.tool_payload instanceof ToolResultPayload &&
+        message.tool_payload.toolName === BlockingTool.getName() &&
+        /interrupt/i.test(String(
+          message.tool_payload.toolError ?? message.tool_payload.toolResult,
+        ))
       )).toBe(true);
       expect(nextMessages.some((message) =>
         typeof message.content === 'string' &&
         message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
         message.content.includes('user_interrupt')
       )).toBe(true);
-      expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
+      expect(nextMessages.some((message) =>
+        message.tool_payload instanceof ToolCallPayload)).toBe(true);
       expect(nextMessages.some((message) => message.content === 'after tool interrupt')).toBe(true);
     } finally {
       if (runtime.isRunning) {

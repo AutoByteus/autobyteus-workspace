@@ -7,7 +7,6 @@ import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
 import { SemanticItem } from '../../../src/memory/models/semantic-item.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
-import { COMPACTED_MEMORY_SCHEMA_VERSION } from '../../../src/memory/store/compacted-memory-manifest.js';
 
 describe('FileMemoryStore', () => {
   let tempDir: string;
@@ -46,7 +45,6 @@ describe('FileMemoryStore', () => {
     const item = new EpisodicItem({
       id: 'ep_0001',
       ts: Date.now() / 1000,
-      turnIds: ['turn_0001', 'turn_0002'],
       summary: 'We discussed refactoring.',
       salience: 0.7
     });
@@ -77,9 +75,14 @@ describe('FileMemoryStore', () => {
     expect(semanticItems[0].fact).toBe('Use pnpm exec vitest.');
   });
 
-  it('replaces semantic items and persists the manifest', () => {
-    const store = new FileMemoryStore(tempDir, 'agent-manifest');
-    store.replaceSemanticItems([
+  it('uses exact current output lookup and creates no compacted-memory manifest', () => {
+    const store = new FileMemoryStore(tempDir, 'agent-current-output');
+    const episode = new EpisodicItem({
+      id: 'ep_1',
+      ts: 99,
+      summary: 'Complete current episode.',
+    });
+    const semantics = [
       new SemanticItem({
         id: 'sem_1',
         ts: 100,
@@ -94,21 +97,21 @@ describe('FileMemoryStore', () => {
         fact: 'Implementation handoff saved at /tmp/implementation-handoff.md.',
         salience: 100,
       }),
-    ]);
-    store.writeCompactedMemoryManifest({
-      schema_version: COMPACTED_MEMORY_SCHEMA_VERSION,
-      last_reset_ts: 123,
-    });
+    ];
+    store.add([episode, ...semantics]);
 
-    const semanticItems = store.list(MemoryType.SEMANTIC) as SemanticItem[];
-    expect(semanticItems).toHaveLength(2);
-    expect(semanticItems[1].fact).toContain('/tmp/implementation-handoff.md');
-    expect(Object.keys(semanticItems[1].toDict())).not.toContain('reference');
-    expect(Object.keys(semanticItems[1].toDict())).not.toContain('tags');
-    expect(store.readCompactedMemoryManifest()).toEqual({
-      schema_version: COMPACTED_MEMORY_SCHEMA_VERSION,
-      last_reset_ts: 123,
-    });
+    expect(store.findEpisodicItemsByIds(['ep_1'])).toEqual([episode]);
+    expect(store.findSemanticItemsByIds(['sem_2', 'sem_1']).map(({ id }) => id))
+      .toEqual(['sem_2', 'sem_1']);
+    expect(() => store.findSemanticItemsByIds(['missing'])).toThrow(
+      "Expected exactly one semantic row 'missing', found 0",
+    );
+    expect(fs.existsSync(path.join(
+      tempDir,
+      'agents',
+      'agent-current-output',
+      'compacted_memory_manifest.json',
+    ))).toBe(false);
   });
 
   it('respects list limits', () => {

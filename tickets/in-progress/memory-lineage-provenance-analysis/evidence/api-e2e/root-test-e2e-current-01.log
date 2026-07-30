@@ -1,0 +1,28 @@
+
+> autobyteus-workspace@ test:e2e /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis
+> pnpm --filter autobyteus-server-ts test --run tests/e2e
+
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: src/application-agent-communication.ts(99,61): error TS2304: Cannot find name 'AbortSignal'.
+autobyteus-application-sdk-contracts build: src/application-iframe-contract.ts(237,28): error TS2552: Cannot find name 'URLSearchParams'. Did you mean 'searchParams'?
+autobyteus-application-sdk-contracts build: src/application-websockets.ts(21,20): error TS2304: Cannot find name 'AbortSignal'.
+autobyteus-application-sdk-contracts build: Failed
+/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-application-sdk-contracts:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @autobyteus/application-sdk-contracts@0.1.0 build: `tsc -p tsconfig.build.json`
+Exit status 2
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+ ELIFECYCLE  Command failed with exit code 2.
+/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  autobyteus-server-ts@0.1.1 pretest: `pnpm prepare:shared`
+Exit status 2
+ ELIFECYCLE  Command failed with exit code 2.

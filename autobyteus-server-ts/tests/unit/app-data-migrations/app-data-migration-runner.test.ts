@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import type {
@@ -10,6 +10,7 @@ import type {
   AppDataMigrationRecordSnapshot,
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 import { AppDataMigrationDuplicateRunError } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
+import { RequiredAppDataMigrationError } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 
 class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLike {
   records = new Map<string, AppDataMigrationRecordSnapshot>();
@@ -168,5 +169,89 @@ describe("AppDataMigrationRunner", () => {
     await expect(runner.listStatuses()).resolves.toMatchObject([
       { migrationId: "m1", status: "NOT_RUN", attempts: 0, canRetry: true },
     ]);
+  });
+
+  it("attempts and persists every required migration before throwing the aggregate typed failure", async () => {
+    const repository = new InMemoryMigrationRepository();
+    const executions: string[] = [];
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("m-fail", async () => {
+          executions.push("m-fail");
+          return {
+            status: "FAILED",
+            summary: { ...summary, failedCount: 1 },
+            errorMessage: "failed item",
+          };
+        }),
+        createDefinition("m-success", async () => {
+          executions.push("m-success");
+          return { status: "SUCCEEDED", summary };
+        }),
+        createDefinition("m-throws", async () => {
+          executions.push("m-throws");
+          throw new Error("definition crashed");
+        }),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    let failure: RequiredAppDataMigrationError | null = null;
+    try {
+      await runner.runPending();
+    } catch (error) {
+      expect(error).toBeInstanceOf(RequiredAppDataMigrationError);
+      failure = error as RequiredAppDataMigrationError;
+    }
+
+    expect(executions).toEqual(["m-fail", "m-success", "m-throws"]);
+    expect(failure?.code).toBe("REQUIRED_APP_DATA_MIGRATION_FAILED");
+    expect(failure?.results.map(({ migrationId, status }) => ({ migrationId, status })))
+      .toEqual([
+        { migrationId: "m-fail", status: "FAILED" },
+        { migrationId: "m-success", status: "SUCCEEDED" },
+        { migrationId: "m-throws", status: "FAILED" },
+      ]);
+    expect((await repository.getRecord("m-fail"))?.errorMessage).toBe("failed item");
+    expect((await repository.getRecord("m-success"))?.status).toBe("SUCCEEDED");
+    expect((await repository.getRecord("m-throws"))?.errorMessage).toBe("definition crashed");
+  });
+
+  it("accepts persisted SUCCEEDED and SUCCEEDED_WITH_WARNINGS results without rerunning them", async () => {
+    const repository = new InMemoryMigrationRepository();
+    const executeSucceeded = vi.fn();
+    const executeWarnings = vi.fn();
+    for (const [migrationId, status] of [
+      ["m-success", "SUCCEEDED"],
+      ["m-warning", "SUCCEEDED_WITH_WARNINGS"],
+    ] as const) {
+      repository.records.set(migrationId, {
+        migrationId,
+        displayName: `Migration ${migrationId}`,
+        status,
+        attempts: 1,
+        startedAt: new Date(),
+        completedAt: new Date(),
+        summaryJson: JSON.stringify(summary),
+        errorMessage: null,
+        logPath: null,
+      });
+    }
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("m-success", executeSucceeded),
+        createDefinition("m-warning", executeWarnings),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.runPending()).resolves.toMatchObject([
+      { migrationId: "m-success", status: "SUCCEEDED" },
+      { migrationId: "m-warning", status: "SUCCEEDED_WITH_WARNINGS" },
+    ]);
+    expect(executeSucceeded).not.toHaveBeenCalled();
+    expect(executeWarnings).not.toHaveBeenCalled();
   });
 });

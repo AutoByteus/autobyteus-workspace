@@ -1,155 +1,193 @@
-import { describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
+import type { CompactionLineageRecord } from '../../../src/memory/lineage/compaction-lineage-record.js';
+import type { CompactionLineageScope } from '../../../src/memory/lineage/compaction-lineage-scope.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
+import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
-import {
-  WorkingContextSnapshotBootstrapOptions,
-  WorkingContextSnapshotBootstrapper,
-} from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
+import { WorkingContextSnapshotBootstrapper } from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
+import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
+import {
+  createCompactedMemoryUserMessage,
+  WorkingContextFinalizer,
+} from '../../../src/memory/working-context-finalizer.js';
+import { getWorkingContextMessageProvenance } from '../../../src/memory/working-context-provenance.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
-import { WorkingContext } from '../../../src/memory/working-context.js';
 
-const makeMemoryManagerBoundary = (store: unknown = { agentId: 'agent_1' }) => ({
-  store,
-  replaceWorkingContext: vi.fn(),
-  ensureWorkingContextToolProtocolSafeForNextLlm: vi.fn(),
-  listRawTraceCorpusOrdered: vi.fn(() => []),
-  compactionPolicy: { maxItemChars: 200 },
-  workingContextSnapshotStore: null,
+const agentId = 'agent-bootstrap';
+const scope: CompactionLineageScope = {
+  targetKind: 'agent_run',
+  runId: agentId,
+  memberId: null,
+};
+
+const lineageRecord = (): CompactionLineageRecord => ({
+  schemaVersion: 1,
+  scope,
+  compactionId: 'c1',
+  previousCompactionId: null,
+  rawTraceArchiveFile: 'raw_traces_000001.jsonl',
+  episodeIds: ['e1'],
+  semanticIds: [],
+  derivedAt: '2026-07-30T00:00:00.000Z',
+  execution: {
+    runtimeKind: 'autobyteus',
+    provider: 'openai',
+    model: 'model-1',
+    selectionPolicyVersion: 1,
+    promptContractVersion: 1,
+  },
 });
 
-describe('WorkingContextSnapshotBootstrapper', () => {
-  it('runs the schema gate first and installs a valid v4 cache directly', () => {
-    const context = new WorkingContext([new Message(MessageRole.SYSTEM, { content: 'System' })]);
-    const payload = {
-      ...WorkingContextSnapshotSerializer.serialize(context, { agent_id: 'agent_1' }),
-      epoch_id: 7,
-      last_compaction_ts: 42,
-    };
-    const snapshotStore = {
-      agentId: 'agent_1',
-      exists: vi.fn(() => true),
-      read: vi.fn(() => payload),
-    };
-    const schemaGate = {
-      supports: vi.fn(() => true),
-      ensureCurrentSchema: vi.fn(() => ({ didReset: false })),
-    };
-    const manager = makeMemoryManagerBoundary();
-    const projector = { project: vi.fn() };
+describe('WorkingContextSnapshotBootstrapper current-only restore', () => {
+  let tempDir: string;
+  let memoryStore: FileMemoryStore;
+  let snapshotStore: WorkingContextSnapshotStore;
+  let lineageStore: FileCompactionLineageStore;
+  let manager: MemoryManager;
 
-    new WorkingContextSnapshotBootstrapper(
-      snapshotStore as any,
-      projector as any,
-      null as any,
-      schemaGate as any,
-    ).bootstrap(manager as any, 'System', new WorkingContextSnapshotBootstrapOptions());
-
-    expect(schemaGate.ensureCurrentSchema.mock.invocationCallOrder[0]).toBeLessThan(
-      snapshotStore.read.mock.invocationCallOrder[0],
-    );
-    expect(manager.replaceWorkingContext).toHaveBeenCalledWith(expect.any(WorkingContext));
-    expect(manager.replaceWorkingContext.mock.calls[0]![0].buildMessages()[0]?.content).toBe('System');
-    expect(projector.project).not.toHaveBeenCalled();
+  beforeEach(() => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'snapshot-bootstrap-v5-'));
+    memoryStore = new FileMemoryStore(tempDir, agentId);
+    snapshotStore = new WorkingContextSnapshotStore(tempDir, agentId);
+    lineageStore = new FileCompactionLineageStore(memoryStore.agentDir, scope);
+    manager = new MemoryManager({
+      store: memoryStore,
+      snapshotStore,
+      workingContextSnapshotStore: snapshotStore,
+      lineageStore,
+      lineageScope: scope,
+      agentId,
+    } as any);
   });
 
-  it('uses the shared compacted-memory projector for restore fallback', () => {
-    const snapshotStore = {
-      agentId: 'agent_1',
-      exists: vi.fn(() => false),
-      read: vi.fn(),
-    };
-    const schemaGate = {
-      supports: vi.fn(() => true),
-      ensureCurrentSchema: vi.fn(() => ({ didReset: true })),
-    };
-    const recovered = [new Message(MessageRole.USER, { content: 'Recovered' })];
-    const recoveryProjector = { project: vi.fn(() => recovered) };
-    const projected = new WorkingContext([
-      new Message(MessageRole.SYSTEM, { content: 'System' }),
-      ...recovered,
-    ]);
-    const compactedMemoryProjector = { project: vi.fn(() => projected) };
-    const manager = makeMemoryManagerBoundary();
+  afterEach(() => {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  });
 
-    new WorkingContextSnapshotBootstrapper(
-      snapshotStore as any,
-      compactedMemoryProjector as any,
-      recoveryProjector as any,
-      schemaGate as any,
-    ).bootstrap(
-      manager as any,
-      'System',
-      new WorkingContextSnapshotBootstrapOptions({ maxEpisodic: 5, maxSemantic: 9, maxItemChars: 123 }),
-    );
-
-    expect(snapshotStore.read).not.toHaveBeenCalled();
-    expect(recoveryProjector.project).toHaveBeenCalledWith([], 123);
-    expect(compactedMemoryProjector.project).toHaveBeenCalledWith({
-      systemPrompt: 'System',
-      continuationMessages: recovered,
-      maxEpisodic: 5,
-      maxSemantic: 9,
+  it('restores a valid v5 snapshot directly and preserves exact current memory shape', () => {
+    memoryStore.add([new EpisodicItem({ id: 'e1', ts: 1, summary: 'Current M1' })]);
+    lineageStore.appendNext(null, lineageRecord());
+    const expected = new WorkingContextFinalizer().finalize({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'Stored system' }),
+        createCompactedMemoryUserMessage('Current M1'),
+      ],
     });
-    expect(manager.replaceWorkingContext).toHaveBeenCalledWith(projected);
+    snapshotStore.write(agentId, WorkingContextSnapshotSerializer.serialize(expected, {
+      agent_id: agentId,
+    }));
+
+    new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
+      manager,
+      'Different current base prompt',
+      { maxItemChars: null },
+    );
+
+    expect(manager.getWorkingContextMessages().map(({ content }) => content))
+      .toEqual(['Stored system', 'Current M1']);
+    expect(manager.loadCurrentCompactionOutput()?.lineageHead.compactionId).toBe('c1');
+    expect(WorkingContextSnapshotSerializer.validate(snapshotStore.read(agentId)!)).toBe(true);
   });
 
-  it('repairs a schema-valid cached context with a missing native tool result', () => {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'working-context-bootstrap-tool-repair-'));
-    try {
-      const agentId = 'agent_cached_tool_repair';
-      const store = new FileMemoryStore(tempDir, agentId);
-      const snapshotStore = new WorkingContextSnapshotStore(tempDir, agentId);
-      store.add([new RawTraceItem({
-        id: 'rt_cached_call',
+  it('recovers only the trusted active interruption fence with provenance after reset', () => {
+    memoryStore.add([
+      new RawTraceItem({
+        id: 'trusted-boundary',
         ts: 1,
-        turnId: 'turn_cached',
+        turnId: 'turn-interrupted',
         seq: 1,
-        traceType: 'tool_call',
-        content: '',
-        sourceEvent: 'PendingToolInvocationEvent',
-        toolName: 'generate_image',
-        toolCallId: 'call_cached',
-        toolArgs: { prompt: 'page two' },
-      })]);
-      const cached = new WorkingContext([
+        traceType: 'operation_boundary',
+        content: 'Cancellation fence: do not resume the interrupted action.',
+        sourceEvent: 'AgentTurnInterruptedEvent',
+      }),
+      new RawTraceItem({
+        id: 'wrong-source',
+        ts: 2,
+        turnId: 'turn-interrupted',
+        seq: 2,
+        traceType: 'operation_boundary',
+        content: 'UNTRUSTED_BOUNDARY',
+        sourceEvent: 'OtherEvent',
+      }),
+      new RawTraceItem({
+        id: 'blank-trusted',
+        ts: 3,
+        turnId: 'turn-interrupted',
+        seq: 3,
+        traceType: 'operation_boundary',
+        content: '   ',
+        sourceEvent: 'AgentTurnInterruptedEvent',
+      }),
+      new RawTraceItem({
+        id: 'follow-up-active-history',
+        ts: 4,
+        turnId: 'turn-follow-up',
+        seq: 1,
+        traceType: 'user',
+        content: 'Natural active continuation.',
+        sourceEvent: 'UserMessageReceivedEvent',
+      }),
+    ]);
+
+    new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
+      manager,
+      'Current base system prompt',
+      { maxItemChars: null },
+    );
+
+    const messages = manager.getWorkingContextMessages();
+    expect(messages.map(({ role }) => role)).toEqual([
+      MessageRole.SYSTEM,
+      MessageRole.SYSTEM,
+      MessageRole.USER,
+    ]);
+    expect(messages.map(({ content }) => content)).toEqual([
+      'Current base system prompt',
+      'Cancellation fence: do not resume the interrupted action.',
+      'Natural active continuation.',
+    ]);
+    expect(JSON.stringify(messages)).not.toContain('UNTRUSTED_BOUNDARY');
+    expect(getWorkingContextMessageProvenance(messages[1]!)).toEqual({
+      kind: 'single',
+      rawTraceIds: ['trusted-boundary'],
+      turnId: 'turn-interrupted',
+    });
+    expect(manager.loadCurrentCompactionOutput()).toBeNull();
+    expect(WorkingContextSnapshotSerializer.validate(snapshotStore.read(agentId)!)).toBe(true);
+  });
+
+  it('fails closed when a lineage head exists without its required v5 snapshot', () => {
+    memoryStore.add([new EpisodicItem({ id: 'e1', ts: 1, summary: 'Current M1' })]);
+    lineageStore.appendNext(null, lineageRecord());
+
+    expect(() => new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
+      manager,
+      'System',
+      { maxItemChars: null },
+    )).toThrow("Current lineage head 'c1' requires a v5 message snapshot");
+  });
+
+  it('rejects a compacted-memory snapshot when lineage is absent', () => {
+    const inconsistent = new WorkingContextFinalizer().finalize({
+      messages: [
         new Message(MessageRole.SYSTEM, { content: 'System' }),
-        new Message(MessageRole.ASSISTANT, {
-          content: 'Generating page two.',
-          tool_payload: new ToolCallPayload([
-            { id: 'call_cached', name: 'generate_image', arguments: { prompt: 'page two' } },
-          ]),
-        }),
-        new Message(MessageRole.USER, { content: 'please continue' }),
-      ]);
-      snapshotStore.write(agentId, WorkingContextSnapshotSerializer.serialize(cached, { agent_id: agentId }));
-      const manager = new MemoryManager({ store, workingContextSnapshotStore: snapshotStore });
+        createCompactedMemoryUserMessage('Orphan memory'),
+      ],
+    });
+    snapshotStore.write(agentId, WorkingContextSnapshotSerializer.serialize(inconsistent, {
+      agent_id: agentId,
+    }));
 
-      new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
-        manager,
-        'System',
-        new WorkingContextSnapshotBootstrapOptions(),
-      );
-
-      const messages = manager.getWorkingContextMessages();
-      expect(messages.map(({ role }) => role)).toEqual([
-        MessageRole.SYSTEM,
-        MessageRole.ASSISTANT,
-        MessageRole.TOOL,
-        MessageRole.USER,
-      ]);
-      expect((messages[2]!.tool_payload as ToolResultPayload).toolCallId).toBe('call_cached');
-      expect(manager.listRawTracesOrdered().some((trace) =>
-        trace.traceType === 'operation_boundary'
-        && trace.sourceEvent === 'WorkingContextSnapshotBootstrapper'
-      )).toBe(true);
-    } finally {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
+    expect(() => new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
+      manager,
+      'System',
+      { maxItemChars: null },
+    )).toThrow('Snapshot compacted memory cannot exist without a lineage head');
   });
 });

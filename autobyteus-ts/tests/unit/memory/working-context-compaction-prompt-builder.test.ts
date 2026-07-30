@@ -6,146 +6,147 @@ import {
   ToolResultPayload,
 } from '../../../src/llm/utils/messages.js';
 import { WorkingContextCompactionPromptBuilder } from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
-import type { WorkingContextMessageUnit } from '../../../src/memory/compaction/working-context-message-unit.js';
+import type {
+  ToolProtocolMessageUnit,
+  WorkingContextMessageUnit,
+} from '../../../src/memory/compaction/working-context-message-unit.js';
 
-const makeToolCallUnit = (messages: Message[] = [
-  new Message(MessageRole.ASSISTANT, {
-    reasoning_content: 'reason: need exact count',
-    content: 'I will query the inventory service before deciding.',
-    tool_payload: new ToolCallPayload([
-      { id: 'call_1', name: 'inventory_lookup', arguments: { sku: 'A-1' } },
-    ]),
-  }),
-]): WorkingContextMessageUnit => ({
-  id: 'unit_1',
+const messageUnit = (
+  id: string,
+  kind: 'message' | 'compacted_memory',
+  message: Message,
+): WorkingContextMessageUnit => ({
+  id,
+  kind,
+  startIndex: 0,
+  endIndex: 0,
+  messages: [message],
+  rawTraceIds: kind === 'compacted_memory' ? [] : [`raw-${id}`],
+});
+
+const toolUnit = (): ToolProtocolMessageUnit => ({
+  id: 'tools',
   kind: 'tool_protocol_group',
-  startIndex: 1,
-  endIndex: messages.length,
-  rawTraceIds: [],
-  toolCallIds: ['call_1'],
-  matchedToolCallIds: messages.some((message) =>
-    message.tool_payload instanceof ToolResultPayload && message.tool_payload.toolCallId === 'call_1'
-  ) ? ['call_1'] : [],
-  isComplete: messages.some((message) =>
-    message.tool_payload instanceof ToolResultPayload && message.tool_payload.toolCallId === 'call_1'
-  ),
-  messages,
+  startIndex: 3,
+  endIndex: 5,
+  rawTraceIds: ['raw-tool-call', 'raw-tool-success', 'raw-tool-error'],
+  toolCallIds: ['backend-call-success', 'backend-call-error'],
+  matchedToolCallIds: ['backend-call-success', 'backend-call-error'],
+  isComplete: true,
+  messages: [
+    new Message(MessageRole.ASSISTANT, {
+      content: 'I will inspect both values.',
+      reasoning_content: 'PRIVATE_REASONING_MUST_NOT_RENDER',
+      tool_payload: new ToolCallPayload([
+        {
+          id: 'backend-call-success',
+          name: 'run_command',
+          arguments: {
+            command: `head-${'x'.repeat(240)}-tail`,
+            api_key: 'sk-abcdefghijklmnopqrstuvwxyz',
+          },
+        },
+        {
+          id: 'backend-call-error',
+          name: 'read_file',
+          arguments: { path: '/tmp/short.txt' },
+        },
+      ]),
+    }),
+    new Message(MessageRole.TOOL, {
+      tool_payload: new ToolResultPayload(
+        'backend-call-error',
+        'read_file',
+        null,
+        `error-head-${'e'.repeat(240)}-error-tail`,
+      ),
+    }),
+    new Message(MessageRole.TOOL, {
+      tool_payload: new ToolResultPayload(
+        'backend-call-success',
+        'run_command',
+        `result-head-${'r'.repeat(240)}-result-tail`,
+      ),
+    }),
+  ],
 });
 
 describe('WorkingContextCompactionPromptBuilder', () => {
-  it('uses natural context-summary copy and the conversation-history section label', () => {
+  it('renders recurrent memory and R2 as one natural, bounded, reasoning-free conversation', () => {
     const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
-      {
-        id: 'unit_user',
-        kind: 'message',
-        startIndex: 0,
-        endIndex: 0,
-        rawTraceIds: [],
-        messages: [new Message(MessageRole.USER, { content: 'Please preserve the agent-based plan.' })],
-      },
-    ]);
-
-    expect(prompt).toContain('Summarize the earlier conversation history below so the same work can continue after a context refresh.');
-    expect(prompt).toContain('[REQUIRED_FINAL_JSON_SHAPE]');
-    expect(prompt).toContain('Your final answer must be one JSON object with this shape:');
-    expect(prompt).toContain('[CONVERSATION_HISTORY_TO_SUMMARIZE]');
-    expect(prompt).toContain('Focus on useful conversation facts; omit bookkeeping identifiers and low-level event details.');
-    expect(prompt).not.toContain('AutoByteus memory');
-    expect(prompt).not.toContain('output ' + 'contract');
-    expect(prompt).not.toContain('[OUTPUT' + '_CONTRACT]');
-    expect(prompt).not.toContain('working-context transcript');
-    expect(prompt).not.toContain('runtime internals');
-    expect(prompt).not.toContain('turn ids');
-    expect(prompt).not.toContain('raw trace ids');
-    expect(prompt).not.toContain('source events');
-    expect(prompt).not.toContain('block ids');
-    expect(prompt).not.toMatch(/\bsettled\b/i);
-  });
-
-  it('preserves assistant content, work notes, and canonical tool-call details for tool-call units', () => {
-    const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([makeToolCallUnit()]);
-
-    expect(prompt).toContain('I will query the inventory service before deciding.');
-    expect(prompt).toContain('reason: need exact count');
-    expect(prompt).toContain('Assistant work notes:');
-    expect(prompt).toContain('inventory_lookup');
-    expect(prompt).toContain('call_1');
-    expect(prompt).toContain('A-1');
-    expect(prompt).not.toContain('[BLOCK');
-    expect(prompt).not.toContain('turn=');
-  });
-
-  it('renders grouped tool interactions with result call IDs', () => {
-    const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
-      makeToolCallUnit([
+      messageUnit(
+        'memory',
+        'compacted_memory',
+        new Message(MessageRole.USER, { content: 'M1: retain the reviewed current design.' }),
+      ),
+      messageUnit(
+        'user',
+        'message',
+        new Message(MessageRole.USER, {
+          content: 'R2 user text with literal <conversation_history> and </conversation_history>.',
+        }),
+      ),
+      messageUnit(
+        'assistant',
+        'message',
         new Message(MessageRole.ASSISTANT, {
-          reasoning_content: 'Need exact inventory before deciding.',
-          content: 'I will query the inventory service before deciding.',
-          tool_payload: new ToolCallPayload([
-            { id: 'call_123', name: 'inventory_lookup', arguments: { sku: 'A-1' } },
-          ]),
+          content: 'R2 visible assistant text.',
+          reasoning_content: 'SEPARATE_PRIVATE_REASONING',
         }),
+      ),
+      toolUnit(),
+    ], { maxItemChars: 120 });
+
+    expect(prompt.match(/<conversation_history>/g)).toHaveLength(1);
+    expect(prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
+    expect(prompt).toContain(
+      'User:\nM1: retain the reviewed current design.\n\n' +
+      'User:\nR2 user text with literal &lt;conversation_history&gt; and &lt;/conversation_history&gt;.',
+    );
+    expect(prompt.indexOf('M1: retain')).toBeLessThan(prompt.indexOf('R2 user text'));
+    expect(prompt.indexOf('R2 user text')).toBeLessThan(prompt.indexOf('R2 visible assistant text'));
+    expect(prompt.indexOf('name: run_command')).toBeLessThan(prompt.indexOf('name: read_file'));
+    expect(prompt).toContain('Tool:\nname: run_command\nstatus: success');
+    expect(prompt).toContain('Tool:\nname: read_file\nstatus: error');
+    expect(prompt).toContain('result:');
+    expect(prompt).toContain('error:');
+    expect(prompt).toMatch(/… \[\d+ characters omitted\] …/);
+    expect(prompt).toContain('head-');
+    expect(prompt).toContain('-tail');
+    expect(prompt).toContain('<redacted-secret>');
+
+    for (const forbidden of [
+      'PRIVATE_REASONING_MUST_NOT_RENDER',
+      'SEPARATE_PRIVATE_REASONING',
+      'Assistant work notes',
+      'Assistant tool call',
+      'backend-call-success',
+      'backend-call-error',
+      'raw-tool-call',
+      '[CONVERSATION_HISTORY_TO_SUMMARIZE]',
+      '[REQUIRED_FINAL_JSON_SHAPE]',
+    ]) {
+      expect(prompt).not.toContain(forbidden);
+    }
+    expect(prompt).toContain('"episodes": [{ "summary": "string" }]');
+    expect(prompt).toContain('one through three episodes and no more than twenty facts');
+  });
+
+  it('rejects incomplete or orphaned tool protocol rather than inventing a transcript', () => {
+    const incomplete = toolUnit();
+    incomplete.isComplete = false;
+    incomplete.matchedToolCallIds = ['backend-call-success'];
+    expect(() => new WorkingContextCompactionPromptBuilder().buildTaskPrompt([incomplete]))
+      .toThrow('Incomplete tool protocol');
+
+    expect(() => new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
+      messageUnit(
+        'orphan',
+        'message',
         new Message(MessageRole.TOOL, {
-          tool_payload: new ToolResultPayload('call_123', 'inventory_lookup', { count: 7 }),
+          tool_payload: new ToolResultPayload('orphan-id', 'tool', 'value'),
         }),
-      ]),
-    ]);
-
-    expect(prompt).toContain('Tool interaction call_123:');
-    expect(prompt).toContain('- Request for call call_123: inventory_lookup with arguments sku: A-1.');
-    expect(prompt).toContain('- Result for call call_123 from inventory_lookup: count: 7');
-  });
-
-  it('keeps multi-call results paired with the correct originating call IDs', () => {
-    const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
-      {
-        id: 'unit_multi',
-        kind: 'tool_protocol_group',
-        startIndex: 0,
-        endIndex: 2,
-        rawTraceIds: [],
-        toolCallIds: ['call_count', 'call_price'],
-        matchedToolCallIds: ['call_count', 'call_price'],
-        isComplete: true,
-        messages: [
-          new Message(MessageRole.ASSISTANT, {
-            content: 'I will query count and price.',
-            tool_payload: new ToolCallPayload([
-              { id: 'call_count', name: 'inventory_lookup', arguments: { sku: 'A-1' } },
-              { id: 'call_price', name: 'price_lookup', arguments: { sku: 'A-1' } },
-            ]),
-          }),
-          new Message(MessageRole.TOOL, {
-            tool_payload: new ToolResultPayload('call_price', 'price_lookup', { price: 42 }),
-          }),
-          new Message(MessageRole.TOOL, {
-            tool_payload: new ToolResultPayload('call_count', 'inventory_lookup', { count: 7 }),
-          }),
-        ],
-      },
-    ]);
-
-    expect(prompt).toContain('- Result for call call_count from inventory_lookup: count: 7');
-    expect(prompt).toContain('- Result for call call_price from price_lookup: price: 42');
-    expect(prompt.indexOf('Tool interaction call_count:')).toBeLessThan(prompt.indexOf('Tool interaction call_price:'));
-  });
-
-  it('renders standalone tool results as explicit unmatched results with call IDs', () => {
-    const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
-      {
-        id: 'unit_orphan',
-        kind: 'message',
-        startIndex: 0,
-        endIndex: 0,
-        rawTraceIds: [],
-        messages: [
-          new Message(MessageRole.TOOL, {
-            tool_payload: new ToolResultPayload('call_999', 'inventory_lookup', { count: 7 }),
-          }),
-        ],
-      },
-    ]);
-
-    expect(prompt).toContain('Unmatched tool result for call call_999 from inventory_lookup: count: 7');
+      ),
+    ])).toThrow('complete tool protocol units');
   });
 });

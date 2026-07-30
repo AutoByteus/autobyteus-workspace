@@ -412,7 +412,16 @@ describe("token usage legacy path column drop startup E2E", () => {
     expect(columnsBefore).toEqual(expect.arrayContaining(["team_run_path_json", "member_path_json"]));
 
     const runner = makeRunner(path.join(tempRoot!, "memory-failure"), path.join(tempRoot!, "logs-failure"), false);
-    const statuses = await runner.runPending();
+    let statuses: Awaited<ReturnType<typeof runner.runPending>> = [];
+    try {
+      await runner.runPending();
+      throw new Error("Expected required migration aggregation to reject.");
+    } catch (error) {
+      expect(error).toMatchObject({
+        code: "REQUIRED_APP_DATA_MIGRATION_FAILED",
+      });
+      statuses = (error as { results: Awaited<ReturnType<typeof runner.runPending>> }).results;
+    }
 
     expect(statuses).toHaveLength(1);
     expect(statuses[0]).toMatchObject({

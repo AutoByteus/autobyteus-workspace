@@ -1,134 +1,144 @@
 import { describe, expect, it } from 'vitest';
-import { Message, MessageRole, ToolCallPayload, ToolCallSpec, ToolResultPayload } from '../../../src/llm/utils/messages.js';
-import { WorkingContext } from '../../../src/memory/working-context.js';
+import {
+  Message,
+  MessageRole,
+  ToolCallPayload,
+  ToolResultPayload,
+} from '../../../src/llm/utils/messages.js';
+import {
+  createCompactedMemoryUserMessage,
+  createNaturalUserMessageProvenance,
+  WorkingContextFinalizer,
+} from '../../../src/memory/working-context-finalizer.js';
+import { MEMORY_MESSAGE_PROVENANCE_METADATA_KEY } from '../../../src/memory/working-context-provenance.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 
+const currentContext = () => new WorkingContextFinalizer().finalize({
+  messages: [
+    new Message(MessageRole.SYSTEM, { content: 'System' }),
+    createCompactedMemoryUserMessage('M1 memory 🧠'),
+    createNaturalUserMessageProvenance(new Message(MessageRole.USER, {
+      content: 'Current user 🚀',
+      image_urls: ['image://one'],
+      audio_urls: ['audio://one'],
+      video_urls: ['video://one'],
+    }), {
+      kind: 'current_user',
+      rawTraceIds: ['raw-user'],
+      turnId: 'turn-user',
+    }),
+    new Message(MessageRole.ASSISTANT, {
+      content: 'Calling tool.',
+      reasoning_content: 'provider-required reasoning',
+      tool_payload: new ToolCallPayload([{
+        id: 'call-1',
+        name: 'inspect',
+        arguments: { nested: true },
+        nativeToolCallContext: {
+          provider: 'openai_responses',
+          functionCallItem: { opaque: 'wire-context' },
+        },
+      }]),
+    }),
+    new Message(MessageRole.TOOL, {
+      tool_payload: new ToolResultPayload('call-1', 'inspect', { ok: true }),
+    }),
+  ],
+});
+
+const payload = () => WorkingContextSnapshotSerializer.serialize(currentContext(), {
+  schema_version: 5,
+  agent_id: 'agent-1',
+});
+
 describe('WorkingContextSnapshotSerializer', () => {
-  it('serializes and deserializes tool payloads with the current schema version', () => {
-    const snapshot = new WorkingContext();
-    snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
-    snapshot.appendMessage(new Message(MessageRole.USER, {
-      content: 'Hello',
-      metadata: { autobyteus_memory_provenance: { sourceKind: 'user_input', rawTraceIds: ['rt_1'] } },
-    }));
-    snapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
-      content: 'Hi',
-      reasoning_content: 'Because',
-      image_urls: ['img://1'],
-      audio_urls: ['aud://1'],
-      video_urls: ['vid://1'],
-    }));
-    snapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
-      content: 'I will search.',
-      reasoning_content: 'Need search results before answering.',
-      tool_payload: new ToolCallPayload([
-        {
-          id: 'call_1',
-          name: 'search',
-          arguments: { q: 'abc' },
-          nativeToolCallContext: {
-            provider: 'openai_responses',
-            functionCallItem: { type: 'function_call', call_id: 'call_1' }
-          }
-        } as ToolCallSpec,
-      ]),
-    }));
-    snapshot.appendMessage(new Message(MessageRole.TOOL, {
-      content: null,
-      tool_payload: new ToolResultPayload('call_1', 'search', { ok: true }, null),
-    }));
+  it('round-trips finalized v5 messages, UTF-16 ranges, media, and native tool structures', () => {
+    const serialized = payload();
 
-    const payload = WorkingContextSnapshotSerializer.serialize(snapshot, {
-      agent_id: 'agent_1',
-      schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
-    });
+    expect(WorkingContextSnapshotSerializer.validate(serialized)).toBe(true);
+    expect(Object.keys(serialized)).toEqual(['schema_version', 'agent_id', 'messages']);
+    expect(JSON.stringify(serialized)).not.toContain('compactionId');
+    expect(JSON.stringify(serialized)).not.toContain('episodeIds');
+    expect(JSON.stringify(serialized)).not.toContain('semanticIds');
+    expect(JSON.stringify(serialized)).not.toContain('lineage');
 
-    expect(payload.schema_version).toBe(WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION);
-    expect(payload).not.toHaveProperty('epoch_id');
-    expect(payload).not.toHaveProperty('last_compaction_ts');
-    expect(WorkingContextSnapshotSerializer.validate(payload)).toBe(true);
+    const { workingContext, metadata } =
+      WorkingContextSnapshotSerializer.deserialize(serialized);
+    expect(metadata).toEqual({ schema_version: 5, agent_id: 'agent-1' });
+    expect(workingContext.buildMessages().map((message) => message.toDict()))
+      .toEqual(currentContext().buildMessages().map((message) => message.toDict()));
 
-    const { workingContext: restored, metadata } = WorkingContextSnapshotSerializer.deserialize(payload);
-    expect(metadata.agent_id).toBe('agent_1');
-
-    const messages = restored.buildMessages();
-    expect(messages.map((message) => message.role)).toEqual([
-      MessageRole.SYSTEM,
-      MessageRole.USER,
-      MessageRole.ASSISTANT,
-      MessageRole.ASSISTANT,
-      MessageRole.TOOL,
+    const user = workingContext.buildMessages()[1]!;
+    const provenance = user.metadata?.[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY] as any;
+    expect(user.content).toContain('M1 memory 🧠');
+    expect(user.content).toContain('Current user 🚀');
+    expect(provenance.constituents).toMatchObject([
+      { kind: 'compacted_memory', textRange: { start: 0 } },
+      {
+        kind: 'current_user',
+        rawTraceIds: ['raw-user'],
+        turnId: 'turn-user',
+        imageRange: { start: 0, end: 1 },
+        audioRange: { start: 0, end: 1 },
+        videoRange: { start: 0, end: 1 },
+      },
     ]);
-    expect(messages[2].reasoning_content).toBe('Because');
-    expect(messages[1].metadata).toEqual({
-      autobyteus_memory_provenance: { sourceKind: 'user_input', rawTraceIds: ['rt_1'] }
-    });
-    expect(messages[2].image_urls).toEqual(['img://1']);
-    expect(messages[3].content).toBe('I will search.');
-    expect(messages[3].reasoning_content).toBe('Need search results before answering.');
-    expect(messages[3].tool_payload).toBeInstanceOf(ToolCallPayload);
-    expect((messages[3].tool_payload as ToolCallPayload).toolCalls[0].nativeToolCallContext).toEqual({
-      provider: 'openai_responses',
-      functionCallItem: { type: 'function_call', call_id: 'call_1' }
-    });
-    expect(messages[4].tool_payload).toBeInstanceOf(ToolResultPayload);
+    expect(provenance.constituents[0].textRange.end).toBe('M1 memory 🧠'.length);
   });
 
-  it('directly reads existing v4 supersets and omits obsolete extras on the next write', () => {
-    const existingV4 = {
+  it('rejects pre-v5 roots and identity-bearing or unknown root fields', () => {
+    const current = payload();
+    expect(WorkingContextSnapshotSerializer.validate({
+      ...current,
       schema_version: 4,
-      agent_id: 'agent_existing',
-      epoch_id: 19,
-      last_compaction_ts: 123.5,
-      messages: [{
-        role: 'system',
-        content: 'System',
-        reasoning_content: null,
-        image_urls: [],
-        audio_urls: [],
-        video_urls: [],
-        tool_payload: null,
-        metadata: null,
-      }],
-    };
-
-    expect(WorkingContextSnapshotSerializer.validate(existingV4)).toBe(true);
-    const { workingContext, metadata } = WorkingContextSnapshotSerializer.deserialize(existingV4);
-    expect(workingContext.buildMessages()[0]?.content).toBe('System');
-    expect(metadata).toEqual({ schema_version: 4, agent_id: 'agent_existing' });
-    const rewritten = WorkingContextSnapshotSerializer.serialize(workingContext, metadata);
-    expect(rewritten).not.toHaveProperty('epoch_id');
-    expect(rewritten).not.toHaveProperty('last_compaction_ts');
+    })).toBe(false);
+    expect(WorkingContextSnapshotSerializer.validate({
+      ...current,
+      compaction_id: 'c1',
+    })).toBe(false);
+    expect(WorkingContextSnapshotSerializer.validate({
+      ...current,
+      episode_ids: ['e1'],
+    })).toBe(false);
   });
 
-  it('rejects stale schema versions', () => {
-    expect(
-      WorkingContextSnapshotSerializer.validate({
-        schema_version: 1,
-        agent_id: 'agent_1',
-        messages: [],
-      } as any)
-    ).toBe(false);
+  it('rejects invalid, overlapping, or out-of-bounds constituent ranges', () => {
+    const outOfBounds = structuredClone(payload()) as any;
+    const user = outOfBounds.messages[1];
+    user.metadata[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY]
+      .constituents[0].textRange.end = user.content.length + 1;
+    expect(WorkingContextSnapshotSerializer.validate(outOfBounds)).toBe(false);
+
+    const overlap = structuredClone(payload()) as any;
+    overlap.messages[1].metadata[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY]
+      .constituents[1].textRange.start = 1;
+    expect(WorkingContextSnapshotSerializer.validate(overlap)).toBe(false);
+
+    const invalidMedia = structuredClone(payload()) as any;
+    invalidMedia.messages[1].metadata[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY]
+      .constituents[1].imageRange.end = 2;
+    expect(WorkingContextSnapshotSerializer.validate(invalidMedia)).toBe(false);
   });
 
-  it('normalizes non-JSON tool results', () => {
-    class Weird {
-      toString() {
-        return '<weird>';
-      }
-    }
-
-    const snapshot = new WorkingContext();
-    snapshot.appendMessage(new Message(MessageRole.TOOL, {
-      content: null,
-      tool_payload: new ToolResultPayload('call_2', 'weird', new Weird(), null),
-    }));
-
-    const payload = WorkingContextSnapshotSerializer.serialize(snapshot, {
-      agent_id: 'agent_2',
-      schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
+  it('normalizes non-JSON tool results without introducing a second schema path', () => {
+    const cyclic: Record<string, unknown> = {};
+    cyclic.self = cyclic;
+    const context = new WorkingContextFinalizer().finalize({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'System' }),
+        new Message(MessageRole.ASSISTANT, {
+          tool_payload: new ToolCallPayload([{ id: 'call', name: 'tool', arguments: {} }]),
+        }),
+        new Message(MessageRole.TOOL, {
+          tool_payload: new ToolResultPayload('call', 'tool', cyclic),
+        }),
+      ],
+    });
+    const serialized = WorkingContextSnapshotSerializer.serialize(context, {
+      agent_id: 'agent-cyclic',
     });
 
-    expect(() => JSON.stringify(payload)).not.toThrow();
+    expect(WorkingContextSnapshotSerializer.validate(serialized)).toBe(true);
+    expect(JSON.stringify(serialized)).toContain('[object Object]');
   });
 });

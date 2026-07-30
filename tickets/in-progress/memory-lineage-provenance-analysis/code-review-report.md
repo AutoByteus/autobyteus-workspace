@@ -14,13 +14,13 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: implementation commit `037e4b122441d9558281778f0b780f94ab6a1572` / `IR-001`
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: `IR-002`; implementation commit `394885c1090cfc8313f2864a2dbca541575bec2f`; prior finding `CR-F-001`
+- Prior Review Round Reviewed: round `1` / `CRR-001` / `Fail — Local Fix`
+- Latest Authoritative Round: `2`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
@@ -33,68 +33,68 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the SR-004 current-only recurrent compaction/lineage model, accepted-compaction sequencing, exact current-output loading, v5 context provenance/restore, origin traversal, startup reset and fail-closed gate, native scope/provider wiring, and shared condensed presentation.
-- Files / areas reviewed: all changed production TypeScript, deleted production compatibility paths, the base-to-commit diff, server/core call sites that make the changed paths product-reachable, and the complete cumulative artifact package.
-- Explicit exclusions: durable API/E2E test replacement and realistic execution remain `api_e2e_engineer`-owned after source review passes; branch refresh remains delivery-owned; unsupported process-crash/manual-corruption scenarios were not used as review premises.
+- Changed implementation and behavior reviewed: the bounded `IR-002` trust mapping in `WorkingContextRecoveryProjector` and the no-snapshot assembly in `WorkingContextSnapshotBootstrapper`, with the previously reviewed SR-004 implementation revalidated where the fix participates.
+- Files / areas reviewed: the full `037e4b1..394885c` source delta; interruption UI/server/core trigger; raw boundary writer; recovery/projector/finalizer/v5 snapshot path; prior `CR-F-001`; current implementation handoff/revision record; and preserved round-1 structural evidence for unaffected production files.
+- Explicit exclusions: durable API/E2E test replacement and realistic interrupt/reset/startup execution remain `api_e2e_engineer`-owned after this source pass; delivery owns remote refresh; unsupported process-crash/manual-corruption scenarios remain excluded.
 
 ### Reviewer Checks Run
 
 - `autobyteus-ts`: `pnpm build` with a temporary dependency link — passed, including TypeScript build and runtime-dependency verification.
 - `autobyteus-server-ts`: `tsc -p tsconfig.build.json --noEmit` with temporary server dependencies and the worktree core build — passed.
-- `git diff --check` — passed.
-- Structural searches — no reverse core-to-server import, state/pointer/runtime-manifest alternative, pre-v5 restore branch, loose origin/provenance type, or duplicate server redactor remained; `compacted_memory_manifest.json` is confined to the reset migration.
-- Focused recovery probe — a trusted interruption `operation_boundary` produced zero recovered messages, establishing `CR-F-001`.
+- Direct `CR-F-001` probe — exactly one trusted `operation_boundary` from `AgentTurnInterruptedEvent` recovered as a system message with `rawTraceIds: ["rt_boundary"]` and the interrupted turn ID; wrong-source and blank boundary variants were excluded; a user-type control retained normal user behavior.
+- No-snapshot/no-lineage bootstrap probe — base system prompt, trusted cancellation fence, and active user history were finalized in order into a valid schema-v5 snapshot; untrusted boundary content was excluded and lineage remained absent.
+- `git diff --check`, bounded-trust search, reverse-dependency/current-authority/legacy searches, and temporary-link cleanup — passed.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Yes`; BEH-001 through BEH-010, REQ-001 through REQ-011, and AC-001 through AC-015 were used as intended-behavior authority.
-- Design-spec behavior map verified against the implementation: `Mostly`; the principal compaction/lineage/reset/presentation spines match, but the supported interruption-to-reset continuation path contradicts BEH-006's preserved safe continuation outcome.
+- Approved requirements basis understood: `Yes`; round 2 rechecked BEH-006/REQ-007/REQ-008/AC-009 and preserved the round-1 confirmation of BEH-001 through BEH-010.
+- Design-spec behavior map verified against the implementation: `Yes`; the supported interruption boundary now survives the approved successful reset through active-only no-memory recovery without widening recovery authority.
 - Design review report and round confirmed: `ARCH-REV-004` / `Pass`.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: `None`; `CR-PREM-001` is an existing supported interruption behavior interacting with the approved startup reset, not a new business behavior.
-- Remaining material ambiguity, if any: `None`; the forward product path and the lost safety instruction are directly observable.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: `None`.
+- Remaining material ambiguity, if any: `None`.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Native traces retain identity/content through `RawTraceArchiveManager.archiveExact`; Event Monitor readers remain active-only and no snapshot/archive fallback was introduced. | N/A |
-| `BEH-002` | Confirmed | Planner-selected new raw IDs flow through the IDless proposal to exact archive and one reference-only lineage append. Prior compacted-memory constituents add no raw IDs. | N/A |
-| `BEH-003` | Confirmed | `AcceptedCompactionBuilder` assigns deterministic episode/semantic IDs and one bounded complete output; older rows stay immutable and inactive. | N/A |
-| `BEH-004` | Confirmed | Explicit scope/kind/ID enters `AgentMemoryOriginService` and `CompactionLineageResolver`, which validates output membership, archive manifest/file identity, direct inputs, and recursive roots. | N/A |
-| `BEH-005` | Confirmed | `CurrentCompactionOutputLoader` reads tail-listed rows only; finalization installs one recurrent M(n) region with preserved retained/tool/media structure. | N/A |
-| `BEH-006` | Contradicted | The reset correctly removes the four files and v5 restore is current-only. However, the no-snapshot branch at `working-context-snapshot-bootstrapper.ts:65-85` delegates active continuation to `WorkingContextRecoveryProjector`, whose non-tool projection at lines 69-89 recognizes only user/assistant traces. | `AgentTurnRunner` lines 121-153 records a trusted `operation_boundary` after the supported user interrupt; `MemoryManager` lines 408-451 uses its content as the system cancellation/safety instruction. After the required reset deletes the snapshot, recovery drops that still-active boundary. See `CR-PREM-001` / `CR-F-001`. |
-| `BEH-007` | Confirmed | Standalone/team-member scope is resolved from product run context and injected through `AgentConfig`/`AgentFactory`; external runtime compaction behavior is unchanged. | N/A |
-| `BEH-008` | Confirmed | Runner/parser failure stays before manager acceptance and all writes; pending operation/head/context remain available for normal retry. | N/A |
-| `BEH-009` | Confirmed | The compactable logical prefix renders once inside one escaped conversation boundary with natural roles, settled tool blocks, no reasoning/backend IDs/timestamps, and explicit value omission. | N/A |
-| `BEH-010` | Confirmed | Core readable-value and condensed-tool renderers own shared body policy; Work Evidence retains its timestamped Markdown/source envelope. | N/A |
+| `BEH-001` | Confirmed | Native traces retain identity/content through exact archive; Event Monitor remains active-only. IR-002 reads active raw solely for current no-snapshot continuation. | N/A |
+| `BEH-002` | Confirmed | Planner-selected new raw IDs flow through the IDless proposal to exact archive and one reference-only lineage append; IR-002 does not alter compaction selection. | N/A |
+| `BEH-003` | Confirmed | Manager acceptance assigns one bounded complete output and immutable lineage relation; unchanged in IR-002. | N/A |
+| `BEH-004` | Confirmed | Typed product target and artifact ref traverse validated direct/root lineage; unchanged in IR-002. | N/A |
+| `BEH-005` | Confirmed | Exact tail output and canonical finalization retain one current memory region plus system/media/tool/continuation structure. Recovered fence uses the same finalizer. | N/A |
+| `BEH-006` | Confirmed | Required reset and v5-only restore remain fail-closed. With no snapshot/head, recovery admits only non-blank `operation_boundary` + `AgentTurnInterruptedEvent` as a system head item, preserves raw/turn provenance, combines it after the current base system prompt, excludes other boundary sources/types, finalizes, and writes valid v5. | N/A |
+| `BEH-007` | Confirmed | Explicit standalone/team-member lineage scope and external-runtime non-expansion are unchanged. | N/A |
+| `BEH-008` | Confirmed | Runner/parser failure remains pre-write with pending/head/context preserved; unchanged. | N/A |
+| `BEH-009` | Confirmed | Natural recurrent compactor input and tight Tool rendering are unchanged; system recovery messages remain head context rather than compacted natural evidence. | N/A |
+| `BEH-010` | Confirmed | Shared presentation body and separate Work Evidence/compaction envelopes are unchanged. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Handoff maps the reviewed larger behavior change/refactor posture to manager, lineage, reset, and presentation owners. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | Normative current/context contract is matched except safe active continuation after the approved reset; `CR-F-001` contradicts the preserved interruption fence. | Apply the bounded recovery fix and return through source review. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Executor -> manager accept/commit, startup migration -> runner -> runtime gate, and resolver paths remain readable and separately owned. | None. |
-| Ownership boundary preservation and clarity | Pass | Strategy is IDless; manager owns acceptance/current state; stores own mechanics; lineage tail is the only current authority. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Metadata, lifecycle reporting, presentation, migration status, and product location stay attached to their governing owners. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Raw archive, migration framework, memory location service, manager, snapshot, and Work Evidence areas were extended rather than bypassed. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Lineage types, user constituents, proposal/accepted shapes, and condensed presentation primitives each have one owner. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | No state pointer/manifest/origin union was added; snapshot identity and lineage identity remain disjoint. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Accepted publication lives in the internal committer; finalization and presentation are centralized. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | Coordinator/controller/facade splits each own validation, lifecycle, or product-location work. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | No changed current file exceeds 500 effective non-empty lines; focused concerns were extracted from the 492-line manager. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Core does not import server; server adapters depend inward on core lineage/presentation; callers do not write lineage/output directly. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Executor uses `MemoryManager` acceptance/commit; request callers do not coordinate repositories; server origin facade constructs core adapters internally. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | `memory/compaction`, `lineage`, `projection`, `restore`, `presentation`, server migration, and server product-facade paths match their owners. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Added files correspond to genuine schema, lifecycle, store, projection, finalization, and facade concerns; no coordinator chain obscures the main spine. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Typed artifact kind/scope, IDless proposal, accepted candidate, exact output loader, and append-next lineage APIs are singular. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names distinguish proposal/accepted/current/lineage/projection and direct/root origin semantics. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Duplicate server redactor and loose provenance/manifest/state models were removed. | None. |
-| Patch-on-patch complexity control | Pass | Clean cut removes old shapes rather than wrapping or dual-reading them. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Schema gate, compacted-memory manifest, loose provenance, server redactor, and old APIs are deleted; forbidden searches are clean. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Implementation smokes cover the new core paths, but no durable scenario currently protects the reachable interrupt -> reset -> no-snapshot bootstrap safety fence; the existing memory suite is intentionally stale. | After the source fix passes review, API/E2E must add/replace durable coverage for `CR-PREM-001` plus the already-recorded reset/lineage scenarios. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No durable test change was made in IR-001; handoff accurately inventories stale fixture families for the next owner. | API/E2E to replace stale fixtures proportionately. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Stage-qualified: stale v4/gate/manifest tests are explicitly reported rather than treated as green; durable replacement belongs to the next API/E2E stage after source pass. | Do not advance until `CR-F-001` is fixed; then preserve this coverage debt in the cumulative handoff. |
-| API/E2E readiness for the next workflow stage | Fail | Core build and server source typecheck pass, but a reachable source defect must be corrected before broad executable coverage begins. | Return to `implementation_engineer`; source review and API/E2E must rerun after the fix. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-002 is a bounded supported-input correction in the existing recovery owner and does not change the reviewed refactor posture. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Trusted interruption fence is now preserved through current active continuation, while generic/archived/historical recovery remains excluded. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | UI interrupt -> native boundary -> required reset -> active recovery -> head/continuation finalization -> v5 remains explicit and uses existing owners. | None. |
+| Ownership boundary preservation and clarity | Pass | Recovery projector classifies trusted raw continuation; bootstrapper assembles current head/history; projector/finalizer/snapshot owners retain their existing roles. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Trust classification stays in recovery and does not leak into lineage, archive, or provider rendering. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing recovery, context projector, finalizer, provenance, and snapshot capabilities are reused. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Canonical single-message provenance and finalization are reused; no new boundary DTO or state carrier was added. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Trusted matching is two exact current event attributes plus non-blank content; no compatibility or union shape was introduced. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Bootstrapper remains the single no-snapshot assembly boundary; callers do not reconstruct the fence. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | Both affected classes perform concrete classification/assembly work. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Recovery is 118 and bootstrapper 112 effective non-empty lines; deltas remain focused. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Restore depends inward on core messages/provenance/projector; no server import or repository bypass exists. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Bootstrapper uses `MemoryManager` and `CompactedMemoryContextProjector`; it does not coordinate raw/store/snapshot internals beyond its established boundary. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Both changes remain in `memory/restore`, the approved current-schema bootstrap/recovery owner. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Two-file fix is proportionate; no one-case helper chain was added. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Public interfaces are unchanged; trust is expressed against the existing exact raw event fields. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Trusted boundary constants and recovered-system partition state intent directly. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Existing provenance/finalizer/projector logic is reused; the two trust constants are the minimal writer contract. | None. |
+| Patch-on-patch complexity control | Pass | IR-002 adds one exact mapping and one existing-projector assembly adjustment, with no fallback/compat layer. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No dormant IR-001 recovery branch or new unused helper remains. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Independent probes cover trusted, wrong-source, wrong-type/user control, blank, provenance, base prompt, active user, v5 validity, untrusted exclusion, and absent lineage. | API/E2E must make the real product journey durable. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | IR-002 adds no durable test file; handoff preserves exact scenario inputs for API/E2E-owned replacement. | API/E2E to implement durable coverage proportionately. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Stage-qualified: stale clean-cut tests remain explicitly inventoried for the API/E2E owner and no compatibility test/source path was added by IR-002. | Preserve the coverage debt in the next handoff. |
+| API/E2E readiness for the next workflow stage | Pass | Source blocker is resolved, builds/typecheck/probes are green, realistic journey and startup scenarios are explicitly identified, and no new source ambiguity remains. | Advance to `api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -151,8 +151,8 @@
 | `autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts` | 53 | Pass — below 500. | Pass — +13; below 220. | Pass — current-output/context projection owner. | Pass — path matches the owning capability. | No structural issue. | None. |
 | `autobyteus-ts/src/memory/projection/compacted-memory-projection-bundle.ts` | 20 | Pass — below 500. | Pass — +23; below 220. | Pass — current-output/context projection owner. | Pass — path matches the owning capability. | No structural issue. | None. |
 | `autobyteus-ts/src/memory/projection/current-compaction-output-loader.ts` | 39 | Pass — below 500. | Pass — +41; below 220. | Pass — current-output/context projection owner. | Pass — path matches the owning capability. | No structural issue. | None. |
-| `autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts` | 105 | Pass — below 500. | Pass — +41; below 220. | Pass — current-schema bootstrap/recovery owner. | Pass — path matches the owning capability. | Local Fix — `CR-F-001`. | Preserve trusted interruption boundary as a system continuation item. |
-| `autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts` | 99 | Pass — below 500. | Pass — +72; below 220. | Pass — current-schema bootstrap/recovery owner. | Pass — path matches the owning capability. | No structural issue. | None. |
+| `autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts` | 118 | Pass — below 500. | Pass — +54; below 220. | Pass — current-schema bootstrap/recovery owner. | Pass — path matches the owning capability. | Pass — prior `CR-F-001` resolved by `IR-002`. | None. |
+| `autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts` | 112 | Pass — below 500. | Pass — +85; below 220. | Pass — current-schema bootstrap/recovery owner. | Pass — path matches the owning capability. | Pass — affected `IR-002` assembly path revalidated. | None. |
 | `autobyteus-ts/src/memory/store/base-store.ts` | 33 | Pass — below 500. | Pass — +17; below 220. | Pass — run-local persistence mechanics owner. | Pass — path matches the owning capability. | No structural issue. | None. |
 | `autobyteus-ts/src/memory/store/file-compaction-lineage-store.ts` | 93 | Pass — below 500. | Pass — +102; below 220. | Pass — run-local persistence mechanics owner. | Pass — path matches the owning capability. | No structural issue. | None. |
 | `autobyteus-ts/src/memory/store/file-store.ts` | 81 | Pass — below 500. | Pass — +18; below 220. | Pass — run-local persistence mechanics owner. | Pass — path matches the owning capability. | No structural issue. | None. |
@@ -167,28 +167,28 @@
 | `autobyteus-ts/src/memory/working-context-snapshot-serializer.ts` | 153 | Pass — below 500. | Pass — +24; below 220. | Pass — canonical WorkingContext schema/finalization owner. | Pass — path matches the owning capability. | No structural issue. | None. |
 | `autobyteus-ts/src/memory/working-context-tool-protocol-repairer.ts` | 190 | Pass — below 500. | Pass — +15; below 220. | Pass — canonical WorkingContext schema/finalization owner. | Pass — path matches the owning capability. | No structural issue. | None. |
 
-Deleted changed production files are intentionally not assigned current line counts: `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-redactor.ts`, `autobyteus-ts/src/memory/message-provenance.ts`, `autobyteus-ts/src/memory/restore/compacted-memory-schema-gate.ts`, and `autobyteus-ts/src/memory/store/compacted-memory-manifest.ts`. Their removal is confirmed under the legacy verdict.
+Deleted changed production files are intentionally not assigned current line counts: `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-redactor.ts`, `autobyteus-ts/src/memory/message-provenance.ts`, `autobyteus-ts/src/memory/restore/compacted-memory-schema-gate.ts`, and `autobyteus-ts/src/memory/store/compacted-memory-manifest.ts`. Their removal remains confirmed.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Current runtime accepts v5/current rows/lineage only; historical filenames are confined to the startup migration. |
-| No legacy old-behavior retention in changed scope | Pass | No old response aliases, loose provenance, mixed current retrieval, schema gate, state pointer, or runtime manifest authority remains. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | The four obsolete production files and associated current APIs/imports were removed. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Exactly four derived files are discarded; raw traces/manifests are direct-use and untouched. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Snapshot deserialization is v5-only and output loading is lineage-tail exact. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Itemized failure, durable runner aggregation, and `startConfiguredServer` rethrow are implemented. `CR-F-001` concerns continuation fidelity after successful reset, not unauthorized compatibility machinery. |
+| No backward-compatibility mechanisms in changed scope | Pass | IR-002 recognizes one current trusted raw event; it does not decode an old snapshot/row or accept historical request shapes. |
+| No legacy old-behavior retention in changed scope | Pass | Current lineage/v5 authority remains clean-cut. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Prior production deletions remain absent; no obsolete recovery path was reintroduced. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Four derived files remain discard/rebuild; active raw boundary content is direct-use current evidence. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Snapshot deserialization remains v5-only and the successful-reset recovery path reads only current raw trace fields. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Reset mechanics are unchanged; post-reset continuation now preserves the supported fence without broadening migration/runtime compatibility. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-None. Required obsolete production items were removed; stale durable test replacement remains an explicitly downstream-owned coverage task rather than hidden production compatibility.
+None.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: the native memory current-authority model, v5 restore/reset lifecycle, origin contract, and shared presentation policy materially change developer/architecture behavior.
-- Files or areas likely affected: durable project memory/architecture and operational migration documentation; delivery should update them or record a concrete no-impact decision after implementation/API-E2E pass. Ticket artifacts already describe the target contract.
+- Why: the native memory current-authority model, v5 reset/restore lifecycle, origin contract, and shared presentation policy remain materially changed; IR-002 clarifies the trusted interruption continuation case.
+- Files or areas likely affected: durable project memory/architecture and operational migration documentation; delivery should update them or record a concrete no-impact decision after API/E2E. Ticket artifacts and handoff now record the trusted-boundary behavior.
 
 ## Material Premise Validation (Only When Needed)
 
@@ -198,72 +198,61 @@ None. `ARCH-REV-004` recorded no separate material-premise IDs.
 
 ### `CR-PREM-001` — A supported interrupted native turn is resumed after the required pre-lineage reset
 
-- Origin: `New`
+- Origin: `New in CRR-001`; revalidated in `CRR-002`
 - Related approved requirement or established contract: BEH-006/REQ-008/AC-009 require successful reset followed by active-only no-memory continuation; REQ-007 and the existing interruption contract preserve system/tool safety and prevent retry of cancelled work.
 - Relevant behavior ID(s): `BEH-006`, with preserved system/tool behavior from `BEH-005`/`REQ-007`.
 - Initiating basis kind: `User`
 - Independent product-supported initiating trigger or applicable governing contract: while an AutoByteus agent or focused team member is running, the user invokes the exposed interrupt-generation action; at the next version startup, the approved required reset contract deletes the old WorkingContext snapshot before run activation.
-- Support evidence: `autobyteus-web/stores/activeContextStore.ts:182-207` routes the agent/team interrupt action; `agent-stream-handler.ts:345-356` invokes the active run; `autobyteus-agent-run-backend.ts:154-169` calls native `agent.interrupt(... reason: "user_interrupt")`. `AgentTurnRunner` catches that supported interruption and records the cancellation boundary.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: UI interrupt -> streaming interrupt command -> active run/backend -> core agent interrupt -> `AgentTurnRunner` lines 121-153 -> raw `operation_boundary` plus system safety note/snapshot -> next server startup -> required reset deletes the pre-v5 snapshot while preserving active raw traces -> later run activation -> `WorkingContextSnapshotRestoreStep` -> bootstrap no-snapshot/no-lineage branch -> `WorkingContextRecoveryProjector.project(active)` -> next user follow-up/request.
-- Lifecycle preconditions and material consequence at the claimed point: the interrupted run has no current lineage and its trusted boundary remains in the active raw file. The projector drops that trace, so the rebuilt context omits “treat the interrupted request as cancelled” / “do not retry or resume incomplete actions.” A follow-up can therefore be evaluated against the interrupted input/partial work without the existing cancellation fence.
+- Support evidence: `autobyteus-web/stores/activeContextStore.ts:182-207` routes the agent/team interrupt action; `agent-stream-handler.ts:345-356` invokes the active run; `autobyteus-agent-run-backend.ts:154-169` calls native `agent.interrupt(... reason: "user_interrupt")`; `AgentTurnRunner` records the trusted cancellation boundary.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: UI interrupt -> streaming interrupt command -> active run/backend -> core agent interrupt -> `AgentTurnRunner` -> raw `operation_boundary` plus system safety note/snapshot -> next server startup -> required reset deletes the pre-v5 snapshot while preserving active raw traces -> later run activation -> `WorkingContextSnapshotRestoreStep` -> no-snapshot/no-lineage bootstrap -> exact trusted boundary classification -> base prompt + recovered fence head, natural active continuation, canonical finalization -> v5 snapshot -> next user follow-up.
+- Lifecycle preconditions and material consequence at the claimed point: the interrupted run has no current lineage and its trusted boundary remains active. IR-002 now retains the cancellation instruction with raw/turn provenance and excludes untrusted boundary sources/types, so the claimed safety loss no longer occurs.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-F-001` is a bounded `Local Fix`; teach active recovery to preserve the trusted interruption boundary as a system continuation item, without adding generic corruption/crash recovery or historical compatibility. API/E2E must later prove the real reset/bootstrap/follow-up path.
+- Review consequence / proportionate response: prior `CR-F-001` is `Resolved`; no generic corruption/crash recovery, archive replay, or compatibility machinery was added. Durable real-journey proof remains API/E2E-owned.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.0`
-- Overall score (`/100`): `89.8`
-- Score calculation note: simple average of the ten categories; the average does not override the sub-9 runtime/API-E2E categories or the Fail decision.
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93.2`
+- Score calculation note: simple average of the ten categories; every category now meets the clean-pass target.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Main compaction, reset, restore, resolver, and presentation paths are explicit and traceable. | The no-snapshot continuation path fails to carry one established safety event. | Preserve the boundary while keeping the same spine. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Manager acceptance, lineage authority, stores, and server adapters have clear owners. | Recovery currently under-implements its owned active-continuation responsibility. | Correct the recovery owner locally. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.3 | IDless proposal, explicit scope/kind, accepted candidate, and exact-current APIs are tight. | No interface flaw drives the defect; the projector's supported-input cases are incomplete. | Add the trusted boundary case without widening the API. |
-| `4` | `Separation of Concerns and File Placement` | 9.2 | Files align with compaction, lineage, projection, restore, store, migration, and facade concerns. | Large existing manager/factory files remain pressure points, though deltas are bounded. | Keep future changes in the extracted owners. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | No duplicate current authority; proposal/accepted/snapshot/lineage shapes are distinct and minimal. | The boundary trace-to-system-message mapping is missing from recovery reuse. | Reuse existing provenance/finalization when restoring it. |
-| `6` | `Naming Quality and Local Readability` | 9.1 | Naming distinguishes direct/root/current/proposal/accepted concepts well. | The broad 83-file change still requires substantial navigation and some large owners. | Maintain focused file ownership and concise lifecycle comments where needed. |
-| `7` | `API/E2E Readiness` | 8.0 | Core builds and changed server source typechecks; downstream scenarios are well inventoried. | A reachable source defect remains, existing memory tests are stale, and real startup non-exposure/interrupt-reset coverage is absent. | Fix source, pass source re-review, then replace durable tests and execute realistic startup/bootstrap coverage. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.5 | Core recurrent lineage and commit sequencing match the approved contract. | `CR-F-001` removes an existing cancellation/safety instruction on a supported post-reset resume path. | Preserve the trusted operation boundary through no-snapshot recovery. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Runtime is a clean current-only model; historical knowledge is migration-confined. | Stale tests remain pending downstream replacement but no production legacy path remains. | Complete durable test clean-cut in API/E2E. |
-| `10` | `Cleanup Completeness` | 9.2 | Obsolete gate/manifest/provenance/redactor/state paths are removed and searches are clean. | Coverage cleanup is incomplete by workflow design. | API/E2E should remove/replace stale clean-cut fixtures. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | Main compaction, reset, restore, resolver, presentation, and interruption-continuation paths are explicit and traceable. | Broad change surface still requires cumulative artifacts for efficient navigation. | Keep the current spine maps synchronized during delivery docs work. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | Manager, lineage, stores, migration, recovery, bootstrap, and product adapters have clear authority. | Recovery/bootstrap are adjacent and require disciplined input/assembly separation. | Preserve the current classification-versus-assembly split. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | IDless proposal, explicit scope/kind, exact current output, and unchanged recovery interfaces are tight. | Trust relies on a precise current writer event pair rather than a shared nominal event type. | Keep writer/recovery contract searches and durable coverage exact. |
+| `4` | `Separation of Concerns and File Placement` | 9.3 | IR-002 remains within two focused restore files; larger existing owners have small cumulative deltas. | Existing 499/492-line factory/manager remain maintenance pressure points. | Keep future deltas in the extracted owners. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Current authority remains singular; canonical provenance/finalization are reused for the fence. | The trusted event pair is intentionally lightweight rather than a new shared model. | Avoid widening it unless a second supported writer requires a shared type. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Trusted-boundary constants and recovered-system partition are direct and readable. | The overall feature remains conceptually dense. | Preserve concise lifecycle evidence and focused names. |
+| `7` | `API/E2E Readiness` | 9.0 | Builds/typecheck and focused probes pass; exact durable scenarios and stale-test families are inventoried. | Existing memory tests remain stale and real interrupt/reset/startup journeys are not yet durably executed. | API/E2E must replace stale fixtures and run the real product paths. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.3 | Recurrent lineage, ordered commit, v5 restore, reset gate, and supported cancellation fence now match approved behavior. | Full product-path confirmation remains downstream executable work. | Validate the real interrupt -> reset -> bootstrap -> follow-up lifecycle. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Runtime remains current-only; historical filenames are migration-confined and IR-002 reads only current raw evidence. | Stale tests still encode removed contracts. | Remove/replace them during API/E2E. |
+| `10` | `Cleanup Completeness` | 9.2 | Obsolete production paths remain removed and structural searches are clean. | Test cleanup is intentionally incomplete until the next stage. | Complete durable coverage cleanup without restoring compatibility. |
 
 ## Findings
 
-### `CR-F-001` — Active recovery drops the supported interruption cancellation boundary after the required reset
-
-- Severity: `High`
-- Classification: `Local Fix`
-- Affected approved behavior / contract: `BEH-006`, `REQ-008`, `AC-009`, preserved system/tool safety under `REQ-007`; premise `CR-PREM-001`.
-- Production trigger/path: user invokes the agent/team interrupt action -> native turn records `operation_boundary` and installs its system safety note -> required startup reset deletes the pre-v5 snapshot but preserves active raw evidence -> no-lineage activation recovers active traces -> projector drops the boundary -> next follow-up context lacks the cancellation fence.
-- Source evidence: `autobyteus-ts/src/agent/loop/agent-turn-runner.ts:121-153`; `autobyteus-ts/src/memory/memory-manager.ts:408-451`; `autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts:65-85`; `autobyteus-ts/src/memory/restore/working-context-recovery-projector.ts:37-89`.
-- Executable evidence: after the reviewed core build, a focused Node probe passed a valid active `RawTraceItem` with `traceType: "operation_boundary"` and `sourceEvent: "AgentTurnInterruptedEvent"` to `WorkingContextRecoveryProjector`; observed result was `{"recoveredCount":0,"roles":[],"content":[]}`.
-- Material consequence: the next model request can see the interrupted user input/partial work without the existing system instruction that the action was cancelled and incomplete work must not be retried or resumed unless explicitly requested. This is reachable safety/behavior loss, not a hypothetical filesystem-corruption scenario.
-- Required action: in active no-snapshot recovery, recognize only the trusted interruption-boundary shape (`operation_boundary` from `AgentTurnInterruptedEvent`) and restore its recorded content as a system message with canonical provenance/finalization. Do not introduce generic operation-boundary text acceptance, archive replay, crash recovery, or old-schema compatibility. Re-run focused source checks and return through implementation review; API/E2E will own the durable real reset/bootstrap/follow-up scenario.
+None. `CR-F-001` is resolved by `IR-002`; its verified resolution is recorded in `CRR-002`.
 
 ## Classification
 
-`Local Fix`
+`N/A — Pass`
 
 ## Recommended Recipient
 
-`implementation_engineer`
-
-Routing note: after the implementation-owned correction, the package returns through implementation-source review and then API/E2E.
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- The existing memory suite remains stale against the approved clean cut (`17` failed / `14` passed files; `28` failed / `85` passed tests); API/E2E must replace rather than normalize these failures.
-- The real `startConfiguredServer` failure non-exposure path and the new `CR-PREM-001` reset/bootstrap path still require realistic downstream execution after source passes.
-- Accepted-compaction publication intentionally has no process-crash journal; unsupported crash/manual-corruption premises were not used to deduct or prescribe machinery.
-- The branch remains 20 commits behind `origin/personal`; delivery owns refresh and integrated-state validation.
+- The existing memory suite remains stale against the approved clean cut (`17` failed / `14` passed files; `28` failed / `85` passed tests); API/E2E must replace rather than normalize those expectations.
+- The real `startConfiguredServer` failure non-exposure path and `CR-PREM-001` interrupt -> reset -> bootstrap -> follow-up journey require durable, realistic execution.
+- Accepted-compaction publication intentionally has no process-crash journal; unsupported crash/manual-corruption premises remain out of scope.
+- The branch is 2 commits ahead and 20 behind `origin/personal`; delivery owns refresh and integrated-state validation.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Score Summary: `9.0/10` (`89.8/100`), with `API/E2E Readiness` 8.0 and `Runtime Correctness And Behavioral Fidelity` 7.5.
-- Failure Origin (when applicable): `N/A — initial implementation review`
-- Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: the current-only compaction/lineage architecture is otherwise coherent and clean-cut. `CR-F-001` is a reachable bounded source defect and blocks API/E2E until corrected and re-reviewed.
+- Score Summary: `9.3/10` (`93.2/100`); every category is at least `9.0`.
+- Failure Origin (when applicable): `N/A`
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: `IR-002` resolves `CR-F-001` without widening recovery or reintroducing legacy/state authority. The complete implementation package is ready for API/E2E coverage investigation, durable test replacement, realistic execution, and evidence.
