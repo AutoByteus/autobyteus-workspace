@@ -45,7 +45,7 @@ This delivery round covers final target refresh, integration, executable revalid
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `Pending final delivery commit`.
+- Ticket moved to `tickets/done/<ticket-name>`: `Completed` in commit `2905a45ef17a35366f3cb0566011af4e4ac35a5f`.
 - Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root`.
 
 ## Version / Tag / Release Commit
@@ -56,16 +56,16 @@ Release `v1.4.30` is authorized. After repository finalization, delivery will ru
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/investigation-notes.md`.
 - Ticket branch: `codex/file-tool-authorized-root`.
-- Ticket branch commit result: `Pending final delivery commit`.
-- Ticket branch push result: `Pending final delivery commit`.
+- Ticket branch commit result: `Completed` (`2905a45ef17a35366f3cb0566011af4e4ac35a5f`).
+- Ticket branch push result: `Completed` to `origin/codex/file-tool-authorized-root`.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
 - Target advanced after user verification: `Yes`.
 - Delivery-owned edits protected before re-integration: `Completed` (`160df219`).
 - Re-integration before final merge result: `Completed` (`651feadfe`); no conflicts.
-- Target branch update result: `Pending final delivery commit`.
-- Merge into target result: `Pending final delivery commit`.
-- Push target branch result: `Pending final delivery commit`.
+- Target branch update result: `Refreshed` from `origin/personal` at `596094be191f6aecba6ef37abcda342a20e9af64` after the user's release authorization.
+- Merge into target result: `Pending` — target worktree finalization is next.
+- Push target branch result: `Pending` — target worktree finalization is next.
 - Repository finalization status: `In progress`.
 - Blocker (if applicable): `N/A`.
 
@@ -96,7 +96,7 @@ Release `v1.4.30` is authorized. After repository finalization, delivery will ru
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `Yes`.
-- Archived release notes artifact used for release/publication: `Pending ticket archival`.
+- Archived release notes artifact used for release/publication: `Ready` at `tickets/done/file-tool-authorized-root/release-notes.md`.
 - Release notes status: `Ready`.
 
 ## Deployment Steps
@@ -112,8 +112,8 @@ Release workflow is in scope after repository finalization. The release tag push
 
 ## Verification Checks
 
-- `git fetch origin --prune`: passed; tracked `origin/personal` remained `34f3fe97a281a9b85e02409bd753ad132df13d20`.
-- `git rev-list --left-right --count origin/personal...HEAD`: `0 1`; the ticket branch is current with the base and contains the reviewed implementation commit.
+- `git fetch origin --prune`: passed; tracked `origin/personal` is `596094be191f6aecba6ef37abcda342a20e9af64`.
+- `git rev-list --left-right --count origin/personal...HEAD`: `0 4`; the pushed ticket branch is current with the base and contains the archived reviewed package.
 - `git diff --check`: passed after docs edits and delivery artifacts were written.
 - Upstream API/E2E: Pass at 96% confidence, including macOS arm64 Electron packaging and packaged CLI/runtime probes.
 - Upstream proportional durable-test review CRR-002: Pass; 1 file / 11 tests passed; no findings.
@@ -132,4 +132,4 @@ Hold finalization or request renewed verification if a post-verification target 
 
 ## Final Status
 
-**Pass — integrated and revalidated; final commit/merge/push and release `v1.4.30` in progress.**
+**Pass — ticket archived and ticket branch pushed; target merge/push and release `v1.4.30` remain in progress.**
