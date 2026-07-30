@@ -50,6 +50,7 @@ const buildEvent = (input: {
   status: TokenUsageUpdatedPayload['api_cost_status'];
   pricingStatus?: TokenUsageUpdatedPayload['pricing_status'];
   modelProvider?: string | null;
+  providerName?: string | null;
   model?: string;
   modelValue?: string | null;
   runtimeKind?: string;
@@ -92,6 +93,7 @@ const buildEvent = (input: {
       ingestion_kind: input.ingestionKind ?? 'codex_thread_token_usage',
       usage_scope: 'per_turn',
       model_provider: input.modelProvider ?? 'OPENAI',
+      provider_name: input.providerName ?? null,
       model_identifier: input.model ?? 'gpt-5.4-mini',
       model_value: input.modelValue ?? null,
       input_token_semantic: inputTokenSemantic,
@@ -1151,6 +1153,7 @@ describe('token usage ledger GraphQL projections', () => {
         model: customModel,
         modelValue: 'qwen3.8-max-preview',
         modelProvider: 'OPENAI_COMPATIBLE',
+        providerName: 'alibaba_cloud',
         runtimeKind: 'autobyteus',
       }));
       await store.appendTokenUsageEvent(buildEvent({
@@ -1190,6 +1193,7 @@ describe('token usage ledger GraphQL projections', () => {
         model: customModel,
         modelValue: 'qwen3.8-max-preview',
         modelProvider: 'OPENAI_COMPATIBLE',
+        providerName: 'alibaba_cloud',
         runtimeKind: 'autobyteus',
       }));
       await store.appendTokenUsageEvent(buildEvent({
@@ -1315,6 +1319,34 @@ describe('token usage ledger GraphQL projections', () => {
         modelDisplayNames: [customModel],
       });
       expect(result.totalCostInPeriod).toBeCloseTo(3.3, 10);
+
+      const persistedCustomEvent = await rootPrismaClient.tokenUsageLedgerEvent.findFirst({
+        where: { runId: standaloneRunId, modelIdentifier: customModel },
+        select: { modelIdentifier: true, modelValue: true, providerName: true },
+      });
+      expect(persistedCustomEvent).toEqual({
+        modelIdentifier: customModel,
+        modelValue: 'qwen3.8-max-preview',
+        providerName: 'alibaba_cloud',
+      });
+
+      await fs.rm(customProviderPath, { force: true });
+      const snapshotAfterProviderDeletion = await execGraphql<{
+        usageStatisticsInPeriod: Array<{ llmModel: string; modelDisplayName: string }>;
+      }>(`
+        query TokenUsageSnapshotAfterProviderDeletion($start: DateTime!, $end: DateTime!) {
+          usageStatisticsInPeriod(startTime: $start, endTime: $end) {
+            llmModel
+            modelDisplayName
+          }
+        }
+      `, { start: new Date(start), end: new Date(end) });
+      expect(snapshotAfterProviderDeletion.usageStatisticsInPeriod).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          llmModel: customModel,
+          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+        }),
+      ]));
     } finally {
       await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: [standaloneRunId, teamRunId, customMemberRunId, builtInMemberRunId, collisionMemberRunId] } } });
       if (originalProviderConfig) {

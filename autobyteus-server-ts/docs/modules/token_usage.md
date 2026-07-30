@@ -12,6 +12,9 @@ The ledger answers, per usage observation:
 - which agent run and turn consumed the tokens;
 - which team/member/task context owned the usage when the run is inside a team;
 - which runtime, model provider, and model identifier produced the usage;
+- for AutoByteus rows, which provider display name was snapshotted at ingestion
+  for historical statistics labels (direct Codex/Claude paths may leave this
+  nullable);
 - which token counts were reported by the provider/runtime and which accounting
   delta is safe to aggregate;
 - whether estimated API price could be calculated from trusted catalog pricing;
@@ -43,6 +46,7 @@ The ledger answers, per usage observation:
   - `prisma/schema.prisma` model `TokenUsageLedgerEvent`
   - `prisma/migrations/20260624090000_add_token_usage_ledger_events/`
   - `prisma/migrations/20260625193000_token_usage_component_pricing_explainability/`
+  - `prisma/migrations/20260730090000_add_token_usage_provider_name/`
   - `prisma/migrations/20260702093000_token_usage_execution_address/`
 
 ## Event Pipeline
@@ -320,6 +324,40 @@ hierarchy. After backfill, runtime/API/frontend hierarchy remains ledger-owned:
 `root_team_run_id` plus `execution_address_json`, with scalar no-address
 fallback only for rows that cannot be deterministically converted.
 
+## Custom-Provider Model Metadata Migrations
+
+The Prisma migration
+`20260730090000_add_token_usage_provider_name` adds nullable
+`token_usage_ledger_events.provider_name`. New AutoByteus observations persist
+the configured custom-provider name or canonical built-in provider display name
+at ingestion time. Direct Codex and Claude paths keep `provider_name = null` and
+retain their existing non-AutoByteus display behavior. New-event persistence
+does not perform a statistics-time provider-registry lookup.
+
+Two required app-data migrations then repair historical rows, after Prisma
+schema migrations, after the execution-address backfill, and before the
+legacy-path-column contract migration:
+
+1. `20260730_token_usage_custom_provider_model_value_backfill` repairs a
+   validated legacy composite `model_value` by keeping the complete
+   `<modelName>` suffix, including additional `:` characters. It never changes
+   `model_identifier`, row counts, attribution, or accounting.
+2. `20260730_token_usage_provider_name_snapshot_backfill` fills only null/empty
+   AutoByteus `provider_name` values from built-in mappings or the current
+   custom-provider registry. It skips direct non-AutoByteus rows and warns
+   rather than guessing for missing/deleted/invalid providers. Rows that
+   already contain a snapshot are unchanged.
+
+Both migrations use independently durable compare-and-set updates, preserve
+row count and all non-target ledger fields, and are idempotent. Startup
+continues after row or migration failures; `FAILED` rows retry through
+`runPending()`, while warning-completed rows remain terminal for `runPending()`
+and retry only through explicit `runMigration(id)`. Each migration records
+`SUCCEEDED`, `SUCCEEDED_WITH_WARNINGS`, or `FAILED` with scan/update/skip/failure
+details. Snapshot-first display preserves historical provider names after a
+rename or deletion; legacy rows without a recoverable snapshot retain the
+current lookup/deterministic fallback policy.
+
 ## GraphQL / Statistics
 
 `TokenUsageStatisticsResolver` exposes ledger-backed reads:
@@ -357,6 +395,16 @@ fallback only for rows that cannot be deterministically converted.
   collapsed into one ambiguous row. Legacy display aliases such as `inputTokens`
   / `outputTokens` are backed by the same cache-aware aggregate contract; do not
   confuse them with the Token Meter's `latestPromptTokens`.
+- The Model projection exposes `llmModel` as the unchanged raw identity and
+  `modelDisplayName` as a server-owned display label. The Task projection
+  exposes `models` and a positional `modelDisplayNames` array from one ordered
+  raw/display sequence; the arrays always have equal length, including
+  recursive and empty rows. AutoByteus custom-provider labels prefer the
+  ingestion-time `provider_name` snapshot and fall back to the current saved
+  provider name only for legacy rows without a snapshot; built-in providers use
+  the canonical provider display name plus model. Non-AutoByteus labels retain
+  their existing behavior. The frontend must not parse raw provider identities
+  or use display labels for grouping/accounting.
 - `getAgentRunTokenUsageSummary(runId)` returns a run summary.
 - `getTeamRunTokenUsageSummary(teamRunId)` returns a team aggregate.
 - `getTeamMemberTokenUsageSummary(teamRunId, memberAgentRunId?, memberRouteKey?)`
@@ -417,6 +465,10 @@ The frontend treats token usage as display-only state:
   understanding and keeps `Model` as a runtime/model diagnostics grouping.
   The frontend does not render `Usage during period`, `Select Date Range:`,
   `Group by:`, or a separate `By Task` / `By Model` tab row.
+- Settings Model rows render the server-owned `modelDisplayName` while
+  retaining the raw `llmModel` for identity and fallback. Task rows render
+  `modelDisplayNames` positionally beside the raw `models` array; the frontend
+  does not reconstruct provider names from opaque identifiers.
 - The Task grouping table shows task/run identity, runtime, model(s), token
   totals, input/output/total cost, recursive team/task/member children, created
   time as the last visible column, and a cost breakdown. It does not render

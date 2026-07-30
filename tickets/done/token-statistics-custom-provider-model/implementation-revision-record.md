@@ -13,7 +13,7 @@
 
 ### IR-001 — Provider-aware token-statistics display and legacy-value backfill
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/design-review-report.md`; initial implementation round.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/done/token-statistics-custom-provider-model/design-review-report.md`; initial implementation round.
 - Triggering finding IDs: `N/A`; architecture review `ARCH-REV-003` authorized implementation.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
@@ -38,7 +38,7 @@
 
 ### IR-002 — Correct malformed composite display fallback after CRR-001
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-report.md`; bounded source-review rework round 1.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/done/token-statistics-custom-provider-model/code-review-report.md`; bounded source-review rework round 1.
 - Triggering finding IDs: `F-001` from `CRR-001`; the source review was not authorized to advance to API/E2E.
 - Classification: `Local Fix`.
 - Prior authoritative result: `IR-001` implementation was complete but source review failed because malformed composite `model_value` could leak a non-composite raw model or built-in provider metadata.
@@ -61,7 +61,7 @@
 
 ### IR-003 — Add AutoByteus provider-name snapshots and Migration B
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/design-review-report.md`; architecture-authorized implementation rework round 2 after `ARCH-REV-005`.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/done/token-statistics-custom-provider-model/design-review-report.md`; architecture-authorized implementation rework round 2 after `ARCH-REV-005`.
 - Triggering finding IDs: `ARCH-F-006` was resolved in `SR-006`; the implementation also preserves the prior `F-001` malformed-display correction.
 - Classification: `Architecture-authorized rework`.
 - Prior authoritative result: `IR-002` implemented the pre-SR-006 display and value-backfill package and had not received repeated source-review authorization for the new provider-name snapshot schema/ingestion contract.
@@ -87,7 +87,7 @@
 
 ### IR-004 — Prove all preserved ledger fields in Migration B
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-report.md`; bounded source-review rework round 2 after `CRR-004`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/done/token-statistics-custom-provider-model/code-review-report.md`; bounded source-review rework round 2 after `CRR-004`.
 - Triggering finding IDs: `F-002`; API/E2E remained unauthorized because the Migration B invariant proof compared only a reduced tuple.
 - Classification: `Local Fix`.
 - Prior authoritative result: `IR-003` implementation was complete, but `CRR-004` failed source review because Migration B selected and compared only `id`, `model_provider`, `model_identifier`, and `model_value` rather than proving the approved preserved ledger fields.

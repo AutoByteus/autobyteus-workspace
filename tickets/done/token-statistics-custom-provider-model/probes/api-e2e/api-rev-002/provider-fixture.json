@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "providers": [
+    {
+      "id": "provider_browser_round2",
+      "name": "alibaba_cloud",
+      "providerType": "OPENAI_COMPATIBLE",
+      "baseUrl": "https://provider.invalid/v1"
+    }
+  ]
+}
