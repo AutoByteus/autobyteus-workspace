@@ -27,7 +27,7 @@
 ## Integrated-State / Verification Summary
 
 - Latest-base refresh: `git fetch origin personal --prune` succeeded; `origin/personal` advanced from the bootstrap `596094be1` to `1b8d8c2f2`.
-- Current delivery refresh: after user verification, `git fetch origin personal --prune` again confirmed `origin/personal@1b8d8c2f2` remained unchanged and already integrated; no additional merge or base-triggered rerun was required. Final target state is `origin/personal@3d31bf31e`.
+- Current delivery refresh: after user verification, `git fetch origin personal --prune` again confirmed `origin/personal@1b8d8c2f2` remained unchanged and already integrated; no additional merge or base-triggered rerun was required. Final target contains release commit `3d31bf31e` plus post-release delivery metadata commits.
 - Candidate protection: completed local checkpoint commit `c4f3cccd4` before integration because the reviewed/API-validated candidate had uncommitted durable test and evidence changes.
 - Integration: merged `origin/personal` into the ticket branch without conflicts at `a503a6920`.
 - Post-integration executable check:

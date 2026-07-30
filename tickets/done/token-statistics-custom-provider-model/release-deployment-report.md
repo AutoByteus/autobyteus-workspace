@@ -99,7 +99,7 @@ This delivery handoff includes the latest-base integration, docs sync, and a use
 - Re-integration before final merge result: `Completed` — merge commit `a05f293777ad3d9ef4d81e387ae8a787ed120272`, no conflicts.
 - Target branch update result: `Completed` — release commit `3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d` pushed to `origin/personal`.
 - Merge into target result: `Completed` — `personal` contains the finalized ticket merge.
-- Push target branch result: `Completed` — `origin/personal@3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d`.
+- Push target branch result: `Completed` — release commit `3d31bf31e` and post-release delivery metadata are present on `origin/personal`.
 - Repository finalization status: `Complete`.
 - Blocker (if applicable): None.
 
