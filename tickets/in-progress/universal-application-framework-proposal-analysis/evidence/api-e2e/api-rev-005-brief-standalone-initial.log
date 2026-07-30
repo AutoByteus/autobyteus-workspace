@@ -1,0 +1,57 @@
+CONSOLE error Failed to load resource: the server responded with a status of 404 (Not Found)
+CONSOLE info [BriefStudio] refresh start applicationId=bundle-app__7374616e64616c6f6e65__62726965662d73747564696f
+TITLE Brief Studio
+BODY BRIEF WORKFLOW
+Brief Studio
+
+Create, review, and finalize briefs from one business record. Generate drafts, keep review notes, and approve outcomes without leaving the same brief workspace.
+
+WHAT YOU CAN DO HERE
+
+Stay focused on the brief work itself.
+Create the brief record that anchors the work.
+Generate fresh drafts when the brief is ready.
+Review outputs, notes, and approval state together.
+STEP 1
+Create
+
+Start with the business brief record and keep the work anchored to one brief.
+
+STEP 2
+Generate
+
+Launch new drafting runs over time as the brief evolves and needs another pass.
+
+STEP 3
+Review
+
+Keep draft outputs, review notes, and approval decisions together on the same record.
+
+Create a brief
+
+Start the workflow with the business record. Execution resource, model, workspace, and tool-execution defaults come from the host-managed application launch setup.
+
+BRIEF TITLE
+Create brief
+GraphQL stays the primary brief API while the host supplies runtime and workspace defaults.
+Briefs
+
+Track each brief, its latest draft state, and its review outcome.
+
+Refresh
+No briefs yet. Create your first brief to start the workflow.
+Brief detail
+
+Review generated drafts, notes, and approval state for the selected brief.
+
+Select a brief to review generated drafts, notes, and approval status.
+BUTTONS [ 'Create brief', 'Refresh' ]
+INPUTS [
+  {
+    type: 'text',
+    placeholder: 'Launch messaging orchestration brief',
+    value: '',
+    name: ''
+  }
+]
+BOOT null

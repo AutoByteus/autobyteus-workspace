@@ -11,6 +11,7 @@ import {
   resetAgentToolMcpSessionRegistryForTests,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import {
+  AgentToolMcpSessionService,
   resetAgentToolMcpSessionServiceForTests,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
@@ -74,6 +75,10 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
     const config = buildMemberConfig();
     const { teamContext, memberContext } = buildTeamContext(config);
     const registry = getAgentToolMcpSessionRegistry();
+    const agentToolMcpSessionAuthority = new AgentToolMcpSessionService({
+      registry,
+      getInternalBaseUrl: () => "http://127.0.0.1:43124",
+    });
     const sender = buildAgentRunMessageSenderContext({
       senderRunId: "worker-run-1",
       senderName: "worker",
@@ -114,6 +119,7 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
       context: memberContext,
       config,
       agentRunManager: { createAgentRun: vi.fn() } as never,
+      agentToolMcpSessionAuthority,
       publish: vi.fn(),
       notifyStatusChange: vi.fn(),
       deliverInterAgentMessage: vi.fn(),

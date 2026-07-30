@@ -1,0 +1,135 @@
+
+> @autobyteus/application-devkit@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> pnpm build && node --test tests/application-devkit.test.mjs
+
+
+> @autobyteus/application-devkit@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-application-devkit
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: create materializes the canonical source/dist project layout
+ok 1 - create materializes the canonical source/dist project layout
+  ---
+  duration_ms: 17.942792
+  type: 'test'
+  ...
+# Subtest: pack emits a valid importable package under dist/importable-package
+ok 2 - pack emits a valid importable package under dist/importable-package
+  ---
+  duration_ms: 107.952708
+  type: 'test'
+  ...
+# Subtest: validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+    # Subtest: stale-application-v3
+    ok 1 - stale-application-v3
+      ---
+      duration_ms: 40.664583
+      type: 'test'
+      ...
+    # Subtest: nested-application-exposures
+    ok 2 - nested-application-exposures
+      ---
+      duration_ms: 42.692083
+      type: 'test'
+      ...
+    # Subtest: missing-websocket-exposure
+    ok 3 - missing-websocket-exposure
+      ---
+      duration_ms: 43.062
+      type: 'test'
+      ...
+    1..3
+ok 3 - validator rejects stale manifests, nested exposure authority, and six-flag backend bundles
+  ---
+  duration_ms: 127.594458
+  type: 'test'
+  ...
+# Subtest: validator reports actionable diagnostics for missing generated files
+ok 4 - validator reports actionable diagnostics for missing generated files
+  ---
+  duration_ms: 32.631584
+  type: 'test'
+  ...
+# Subtest: validator rejects an explicit v3 backend-definition compatibility fixture
+ok 5 - validator rejects an explicit v3 backend-definition compatibility fixture
+  ---
+  duration_ms: 40.080208
+  type: 'test'
+  ...
+# Subtest: pack rejects unsafe application ids before package writes
+    # Subtest: ../escaped
+    ok 1 - ../escaped
+      ---
+      duration_ms: 9.945417
+      type: 'test'
+      ...
+    # Subtest: a/b
+    ok 2 - a/b
+      ---
+      duration_ms: 8.523333
+      type: 'test'
+      ...
+    1..2
+ok 6 - pack rejects unsafe application ids before package writes
+  ---
+  duration_ms: 19.208916
+  type: 'test'
+  ...
+# Subtest: pack validates generated application roots as direct applications children
+ok 7 - pack validates generated application roots as direct applications children
+  ---
+  duration_ms: 8.192833
+  type: 'test'
+  ...
+# Subtest: pack rejects agents and agent-teams source/output overlap before output cleanup
+    # Subtest: agentsDir
+    ok 1 - agentsDir
+      ---
+      duration_ms: 15.145791
+      type: 'test'
+      ...
+    # Subtest: agentTeamsDir
+    ok 2 - agentTeamsDir
+      ---
+      duration_ms: 44.09125
+      type: 'test'
+      ...
+    1..2
+ok 8 - pack rejects agents and agent-teams source/output overlap before output cleanup
+  ---
+  duration_ms: 59.618458
+  type: 'test'
+  ...
+# Subtest: validator reports unsafe local application ids in generated packages
+ok 9 - validator reports unsafe local application ids in generated packages
+  ---
+  duration_ms: 34.137375
+  type: 'test'
+  ...
+# Subtest: controlled development browser retains and explicitly reloads the active page
+ok 10 - controlled development browser retains and explicitly reloads the active page
+  ---
+  duration_ms: 359.271125
+  type: 'test'
+  ...
+# Subtest: project watcher replaces resolved input subscriptions after config changes
+ok 11 - project watcher replaces resolved input subscriptions after config changes
+  ---
+  duration_ms: 94.989
+  type: 'test'
+  ...
+# Subtest: Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+ok 12 - Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend
+  ---
+  duration_ms: 6.0595
+  type: 'test'
+  ...
+1..12
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1040.754875

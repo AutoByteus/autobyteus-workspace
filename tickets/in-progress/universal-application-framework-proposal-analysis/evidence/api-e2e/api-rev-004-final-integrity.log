@@ -1,0 +1,35 @@
+HEAD=59db1da126171d8a4360f6b2e93c9fcbd2882db0
+BRANCH=codex/universal-application-framework-proposal-analysis
+DIFF_CHECK
+PORTS
+PORT_3000=CLEAN
+PORT_8000=CLEAN
+PORT_43124=CLEAN
+TEMP
+CLEAN
+REPORT_RESULT
+247:## Latest Authoritative Result
+248-
+249-- Result: `Fail`.
+250-- Final validation confidence: `89%`.
+251-- Default 95% target met: `No`.
+252-- Any final category below 90%: `Yes` — requirement/acceptance proof 50% because critical both-host AC-005/006 fails.
+253-- Broader validation decision: `Required; executed until critical standalone failure`.
+254-- Critical acceptance criteria lacking direct proof: AC-005 and AC-006 in standalone; complete AC-001 successful dual-host journey and remaining AC-011/013 live command matrix.
+255-- Required next recipient: `code_reviewer` for focused failure-origin review.
+256-- Notes: prior `APIE2E-BRIEF-002` / `APIE2E-F003` is resolved. New failure is `APIE2E-BRIEF-003` / `APIE2E-F004`. No missing dependency; cleanup complete.
+REV_INDEX
+# API/E2E Revision Record — Universal Application Dual-Host Foundation
+
+## Revision Index
+
+| Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
+| --- | --- | --- | --- | --- |
+| API-REV-001 | `code_reviewer` `CRR-002`; API/E2E round 1 | solution baseline; architecture review baseline; `IR-002`; `CRR-002` | N/A | **Fail / 89%** |
+| API-REV-002 | `code_reviewer` `CRR-004`; API/E2E round 2 | `SR-003`; `ARCH-REV-003`; `IR-003`; `CRR-004`; `API-REV-001` | **Fail / 89%** | **Fail / 88%** |
+| API-REV-003 | `code_reviewer` `CRR-006`; API/E2E round 3 | `IR-004`; `CRR-006`; `API-REV-002` | **Fail / 88%** | **Fail / 88%** |
+| API-REV-004 | `code_reviewer` `CRR-008`; API/E2E round 4 | `IR-005`; `CRR-008`; `API-REV-003` | **Fail / 88%** | **Fail / 89%** |
+
+## Revision Entries
+
+### API-REV-001 — Initial dual-host coverage baseline exposes repeated Studio reload failure

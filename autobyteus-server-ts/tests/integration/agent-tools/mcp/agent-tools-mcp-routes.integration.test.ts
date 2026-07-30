@@ -145,7 +145,7 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
       snapshotStore,
     });
     const catalog = new AgentToolMcpCatalog({
-      providers: [new PublishArtifactsMcpAdapterProvider(publicationService)],
+      providers: [new PublishArtifactsMcpAdapterProvider()],
     });
     const app = fastify();
     const registry = new AgentToolMcpSessionRegistry();
@@ -171,6 +171,9 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
       executionContext: {
         workingDirectory: workspaceRoot,
         memoryDir,
+      },
+      executionAuthorities: {
+        publishedArtifactPublication: publicationService,
       },
     });
     const sessionUrl = `/mcp/agent-tools/${session.sessionId}`;

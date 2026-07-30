@@ -31,13 +31,11 @@ import { ApplicationExecutionEventIngressService } from "../../../src/applicatio
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationOrchestrationStartupGate } from "../../../src/application-orchestration/services/application-orchestration-startup-gate.js";
-import { ApplicationExecutionResourceConfigurationService } from "../../../src/application-orchestration/services/application-execution-resource-configuration-service.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
 import { ApplicationExecutionResourceResolver } from "../../../src/application-orchestration/services/application-execution-resource-resolver.js";
 import { ApplicationExecutionContext } from "../../../src/application-orchestration/domain/models.js";
 import { ApplicationExecutionEventJournalStore } from "../../../src/application-orchestration/stores/application-execution-event-journal-store.js";
-import { ApplicationExecutionResourceConfigurationStore } from "../../../src/application-orchestration/stores/application-execution-resource-configuration-store.js";
 import { ApplicationRunBindingStore } from "../../../src/application-orchestration/stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../../../src/application-orchestration/stores/application-run-lookup-store.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
@@ -46,6 +44,7 @@ import { registerApplicationAvailabilityRoutes } from "../../../src/api/rest/app
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
@@ -117,7 +116,7 @@ const createHostedBriefStudioClient = async (
     createApplicationBackendMountTransport,
     createApplicationClient,
   } = await import(
-    "../../../../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-frontend-sdk.js"
+    "../../../../autobyteus-application-frontend-sdk/src/index.ts"
   );
 
   const applicationClient = createApplicationClient({
@@ -637,6 +636,22 @@ describe("Brief Studio imported package integration", () => {
       agentDefinitionService: fakeAgentDefinitionService as never,
       agentTeamDefinitionService: fakeTeamDefinitionService as never,
     });
+    const resolvedDefaultTeam = await executionResourceResolver.resolveExecutionResource(
+      applicationId,
+      {
+        source: "bundle",
+        kind: "AGENT_TEAM",
+        localId: "brief-studio-team",
+      },
+    );
+    const researcherDefinitionId = buildTeamLocalAgentDefinitionId(
+      resolvedDefaultTeam.definitionId,
+      "researcher",
+    );
+    const writerDefinitionId = buildTeamLocalAgentDefinitionId(
+      resolvedDefaultTeam.definitionId,
+      "writer",
+    );
 
     const runBindingLaunchService = new ApplicationRunBindingLaunchService({
       executionResourceResolver,
@@ -673,13 +688,62 @@ describe("Brief Studio imported package integration", () => {
       dispatchService,
     });
 
-    const executionResourceConfigurationService = new ApplicationExecutionResourceConfigurationService({
-      applicationBundleService: bundleService,
-      executionResourceResolver,
-      configurationStore: new ApplicationExecutionResourceConfigurationStore({
-        platformStateStore,
-      }),
-    });
+    const launchConfigurationService = {
+      requireRunnableConfiguration: vi.fn(async () => ({
+        slotKey: "draftingTeam",
+        executionResourceRef: {
+          source: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "brief-studio-team",
+        },
+        resourceDefinitionId: resolvedDefaultTeam.definitionId,
+        resourceKind: "AGENT_TEAM",
+        leaves: [
+          {
+            memberRouteKey: "researcher",
+            memberName: "researcher",
+            agentDefinitionId: researcherDefinitionId,
+            llmModelIdentifier: "gpt-test",
+            runtimeKind: RuntimeKind.AUTOBYTEUS,
+            llmConfig: null,
+            workspaceRootPath: path.join(tempRoot, "workspace"),
+            provenance: {
+              runtimeKind: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: researcherDefinitionId,
+              },
+              llmModelIdentifier: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: researcherDefinitionId,
+              },
+              llmConfig: null,
+              workspaceRootPath: "APPLICATION_RUNTIME",
+            },
+          },
+          {
+            memberRouteKey: "writer",
+            memberName: "writer",
+            agentDefinitionId: writerDefinitionId,
+            llmModelIdentifier: "gpt-test",
+            runtimeKind: RuntimeKind.AUTOBYTEUS,
+            llmConfig: null,
+            workspaceRootPath: path.join(tempRoot, "workspace"),
+            provenance: {
+              runtimeKind: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: writerDefinitionId,
+              },
+              llmModelIdentifier: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: writerDefinitionId,
+              },
+              llmConfig: null,
+              workspaceRootPath: "APPLICATION_RUNTIME",
+            },
+          },
+        ],
+      })),
+    };
 
     const runObserverService = new ApplicationRunObserverService({
       lifecycleGateway: fakeLifecycleGateway as never,
@@ -692,7 +756,7 @@ describe("Brief Studio imported package integration", () => {
       startupGate,
       availabilityService,
       executionResourceResolver,
-      executionResourceConfigurationService,
+      launchConfigurationService: launchConfigurationService as never,
       runBindingLaunchService,
       bindingStore,
       lookupStore,
@@ -724,10 +788,21 @@ describe("Brief Studio imported package integration", () => {
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(websocket);
     await app.register(async (restApp) => {
-      await registerApplicationAvailabilityRoutes(restApp);
-      await registerApplicationBackendRoutes(restApp);
+      const lifecycle = { awaitReady: async () => undefined } as never;
+      await registerApplicationAvailabilityRoutes(restApp, {
+        gateway: applicationBackendState.apiGatewayService!,
+        availabilityService,
+        lifecycle,
+      });
+      await registerApplicationBackendRoutes(restApp, {
+        gateway: applicationBackendState.apiGatewayService!,
+        lifecycle,
+      });
     }, { prefix: "/rest" });
-    await registerApplicationBackendNotificationWebsocket(app);
+    await registerApplicationBackendNotificationWebsocket(app, {
+      notificationHub: applicationBackendState.notificationHub!,
+      lifecycle: { awaitReady: async () => undefined } as never,
+    });
     await app.listen({ host: "127.0.0.1", port: 0 });
     baseUrl = buildBaseUrl(app.server.address() as { port: number; address: string });
     notificationSocket = null;

@@ -10,285 +10,273 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-self-validation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/sources/autobyteus-vertical-application-developer-experience-proposal.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-003` (with `SR-001` and `SR-002` retained as history)
+- Relevant Solution Revision IDs: `SR-010`; `SR-008`/`SR-009` are retained current-state context; `SR-007` remains withdrawn
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: Architecture re-review requested by `solution_designer` after `SR-003`
-- Prior Review Round Reviewed: 2 / `ARCH-REV-002`
-- Latest Authoritative Round: 3
-- Current-State Evidence Basis: task `HEAD` and `origin/personal` both at `6caf809303294252c109420b238588f0c68aca6a`; ancestor check passed. Review included the current frontend SDK/contracts, package parser/identity, server startup and shutdown, Prisma/vault/Search prerequisites, application runtime graph dependencies, devkit config/assembler/resource copier, representative application layouts/manifests, current package-root materialization model, and Studio package operations.
-- Independent Evidence: the retained SR-003 disposable devkit probe packed and validated both maintained applications through the exact proposed configuration, including icon, team, migration, and seven exposure assertions; prior baseline contract/frontend checks remain `18/18` passing and no production source changed between that evidence and this review. Round-3 relative-link, canonical-ID, contradiction, base, ancestor, and `git diff --check` checks passed.
+- Current Architecture Review Revision ID: `ARCH-REV-008`
+- Current Review Round: 8
+- Trigger: `CRR-020` / `CR-015` after `API-REV-007` disproved the prior unchanged-publication-provider premise on the supported standalone Brief path.
+- Prior Review Round Reviewed: round 7 / `ARCH-REV-007` (`Withdrawn — No Decision`)
+- Latest Authoritative Round Before This Review: round 6 / `ARCH-REV-006` (`Pass`)
+- Current-State Evidence Basis: approved requirements through 2026-07-30; `API-REV-007`; `CRR-020`; retained evidence `api-rev-007-actual-tools-dispatch.json`, `api-rev-007-standalone-state-after-failure.log`, `api-rev-007-brief-standalone-final-browser.json`, `api-rev-007-brief-standalone-final.png`, and `api-rev-007-source-correlation.log`; current source for application run-authority construction, Agent Tools session/route/catalog/dispatcher/executor, Codex/Claude session creation, and published-artifact publication.
+- Reviewed Solution Commit: `70faec030f614b502ceb3975d492c9f50dd84ff9`
+- Independent Review Checks: current source confirms the distinct graph-local versus process-global publication owners and the real construction cycle; all relative links in the six solution-owned artifacts resolve; BEH/REQ/AC/UC/DS/SR identifiers are contiguous; `git diff --check` passes. No production/test execution was repeated because this round reviews a design correction over preserved live failure evidence.
 
 ## Round History
 
-| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial solution-package review | N/A | AR-001–AR-004 | Fail | No | Direction was sound; readiness, frontend migration, dependency conversion, and traceability were incomplete. |
-| 2 | `SR-002` and refreshed-base reconciliation | AR-001–AR-004 | AR-005, AR-006 | Fail | No | AR-002–AR-004 resolved; exact readiness consistency, maintained-app package inputs, and the broad-server fallback contradiction remained. |
-| 3 | `SR-003` bounded design correction | AR-001, AR-005, AR-006 | None | Pass | Yes | All prior findings are verified resolved without expanding approved product scope. |
-
-## Prior Findings Resolution Check (Mandatory On Round >1)
-
-| Finding ID | Prior Status | Current Status | Related Solution Revision | Verification Evidence | Required Follow-Up |
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
-| AR-001 | Open / blocking | Resolved | SR-003 | P0–P9, the graph, dependency rules, composition example, file map, guidance, and SV-C24 now use one order: AppConfig/database location -> core migration -> protected DB/root-key/sidecar paths -> Prisma -> vault -> app-data migration -> remaining readiness. P6 names exactly seven groups including provisioned Search. | None. |
-| AR-002 | Resolved | Remains resolved | SR-002, SR-003 | Exact unversioned `startApplication` contract and complete source/test/doc/generated consumer inventory remain unchanged and coherent. | None. |
-| AR-003 | Resolved | Remains resolved | SR-002, SR-003 | Exact construction DAG, narrow cycle seams, graph-local authorities, Modify/Retain inventory, and deterministic disposal remain actionable. | None. |
-| AR-004 | Resolved | Remains resolved | SR-002, SR-003 | BEH-001–BEH-007 meanings remain stable across the core artifacts; security evidence remains separately identified. | None. |
-| AR-005 | Open / blocking | Resolved | SR-003 | Both maintained apps now have one exact checked-in devkit configuration mapping their real source roots, entries, resources, migrations, seven exposure booleans, and output. The existing devkit seam was proven by a cleaned disposable pack/validate probe. Custom builders and generated source-root runtime mirrors are explicitly deleted rather than wrapped. Current server documentation and materializer behavior confirm these maintained roots are authoring/sample roots, not the platform built-in payload. | None. |
-| AR-006 | Open / blocking | Resolved | SR-003 | The approved critical analysis now rejects broad `buildApp()` use in its correction, replacement language, roadmap, and decision table. Named runtime prerequisites remain reusable only inside the explicit selected-application composition. | None. |
+| 1 | Initial solution package | N/A | AR-001–AR-004 | Fail — Design Impact | Readiness, frontend migration, graph construction, and traceability were incomplete. |
+| 2 | `SR-002` | AR-001–AR-004 | AR-005, AR-006 | Fail — Design Impact | AR-002–AR-004 resolved; three bounded design gaps remained. |
+| 3 | `SR-003` | AR-001, AR-005, AR-006 | None | Pass | Dual-host macro architecture became implementation-ready. |
+| 4 | `SR-004` / downstream re-entry | Prior architecture findings; CR-006–CR-008 | AR-007 | Fail — Design Impact | Invalid saved host state was not representable. |
+| 5 | `SR-005` | AR-007 | None | Pass | Invalid/stale overrides are preserved and blocked without fallback. |
+| 6 | `SR-006` / `CRR-012` | CR-009, CR-012 | None | Pass | Selected-resource editing and portable launch policy gained authoritative owners. |
+| 7 | Withdrawn `SR-007` | CR-013 | N/A | Withdrawn — No Decision | `CRR-016` superseded the premise; `ARCH-REV-006` remained the latest valid result. |
+| 8 | `SR-010` / `CRR-020` after `API-REV-007` | CR-015 and all prior architecture resolutions | None | Pass | Session-bound graph publication, the process authority, and the bind-once lifecycle seam are implementation-ready. |
+
+## Prior Findings Resolution Check
+
+| Finding ID | Prior Status | Current Status | Related Revision | Verification Evidence | Required Follow-Up |
+| --- | --- | --- | --- | --- | --- |
+| AR-001–AR-007 | Resolved through `ARCH-REV-006` | Remain resolved | SR-002–SR-006 | SR-010 preserves lifecycle/tool ordering, clean-cut frontend migration, explicit compositions, package/default/readiness/editing semantics, portable policy, and graph-local prompt ownership. | Preserve established coverage. |
+| CR-009–CR-014 | Resolved in prior design/source rounds | Remain resolved | SR-006, SR-008, SR-009; IR-010/IR-011; CRR-019 | API-REV-007 reaches route authentication, actual tool listing, graph-local members, and recipient-name messaging before the publication failure. | Do not reopen their scopes. |
+| CR-015 / APIE2E-F007 | Open — Design Impact | Resolved in design; implementation and executable proof pending | SR-010, SV-015 | DS-014 now connects authenticated application sessions to the exact graph publication port, assigns route/session construction to one process family, and breaks the real cycle with one fail-closed bind-once port. | Implement, source-review, and rerun required proof. |
+| APIE2E-REPO-005 | `Unclear` / unattributed | Remains separate and non-material to this decision | API-REV-007, CRR-020 | No supported failure origin ties this broad diagnostic to CR-015. | Preserve for separate API/E2E reconciliation. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Yes. One validated current manifest-v4 package runs through Studio and selected-app standalone; app source uses one startup API; runtime authorities are shared through explicit compositions; development and production commands use real hosts; identity/account/authentication and package-vNext remain excluded.
-- Relevant existing behavior and evidence confirmed: Yes. Current Studio bootstrap, package identity/parser, backend/runtime authorities, application storage/migrations, startup/shutdown, devkit packaging, and maintained application inputs were independently inspected.
-- Approved change, preserved behavior, and outside scope understood: Yes.
-- Remaining material ambiguity, if any: None.
+- Approved requirements / intended behavior understood: one unchanged manifest-v4 package through Studio and selected-app standalone; complete package-owned Codex/Luna launch defaults; optional non-mutating Studio overrides; one internal Agent Tools route in both hosts; exact application publication/projection; no user authentication, external-gateway expansion, provider-native-tool work, package vNext, copied server, or fallback.
+- Relevant existing behavior and evidence confirmed: route registration and bearer authentication now work in both hosts; both real Brief members list `publish_artifacts`/`send_message_to`; recipient-name handoff succeeds; the default publish provider separately captures a process-global publication service while the active runs and correct publication service are graph-local.
+- Approved change, preserved behavior, and outside scope understood: SR-010 changes only publication/session authority selection and its construction/stop lifecycle. Route protocol, 401/404 behavior, descriptor/tool eligibility, message delivery, graph publication semantics, native tools, configured-MCP behavior, and Studio-only `/mcp/gateway` remain unchanged.
+- Remaining material ambiguity, if any: None. `APIE2E-REPO-005` remains separately `Unclear` and does not drive this architecture.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational | Pass | Pass | Pass | Confirmed | None. |
-| BEH-002 | Contract | Pass | Pass | Pass | Confirmed | None. |
-| BEH-003 | Contract | Pass | Pass | Pass | Confirmed | None. |
-| BEH-004 | System | Pass | Pass | Pass | Confirmed | None. |
-| BEH-005 | Operational | Pass | Pass | Pass | Confirmed | None. |
-| BEH-006 | Operational | Pass | Pass | Pass | Confirmed | None. |
-| BEH-007 | System | Pass | Pass | Pass | Confirmed | None. |
+| BEH-001 | User / host lifecycle | Pass | Pass | Pass | Confirmed | Preserve Studio/standalone host behavior. |
+| BEH-002 | SDK contract | Pass | Pass | Pass | Confirmed | Preserve one `startApplication` client path. |
+| BEH-003 | Package contract | Pass | Pass | Pass | Confirmed | Preserve current manifest/package parser and immutable bytes. |
+| BEH-004 | User-triggered real application run | Pass | Pass — API-REV-007/CRR-020 prove the live path and wrong authority | Pass — DS-014 reaches session issue, authenticated callback, exact publication, journal, and projection | Confirmed | Implement session-bound publication port. |
+| BEH-005 | System transport / authority | Pass | Pass — both hosts register/authenticate the route; source confirms independent defaults | Pass — one process authority supplies both route and scoped-session construction | Confirmed | Remove composition-path default discovery. |
+| BEH-006 | Developer command / conformance | Pass | Pass — clean `pnpm dev` reaches actual tools and handoff | Pass — acceptance continues through exact graph publication and application projection | Confirmed | Rerun standalone and Studio real spines. |
+| BEH-007 | Persistence / recovery | Pass | Pass | Pass — sessions/ports remain ephemeral; no stored schema changes | Confirmed | No migration. |
+| BEH-008 | Prompt authority | Pass | Pass — prior implementation/evidence retained | Pass — SR-010 does not change member-context construction | Confirmed | Preserve prompt proof. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| Retained proposal source | Pass | Pass | Pass | Pass | Pass | None; evidence/input only. |
-| `proposal-critical-analysis.md` | Pass | Pass | Pass | Pass | Pass | None; approved/refined behavior context, with identity/account scope removed. |
-| `design-self-validation.md` | Pass | Pass | Pass | Pass | Pass | None; evidence-only, approval N/A. |
+| Retained proposal source | Pass | Pass | Pass | Pass | Pass — evidence/input, approval N/A | None. |
+| `proposal-critical-analysis.md` | Pass | Pass | Pass | Pass | Pass — approved/refined through 2026-07-30 and aligned through SR-010 | None. |
+| `design-self-validation.md` | Pass | Pass | Pass | Pass | Pass — evidence-only, approval N/A, complete through SV-015 | Execute its deferred proof downstream. |
 
-The investigation-notes supplement inventory identifies each artifact's purpose, scope, status, and approval applicability. Core-artifact links are valid.
+The investigation notes contain the canonical supplement inventory with purpose, scope, supported cores, status, approval applicability, and retention decision. Every material supplement is linked from the requirements and design; the evidence-only self-validation does not replace design authority.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The package identifies a larger cross-cutting feature with startup/composition ownership defects. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Iframe-only startup and the monolithic server root are traced to current source and production paths. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Bootstrap and composition-critical extraction are in scope; package-vNext, marketplace, optimized distribution, and repository-wide DI are deferred. | None. |
-| Refactor decision is supported by concrete design sections | Pass | Provider boundaries, two compositions, fixed construction DAG, lifecycle, route cardinality, removal inventory, and staged implementation are explicit. | None. |
+| Assessment is present for the current task posture | Pass | Requirements and design classify the current posture as downstream authoritative-boundary/construction-cycle correction. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | API-REV-007 and CRR-020 trace the supported Brief action through the default provider to the wrong process-global manager. Current source confirms the graph service already exists. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The graph-sensitive publication authority is required now; provider-native tools, browser/media/task/configured-MCP expansion, external gateway, and repository-wide DI remain excluded/deferred. | None. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-014, P6A, exact graph, Modify/Retain inventory, file map, sequence 7, removal log, and SV-C39–SV-C42 are actionable. | Implement as reviewed. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Studio startup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Standalone startup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Shared backend invocation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-004 | Runtime return/event flow | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 | Platform lifecycle/readiness/stop | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-006 | Native real-host development | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-007 | Build once / two hosts | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-008 | Standalone root/assets/navigation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-009 | Studio setup/reload/exit | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-010 | Built-package production start | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-001–DS-010 | Dual-host bootstrap, shared execution, lifecycle, commands, and static host | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-011 | Standalone package-default validation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-012 | Selected-resource/effective launch configuration and readiness | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-013 | Graph-local team prompt semantics | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-014 | Authenticated application Agent Tools publication and handoff return spine | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+DS-014 has sufficient span: supported Brief action -> guarded graph run -> scoped session -> descriptor -> authenticated route/family -> session execution authority -> publication/message -> writer handoff -> graph event/journal -> application projection. The deferred port is a bounded construction concern, not a substitute for this business spine.
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Frontend startup / `startApplication` | Pass | Pass | Pass | Pass | Provider-local wires normalize before the app callback. |
-| Standalone selection | Pass | Pass | Pass | Pass | One package/local-ID selector delegates to the current parser and derives identity once. |
-| Gateway/engine/orchestration | Pass | Pass | Pass | Pass | Host adapters share authorities without exposing their internals. |
-| `ApplicationPlatformLifecycle` | Pass | Pass | Pass | Pass | It owns named phases and state, not arbitrary service lookup. |
-| Devkit package/development boundary | Pass | Pass | Pass | Pass | Declarative configuration feeds one pack owner; host commands do not become alternate builders. |
-| Composition roots/runtime graph | Pass | Pass | Pass | Pass | The typed graph is construction output, never a runtime service locator. |
+| `AgentToolsMcpProcessAuthority` | Pass | Pass | Pass | Pass | Owns one exact registry/catalog/provider/executor/dispatcher family and lifecycle; exposes only route dependencies and scoped-session construction, not a generic service container. |
+| `ApplicationAgentToolsSessionAuthority` | Pass | Pass | Pass | Pass | Owns application-session issue tracking, execution-authority attachment, issue blocking, revoke, and close for one graph scope. |
+| Authenticated session execution authorities | Pass | Pass | Pass | Pass | Carries only the graph publication port in memory; no graph lookup or wire exposure. |
+| `PublishedArtifactPublicationPort` | Pass | Pass | Pass | Pass | One publication command; manager, relay, journal, and graph remain hidden. |
+| `DeferredPublishedArtifactPublicationPort` | Pass | Pass | Pass | Pass | One named bind-once graph cycle seam with pre-bind/rebind/post-close failure. |
+| `ApplicationPlatformLifecycle` | Pass | Pass | Pass | Pass | P6A and stop ordering govern readiness and disposal without absorbing route/publication business logic. |
+| Internal Agent Tools route vs external MCP gateway | Pass | Pass | Pass | Pass | Both hosts retain the internal route; only Studio owns `/mcp/gateway`; neither aliases the other. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Application source -> SDKs | Pass | Pass | Pass | Pass | No Studio/server/host imports or host branching. |
-| Coordinator -> provider/client factory | Pass | Pass | Pass | Pass | Provider wire branches remain encapsulated. |
-| Host ingress -> gateway/communication owners | Pass | Pass | Pass | Pass | Fixed and multi-app mounts remain thin cardinality adapters. |
-| Composition -> runtime graph/lifecycle | Pass | Pass | Pass | Pass | Exact graph instances and retained process resources are identified. |
-| Composition -> Prisma/vault/tool prerequisites | Pass | Pass | Pass | Pass | One protected-path-before-Prisma chain and seven-group readiness contract are used everywhere. |
-| Devkit -> pack/host public boundaries | Pass | Pass | Pass | Pass | No server manager/internal lifecycle import and no executable build hook. |
+| Composition -> process authority | Pass | Pass | Pass | Pass | Composition constructs once and supplies narrow outputs; route/session may not resolve defaults independently. |
+| Application graph -> scoped session authority | Pass | Pass | Pass | Pass | Graph supplies only its deferred publication port; it cannot use the general-process session authority. |
+| Route -> process route dependencies | Pass | Pass | Pass | Pass | No whole graph, default registry, or external-gateway dependency. |
+| Provider -> authenticated session port | Pass | Pass | Pass | Pass | Global publication getter, process manager lookup, request-time graph lookup, and package/run-ID routing are prohibited. |
+| Runtime factories/cleanup -> scoped issue/revoke | Pass | Pass | Pass | Pass | Application Codex/Claude and new/restored member cleanup use the issuing scope. General-process paths receive an explicit separate authority. |
+| Lifecycle -> scope/port/process close | Pass | Pass | Pass | Pass | Issue is blocked and graph sessions revoked before port/process disposal; restart creates new scope and descriptors. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `startApplication(options)` | Pass | Pass | Pass | Low | Pass |
-| `ApplicationBootstrapProvider.acquire(signal)` | Pass | Pass | Pass | Low | Pass |
-| `ApplicationRuntimeBootstrap` | Pass | Pass | Pass | Low | Pass |
-| `StandaloneApplicationBootstrapPayload` | Pass | Pass | Pass | Low | Pass |
-| `StandaloneApplicationSelectionService.resolve(config)` | Pass | Pass | Pass | Low | Pass |
-| Lifecycle phase methods | Pass | Pass | Pass | Low | Pass |
-| `autobyteus-app dev --host ...` | Pass | Pass | Pass | Low | Pass |
-| `autobyteus-app start` | Pass | Pass | Pass | Low | Pass |
-| `startStandaloneApplicationHost(config)` | Pass | Pass | Pass | Low | Pass |
-| Studio/standalone REST/WS mounts | Pass | Pass | Pass | Low | Pass |
+| `AgentToolsMcpProcessAuthority.createApplicationSessionAuthority(...)` | Pass | Pass | Pass | Low | Pass |
+| `ApplicationAgentToolsSessionAuthority.createSession(input)` | Pass | Pass | Pass | Low | Pass |
+| `ApplicationAgentToolsSessionAuthority.close()` | Pass | Pass | Pass | Low | Pass |
+| `AgentToolsMcpProcessAuthority.routeDependencies` | Pass | Pass | Pass | Low | Pass |
+| `PublishedArtifactPublicationPort.publishManyForRun(input)` | Pass | Pass | Pass | Low | Pass |
+| `DeferredPublishedArtifactPublicationPort.bind/close` | Pass | Pass | Pass | Low | Pass |
+| `registerAgentToolsMcpRoutes(app, routeDependencies)` | Pass | Pass | Pass | Low | Pass |
+| `ApplicationPlatformLifecycle.prepareBeforeListen/stop` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Bootstrap/client communication | Pass | Pass | Pass | Pass | Bootstrap is normalized; existing client transport is reused. |
-| Package parsing and identity | Pass | Pass | N/A | Pass | Current v4 parser/provider and canonical identity remain authoritative. |
-| Gateway/engine/storage/orchestration | Pass | Pass | N/A | Pass | Implementations remain single-source. |
-| Startup/readiness | Pass | Pass | Pass | Pass | Shared lifecycle extracts exact current requirements. |
-| Static root and fixed selected-app ingress | Pass | Pass | Pass | Pass | Narrow host adapters are justified. |
-| Dev packaging/validation | Pass | Pass | N/A | Pass | Current devkit pack/validate owner is configured, not duplicated. |
+| Session authentication/registry/catalog/dispatch | Pass | Pass | Pass | Pass | Existing semantics are composed under one owner rather than replaced. |
+| Published-artifact business semantics | Pass | Pass | Pass | Pass | Existing graph-local service implements the narrow port; no second publication system. |
+| Recipient-name messaging | Pass | Pass | N/A | Pass | Proven member-context path remains unchanged. |
+| Agent runtime construction | Pass | Pass | Pass | Pass | Existing Codex/Claude seams receive explicit application/general session authorities only where the shared provider contract requires it. |
+| External MCP gateway | Pass | Pass | N/A | Pass | Remains Studio-only and is not reused as a callback workaround. |
+| Provider-native/configured-MCP/browser/media/task tools | Pass | Pass | N/A | Pass | No unsupported graph machinery is added. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| SDK contracts/frontend startup | Pass | Pass | Pass | Pass | Correct normalization boundary. |
-| Application packages/bundles | Pass | Pass | Pass | Pass | No second package system. |
-| Application platform runtime | Pass | Pass | Pass | Pass | Cohesive lifecycle plus graph-local authorities. |
-| API transport adapters | Pass | Pass | Pass | Pass | Distinct host cardinality over shared services. |
-| Standalone host/compositions | Pass | Pass | Pass | Pass | Selected surface and process ownership are explicit. |
-| Devkit | Pass | Pass | Pass | Pass | Owns package and command orchestration, not server internals. |
+| Agent Tools MCP transport | Pass | Pass | Pass | Pass | Process identity plus scoped session lifecycle are within the existing transport boundary. |
+| Published artifacts | Pass | Pass | Pass | Pass | Existing graph service remains the publication authority behind one port. |
+| Application platform runtime | Pass | Pass | Pass | Pass | Owns graph construction seam and lifecycle readiness/stop. |
+| Composition roots | Pass | Pass | Pass | Pass | Select the exact process family and host surface. |
+| Agent/runtime factories | Pass | Pass | Pass | Pass | Issue sessions through the correct scoped/general authority without becoming transport owners. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime bootstrap | Pass | Pass | Pass | Pass | Absolute host-neutral runtime endpoints only. |
-| Standalone provider wire | Pass | Pass | Pass | Pass | Strict relative wire paths stay provider-local. |
-| Provider contract | Pass | Pass | Pass | Pass | Narrow provider protocol; not a generic plugin registry. |
-| Backend HTTP handlers | Pass | Pass | Pass | Pass | Shared parsing/delegation with host-specific mounts. |
-| Selected application descriptor | Pass | Pass | Pass | Pass | One immutable canonical identity. |
-| Lifecycle state and cycle-break ports | Pass | Pass | Pass | Pass | Narrow availability and one-bind event-handler seams. |
-| Maintained app package mapping | Pass | Pass | Pass | Pass | One declarative devkit config per project, identical because the layouts/contracts are identical. |
+| Per-session execution authority | Pass | Pass | Pass | Pass | One tight non-wire type avoids provider capture and request-time graph resolution. |
+| Publication command contract | Pass | Pass | Pass | Pass | One port is shared by the real service and deferred graph seam. |
+| Scoped session issue/revoke | Pass | Pass | Pass | Pass | One application scope is reused across Codex/Claude and member cleanup. |
+| Process route/session authority identity | Pass | Pass | Pass | Pass | One process owner avoids duplicated registry/catalog/dispatcher families. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `ApplicationRuntimeBootstrap` | Pass | Pass | Pass | Pass | Pass | Iframe correlation and request context do not leak through normalization. |
-| `StandaloneApplicationBootstrapPayload` | Pass | Pass | Pass | Pass | Pass | Relative paths are specialized provider wire, not loosened runtime URLs. |
-| `StandaloneApplicationSelection` | Pass | Pass | Pass | Pass | Pass | Canonical ID is derived, not a second selector. |
-| `ApplicationPlatformLifecycleState` | Pass | Pass | Pass | N/A | Pass | One state authority. |
-| `ApplicationPlatformRuntimeGraph` | Pass | Pass | Pass | N/A | Pass | Typed construction result only. |
-| `ApplicationDevkitConfig` mapping | Pass | Pass | Pass | N/A | Pass | Each field has one package-input meaning; no executable fallback representation. |
+| `AgentToolMcpSessionExecutionAuthorities` | Pass | Pass | Pass | Pass | Pass | Contains only `publishedArtifactPublication`; another field requires separate reachable evidence. |
+| `PublishedArtifactPublicationRequest` | Pass | Pass | Pass | N/A | Pass | Reuses the existing publication input meaning; no second run identity. |
+| `AgentToolMcpSession` | Pass | Pass | Pass | Pass | Pass | Execution authority is non-wire and does not duplicate descriptor/token/config state. |
+| Process vs application session authority | Pass | Pass | Pass | Pass | Pass | Shared registry/catalog core with explicit general-process and graph-scoped variants; no kitchen-sink optional context. |
 
 ## File Responsibility Mapping Verdict
 
 | File / Area | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Frontend startup contract/coordinator/provider files | Pass | Pass | Pass | Pass | Exact source and generated migration is complete. |
-| `application-platform-lifecycle.ts` | Pass | Pass | Pass | Pass | Named phase owner with explicit state. |
-| `agent-tool-registry-readiness.ts` | Pass | Pass | Pass | Pass | Exactly seven named groups including Search. |
-| `create-application-platform-runtime-graph.ts` | Pass | Pass | Pass | Pass | Fixed DAG, cycle seams, output, and forbidden lookups are exact. |
-| Composition/process resource files | Pass | Pass | Pass | Pass | Prerequisites, listeners, signals, and disposal are allocated. |
-| REST/WS handler/registrar files | Pass | Pass | Pass | Pass | Shared handlers plus explicit mounts. |
-| Maintained application config/source/output files | Pass | Pass | Pass | Pass | Exact config, icon/source imports, generated output, deletion, and regeneration are mapped. |
+| `agent-tools/mcp/agent-tools-mcp-process-authority.ts` | Pass | Pass | Pass | Pass | Exact process family and lifecycle only. |
+| `agent-tools/mcp/application-agent-tools-session-authority.ts` | Pass | Pass | Pass | Pass | One graph session scope only. |
+| `agent-tools/mcp/agent-tool-mcp-session.ts` | Pass | Pass | Pass | Pass | Adds only non-wire execution authorities. |
+| `agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts` | Pass | Pass | Pass | Pass | Delegates through authenticated session port; owns no publication service. |
+| `services/published-artifacts/published-artifact-publication-port.ts` | Pass | Pass | Pass | Pass | One command contract. |
+| `application-platform/runtime/deferred-published-artifact-publication-port.ts` | Pass | Pass | Pass | Pass | One cycle-breaking state machine. |
+| `agent-tools/mcp/agent-tools-mcp-routes.ts` | Pass | Pass | Pass | Pass | Protocol/auth registrar with explicit dependencies. |
+| Application/general Codex/Claude construction and cleanup callsites | Pass | Pass | Pass | Pass | Modify inventory separates application scope from general-process preservation. |
+| Studio/standalone compositions and application graph factory | Pass | Pass | Pass | Pass | Construction order and host route surfaces are explicit. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| SDK `application-startup/` | Pass | Pass | Low | Pass | Coordinator and provider concerns are separated. |
-| Server `application-platform/runtime/` | Pass | Pass | Medium | Pass | Shared construction/lifecycle seams are cohesive. |
-| `standalone-application-host/` | Pass | Pass | Medium | Pass | Config, selection, API, process, and static owners reflect real depth. |
-| `compositions/` | Pass | Pass | Low | Pass | Product roots only. |
-| Existing REST/WebSocket folders | Pass | Pass | Medium | Pass | Transport implementation remains in established areas. |
-| Devkit commands/development/config folders | Pass | Pass | Medium | Pass | Command and project-input concerns have distinct homes. |
-| Maintained app source roots and `dist/importable-package` | Pass | Pass | Low | Pass | Source and generated runtime output have one owner each. |
+| `autobyteus-server-ts/src/agent-tools/mcp/` | Pass | Pass | Low | Pass | Process/session authority stays with its protocol family. |
+| `autobyteus-server-ts/src/services/published-artifacts/` | Pass | Pass | Low | Pass | Narrow business capability port sits with publication owner. |
+| `autobyteus-server-ts/src/application-platform/runtime/` | Pass | Pass | Low | Pass | Graph-owned deferred seam and lifecycle belong to application runtime construction. |
+| `autobyteus-server-ts/src/compositions/` | Pass | Pass | Low | Pass | Full host wiring remains only in composition roots. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Hosted application startup API/types/copy/tests | Pass | Pass | Pass | Pass | One unversioned startup surface replaces it. |
-| Version-suffixed code identifiers | Pass | Pass | Pass | Pass | Serialized contract values remain; aliases do not. |
-| Public iframe/mock dev fallback | Pass | Pass | Pass | Pass | Useful mocks may remain test-only. |
-| Application routes in broad registries | Pass | Pass | Pass | Pass | Explicit Studio and standalone registrars replace them. |
-| Monolithic `buildApp` as standalone composition | Pass | Pass | Pass | Pass | Explicitly rejected in all governing artifacts. |
-| Composition-critical application globals | Pass | Pass | Pass | Pass | Exact Modify/Retain inventory is complete. |
-| Maintained app custom builders/generated source mirrors/vendor trees | Pass | Pass | Pass | Pass | Deleted after icon migration; devkit-owned output is regenerated. |
+| Cached/global publication capture in `PublishArtifactsMcpAdapterProvider` | Pass | Pass | Pass | Pass | Replaced by authenticated session publication port; no fallback retained. |
+| Application-path default Agent Tools session/registry/catalog/dispatcher discovery | Pass | Pass | Pass | Pass | Replaced by process owner and scoped authority. |
+| Global/default revocation in application run/member cleanup | Pass | Pass | Pass | Pass | Replaced by issuing application scope. |
+| Broad withdrawn SR-007 runtime/tool machinery | Pass | Pass | Pass | Pass | Remains removed; native/configured-MCP/general-gateway expansion stays out of scope. |
+| Alternate route/catalog/global-current-graph workarounds | Pass | Pass | Pass | Pass | Explicitly rejected, not staged as compatibility. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Application-facing startup | No | Pass | Pass | One API and provider normalization. |
-| Versioned code symbols | No | Pass | Pass | Clean unversioned rename; serialized values stay current. |
-| Manifest/package contracts | No | Pass | Pass | Manifest v4 remains the sole contract. |
-| Studio iframe host protocol | No | Pass | Pass | Preserved current wire is provider-local, not a compatibility wrapper. |
-| Maintained app packaging | No | Pass | Pass | Custom builder and source mirrors are removed, not wrapped. |
-| Persisted data | No | Pass | Pass | No version branch, dual reader/writer, or transformation. |
+| Publication authority | No | Pass | Pass | Global provider fallback is removed rather than retained behind a branch. |
+| Agent Tools route/catalog | No | Pass | Pass | One existing route and one process catalog remain; no alias or second graph catalog. |
+| Session persistence | No | Pass | Pass | Sessions remain ephemeral; restart issues fresh capabilities. |
+| Package/runtime/public API | No new compatibility mechanism | Pass | Pass | SR-010 does not change manifest, package, or provider-native contracts. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Per-app `app.sqlite`, `platform.sqlite`, logs/runtime state, and global orchestration lookup | `Directly Usable — No Migration` | Pass | Pass | N/A | Pass | Schemas/readers/writers stay current; Studio identity is unchanged; standalone uses current-format identity and an isolated root; recovery filters to the selected ID. |
-| Generated SDK/application package outputs | `Discard or Rebuild` | Pass | Pass | N/A | Pass | Build owners regenerate derived artifacts from source; no runtime data transformation. |
-| New standalone host `.env` | Not application data; bounded config materialization | Pass | Pass | N/A | Pass | Only a missing empty/non-secret file may be created; existing config and credentials are not overwritten or persisted. |
+| Agent Tools sessions/tokens/execution authorities | Not persisted / Not Affected | Pass | Pass | N/A | Pass | Registry retains in-memory session object; execution port is excluded from wire/log/store/token/package. |
+| Publication journal/application projection | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Existing service and stores retain their schemas and semantics; only authority routing changes. |
+| Package and application/platform databases | Directly Usable — No Migration | Pass | Pass | N/A | Pass | SR-010 introduces no schema or stored default changes. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Bootstrap contract and frontend API | Pass | Pass | Pass | Pass |
-| Server composition/lifecycle extraction | Pass | Pass | Pass | Pass |
-| Standalone selection/host | Pass | Pass | Pass | Pass |
-| Native development and maintained-app conversion | Pass | Pass | Pass | Pass |
-| Built-package production start | Pass | Pass | Pass | Pass |
-| Documentation/supplement cleanup | Pass | N/A | Pass | Pass |
+| Process authority extraction | Pass | Pass | Pass | Pass |
+| Session execution-authority addition | Pass | Pass | Pass | Pass |
+| Graph cycle break and P6A readiness | Pass | Pass | Pass | Pass |
+| Application/general runtime construction migration | Pass | Pass | Pass | Pass |
+| Scope revoke, port close, and process shutdown | Pass | Pass | Pass | Pass |
+| Default/global bypass removal and validation rerun | Pass | Pass | Pass | Pass |
 
-The sequence first establishes the clean startup contract and package inputs, then extracts the graph/lifecycle, then adds standalone and command paths, and finally performs cross-host proof. Temporary seams are restricted to the two named cycle breaks and do not become compatibility paths.
+The sequence preserves the working route/auth/tool-list/message path first, introduces the exact process/session contracts, binds the graph port before readiness, removes global capture, then proves failure states and live projection. No partially working compatibility stage is treated as a supported target.
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Provider normalization | Yes | Pass | Pass | Pass | Provider-local wires normalize to one runtime type. |
-| Standalone selection/identity | Yes | Pass | Pass | Pass | Current parser and one derived ID are explicit. |
-| Composition graph/lifecycle | Yes | Pass | Pass | Pass | Exact readiness order, graph construction, and stop ownership are shown. |
-| Route adapters/static fallback | Yes | Pass | Pass | Pass | Public cardinality and SPA exclusions are clear. |
-| Native commands | Yes | Pass | Pass | Pass | Exact scripts, project config, watch inputs, rebuild/restart behavior, and build-free start are shown. |
-| Maintained app packaging | Yes | Pass | Pass | Pass | Full config example and custom-builder rejection make the target executable. |
+| Full publication/handoff spine | Yes | Pass | Pass | Pass | DS-014 shows the initiating backend through application projection. |
+| Process/session/route composition | Yes | Pass | Pass | Pass | Text graph shows one process authority, one app scope, and exact route dependencies. |
+| Construction-cycle order | Yes | Pass | Pass | Pass | Eight-step bind/readiness/close sequence is explicit. |
+| Interface shape | Yes | Pass | Pass | Pass | Session execution authorities and publication port have exact TypeScript shapes. |
+| Host construction | Yes | Pass | Pass | Pass | Composition example shows shared family and separate external gateway. |
+| Rejected alternatives | Yes | Pass | Pass | Pass | Mutable singleton, request lookup, second catalog/route, and broad SR-007 are explicitly rejected. |
 
-## Material Premise Validation (Only When Needed)
+## Material Premise Validation
 
-### MP-AR-001 — Refreshed-base runtime prerequisites must be preserved in both hosts
+### `MP-ARCH-008-001` — a supported application member invokes publication while active only in the application graph
 
-- Related approved requirement or established contract: BEH-004, BEH-005, BEH-007; current operational startup contract.
-- Relevant behavior ID(s): BEH-004, BEH-005, BEH-007.
-- Initiating basis kind: Operational / Contract.
-- Independent product-supported initiating trigger or applicable governing contract: the operator starts Studio or the approved standalone host; both promise the same real application runtime authorities and readiness.
-- Support evidence: current `server-runtime.ts` always derives the operational database location, registers protected DB/key/sidecar paths, initializes Prisma and the vault, and registers provisioned Search before runtime use.
-- Forward path: process start -> AppConfig/database location -> core migration -> protected paths -> Prisma -> vault -> app-data migration -> seven tool groups/readiness -> host ready -> process stop -> application consumers -> event pipeline -> vault -> Prisma.
-- Lifecycle preconditions and material consequence: omitting or reordering these steps would not preserve current runtime/security/readiness behavior.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: SR-003 now specifies one exact sequence and group count everywhere; the premise no longer drives an open finding.
+- Related approved requirement or established contract: REQ-004, REQ-005, REQ-007; AC-005, AC-006, AC-010, AC-016
+- Relevant behavior ID(s): BEH-004–BEH-006
+- Initiating basis kind: `User`
+- Independent product-supported initiating trigger or applicable governing contract: a user opens the maintained Brief standalone application, creates a brief, and selects **Generate draft**.
+- Support evidence: the exposed Brief standalone browser UI and supported application-folder `pnpm dev` path were executed with the real package, worker, SQLite, Chrome, Codex App Server, and Luna. API-REV-007 produced graph-local researcher/writer members, authenticated sessions, actual tool lists, and two successful handoffs.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `Brief Generate draft -> selected application backend -> guarded binding/team launch -> graph-local researcher/writer AgentRunManager -> Codex session descriptor -> internal Agent Tools route -> registry/catalog/dispatcher/executor -> PublishArtifactsMcpAdapterProvider -> captured process-global PublishedArtifactPublicationService -> process-global active-run lookup -> expected event/journal/application projection`.
+- Lifecycle preconditions and material consequence at the claimed point: both graph-local members are active; authentication, tool discovery, tool invocation, team routing, and writer creation succeed. The process-global manager cannot see either member, so all five publication calls fail before journal/projection and the user receives no draft output.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: one session-bound graph publication port plus one coherent process family is required. The real factory/publication cycle justifies one narrow bind-once deferred port. No broader tool/runtime/gateway redesign is justified.
 
-### MP-AR-005 — Maintained application roots must enter the real devkit pack path
+### `MP-ARCH-008-002` — an application scope can stop while its issued descriptors still exist in the process registry
 
-- Related approved requirement or established contract: BEH-006, UC-015, AC-011.
-- Relevant behavior ID(s): BEH-006.
-- Initiating basis kind: User.
-- Independent product-supported initiating trigger or applicable governing contract: a developer runs supported `pnpm dev`, `pnpm dev:studio`, or `pnpm build` from Brief Studio or Socratic Math Teacher.
-- Support evidence: the exposed application-folder command contract is approved; current maintained projects use `frontend-src`, `backend-src`, and root `agent-teams`, while the devkit accepts declarative path/entry/resource/exposure configuration.
-- Forward path: application project command -> load checked-in devkit config -> current pack/validation owner -> `dist/importable-package` -> real Studio or standalone host path.
-- Lifecycle preconditions and material consequence: without a real mapping, default devkit inputs would not find maintained sources and real-host development could not start.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: SR-003 supplies the exact mapping and retained probe evidence; custom builders are removed, so no open finding remains.
-
-AR-006 required no material-premise record: it was a direct cross-artifact governing-contract contradiction and is now resolved.
+- Related approved requirement or established contract: REQ-004, REQ-005, REQ-007; AC-006, AC-010, AC-016; supported host shutdown/restart contract
+- Relevant behavior ID(s): BEH-004, BEH-005, BEH-007
+- Initiating basis kind: `Operational`
+- Independent product-supported initiating trigger or applicable governing contract: the operator stops or restarts Studio/standalone after a real application run has issued Agent Tools sessions.
+- Support evidence: `pnpm dev` restart/termination and production host stop are supported lifecycle actions; current session capabilities are process-memory objects and run/member cleanup already revokes sessions.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `operator stop/restart -> Fastify ingress drain -> application lifecycle blocks runs/session issue -> run/member handles stop -> scoped session revoke -> publication port close -> graph/process/event/vault/Prisma disposal -> restart creates a new process/graph scope`.
+- Lifecycle preconditions and material consequence at the claimed point: descriptors may have been delivered to active runtimes before shutdown. If sessions outlive the graph, a request could retain a disposed publication reference; if global revoke is used, another scope could be disrupted.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: the scope tracks only sessions it creates, blocks issue, revokes them before port close, and restarts with a new scope. This lifecycle machinery is necessary and bounded.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None.
+None. `APIE2E-REPO-005` remains a separate unattributed diagnostic and does not block or broaden this design decision.
 
 ## Review Decision
 
 `Pass`
 
-The solution is implementation-ready. Provider normalization keeps iframe-v4 acquisition provider-local while giving application code one exact `startApplication` contract. Standalone selection reuses the current parser and stable current-format identity. `ApplicationPlatformLifecycle` owns a bounded stateful lifecycle rather than service lookup. Studio and standalone use explicit compositions with shared graph-local gateway/engine/storage/orchestration authorities and different ingress cardinality. Manifest v4 and persisted data remain directly usable without a compatibility wrapper or data migration. The staged singleton conversion is bounded by a concrete Modify/Retain inventory, narrow cycle seams, and explicit cleanup. SR-003 closes the remaining readiness, maintained-project packaging, and broad-server-fallback defects without introducing new product behavior.
+The upstream behavior basis is confirmed. SR-010 is actionable in the current codebase, resolves CR-015 at the correct authority boundary, and uses a proportionate cycle seam and lifecycle. No in-scope mechanism or finding depends on an unsupported material premise.
 
 ## Findings
 
@@ -296,7 +284,7 @@ None.
 
 ## Classification
 
-`N/A — Pass`
+N/A — Pass.
 
 ## Recommended Recipient
 
@@ -304,18 +292,18 @@ None.
 
 ## Residual Risks
 
-- Hidden singleton coupling remains an implementation risk controlled by the exact Modify/Retain inventory and distinct catalog/data-root sentinel tests.
-- SPA fallback/platform-prefix collisions, absolute asset bases, origin/WS validation, and generated output correctness require API/E2E across the supported Studio and standalone builds.
-- Worker-crash recovery plus refreshed-base event-pipeline/vault/Prisma shutdown require real execution evidence.
-- New `dev`, `dev:studio`, and `start` commands still require implementation and executable validation; the retained config probe proves only the current pack-input seam.
-- The first distribution may remain heavy and workspace-coupled. Optimized independent packaging, full offline dependency closure, marketplace isolation, and public-internet security are correctly deferred.
-- Manifest v4 still depends on current trusted ambient tool/skill/runtime availability and must not be represented as a closed portable marketplace artifact.
+1. Implementation must make process-family identity observable enough to prove route lookup, session issue, provider dispatch, and revoke use the same registry/catalog/dispatcher rather than parallel defaults.
+2. General-process Codex/Claude construction must receive its explicit general authority without allowing application factories to reuse it; current global factory seams make this a source-review focus.
+3. The deferred port needs deterministic tests for pre-bind, second bind, post-close, and failure before any snapshot/journal/relay/projection mutation.
+4. Stop/restart tests must prove application-scope-only revocation, old-descriptor failure, new-scope issuance, and no session referencing a disposed graph.
+5. Real standalone and Studio Brief must both complete publication, recipient-name handoff, graph event/journal, and application projection while the deliberately distinct process-global owner remains untouched.
+6. Existing 401/404, tool projection, route ordering, configured-MCP behavior, native-tool exclusion, and standalone absence of `/mcp/gateway` require regression proof.
+7. `APIE2E-REPO-005` remains separately `Unclear`; it must not be attributed to this correction without a supported production origin.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Round: 3
-- Architecture Review Revision: `ARCH-REV-003`
-- Related Solution Revision: `SR-003`
-- Material-Premise Gate: `Pass`
-- Notes: AR-001–AR-006 are resolved. Proceed to implementation with downstream executable coverage required for the listed residual risks.
+- Current Architecture Review Revision: `ARCH-REV-008`
+- Reviewed Solution Revision: `SR-010`
+- Material-Premise Gate: `Pass` (`MP-ARCH-008-001` and `MP-ARCH-008-002` are reachable and the response is proportionate)
+- Notes: This pass supersedes the withdrawal-only canonical report from round 7. `ARCH-REV-007` remains historically withdrawn; `ARCH-REV-008` is the current authoritative architecture result. Implementation may resume, followed by source review and API/E2E rerun.

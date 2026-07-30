@@ -189,7 +189,10 @@ export default {
 
     app = fastify();
     await app.register(websocket);
-    await registerApplicationBackendWebsocket(app);
+    await registerApplicationBackendWebsocket(app, {
+      gateway: gatewayState.service,
+      lifecycle: { awaitReady: async () => undefined },
+    } as never);
     await app.listen({ host: "127.0.0.1", port: 0 });
     const address = app.server.address();
     if (!address || typeof address === "string") throw new Error("Expected an ephemeral TCP address.");

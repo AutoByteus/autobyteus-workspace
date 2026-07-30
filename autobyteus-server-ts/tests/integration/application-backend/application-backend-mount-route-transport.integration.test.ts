@@ -174,7 +174,10 @@ describe("Application backend mount route transport integration", () => {
 
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(async (restApp) => {
-      await registerApplicationBackendRoutes(restApp);
+      await registerApplicationBackendRoutes(restApp, {
+        gateway: applicationBackendState.apiGatewayService!,
+        lifecycle: { awaitReady: async () => undefined } as never,
+      });
     }, { prefix: "/rest" });
     await app.listen({ host: "127.0.0.1", port: 0 });
     baseUrl = buildBaseUrl(app.server.address() as { port: number; address: string });

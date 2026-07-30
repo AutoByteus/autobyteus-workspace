@@ -357,32 +357,58 @@ test('project watcher replaces resolved input subscriptions after config changes
   }
 });
 
-test('Studio client refreshes a registered local package before resolving its current identity', async () => {
+test('Studio client imports once, refreshes the existing package, resolves current identity, and then reloads its backend', async () => {
   const { StudioApplicationClient } = await import(
     '../dist/development/studio-application-client.js'
   );
   const originalFetch = globalThis.fetch;
-  const queries = [];
-  globalThis.fetch = async (_url, init) => {
+  const operations = [];
+  let registered = false;
+  let refreshed = false;
+  globalThis.fetch = async (url, init) => {
+    if (!String(url).endsWith('/graphql')) {
+      const applicationId = decodeURIComponent(String(url).match(
+        /\/rest\/applications\/([^/]+)\/backend\/reload$/,
+      )?.[1] ?? '');
+      operations.push(`backend-reload:${applicationId}`);
+      return new Response(null, { status: 204 });
+    }
     const body = JSON.parse(init.body);
-    queries.push(body.query);
+    if (body.query.includes('query DevkitApplicationPackages')) {
+      operations.push('list-packages');
+      return Response.json({
+        data: {
+          applicationPackages: registered ? [{ packageId: 'pkg-current' }] : [],
+        },
+      });
+    }
     if (body.query.includes('mutation DevkitImportApplicationPackage')) {
+      operations.push('import-package');
+      assert.equal(registered, false);
+      registered = true;
       return Response.json({ data: { importApplicationPackage: [{ packageId: 'pkg-current' }] } });
     }
-    if (body.query.includes('query DevkitApplicationPackages')) {
-      return Response.json({ data: { applicationPackages: [{ packageId: 'pkg-current' }] } });
-    }
     if (body.query.includes('query DevkitApplicationPackageDetails')) {
+      operations.push('package-details');
       return Response.json({
         data: { applicationPackageDetails: { rootPath: '/tmp/current-package' } },
       });
     }
+    if (body.query.includes('mutation DevkitReloadApplicationPackage')) {
+      operations.push('reload-package');
+      assert.equal(registered, true);
+      refreshed = true;
+      return Response.json({
+        data: { reloadApplicationPackage: [{ packageId: 'pkg-current' }] },
+      });
+    }
     if (body.query.includes('query DevkitApplications')) {
+      operations.push('list-applications');
       return Response.json({
         data: {
           listApplications: [{
-            id: 'canonical-current',
-            localApplicationId: 'renamed-app',
+            id: refreshed ? 'canonical-current' : 'canonical-initial',
+            localApplicationId: refreshed ? 'renamed-app' : 'initial-app',
             packageId: 'pkg-current',
           }],
         },
@@ -391,13 +417,32 @@ test('Studio client refreshes a registered local package before resolving its cu
     throw new Error(`Unexpected query: ${body.query}`);
   };
   try {
-    const selected = await new StudioApplicationClient('http://127.0.0.1:8000')
-      .ensureLocalPackage('/tmp/current-package', 'renamed-app');
-    assert.deepEqual(selected, {
+    const client = new StudioApplicationClient('http://127.0.0.1:8000');
+    const initial = await client.ensureLocalPackage('/tmp/current-package', 'initial-app');
+    await client.reloadApplication(initial.applicationId);
+    const current = await client.ensureLocalPackage('/tmp/current-package', 'renamed-app');
+    await client.reloadApplication(current.applicationId);
+    assert.deepEqual(initial, {
+      packageId: 'pkg-current',
+      applicationId: 'canonical-initial',
+    });
+    assert.deepEqual(current, {
       packageId: 'pkg-current',
       applicationId: 'canonical-current',
     });
-    assert.equal(queries[0].includes('mutation DevkitImportApplicationPackage'), true);
+    assert.deepEqual(operations, [
+      'list-packages',
+      'import-package',
+      'list-packages',
+      'package-details',
+      'list-applications',
+      'backend-reload:canonical-initial',
+      'list-packages',
+      'package-details',
+      'reload-package',
+      'list-applications',
+      'backend-reload:canonical-current',
+    ]);
   } finally {
     globalThis.fetch = originalFetch;
   }

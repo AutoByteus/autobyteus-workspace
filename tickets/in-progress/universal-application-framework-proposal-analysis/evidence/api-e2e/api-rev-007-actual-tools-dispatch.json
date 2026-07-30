@@ -1,0 +1,173 @@
+{
+  "scenarioId": "APIE2E-STANDALONE-MCP-003",
+  "findingId": "APIE2E-F007",
+  "capturedAt": "2026-07-30T05:49:00.000Z",
+  "head": "83b24e88217032943b52f640f3d799e4054345c8",
+  "applicationUrl": "http://127.0.0.1:43124/",
+  "briefId": "brief-864f6ba0-0df0-4844-90ee-d743d342cd64",
+  "bindingId": "84c7b16c-4e72-4ee7-bb53-177835ae65b9",
+  "runIds": {
+    "team": "brief_studio_team_47404ce97a884085ab5dceaa67a02603",
+    "researcher": "brief_studio_researcher_6792f02732c245aa8b90c6034949c763",
+    "writer": "brief_studio_writer_b8b1d55a87234564b3a08cb80532fcd2"
+  },
+  "codexThreadIds": {
+    "researcher": "019fb188-dc34-7841-b39b-3370f08c2934",
+    "writer": "019fb18a-0b1e-70f0-adee-b9c9e3dfc393"
+  },
+  "descriptorObservation": {
+    "nonNull": true,
+    "basis": "Both real Codex member threads connected to three MCP servers with zero unavailable servers; the AutoByteus Agent Tools publish_artifacts and send_message_to adapters were present in each actual session tool catalog.",
+    "secretsRecorded": false
+  },
+  "authenticatedToolsList": [
+    {
+      "threadId": "019fb188-dc34-7841-b39b-3370f08c2934",
+      "mcpServerCount": 3,
+      "availableServerCount": 3,
+      "unavailableServerCount": 0,
+      "toolCount": 86
+    },
+    {
+      "threadId": "019fb18a-0b1e-70f0-adee-b9c9e3dfc393",
+      "mcpServerCount": 3,
+      "availableServerCount": 3,
+      "unavailableServerCount": 0,
+      "toolCount": 86
+    }
+  ],
+  "eligibleToolPresence": {
+    "researcher": {
+      "rolloutLine": 84,
+      "publishArtifacts": true,
+      "sendMessageTo": true
+    },
+    "writer": {
+      "rolloutLine": 27,
+      "publishArtifacts": true,
+      "sendMessageTo": true
+    }
+  },
+  "actualDispatches": [
+    {
+      "role": "researcher",
+      "threadId": "019fb188-dc34-7841-b39b-3370f08c2934",
+      "rolloutLine": 59,
+      "timestamp": "2026-07-30T05:40:18.286Z",
+      "tool": "publish_artifacts",
+      "isError": true,
+      "resultText": "{\n  \"error\": {\n    \"code\": \"publish_artifacts_failed\",\n    \"message\": \"Run 'brief_studio_researcher_6792f02732c245aa8b90c6034949c763' is not active.\"\n  }\n}",
+      "artifactPaths": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+      ]
+    },
+    {
+      "role": "researcher",
+      "threadId": "019fb188-dc34-7841-b39b-3370f08c2934",
+      "rolloutLine": 71,
+      "timestamp": "2026-07-30T05:40:33.939Z",
+      "tool": "publish_artifacts",
+      "isError": true,
+      "resultText": "{\n  \"error\": {\n    \"code\": \"publish_artifacts_failed\",\n    \"message\": \"Run 'brief_studio_researcher_6792f02732c245aa8b90c6034949c763' is not active.\"\n  }\n}",
+      "artifactPaths": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+      ]
+    },
+    {
+      "role": "researcher",
+      "threadId": "019fb188-dc34-7841-b39b-3370f08c2934",
+      "rolloutLine": 77,
+      "timestamp": "2026-07-30T05:40:42.514Z",
+      "tool": "send_message_to",
+      "isError": false,
+      "resultText": "Delivered message to writer.",
+      "recipientName": "writer",
+      "targetAgentRunId": null,
+      "referenceFiles": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/research.md"
+      ]
+    },
+    {
+      "role": "researcher",
+      "threadId": "019fb188-dc34-7841-b39b-3370f08c2934",
+      "rolloutLine": 152,
+      "timestamp": "2026-07-30T05:42:27.538Z",
+      "tool": "send_message_to",
+      "isError": false,
+      "resultText": "Delivered message to writer.",
+      "recipientName": "writer",
+      "targetAgentRunId": null,
+      "referenceFiles": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md"
+      ]
+    },
+    {
+      "role": "researcher",
+      "threadId": "019fb188-dc34-7841-b39b-3370f08c2934",
+      "rolloutLine": 162,
+      "timestamp": "2026-07-30T05:42:45.838Z",
+      "tool": "publish_artifacts",
+      "isError": true,
+      "resultText": "{\n  \"error\": {\n    \"code\": \"publish_artifacts_failed\",\n    \"message\": \"Run 'brief_studio_researcher_6792f02732c245aa8b90c6034949c763' is not active.\"\n  }\n}",
+      "artifactPaths": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md"
+      ]
+    },
+    {
+      "role": "researcher",
+      "threadId": "019fb188-dc34-7841-b39b-3370f08c2934",
+      "rolloutLine": 186,
+      "timestamp": "2026-07-30T05:43:11.887Z",
+      "tool": "send_message_to",
+      "isError": true,
+      "resultText": "Exact AgentRun target 'brief_studio_writer_b8b1d55a87234564b3a08cb80532fcd2' is not active.",
+      "recipientName": null,
+      "targetAgentRunId": "brief_studio_writer_b8b1d55a87234564b3a08cb80532fcd2",
+      "referenceFiles": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md"
+      ]
+    },
+    {
+      "role": "writer",
+      "threadId": "019fb18a-0b1e-70f0-adee-b9c9e3dfc393",
+      "rolloutLine": 48,
+      "timestamp": "2026-07-30T05:41:36.866Z",
+      "tool": "publish_artifacts",
+      "isError": true,
+      "resultText": "{\n  \"error\": {\n    \"code\": \"publish_artifacts_failed\",\n    \"message\": \"Run 'brief_studio_writer_b8b1d55a87234564b3a08cb80532fcd2' is not active.\"\n  }\n}",
+      "artifactPaths": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md"
+      ]
+    },
+    {
+      "role": "writer",
+      "threadId": "019fb18a-0b1e-70f0-adee-b9c9e3dfc393",
+      "rolloutLine": 66,
+      "timestamp": "2026-07-30T05:42:30.847Z",
+      "tool": "publish_artifacts",
+      "isError": true,
+      "resultText": "{\n  \"error\": {\n    \"code\": \"publish_artifacts_failed\",\n    \"message\": \"Run 'brief_studio_writer_b8b1d55a87234564b3a08cb80532fcd2' is not active.\"\n  }\n}",
+      "artifactPaths": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio/.autobyteus/dev/data/applications/bundle-app__7374616e64616c6f6e65__62726965662d73747564696f/runtime/brief-studio/final-brief.md"
+      ]
+    }
+  ],
+  "assertions": {
+    "actualDescriptorNonNull": "Pass",
+    "authenticatedToolsList": "Pass",
+    "publishArtifactsEligibleAndInvoked": "Pass",
+    "sendMessageToEligibleAndDispatched": "Pass",
+    "writerHandoffAndRun": "Pass",
+    "publishArtifactsCompleted": "Fail",
+    "projectedArtifacts": "Fail"
+  },
+  "failure": {
+    "messagePattern": "Run '<graph-local member run id>' is not active.",
+    "researcherPublishAttempts": 3,
+    "writerPublishAttempts": 2,
+    "applicationBriefStatus": "not_started",
+    "applicationArtifactCount": 0,
+    "platformPublicationJournalCount": 0
+  },
+  "validityNote": "No direct file or SQLite mutation is counted as publication or handoff proof. Only actual Agent Tools MCP results, the live binding/run state, the application databases, and the rendered browser state are used for these assertions."
+}

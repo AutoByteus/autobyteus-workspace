@@ -201,7 +201,10 @@ describe("Application agent communication WebSocket integration", () => {
 
     app = fastify();
     await app.register(websocket);
-    await registerApplicationAgentCommunicationWebsocket(app);
+    await registerApplicationAgentCommunicationWebsocket(app, {
+      agentCommunicationService: communicationState.service,
+      lifecycle: { awaitReady: async () => undefined },
+    } as never);
     await app.listen({ host: "127.0.0.1", port: 0 });
     const address = app.server.address();
     if (!address || typeof address === "string") throw new Error("Expected an ephemeral TCP address.");

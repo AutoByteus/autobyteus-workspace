@@ -309,6 +309,58 @@ describe("ApplicationEngineHostService", () => {
     });
   });
 
+  it("recovers a failed worker on the next supported ensure-ready request", async () => {
+    const applicationId = "built-in:applications__sample-app";
+    const bundleService = {
+      getApplicationById: vi.fn().mockResolvedValue(createBundle()),
+    };
+    const storageLifecycleService = new ApplicationStorageLifecycleService({
+      appConfig: createMockAppConfig(tempRoot) as never,
+      applicationBundleService: bundleService as never,
+    });
+    const service = new ApplicationEngineHostService({
+      applicationBundleService: bundleService as never,
+      storageLifecycleService,
+    });
+
+    const firstStatus = await service.ensureApplicationEngine(applicationId);
+    expect(firstStatus.ready).toBe(true);
+    const firstHandle = (service as any).runtimeHandleByApplicationId.get(applicationId);
+    const firstChild = firstHandle?.supervisor?.process;
+    expect(firstChild?.pid).toEqual(expect.any(Number));
+    firstChild.kill("SIGKILL");
+
+    await vi.waitFor(() => {
+      expect(service.getApplicationEngineStatus(applicationId)).toMatchObject({
+        state: "failed",
+        ready: false,
+      });
+    });
+    expect((service as any).runtimeHandleByApplicationId.has(applicationId)).toBe(false);
+
+    const recoveredStatus = await service.ensureApplicationEngine(applicationId);
+    expect(recoveredStatus).toMatchObject({
+      state: "ready",
+      ready: true,
+      lastFailure: null,
+    });
+    const recoveredHandle = (service as any).runtimeHandleByApplicationId.get(applicationId);
+    expect(recoveredHandle?.supervisor?.process?.pid).not.toBe(firstChild.pid);
+    await expect(
+      service.invokeApplicationQuery(applicationId, {
+        queryName: "tickets.get",
+        requestContext: { applicationId },
+        input: { ticketId: "after-recovery" },
+      }),
+    ).resolves.toMatchObject({
+      input: { ticketId: "after-recovery" },
+      requestContext: { applicationId },
+    });
+
+    await service.stopAllApplicationEngines();
+    expect(service.getApplicationEngineStatus(applicationId).state).toBe("stopped");
+  });
+
   it("repairs empty app storage before reusing an already-ready runtime handle", async () => {
     await fs.writeFile(
       path.join(migrationsDirPath, "001_create_briefs.sql"),

@@ -1,0 +1,73 @@
+# API-REV-005 final integrity
+UTC 2026-07-29T21:11:05Z
+
+## Reviewed HEAD
+077ebfa760ed90a1cbc3e7cd2cd9b5fe96352e51
+
+## Branch
+codex/universal-application-framework-proposal-analysis
+
+## Diff check
+PASS: git diff --check
+
+## Owned listener check
+PASS: no listener on 43124
+PASS: no listener on 8000
+PASS: no listener on 3000
+
+## Owned generated path check
+PASS: absent applications/brief-studio/.autobyteus
+PASS: absent applications/brief-studio/brief-studio/research.md
+PASS: absent autobyteus-application-devkit/.tmp-tests
+PASS: absent autobyteus-application-devkit/dist
+
+## Owned process check
+PASS: no process tied to this worktree, Brief application, or port 43124
+NOTE: unrelated long-lived Codex app-server processes in other working directories were not modified.
+
+## API/E2E artifacts
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-dev-standalone.log
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-standalone-real-team.log
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-standalone-stall-api.json
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-standalone-stall.png
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-standalone-tool-exposure.json
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-standalone-tool-stall-excerpt.json
+PASS: exists tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-standalone-agent-tools-route-regression.log
+
+## Worktree status
+ M autobyteus-application-devkit/tests/application-devkit.test.mjs
+ M autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+ M autobyteus-server-ts/tests/integration/application-backend/brief-studio-team-config.integration.test.ts
+ M autobyteus-server-ts/tests/unit/api/graphql/types/definition-catalog-refresh.test.ts
+ M autobyteus-server-ts/tests/unit/api/rest/application-backends-execution-resource-configurations.test.ts
+ M autobyteus-server-ts/tests/unit/api/rest/application-backends-prefix.test.ts
+ M autobyteus-server-ts/tests/unit/application-engine/application-engine-host-service.test.ts
+ D autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-configuration-service.test.ts
+ D autobyteus-server-ts/tests/unit/application-orchestration/application-execution-resource-stale-state.test.ts
+ M autobyteus-web/components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+ M autobyteus-web/components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+ M tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/design-self-validation.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/proposal-critical-analysis.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md
+ M tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md
+?? autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+?? autobyteus-server-ts/tests/integration/application-backend/standalone-application-composition.integration.test.ts
+?? autobyteus-server-ts/tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts
+?? autobyteus-server-ts/tests/unit/application-platform/
+?? autobyteus-web/composables/__tests__/useApplicationLaunchSelectionPreviews.spec.ts
+?? tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md
+?? tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md
+?? tickets/in-progress/universal-application-framework-proposal-analysis/evidence/

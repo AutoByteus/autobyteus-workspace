@@ -1,0 +1,48 @@
+{
+  "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+  "title": "API REV 004 live team 2026-07-29T13:59:06.106Z",
+  "briefId": "brief-33d37abd-fb3a-400a-9a93-5cc63bb2a88b",
+  "brief": {
+    "briefId": "brief-33d37abd-fb3a-400a-9a93-5cc63bb2a88b",
+    "title": "API REV 004 live team 2026-07-29T13:59:06.106Z",
+    "status": "researching",
+    "latestBindingId": "3bd9572f-ef5b-4be8-acaa-11e73880eba4",
+    "latestRunId": "brief_studio_team_d14443ac021e4ce1b31944eac5faa202",
+    "latestBindingStatus": "ATTACHED",
+    "lastErrorMessage": null,
+    "createdAt": "2026-07-29T13:59:09.552Z",
+    "updatedAt": "2026-07-29T14:02:54.053Z",
+    "approvedAt": null,
+    "rejectedAt": null,
+    "artifacts": [
+      {
+        "briefId": "brief-33d37abd-fb3a-400a-9a93-5cc63bb2a88b",
+        "artifactKind": "researcher",
+        "publicationKind": "research",
+        "revisionId": "c82db9a1-b99d-4de8-963c-1266b40b7bee",
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/.autobyteus/development/server-data/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+        "description": null,
+        "body": "# API REV 004 Research Checkpoint\n\n**Brief Title:** API REV 004 live team 2026-07-29T13:59:06.106Z\n\n## Key Findings\n\n- API revision 004 represents the fourth major iteration in the universal application framework proposal, building on established patterns from REV 001-003\n- Current live team deployment requires stability focus; breaking changes must be carefully evaluated against existing integrations\n- Importable package structure in brief-studio/dist supports modular API distribution with clear versioning boundaries\n- Version 004 introduces compatibility layers that enable gradual migration from REV 003 without forced immediate upgrades\n- Test coverage requirements have increased to 95% minimum for all public API surface areas in this revision\n\n## Risks & Open Questions\n\n- Migration path complexity: teams using REV 002 directly may face multi-step upgrade challenges; need to validate skip-generation compatibility\n- Documentation synchronization: API spec updates must stay aligned with implementation; risk of drift during parallel development cycles\n- Backward compatibility guarantees undefined for edge cases in legacy authentication flows; requires explicit policy decision\n\n## Recommendations & Next Steps\n\n- Prioritize non-breaking changes for REV 004; defer structural refactors to REV 005\n- Create migration guide documenting upgrade paths from REV 002, 003, and direct 004 adoption\n- Establish API deprecation timeline (minimum 2 revision cycles) for any sunset features in this release\n- Coordinate with writer to produce implementation brief covering: change summary, migration instructions, and compatibility matrix\n",
+        "producerMemberRouteKey": "researcher",
+        "updatedAt": "2026-07-29T14:02:54.053Z"
+      }
+    ],
+    "reviewNotes": []
+  },
+  "executions": [
+    {
+      "bindingId": "3bd9572f-ef5b-4be8-acaa-11e73880eba4",
+      "status": "ATTACHED",
+      "runId": "brief_studio_team_d14443ac021e4ce1b31944eac5faa202",
+      "definitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+      "createdAt": "2026-07-29T13:59:09.780Z",
+      "updatedAt": "2026-07-29T13:59:09.780Z",
+      "terminatedAt": null,
+      "lastErrorMessage": null
+    }
+  ],
+  "notificationTopics": [
+    "brief.created",
+    "brief.draft_run_started"
+  ]
+}

@@ -350,10 +350,21 @@ export default {
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(websocket);
     await app.register(async (restApp) => {
-      await registerApplicationAvailabilityRoutes(restApp);
-      await registerApplicationBackendRoutes(restApp);
+      const lifecycle = { awaitReady: async () => undefined } as never;
+      await registerApplicationAvailabilityRoutes(restApp, {
+        gateway: applicationBackendState.apiGatewayService!,
+        availabilityService: { reloadAndReenter: vi.fn() } as never,
+        lifecycle,
+      });
+      await registerApplicationBackendRoutes(restApp, {
+        gateway: applicationBackendState.apiGatewayService!,
+        lifecycle,
+      });
     }, { prefix: "/rest" });
-    await registerApplicationBackendNotificationWebsocket(app);
+    await registerApplicationBackendNotificationWebsocket(app, {
+      notificationHub: applicationBackendState.notificationHub!,
+      lifecycle: { awaitReady: async () => undefined } as never,
+    });
     await app.listen({ host: "127.0.0.1", port: 0 });
     baseUrl = buildBaseUrl(app.server.address() as { port: number; address: string });
     notificationSocket = null;

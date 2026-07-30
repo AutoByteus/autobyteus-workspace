@@ -1,0 +1,54 @@
+# API-REV-006 cleanup
+UTC 2026-07-30T05:15:21Z
+## owned paths before
+present applications/brief-studio/.autobyteus
+present autobyteus-application-devkit/dist
+absent autobyteus-application-devkit/.tmp-tests
+## remove owned paths
+removed only API-REV-006 runtime data, devkit build output, and temporary inspector scripts
+## owned paths after
+absent applications/brief-studio/.autobyteus
+absent autobyteus-application-devkit/dist
+absent autobyteus-application-devkit/.tmp-tests
+## listeners after
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+## owned process patterns after
+16484 /bin/bash -lc set -euo pipefail
+EVID='tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e'
+OUT="$EVID/api-rev-006-cleanup.log"
+{
+ echo '# API-REV-006 cleanup'
+ echo "UTC $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+ echo '## owned paths before'
+ for p in applications/brief-studio/.autobyteus autobyteus-application-devkit/dist autobyteus-application-devkit/.tmp-tests; do [ -e "$p" ] && echo "present $p" || echo "absent $p"; done
+ echo '## remove owned paths'
+ python3 - <<'PY'
+import pathlib, shutil
+for raw in ['applications/brief-studio/.autobyteus','autobyteus-application-devkit/dist','autobyteus-application-devkit/.tmp-tests']:
+ p=pathlib.Path(raw)
+ if p.is_dir(): shutil.rmtree(p)
+ elif p.exists(): p.unlink()
+for p in pathlib.Path('/tmp').glob('api-rev-006-*.mjs'):
+ p.unlink()
+print('removed only API-REV-006 runtime data, devkit build output, and temporary inspector scripts')
+PY
+ echo '## owned paths after'
+ for p in applications/brief-studio/.autobyteus autobyteus-application-devkit/dist autobyteus-application-devkit/.tmp-tests; do [ -e "$p" ] && echo "present $p" || echo "absent $p"; done
+ echo '## listeners after'
+ for p in 43124 9229 8000 3000; do if lsof -nP -iTCP:$p -sTCP:LISTEN >/dev/null 2>&1; then lsof -nP -iTCP:$p -sTCP:LISTEN; else echo "clear $p"; fi; done
+ echo '## owned process patterns after'
+ pgrep -fal 'applications/brief-studio/.autobyteus|pnpm -C applications/brief-studio dev|--port 43124' || echo clear
+} > "$OUT"
+cat "$OUT"
+
+## verification after cleanup command exited
+2026-07-30T05:15:31Z
+clear 43124
+clear 9229
+clear 8000
+clear 3000
+owned pids 84505 and 87530 absent
+temporary inspector scripts absent

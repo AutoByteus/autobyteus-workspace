@@ -135,7 +135,7 @@ export default {
   commands: {
     'capabilities.exercise': async (_input, context) => {
       const resources = await context.agentResources.listAvailable({ source: 'bundle' })
-      const configured = await context.agentResources.getConfigured('primaryAgent')
+      const configured = await context.agentResources.requireRunnable('primaryAgent')
 
       const agent = await context.agentExecution.startAgent({
         launchRequestId: 'agent-launch-request-1',
@@ -470,11 +470,33 @@ describe("Application context capability integration", () => {
       startupGate: { awaitReady: vi.fn(async () => undefined) } as never,
       availabilityService: { requireApplicationActive: vi.fn(async () => undefined) } as never,
       executionResourceResolver: executionResourceResolver as never,
-      executionResourceConfigurationService: {
-        getConfiguredExecutionResource: vi.fn(async (_applicationId: string, slotKey: string) => ({
+      launchConfigurationService: {
+        requireRunnableConfiguration: vi.fn(async (_applicationId: string, slotKey: string) => ({
           slotKey,
           executionResourceRef: AGENT_RESOURCE_REF,
-          launchProfile: null,
+          resourceDefinitionId: AGENT_RESOURCE.definitionId,
+          resourceKind: "AGENT",
+          leaves: [{
+            memberRouteKey: null,
+            memberName: "Sample Agent",
+            agentDefinitionId: AGENT_RESOURCE.definitionId,
+            runtimeKind: "autobyteus",
+            llmModelIdentifier: "gpt-test",
+            llmConfig: null,
+            workspaceRootPath: tempRoot,
+            provenance: {
+              runtimeKind: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: AGENT_RESOURCE.definitionId,
+              },
+              llmModelIdentifier: {
+                kind: "PACKAGE_AGENT_DEFAULT",
+                agentDefinitionId: AGENT_RESOURCE.definitionId,
+              },
+              llmConfig: null,
+              workspaceRootPath: "APPLICATION_RUNTIME",
+            },
+          }],
         })),
       } as never,
       runBindingLaunchService,
