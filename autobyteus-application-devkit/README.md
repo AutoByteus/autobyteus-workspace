@@ -26,6 +26,11 @@ The generated source project uses editable `src/frontend` and `src/backend` inpu
 
 `dev`, `dev --host studio`, and `start` all use real runtime hosts. Mock bootstrap and backend behavior are test fixtures only and are never selected as a command fallback.
 
+The server package owns `startStandaloneApplicationHost` and its
+`buildStandaloneApplicationServer` assembly boundary. The devkit owns project
+build, validation, watch, and host-process orchestration; it does not construct
+the server's `ApplicationPlatformRuntime` or start agent/team runs itself.
+
 ## Safety boundary
 
 User import of `dist/importable-package` remains prebuilt-only: AutoByteus validates package files and does not run app install/build/lifecycle scripts during import. Backend code from the package is still executed when the application launches in the existing worker runtime; this devkit is not an arbitrary-code sandbox.

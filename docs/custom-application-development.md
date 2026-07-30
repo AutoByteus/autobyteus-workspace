@@ -106,6 +106,15 @@ pnpm start
 
 `start` validates `dist/importable-package` and runs it without rebuilding or watching. Mutable database, vault, logs, and application state live under `.autobyteus/standalone-data` by default; the package remains read-only.
 
+Studio is assembled by `buildStudioServer`; standalone uses
+`buildStandaloneApplicationServer` behind `startStandaloneApplicationHost`.
+Each host builds one `ApplicationPlatformRuntime`. Runtime construction prepares
+services and managers but starts no agent or team run. Application business
+demand creates new runs, and post-listen recovery may restore recorded runs.
+The process-owned `AgentToolsMcpRuntime` and scoped session managers preserve
+the internal `/mcp/agent-tools/:sessionId` callback; Studio-only `/mcp/gateway`
+is a separate external-client surface.
+
 ## Agent-published artifacts
 
 When an application agent needs to publish files back to the application, configure the agent with the canonical local tool name:

@@ -118,6 +118,12 @@ That gate:
 - keeps `Enter application` disabled while setup is loading, saving, dirty, or missing required saved state, and
 - only allows host launch after the setup panel reports `launch-ready`.
 
+Studio consumes the server's launch-configuration service through the host API
+and shares one server-owned `ApplicationPlatformRuntime` across installed
+applications. Loading setup constructs no runtime and starts no agent/team run
+in the browser; execution begins only when application business behavior
+requests it after entry.
+
 `ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It loads the saved slot state, owns refresh/save/reset actions, and surfaces:
 
 - required vs optional slots, and

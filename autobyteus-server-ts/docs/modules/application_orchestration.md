@@ -7,8 +7,10 @@ Owns application-authored runtime orchestration after an application backend is 
 ## TS Source
 
 - `src/application-orchestration`
+- `src/application-platform/runtime`
 - `src/startup/agent-tool-loader.ts`
-- `src/server-runtime.ts`
+- `src/compositions/build-studio-server.ts`
+- `src/compositions/build-standalone-application-server.ts`
 
 ## Main Service And Supporting Owners
 
@@ -28,6 +30,8 @@ Owns application-authored runtime orchestration after an application backend is 
 - `src/application-orchestration/stores/application-run-binding-store.ts`
 - `src/application-orchestration/stores/application-run-lookup-store.ts`
 - `src/application-orchestration/stores/application-execution-event-journal-store.ts`
+- `src/application-platform/runtime/create-application-orchestration-services.ts`
+- `src/application-platform/runtime/create-application-run-services.ts`
 
 ## Authority Boundary
 
@@ -151,7 +155,15 @@ Runtime-visible lifecycle events use the application-owned orchestration journal
 
 ## Startup Recovery And Gating
 
-`server-runtime.ts` runs orchestration startup recovery after the HTTP/WebSocket stack is listening:
+`createApplicationOrchestrationServices` and
+`createApplicationRunServices` construct named runtime services around the
+exact runtime-local definitions and run managers. They prepare services,
+managers, and factories only. `ApplicationRunBindingLaunchService` is the
+business-demand boundary that creates a new agent or team run; startup recovery
+only restores runs represented by recorded nonterminal bindings.
+
+The Studio and standalone server assembly roots run orchestration startup recovery
+after the HTTP/WebSocket stack is listening:
 
 1. `ApplicationOrchestrationStartupGate.runStartupRecovery(...)` enters the `RECOVERING` state.
 2. `ApplicationOrchestrationRecoveryService.resumeBindings()` enumerates all installed applications, reloads nonterminal bindings, rebuilds global run lookups, and reattaches lifecycle observers when possible.

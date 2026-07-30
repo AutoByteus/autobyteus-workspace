@@ -52,6 +52,15 @@ The same REST module also exposes the host launch-setup surfaces outside the bac
 
 Those setup routes feed the authoritative pre-entry setup gate on `/applications/:id` before the iframe host is allowed to enter the application.
 
+### Internal Agent Tools route is separate
+
+Both `buildStudioServer` and `buildStandaloneApplicationServer` register
+`/mcp/agent-tools/:sessionId` from the same process-owned
+`AgentToolsMcpRuntime`. Each application runtime issues sessions through its
+`ScopedAgentToolMcpSessionManager`; authenticated publication uses only that
+session's `PublishedArtifactPublisher`. Studio's `/mcp/gateway` remains a
+separate external-client boundary and is not registered by standalone.
+
 ### WebSocket notifications
 
 - `GET /ws/applications/:applicationId/backend/notifications`

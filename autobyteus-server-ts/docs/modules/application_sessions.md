@@ -12,6 +12,28 @@ The current implementation replaced the old session-owned model with application
 - host/bootstrap request context uses `{ applicationId }`, not an application-session id, and
 - the old session GraphQL / websocket / retained-snapshot surfaces were removed from the live codepath.
 
+## Current Agent Tools MCP Session Scope
+
+The current Agent Tools MCP sessions are ephemeral bearer capabilities, not a
+return of the former durable application-session identity:
+
+- `AgentToolsMcpRuntime` owns one process registry, tool catalog, executor,
+  dispatcher, and internal route family.
+- Each `ApplicationPlatformRuntime` receives a
+  `ScopedAgentToolMcpSessionManager` bound to that runtime's exact
+  `PublishedArtifactPublisher`. General-process sessions use a separate scoped
+  manager and cannot inherit an application's publication capability.
+- Both Studio and standalone register the internal
+  `/mcp/agent-tools/:sessionId` route. The external `/mcp/gateway` client surface
+  is separate and remains Studio-only.
+- Application-runtime shutdown first blocks new session issue, then drains
+  dispatch and communication surfaces, stops workers and runtime-owned
+  team/agent runs, revokes the runtime's sessions, closes its publisher, and
+  stops remaining streams.
+
+These descriptors are session-scoped capabilities; they are not stored
+application identity, wire-level application sessions, or retained snapshots.
+
 ## Current Authoritative Docs
 
 - [`application_orchestration.md`](./application_orchestration.md)

@@ -7,7 +7,9 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 ## TS Source
 
 - `src/application-engine`
-- `src/server-runtime.ts`
+- `src/application-platform/runtime`
+- `src/compositions/build-studio-server.ts`
+- `src/compositions/build-standalone-application-server.ts`
 
 ## Main Service And Supporting Owners
 
@@ -83,11 +85,34 @@ Unexpected worker exit clears the in-memory runtime handle and moves engine stat
 
 ## Startup Resume Hook
 
-After the HTTP/WebSocket stack is listening, `server-runtime.ts` runs application-orchestration startup recovery:
+After the HTTP/WebSocket stack is listening, each server assembly root runs
+application-orchestration startup recovery:
 
 - `ApplicationOrchestrationRecoveryService.resumeBindings()` rebuilds durable lookups and reattaches observers,
 - `ApplicationExecutionEventDispatchService.resumePendingEvents()` reschedules pending event journals,
 - none of that eagerly starts every application worker, but pending event dispatch or live backend traffic may lazily start a worker when needed.
+
+## Application Platform Runtime Shutdown
+
+The Studio and standalone servers place each application engine inside one
+`ApplicationPlatformRuntime`. Building that runtime prepares its services and
+managers but starts no new run. Business launch requests create new runs;
+post-listen recovery may restore recorded runs. Runtime shutdown is ordered so
+no new work can enter while owned capabilities are being dismantled:
+
+1. block new application Agent Tools session issue;
+2. stop dispatch, application communication, backend gateway/socket,
+   notification, and observer admission;
+3. stop application workers;
+4. use `ApplicationRunShutdownCoordinator` to stop runtime-owned team runs
+   before remaining runtime-owned agent runs;
+5. revoke the runtime's scoped Agent Tools sessions;
+6. close its bind-once `PublishedArtifactPublisher`; and
+7. stop remaining streaming surfaces.
+
+The process-level `AgentToolsMcpRuntime` closes only after the application
+runtime has stopped. This ordering prevents a stopped application from
+retaining a publication capability or accepting new runtime-scoped work.
 
 ## Related Docs
 

@@ -119,6 +119,37 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - If the application backend later wants runtime work, it calls the named `context.agentExecution`, `context.agentResources`, or `context.publishedArtifacts` capability through the application-orchestration boundary.
 - Bundles therefore remain the durable package/distribution boundary, while orchestration, backend transport, engine startup, and storage state have separate authoritative owners.
 
+## Dual-Host Servers And Application Runtime
+
+`buildStudioServer` and `buildStandaloneApplicationServer` are the two server
+assembly roots over `ApplicationPlatformRuntime`. Studio builds one application
+runtime for its process and shares that connected service set across installed
+applications. Standalone builds one application runtime for its process and
+selects exactly one application from the configured package.
+
+Building `ApplicationPlatformRuntime` prepares managers, services, factories,
+and lifecycle owners; it starts no new agent or team run. Application business
+demand creates new execution, while the established recovery phase may restore
+recorded runs after the server listens.
+
+- Studio combines the application catalog, setup UI, iframe host, broad Studio
+  APIs, the internal `/mcp/agent-tools/:sessionId` route, and the external
+  `/mcp/gateway` client surface.
+- Standalone selects exactly one local application or package, validates it
+  before the server listens, serves its UI at `/`, and exposes same-origin
+  bootstrap plus application backend/WebSocket surfaces under
+  `/_autobyteus/*`. It includes the internal Agent Tools route but not the
+  Studio external gateway.
+- Each process owns one `AgentToolsMcpRuntime`. The application runtime receives
+  one `ScopedAgentToolMcpSessionManager` for its explicit scope and exact
+  `PublishedArtifactPublisher`; `/mcp/agent-tools/:sessionId` remains distinct
+  from Studio-only `/mcp/gateway`.
+
+Server assembly and standalone-host ownership live under
+`src/compositions/build-studio-server.ts`,
+`src/compositions/build-standalone-application-server.ts`,
+`src/standalone-application-host`, and `src/application-platform`.
+
 ## Integrity Rules
 
 - Missing `ui` assets, a missing backend bundle manifest, or a missing backend entry module make the bundle invalid.
