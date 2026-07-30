@@ -8,117 +8,117 @@
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md` in the same ticket directory
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-010`; prior approved `SR-006` remains applicable and withdrawn revisions remain historical only
+- Relevant Solution Revision IDs: `SR-010`; retained `SR-006`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-008` and retained `ARCH-REV-006`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-012`, cumulative `IR-001`–`IR-011`
+- Relevant Implementation Revision IDs: `IR-013`, cumulative `IR-001`–`IR-012`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-021`
-- Current Review Round: `21`
-- Trigger: `implementation_engineer` handoff for source commit `cf8c8f7213468e5625bf521bbf0649fb78ac1a63`
-- Prior Review Round Reviewed: `20` / `CRR-020` (`Fail — Design Impact`)
-- Latest Authoritative Round: `21`
+- Current Code Review Revision ID: `CRR-022`
+- Current Review Round: `22`
+- Trigger: `implementation_engineer` source re-review handoff for `15dc77abc5d1aa8e800fca429fc5b648b473b1d5`
+- Prior Review Round Reviewed: `21` / `CRR-021` (`Fail — Local Fix`, `CR-016`)
+- Latest Authoritative Round: `22`
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md` as retained failure context
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md` as retained failure context
 - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: `API-REV-007`
 - Delivery Revision Record Reviewed: `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: source-review finding `CR-016`; triggering historical scenarios `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`
-- Exact Failing Commands / Execution Mode: reviewer TypeScript passed; focused Vitest selection produced `59` passes, `12` environment-gated skips, and two expected API/E2E-owned stale-test failures described below
-- Failure Evidence Paths: current source paths listed in `CR-016`; retained `api-rev-007-*` evidence under the ticket's `evidence/api-e2e/` directory
+- Failing Scenario IDs: `N/A` for this passing source round; historical `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`
+- Exact Review Commands / Execution Mode:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
+  - Disposable reviewer Vitest probe for `ApplicationRunShutdownAuthority` and `ApplicationPlatformLifecycle` ordering/failure continuation — 2/2 Pass; probe removed.
+  - `git diff --check 15dc77abc^ 15dc77abc` plus changed-source size/placement and manager-leakage inspection — Pass.
+  - Additional inherited selection: agent-run manager 9/9 and application-run-authority 1/1 passed; the unchanged team-manager integration fixture produced 1 pass / 7 failures because it omits an already-required run identity field. IR-013 does not change that API/signature; this is not IR-013 source evidence and remains with the separately unattributed repository-test debt.
+- Failure Evidence Paths: `N/A` for this source result; retained `api-rev-007-*` evidence remains upstream context.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the complete IR-012 process/session/publication authority correction, application/general runtime construction, authenticated route dispatch, graph publication, readiness, graceful stop/restart, and cleanup.
-- Files / areas reviewed: all 29 changed production-source paths in `cf8c8f721`; SR-010/DS-014/P6A; Studio and standalone composition roots; Agent Tools process/session/route/provider code; publication port/service; graph run authorities; Codex/Claude/mixed create/restore/cleanup wiring; lifecycle and process close paths.
-- Explicit exclusions: no proportional review or implementation ownership of the cumulative API/E2E-owned dirty test package; no provider-native-tool, application-owned-MCP, external-gateway, schema, persistence, frontend, or unrelated singleton redesign.
+- Changed implementation and behavior reviewed: the complete IR-013 correction for graph-owned team/agent run shutdown, including construction ownership, narrow lifecycle exposure, idempotency, failure aggregation, shutdown ordering, and continuation through scope/port/stream cleanup.
+- Files / areas reviewed: all six production-source paths in `15dc77abc`; the exact graph-local manager construction and stop methods; `ApplicationPlatformRuntimeGraph` encapsulation; DS-005/DS-014; `MP-ARCH-008-002`; the still-valid IR-012 process/session/publication conclusions.
+- Explicit exclusions: no proportional review or ownership of the cumulative API/E2E dirty test package; no provider-native-tool, configured-MCP, external-gateway, schema, persistence, frontend, or unrelated repository-test redesign.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. The same package must complete real publication/handoff in both hosts, and operator stop/restart must revoke application sessions and stop owned run/member resources deterministically.
-- Design-spec behavior map verified against the implementation: DS-014's forward publication spine is implemented coherently. DS-005/DS-014's graceful-stop spine is contradicted because graph-local run managers are constructed but never attached to lifecycle shutdown.
-- Design review report and round confirmed: `ARCH-REV-008` is the current Pass and explicitly makes P6A plus stop ordering implementation obligations.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. Graceful stop/restart is already `UC-014`, `BEH-005`/`BEH-007`, and `MP-ARCH-008-002`.
-- Remaining material ambiguity, if any: None. This is a bounded implementation omission against the reviewed lifecycle.
+- Approved requirements basis understood: Yes. Supported operator stop/restart must stop graph-owned run/member backends before application session/publication disposal, while preserving exact process/application authority separation.
+- Design-spec behavior map verified against the implementation: Yes. IR-013 completes the DS-005/DS-014 stop spine at the exact missing edge identified by CRR-021.
+- Design review report and round confirmed: `ARCH-REV-008` remains the current Pass; no design expansion is needed.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: None.
+- Remaining material ambiguity, if any: None.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-004` | Confirmed in source; executable rerun pending | Application Codex/Claude and mixed members receive the graph-scoped session authority; authenticated sessions carry the exact deferred publication port; the provider delegates only through that port. | None in the main publication path. |
-| `BEH-005` | Contradicted at graceful stop | Both compositions own one route/session family and close application lifecycle before the process authority. | The lifecycle closes workers/scope/port but never stops the graph-local `AgentTeamRunManager` or `AgentRunManager`. |
-| `BEH-006` | Confirmed in source; executable rerun pending | Standalone and Studio route construction use exact process dependencies; package/runtime behavior remains unchanged. | None in startup or dispatch. |
-| `BEH-007` | Contradicted at stop/restart | Ports/scopes are ephemeral and restart constructs fresh instances. | Active graph-local run/member backends are not terminated by the application lifecycle before their session scope and port close. |
+| `BEH-004` | Confirmed in source; executable rerun pending | IR-012’s authenticated application session -> exact graph publication port path is unchanged. | None. |
+| `BEH-005` | Confirmed in source; executable rerun pending | Both compositions close application lifecycle before process authority. Lifecycle now blocks issue/ingress, stops workers, stops graph team runs then remaining agent runs, revokes the graph session scope, closes the publication port, and stops streaming. | None. |
+| `BEH-006` | Confirmed in source; executable rerun pending | Standalone and Studio route/runtime construction remains unchanged by IR-013. | None. |
+| `BEH-007` | Confirmed in source; executable rerun pending | Graph-owned run managers are now reachable only through one close authority; restart still creates a fresh graph scope and port. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | SR-010 correctly classifies the prior defect as a boundary/construction-cycle issue and IR-012 implements that bounded structure. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | The retained proposal analysis/self-validation constraints remain intact; no package, provider-native, or external-gateway expansion appears. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-014 publication is clear, but the supported operator-stop spine ends without graph-local run/member shutdown. | Resolve `CR-016`. |
-| Ownership boundary preservation and clarity | Pass | One composition process authority, one graph session scope, and one narrow publication port replace the prior hidden global publication path. | None. |
-| Off-spine concern clarity | Pass | Authentication, registry/catalog dispatch, deferred binding, and lifecycle remain attached to explicit owners rather than the business spine. | None. |
-| Existing capability/subsystem reuse check | Pass | Existing catalog, route, service, manager, and publication semantics are reused; new manager `stopAll*` operations already exist. | Connect the existing graph managers to lifecycle rather than add another shutdown family. |
-| Reusable owned structures check | Pass | Session execution authorities and publication request/port shapes are centralized once. | None. |
-| Shared-structure/data-model tightness check | Pass | The non-wire authority shape contains only the publication port; process and graph scopes are specialized without a kitchen-sink container. | None. |
-| Repeated coordination ownership check | Pass | Registry/catalog/executor/dispatcher construction is owned once by `AgentToolsMcpProcessAuthority`. | None. |
-| Empty indirection check | Pass | The process authority owns identity/lifecycle policy; the deferred port owns a real bind-once state machine. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | New files are small and subject-owned; providers remain adapters and publication stays in its existing subsystem. | None. |
-| Ownership-driven dependency check | Pass | Composition -> process authority -> graph scope -> authenticated session port follows the reviewed direction; no request-time graph lookup exists. | None. |
-| Authoritative Boundary Rule check | Pass | Route/provider callers no longer bypass an outer authority to find a hidden global publication manager. | None. |
-| File placement check | Pass | Process/session code is under Agent Tools MCP; the cycle seam is under application runtime; publication contract is under published artifacts. | None. |
-| Flat-vs-over-split layout judgment | Pass | The new files represent distinct owners and avoid both a large composition blob and artificial one-method forwarding layers. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | `routeDependencies`, `createApplicationSessionAuthority`, and `publishManyForRun` have singular subjects and explicit identities. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Process, application scope, deferred port, and general-process run authority names match their responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Studio/standalone share authority types and route registrar; host-specific construction remains at composition roots. | None. |
-| Patch-on-patch complexity control | Pass | IR-012 replaces the failed hidden-global boundary instead of adding a fallback, catalog merge, or package branch. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | Graph-local managers and their new `stopAll*` operations are not reachable from graph lifecycle cleanup, leaving the owned active-run state without a close path. | Resolve `CR-016`; do not remove the operations. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Implementation probes target process-family identity, bind states, scope isolation, P6A, and missing authority; API/E2E must make these durable. | Reconcile durable coverage after source re-review. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No implementation-owned durable test changed; the existing Agent Tools fixtures remain coherent. | API/E2E owns explicit dependency fixture updates. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No implementation-owned test retention or compatibility suite was added. Two existing failures are known signature/fixture updates in the API/E2E-owned package, not production evidence. | API/E2E updates them after source Pass. |
-| API/E2E readiness for the next workflow stage | Fail | TypeScript and most focused checks pass, but graceful stop cannot yet prove no graph-run/session leak; the route-backed publication and standalone-composition fixtures also need explicit new dependencies. | Source-fix and re-review first; then API/E2E reconciliation/rerun. |
+| Task design health assessment is present, evidence-backed, and preserved | Pass | SR-010/ARCH-REV-008 remain coherent; IR-013 is the bounded implementation completion identified by CRR-021. | None. |
+| Implementation matches approved behavior-defining artifacts | Pass | Exact DS-005/DS-014 lifecycle placement is implemented without changing publication, messaging, native tools, or gateway scope. | None. |
+| Data-flow spine inventory clarity and preservation | Pass | `operator stop -> block issue/ingress -> stop workers -> stop graph teams -> stop remaining graph agents -> revoke scope -> close port -> stop streaming` now reaches the supported outcome. | API/E2E must execute it with real active runs. |
+| Ownership boundary preservation and clarity | Pass | `ApplicationRunShutdownAuthority` retains only two narrow stop ports over the exact graph-local managers. | None. |
+| Off-spine concern clarity | Pass | Shutdown coordination remains a lifecycle concern and does not enter publication/business adapters. | None. |
+| Existing capability/subsystem reuse | Pass | Existing manager stop operations are reused rather than duplicated. | None. |
+| Reusable owned structures | Pass | Two minimal structural ports keep lifecycle independent of manager internals. | None. |
+| Shared-structure/data-model tightness | Pass | No shared DTO, schema, or persistent representation changed. | None. |
+| Repeated coordination ownership | Pass | Team-before-agent ordering and aggregation have one owner. | None. |
+| Empty indirection | Pass | The new authority owns real ordering, idempotency, and failure policy; it is not a forwarding-only layer. | None. |
+| Separation of concerns and file responsibility | Pass | The 36-effective-line authority has one concern; lifecycle retains only the close boundary. | None. |
+| Ownership-driven dependency direction | Pass | Run construction -> narrow shutdown authority -> lifecycle; no lifecycle-to-manager or process-global lookup exists. | None. |
+| Authoritative Boundary Rule | Pass | Neither graph manager is exposed on `ApplicationPlatformRuntimeGraph`; callers cannot bypass the shutdown authority. | None. |
+| File placement | Pass | The authority is correctly placed under application-platform runtime beside construction/lifecycle owners. | None. |
+| Flat-vs-over-split judgment | Pass | A separate owner is justified by ordering/aggregation policy and avoids broad manager exposure. | None. |
+| Interface/API/command clarity | Pass | `stopAllRuns()` is singular and its two internal ports identify team and agent subjects explicitly. | None. |
+| Naming quality and responsibility alignment | Pass | `ApplicationRunShutdownAuthority` accurately names graph-owned application-run shutdown responsibility. | None. |
+| No unjustified duplication | Pass | No parallel shutdown family, fallback, or process-manager copy was added. | None. |
+| Patch-on-patch complexity control | Pass | IR-013 closes the identified lifecycle edge without compatibility or special-case branches. | None. |
+| Dead/obsolete cleanup completeness | Pass | The previously unreachable graph stop operations now participate in lifecycle cleanup. | None. |
+| Relevant test scenarios are requirement-aligned | Pass | The disposable probe covers exact order, idempotency, both-owner aggregation, continuation after team failure, and later cleanup after run failure. | Make this boundary durable and execute real shutdown downstream. |
+| Test fixtures/helpers remain coherent | Pass with downstream reconciliation | IR-013 changes no durable tests. Existing API/E2E-owned explicit dependency fixtures remain for the next stage. | `api_e2e_engineer` owns reconciliation. |
+| No stale/compatibility tests added in changed scope | Pass | No implementation-owned test or compatibility fixture was added. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Source, type, structural, and focused lifecycle evidence are sufficient to proceed. Real publication/restart and durable coverage remain intentionally downstream. | Route to API/E2E. |
 
 ## Source File Size And Structure Audit
 
-All 29 changed production-source files were audited. No file exceeds 500 effective non-empty lines and no changed-file delta exceeds 220 lines.
+All six IR-013 production-source paths were audited. No changed file exceeds 500 effective non-empty lines and no changed-file delta exceeds 220 lines.
 
-| Source File / Area | Effective Non-Empty Lines | `>500` Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- | --- |
-| `agent-tools/mcp/agent-tools-mcp-process-authority.ts` | 114 | Pass | Pass (`123`) | Pass | Pass | Healthy owner | None. |
-| `agent-tools/mcp/application-agent-tools-session-authority.ts` | 103 | Pass | Pass (`115`) | Pass | Pass | Healthy owner | None. |
-| `application-platform/runtime/deferred-published-artifact-publication-port.ts` | 45 | Pass | Pass (`51`) | Pass | Pass | Healthy narrow state machine | None. |
-| `services/published-artifacts/published-artifact-publication-port.ts` | 23 | Pass | Pass (`26`) | Pass | Pass | Healthy contract | None. |
-| `compositions/build-studio-server-composition.ts` | 225 | Pass | Pass (`131`) | Pass | Pass | Composition root remains readable | None. |
-| `standalone-application-host/start-standalone-application-host.ts` | 236 | Pass | Pass (`51`) | Pass | Pass | Process facade remains bounded | None. |
-| `application-platform/runtime/create-application-platform-runtime-graph.ts` | 151 | Pass | Pass (`23`) | Fail only at omitted close connection | Pass | `Local Fix` | Expose/invoke graph-run shutdown. |
-| `application-platform/runtime/application-platform-lifecycle.ts` | 186 | Pass | Pass (`6`) | Fail at shutdown completeness | Pass | `Local Fix` | Resolve `CR-016`. |
-| `agent-execution/services/agent-run-manager.ts` / `agent-team-run-manager.ts` | 332 / 283 | Pass | Pass (`44` / `38`) | Pass; stop operations exist | Pass | Healthy owners, currently unconnected in graph | Connect through a narrow graph lifecycle boundary. |
-| Largest other changed files: `mixed-team-manager.ts` / `mixed-agent-member-handle.ts` / Codex bootstrapper | 471 / 401 / 396 | Pass | Pass (`8` / `8` / `6`) | Pass | Pass | No size-triggered split | None. |
+| Source File / Area | Effective Non-Empty Lines | Delta | Size / Delta Check | SoC / Ownership Check | Placement Check | Classification | Required Action |
+| --- | ---: | ---: | --- | --- | --- | --- | --- |
+| `application-platform/runtime/application-run-shutdown-authority.ts` | 36 | 41 | Pass | Pass: owns order/idempotency/aggregation | Pass | Healthy new owner | None. |
+| `application-platform/runtime/create-application-run-authorities.ts` | 153 | 6 | Pass | Pass: binds exact graph managers once | Pass | Healthy construction | None. |
+| `application-platform/runtime/create-application-orchestration-authorities.ts` | 198 | 1 | Pass | Pass: forwards only narrow authority | Pass | Healthy construction | None. |
+| `application-platform/runtime/create-application-platform-runtime-graph.ts` | 152 | 1 | Pass | Pass: lifecycle receives authority; public graph does not expose managers | Pass | Healthy composition | None. |
+| `application-platform/runtime/application-platform-lifecycle-contracts.ts` | 61 | 4 | Pass | Pass: explicit lifecycle dependency | Pass | Healthy contract | None. |
+| `application-platform/runtime/application-platform-lifecycle.ts` | 187 | 1 | Pass | Pass: exact stop placement with existing per-step continuation | Pass | Healthy lifecycle | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No aliases, dual authority paths, or fallback publication owner were added. |
-| No legacy old-behavior retention in changed scope | Pass | The MCP provider no longer retains its prior cached/global publication path. |
-| Dead/obsolete code cleanup completeness in changed scope | Fail | The graph lifecycle lacks the required connection to its owned run managers' shutdown operations; see `CR-016`. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Session/port state remains ephemeral; no schema or migration change exists. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No compatibility behavior appears. |
-| Approved transition mechanics match the reviewed design | Pass | `Directly Usable — No Migration` is preserved. |
+| No backward-compatibility mechanisms in changed scope | Pass | No aliases, dual paths, or fallback manager lookups. |
+| No legacy old-behavior retention in changed scope | Pass | The missing lifecycle edge is connected directly. |
+| Dead/obsolete code cleanup completeness | Pass | Graph manager stop operations now have a supported lifecycle caller. |
+| Approved persisted-data transition decision followed | Pass | No persistence/schema change. |
+| No version-specific dual reads/writes or request-time fallback | Pass | None added. |
+| Approved transition mechanics match reviewed design | Pass | Ephemeral graph scope remains `Directly Usable — No Migration`. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None. `CR-016` requires connecting live owned shutdown behavior, not removing a legacy item.
+None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No` additional product-documentation impact identified in IR-012.
-- Why: SR-010/design artifacts already document the internal authority and lifecycle contract; the remaining issue is implementation conformance.
-- Files or areas likely affected: reviewer and implementation handoff artifacts only until source passes; delivery still owns final project-doc assessment.
+- Docs impact: `No` additional product-documentation impact identified in IR-013.
+- Why: reviewed solution artifacts already define the lifecycle invariant; IR-013 is internal conformance.
+- Files or areas likely affected: final delivery documentation assessment remains downstream.
 
 ## Material Premise Validation
 
@@ -126,76 +126,65 @@ None. `CR-016` requires connecting live owned shutdown behavior, not removing a 
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-ARCH-008-001` | Confirmed | IR-012 now connects the supported application member's authenticated publication call to its graph-local port in source; API/E2E proof remains pending. |
-| `MP-ARCH-008-002` | Confirmed | Operator stop/restart remains a supported lifecycle. Current source blocks issue and revokes the scope, but omits the required graph-local run/member shutdown step before port/process disposal. |
+| `MP-ARCH-008-001` | Confirmed | IR-012 publication authority remains intact; executable publication proof is pending API/E2E. |
+| `MP-ARCH-008-002` | Confirmed and implemented in source | The independent supported trigger remains operator stop/restart after real application sessions/runs exist. IR-013 now terminates the exact graph run owners before scope/port disposal and preserves later cleanup after failure. |
 
-No new premise is introduced.
+No new material premise is introduced.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.0`
-- Overall score (`/100`): `90`
-- Score calculation note: simple average rounded for trend visibility; the review fails because several mandatory categories are below `9.0`, regardless of the average.
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95`
+- Score calculation note: simple average rounded for trend visibility; every mandatory category is at least `9.0`.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | Data-Flow Spine Inventory and Clarity | 8.6 | Main publication and authority spines are explicit and coherent. | The supported shutdown spine does not reach graph-local run/member termination. | Complete the lifecycle edge in `CR-016`. |
-| `2` | Ownership Clarity and Boundary Encapsulation | 9.4 | Process, graph scope, authenticated session, and publication owners are explicit. | The graph-run owner is not exposed through a narrow close boundary. | Add only the lifecycle-facing close contract. |
-| `3` | API / Interface / Query / Command Clarity | 9.4 | New interfaces are small, explicit, and subject-specific. | Shutdown has no graph-run interface despite manager operations existing. | Expose one narrow close/stop operation, not manager internals. |
-| `4` | Separation of Concerns and File Placement | 9.4 | Files and compositions follow ownership. | Lifecycle wiring is incomplete, not misplaced. | Keep the correction in graph construction/lifecycle contracts. |
-| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | The session authority and publication port shapes are tight. | No material shared-shape weakness. | Preserve the current shapes. |
-| `6` | Naming Quality and Local Readability | 9.3 | Names communicate scope and lifecycle well. | General and application run authority symmetry is incomplete in the public graph construction. | Name the graph shutdown boundary explicitly. |
-| `7` | API/E2E Readiness | 8.2 | TypeScript passes and focused execution has broad green coverage. | Graceful cleanup is not implementable as approved; two API-owned fixtures are stale after explicit dependency changes. | Source-fix/re-review, then durable fixture updates and live rerun. |
-| `8` | Runtime Correctness And Behavioral Fidelity | 8.2 | The original publication-authority defect is corrected in source. | Active graph-local run/member backends can survive application lifecycle stop while their sessions/port are closed. | Stop team then agent managers before final scope/port disposal, with failure-safe ordering. |
-| `9` | No Backward-Compatibility / No Legacy Retention | 9.8 | Clean-cut authority replacement with no fallback or dual path. | No material weakness. | Preserve. |
-| `10` | Cleanup Completeness | 7.8 | Scope/port/process closes are present and idempotent. | The application graph's actual run managers are never stopped or released by its lifecycle. | Resolve `CR-016` and prove restart has no old active runs/sessions. |
+| `1` | Data-Flow Spine Inventory and Clarity | 9.5 | Publication and supported shutdown spines are complete and explicit. | Real-process execution remains downstream. | Prove active-run stop/restart in API/E2E. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.6 | Exact graph managers remain private behind one narrow close authority. | No material source weakness. | Preserve. |
+| `3` | API / Interface / Query / Command Clarity | 9.6 | Minimal subject-specific ports and one lifecycle command. | No material source weakness. | Preserve. |
+| `4` | Separation of Concerns and File Placement | 9.6 | Ordering policy, construction, and lifecycle remain in their correct owners. | No material source weakness. | Preserve. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | No loose shared structure; the new ports are minimal. | No material source weakness. | Preserve. |
+| `6` | Naming Quality and Local Readability | 9.5 | Names express application scope and shutdown responsibility directly. | No material source weakness. | Preserve. |
+| `7` | API/E2E Readiness | 9.2 | TypeScript and focused shutdown checks pass; source is ready for broader execution. | Durable explicit-dependency tests and real lifecycle proof remain pending; unrelated repository test debt remains unattributed. | Reconcile and rerun downstream. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 9.5 | Team-before-agent stop, idempotency, aggregation, and failure-safe later cleanup match supported lifecycle. | Real Codex/Claude/team process proof remains downstream. | Execute actual active-run stop/restart. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 9.8 | Clean direct correction, no fallback or dual path. | None. | Preserve. |
+| `10` | Cleanup Completeness | 9.5 | Workers, graph runs, sessions, port, and streaming now have ordered cleanup with continuation. | Leak-free real restart still needs executable proof. | Verify in API/E2E. |
 
 ## Findings
 
-### `CR-016` — graceful application stop omits graph-local run/member shutdown
+No open implementation-source finding in IR-013.
 
-- Affected approved behavior: `BEH-005`, `BEH-007`; `REQ-004`, `REQ-005`; `AC-006`, `AC-010`, `AC-013`; `UC-011`, `UC-014`, `UC-018`; DS-005/DS-014 lifecycle stop.
-- Reachability basis: confirmed upstream `MP-ARCH-008-002`. The independent trigger is the supported operator stop/restart of Studio or standalone after a real application run has issued sessions.
-- Source evidence:
-  1. `createApplicationRunAuthorities()` constructs exact graph-local `AgentRunManager` and `AgentTeamRunManager` instances.
-  2. IR-012 adds `stopAllAgentRuns()` and `stopAllTeamRuns()` and uses them only in `GeneralProcessRunAuthority`.
-  3. The application-run authority return shape exposes services/publication but no lifecycle-facing run close boundary; `ApplicationPlatformRuntimeGraph` likewise retains no graph-run closer.
-  4. `ApplicationPlatformLifecycle.runStop()` blocks session issue, disposes ingress/observers/workers, closes the application session scope and publication port, and stops streaming, but never terminates either graph-local manager.
-  5. `ApplicationEngineHostService.stopAllApplicationEngines()` stops backend worker processes and streams; `ApplicationBackendHost.stop()` closes worker sockets/observers/lifecycle only. Neither owns platform agent/team runs.
-- Material consequence: graceful standalone development restart or Studio/standalone process stop can leave package-owned Codex/Claude/team backends and their graph manager state active while their authenticated sessions are revoked and publication port is closed. The old graph has no remaining authoritative close path, contradicting the approved no-session/no-run-survival lifecycle and creating cleanup/restart leakage risk.
-- Required action:
-  1. Expose one narrow application-graph run shutdown authority from the existing graph-local managers; do not expose both managers broadly or use process globals.
-  2. Invoke it in the reviewed stop sequence after new ingress/session issue is blocked and before final scope/port/process disposal. Stop team runs before remaining agent runs, aggregate failures, and ensure scope revoke/port close still execute.
-  3. Preserve exact application/general manager separation, session-authority injection, publication authority, and route behavior.
-  4. Add durable lifecycle proof that active graph-local team/member runs stop, their sessions revoke, the port closes afterward, a general-process session is unaffected until process close, and restart contains no old run/session state.
-- Classification: `Local Fix` — the approved design and existing manager operations are sufficient; the implementation omitted their graph lifecycle connection.
+### Prior Finding Resolution
 
-### Prior finding resolution
-
-- `CR-015`: resolved in source; API/E2E rerun pending. The default MCP publication provider is authority-free, authenticated sessions carry the exact graph port, and no provider/request path calls the cached publication service or process-global run manager.
-- `CR-001`–`CR-014`: remain resolved for their owned behavior; IR-012 does not reopen their application development, launch, prompt, route, definition, or configuration paths.
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-014` | Resolved in source / applicable API/E2E rerun pending | Remain Resolved for their owned behavior | `IR-002`–`IR-011`, `CRR-002`–`CRR-019`, `API-REV-001`–`API-REV-007` | IR-013 changes only application graph shutdown construction/lifecycle. |
+| `CR-015` | Resolved in source; API/E2E rerun pending | Remains Resolved in source; API/E2E rerun pending | `SR-010`, `ARCH-REV-008`, `IR-012`, `CRR-020`, `CRR-021` | Session-bound graph publication authority is unchanged; no provider/request-time global fallback reappears. |
+| `CR-016` | Open — Local Fix | Resolved in source; API/E2E rerun pending | `IR-013`, `CRR-021`, `CRR-022`, `MP-ARCH-008-002` | Exact graph-local managers are bound behind one narrow idempotent shutdown authority; lifecycle stops teams then agents before scope/port close and continues cleanup after failures. Reviewer TypeScript/diff/size checks and disposable 2/2 probe pass. |
 
 ## Classification
 
-`Local Fix`
+`Pass`
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- After the source fix, API/E2E must reconcile the explicit route/session dependencies in the existing route-backed publication and standalone-composition tests; the reviewer run observed those two stale fixtures while 59 tests passed and 12 Codex cases were environment-gated.
-- Then rerun real standalone and Studio publication, recipient-name handoff, journal/relay/projection, graceful stop/restart, scope isolation, and cleanup.
+- Reconcile the cumulative durable route/session/lifecycle fixtures with IR-012/IR-013’s explicit dependencies; implementation changed no durable test.
+- Rerun `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007` first and prove actual authenticated `publish_artifacts`, recipient-name `send_message_to`, writer handoff, journal/relay/application projection, and no direct-file/SQLite workaround.
+- Execute real active team/member graceful stop and restart, confirm old descriptors/runs/sessions cannot dispatch, and confirm general-process scope survives until process close.
+- Then resume Studio publication/remount, dual-host parity/digests, maintained command, recovery/isolation, and cleanup matrices.
 - Preserve native Codex/Claude tools, configured-MCP boundaries, route security, and Studio-only external `/mcp/gateway`.
-- `APIE2E-REPO-005` remains independently `Unclear` and is not attributed here.
+- `APIE2E-REPO-005` remains independently `Unclear`; this source pass does not reclassify it.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass` (`MP-ARCH-008-001` and `MP-ARCH-008-002` remain reachable/confirmed)
-- Score Summary: `9.0/10` (`90/100`); Data-Flow, API/E2E Readiness, Runtime Correctness, and Cleanup are below the clean-pass threshold
-- Failure Origin: `Local Fix` — graph-local run managers are not connected to application lifecycle shutdown
-- Recommended Recipient: `implementation_engineer`
-- Notes: IR-012 resolves `CR-015` in source, but must not advance to API/E2E until `CR-016` passes source re-review.
+- Material-Premise Gate: `Pass` (`MP-ARCH-008-001` and `MP-ARCH-008-002` remain independently supported; IR-013 now implements the latter lifecycle obligation)
+- Score Summary: `9.5/10` (`95/100`); every category is `>=9.0`
+- Failure Origin: `N/A`; `CR-016` resolved in source, executable rerun pending
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: IR-013 is approved for API/E2E. This is not an API/E2E Pass and does not resolve the separate `APIE2E-REPO-005` uncertainty.

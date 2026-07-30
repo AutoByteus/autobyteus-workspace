@@ -25,6 +25,7 @@
 | `CRR-019` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-011` | `Fail — Local Fix` | `Pass` | `CR-014`, `APIE2E-F006` |
 | `CRR-020` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-007` | `Pass` | `Fail — Design Impact` | `CR-015`, `APIE2E-F007` |
 | `CRR-021` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-012` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-015`, `CR-016`, `APIE2E-F007` |
+| `CRR-022` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-013` | `Fail — Local Fix` | `Pass` | `CR-016`, `APIE2E-F007` |
 
 ## Revision Entries
 
@@ -595,3 +596,30 @@ None.
 - Material score or classification changes: prior `Design Impact` is resolved by the approved SR-010 implementation; current full source result is `Fail — Local Fix`, `9.0/10` (`90/100`). Data-Flow, API/E2E Readiness, Runtime Correctness, and Cleanup remain below `9.0`.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: source rework must expose one narrow graph-run shutdown boundary and execute team/member then remaining-agent stop before final scope/port/process disposal with failure-safe cleanup. After source Pass, API/E2E must reconcile explicit route/session fixtures and rerun real publication/handoff/projection plus graceful restart/leak proof. `APIE2E-REPO-005` remains independently `Unclear`.
+
+### CRR-022 — IR-013 completes graph-owned run shutdown
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `22`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-013`; `CR-016`; retained `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`
+- Relevant solution revision IDs: `SR-010`; retained `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-013`
+- Relevant API/E2E revision IDs: `API-REV-007`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Local Fix` (`CRR-021`, `90/100`)
+- Current authoritative result: `Pass` (`CRR-022`, `95/100`)
+- What changed in the review result and why: IR-013 introduces one narrow `ApplicationRunShutdownAuthority` over the exact graph-local team and agent managers. It owns idempotency, stops teams before remaining agents, continues after either owner fails, and aggregates both failure classes. Run construction forwards only this authority into lifecycle; neither manager is exposed on the public runtime graph. Lifecycle invokes it after worker-engine stop and before graph session-scope revoke/publication-port close, while the existing per-step aggregation preserves later scope, port, and streaming cleanup after failure. This is the exact bounded correction required by CRR-021 and does not reopen IR-012’s publication, route, security, messaging, provider-native-tool, configured-MCP, or gateway boundaries.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-014` | Resolved in source / applicable API/E2E rerun pending | Remain Resolved for their owned behavior | `IR-002`–`IR-011`, `CRR-002`–`CRR-019`, `API-REV-001`–`API-REV-007` | IR-013 changes only graph-owned run shutdown construction and lifecycle. |
+| `CR-015` | Resolved in source; API/E2E rerun pending | Remains Resolved in source; API/E2E rerun pending | `SR-010`, `ARCH-REV-008`, `IR-012`, `CRR-020`, `CRR-021` | Session-bound graph publication authority remains unchanged and has no provider/request-time global fallback. |
+| `CR-016` | Open — Local Fix | Resolved in source; API/E2E rerun pending | `IR-013`, `CRR-021`, `CRR-022`, `MP-ARCH-008-002` | Reviewer source trace confirms the exact graph managers feed one narrow shutdown authority and lifecycle places it before scope/port disposal. TypeScript, diff/size/leakage checks, and a disposable 2/2 ordering/failure-continuation probe pass. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: result changes from `Fail — Local Fix` to `Pass`; the current full source score is `9.5/10` (`95/100`) with every category `>=9.0`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must reconcile cumulative explicit dependency/lifecycle fixtures, rerun the exact real publication/handoff/journal/projection failure path, and prove active graph team/member stop plus leak-free restart before completing the retained dual-host matrix. An extra unchanged team-manager integration selection still has stale required-ID fixtures and is not attributed to IR-013; `APIE2E-REPO-005` remains separately `Unclear`.
