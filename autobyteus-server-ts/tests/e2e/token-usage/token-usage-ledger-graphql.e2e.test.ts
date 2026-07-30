@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { createRequire } from 'node:module';
+import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -10,6 +11,7 @@ import { createTokenUsageUpdatedPayload } from '../../../src/agent-execution/dom
 import { TokenUsageLedgerStore } from '../../../src/token-usage/providers/token-usage-ledger-store.js';
 import type { TokenUsageUpdatedPayload } from '../../../src/agent-execution/domain/agent-run-token-usage.js';
 import type { TokenUsageExecutionAddress } from '../../../src/token-usage/domain/execution-address.js';
+import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 
 const store = new TokenUsageLedgerStore();
 const createdRunIds = new Set<string>();
@@ -49,6 +51,7 @@ const buildEvent = (input: {
   pricingStatus?: TokenUsageUpdatedPayload['pricing_status'];
   modelProvider?: string | null;
   model?: string;
+  modelValue?: string | null;
   runtimeKind?: string;
   ingestionKind?: string;
   currency?: string | null;
@@ -90,6 +93,7 @@ const buildEvent = (input: {
       usage_scope: 'per_turn',
       model_provider: input.modelProvider ?? 'OPENAI',
       model_identifier: input.model ?? 'gpt-5.4-mini',
+      model_value: input.modelValue ?? null,
       input_token_semantic: inputTokenSemantic,
       reported_input_tokens: reportedInputTokens,
       reported_output_tokens: input.outputTokens,
@@ -1102,6 +1106,222 @@ describe('token usage ledger GraphQL projections', () => {
     });
   });
 
+  it('exposes provider-aware model and task fields through the live GraphQL schema', async () => {
+    const suffix = randomUUID();
+    const providerId = `provider_${suffix}`;
+    const customProviderPath = path.join(
+      appConfigProvider.config.getAppDataDir(),
+      'llm',
+      'custom-llm-providers.json',
+    );
+    let originalProviderConfig: Buffer | null = null;
+    try {
+      originalProviderConfig = await fs.readFile(customProviderPath);
+    } catch {
+      originalProviderConfig = null;
+    }
+    await fs.mkdir(path.dirname(customProviderPath), { recursive: true });
+    await fs.writeFile(customProviderPath, JSON.stringify({
+      version: 2,
+      providers: [{
+        id: providerId,
+        name: 'alibaba_cloud',
+        providerType: 'OPENAI_COMPATIBLE',
+        baseUrl: 'https://provider.invalid/v1',
+      }],
+    }), 'utf-8');
 
+    const customModel = `openai-compatible:${providerId}:qwen3.8-max-preview`;
+    const teamRunId = `graphql-display-team-${suffix}`;
+    const customMemberRunId = `graphql-display-member-custom-${suffix}`;
+    const builtInMemberRunId = `graphql-display-member-built-in-${suffix}`;
+    const collisionMemberRunId = `graphql-display-member-collision-${suffix}`;
+    const standaloneRunId = `graphql-display-standalone-${suffix}`;
+    const start = '2046-07-30T10:00:00.000Z';
+    const end = '2046-07-30T10:10:00.000Z';
 
+    try {
+      await store.appendTokenUsageEvent(buildEvent({
+        runId: standaloneRunId,
+        observedAt: '2046-07-30T10:01:00.000Z',
+        grossInputTokens: 100,
+        outputTokens: 10,
+        totalCost: 1.1,
+        status: 'estimated',
+        model: customModel,
+        modelValue: 'qwen3.8-max-preview',
+        modelProvider: 'OPENAI_COMPATIBLE',
+        runtimeKind: 'autobyteus',
+      }));
+      await store.appendTokenUsageEvent(buildEvent({
+        runId: standaloneRunId,
+        observedAt: '2046-07-30T10:02:00.000Z',
+        grossInputTokens: 80,
+        outputTokens: 8,
+        totalCost: 0.88,
+        status: 'estimated',
+        model: 'deepseek-v4-flash',
+        modelValue: 'deepseek-v4-flash',
+        modelProvider: 'DEEPSEEK',
+        runtimeKind: 'autobyteus',
+      }));
+      await store.appendTokenUsageEvent(buildEvent({
+        runId: standaloneRunId,
+        observedAt: '2046-07-30T10:03:00.000Z',
+        grossInputTokens: 60,
+        outputTokens: 6,
+        totalCost: 0.66,
+        status: 'estimated',
+        model: 'gpt-5.6-luna',
+        modelValue: 'gpt-5.6-luna',
+        modelProvider: 'OPENAI',
+        runtimeKind: 'codex_app_server',
+      }));
+      await store.appendTokenUsageEvent(buildEvent({
+        runId: customMemberRunId,
+        rootTeamRunId: teamRunId,
+        memberRouteKey: 'custom',
+        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'custom' }] },
+        observedAt: '2046-07-30T10:04:00.000Z',
+        grossInputTokens: 30,
+        outputTokens: 3,
+        totalCost: 0.33,
+        status: 'estimated',
+        model: customModel,
+        modelValue: 'qwen3.8-max-preview',
+        modelProvider: 'OPENAI_COMPATIBLE',
+        runtimeKind: 'autobyteus',
+      }));
+      await store.appendTokenUsageEvent(buildEvent({
+        runId: builtInMemberRunId,
+        rootTeamRunId: teamRunId,
+        memberRouteKey: 'built-in',
+        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'built-in' }] },
+        observedAt: '2046-07-30T10:05:00.000Z',
+        grossInputTokens: 20,
+        outputTokens: 2,
+        totalCost: 0.22,
+        status: 'estimated',
+        model: 'deepseek-v4-flash',
+        modelValue: 'deepseek-v4-flash',
+        modelProvider: 'DEEPSEEK',
+        runtimeKind: 'autobyteus',
+      }));
+      await store.appendTokenUsageEvent(buildEvent({
+        runId: collisionMemberRunId,
+        rootTeamRunId: teamRunId,
+        memberRouteKey: 'collision',
+        executionAddress: { segments: [{ kind: 'member', memberRouteKey: 'collision' }] },
+        observedAt: '2046-07-30T10:06:00.000Z',
+        grossInputTokens: 10,
+        outputTokens: 1,
+        totalCost: 0.11,
+        status: 'estimated',
+        model: customModel,
+        modelValue: 'qwen3.8-max-preview',
+        modelProvider: 'OPENAI',
+        runtimeKind: 'codex_app_server',
+      }));
+
+      const query = `
+        query TokenUsageDisplayFields($start: DateTime!, $end: DateTime!) {
+          usageStatisticsInPeriod(startTime: $start, endTime: $end) {
+            runtimeKind
+            llmModel
+            modelDisplayName
+            inputTokens
+            outputTokens
+            totalCost
+          }
+          tokenUsageTaskStatisticsInPeriod(startTime: $start, endTime: $end) {
+            rows {
+              rowId
+              models
+              modelDisplayNames
+              children {
+                rowId
+                memberRouteKey
+                models
+                modelDisplayNames
+              }
+            }
+          }
+          totalCostInPeriod(startTime: $start, endTime: $end)
+        }
+      `;
+
+      const result = await execGraphql<{
+        usageStatisticsInPeriod: Array<{
+          runtimeKind: string;
+          llmModel: string;
+          modelDisplayName: string;
+          inputTokens: number;
+          outputTokens: number;
+          totalCost: number | null;
+        }>;
+        tokenUsageTaskStatisticsInPeriod: {
+          rows: Array<{
+            rowId: string;
+            models: string[];
+            modelDisplayNames: string[];
+            children: Array<{
+              rowId: string;
+              memberRouteKey: string | null;
+              models: string[];
+              modelDisplayNames: string[];
+            }>;
+          }>;
+        };
+        totalCostInPeriod: number | null;
+      }>(query, { start: new Date(start), end: new Date(end) });
+
+      expect(result.usageStatisticsInPeriod).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          runtimeKind: 'autobyteus',
+          llmModel: customModel,
+          modelDisplayName: 'alibaba_cloud:qwen3.8-max-preview',
+          inputTokens: 130,
+          outputTokens: 13,
+          totalCost: expect.closeTo(1.43, 10),
+        }),
+        expect.objectContaining({
+          runtimeKind: 'autobyteus',
+          llmModel: 'deepseek-v4-flash',
+          modelDisplayName: 'DeepSeek:deepseek-v4-flash',
+        }),
+        expect.objectContaining({
+          runtimeKind: 'codex_app_server',
+          llmModel: 'gpt-5.6-luna',
+          modelDisplayName: 'gpt-5.6-luna',
+        }),
+      ]));
+      const taskTeam = result.tokenUsageTaskStatisticsInPeriod.rows.find((row) => row.rowId === `team:${teamRunId}`);
+      expect(taskTeam).toBeDefined();
+      expect(taskTeam?.models).toHaveLength(taskTeam?.modelDisplayNames.length ?? -1);
+      expect(taskTeam?.children).toHaveLength(3);
+      const customMember = taskTeam?.children.find((row) => row.memberRouteKey === 'custom');
+      expect(customMember).toMatchObject({
+        models: [customModel],
+        modelDisplayNames: ['alibaba_cloud:qwen3.8-max-preview'],
+      });
+      const builtInMember = taskTeam?.children.find((row) => row.memberRouteKey === 'built-in');
+      expect(builtInMember).toMatchObject({
+        models: ['deepseek-v4-flash'],
+        modelDisplayNames: ['DeepSeek:deepseek-v4-flash'],
+      });
+      const collisionMember = taskTeam?.children.find((row) => row.memberRouteKey === 'collision');
+      expect(collisionMember).toMatchObject({
+        models: [customModel],
+        modelDisplayNames: [customModel],
+      });
+      expect(result.totalCostInPeriod).toBeCloseTo(3.3, 10);
+    } finally {
+      await rootPrismaClient.tokenUsageLedgerEvent.deleteMany({ where: { runId: { in: [standaloneRunId, teamRunId, customMemberRunId, builtInMemberRunId, collisionMemberRunId] } } });
+      if (originalProviderConfig) {
+        await fs.writeFile(customProviderPath, originalProviderConfig);
+      } else {
+        await fs.rm(customProviderPath, { force: true });
+      }
+    }
+  });
 });
