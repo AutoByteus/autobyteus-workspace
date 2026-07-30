@@ -1,0 +1,313 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted creates session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > registers definition with expected schema
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a unified diff patch in an existing file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a git diff style patch with file headers
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises PatchApplicationError when patch fails
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > retries with whitespace tolerance
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises error when file is missing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > read then patch flow
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/edit-file.test.ts (9 tests) 23ms
+ ✓ tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts (1 test) 153ms
+ ✓ tests/unit/tools/terminal/wsl-tmux-session.test.ts (3 tests) 210ms
+ ✓ tests/unit/tools/file/workspace-path-utils.test.ts (8 tests) 22ms
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > inserts text after an exact anchor
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > requires exactly one anchor mode
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_register_and_get_tool_definition
+Successfully registered tool definition: 'DummyToolNoConfig'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_register_overwrites_existing
+Successfully registered tool definition: 'DummyToolNoConfig'
+Successfully registered tool definition: 'DummyToolNoConfig'
+
+stderr | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_register_overwrites_existing
+Overwriting existing tool definition for name: 'DummyToolNoConfig'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_unregister_tool
+Successfully registered tool definition: 'DummyToolNoConfig'
+Successfully unregistered tool definition: 'DummyToolNoConfig'
+
+stderr | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_unregister_tool
+Attempted to unregister tool 'nonexistent_tool', but it was not found in the registry.
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > returns a helpful missing anchor error
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_reload_tool_schema
+Successfully registered tool definition: 'ReloadableTool'
+
+stderr | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_reload_tool_schema
+Attempted to reload schema for tool 'nonexistent', but it was not found in the registry.
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_reload_tool_schema_updates_description
+Successfully registered tool definition: 'DynamicDescriptionTool'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_reload_all_tool_schemas
+Successfully registered tool definition: 'Tool1'
+Successfully registered tool definition: 'Tool2'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_list_tools
+Successfully registered tool definition: 'DummyToolNoConfig'
+Successfully registered tool definition: 'DummyFactoryTool'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_create_simple_class_based_tool
+Successfully registered tool definition: 'DummyToolNoConfig'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_create_class_based_tool_with_config
+Successfully registered tool definition: 'DummyToolWithConfig'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_create_factory_based_tool
+Successfully registered tool definition: 'DummyFactoryTool'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_create_tool_instantiation_fails_raises_error
+Successfully registered tool definition: 'DummyToolFailsInit'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_get_tools_by_mcp_server
+Successfully registered tool definition: 'McpTool'
+Successfully registered tool definition: 'LocalTool'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/tools/file/insert-in-file.test.ts (6 tests) 18ms
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_get_tools_by_category
+Successfully registered tool definition: 'BetaTool'
+Successfully registered tool definition: 'AlphaTool'
+
+stdout | tests/unit/tools/registry/tool-registry.test.ts > ToolRegistry > test_get_tools_grouped_by_category
+Successfully registered tool definition: 'AlphaTool'
+Successfully registered tool definition: 'BetaTool'
+Successfully registered tool definition: 'GammaTool'
+
+ ✓ tests/unit/tools/registry/tool-registry.test.ts (17 tests) 20ms
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > replaces a unique exact block
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > returns a helpful multiple match error
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'replace_in_file'
+
+ ✓ tests/unit/tools/file/replace-in-file.test.ts (5 tests) 14ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts (4 tests) 10ms
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts (4 tests) 18ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted is idempotent
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/run-bash.test.ts (6 tests) 698ms
+ ✓ tests/unit/tools/search/serpapi-strategy.test.ts (4 tests) 4ms
+ ✓ tests/unit/tools/multimedia/download-media-tool.test.ts (2 tests) 14ms
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_set_agent_id_validates
+Attempted to set invalid agentId: 
+Attempted to set invalid agentId: null
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_missing_required_raises
+Invalid arguments for tool 'RecordingTool': Required parameter 'count' is missing.
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_invalid_type_raises
+Invalid arguments for tool 'RecordingTool': Invalid value for parameter 'count': 'not-a-number...'. Expected type compatible with integer.
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_execute_allows_args_without_schema
+Tool 'RecordingTool' does not define an argument schema but received arguments: {"message":"hello"}.
+
+stderr | tests/unit/tools/base-tool.test.ts > BaseTool > test_prepare_execution_preserves_validation_errors_and_mode_errors
+Invalid arguments for tool 'ExternalPreparationTool': Required parameter 'count' is missing.
+
+ ✓ tests/unit/tools/base-tool.test.ts (9 tests) 7ms
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts (4 tests) 1006ms
+     ✓ finds and stops live descendants in a detached shell process group  500ms
+stdout | tests/unit/tools/functional-tool.test.ts > @tool decorator > test_tool_decorator_registers_definition
+Successfully registered tool definition: 'DecoratedTool'
+
+stdout | tests/unit/tools/functional-tool.test.ts > @tool decorator > test_tool_decorator_returns_functional_tool_instance
+Successfully registered tool definition: 'anotherDecoratedFunc'
+
+stdout | tests/unit/tools/functional-tool.test.ts > @tool decorator > test_tool_decorator_default_category
+Successfully registered tool definition: 'namedTool'
+
+ ✓ tests/unit/tools/multimedia/media-reader-tool.test.ts (3 tests) 15ms
+ ✓ tests/unit/tools/functional-tool.test.ts (10 tests) 8ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > executeCommand returns TerminalResult
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/web/read-url-tool.test.ts (4 tests) 15ms
+ ✓ tests/unit/tools/tool-state.test.ts (1 test) 3ms
+stderr | tests/unit/tools/mcp/config-service.test.ts > McpConfigService > adds configs and overwrites existing config
+Overwriting existing MCP config with server_id 'common_server'.
+
+ ✓ tests/unit/tools/mcp/config-service.test.ts (9 tests) 23ms
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts (7 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts (7 tests) 1273ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (12 tests) 1305ms
+     ✓ starting twice throws  331ms
+     ✓ close is idempotent  305ms
+     ✓ returns queued data on read  303ms
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts (2 tests) 8ms
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > registers definition with expected schema
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > formats XML usage
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > formats JSON usage
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/read-file.test.ts (3 tests) 8ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts (11 tests) 24ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts (6 tests) 8ms
+stdout | tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts > run_bash OpenAI-compatible schema > uses the function-tool envelope with closed object parameters and no default strict flag
+Successfully registered tool definition: 'run_bash'
+
+ ✓ tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts (1 test) 6ms
+stdout | tests/unit/tools/tool-meta.test.ts > registerToolClass > registers a valid tool class
+Successfully registered tool definition: 'DummyTool'
+
+stdout | tests/unit/tools/tool-meta.test.ts > registerToolClass > uses category from class when provided
+Successfully registered tool definition: 'CategoryTool'
+
+ ✓ tests/unit/tools/tool-meta.test.ts (4 tests) 3ms
+ ✓ tests/unit/tools/search-tool.test.ts (3 tests) 8ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts (3 tests) 6ms
+ ✓ tests/unit/tools/mcp/tool.test.ts (4 tests) 8ms
+ ✓ tests/unit/tools/tool-config.test.ts (14 tests) 7ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts (6 tests) 5ms
+ ✓ tests/unit/tools/usage/providers/tool-manifest-provider.test.ts (4 tests) 5ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts (5 tests) 1808ms
+     ✓ starts, tracks, reads, and stops background commands by WSL Linux PID  324ms
+     ✓ startCommand returns PID metadata and captures output  981ms
+     ✓ stopProcess removes a managed process  350ms
+ ✓ tests/unit/tools/mcp/types.test.ts (21 tests) 6ms
+ ✓ tests/unit/tools/search/serper-strategy.test.ts (4 tests) 7ms
+stdout | tests/unit/tools/file/file-tool-schema.test.ts > generic file-tool serialized path schemas > uses identical canonical path/base_dir wording and optionality across all five tools
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/tools/file/file-tool-schema.test.ts (1 test) 4ms
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts (11 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/default-xml-schema-formatter.test.ts (6 tests) 7ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > close cleans up session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts (10 tests) 4ms
+ ✓ tests/unit/tools/mcp/factory.test.ts (2 tests) 2ms
+ ✓ tests/unit/tools/terminal/ansi-utils.test.ts (4 tests) 4ms
+ ✓ tests/unit/tools/zod-schema-converter.test.ts (4 tests) 29ms
+ ✓ tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts (1 test) 2ms
+stdout | tests/unit/tools/usage/providers/tool-schema-provider.test.ts > ToolSchemaProvider > builds OpenAI schemas by default
+Successfully registered tool definition: 'ToolA'
+
+stdout | tests/unit/tools/usage/providers/tool-schema-provider.test.ts > ToolSchemaProvider > builds Anthropic schemas when provider is ANTHROPIC
+Successfully registered tool definition: 'ToolB'
+
+stdout | tests/unit/tools/usage/providers/tool-schema-provider.test.ts > ToolSchemaProvider > builds Gemini schemas when provider is GEMINI
+Successfully registered tool definition: 'ToolC'
+
+stderr | tests/unit/tools/usage/providers/tool-schema-provider.test.ts > ToolSchemaProvider > skips unknown tool names
+Tool 'MissingTool' not found in registry.
+
+ ✓ tests/unit/tools/usage/providers/tool-schema-provider.test.ts (4 tests) 4ms
+ ✓ tests/unit/tools/search/vertex-ai-search-strategy.test.ts (6 tests) 37ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts (1 test) 4ms
+ ✓ tests/unit/tools/registry/tool-definition.test.ts (7 tests) 4ms
+ ✓ tests/unit/tools/usage/registries/tool-formatting-registry.test.ts (5 tests) 7ms
+ ✓ tests/unit/tools/mcp/websocket-managed-mcp-server.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/usage/formatters/google-json-schema-formatter.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/usage/formatters/run-bash-xml-formatter.test.ts (2 tests) 8ms
+ ✓ tests/unit/tools/tool-category.test.ts (2 tests) 2ms
+ ✓ tests/unit/tools/usage/formatters/default-json-schema-formatter.test.ts (1 test) 4ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts (7 tests) 4ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > falls back to provided session factory when primary startup fails
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/usage/formatters/default-xml-example-formatter.test.ts (4 tests) 5ms
+ ✓ tests/unit/tools/usage/formatters/openai-json-example-formatter.test.ts (2 tests) 6ms
+ ✓ tests/unit/tools/factory/tool-factory.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/usage/formatters/google-json-example-formatter.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/usage/formatters/gemini-json-example-formatter.test.ts (2 tests) 7ms
+ ✓ tests/unit/tools/terminal/types.test.ts (4 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/default-json-example-formatter.test.ts (2 tests) 5ms
+ ✓ tests/unit/tools/usage/formatters/anthropic-json-example-formatter.test.ts (1 test) 5ms
+stdout | tests/unit/tools/file/write-file.test.ts > write_file tool definition > registers definition with expected schema
+Successfully registered tool definition: 'write_file'
+
+ ✓ tests/unit/tools/file/write-file.test.ts (1 test) 4ms
+ ✓ tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts (1 test) 4ms
+ ✓ tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts (4 tests) 3ms
+ ✓ tests/unit/tools/search/factory.test.ts (4 tests) 5ms
+ ✓ tests/unit/tools/usage/formatters/write-file-xml-formatter.test.ts (4 tests) 4ms
+ ✓ tests/unit/tools/search/factory-drift.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/search/client.test.ts (2 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/utils.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/tool-origin.test.ts (2 tests) 1ms
+ ✓ tests/unit/tools/search/providers.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/index.test.ts (2 tests) 2ms
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts (7 tests) 3614ms
+     ✓ ensureStarted creates session  515ms
+     ✓ ensureStarted is idempotent  517ms
+     ✓ executeCommand returns TerminalResult  1042ms
+     ✓ close cleans up session  513ms
+     ✓ falls back to provided session factory when primary startup fails  1022ms
+
+ Test Files  80 passed (80)
+      Tests  355 passed (355)
+   Start at  07:33:47
+   Duration  4.11s (transform 3.47s, setup 729ms, import 7.67s, tests 10.62s, environment 9ms)
+
+exit=0
