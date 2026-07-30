@@ -17,6 +17,7 @@ export const packApplicationProjectAtomically = async (input: {
   await packApplicationProject({
     projectRoot: input.projectRoot,
     outputPackageRootOverride: stagingRoot,
+    metadataPackageRootOverride: packageRoot,
   });
   let movedPrevious = false;
   try {
