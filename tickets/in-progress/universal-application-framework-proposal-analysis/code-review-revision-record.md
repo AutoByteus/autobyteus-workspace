@@ -19,6 +19,7 @@
 | `CRR-013` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-008` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-009`, `CR-010`, `CR-011`, `CR-012` |
 | `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-009` | `Fail — Local Fix` | `Pass` | `CR-009` |
 | `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-005` | `Pass` | `Fail — Design Impact` | `CR-013`, `APIE2E-F005` |
+| `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Clarification / user-confirmed tool projection | `Fail — Design Impact` | `Fail — Local Fix` | `CR-013`, `APIE2E-F005` |
 
 ## Revision Entries
 
@@ -417,7 +418,7 @@ None.
 - Relevant delivery revision IDs: `N/A`
 - Prior authoritative result: `Pass` (`CRR-014`, `94/100`)
 - Current authoritative result: `Fail — Design Impact`
-- What changed in the review result and why: API-REV-005 confirms the prior package-default failure is resolved and reaches a real attached standalone Luna team run. That supported run then cannot call any configured application tools because its descriptor advertises `/mcp/agent-tools/:sessionId` while the standalone composition does not register the route. Focused review found that this is not safely only a missing source line: the authoritative design's exact standalone route inventory and construction sequence also omit this required internal transport while AC-005/006 require the real tool-dependent flow.
+- What changed in the review result and why: API-REV-005 confirms the prior package-default failure is resolved and reaches a real attached standalone Luna team run. That supported run then cannot call its eligible server Agent Tools because its descriptor advertises `/mcp/agent-tools/:sessionId` while the standalone composition does not register the route. The subsequent user clarification establishes that native `write_file` was never expected through this gateway. Focused review found that this is not safely only a missing source line: the authoritative design's exact standalone route inventory and construction sequence also omit this required internal transport while AC-005/006 require the real tool-dependent flow.
 
 #### Prior Finding Resolution
 
@@ -430,3 +431,28 @@ None.
 - Material score or classification changes: the prior full score remains historical and is not recomputed. API/E2E-readiness and runtime-fidelity conclusions are superseded for this path; result changes from `Pass` to `Fail — Design Impact`.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: revise the standalone real-run spine, route inventory, internal-versus-external MCP distinction, exact session/dispatcher authority, security/base-URL/lifecycle contract, and validation plan. The broad-suite `APIE2E-REPO-005` result remains unattributed and cannot drive a separate defect yet.
+
+### CRR-016 — user clarification restores the native/server tool boundary and narrows CR-013
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Clarification`, round `16`
+- Triggering role, report path, and finding or scenario IDs: user correction after CRR-015; `API-REV-005`; `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
+- Relevant solution revision IDs: `SR-006`; in-progress unapproved `SR-007` must be reconsidered
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-001`–`IR-009`
+- Relevant API/E2E revision IDs: `API-REV-005`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Design Impact` (`CRR-015`)
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: the user confirmed that Codex and Claude keep their native file tools; the server gateway is only for eligible server-owned Agent Tools and configured MCP-origin tools. Reviewed-HEAD source confirms the default adapter list includes `publish_artifacts` and `send_message_to` but no file read/write adapters, and non-MCP configured tools are not gateway-routed. CRR-015 therefore overclaimed `write_file` as an expected MCP tool and over-escalated the already-working gateway. The real defect remains valid but narrow: standalone omits the existing route that Studio already registers.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-013` | Open — Design Impact | Open — Local Fix | `CRR-015`, `CRR-016`, `API-REV-005` | Existing catalog/providers/materializers already own runtime-specific projection. `write_file` is not a server MCP adapter; `publish_artifacts` and `send_message_to` are. Standalone alone omits the established route. |
+
+- New or remaining finding IDs: `CR-013`, linked to `APIE2E-F005` and `APIE2E-STANDALONE-MCP-001`.
+- Material score or classification changes: no full score recomputation. Classification changes from `Design Impact` to implementation-owned `Local Fix`; the API/E2E expectation/report also needs a bounded correction so configured package names are not treated as the actual MCP descriptor.
+- Recommended recipient: `implementation_engineer`, routed via the current `solution_designer` reset point because the superseded Design Impact package is already there.
+- Remaining risks or uncertainty: do not commit or approve the in-progress broad SR-007/runtime-authority redesign on CRR-015's incorrect gateway premise. Preserve native/server/configured-MCP/external-gateway distinctions and revalidate actual descriptor contents plus the real standalone publication/handoff flow.

@@ -8,7 +8,7 @@
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md` in the same ticket directory
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-006`
+- Relevant Solution Revision IDs: `SR-006`; an unapproved in-progress SR-007 draft is explicitly not review authority
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-006`
@@ -16,96 +16,98 @@
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-009` and cumulative `IR-001`–`IR-008`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-015`
-- Current Review Round: `15`
-- Trigger: API/E2E round 5 failure after reviewed HEAD `077ebfa760ed90a1cbc3e7cd2cd9b5fe96352e51`.
-- Prior Review Round Reviewed: `14` / `CRR-014`
-- Latest Authoritative Round: `15`
+- Current Code Review Revision ID: `CRR-016`
+- Current Review Round: `16`
+- Trigger: user correction of CRR-015/API-REV-005 tool-exposure semantics: Codex and Claude use their native file tools; the server Agent Tools MCP gateway exposes only eligible server-owned adapters and configured MCP-origin tools.
+- Prior Review Round Reviewed: `15` / `CRR-015`
+- Latest Authoritative Round: `16`
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-005` (prior `API-REV-004` resolution retained)
+- Relevant API/E2E Revision IDs: `API-REV-005`
 - Relevant Delivery Revision IDs: `N/A`
 - Failing Scenario IDs: `APIE2E-BRIEF-003`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
 - Exact Failing Commands / Execution Mode: clean standalone `pnpm -C applications/brief-studio dev -- --port 43124 --no-open` with real Codex App Server/Luna and system Chrome; durable reproduction `pnpm -C autobyteus-server-ts exec vitest run tests/integration/application-backend/standalone-application-composition.integration.test.ts`.
-- Failure Evidence Paths: `evidence/api-e2e/api-rev-005-brief-standalone-real-team.log`, `api-rev-005-brief-standalone-stall-api.json`, `api-rev-005-brief-standalone-tool-exposure.json`, `api-rev-005-brief-standalone-tool-stall-excerpt.json`, and `api-rev-005-standalone-agent-tools-route-regression.log` under the ticket directory.
+- Failure Evidence Paths: `evidence/api-e2e/api-rev-005-brief-standalone-real-team.log`, `api-rev-005-brief-standalone-stall-api.json`, `api-rev-005-brief-standalone-tool-exposure.json`, and `api-rev-005-standalone-agent-tools-route-regression.log` under the ticket directory.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: the supported clean-standalone Brief team/tool path, the session-scoped Agent Tools MCP descriptor and route, both composition roots' route registration, and the reviewed standalone route-boundary design.
-- Files / areas reviewed: the three API/E2E canonical artifacts; the exact failing integration scenario and live evidence; `agent-tool-mcp-session-service.ts`, `agent-tools-mcp-routes.ts`, `build-studio-server-composition.ts`, `build-standalone-application-server-composition.ts`; requirements AC-005/006/010 and design DS-002/004/005 plus the exact standalone route inventory and Sequence 4.
-- Explicit exclusions: this focused review does not reopen the full CRR-014 scorecard, proportionally review the cumulative durable test package, or attribute the secondary mixed whole-server-suite failures without independent evidence.
+- Changed implementation and behavior reviewed: the runtime-specific projection from configured agent `toolNames` into Codex/Claude native tools versus the Agent Tools MCP descriptor, plus the standalone composition's omission of the existing server gateway route.
+- Files / areas reviewed at reviewed HEAD `077ebfa760ed90a1cbc3e7cd2cd9b5fe96352e51`: `agent-tool-mcp-catalog.ts`, the default MCP adapter providers, configured MCP source resolver, Codex/Claude MCP materializers, session service/routes, and both composition roots; the Brief researcher/writer configs and API-REV-005 evidence.
+- Explicit exclusions: this correction does not approve the uncommitted SR-007/source drafts currently present in the shared worktree, reopen the full CRR-014 scorecard, proportionally review durable tests, or attribute the secondary broad-suite failures.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. AC-005 and AC-006 require the real package team/provider/artifact journey in both hosts; AC-010 confines standalone to related application runtime ingress rather than permitting unrelated Studio/platform surfaces.
-- Design-spec behavior map verified against the implementation: Contradicted. The design requires strict tool readiness and real standalone execution, but its exact standalone route inventory and Sequence 4 list only readiness/bootstrap plus selected-app backend, notification, custom-WebSocket, and direct agent-communication mounts. They omit the session-scoped Agent Tools MCP transport that the normal Codex runtime advertises and requires.
-- Design review report and round confirmed: `ARCH-REV-006`, decision `Pass`; its standalone route boundary is incomplete for the now-proven runtime path.
-- Behavior-basis status: `Contradicted`.
-- Changed or newly discovered behavior, if any: no new business behavior. API-REV-005 exposes a missing transport segment inside already-approved UC-004/UC-009 and AC-005/006.
-- Remaining material ambiguity, if any: the target design must state whether the required authenticated Agent Tools MCP endpoint is classified as selected-application agent/run communication under AC-010 and how its session authority is bound to the standalone composition. The requirement to make configured tools work is not ambiguous.
+- Approved requirements basis understood: Yes, with the user's authoritative clarification. Codex/Claude native tools remain native. The server Agent Tools MCP transport exposes only configured tools that have an eligible server-owned static adapter or a registered MCP-origin source.
+- Design-spec behavior map verified against the reviewed implementation: sufficient for bounded correction. The existing Agent Tools MCP subsystem, route, capability token, adapters, and Codex/Claude materializers already own the behavior and work in Studio. Standalone omits only the existing route registration.
+- Design review report and round confirmed: `ARCH-REV-006`, decision `Pass`.
+- Behavior-basis status: `Confirmed` after correction.
+- Changed or newly discovered behavior, if any: none. The prior review and API/E2E report incorrectly treated every configured agent tool name as an expected Agent Tools MCP tool.
+- Remaining material ambiguity, if any: none for the bounded fix. The route is required for eligible server-owned tools during a standalone run; it must not add native file tools to the gateway.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Corrected Evidence |
 | --- | --- | --- | --- |
-| `BEH-004` | Contradicted at runtime transport | The package baseline reaches one attached binding and one real Luna team run, but the researcher cannot reach its configured application tools, so the effective run configuration does not complete its required workflow. | Real trace: 107 events, 36 `run_bash` calls, and zero `write_file`, `publish_artifacts`, or `send_message_to` calls. |
-| `BEH-005` | Contradicted at composition surface | Studio registers `registerAgentToolsMcpRoutes(app)`; standalone registers REST, WebSockets, and static routes only. | `AgentToolMcpSessionService` advertises `/mcp/agent-tools/:sessionId` in both runtime modes, while standalone returns route-not-found `404`. |
-| `BEH-006` | Confirmed through the prior failure boundary | Clean standalone package validation/readiness now supplies the package-owned Codex/Luna defaults and starts the real run. | No F004 missing-profile recurrence; F005 occurs later at tool transport. |
+| `BEH-004` | Confirmed until the missing standalone route | `toolNames` enter runtime projection; native Codex/Claude capabilities stay native, while eligible server/MCP tools enter the session descriptor. | `write_file` has no default Agent Tools MCP adapter and a non-MCP tool definition is ignored by the configured-MCP resolver. `publish_artifacts` and `send_message_to` have explicit server adapter providers. |
+| `BEH-005` | Bounded implementation omission | Studio registers `registerAgentToolsMcpRoutes(app)`; standalone registers REST, WebSockets, and static routes but omits that existing registrar. | Unauthenticated standalone POST returns platform `404`; the existing route would return its established `401` gate. |
+| `BEH-006` | Confirmed through launch | Clean standalone package defaults/readiness produce the real Codex/Luna binding and team run. | The runtime used native `run_bash` to create files; failure remained at server-owned publication/handoff availability. |
 
 ## Material Premise Validation
 
-### `MP-CR-013` — a supported clean standalone Brief run requires the advertised Agent Tools MCP transport
+### `MP-CR-013` — a supported clean standalone Brief run requires eligible server Agent Tools
 
-- Origin: `New`
-- Related approved requirement or established contract: UC-004, UC-009, AC-005, AC-006, and the runtime descriptor contract emitted by `AgentToolMcpSessionService`.
+- Origin: `Corrected from CRR-015`
+- Related approved requirement or established contract: UC-004, UC-009, AC-005, AC-006, and the existing Agent Tools MCP descriptor/route contract.
 - Relevant behavior ID(s): `BEH-004`, `BEH-005`, `BEH-006`.
 - Initiating basis kind: `User`.
-- Independent product-supported initiating trigger or applicable governing contract: a user opens the maintained Brief application through the supported standalone `pnpm dev` product path, creates a Brief, and invokes `Generate draft` in the real browser UI.
-- Support evidence: the maintained application exposes that browser action; API-REV-005 executed it against fresh standalone state with the package-owned Codex/Luna defaults and captured the resulting binding, run, provider trace, and business state.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `Brief standalone UI -> selected-app backend command -> application context agent execution -> launch authority -> attached Brief team run -> researcher Codex App Server provisioning -> AgentToolMcpSessionService descriptor -> POST /mcp/agent-tools/:sessionId -> authenticated dispatcher -> configured write/publish/message tools -> writer handoff/artifact projection`.
-- Lifecycle preconditions and material consequence at the claimed point: platform and application readiness pass; the binding is `ATTACHED`; the real run and researcher exist. Because the advertised endpoint is not registered, configured tools are unavailable, no valid handoff/artifact occurs, and the Brief remains `not_started` with zero projected artifacts.
+- Independent product-supported initiating trigger or applicable governing contract: a user opens the maintained Brief standalone application, creates a Brief, and invokes `Generate draft`.
+- Support evidence: API-REV-005 reaches a real attached Brief team run under package-owned Codex/Luna defaults.
+- Forward production path: `Brief UI -> selected-app backend -> application agent execution -> team run -> Codex native file operation + Agent Tools MCP descriptor for eligible server tools -> /mcp/agent-tools/:sessionId -> publish_artifacts/send_message_to -> writer handoff/artifact projection`.
+- Lifecycle preconditions and material consequence: readiness, binding, run creation, and native file creation are reachable. Because standalone does not register the existing Agent Tools MCP route, server-owned publication/handoff tools cannot be called, so the business workflow does not project artifacts or complete.
 - Reachability: `Reachable`.
-- Review consequence / proportionate response: the missing transport is material and must be corrected, but its path, classification, composition authority, and public-surface/security boundary must first be added to the reviewed solution rather than inferred as a one-line route registration.
+- Review consequence / proportionate response: register the existing route in standalone and validate the correct runtime-specific tool projection. Do not add native `write_file`/`read_file` tools to the gateway or redesign the working gateway subsystem.
 
 ## Findings
 
-### `CR-013` — the reviewed standalone route boundary omits a required internal run transport
+### `CR-013` — standalone omits the existing Agent Tools MCP route for eligible server tools
 
-- Affected approved behavior: UC-004, UC-009; AC-005, AC-006, and AC-010; `BEH-004`–`BEH-006`.
-- Reachability basis: `MP-CR-013`.
-- Source evidence: `AgentToolMcpSessionService.buildDescriptor()` always emits `${internalBaseUrl}/mcp/agent-tools/:sessionId`; `buildStudioServerComposition()` registers the matching route; `buildStandaloneApplicationServerComposition()` does not. The exact unauthenticated route probe therefore receives platform `404`, not the route gate's `401 unauthorized`.
-- Design evidence: DS-005 requires the tool groups for both hosts, but the exact standalone wrapper/route inventory and Sequence 4 enumerate only `/_autobyteus` readiness/bootstrap/backend/notification/custom-WS/direct-agent mounts. The design separately calls the external MCP gateway Studio-only and never distinguishes that optional gateway from this required internal Agent Tools transport.
-- Material consequence: the real standalone researcher receives no configured write, publication, or team-message tools and cannot complete the approved Brief researcher-to-writer/artifact flow.
-- Failure origin: inadequate reviewed design plus matching implementation omission. The mechanical source delta may be small, but adding `/mcp/agent-tools/*` outside the reviewed standalone route inventory, with default process-wide registry/dispatcher access, would make a new public-surface and authority decision that the current design does not authorize.
-- Earlier review gap: CRR-014 should have traced the real team-run spine through runtime tool delivery and compared every descriptor-advertised callback route with both composition inventories. The implementation matched the incomplete route map, which allowed the omission to survive source review; the prior API/E2E-readiness and runtime-fidelity conclusions are superseded for this path.
-- Required design correction:
-  1. Extend the standalone real-run spine through session creation, descriptor delivery, authenticated Agent Tools dispatch, configured tool execution, handoff, and artifact projection.
-  2. Classify the Agent Tools MCP endpoint explicitly as required internal application-run transport, distinct from the optional external MCP gateway, and reconcile AC-010 plus the exact standalone route inventory/prefix policy.
-  3. Specify the authoritative session registry/catalog/dispatcher identity used by both run provisioning and the route, including base-URL derivation, authentication/session scoping, revocation, and shutdown; do not leave a composition-critical default accessor as an implicit decision.
-  4. Update the construction sequence, file/change map, negative route-inventory expectations, and both-host validation scenarios before implementation resumes.
+- Affected approved behavior: UC-004, UC-009; AC-005 and AC-006; `BEH-004`–`BEH-006`.
+- Reachability basis: corrected `MP-CR-013`.
+- Source evidence at reviewed HEAD:
+  - `buildDefaultAgentToolMcpAdapterProviders()` exposes server-owned adapters including `publish_artifacts` and `send_message_to`; it does not expose file read/write adapters.
+  - `ConfiguredMcpAgentToolSourceResolver` forwards only `ToolOrigin.MCP`; ordinary registered native/server tools without an eligible static adapter are not added to the descriptor.
+  - Studio registers the existing Agent Tools MCP route; standalone does not.
+- Correct failure interpretation: `write_file` is not expected through the gateway for Codex/Claude. Its absence from MCP calls is not a defect. The valid failure is that the missing route prevents eligible server-owned tools such as `publish_artifacts` and `send_message_to` from being available in standalone.
+- Failure origin: bounded implementation composition wiring. The route, authorization, session/catalog/dispatcher behavior, runtime materialization, and adapter projection already exist and work in Studio; no new gateway semantics or broad authority refactor is required to establish the missing standalone path.
+- Earlier review correction: CRR-015 correctly found the missing route but overstated the expected tool set and escalated a working subsystem into a broad Design Impact. That classification is superseded.
+- Required local correction:
+  1. Register the existing Agent Tools MCP route in the standalone composition before static fallback, using the same established session authority used by run provisioning.
+  2. Preserve the current projection: native Codex/Claude file tools stay native; only configured eligible server adapters and configured MCP-origin tools enter `enabled_tools`.
+  3. Add/adjust durable assertions so the Brief researcher descriptor includes `publish_artifacts` and `send_message_to` but does not require gateway `write_file`; verify the route's 401/404 gates and the real native-write -> server-publish/message workflow.
+  4. Correct API-REV-005 wording/tests that equate configured agent `toolNames` with gateway-enabled tool names.
 
-The secondary `APIE2E-REPO-005` broad-suite failures remain `Unclear` and do not drive this finding or routing because API-REV-005 did not establish regression attribution. Preserve that evidence for later reconciliation.
+The secondary `APIE2E-REPO-005` result remains `Unclear` and unrelated to this classification.
 
 ## Classification
 
-`Design Impact` — the approved behavior is clear, but the reviewed standalone composition boundary is structurally incomplete. A direct local registration would cross the design's exact route and authority boundaries without an approved target contract.
+`Local Fix` — primary owner `implementation_engineer` for the standalone composition registration. API/E2E owns correction of the over-broad gateway-tool expectation and rerun evidence after source review.
 
 ## Recommended Recipient
 
-`solution_designer`
+`implementation_engineer`, after the current solution owner discards or narrows the unapproved SR-007 redesign that was based on the superseded CRR-015 interpretation.
 
 ## Residual Risks
 
-- The revised solution must keep the required internal Agent Tools transport distinct from the Studio-only external MCP gateway and from public app browser bootstrap routes.
-- Authority identity matters as much as route presence: the route must dispatch against the same session/tool exposure created for the real application run, with explicit lifecycle/security ownership.
-- After solution and architecture approval, implementation must return through full source review; API/E2E must rerun `APIE2E-STANDALONE-MCP-001` and the real standalone Brief flow first, then resume Studio parity, remount, commands, digests, recovery, isolation, and cleanup.
-- The secondary whole-server-suite red result remains unattributed and must not be silently converted into product defects or ignored in a final pass.
+- Do not expose native `read_file`/`write_file` through Agent Tools MCP merely because they appear in an agent definition's `toolNames`.
+- Preserve the distinction between native runtime tools, server-owned Agent Tools MCP adapters, configured external MCP-origin tools, and the separate generic external MCP gateway.
+- After the bounded source fix and source review, API/E2E must inspect the actual descriptor/`tools/list`, not infer it from package `toolNames`, then rerun the real standalone Brief handoff/artifact path.
+- The secondary broad-suite failures remain unattributed.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Fail`
 - Review Entry Point: `API/E2E Failure-Origin Review`
-- Material-Premise Gate: `Pass` (`MP-CR-013` is reachable)
-- Score Summary: prior CRR-014 `94/100` is historical and not recomputed in this focused review; its API/E2E-readiness and runtime-fidelity conclusions are superseded for the affected path.
-- Failure Origin: `Design Impact` — incomplete standalone application-run transport/route boundary, with a corresponding implementation omission.
-- Recommended Recipient: `solution_designer`
-- Notes: do not route a one-line route registration directly to implementation. Revise the full standalone run spine and composition authority/surface contract, obtain architecture review, then implement, source-review, and rerun API/E2E.
+- Material-Premise Gate: `Pass` (corrected `MP-CR-013` is reachable)
+- Score Summary: prior full score is not recomputed in this focused correction.
+- Failure Origin: `Local Fix` — standalone composition omitted the existing server Agent Tools MCP route; the gateway itself and native-tool separation are established behavior.
+- Recommended Recipient: `implementation_engineer` via the current solution owner reset/reroute.
+- Notes: CRR-015's Design Impact classification and its expectation that `write_file` be gateway-exposed are superseded. Do not continue a broad Agent Tools runtime redesign on that basis.
