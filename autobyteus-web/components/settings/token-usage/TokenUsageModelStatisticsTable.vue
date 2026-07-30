@@ -19,7 +19,7 @@
         <tbody class="divide-y divide-gray-100 bg-white">
           <tr v-for="row in rows" :key="row.rowId" class="align-top hover:bg-gray-50">
             <td class="px-3 py-3">{{ formatter.formatRuntimeKind(row.runtimeKind) }}</td>
-            <td class="px-3 py-3 font-medium text-gray-900">{{ row.llmModel }}</td>
+            <td class="px-3 py-3 font-medium text-gray-900">{{ row.modelDisplayName }}</td>
             <td class="px-3 py-3 text-right tabular-nums">{{ formatter.formatInteger(row.aggregate.grossInputTokens) }}</td>
             <td class="px-3 py-3 text-right tabular-nums">
               <div>{{ formatter.formatInteger(row.aggregate.cacheReadInputTokens) }}</div>
@@ -68,7 +68,7 @@ const props = defineProps<{
 const { t: $t } = useLocalization();
 const formatter = createTokenUsageStatisticsFormatter($t);
 
-const chartLabels = computed(() => props.rows.map((row) => `${formatter.formatRuntimeKind(row.runtimeKind)} · ${row.llmModel}`));
+const chartLabels = computed(() => props.rows.map((row) => `${formatter.formatRuntimeKind(row.runtimeKind)} · ${row.modelDisplayName}`));
 const chartData = computed(() => props.rows.map((row) => row.aggregate.estimatedApiTotalCost));
 const chartTooltipLabels = computed(() => props.rows.map((row) => (
   formatter.formatCostCell(row.aggregate.estimatedApiTotalCost, row.aggregate.currency, row.aggregate.apiCostStatus)

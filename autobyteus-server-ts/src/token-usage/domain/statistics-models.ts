@@ -28,6 +28,7 @@ export interface TokenUsageTaskStatisticsRow extends TokenUsageTaskRowDisplayMet
   taskId: string | null;
   executionAddress: TokenUsageExecutionAddress | null;
   models: string[];
+  modelDisplayNames: string[];
   runtimeKinds: string[];
   aggregate: TokenUsageCostSummaryAggregate;
   children: TokenUsageTaskStatisticsRow[];
@@ -41,5 +42,6 @@ export interface TokenUsageRuntimeModelStatisticsRow {
   rowId: string;
   runtimeKind: string;
   modelIdentifier: string;
+  modelDisplayName: string;
   aggregate: TokenUsageCostSummaryAggregate;
 }

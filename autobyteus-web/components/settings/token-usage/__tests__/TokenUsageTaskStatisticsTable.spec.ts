@@ -128,6 +128,7 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   createdAt: '2041-07-01T10:30:00.000Z',
   createdTimeSource: 'FIRST_USAGE_OBSERVED',
   models: ['gpt-shared'],
+  modelDisplayNames: ['gpt-shared'],
   runtimeKinds: ['codex_app_server'],
   aggregate: buildAggregate({
     grossInputTokens: 200,
@@ -164,6 +165,7 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
   createdAt: '2041-07-01T11:00:00.000Z',
   createdTimeSource: 'RUN_HISTORY',
   models: ['gpt-shared', 'deepseek-v4-flash'],
+  modelDisplayNames: ['gpt-shared', 'DeepSeek:deepseek-v4-flash'],
   runtimeKinds: ['codex_app_server', 'autobyteus'],
   aggregate: buildAggregate(),
   children: [{
@@ -182,6 +184,7 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
     createdAt: '2041-07-01T11:01:00.000Z',
     createdTimeSource: 'FIRST_USAGE_OBSERVED',
     models: ['gpt-shared'],
+    modelDisplayNames: ['gpt-shared'],
     runtimeKinds: ['codex_app_server'],
     aggregate: buildAggregate({
       grossInputTokens: 100,
@@ -215,6 +218,7 @@ const rows: TokenUsageTaskStatisticsRow[] = [{
     createdAt: '2041-07-01T11:02:00.000Z',
     createdTimeSource: 'FIRST_USAGE_OBSERVED',
     models: ['deepseek-v4-flash'],
+    modelDisplayNames: ['DeepSeek:deepseek-v4-flash'],
     runtimeKinds: ['autobyteus'],
     aggregate: buildAggregate({
       grossInputTokens: 60,
@@ -313,7 +317,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
     expect(topRows[1]).toContain('Standalone Agent');
     expect(wrapper.text()).toContain('First usage observed');
     expect(wrapper.text()).toContain('Mixed: Codex, Autobyteus');
-    expect(wrapper.text()).toContain('Mixed: gpt-shared, deepseek-v4-flash');
+    expect(wrapper.text()).toContain('Mixed: gpt-shared, DeepSeek:deepseek-v4-flash');
     expect(wrapper.text()).toContain('cache hit 25.0%');
     expect(wrapper.text()).toContain('5 thinking included');
     expect(wrapper.text()).toContain('partial est.');
