@@ -3,11 +3,11 @@ import type {
   AgentToolMcpDescriptor,
   AgentToolMcpSession,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
-import type { AgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import type { AgentToolMcpSessionAuthority } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 
 export type ClaudeAgentToolsMcpSessionServiceLike = Pick<
-  AgentToolMcpSessionService,
+  AgentToolMcpSessionAuthority,
   "createAgentToolMcpSession"
 >;
 

@@ -39,6 +39,9 @@ import { buildApplicationStorageLayout } from "../../application-storage/utils/a
 import {
   ApplicationProviderCredentialReadinessAdapter,
 } from "../launch-configuration/application-provider-credential-readiness-adapter.js";
+import type {
+  ApplicationAgentToolsSessionAuthority,
+} from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
 
 export const createApplicationOrchestrationAuthorities = (input: {
   appConfig: AppConfig;
@@ -49,6 +52,7 @@ export const createApplicationOrchestrationAuthorities = (input: {
   deferredEnginePort: DeferredApplicationEngineEventHandlerPort;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
+  agentToolsSessionAuthority: ApplicationAgentToolsSessionAuthority;
 }) => {
   const runLookupStore = new ApplicationRunLookupStore({
     globalPlatformStateStore: input.globalPlatformStateStore,

@@ -37,6 +37,9 @@ import { MixedConversationTargetRouter } from "./conversation-target/mixed-conve
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../task-delegation/task-agent-directory.js";
 import { disposeTaskTeamActiveRunDirectoryForParentTeamRun, getTaskTeamActiveRunDirectory } from "../../task-delegation/task-team-active-run-directory.js";
 import type { MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
+import type {
+  AgentToolMcpSessionAuthority,
+} from "../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -90,6 +93,7 @@ export class MixedTeamManager implements TeamManager {
     options: {
       subTeamRunFactory?: MixedSubTeamRunFactory;
       agentRunManager?: AgentRunManager;
+      agentToolMcpSessionAuthority?: AgentToolMcpSessionAuthority;
       memberTeamContextBuilder: MemberTeamContextBuilder;
     },
   ) {
@@ -114,6 +118,8 @@ export class MixedTeamManager implements TeamManager {
       configResolver,
       subTeamRunFactory,
       agentRunManager: options.agentRunManager,
+      agentToolMcpSessionAuthority:
+        options.agentToolMcpSessionAuthority,
       memberTeamContextBuilder: options.memberTeamContextBuilder,
       ...sharedCallbacks,
     });
@@ -121,6 +127,8 @@ export class MixedTeamManager implements TeamManager {
       teamContext: context,
       configResolver,
       agentRunManager: options.agentRunManager,
+      agentToolMcpSessionAuthority:
+        options.agentToolMcpSessionAuthority,
       memberTeamContextBuilder: options.memberTeamContextBuilder,
       ...sharedCallbacks,
     });

@@ -33,7 +33,10 @@ import {
   AgentRunMemoryRecorder,
   getAgentRunMemoryRecorder,
 } from "../../agent-memory/services/agent-run-memory-recorder.js";
-import { getAgentToolMcpSessionService } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import {
+  getAgentToolMcpSessionService,
+  type AgentToolMcpSessionAuthority,
+} from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -56,6 +59,7 @@ type AgentRunManagerOptions = {
   runFileChangeService?: RunFileChangeService;
   publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
   memoryRecorder?: AgentRunMemoryRecorder;
+  agentToolMcpSessionAuthority?: AgentToolMcpSessionAuthority;
 };
 
 export class AgentRunManager {
@@ -66,6 +70,7 @@ export class AgentRunManager {
   private readonly runFileChangeService: RunFileChangeService;
   private readonly publishedArtifactRelayService: ApplicationPublishedArtifactRelayService;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
+  private readonly agentToolMcpSessionAuthority: AgentToolMcpSessionAuthority;
   private activeRuns = new Map<string, AgentRun>();
   private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
   private readonly publishedArtifactRelayUnsubscribers = new Map<string, () => void>();
@@ -76,6 +81,22 @@ export class AgentRunManager {
       AgentRunManager.instance = new AgentRunManager(options);
     }
     return AgentRunManager.instance;
+  }
+
+  static initializeProcessInstance(
+    options: AgentRunManagerOptions,
+  ): AgentRunManager {
+    if (AgentRunManager.instance) {
+      throw new Error("The process AgentRunManager is already initialized.");
+    }
+    AgentRunManager.instance = new AgentRunManager(options);
+    return AgentRunManager.instance;
+  }
+
+  static releaseProcessInstance(instance: AgentRunManager): void {
+    if (AgentRunManager.instance === instance) {
+      AgentRunManager.instance = null;
+    }
   }
 
   constructor(options: AgentRunManagerOptions = {}) {
@@ -90,6 +111,8 @@ export class AgentRunManager {
     this.publishedArtifactRelayService =
       options.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
     this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
+    this.agentToolMcpSessionAuthority =
+      options.agentToolMcpSessionAuthority ?? getAgentToolMcpSessionService();
     logger.info("AgentRunManager initialized.");
   }
 
@@ -207,6 +230,23 @@ export class AgentRunManager {
     }
   }
 
+  async stopAllAgentRuns(): Promise<void> {
+    const errors: unknown[] = [];
+    for (const runId of this.listActiveRuns()) {
+      try {
+        await this.terminateAgentRun(runId);
+      } catch (error) {
+        errors.push(error);
+      }
+    }
+    if (errors.length > 0) {
+      throw new AggregateError(
+        errors,
+        "Failed to stop all process agent runs.",
+      );
+    }
+  }
+
   private resolveBackendFactory(
     runtimeKind: RuntimeKind,
   ): AgentRunBackendFactory | null {
@@ -281,7 +321,7 @@ export class AgentRunManager {
 
   private unregisterActiveRun(runId: string): void {
     this.activeRuns.delete(runId);
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForRun(runId);
+    this.agentToolMcpSessionAuthority.revokeAgentToolMcpSessionsForRun(runId);
     this.unregisterRunFileChanges(runId);
     this.unregisterPublishedArtifactRelay(runId);
     this.unregisterMemoryRecorder(runId);

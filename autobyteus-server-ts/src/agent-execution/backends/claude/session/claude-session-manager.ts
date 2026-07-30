@@ -19,7 +19,7 @@ import {
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import {
   getAgentToolMcpSessionService,
-  type AgentToolMcpSessionService,
+  type AgentToolMcpSessionAuthority,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 export type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 export { ClaudeSession } from "./claude-session.js";
@@ -30,7 +30,7 @@ export class ClaudeSessionManager {
   private readonly sessionMessageCache = new ClaudeSessionMessageCache();
   private readonly activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
   private readonly sdkClient: ClaudeSdkClient;
-  private readonly agentToolMcpSessionService: AgentToolMcpSessionService;
+  private readonly agentToolMcpSessionService: AgentToolMcpSessionAuthority;
   private readonly toolingCoordinator = new ClaudeSessionToolUseCoordinator(
     new Map(),
     new Map(),
@@ -41,7 +41,7 @@ export class ClaudeSessionManager {
   constructor(
     workspaceManager: WorkspaceManager = getWorkspaceManager(),
     sdkClient: ClaudeSdkClient = getClaudeSdkClient(),
-    agentToolMcpSessionService: AgentToolMcpSessionService = getAgentToolMcpSessionService(),
+    agentToolMcpSessionService: AgentToolMcpSessionAuthority = getAgentToolMcpSessionService(),
   ) {
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;

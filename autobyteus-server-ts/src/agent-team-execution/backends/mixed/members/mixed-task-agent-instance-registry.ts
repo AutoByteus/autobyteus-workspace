@@ -21,6 +21,9 @@ import { getMixedTaskAgentHandleRecoveryCache } from "./mixed-task-agent-handle-
 import type { MixedTeamEventPublish, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
 import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
+import type {
+  AgentToolMcpSessionAuthority,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 
 export type TaskAgentInstanceDeliveryAccess = {
   deliverInterAgentMessageToTaskAgent(
@@ -41,6 +44,7 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
     teamContext: TeamRunContext<MixedTeamRunContext>;
     configResolver: MixedTeamMemberConfigResolver;
     agentRunManager?: AgentRunManager;
+    agentToolMcpSessionAuthority?: AgentToolMcpSessionAuthority;
     memberTeamContextBuilder: MemberTeamContextBuilder;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
@@ -82,6 +86,8 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
       }),
       config: this.buildTaskAgentRunConfig(logicalContext, request.identity.taskAgentRunId),
       agentRunManager: this.options.agentRunManager,
+      agentToolMcpSessionAuthority:
+        this.options.agentToolMcpSessionAuthority,
       memberTeamContextBuilder: this.options.memberTeamContextBuilder,
       publish: this.options.publish,
       notifyStatusChange: this.options.notifyStatusChange,
@@ -287,6 +293,8 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
       }),
       config: this.buildTaskAgentRunConfig(logicalContext, taskAgentRunId),
       agentRunManager: this.options.agentRunManager,
+      agentToolMcpSessionAuthority:
+        this.options.agentToolMcpSessionAuthority,
       memberTeamContextBuilder: this.options.memberTeamContextBuilder,
       publish: this.options.publish,
       notifyStatusChange: this.options.notifyStatusChange,

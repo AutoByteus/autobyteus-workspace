@@ -31,6 +31,16 @@ import { stopGatewayCallbackDeliveryRuntime } from "../external-channel/runtime/
 import { getManagedMessagingGatewayService } from "../managed-capabilities/messaging-gateway/defaults.js";
 import { stopDefaultAgentRunEventPipeline } from "../agent-execution/events/default-agent-run-event-pipeline.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
+import {
+  createAgentToolsMcpProcessAuthority,
+  type AgentToolsMcpProcessAuthority,
+} from "../agent-tools/mcp/agent-tools-mcp-process-authority.js";
+import {
+  getPublishedArtifactPublicationService,
+} from "../services/published-artifacts/published-artifact-publication-service.js";
+import {
+  GeneralProcessRunAuthority,
+} from "../agent-execution/runtime/general-process-run-authority.js";
 
 export type StudioServerComposition = Readonly<{
   app: FastifyInstance;
@@ -38,24 +48,35 @@ export type StudioServerComposition = Readonly<{
   packageRegistryService: ApplicationPackageRegistryService;
 }>;
 
-const closeStudioProcessResources = async (): Promise<void> => {
+const closeStudioProcessResources = async (input: {
+  agentToolsProcessAuthority: AgentToolsMcpProcessAuthority;
+  generalProcessRunAuthority: GeneralProcessRunAuthority;
+}): Promise<void> => {
   stopMemorySyncWorker();
   try {
-    await stopChannelRunOutputDeliveryRuntime();
+    await input.generalProcessRunAuthority.close();
   } finally {
     try {
-      await stopGatewayCallbackDeliveryRuntime();
+      input.agentToolsProcessAuthority.close();
     } finally {
       try {
-        await getManagedMessagingGatewayService().close();
+        await stopChannelRunOutputDeliveryRuntime();
       } finally {
         try {
-          await stopDefaultAgentRunEventPipeline();
+          await stopGatewayCallbackDeliveryRuntime();
         } finally {
           try {
-            await getSecretVaultRuntime().close();
+            await getManagedMessagingGatewayService().close();
           } finally {
-            await shutdownPrisma();
+            try {
+              await stopDefaultAgentRunEventPipeline();
+            } finally {
+              try {
+                await getSecretVaultRuntime().close();
+              } finally {
+                await shutdownPrisma();
+              }
+            }
           }
         }
       }
@@ -63,7 +84,10 @@ const closeStudioProcessResources = async (): Promise<void> => {
   }
 };
 
-const createStudioApplicationAuthorities = (appConfig: AppConfig) => {
+const createStudioApplicationAuthorities = (
+  appConfig: AppConfig,
+  agentToolsProcessAuthority: AgentToolsMcpProcessAuthority,
+) => {
   let bundleService!: ApplicationBundleService;
   let applicationGraph!: ApplicationPlatformRuntimeGraph;
   let definitionServices!: ReturnType<typeof createApplicationDefinitionServices>;
@@ -101,6 +125,8 @@ const createStudioApplicationAuthorities = (appConfig: AppConfig) => {
     appConfig,
     bundleService,
     ...definitionServices,
+    agentToolsSessionAuthorityFactory:
+      agentToolsProcessAuthority,
   });
   return {
     packageRegistryService,
@@ -114,14 +140,36 @@ export const buildStudioServerComposition = async (input: {
   appConfig: AppConfig;
   loggingConfig: LoggingConfig;
 }): Promise<StudioServerComposition> => {
+  const agentToolsProcessAuthority =
+    createAgentToolsMcpProcessAuthority({
+      generalProcessPublication:
+        getPublishedArtifactPublicationService(),
+    });
+  const generalProcessRunAuthority =
+    new GeneralProcessRunAuthority(
+      agentToolsProcessAuthority.generalProcessSessionAuthority,
+    );
+  let studioAuthorities:
+    ReturnType<typeof createStudioApplicationAuthorities>;
+  try {
+    studioAuthorities = createStudioApplicationAuthorities(
+      input.appConfig,
+      agentToolsProcessAuthority,
+    );
+  } catch (error) {
+    await closeStudioProcessResources({
+      agentToolsProcessAuthority,
+      generalProcessRunAuthority,
+    });
+    throw error;
+  }
   const {
     packageRegistryService,
     bundleService,
     applicationGraph,
     agentDefinitionService,
     agentTeamDefinitionService,
-  } =
-    createStudioApplicationAuthorities(input.appConfig);
+  } = studioAuthorities;
   configureStudioApplicationApiAuthorities({
     bundleService,
     packageRegistryService,
@@ -134,34 +182,49 @@ export const buildStudioServerComposition = async (input: {
     disableRequestLogging: true,
     maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
   });
-  registerHttpAccessLogPolicy(app, {
-    mode: input.loggingConfig.httpAccessLogMode,
-    includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
-  });
-  await registerAgentToolsMcpRoutes(app);
-  await registerMcpGatewayRoutes(app);
-  await app.register(cors, {
-    origin: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  });
-  await app.register(multipart, {
-    limits: { fileSize: 25 * 1024 * 1024 },
-  });
-  await app.register(websocket);
-  await registerRemoteAccessPolicyPlugin(app);
-  await registerMobileWebStaticRoutes(app);
-  await app.register(
-    async (restApp) => registerRestRoutes(restApp, applicationGraph),
-    { prefix: "/rest" },
-  );
-  await registerWebsocketRoutes(app, applicationGraph);
-  await registerGraphql(app);
   app.addHook("onClose", async () => {
     try {
       await applicationGraph.lifecycle.stop();
     } finally {
-      await closeStudioProcessResources();
+      await closeStudioProcessResources({
+        agentToolsProcessAuthority,
+        generalProcessRunAuthority,
+      });
     }
   });
-  return Object.freeze({ app, applicationGraph, packageRegistryService });
+  try {
+    registerHttpAccessLogPolicy(app, {
+      mode: input.loggingConfig.httpAccessLogMode,
+      includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
+    });
+    await registerAgentToolsMcpRoutes(
+      app,
+      agentToolsProcessAuthority.routeDependencies,
+    );
+    await registerMcpGatewayRoutes(app);
+    await app.register(cors, {
+      origin: true,
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    });
+    await app.register(multipart, {
+      limits: { fileSize: 25 * 1024 * 1024 },
+    });
+    await app.register(websocket);
+    await registerRemoteAccessPolicyPlugin(app);
+    await registerMobileWebStaticRoutes(app);
+    await app.register(
+      async (restApp) => registerRestRoutes(restApp, applicationGraph),
+      { prefix: "/rest" },
+    );
+    await registerWebsocketRoutes(app, applicationGraph);
+    await registerGraphql(app);
+    return Object.freeze({
+      app,
+      applicationGraph,
+      packageRegistryService,
+    });
+  } catch (error) {
+    await app.close();
+    throw error;
+  }
 };

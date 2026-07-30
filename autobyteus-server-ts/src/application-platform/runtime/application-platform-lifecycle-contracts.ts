@@ -13,6 +13,12 @@ import type { ApplicationEngineHostService } from "../../application-engine/serv
 import type { ApplicationAgentStreamingService } from "../../application-agent-streaming/services/application-agent-streaming-service.js";
 import type { AgentToolRegistryReadiness } from "../../startup/agent-tool-loader.js";
 import type { ApplicationDefinitionRuntimeReadiness } from "./application-definition-runtime-readiness.js";
+import type {
+  ApplicationAgentToolsSessionAuthority,
+} from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
+import type {
+  DeferredPublishedArtifactPublicationPort,
+} from "./deferred-published-artifact-publication-port.js";
 
 export type ApplicationPlatformLifecycleState =
   | "constructed"
@@ -32,6 +38,9 @@ export type ApplicationPlatformLifecycleDependencies = {
     toolReadiness: AgentToolRegistryReadiness;
     bootstrapBuiltInAgents: () => Promise<void>;
     definitionRuntimeReadiness: ApplicationDefinitionRuntimeReadiness;
+    agentToolsSessionAuthority: ApplicationAgentToolsSessionAuthority;
+    publishedArtifactPublicationPort:
+      DeferredPublishedArtifactPublicationPort;
   };
   bundleService: ApplicationBundleService;
   platformStateStore: ApplicationPlatformStateStore;

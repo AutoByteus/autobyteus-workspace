@@ -21,12 +21,18 @@ import { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.j
 import type { ApplicationPlatformRuntimeGraph } from "./application-platform-runtime-graph.js";
 import { createApplicationOrchestrationAuthorities } from "./create-application-orchestration-authorities.js";
 import { DeferredApplicationEngineEventHandlerPort } from "./deferred-application-engine-event-handler-port.js";
+import { DeferredPublishedArtifactPublicationPort } from "./deferred-published-artifact-publication-port.js";
+import type {
+  ApplicationAgentToolsSessionAuthorityFactory,
+} from "../../agent-tools/mcp/agent-tools-mcp-process-authority.js";
 
 export const createApplicationPlatformRuntimeGraph = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
+  agentToolsSessionAuthorityFactory:
+    ApplicationAgentToolsSessionAuthorityFactory;
   selectedApplicationIds?: ReadonlySet<string> | null;
 }): ApplicationPlatformRuntimeGraph => {
   const storageLifecycleService = new ApplicationStorageLifecycleService({
@@ -40,13 +46,26 @@ export const createApplicationPlatformRuntimeGraph = (input: {
   const globalPlatformStateStore = new ApplicationGlobalPlatformStateStore(input.appConfig);
   const availabilityRegistry = new ApplicationAvailabilityStateRegistry();
   const deferredEnginePort = new DeferredApplicationEngineEventHandlerPort();
+  const deferredPublicationPort =
+    new DeferredPublishedArtifactPublicationPort();
+  const agentToolsSessionAuthority =
+    input.agentToolsSessionAuthorityFactory
+      .createApplicationSessionAuthority({
+        executionAuthorities: {
+          publishedArtifactPublication: deferredPublicationPort,
+        },
+        assertExecutionAuthoritiesReady: () =>
+          deferredPublicationPort.assertBound(),
+      });
   const authorities = createApplicationOrchestrationAuthorities({
     ...input,
     platformStateStore,
     globalPlatformStateStore,
     availabilityRegistry,
     deferredEnginePort,
+    agentToolsSessionAuthority,
   });
+  deferredPublicationPort.bind(authorities.publicationService);
   const engineHostService = new ApplicationEngineHostService({
     applicationBundleService: input.bundleService,
     storageLifecycleService,
@@ -92,6 +111,8 @@ export const createApplicationPlatformRuntimeGraph = (input: {
         });
       },
       definitionRuntimeReadiness,
+      agentToolsSessionAuthority,
+      publishedArtifactPublicationPort: deferredPublicationPort,
     },
     bundleService: input.bundleService,
     platformStateStore,
@@ -115,6 +136,8 @@ export const createApplicationPlatformRuntimeGraph = (input: {
     platformStateStore,
     globalPlatformStateStore,
     runLookupStore: authorities.runLookupStore,
+    agentToolsSessionAuthority,
+    publishedArtifactPublicationService: authorities.publicationService,
     startupGate: authorities.startupGate,
     availabilityService: authorities.availabilityService,
     recoveryService: authorities.recoveryService,

@@ -41,6 +41,7 @@ export class ApplicationPlatformLifecycle {
       await this.dependencies.preparation.prepareWorkspaceRuntime();
       await this.dependencies.preparation.prepareAgentCustomizations();
       await this.dependencies.preparation.toolReadiness.registerRequiredGroups();
+      this.dependencies.preparation.agentToolsSessionAuthority.assertReady();
       const snapshot = await this.dependencies.bundleService.getCatalogSnapshot();
       this.assertSelectedCatalogIsValid(snapshot);
       this.catalogSnapshot = snapshot;
@@ -154,6 +155,7 @@ export class ApplicationPlatformLifecycle {
       }
     };
 
+    this.dependencies.preparation.agentToolsSessionAuthority.blockNewSessions();
     await runStep(() => this.dependencies.eventDispatchService.stop());
     await runStep(() => this.dependencies.agentCommunicationService.closeAll());
     await runStep(() => this.dependencies.backendGateway.dispose());
@@ -161,6 +163,10 @@ export class ApplicationPlatformLifecycle {
     await runStep(() => this.dependencies.notificationHub.closeAll());
     await runStep(() => this.dependencies.runObserverService.dispose());
     await runStep(() => this.dependencies.engineHostService.stopAllApplicationEngines());
+    await runStep(() =>
+      this.dependencies.preparation.agentToolsSessionAuthority.close());
+    await runStep(() =>
+      this.dependencies.preparation.publishedArtifactPublicationPort.close());
     await runStep(() => this.dependencies.streamingService.stopAll());
     this.state = "stopped";
     if (errors.length > 0) {

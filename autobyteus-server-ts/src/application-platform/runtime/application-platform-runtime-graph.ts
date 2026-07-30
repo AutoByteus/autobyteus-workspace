@@ -15,6 +15,12 @@ import type { ApplicationBackendNotificationHub } from "../../application-backen
 import type { ApplicationBackendWebSocketSessionService } from "../../application-backend-api-gateway/websockets/application-backend-websocket-session-service.js";
 import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import type { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
+import type {
+  ApplicationAgentToolsSessionAuthority,
+} from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
+import type {
+  PublishedArtifactPublicationService,
+} from "../../services/published-artifacts/published-artifact-publication-service.js";
 
 export type ApplicationPlatformRuntimeGraph = Readonly<{
   bundleService: ApplicationBundleService;
@@ -22,6 +28,8 @@ export type ApplicationPlatformRuntimeGraph = Readonly<{
   platformStateStore: ApplicationPlatformStateStore;
   globalPlatformStateStore: ApplicationGlobalPlatformStateStore;
   runLookupStore: ApplicationRunLookupStore;
+  agentToolsSessionAuthority: ApplicationAgentToolsSessionAuthority;
+  publishedArtifactPublicationService: PublishedArtifactPublicationService;
   startupGate: ApplicationOrchestrationStartupGate;
   availabilityService: ApplicationAvailabilityService;
   recoveryService: ApplicationOrchestrationRecoveryService;

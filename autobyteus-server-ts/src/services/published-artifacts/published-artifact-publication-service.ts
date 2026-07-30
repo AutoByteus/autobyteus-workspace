@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import {
   ApplicationPublishedArtifactRelayService,
   getApplicationPublishedArtifactRelayService,
@@ -21,7 +20,11 @@ import {
   PublishedArtifactSnapshotStore,
   getPublishedArtifactSnapshotStore,
 } from "./published-artifact-snapshot-store.js";
-import type { PublishArtifactsToolArtifactInput } from "./published-artifact-tool-contract.js";
+import type {
+  PublishedArtifactPublicationFallbackRuntimeContext,
+  PublishedArtifactPublicationPort,
+  PublishedArtifactPublicationRequest,
+} from "./published-artifact-publication-port.js";
 import {
   EMPTY_PUBLISHED_ARTIFACT_PROJECTION,
   normalizePublishedArtifactType,
@@ -50,14 +53,8 @@ const normalizeOptionalNonEmptyString = (value: string | null | undefined): stri
   return trimmed.length > 0 ? trimmed : null;
 };
 
-type FallbackPublicationRuntimeContext = {
-  memoryDir?: string | null;
-  workspaceRootPath?: string | null;
-  applicationExecutionContext?: ApplicationExecutionContext | null;
-  emitArtifactPersisted?: ((artifact: PublishedArtifactSummary) => void | Promise<void>) | null;
-};
-
-export class PublishedArtifactPublicationService {
+export class PublishedArtifactPublicationService
+implements PublishedArtifactPublicationPort {
   constructor(
     private readonly dependencies: {
       agentRunManager?: AgentRunManager;
@@ -92,7 +89,7 @@ export class PublishedArtifactPublicationService {
     runId: string;
     path: string;
     description?: string | null;
-    fallbackRuntimeContext?: FallbackPublicationRuntimeContext | null;
+    fallbackRuntimeContext?: PublishedArtifactPublicationFallbackRuntimeContext | null;
   }): Promise<PublishedArtifactSummary> {
     const run = this.agentRunManager.getActiveRun(input.runId);
     const fallbackRuntimeContext = input.fallbackRuntimeContext ?? null;
@@ -194,11 +191,9 @@ export class PublishedArtifactPublicationService {
   }
 
 
-  async publishManyForRun(input: {
-    runId: string;
-    artifacts: PublishArtifactsToolArtifactInput[];
-    fallbackRuntimeContext?: FallbackPublicationRuntimeContext | null;
-  }): Promise<PublishedArtifactSummary[]> {
+  async publishManyForRun(
+    input: PublishedArtifactPublicationRequest,
+  ): Promise<PublishedArtifactSummary[]> {
     if (!Array.isArray(input.artifacts) || input.artifacts.length === 0) {
       throw new Error("At least one published artifact is required.");
     }
