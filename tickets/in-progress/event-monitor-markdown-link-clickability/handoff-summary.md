@@ -8,6 +8,7 @@
 - Ticket: `event-monitor-markdown-link-clickability`
 - Ticket branch: `codex/event-monitor-markdown-link-clickability`
 - Current reviewed source: `f809c765ddc2807bfc2a1c154fb906d92e24ea2a`
+- Pre-verification delivery checkpoint: `aa2070124332a4aac9fbcf2d342a8832a39fbc46` (`chore(ticket): checkpoint delivery package`).
 
 ## Delivered Change
 
@@ -27,6 +28,7 @@
   - Cleanup completed; no task-owned process or temporary route remains.
 - Proportional durable test-code review: `CRR-002 Pass`; no findings and no rerun required.
 - Delivery base check: `git fetch origin personal` succeeded; latest `origin/personal` is `34f3fe97a281a9b85e02409bd753ad132df13d20`, already the ticket branch merge-base. No new base commits required integration and no additional post-integration rerun was required.
+- Checkpoint state: The cumulative ticket package and delivery artifacts are preserved in the local checkpoint above; the checkpoint has not been pushed or merged.
 - Delivery docs sync: `Pass`; long-lived docs were reviewed and remain accurate, with no edits required.
 
 ## Delivery Artifacts
