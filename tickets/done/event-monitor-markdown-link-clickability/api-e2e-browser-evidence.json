@@ -1,0 +1,71 @@
+{
+  "url": "http://127.0.0.1:43127/api-e2e-event-monitor-markdown-link-clickability",
+  "unsupportedLabels": 6,
+  "unsupportedAnchors": 0,
+  "unsupportedActionIds": 0,
+  "inertEventCountBeforeSupported": "0",
+  "totalEventCountAfterSupported": "1",
+  "supportedActionCount": 1,
+  "supportedHref": "#",
+  "supportedTitle": "/tmp/report.md",
+  "genericActionIds": 0,
+  "genericAnchors": 1,
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "requestfailed",
+      "text": "http://localhost:8000/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "http://localhost:8000/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "http://localhost:8000/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "http://localhost:8000/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    }
+  ]
+}

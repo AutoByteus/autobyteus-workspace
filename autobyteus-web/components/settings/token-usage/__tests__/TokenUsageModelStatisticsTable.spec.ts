@@ -81,11 +81,13 @@ const rows: TokenUsageRuntimeModelStatisticsRow[] = [{
   rowId: 'runtime-model:codex_app_server:gpt-shared',
   runtimeKind: 'codex_app_server',
   llmModel: 'gpt-shared',
+  modelDisplayName: 'gpt-shared',
   aggregate: aggregate(),
 }, {
   rowId: 'runtime-model:autobyteus:gpt-shared',
   runtimeKind: 'autobyteus',
   llmModel: 'gpt-shared',
+  modelDisplayName: 'Autobyteus:gpt-shared',
   aggregate: aggregate({
     grossInputTokens: 60,
     standardInputTokens: 60,
@@ -106,6 +108,7 @@ const rows: TokenUsageRuntimeModelStatisticsRow[] = [{
   rowId: 'runtime-model:Unknown:gpt-old',
   runtimeKind: 'Unknown',
   llmModel: 'gpt-old',
+  modelDisplayName: 'gpt-old',
   aggregate: aggregate({
     grossInputTokens: 20,
     standardInputTokens: 20,
@@ -142,13 +145,13 @@ describe('TokenUsageModelStatisticsTable', () => {
     expect(wrapper.text()).toContain('Codex');
     expect(wrapper.text()).toContain('Autobyteus');
     expect(wrapper.text()).toContain('Unknown');
-    expect(wrapper.text().match(/gpt-shared/g)).toHaveLength(4);
+    expect(wrapper.text()).toContain('Autobyteus:gpt-shared');
     expect(wrapper.text()).toContain('cache hit 20.0%');
     expect(wrapper.text()).toContain('no cache data');
     expect(wrapper.text()).toMatch(/Included diagnostic|included \/ diagnostic/i);
     expect(wrapper.text()).toContain('mixed est.');
     expect(wrapper.text()).toContain('price missing');
     expect(wrapper.get('[data-test="bar-chart"]').text()).toContain('Codex · gpt-shared');
-    expect(wrapper.get('[data-test="bar-chart"]').text()).toContain('Autobyteus · gpt-shared');
+    expect(wrapper.get('[data-test="bar-chart"]').text()).toContain('Autobyteus · Autobyteus:gpt-shared');
   });
 });

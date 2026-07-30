@@ -1,0 +1,5 @@
+Command: pnpm build:electron
+Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-web
+Observed result: packaging compile and server preparation completed, but final default Linux target selection failed because the documented builder refuses cross-platform Linux packaging on the darwin/arm64 host.
+Observed error: Linux Electron packaging requires a native Linux host so bundled native server resources match the package target. Current host: darwin/arm64.
+Classification: environment/target selection limitation, not an implementation failure. Follow-up: reran the project-supported host target with `pnpm build:electron:mac`; macOS arm64 DMG and ZIP completed successfully.

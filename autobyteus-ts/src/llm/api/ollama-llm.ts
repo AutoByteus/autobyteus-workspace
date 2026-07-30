@@ -11,6 +11,27 @@ import { convertOllamaToolCalls } from '../converters/ollama-tool-call-converter
 import { createLocalLongRunningFetch } from '../transport/local-long-running-fetch.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
+export const createOllamaTokenUsageObservation = (
+  response: unknown,
+  model: LLMModel,
+): LlmTokenUsageObservation | null => {
+  if (!response || typeof response !== 'object' || Array.isArray(response)) {
+    return null;
+  }
+  const record = response as Record<string, unknown>;
+  return buildLlmTokenUsageObservation({
+    inputTokens: record.prompt_eval_count,
+    outputTokens: record.eval_count,
+    rawUsage: record,
+    model: {
+      modelProvider: model.provider,
+      providerName: model.providerName,
+      modelIdentifier: model.modelIdentifier,
+      modelValue: model.value,
+    },
+  });
+};
+
 export class OllamaLLM extends BaseLLM {
   private client: Ollama;
   private _renderer: BasePromptRenderer;
@@ -84,20 +105,7 @@ export class OllamaLLM extends BaseLLM {
 
 
   private toTokenUsage(response: unknown): LlmTokenUsageObservation | null {
-    if (!response || typeof response !== 'object' || Array.isArray(response)) {
-      return null;
-    }
-    const record = response as Record<string, unknown>;
-    return buildLlmTokenUsageObservation({
-      inputTokens: record.prompt_eval_count,
-      outputTokens: record.eval_count,
-      rawUsage: record,
-      model: {
-        modelProvider: this.model.provider,
-        modelIdentifier: this.model.modelIdentifier,
-        modelValue: this.model.value,
-      },
-    });
+    return createOllamaTokenUsageObservation(response, this.model);
   }
 
   protected async _sendMessagesToLLM(

@@ -1,0 +1,33 @@
+{
+  "url": "http://127.0.0.1:38202/settings",
+  "taskGrouping": "task",
+  "modelGrouping": "model",
+  "taskText": "Unknown agent run\nrun …odex-run\n\tCodex\tgpt-5.6-luna\t\n20\nno cache data\n\t\n5\n\t0,1250 $\t0,1250 $\t\n0,2500 $\n\t\n29. Juli 2026, 14:00\n\n\nUnknown agent run\nrun …stom-run\n\tAutobyteus\talibaba_cloud:qwen3.8-max-preview\t\n100\nno cache data\n\t\n10\n\t0,6250 $\t0,6250 $\t\n1,25 $\n\t\n29. Juli 2026, 14:00",
+  "modelText": "Autobyteus\talibaba_cloud:qwen3.8-max-preview\t100\t\n0\nno cache data\n\t10\t\n0\n\t0,6250 $\t0,6250 $\tprice missing\t1,25 $\nCodex\tgpt-5.6-luna\t20\t\n0\nno cache data\n\t5\t\n0\n\t0,1250 $\t0,1250 $\tprice missing\t0,2500 $",
+  "graphqlResponses": [
+    {
+      "url": "http://127.0.0.1:38201/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    },
+    {
+      "url": "http://127.0.0.1:38201/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    },
+    {
+      "url": "http://127.0.0.1:38201/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    },
+    {
+      "url": "http://127.0.0.1:38201/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    }
+  ]
+}

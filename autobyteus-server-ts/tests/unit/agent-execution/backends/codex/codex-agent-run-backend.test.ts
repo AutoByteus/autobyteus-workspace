@@ -256,6 +256,7 @@ describe("CodexAgentRunBackend", () => {
             effective_context_window_tokens: 128000,
             context_window_usage_percent: 0.0078125,
             model_provider: "OPENAI",
+            provider_name: null,
             model_identifier: "gpt-5.6-sol",
             raw_usage_json: {
               totalTokens: 150,

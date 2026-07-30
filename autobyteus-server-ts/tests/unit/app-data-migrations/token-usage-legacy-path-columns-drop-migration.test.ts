@@ -20,6 +20,8 @@ import {
   TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID,
   TokenUsageLegacyPathColumnsDropMigration,
 } from "../../../src/app-data-migrations/migrations/token-usage-legacy-path-columns-drop-migration.js";
+import { TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.js";
+import { TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.js";
 
 const TOKEN_USAGE_MIGRATION_SQL_FILES = [
   "20260517090000_add_app_data_migration_records/migration.sql",
@@ -27,6 +29,7 @@ const TOKEN_USAGE_MIGRATION_SQL_FILES = [
   "20260625193000_token_usage_component_pricing_explainability/migration.sql",
   "20260629120000_add_token_usage_display_fields/migration.sql",
   "20260702093000_token_usage_execution_address/migration.sql",
+  "20260730090000_add_token_usage_provider_name/migration.sql",
 ];
 
 type RawMigrationRecord = {
@@ -296,6 +299,10 @@ describe("TokenUsageLegacyPathColumnsDropMigration", () => {
     expect(definitionIds.indexOf(TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID)).toBeGreaterThanOrEqual(0);
     expect(definitionIds.indexOf(TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID))
       .toBeGreaterThan(definitionIds.indexOf(TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID));
+    expect(definitionIds.indexOf(TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID))
+      .toBe(definitionIds.indexOf(TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID) + 1);
+    expect(definitionIds.indexOf(TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID))
+      .toBeGreaterThan(definitionIds.indexOf(TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID));
   });
 
   it("drops present legacy columns while preserving canonical columns, rows, totals, and indexes", async () => {

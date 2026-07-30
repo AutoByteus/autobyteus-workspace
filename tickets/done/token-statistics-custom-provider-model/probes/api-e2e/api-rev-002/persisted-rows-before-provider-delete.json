@@ -1,0 +1,32 @@
+[
+  {
+    "usageEventId": "browser-round2-custom",
+    "runtimeKind": "autobyteus",
+    "modelProvider": "OPENAI_COMPATIBLE",
+    "providerName": "alibaba_cloud",
+    "modelIdentifier": "openai-compatible:provider_browser_round2:qwen3.8-max-preview",
+    "modelValue": "qwen3.8-max-preview",
+    "accountingTotalTokens": 110,
+    "estimatedApiTotalCost": 1.25
+  },
+  {
+    "usageEventId": "browser-round2-codex",
+    "runtimeKind": "codex_app_server",
+    "modelProvider": "OPENAI",
+    "providerName": null,
+    "modelIdentifier": "gpt-5.6-luna",
+    "modelValue": "gpt-5.6-luna",
+    "accountingTotalTokens": 110,
+    "estimatedApiTotalCost": 1.25
+  },
+  {
+    "usageEventId": "browser-round2-deepseek",
+    "runtimeKind": "autobyteus",
+    "modelProvider": "DEEPSEEK",
+    "providerName": "DeepSeek",
+    "modelIdentifier": "deepseek-v4-flash",
+    "modelValue": "deepseek-v4-flash",
+    "accountingTotalTokens": 110,
+    "estimatedApiTotalCost": 1.25
+  }
+]

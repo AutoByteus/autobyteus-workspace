@@ -246,6 +246,9 @@ export class TokenUsageTaskStatisticsRowGraphql {
   models!: string[];
 
   @Field(() => [String])
+  modelDisplayNames!: string[];
+
+  @Field(() => [String])
   runtimeKinds!: string[];
 
   @Field(() => TokenUsageCostSummaryAggregateGraphql)
@@ -268,6 +271,9 @@ export class UsageStatistics {
 
   @Field(() => String)
   llmModel!: string;
+
+  @Field(() => String)
+  modelDisplayName!: string;
 
   @Field(() => GraphQLSafeInt)
   inputTokens!: number;
@@ -460,6 +466,7 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
   createdAt: row.createdAt,
   createdTimeSource: row.createdTimeSource,
   models: row.models,
+  modelDisplayNames: row.modelDisplayNames,
   runtimeKinds: row.runtimeKinds,
   aggregate: toTokenUsageCostSummaryAggregateGraphql(row.aggregate),
   children: row.children.map(toTaskRow),
@@ -468,6 +475,7 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
 const toUsageStatistics = (row: TokenUsageRuntimeModelStatisticsRow): UsageStatistics => ({
   runtimeKind: row.runtimeKind,
   llmModel: row.modelIdentifier,
+  modelDisplayName: row.modelDisplayName,
   inputTokens: row.aggregate.gross_input_tokens,
   promptTokens: row.aggregate.gross_input_tokens,
   cacheReadInputTokens: row.aggregate.cache_read_input_tokens,

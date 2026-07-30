@@ -4,20 +4,15 @@ import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
-import { resolveAbsolutePath } from './workspace-path-utils.js';
+import { addFileToolPathParameters } from './file-tool-schema.js';
+import { resolveFileToolPath } from './workspace-path-utils.js';
 import { replaceExactBlock, TextEditOperationError } from './text-edit-utils.js';
 
 const DESCRIPTION =
-  'Replaces one exact text block in a file without overwriting unrelated content. Provide old_text and new_text, copying old_text exactly from the file including whitespace, indentation, and newlines. Use this after read_file when you know the exact block to replace. If the match is not unique, make old_text more specific or use edit_file for a diff-style patch.';
+  'Replaces one exact text block in a file without overwriting unrelated content. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Provide old_text and new_text, copying old_text exactly from the file including whitespace, indentation, and newlines. Use this after read_file when you know the exact block to replace. If the match is not unique, make old_text more specific or use edit_file for a diff-style patch.';
 
 const argumentSchema = new ParameterSchema();
-argumentSchema.addParameter(new ParameterDefinition({
-  name: 'path',
-  type: ParameterType.STRING,
-  description:
-    'The filesystem path to the file to update. This may be absolute or relative to the configured workspace root. It is never resolved from prior shell cd state.',
-  required: true
-}));
+addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'old_text',
   type: ParameterType.STRING,
@@ -38,10 +33,11 @@ type AgentContextLike = { agentId: string; workspaceRootPath?: string | null };
 export async function replaceInFile(
   context: AgentContextLike,
   path: string,
+  baseDir: string | null | undefined,
   old_text: string,
   new_text: string
 ): Promise<string> {
-  const finalPath = resolveAbsolutePath(context, path);
+  const finalPath = resolveFileToolPath(context, path, baseDir);
 
   try {
     await fs.access(finalPath);
@@ -75,7 +71,8 @@ export function registerReplaceInFileTool(): BaseTool {
       name: TOOL_NAME,
       description: DESCRIPTION,
       argumentSchema,
-      category: ToolCategory.FILE_SYSTEM
+      category: ToolCategory.FILE_SYSTEM,
+      paramNames: ['context', 'path', 'base_dir', 'old_text', 'new_text']
     })(replaceInFile) as BaseTool;
     return cachedTool;
   }

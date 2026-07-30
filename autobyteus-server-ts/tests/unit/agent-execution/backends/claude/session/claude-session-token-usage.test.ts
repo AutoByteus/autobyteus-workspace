@@ -34,6 +34,7 @@ describe('buildClaudeTokenUsageEvent', () => {
         ingestion_kind: 'claude_sdk_result',
         usage_scope: 'per_turn',
         model_provider: 'ANTHROPIC',
+        provider_name: null,
         model_identifier: 'claude-sonnet-4-6',
         model_value: 'claude-sonnet-4-6',
         reported_input_tokens: 1200,
@@ -115,6 +116,7 @@ describe('buildClaudeTokenUsageEvent', () => {
     });
 
     expect(event?.params).toEqual(expect.objectContaining({
+      provider_name: null,
       model_identifier: 'claude-sonnet-4-6',
       model_value: 'claude-sonnet-4-6',
       reported_input_tokens: 9393,

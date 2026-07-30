@@ -1,23 +1,46 @@
 import { describe, expect, it } from 'vitest';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { createAutoByteusTokenUsageObservation } from '../../../../src/llm/api/autobyteus-token-usage-normalizer.js';
 import { createOpenAICompatibleTokenUsageObservation } from '../../../../src/llm/api/openai-compatible-token-usage-normalizer.js';
 import { createGeminiTokenUsageObservation } from '../../../../src/llm/api/gemini-token-usage-normalizer.js';
+import { createOllamaTokenUsageObservation } from '../../../../src/llm/api/ollama-llm.js';
 import {
   createAnthropicUsageAccumulator,
   createAnthropicTokenUsageObservationFromAccumulator,
   foldAnthropicUsage,
 } from '../../../../src/llm/api/anthropic-token-usage-normalizer.js';
 
-const buildModel = (provider: LLMProvider, name = 'provider-test-model') =>
+const buildModel = (provider: LLMProvider, name = 'provider-test-model', providerName?: string) =>
   new LLMModel({
     name,
     value: `${name}-value`,
     canonicalName: name,
     provider,
+    providerName,
   });
 
 describe('provider token usage normalizers', () => {
+  it('propagates the AutoByteus provider-name snapshot through every shared normalizer', () => {
+    const autoByteusModel = buildModel(LLMProvider.OPENAI_COMPATIBLE, 'custom-model', 'Custom Provider');
+    const anthropicModel = buildModel(LLMProvider.ANTHROPIC, 'claude-test', 'Anthropic Built-in');
+    const geminiModel = buildModel(LLMProvider.GEMINI, 'gemini-test', 'Gemini Built-in');
+    const ollamaModel = buildModel(LLMProvider.OLLAMA, 'llama-test', 'Ollama Built-in');
+
+    expect(createAutoByteusTokenUsageObservation({ prompt_tokens: 2, completion_tokens: 3, total_tokens: 5 }, autoByteusModel)?.provider_name)
+      .toBe('Custom Provider');
+    expect(createOpenAICompatibleTokenUsageObservation({ prompt_tokens: 2, completion_tokens: 3, total_tokens: 5 }, autoByteusModel)?.provider_name)
+      .toBe('Custom Provider');
+    expect(createAnthropicTokenUsageObservationFromAccumulator(
+      foldAnthropicUsage(createAnthropicUsageAccumulator(), { input_tokens: 2, output_tokens: 3 }),
+      anthropicModel,
+    )?.provider_name).toBe('Anthropic Built-in');
+    expect(createGeminiTokenUsageObservation({ promptTokenCount: 2, candidatesTokenCount: 3, totalTokenCount: 5 }, geminiModel)?.provider_name)
+      .toBe('Gemini Built-in');
+    expect(createOllamaTokenUsageObservation({ prompt_eval_count: 2, eval_count: 3 }, ollamaModel)?.provider_name)
+      .toBe('Ollama Built-in');
+  });
+
   it('preserves OpenAI-compatible raw usage, cached input tokens, and reasoning tokens', () => {
     const model = buildModel(LLMProvider.OPENAI, 'gpt-test');
     const usage = {

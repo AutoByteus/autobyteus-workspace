@@ -1,0 +1,290 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > creates a file at an absolute path
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > edits file content on disk
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content with line numbers
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > registers definition with expected schema
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a unified diff patch in an existing file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/insert-in-file.test.ts > insert_in_file tool (integration) > inserts content on disk after an anchor
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/replace-in-file.test.ts > replace_in_file tool (integration) > updates file content on disk
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > inserts text after an exact anchor
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > registers definition with expected schema
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > replaces a unique exact block
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content without line numbers
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > creates a file in a new directory
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file with line range
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > requires path and content arguments
+Successfully registered tool definition: 'write_file'
+
+stderr | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > requires path and content arguments
+Invalid arguments for tool 'write_file': Required parameter 'path' is missing.
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'edit_file'
+
+stderr | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > requires path and content arguments
+Invalid arguments for tool 'write_file': Required parameter 'content' is missing.
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > writes empty content
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > requires exactly one anchor mode
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a git diff style patch with file headers
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/replace-in-file.test.ts > replace_in_file tool (integration) > resolves a relative path from an explicit absolute base directory
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > returns a helpful multiple match error
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/integration/tools/file/insert-in-file.test.ts > insert_in_file tool (integration) > resolves a relative path from an explicit absolute base directory
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > overwrites existing file
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > returns a helpful missing anchor error
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects invalid line range
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/write-file.test.ts > write_file tool (integration) > wraps IO errors
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > resolves relative edit paths from an explicit absolute base directory
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/replace-in-file.test.ts > replace_in_file tool (integration) > rejects a relative path without base_dir
+Successfully registered tool definition: 'replace_in_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects missing path argument
+Successfully registered tool definition: 'read_file'
+
+stderr | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects missing path argument
+Invalid arguments for tool 'read_file': Required parameter 'path' is missing.
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/insert-in-file.test.ts > insert_in_file tool (integration) > rejects a relative path without base_dir
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises PatchApplicationError when patch fails
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/integration/tools/file/write-file.test.ts (9 tests) 40ms
+ ✓ tests/integration/tools/file/replace-in-file.test.ts (3 tests) 33ms
+stdout | tests/unit/tools/file/replace-in-file.test.ts > replace_in_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'replace_in_file'
+
+ ✓ tests/integration/tools/file/insert-in-file.test.ts (3 tests) 33ms
+ ✓ tests/unit/tools/file/replace-in-file.test.ts (5 tests) 36ms
+stdout | tests/unit/tools/file/insert-in-file.test.ts > insert_in_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > returns empty string for empty file
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/insert-in-file.test.ts (6 tests) 40ms
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > rejects relative edit paths without an explicit base directory
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > throws when file does not exist
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > retries with whitespace tolerance
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/integration/tools/file/edit-file.test.ts (4 tests) 53ms
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > wraps IO errors
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises error when file is missing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/integration/tools/file/read-file.test.ts (11 tests) 83ms
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > read then patch flow
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/edit-file.test.ts (9 tests) 108ms
+stdout | tests/unit/tools/file/write-file.test.ts > write_file tool definition > registers definition with expected schema
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/unit/tools/file/file-tool-schema.test.ts > generic file-tool serialized path schemas > uses identical canonical path/base_dir wording and optionality across all five tools
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/tools/file/write-file.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/file/file-tool-schema.test.ts (1 test) 6ms
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > registers definition with expected schema
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > formats XML usage
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > formats JSON usage
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/read-file.test.ts (3 tests) 7ms
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts (4 tests) 2ms
+ ✓ tests/unit/tools/file/workspace-path-utils.test.ts (8 tests) 42ms
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/tools/usage/formatters/write-file-xml-formatter.test.ts (4 tests) 2ms
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies a write to a non-existent descendant of a protected root
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts (11 tests) 68ms
+ ✓ tests/unit/tools/terminal/run-bash.test.ts (6 tests) 623ms
+
+ Test Files  16 passed (16)
+      Tests  88 passed (88)
+   Start at  07:33:39
+   Duration  1.30s (transform 1.72s, setup 226ms, import 2.48s, tests 1.18s, environment 5ms)
+
+exit=0

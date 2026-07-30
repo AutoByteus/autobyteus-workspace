@@ -21,16 +21,22 @@ describe('read_file tool definition', () => {
 
     const schema = definition?.argumentSchema;
     expect(schema).toBeInstanceOf(ParameterSchema);
-    expect(schema?.parameters.length).toBe(4);
+    expect(schema?.parameters.length).toBe(5);
 
     const paramPath = schema?.getParameter('path');
     expect(paramPath).toBeInstanceOf(ParameterDefinition);
     expect(paramPath?.name).toBe('path');
     expect(paramPath?.type).toBe(ParameterType.STRING);
     expect(paramPath?.required).toBe(true);
-    expect(paramPath?.description).toContain("Parameter 'path' for tool 'read_file'");
-    expect(paramPath?.description).toContain('absolute filesystem path or a path relative to the configured workspace root');
-    expect(paramPath?.description).toContain('prior shell cd state');
+    expect(paramPath?.description).toContain('If path is relative, you must provide an absolute base_dir');
+    expect(paramPath?.description).toContain('Absolute paths are used directly and take precedence');
+    expect(paramPath?.description).toContain('never resolved from the configured workspace, process cwd, or prior shell cd state');
+
+    const paramBaseDir = schema?.getParameter('base_dir');
+    expect(paramBaseDir).toBeInstanceOf(ParameterDefinition);
+    expect(paramBaseDir?.type).toBe(ParameterType.STRING);
+    expect(paramBaseDir?.required).toBe(false);
+    expect(paramBaseDir?.description).toContain('required for a relative path');
 
     const paramStartLine = schema?.getParameter('start_line');
     expect(paramStartLine?.type).toBe(ParameterType.INTEGER);
@@ -50,8 +56,8 @@ describe('read_file tool definition', () => {
     const xmlOutput = definition?.getUsageXml() ?? '';
     expect(xmlOutput).toContain(`<tool name="${TOOL_NAME_READ_FILE}"`);
     expect(xmlOutput).toContain('Reads content from a specified file');
-    expect(xmlOutput).toContain("Parameter 'path' for tool 'read_file'");
-    expect(xmlOutput).toContain('absolute filesystem path or a path relative to the configured workspace root');
+    expect(xmlOutput).toContain('If path is relative, you must provide an absolute base_dir');
+    expect(xmlOutput).toContain('name="base_dir"');
     expect(xmlOutput).toContain('prior shell cd state');
     expect(xmlOutput).toContain('include_line_numbers');
     expect(xmlOutput).toContain('default="True"');
@@ -67,7 +73,9 @@ describe('read_file tool definition', () => {
     const inputSchema = jsonOutput.inputSchema;
     expect(inputSchema.type).toBe('object');
     expect(inputSchema.properties.path.type).toBe('string');
+    expect(inputSchema.properties.base_dir.type).toBe('string');
     expect(inputSchema.required).toContain('path');
+    expect(inputSchema.required).not.toContain('base_dir');
     expect(inputSchema.properties.start_line.type).toBe('integer');
     expect(inputSchema.properties.end_line.type).toBe('integer');
     expect(inputSchema.properties.include_line_numbers.type).toBe('boolean');

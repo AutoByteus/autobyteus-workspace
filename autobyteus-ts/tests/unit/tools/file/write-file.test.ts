@@ -20,15 +20,21 @@ describe('write_file tool definition', () => {
 
     const schema = definition?.argumentSchema;
     expect(schema).toBeInstanceOf(ParameterSchema);
-    expect(schema?.parameters.length).toBe(2);
+    expect(schema?.parameters.length).toBe(3);
 
     const paramPath = schema?.getParameter('path');
     expect(paramPath).toBeInstanceOf(ParameterDefinition);
     expect(paramPath?.type).toBe(ParameterType.STRING);
     expect(paramPath?.required).toBe(true);
-    expect(paramPath?.description).toContain("Parameter 'path' for tool 'write_file'");
-    expect(paramPath?.description).toContain('absolute filesystem path or a path relative to the configured workspace root');
+    expect(paramPath?.description).toContain('If path is relative, you must provide an absolute base_dir');
+    expect(paramPath?.description).toContain('Absolute paths are used directly and take precedence');
     expect(paramPath?.description).toContain('prior shell cd state');
+
+    const paramBaseDir = schema?.getParameter('base_dir');
+    expect(paramBaseDir).toBeInstanceOf(ParameterDefinition);
+    expect(paramBaseDir?.type).toBe(ParameterType.STRING);
+    expect(paramBaseDir?.required).toBe(false);
+    expect(paramBaseDir?.description).toContain('required for a relative path');
 
     const paramContent = schema?.getParameter('content');
     expect(paramContent).toBeInstanceOf(ParameterDefinition);

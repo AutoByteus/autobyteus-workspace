@@ -118,6 +118,7 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
         reported_output_tokens: 25,
         reported_total_tokens: 125,
         model_provider: 'OPENAI',
+        provider_name: 'Codex snapshot should survive enrichment',
         model_identifier: 'gpt-5.4-mini',
         root_team_run_id: 'payload-team-should-be-overridden',
         member_route_key: 'payload-route-should-be-overridden',
@@ -146,6 +147,7 @@ describe('TokenUsageEventEnrichmentTransformer', () => {
     expect(payload.member_route_key).toBe('planner.worker');
     expect(payload.agent_definition_id).toBe('agent-def-1');
     expect(payload.workspace_id).toBe('workspace-1');
+    expect(payload.provider_name).toBe('Codex snapshot should survive enrichment');
     expect(payload.task_agent_instance_id).toBe('task-agent-instance-1');
     expect(payload.accounting_input_tokens).toBe(100);
     expect(payload.accounting_output_tokens).toBe(25);
