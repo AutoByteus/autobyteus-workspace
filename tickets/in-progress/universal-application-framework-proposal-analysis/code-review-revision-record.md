@@ -31,6 +31,7 @@
 | `CRR-025` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-009` | `Pass` | `Fail — Local Fix` | `CR-017`, `APIE2E-F008` |
 | `CRR-026` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-015` | `Fail — Local Fix` | `Pass` | `CR-017`, `APIE2E-F008` |
 | `CRR-027` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-010` | `N/A` | `Pass` | `N/A` |
+| `CRR-028` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested framework naming audit | `Pass` (`CRR-026` source; `CRR-027` test review) | `Fail — Design Impact` | `CR-018` |
 
 ## Revision Entries
 
@@ -754,3 +755,30 @@ None. `CRR-023` had no unresolved proportional test-review finding; `CR-017` is 
 - Material score or classification changes: no source scorecard or API/E2E confidence recomputation. Proportional test-code result is `Pass`; `API-REV-010` remains `Pass / 98.3%`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: historical `APIE2E-REPO-005` remains separate `Unclear` repository-test debt and is not requirement evidence. Delivery should resume latest integrated-state, documentation/no-impact, and final handoff work without reopening the source scorecard.
+
+
+### CRR-028 — Core framework vocabulary requires design-led readability correction
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review` (fresh cross-cutting framework naming and responsibility audit), round `28`
+- Triggering role, report path, and finding or scenario IDs: user-requested developer-comprehension review after the final runtime/test passes; `code-review-report.md`; new finding `CR-018`; scenario IDs `N/A`
+- Relevant solution revision IDs: `SR-010`; retained `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
+- Relevant implementation revision IDs: cumulative through `IR-015`
+- Relevant API/E2E revision IDs: `API-REV-010`; retained `API-REV-008` and `API-REV-009`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: implementation source `Pass` (`CRR-026`) and proportional test-code `Pass` (`CRR-027`); `API-REV-010` remains `Pass / 98.3%`
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: a fresh responsibility-to-name audit found that the functional architecture is sound but its central vocabulary does not let a new developer infer roles and boundaries from code. `Composition`, `Graph`, `Authority`, `Runtime`, and `Port` are used across different construction, live-runtime, session-management, lifecycle, and coordination roles. The design spec explicitly assessed key names as natural/self-descriptive and low-risk; that premise is contradicted by the concrete source trace and developer comprehension review. The correct response is a design-led naming taxonomy and clean-cut rename map, not ad hoc implementation aliases.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-017` | Resolved for their owned runtime/source behavior | Remain Resolved | `CRR-002`–`CRR-026`, `API-REV-001`–`API-REV-010` | CRR-028 changes no runtime conclusion; Studio/standalone launch, configuration, graph-local execution, Agent Tools, publication, shutdown, packaging, and parity remain passed. |
+| `CR-018` | `N/A` | Open — Design Impact | `CRR-028` | Source responsibility audit across `StudioServerComposition`, `ApplicationPlatformRuntimeGraph`, process/application session authorities, run authorities, and deferred publication port contradicts the design's self-descriptive naming assessment. |
+
+- New or remaining finding IDs: `CR-018`
+- Material score or classification changes: latest full review changes from source `Pass / 96` plus API/E2E/test-review Pass to `Fail — Design Impact / 89`. Naming Quality is `6.5`, Data-Flow clarity `8.4`, and API/interface clarity `8.5`; strong runtime evidence does not override the structural naming gap.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: exact target names, scope boundaries, and exported/public compatibility impact require solution design and architecture review. Avoid a repository-wide mechanical rename, opaque replacement jargon, or default compatibility aliases. Preserve all passed runtime behavior and rerun source review plus proportionate API/E2E after implementation. `APIE2E-REPO-005` remains separate historical `Unclear` debt.
