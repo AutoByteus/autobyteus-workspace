@@ -10,42 +10,21 @@ import type {
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
 import { parseTokenUsageCompositeModelValue } from "../../token-usage/projections/token-usage-model-display-projection.js";
+import {
+  preservedRowSnapshot,
+  type Classification,
+  type RawTokenUsageProviderNameBackfillRow,
+  type TokenUsageProviderNameSnapshotBackfillDatabase,
+} from "./token-usage-provider-name-snapshot-backfill-row.js";
+export type {
+  RawTokenUsageProviderNameBackfillRow,
+  TokenUsageProviderNameSnapshotBackfillDatabase,
+} from "./token-usage-provider-name-snapshot-backfill-row.js";
 
 export const TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID =
   "20260730_token_usage_provider_name_snapshot_backfill";
 
 const MAX_ROW_FAILURE_DETAILS = 50;
-
-export type RawTokenUsageProviderNameBackfillRow = {
-  id: number;
-  usage_event_id: string;
-  runtime_kind: string;
-  model_provider: string | null;
-  provider_name: string | null;
-  model_identifier: string | null;
-  model_value: string | null;
-};
-
-export interface TokenUsageProviderNameSnapshotBackfillDatabase {
-  listTokenUsageLedgerRows(): Promise<RawTokenUsageProviderNameBackfillRow[]>;
-  listTokenUsageProviderNameBackfillCandidates(): Promise<RawTokenUsageProviderNameBackfillRow[]>;
-  countTokenUsageLedgerRows(): Promise<number>;
-  updateTokenUsageProviderName(input: {
-    id: number;
-    expectedProviderName: string | null;
-    nextProviderName: string;
-  }): Promise<number | void>;
-}
-
-type SkipReason =
-  | "SKIPPED_ALREADY_POPULATED"
-  | "SKIPPED_SCOPE_MISMATCH"
-  | "SKIPPED_PROVIDER_NAME_UNRECOVERABLE"
-  | "SKIPPED_SOURCE_CHANGED";
-
-type Classification =
-  | { kind: "MIGRATE"; providerName: string }
-  | { kind: "SKIP"; reason: SkipReason };
 
 const compact = (value: string | null | undefined): string | null => {
   const normalized = value?.trim();
@@ -136,11 +115,84 @@ export class PrismaTokenUsageProviderNameSnapshotBackfillDatabase
       SELECT
         "id",
         "usage_event_id",
+        "idempotency_key",
+        "observed_at",
+        "persisted_at",
+        "run_id",
+        "turn_id",
+        "llm_call_id",
+        "call_sequence",
+        "root_team_run_id",
+        "execution_address_json",
+        "member_agent_run_id",
+        "member_route_key",
+        "agent_definition_id",
+        "workspace_id",
+        "task_agent_instance_id",
+        "task_agent_run_id",
+        "task_id",
+        "team_name",
+        "agent_name",
+        "run_summary",
+        "run_created_at",
+        "member_name",
         "runtime_kind",
         "model_provider",
         "provider_name",
         "model_identifier",
-        "model_value"
+        "model_value",
+        "ingestion_kind",
+        "usage_scope",
+        "snapshot_series_key",
+        "previous_snapshot_event_id",
+        "input_token_semantic",
+        "reported_input_tokens",
+        "reported_output_tokens",
+        "reported_total_tokens",
+        "accounting_input_tokens",
+        "accounting_output_tokens",
+        "accounting_total_tokens",
+        "standard_input_tokens",
+        "cache_miss_input_tokens",
+        "cache_read_input_tokens",
+        "cache_creation_input_tokens",
+        "cache_creation_5m_input_tokens",
+        "cache_creation_1h_input_tokens",
+        "cache_state",
+        "reasoning_output_tokens",
+        "billable_input_tokens",
+        "billable_output_tokens",
+        "raw_usage_json",
+        "raw_event_json",
+        "quality_flags_json",
+        "cost_basis",
+        "currency",
+        "input_price_per_million",
+        "output_price_per_million",
+        "cached_input_read_price_per_million",
+        "cached_input_write_price_per_million",
+        "cached_input_write_5m_price_per_million",
+        "cached_input_write_1h_price_per_million",
+        "pricing_source",
+        "pricing_status",
+        "pricing_missing_reason",
+        "pricing_snapshot_json",
+        "pricing_policy_key",
+        "selected_pricing_tier_id",
+        "missing_price_dimensions_json",
+        "estimated_api_input_cost",
+        "estimated_api_standard_input_cost",
+        "estimated_api_cache_read_input_cost",
+        "estimated_api_cache_creation_input_cost",
+        "estimated_api_cache_creation_5m_input_cost",
+        "estimated_api_cache_creation_1h_input_cost",
+        "estimated_api_output_cost",
+        "estimated_api_reasoning_output_cost",
+        "estimated_api_total_cost",
+        "api_cost_status",
+        "latest_prompt_tokens",
+        "effective_context_window_tokens",
+        "context_window_usage_percent"
       FROM "token_usage_ledger_events"
       ORDER BY "id" ASC
     `;
@@ -151,11 +203,84 @@ export class PrismaTokenUsageProviderNameSnapshotBackfillDatabase
       SELECT
         "id",
         "usage_event_id",
+        "idempotency_key",
+        "observed_at",
+        "persisted_at",
+        "run_id",
+        "turn_id",
+        "llm_call_id",
+        "call_sequence",
+        "root_team_run_id",
+        "execution_address_json",
+        "member_agent_run_id",
+        "member_route_key",
+        "agent_definition_id",
+        "workspace_id",
+        "task_agent_instance_id",
+        "task_agent_run_id",
+        "task_id",
+        "team_name",
+        "agent_name",
+        "run_summary",
+        "run_created_at",
+        "member_name",
         "runtime_kind",
         "model_provider",
         "provider_name",
         "model_identifier",
-        "model_value"
+        "model_value",
+        "ingestion_kind",
+        "usage_scope",
+        "snapshot_series_key",
+        "previous_snapshot_event_id",
+        "input_token_semantic",
+        "reported_input_tokens",
+        "reported_output_tokens",
+        "reported_total_tokens",
+        "accounting_input_tokens",
+        "accounting_output_tokens",
+        "accounting_total_tokens",
+        "standard_input_tokens",
+        "cache_miss_input_tokens",
+        "cache_read_input_tokens",
+        "cache_creation_input_tokens",
+        "cache_creation_5m_input_tokens",
+        "cache_creation_1h_input_tokens",
+        "cache_state",
+        "reasoning_output_tokens",
+        "billable_input_tokens",
+        "billable_output_tokens",
+        "raw_usage_json",
+        "raw_event_json",
+        "quality_flags_json",
+        "cost_basis",
+        "currency",
+        "input_price_per_million",
+        "output_price_per_million",
+        "cached_input_read_price_per_million",
+        "cached_input_write_price_per_million",
+        "cached_input_write_5m_price_per_million",
+        "cached_input_write_1h_price_per_million",
+        "pricing_source",
+        "pricing_status",
+        "pricing_missing_reason",
+        "pricing_snapshot_json",
+        "pricing_policy_key",
+        "selected_pricing_tier_id",
+        "missing_price_dimensions_json",
+        "estimated_api_input_cost",
+        "estimated_api_standard_input_cost",
+        "estimated_api_cache_read_input_cost",
+        "estimated_api_cache_creation_input_cost",
+        "estimated_api_cache_creation_5m_input_cost",
+        "estimated_api_cache_creation_1h_input_cost",
+        "estimated_api_output_cost",
+        "estimated_api_reasoning_output_cost",
+        "estimated_api_total_cost",
+        "api_cost_status",
+        "latest_prompt_tokens",
+        "effective_context_window_tokens",
+        "context_window_usage_percent"
       FROM "token_usage_ledger_events"
       WHERE "provider_name" IS NULL OR trim("provider_name") = ''
       ORDER BY "id" ASC
@@ -303,24 +428,24 @@ export class TokenUsageProviderNameSnapshotBackfillMigration implements AppDataM
     try {
       const afterRows = await database.listTokenUsageLedgerRows();
       const afterCount = await database.countTokenUsageLedgerRows();
-      const beforeIdentity = beforeRows
-        .map((row) => JSON.stringify([row.id, row.model_provider, row.model_identifier, row.model_value]))
+      const beforePreservedSnapshots = beforeRows
+        .map(preservedRowSnapshot)
         .sort();
-      const afterIdentity = afterRows
-        .map((row) => JSON.stringify([row.id, row.model_provider, row.model_identifier, row.model_value]))
+      const afterPreservedSnapshots = afterRows
+        .map(preservedRowSnapshot)
         .sort();
-      const rawIdentityChanged = beforeIdentity.length !== afterIdentity.length || beforeIdentity.some((value, index) => (
-        value !== afterIdentity[index]
+      const preservedFieldsChanged = beforePreservedSnapshots.length !== afterPreservedSnapshots.length || beforePreservedSnapshots.some((value, index) => (
+        value !== afterPreservedSnapshots[index]
       ));
-      if (afterCount !== beforeCount || rawIdentityChanged) {
+      if (afterCount !== beforeCount || preservedFieldsChanged) {
         throw new Error(
-          `Token usage ledger invariants changed: row count ${beforeCount} -> ${afterCount}; raw identity/model value changed=${rawIdentityChanged}.`,
+          `Token usage ledger invariants changed: row count ${beforeCount} -> ${afterCount}; preserved fields changed=${preservedFieldsChanged}.`,
         );
       }
       invariantDetails.push(detail(
         "token-usage-provider-name:invariants",
         "SKIPPED",
-        `Row count, provider type, model_identifier, and model_value preserved: ${beforeCount} rows; only eligible provider_name fields may change.`,
+        `Row count and every non-provider_name ledger field (identity, attribution, token/cost/accounting, timestamps, and raw JSON) preserved: ${beforeCount} rows; only eligible provider_name fields may change.`,
       ));
     } catch (error) {
       failureCount += 1;

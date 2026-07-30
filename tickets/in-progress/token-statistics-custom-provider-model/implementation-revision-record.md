@@ -7,6 +7,7 @@
 | IR-001 | `architecture_reviewer`, `design-review-report.md`, implementation round 1 | `N/A` | `Initial Baseline` | `SR-004`, `ARCH-REV-003`, `CRR-N/A`, `API-REV-N/A`, `DR-N/A` | Implementation complete; handed to `code_reviewer` |
 | IR-002 | `code_reviewer`, `code-review-report.md`, source-review rework round 1 | `F-001` | `Local Fix` | `SR-004`, `ARCH-REV-003`, `CRR-001`, `API-REV-N/A`, `DR-N/A` | Fix implemented and re-submitted to `code_reviewer` |
 | IR-003 | `architecture_reviewer`, `design-review-report.md`, architecture-authorized implementation rework round 2 | `ARCH-F-006` (resolved in `SR-006`); retains `F-001` regression coverage | `Architecture-authorized rework` | `SR-006`, `ARCH-REV-005`, `CRR-N/A`, `API-REV-N/A`, `DR-N/A` | Snapshot schema/ingestion/migration implementation complete; awaiting repeated source review |
+| IR-004 | `code_reviewer`, `code-review-report.md`, bounded source-review rework round 2 | `F-002` | `Local Fix` | `SR-006`, `ARCH-REV-005`, `CRR-004`, `API-REV-N/A`, `DR-N/A` | Complete non-provider_name Migration B invariant proof; re-submitted to `code_reviewer` |
 
 ## Revision Entries
 
@@ -83,3 +84,27 @@
 - Local validation and result: `autobyteus-ts` build and normalizer tests passed (`1` file/`9` tests); server production build passed; focused server suite passed (`10` files/`65` tests); statistics-provider integration passed (`1` file/`9` tests); SQL repository integration passed (`1` file/`4` tests); Prisma test databases applied the new schema migration; final staged and unstaged `git diff --check` passed.
 - Next recipient or routing: `code_reviewer` for repeated implementation-source review. API/E2E remains unauthorized until source review passes.
 - Remaining limitations or risks: Downstream coverage/execution/docs/delivery artifacts were produced for the pre-SR-006 package and must be regenerated. No live browser/API-E2E sign-off is claimed. Repository-wide server typecheck retains the known TS6059 baseline; production build is the authoritative compile check.
+
+### IR-004 — Prove all preserved ledger fields in Migration B
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-report.md`; bounded source-review rework round 2 after `CRR-004`.
+- Triggering finding IDs: `F-002`; API/E2E remained unauthorized because the Migration B invariant proof compared only a reduced tuple.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-003` implementation was complete, but `CRR-004` failed source review because Migration B selected and compared only `id`, `model_provider`, `model_identifier`, and `model_value` rather than proving the approved preserved ledger fields.
+- Current authoritative result: The bounded fix is complete and ready for repeated source review. Migration B now projects every `TokenUsageLedgerEvent` column in both the all-row and candidate adapters, snapshots all `79` non-`provider_name` fields, compares sorted before/after snapshots plus row count, and leaves the provider-name-only production update unchanged. The unit fixture supplies representative identity, attribution, token/accounting, pricing/cost, timestamp/context, and raw-JSON fields; a post-read accounting mutation is detected as an invariant failure.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-005`.
+- Related code-review revision IDs: `CRR-004`.
+- Related API/E2E revision IDs: `N/A`; API/E2E remains unauthorized pending repeated source review.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: It documents the implementation-owned correction required by F-002 and the resulting complete invariant-proof boundary.
+- Approved behavior or requirement IDs affected: `BEH-TOKMODEL-009`, `BEH-TOKMODEL-010`, `REQ-TOKMODEL-009`, `REQ-TOKMODEL-010`, `AC-TOKMODEL-010`.
+- Implementation delta:
+  - Extracted the Migration B row shape, database boundary, and preserved-row snapshot into `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-row.ts` to keep the migration implementation below the source-size guardrail.
+  - Expanded both Prisma SQL projections from the reduced identity tuple to all `80` ledger columns, including attribution, token/accounting, cost/pricing, timestamps/context, and raw JSON fields.
+  - Replaced the reduced final invariant comparison with row count plus sorted snapshots of every non-`provider_name` field; only the intentionally changed provider-name column is excluded.
+  - Expanded the Migration B fixture and preserved-facts assertions to cover the complete approved field set, and added a token-field mutation failure assertion.
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`; `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-row.ts`; `autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts`; implementation handoff artifacts.
+- Local validation and result: Migration B unit test passed (`1` file / `5` tests); both SQL projections were audited as `80/80` schema columns with `79/79` preserved fields; server production build passed including Prisma generation and bootstrap smoke; `git diff --check` passed.
+- Next recipient or routing: `code_reviewer` for repeated implementation-source review (`CRR-005` or next canonical round); API/E2E remains unauthorized until source review passes.
+- Remaining limitations or risks: No API/E2E or live browser sign-off is claimed. Repository-wide server typecheck retains the known TS6059 baseline; production build is the authoritative compile check.

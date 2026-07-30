@@ -15,17 +15,17 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Architecture-authorized rework after ARCH-REV-005 / SR-006`.
+- Implementation cycle: `Bounded Local Fix after CRR-004 / F-002`.
 - Implementation revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`.
+- Current implementation revision ID: `IR-004`.
 - Related solution revision IDs: `SR-006` (supersedes the prior implementation basis in `SR-004`).
 - Related architecture-review revision IDs: `ARCH-REV-005`.
-- Related code-review revision IDs: `CRR-N/A` for this architecture-authorized rework; the prior source-review report remains part of the package.
+- Related code-review revision IDs: `CRR-004` (F-002 bounded local fix); repeated source review is requested after this handoff.
 - Related API/E2E revision IDs: `N/A`.
 - Related delivery revision IDs: `DR-N/A`; downstream artifacts predate SR-006 and must be regenerated.
-- Triggering finding IDs: `ARCH-F-006` resolved in `SR-006`; `F-001` remains corrected and regression-tested.
+- Triggering finding IDs: `F-002` from `CRR-004`; `ARCH-F-006` is resolved in `SR-006` and `F-001` remains corrected and regression-tested.
 
-Implemented the SR-006 provider-name snapshot contract in addition to the approved display projection. AutoByteus shared normalizers now carry `model.providerName` as nested `usage.provider_name`; direct Codex/Claude producers explicitly forward nullable top-level `provider_name`; common payload canonicalization applies top-level-first/nested-fallback precedence and conflict quality flagging; enrichment and SQL/Prisma preserve the selected value or null. The nullable schema migration and fixed-ID `20260730_token_usage_provider_name_snapshot_backfill` are wired after Migration A and before legacy path cleanup with CAS-only provider-name updates, AutoByteus-only recovery, invariant checks, and failure/retry semantics. The display projection is snapshot-first and retains the exact malformed-composite fallback, while the raw identity, grouping, attribution, pricing, counts, row identity, accounting consumers, and non-AutoByteus behavior remain unchanged.
+Implemented the SR-006 provider-name snapshot contract in addition to the approved display projection. AutoByteus shared normalizers now carry `model.providerName` as nested `usage.provider_name`; direct Codex/Claude producers explicitly forward nullable top-level `provider_name`; common payload canonicalization applies top-level-first/nested-fallback precedence and conflict quality flagging; enrichment and SQL/Prisma preserve the selected value or null. The nullable schema migration and fixed-ID `20260730_token_usage_provider_name_snapshot_backfill` are wired after Migration A and before legacy path cleanup with CAS-only provider-name updates, AutoByteus-only recovery, invariant checks, and failure/retry semantics. The F-002 fix moves the Migration B row shape and preserved-field snapshot into `token-usage-provider-name-snapshot-backfill-row.ts`; both SQL projections now load all ledger columns, and the before/after proof compares every non-`provider_name` field (identity, attribution, token/cost/accounting, timestamps, pricing, context, and raw JSON). The display projection is snapshot-first and retains the exact malformed-composite fallback, while the raw identity, grouping, attribution, pricing, counts, row identity, accounting consumers, and non-AutoByteus behavior remain unchanged.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -52,6 +52,7 @@ Implemented the SR-006 provider-name snapshot contract in addition to the approv
 - App-data migration and registry:
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-row.ts`
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
 - Provider-name schema and persistence:
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/prisma/schema.prisma`
@@ -98,7 +99,7 @@ Implemented the SR-006 provider-name snapshot contract in addition to the approv
 ## Known Risks
 
 - Provider rename/deletion does not change newly snapshotted AutoByteus labels; legacy null/empty rows still change with current metadata and deleted/unavailable providers use deterministic provider-ID fallback while raw identity remains available.
-- Migration B cannot recover a deleted or malformed legacy custom provider name and reports `SKIPPED_PROVIDER_NAME_UNRECOVERABLE` without guessing; provider-map load failure is `FAILED`.
+- Migration B cannot recover a deleted or malformed legacy custom provider name and reports `SKIPPED_PROVIDER_NAME_UNRECOVERABLE` without guessing; provider-map load failure is `FAILED`. The migration now explicitly selects and proves preservation of every non-`provider_name` ledger column; no production write path changes those fields.
 - No live browser preview was available for this implementation round. Component mounting covered table/chart output and recursive task display, but `api_e2e_engineer` should independently inspect the real statistics surface.
 - Repository-wide server typecheck reports baseline TS6059 errors because `tsconfig.json` uses `rootDir: src` while including `tests`; the production build is green.
 - Broader API/E2E coverage and startup recovery testing remain downstream-owned.
@@ -128,7 +129,7 @@ Implemented the SR-006 provider-name snapshot contract in addition to the approv
 - Design-spec decision reference: `design-spec.md`, “Legacy Data Correction / App-Data Migration” and “Persisted Data / State Transition Decision”.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
 - Direct-use evidence or discard/rebuild result, when applicable: Current reader path remains version-agnostic; display resolver safely handles pending, failed, warning, partial, and complete migration states.
-- Migration implementation and focused checks, only when `Migration Required`: schema migration before app-data startup, fixed-ID Migration A, fixed-ID Migration B after A and before legacy-path cleanup, anchored parser, AutoByteus-only provider snapshot classifier, provider-map dependency failure, exact skip matrix, injected Prisma boundaries, row-level CAS, independent durability, row-count/raw-identity checks, idempotence, warning/failure status mapping, and synthetic composite tests.
+- Migration implementation and focused checks, only when `Migration Required`: schema migration before app-data startup, fixed-ID Migration A, fixed-ID Migration B after A and before legacy-path cleanup, anchored parser, AutoByteus-only provider snapshot classifier, provider-map dependency failure, exact skip matrix, injected Prisma boundaries, row-level CAS, independent durability, row-count and complete non-`provider_name` ledger-field checks, idempotence, warning/failure status mapping, and synthetic composite tests.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
@@ -146,6 +147,10 @@ Implemented the SR-006 provider-name snapshot contract in addition to the approv
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/domain/agent-run-token-usage-provider-name.test.ts tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts` — passed, `10` files / `65` tests.
 - `pnpm -C autobyteus-server-ts exec vitest run tests/integration/token-usage/providers/statistics-provider.integration.test.ts` — passed, `1` file / `9` tests, including legacy map lookup and snapshot-first no-lookup behavior.
 - `pnpm -C autobyteus-server-ts exec vitest run tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts` — passed, `1` file / `4` tests, including nullable and non-null provider-name SQL/Prisma round trips.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts` — passed after CRR-004/F-002, `1` file / `5` tests; synthetic fixtures cover all preserved ledger fields and a post-read token mutation fails the invariant proof.
+- Prisma projection audit — passed; both Migration B SELECT projections contain all `80` `TokenUsageLedgerEvent` columns, and the preserved snapshot contains all `79` non-`provider_name` columns.
+- `pnpm -C autobyteus-server-ts build` — passed after CRR-004/F-002, including shared builds, Prisma generation, production TypeScript build, asset copy, and built-in-agent bootstrap smoke.
+- `git diff --check` — passed after CRR-004/F-002.
 - Prior focused GraphQL and frontend checks remain regression evidence from the pre-SR-006 display package; downstream API/E2E must regenerate them against the snapshot schema/ingestion behavior.
 - Existing targeted GraphQL regressions (`token-usage-ledger-graphql.e2e.test.ts`, `token-usage-unit-prices-graphql.e2e.test.ts`) — passed, `2` files / `4` tests; these are recorded as regression evidence only, not downstream API/E2E sign-off.
 - `pnpm -C autobyteus-web exec nuxt prepare` — passed.
