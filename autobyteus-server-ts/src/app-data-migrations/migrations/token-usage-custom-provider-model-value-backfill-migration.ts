@@ -22,6 +22,7 @@ export type RawTokenUsageCustomProviderModelValueRow = {
   usage_event_id: string;
   runtime_kind: string;
   model_provider: string | null;
+  provider_name: string | null;
   model_identifier: string | null;
   model_value: string | null;
 };
@@ -150,6 +151,7 @@ export class PrismaTokenUsageCustomProviderModelValueBackfillDatabase
         "usage_event_id",
         "runtime_kind",
         "model_provider",
+        "provider_name",
         "model_identifier",
         "model_value"
       FROM "token_usage_ledger_events"
@@ -278,10 +280,10 @@ export class TokenUsageCustomProviderModelValueBackfillMigration implements AppD
       const afterRows = await database.listTokenUsageLedgerRows();
       const afterCount = await database.countTokenUsageLedgerRows();
       const beforeRawIdentity = rows
-        .map((row) => JSON.stringify([row.id, row.model_identifier]))
+        .map((row) => JSON.stringify([row.id, row.model_provider, row.provider_name, row.model_identifier]))
         .sort();
       const afterRawIdentity = afterRows
-        .map((row) => JSON.stringify([row.id, row.model_identifier]))
+        .map((row) => JSON.stringify([row.id, row.model_provider, row.provider_name, row.model_identifier]))
         .sort();
       const rawIdentityChanged = beforeRawIdentity.length !== afterRawIdentity.length || beforeRawIdentity.some((value, index) => (
         value !== afterRawIdentity[index]

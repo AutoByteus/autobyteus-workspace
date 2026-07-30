@@ -13,11 +13,13 @@ const context = (names: Record<string, string> = {}): TokenUsageModelDisplayCont
 const event = (input: Partial<{
   runtime_kind: string;
   model_provider: string | null;
+  provider_name: string | null;
   model_identifier: string | null;
   model_value: string | null;
 }>) => ({
   runtime_kind: input.runtime_kind ?? "autobyteus",
   model_provider: input.model_provider ?? "OPENAI_COMPATIBLE",
+  provider_name: input.provider_name ?? null,
   model_identifier: input.model_identifier === undefined
     ? "openai-compatible:provider_A:qwen3.8-max-preview"
     : input.model_identifier,
@@ -36,6 +38,9 @@ describe("token usage model display projection", () => {
   it("resolves custom, built-in, and non-AutoByteus labels without changing raw identity", () => {
     expect(resolveTokenUsageModelDisplayName(event({}), context({ provider_A: "alibaba_cloud" }))).toBe(
       "alibaba_cloud:qwen3.8-max-preview",
+    );
+    expect(resolveTokenUsageModelDisplayName(event({ provider_name: "historical_provider" }), context({ provider_A: "renamed_provider" }))).toBe(
+      "historical_provider:qwen3.8-max-preview",
     );
     expect(resolveTokenUsageModelDisplayName(event({
       model_provider: "DEEPSEEK",
@@ -64,6 +69,7 @@ describe("token usage model display projection", () => {
     }), context())).toBe("Unknown Provider:Unknown Model");
     expect(resolveTokenUsageModelDisplayName(event({
       model_provider: "DEEPSEEK",
+      provider_name: "DeepSeek",
       model_identifier: "legacy-model",
       model_value: "openai-compatible:provider_A",
     }), context())).toBe("Unknown Provider:Unknown Model");

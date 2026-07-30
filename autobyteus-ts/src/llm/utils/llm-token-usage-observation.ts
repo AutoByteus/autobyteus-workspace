@@ -25,6 +25,7 @@ export const LlmTokenUsageObservationSchema = z.object({
   total_tokens: nullableNonNegativeInt,
   usage_scope: z.literal('per_call'),
   model_provider: z.string().nullable(),
+  provider_name: z.string().nullable().optional(),
   model_identifier: z.string().nullable(),
   model_value: z.string().nullable(),
   input_token_semantic: InputTokenSemanticSchema.optional(),
@@ -46,6 +47,7 @@ export type LlmTokenUsageObservation = z.infer<typeof LlmTokenUsageObservationSc
 
 export type LlmTokenUsageModelIdentity = {
   modelProvider?: string | null;
+  providerName?: string | null;
   modelIdentifier?: string | null;
   modelValue?: string | null;
 };
@@ -104,6 +106,7 @@ export const buildLlmTokenUsageObservation = (input: {
     total_tokens: totalTokens,
     usage_scope: 'per_call',
     model_provider: input.model?.modelProvider ?? null,
+    provider_name: input.model?.providerName ?? null,
     model_identifier: input.model?.modelIdentifier ?? null,
     model_value: input.model?.modelValue ?? null,
     input_token_semantic: inputTokenSemantic,

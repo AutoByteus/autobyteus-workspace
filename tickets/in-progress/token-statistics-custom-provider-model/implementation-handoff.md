@@ -9,22 +9,23 @@
 - Solution revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/architecture-review-revision-record.md`
-- Triggering rework report: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-report.md`
-- Triggering code-review revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-revision-record.md`
+- Prior source-review report: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-report.md`
+- Prior code-review revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-revision-record.md`
+- Still-relevant downstream package requiring regeneration for SR-006: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/coverage-investigation.md`, `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/execution-coverage-report.md`, `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/api-e2e-revision-record.md`, `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/api-e2e-test-review-report.md`, `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/docs-sync-report.md`, `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/handoff-summary.md`, `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/release-deployment-report.md`, `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/delivery-revision-record.md`
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework after CRR-001`.
+- Implementation cycle: `Architecture-authorized rework after ARCH-REV-005 / SR-006`.
 - Implementation revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`.
-- Related solution revision IDs: `SR-004`.
-- Related architecture-review revision IDs: `ARCH-REV-003`.
-- Related code-review revision IDs: `CRR-001`.
+- Current implementation revision ID: `IR-003`.
+- Related solution revision IDs: `SR-006` (supersedes the prior implementation basis in `SR-004`).
+- Related architecture-review revision IDs: `ARCH-REV-005`.
+- Related code-review revision IDs: `CRR-N/A` for this architecture-authorized rework; the prior source-review report remains part of the package.
 - Related API/E2E revision IDs: `N/A`.
-- Related delivery revision IDs: `N/A`.
-- Triggering finding IDs: `F-001`.
+- Related delivery revision IDs: `DR-N/A`; downstream artifacts predate SR-006 and must be regenerated.
+- Triggering finding IDs: `ARCH-F-006` resolved in `SR-006`; `F-001` remains corrected and regression-tested.
 
-Implemented the architecture-approved provider-aware display projection without changing canonical identity or accounting. The server now resolves AutoByteus provider/model labels using one query-scoped custom-provider map, preserves non-AutoByteus labels, and derives Model/Task display metadata from one ordered raw/display entry sequence. GraphQL and frontend hydration expose and render the new display fields while retaining raw fields. The fixed-ID app-data migration normalizes only eligible composite `model_value` rows using independent CAS updates and validates row-count/raw-identity invariants. The CRR-001 malformed-composite fallback finding is corrected: malformed `model_value` metadata now yields exactly `Unknown Provider:Unknown Model` unless `model_identifier` is itself a valid raw composite.
+Implemented the SR-006 provider-name snapshot contract in addition to the approved display projection. AutoByteus shared normalizers now carry `model.providerName` as nested `usage.provider_name`; direct Codex/Claude producers explicitly forward nullable top-level `provider_name`; common payload canonicalization applies top-level-first/nested-fallback precedence and conflict quality flagging; enrichment and SQL/Prisma preserve the selected value or null. The nullable schema migration and fixed-ID `20260730_token_usage_provider_name_snapshot_backfill` are wired after Migration A and before legacy path cleanup with CAS-only provider-name updates, AutoByteus-only recovery, invariant checks, and failure/retry semantics. The display projection is snapshot-first and retains the exact malformed-composite fallback, while the raw identity, grouping, attribution, pricing, counts, row identity, accounting consumers, and non-AutoByteus behavior remain unchanged.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -38,6 +39,8 @@ Implemented the architecture-approved provider-aware display projection without 
 | `BEH-TOKMODEL-006` | Historical composite `model_value` is safely normalized without rewriting raw identity. | `TokenUsageCustomProviderModelValueBackfillMigration` plus `Prisma...Database` and registry placement. | Implemented; migration tests cover idempotence, warnings, partial failure, retry, CAS, and invariants. |
 | `BEH-TOKMODEL-007` | Accounting aggregate consumers remain display-context-free. | `getTotalCost`, run-summary adapter, synthetic GraphQL summary aggregate, and aggregate GraphQL mapping remain untouched. | Implemented; existing GraphQL regression checks passed. |
 | `BEH-TOKMODEL-008` | Ordered display projection has one entry per raw identifier and mixed-runtime task collisions use raw fallback. | `buildTokenUsageModelDisplayEntries()` is shared by Model and Task paths and never deduplicates by display label. | Implemented and unit-tested. |
+| `BEH-TOKMODEL-009` | New AutoByteus ledger events persist a readable provider-name snapshot while raw identity and provider type remain canonical. | `autobyteus-ts/src/llm/utils/llm-token-usage-observation.ts`; named shared normalizers; `agent-run-token-usage.ts`; Prisma schema/migration; SQL repository; `token-usage-provider-name-snapshot-backfill-migration.ts`. | Implemented; custom and built-in snapshots are persisted/read back, direct runtimes remain nullable, and Migration B is registry-wired after Migration A. |
+| `BEH-TOKMODEL-010` | Supported producer matrix and common payload precedence preserve provider_name through enrichment, forwarding, and storage. | AutoByteus normalizers and Ollama helper; Codex thread/backend; Claude session/converter; `createTokenUsageUpdatedPayload`; enrichment transformer; SQL/Prisma repository. | Implemented; top-level-first/nested-fallback, `provider_name_top_level_nested_conflict`, null preservation, and producer-focused assertions are covered. |
 
 ## Key Files Or Areas
 
@@ -48,7 +51,24 @@ Implemented the architecture-approved provider-aware display projection without 
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/token-usage/providers/task-statistics-tree-builder.ts`
 - App-data migration and registry:
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
+- Provider-name schema and persistence:
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/prisma/schema.prisma`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/prisma/migrations/20260730090000_add_token_usage_provider_name/migration.sql`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/agent-execution/domain/agent-run-token-usage.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-ledger-repository.ts`
+- Producer paths:
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-ts/src/llm/utils/llm-token-usage-observation.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-ts/src/llm/api/autobyteus-token-usage-normalizer.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-ts/src/llm/api/openai-compatible-token-usage-normalizer.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-ts/src/llm/api/anthropic-token-usage-normalizer.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-ts/src/llm/api/gemini-token-usage-normalizer.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-ts/src/llm/api/ollama-llm.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-token-usage.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-token-usage.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts`
 - GraphQL transport: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/src/api/graphql/types/token-usage-stats.ts`
 - Frontend transport/store/UI:
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-web/graphql/queries/token_usage_statistics_queries.ts`
@@ -60,6 +80,9 @@ Implemented the architecture-approved provider-aware display projection without 
 - Focused implementation tests:
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts`
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/tests/unit/agent-execution/domain/agent-run-token-usage-provider-name.test.ts`
+  - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-ts/tests/unit/llm/api/token-usage-normalizers.test.ts`
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-server-ts/tests/integration/token-usage/providers/statistics-provider.integration.test.ts`
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-web/stores/__tests__/tokenUsageStatistics.spec.ts`
   - `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/autobyteus-web/components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts`
@@ -67,14 +90,15 @@ Implemented the architecture-approved provider-aware display projection without 
 
 ## Important Assumptions
 
-- The saved custom-provider `name` is current display metadata; no provider-name snapshot is introduced.
+- New AutoByteus events persist the configured/readable provider name in nullable `provider_name`; direct Codex/Claude events intentionally remain nullable and do not receive guessed `OpenAI`/`Anthropic` labels. Legacy null/empty rows still use current metadata or deterministic fallback.
 - `model_identifier` remains the raw accounting authority. Display labels are never used as grouping or deduplication keys.
 - The current app-data runner owns status persistence, startup continuation, retry, and migration logging; the migration definition owns classification, CAS, and invariant validation.
 - The local database does not provide composite samples, so tests use synthetic composite fixtures including `org/model:tag`.
 
 ## Known Risks
 
-- Provider rename/deletion changes current friendly labels for historical rows; deleted or unavailable providers use deterministic provider-ID fallback while raw identity remains available.
+- Provider rename/deletion does not change newly snapshotted AutoByteus labels; legacy null/empty rows still change with current metadata and deleted/unavailable providers use deterministic provider-ID fallback while raw identity remains available.
+- Migration B cannot recover a deleted or malformed legacy custom provider name and reports `SKIPPED_PROVIDER_NAME_UNRECOVERABLE` without guessing; provider-map load failure is `FAILED`.
 - No live browser preview was available for this implementation round. Component mounting covered table/chart output and recursive task display, but `api_e2e_engineer` should independently inspect the real statistics surface.
 - Repository-wide server typecheck reports baseline TS6059 errors because `tsconfig.json` uses `rootDir: src` while including `tests`; the production build is green.
 - Broader API/E2E coverage and startup recovery testing remain downstream-owned.
@@ -100,24 +124,29 @@ Implemented the architecture-approved provider-aware display projection without 
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Migration Required` for historical composite `model_value`; `Directly Usable — No Migration` for canonical identity/accounting/provider names.
+- Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Migration Required` for the nullable provider_name schema/ingestion rollout and both historical corrections; canonical identity/accounting remain directly usable without rewrite.
 - Design-spec decision reference: `design-spec.md`, “Legacy Data Correction / App-Data Migration” and “Persisted Data / State Transition Decision”.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
 - Direct-use evidence or discard/rebuild result, when applicable: Current reader path remains version-agnostic; display resolver safely handles pending, failed, warning, partial, and complete migration states.
-- Migration implementation and focused checks, only when `Migration Required`: Fixed ID, required startup registration immediately after execution-address backfill, anchored parser, exact skip matrix, injected Prisma boundary, row-level CAS, independent durability, row-count/raw-identity checks, idempotence, warning/failure status mapping, and synthetic composite tests.
+- Migration implementation and focused checks, only when `Migration Required`: schema migration before app-data startup, fixed-ID Migration A, fixed-ID Migration B after A and before legacy-path cleanup, anchored parser, AutoByteus-only provider snapshot classifier, provider-map dependency failure, exact skip matrix, injected Prisma boundaries, row-level CAS, independent durability, row-count/raw-identity checks, idempotence, warning/failure status mapping, and synthetic composite tests.
 - Deviation from the reviewed transition decision: `None`.
 
 ## Environment Or Dependency Notes
 
 - No new package dependency was added.
 - `pnpm install --offline --frozen-lockfile` was used to materialize the existing workspace dependencies.
-- Server build regenerated Prisma client; no Prisma schema or schema migration was added.
+- Server build regenerated Prisma client from the nullable `provider_name` schema field and applied the checked-in schema migration in test databases.
 - Live codegen verification used a temporary backend/data directory and the updated GraphQL schema; no permanent app data was intentionally used for validation.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-server-ts build` — passed, including shared package builds, Prisma generation, TypeScript production build, asset copy, and built-in-agent bootstrap smoke.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/token-usage/providers/statistics-provider.integration.test.ts tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts` — repeated after CRR-001 F-001 fix and passed, `3` files / `15` tests.
+- `pnpm -C autobyteus-ts build` — passed, including TypeScript production build and runtime dependency verification.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/llm/api/token-usage-normalizers.test.ts` — passed, `1` file / `9` tests, including all named shared AutoByteus normalizer paths and the Ollama helper.
+- `pnpm -C autobyteus-server-ts build` — passed, including shared package builds, Prisma generation with `provider_name`, TypeScript production build, asset copy, and built-in-agent bootstrap smoke.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/domain/agent-run-token-usage-provider-name.test.ts tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts tests/unit/app-data-migrations/token-usage-provider-name-snapshot-backfill-migration.test.ts tests/unit/app-data-migrations/token-usage-legacy-path-columns-drop-migration.test.ts tests/unit/token-usage/projections/token-usage-unit-price-summary.test.ts` — passed, `10` files / `65` tests.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/token-usage/providers/statistics-provider.integration.test.ts` — passed, `1` file / `9` tests, including legacy map lookup and snapshot-first no-lookup behavior.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/token-usage/repositories/token-usage-record-repository.integration.test.ts` — passed, `1` file / `4` tests, including nullable and non-null provider-name SQL/Prisma round trips.
+- Prior focused GraphQL and frontend checks remain regression evidence from the pre-SR-006 display package; downstream API/E2E must regenerate them against the snapshot schema/ingestion behavior.
 - Existing targeted GraphQL regressions (`token-usage-ledger-graphql.e2e.test.ts`, `token-usage-unit-prices-graphql.e2e.test.ts`) — passed, `2` files / `4` tests; these are recorded as regression evidence only, not downstream API/E2E sign-off.
 - `pnpm -C autobyteus-web exec nuxt prepare` — passed.
 - `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/tokenUsageStatistics.spec.ts components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts` — passed, `3` files / `6` tests.
@@ -125,8 +154,8 @@ Implemented the architecture-approved provider-aware display projection without 
 - `pnpm -C autobyteus-web guard:localization-boundary` — passed.
 - `BACKEND_GRAPHQL_BASE_URL=http://127.0.0.1:18182/graphql pnpm -C autobyteus-web codegen` against a temporary updated server — passed; `autobyteus-web/generated/graphql.ts` contains both new fields.
 - Direct built-schema introspection — passed; `TokenUsageTaskStatisticsRowGraphql.modelDisplayNames` and `UsageStatistics.modelDisplayName` are present.
-- Direct built-registry inspection — passed; migration order is execution-address backfill -> `20260730_token_usage_custom_provider_model_value_backfill` -> legacy path-column drop.
-- `pnpm -C autobyteus-server-ts typecheck` — fails on the repository baseline TS6059 configuration (`tests` outside `rootDir: src`); no changed-source error was observed before the baseline flood. Production build passed and is the authoritative implementation compile check.
+- Direct built-registry inspection — passed; migration order is execution-address backfill -> `20260730_token_usage_custom_provider_model_value_backfill` -> `20260730_token_usage_provider_name_snapshot_backfill` -> legacy path-column drop.
+- `pnpm -C autobyteus-server-ts typecheck` — remains a repository baseline TS6059 configuration failure (`tests` outside `rootDir: src`); no changed-source error was observed before the baseline flood. Production build passed and is the authoritative implementation compile check.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -148,4 +177,4 @@ Implemented the architecture-approved provider-aware display projection without 
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-API/E2E engineer must independently investigate current coverage, add or adjust durable API/E2E tests as needed, verify live GraphQL contract/codegen and realistic migration startup/recovery behavior, inspect the rendered browser surface, score coverage confidence, and return the result to `code_reviewer`. This handoff does not claim API/E2E sign-off; source review must be repeated for CRR-001 before API/E2E starts.
+API/E2E engineer must independently investigate current coverage, add or adjust durable API/E2E tests as needed, verify live GraphQL contract/codegen and realistic migration startup/recovery behavior, inspect the rendered browser surface, score coverage confidence, and return the result to `code_reviewer`. This handoff does not claim API/E2E sign-off; source review must be repeated for the SR-006 snapshot schema/ingestion delta before API/E2E starts. The existing downstream coverage, execution, docs, handoff, release, and delivery artifacts predate SR-006 and are evidence to regenerate, not current validation.

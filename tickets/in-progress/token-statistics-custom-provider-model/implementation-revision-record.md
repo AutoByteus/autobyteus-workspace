@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer`, `design-review-report.md`, implementation round 1 | `N/A` | `Initial Baseline` | `SR-004`, `ARCH-REV-003`, `CRR-N/A`, `API-REV-N/A`, `DR-N/A` | Implementation complete; handed to `code_reviewer` |
 | IR-002 | `code_reviewer`, `code-review-report.md`, source-review rework round 1 | `F-001` | `Local Fix` | `SR-004`, `ARCH-REV-003`, `CRR-001`, `API-REV-N/A`, `DR-N/A` | Fix implemented and re-submitted to `code_reviewer` |
+| IR-003 | `architecture_reviewer`, `design-review-report.md`, architecture-authorized implementation rework round 2 | `ARCH-F-006` (resolved in `SR-006`); retains `F-001` regression coverage | `Architecture-authorized rework` | `SR-006`, `ARCH-REV-005`, `CRR-N/A`, `API-REV-N/A`, `DR-N/A` | Snapshot schema/ingestion/migration implementation complete; awaiting repeated source review |
 
 ## Revision Entries
 
@@ -56,3 +57,29 @@
 - Local validation and result: Focused server suite passed (`3` files, `15` tests); production server build passed; `git diff --check` passed.
 - Next recipient or routing: `code_reviewer` for repeated implementation-source review; API/E2E remains unauthorized until that review passes.
 - Remaining limitations or risks: No live browser preview was available; the repository-wide server typecheck retains the known TS6059 baseline; API/E2E and delivery stages remain downstream-owned.
+
+### IR-003 — Add AutoByteus provider-name snapshots and Migration B
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/design-review-report.md`; architecture-authorized implementation rework round 2 after `ARCH-REV-005`.
+- Triggering finding IDs: `ARCH-F-006` was resolved in `SR-006`; the implementation also preserves the prior `F-001` malformed-display correction.
+- Classification: `Architecture-authorized rework`.
+- Prior authoritative result: `IR-002` implemented the pre-SR-006 display and value-backfill package and had not received repeated source-review authorization for the new provider-name snapshot schema/ingestion contract.
+- Current authoritative result: SR-006 implementation is complete and ready for repeated implementation-source review. AutoByteus shared normalizers persist configured/readable `provider_name`; direct Codex/Claude producers forward null; common payload precedence and conflict flagging are implemented; enrichment and SQL/Prisma round trips preserve the selected value/null; the nullable schema migration and fixed-ID Migration B are wired and tested; snapshot-first display and exact malformed fallback remain intact.
+- Related solution revision IDs: `SR-006` (prior basis: `SR-004`).
+- Related architecture-review revision IDs: `ARCH-REV-005` (prior gate: `ARCH-REV-003`).
+- Related code-review revision IDs: `N/A` for this architecture rework; prior `CRR-001`/`F-001` correction remains covered by focused tests.
+- Related API/E2E revision IDs: `N/A`; downstream artifacts predate SR-006 and require regeneration after source review.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: The architecture gate changed the persisted/ingestion contract and explicitly required downstream artifacts to be regenerated; this entry preserves the implementation delta and validation boundary.
+- Approved behavior or requirement IDs affected: `BEH-TOKMODEL-001` through `BEH-TOKMODEL-010`; `REQ-TOKMODEL-001` through `REQ-TOKMODEL-010`; `AC-TOKMODEL-001` through `AC-TOKMODEL-011`; `DS-TOKMODEL-001` through `DS-TOKMODEL-004`.
+- Implementation delta:
+  - Added optional nested `provider_name` to the shared `LlmTokenUsageObservation` schema/identity and propagated `model.providerName` through AutoByteus, OpenAI-compatible, Anthropic accumulator/wrapper, Gemini, and Ollama response normalizers.
+  - Added top-level nullable provider_name to direct Codex/Claude producer paths and preserved it through backend forwarding/converter serialization without inventing runtime labels.
+  - Added top-level-first/nested-fallback provider-name canonicalization and `provider_name_top_level_nested_conflict` quality flag; context enrichment remains pass-through.
+  - Added nullable Prisma `providerName`, schema migration `20260730090000_add_token_usage_provider_name`, SQL create/read mapping, and round-trip coverage.
+  - Added `TokenUsageProviderNameSnapshotBackfillMigration` with fixed ID `20260730_token_usage_provider_name_snapshot_backfill`, AutoByteus-only recovery, built-in/current custom map resolution, warning/failure/retry semantics, CAS updates, and row-count/provider/model/raw-value/accounting invariants; registered after Migration A and before legacy path cleanup.
+  - Updated display-context loading to avoid current provider-map reads when all AutoByteus events already have snapshots; snapshot-first resolver behavior and malformed-composite exact fallback are tested.
+- Changed files or areas: shared `autobyteus-ts` observation/normalizers; server token-usage domain, direct producers, Prisma schema/migration, SQL repository, display projection/statistics provider, Migration A row shape, Migration B/registry; focused unit/integration tests; implementation handoff.
+- Local validation and result: `autobyteus-ts` build and normalizer tests passed (`1` file/`9` tests); server production build passed; focused server suite passed (`10` files/`65` tests); statistics-provider integration passed (`1` file/`9` tests); SQL repository integration passed (`1` file/`4` tests); Prisma test databases applied the new schema migration; final staged and unstaged `git diff --check` passed.
+- Next recipient or routing: `code_reviewer` for repeated implementation-source review. API/E2E remains unauthorized until source review passes.
+- Remaining limitations or risks: Downstream coverage/execution/docs/delivery artifacts were produced for the pre-SR-006 package and must be regenerated. No live browser/API-E2E sign-off is claimed. Repository-wide server typecheck retains the known TS6059 baseline; production build is the authoritative compile check.

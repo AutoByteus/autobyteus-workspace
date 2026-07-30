@@ -22,6 +22,7 @@ export type CodexReadyTokenUsageUpdate = {
   effective_context_window_tokens: number | null;
   context_window_usage_percent: number | null;
   model_provider: string | null;
+  provider_name: string | null;
   model_identifier: string | null;
   model_value: string | null;
   raw_usage_json: Record<string, unknown> | null;
@@ -185,6 +186,7 @@ export const resolveCodexThreadTokenUsage = (input: {
     effective_context_window_tokens: effectiveContextWindowTokens,
     context_window_usage_percent: contextWindowUsagePercent,
     model_provider: "OPENAI",
+    provider_name: null,
     model_identifier: input.model,
     model_value: input.model,
     raw_usage_json: cloneRecord(selected),

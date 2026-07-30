@@ -57,8 +57,12 @@ const hasCompositeMarker = (value: string | null): boolean => Boolean(value?.sta
 const resolveProviderLabel = (
   providerId: string | null,
   modelProvider: string | null | undefined,
+  providerName: string | null | undefined,
   context: TokenUsageModelDisplayContext,
 ): string => {
+  const snapshotName = compact(providerName);
+  if (snapshotName) return snapshotName;
+
   if (providerId) {
     if (!context.providerMapLoadFailed) {
       const savedName = compact(context.customProviderNames.get(providerId));
@@ -80,7 +84,7 @@ const resolveProviderLabel = (
 };
 
 const resolveAutobyteusDisplayName = (
-  event: Pick<TokenUsageUpdatedPayload, "model_provider" | "model_identifier" | "model_value">,
+  event: Pick<TokenUsageUpdatedPayload, "model_provider" | "provider_name" | "model_identifier" | "model_value">,
   context: TokenUsageModelDisplayContext,
 ): string => {
   const modelIdentifier = compact(event.model_identifier);
@@ -93,6 +97,7 @@ const resolveAutobyteusDisplayName = (
   let providerId: string | null = rawComposite?.providerId ?? null;
   let modelName: string | null = null;
   let providerForDisplay = event.model_provider;
+  let providerNameForDisplay = event.provider_name;
 
   if (valueIsMalformedComposite) {
     if (rawComposite) {
@@ -102,6 +107,7 @@ const resolveAutobyteusDisplayName = (
       // identifier or infer a provider from metadata. Only a valid raw
       // composite may supply the fallback provider/model pair.
       providerForDisplay = null;
+      providerNameForDisplay = null;
     }
   } else if (valueComposite) {
     if (rawComposite) {
@@ -127,12 +133,12 @@ const resolveAutobyteusDisplayName = (
     modelName = modelIdentifier;
   }
 
-  const providerLabel = resolveProviderLabel(providerId, providerForDisplay, context);
+  const providerLabel = resolveProviderLabel(providerId, providerForDisplay, providerNameForDisplay, context);
   return `${providerLabel}:${modelName ?? UNKNOWN_MODEL}`;
 };
 
 export const resolveTokenUsageModelDisplayName = (
-  event: Pick<TokenUsageUpdatedPayload, "runtime_kind" | "model_provider" | "model_identifier" | "model_value">,
+  event: Pick<TokenUsageUpdatedPayload, "runtime_kind" | "model_provider" | "provider_name" | "model_identifier" | "model_value">,
   context: TokenUsageModelDisplayContext = EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT,
 ): string => {
   if (normalizeTokenUsageRuntimeKind(event.runtime_kind).trim().toLowerCase() !== "autobyteus") {

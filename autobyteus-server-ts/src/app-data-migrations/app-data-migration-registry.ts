@@ -9,6 +9,7 @@ import { RemoveSelfEvolutionRunMetadataMigration } from "./migrations/remove-sel
 import { TeamCommunicationProjectionAddressMigration } from "./migrations/team-communication-projection-address-migration.js";
 import { TokenUsageExecutionAddressBackfillMigration } from "./migrations/token-usage-execution-address-backfill-migration.js";
 import { TokenUsageCustomProviderModelValueBackfillMigration } from "./migrations/token-usage-custom-provider-model-value-backfill-migration.js";
+import { TokenUsageProviderNameSnapshotBackfillMigration } from "./migrations/token-usage-provider-name-snapshot-backfill-migration.js";
 import { TokenUsageLegacyPathColumnsDropMigration } from "./migrations/token-usage-legacy-path-columns-drop-migration.js";
 import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
 import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
@@ -27,6 +28,7 @@ export class AppDataMigrationRegistry {
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageExecutionAddressBackfillMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageCustomProviderModelValueBackfillMigration(),
+      new TokenUsageProviderNameSnapshotBackfillMigration(),
       new TokenUsageLegacyPathColumnsDropMigration(),
       new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
       new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),

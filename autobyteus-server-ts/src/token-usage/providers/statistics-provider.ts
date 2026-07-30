@@ -39,7 +39,13 @@ export class TokenUsageStatisticsProvider {
     private readonly customProviderStore: Pick<CustomLlmProviderStore, "listProviders"> = getCustomLlmProviderStore(),
   ) {}
 
-  private async loadDisplayContext(): Promise<TokenUsageModelDisplayContext> {
+  private async loadDisplayContext(events: TokenUsageUpdatedPayload[]): Promise<TokenUsageModelDisplayContext> {
+    const requiresLegacyProviderLookup = events.some((event) => (
+      normalizeTokenUsageRuntimeKind(event.runtime_kind).trim().toLowerCase() === "autobyteus" &&
+      !event.provider_name?.trim()
+    ));
+    if (!requiresLegacyProviderLookup) return EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT;
+
     try {
       const providers = await this.customProviderStore.listProviders();
       return {
@@ -66,7 +72,7 @@ export class TokenUsageStatisticsProvider {
     endDate: Date,
   ): Promise<TokenUsageTaskStatisticsResult> {
     const records = await this.store.listEventsInPeriod(startDate, endDate);
-    const displayContext = await this.loadDisplayContext();
+    const displayContext = await this.loadDisplayContext(records);
     return { rows: this.taskTreeBuilder.buildRows(records, displayContext) };
   }
 
@@ -75,7 +81,7 @@ export class TokenUsageStatisticsProvider {
     endDate: Date,
   ): Promise<TokenUsageRuntimeModelStatisticsRow[]> {
     const records = await this.store.listEventsInPeriod(startDate, endDate);
-    const displayContext = await this.loadDisplayContext();
+    const displayContext = await this.loadDisplayContext(records);
     const groups: EventGroups = new Map();
 
     for (const record of records) {

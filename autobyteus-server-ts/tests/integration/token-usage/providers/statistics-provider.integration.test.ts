@@ -21,6 +21,7 @@ const buildEvent = (input: {
   currency?: string | null;
   runtimeKind?: string;
   modelProvider?: string | null;
+  providerName?: string | null;
   modelValue?: string | null;
   runId?: string;
   rootTeamRunId?: string | null;
@@ -58,6 +59,7 @@ const buildEvent = (input: {
         member_name: input.memberName ?? null,
         runtime_kind: input.runtimeKind ?? "codex_app_server",
         model_provider: input.modelProvider ?? null,
+        provider_name: input.providerName ?? null,
         model_identifier: input.model,
         model_value: input.modelValue ?? null,
         reported_input_tokens: input.inputTokens,
@@ -141,9 +143,9 @@ describe("TokenUsageStatisticsProvider", () => {
     expect(autobyteus.aggregate.api_cost_status).toBe("price_missing");
   });
 
-  it("loads custom provider names once and keeps the raw model identifier separate from display", async () => {
+  it("loads legacy custom provider names once and keeps the raw model identifier separate from display", async () => {
     const customProviderStore = {
-      listProviders: vi.fn().mockResolvedValue([{ id: "provider_A", name: "alibaba_cloud" }]),
+      listProviders: vi.fn().mockResolvedValue([{ id: "provider_A", name: "renamed_provider" }]),
     };
     mockStore.listEventsInPeriod.mockResolvedValue([
       buildEvent({
@@ -169,8 +171,38 @@ describe("TokenUsageStatisticsProvider", () => {
     expect(customProviderStore.listProviders).toHaveBeenCalledTimes(1);
     expect(result[0]).toMatchObject({
       modelIdentifier: "openai-compatible:provider_A:qwen3.8-max-preview",
-      modelDisplayName: "alibaba_cloud:qwen3.8-max-preview",
+      modelDisplayName: "renamed_provider:qwen3.8-max-preview",
     });
+  });
+
+  it("prefers the persisted provider snapshot without reading the current provider map", async () => {
+    const customProviderStore = {
+      listProviders: vi.fn().mockResolvedValue([{ id: "provider_A", name: "renamed_provider" }]),
+    };
+    mockStore.listEventsInPeriod.mockResolvedValue([
+      buildEvent({
+        model: "openai-compatible:provider_A:qwen3.8-max-preview",
+        modelProvider: "OPENAI_COMPATIBLE",
+        providerName: "historical_alibaba_cloud",
+        modelValue: "qwen3.8-max-preview",
+        runtimeKind: "autobyteus",
+        inputTokens: 10,
+        outputTokens: 5,
+        inputCost: 0.01,
+        outputCost: 0,
+        totalCost: 0.01,
+        status: "estimated",
+      }),
+    ]);
+
+    const result = await new TokenUsageStatisticsProvider(
+      mockStore as never,
+      undefined,
+      customProviderStore as never,
+    ).getStatisticsPerRuntimeModel(new Date("2026-07-30T00:00:00.000Z"), new Date("2026-07-31T00:00:00.000Z"));
+
+    expect(customProviderStore.listProviders).not.toHaveBeenCalled();
+    expect(result[0]).toMatchObject({ modelDisplayName: "historical_alibaba_cloud:qwen3.8-max-preview" });
   });
 
   it("returns null aggregate cost and mixed status for mixed currencies", async () => {

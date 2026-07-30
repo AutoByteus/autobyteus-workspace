@@ -14,6 +14,7 @@ const buildEvent = (input: {
   snapshotSeriesKey?: string | null;
   inputTokens?: number;
   outputTokens?: number;
+  providerName?: string | null;
 }) => {
   const runId = input.runId ?? `ledger_repo_${randomUUID()}`;
   createdRunIds.add(runId);
@@ -41,6 +42,7 @@ const buildEvent = (input: {
       cache_state: "not_reported",
       billable_output_tokens: reportedOutput,
       model_identifier: "gpt-test",
+      provider_name: input.providerName ?? null,
       runtime_kind: "codex_app_server",
       ingestion_kind: "codex_thread_token_usage",
       pricing_status: "missing",
@@ -85,6 +87,7 @@ describe("SqlTokenUsageLedgerRepository", () => {
     expect(records[0]?.accounting_total_tokens).toBe(150);
     expect(records[0]?.standard_input_tokens).toBe(100);
     expect(records[0]?.estimated_api_total_cost).toBeNull();
+    expect(records[0]?.provider_name).toBeNull();
   });
 
   it("round-trips raw usage, semantic component, pricing, missing-dimension, and context fields", async () => {
@@ -97,6 +100,7 @@ describe("SqlTokenUsageLedgerRepository", () => {
         runtime_kind: "autobyteus",
         ingestion_kind: "autobyteus_llm_phase",
         model_provider: "ANTHROPIC",
+        provider_name: "Historical Anthropic",
         model_identifier: "claude-sonnet-4-6",
         input_token_semantic: "base_excludes_cache",
         reported_input_tokens: 11,
@@ -154,6 +158,7 @@ describe("SqlTokenUsageLedgerRepository", () => {
 
     expect(record).toEqual(expect.objectContaining({
       input_token_semantic: "base_excludes_cache",
+      provider_name: "Historical Anthropic",
       accounting_input_tokens: 10_447,
       standard_input_tokens: 11,
       cache_miss_input_tokens: 11,

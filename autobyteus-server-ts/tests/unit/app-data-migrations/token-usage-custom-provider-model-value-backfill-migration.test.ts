@@ -11,6 +11,7 @@ const row = (input: Partial<RawTokenUsageCustomProviderModelValueRow> = {}): Raw
   usage_event_id: input.usage_event_id ?? `event-${input.id ?? 1}`,
   runtime_kind: input.runtime_kind ?? "autobyteus",
   model_provider: input.model_provider ?? "OPENAI_COMPATIBLE",
+  provider_name: input.provider_name ?? null,
   model_identifier: input.model_identifier ?? "openai-compatible:provider_A:org/model:tag",
   model_value: input.model_value ?? "openai-compatible:provider_A:org/model:tag",
 });
