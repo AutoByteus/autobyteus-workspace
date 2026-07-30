@@ -30,6 +30,7 @@
 | `CRR-024` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-014` after `DR-001` | `Pass` (`CRR-022` source; `CRR-023` test review) | `Pass` | `DR-001`; retained `CR-015`, `CR-016` |
 | `CRR-025` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-009` | `Pass` | `Fail — Local Fix` | `CR-017`, `APIE2E-F008` |
 | `CRR-026` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-015` | `Fail — Local Fix` | `Pass` | `CR-017`, `APIE2E-F008` |
+| `CRR-027` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-010` | `N/A` | `Pass` | `N/A` |
 
 ## Revision Entries
 
@@ -730,3 +731,26 @@ None.
 - Material score or classification changes: result changes from `Fail — Local Fix` to `Pass`; current full implementation score is `9.6/10` (`96/100`), with every category `>=9.0`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: rerun the exact atomic regression and maintained `dev`/`dev:studio` 73-file parity, then return for proportional review of the API/E2E-owned durable test. The first reviewer full run transiently timed out on the unchanged watcher test, but its focused rerun and the complete rerun passed; record any recurrence proportionately. `APIE2E-REPO-005` remains historical `Unclear`; delivery remains blocked.
+
+### CRR-027 — API-REV-010 atomic metadata durable-test delta passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E Test-Code Review`, round `27` overall / second proportional review
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-010`; resolved `APIE2E-PARITY-005` / `APIE2E-F008`; durable `APIE2E-PACK-002`
+- Relevant solution revision IDs: `SR-010`; retained `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-015`; cumulative prior revisions retained
+- Relevant API/E2E revision IDs: `API-REV-010`; triggering durable delta originated in `API-REV-009`
+- Relevant delivery revision IDs: `DR-001` (execution-confirmed resolved)
+- Prior authoritative result: `N/A` for this proportional delta; implementation source remains `CRR-026` Pass and prior cumulative durable package remains `CRR-023` Pass
+- Current authoritative result: `Pass`
+- What changed in the review result and why: reviewed the only later durable path, `autobyteus-application-devkit/tests/application-devkit.test.mjs`. Its new 22-line scenario materializes a real project, invokes the production atomic pack, and requires the renamed README to name the exact canonical root and never a staging root. It reuses existing fixtures, adds one narrow regex helper, remains in the coherent devkit lifecycle suite, and agrees with focused 1/1, full 20/20, and real four-point 73/73 parity evidence. No assertion was weakened, no stale test was retained, and no full workflow rerun was needed for review.
+
+#### Prior Finding Resolution
+
+None. `CRR-023` had no unresolved proportional test-review finding; `CR-017` is a source finding resolved by `IR-015`/`CRR-026` and confirmed in `API-REV-010`.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no source scorecard or API/E2E confidence recomputation. Proportional test-code result is `Pass`; `API-REV-010` remains `Pass / 98.3%`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: historical `APIE2E-REPO-005` remains separate `Unclear` repository-test debt and is not requirement evidence. Delivery should resume latest integrated-state, documentation/no-impact, and final handoff work without reopening the source scorecard.
