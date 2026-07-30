@@ -2,11 +2,11 @@
 
 ## Status
 
-- **Validation round:** `SV-014`, clarifying MCP ownership and removing Codex/Claude runtime-internal tooling from the application-framework acceptance scope after the user’s final discussion.
-- **Conclusion:** **Pass — documentation/traceability clarification only.** `ARCH-REV-006` remains the design authority and CR-013 remains the same bounded Local Fix. Both hosts require the run-scoped Agent Tools route; standalone does not expose the general external-client MCP gateway or inherit Studio MCP configuration. No architecture review or source-scope expansion is required. This is not an implementation or API/E2E pass.
-- **Current implementation evidence:** SR-006 passed as `ARCH-REV-006`; IR-008/IR-009 and `CRR-014` implement/pass selected-resource editing, recursive portable policy, complete Codex/Luna launch, and prompt semantics. `API-REV-005` proves standalone binding/team/session descriptor creation but reaches generic 404 at the unregistered existing route. `CRR-016` verifies the existing Agent Tools subsystem is coherent and classifies only the standalone route omission as `Local Fix`. Commit `e8e06afdd` now contains the bounded registrar change, but its owning implementation/source-review result is not presumed here. Runtime-internal tooling is outside this ticket.
+- **Validation round:** `SV-015`, correcting the application Agent Tools publication authority and construction lifecycle after API-REV-007 / CRR-020 disproved the prior unchanged-provider premise.
+- **Conclusion:** **Pass — revised design is internally coherent and ready for architecture review.** Route/auth/tool listing and recipient-name messaging remain valid. DS-014 now gives route registration and application session issue one exact process authority, carries the graph-local publication port on the authenticated session, breaks the construction cycle through one bind-once fail-closed port, and revokes/closes the scope deterministically. This is not an architecture, implementation, or API/E2E pass.
+- **Current implementation evidence:** SR-006 passed as `ARCH-REV-006`; later IR-010/CRR-017 resolve route parity and IR-011/CRR-019 resolve graph-local Codex definitions. API-REV-007 proves both real members authenticate, list actual tools, and complete two `send_message_to` handoffs, then proves all five publication calls use the wrong process-global manager and create no journal/projection. CRR-020 classifies CR-015 as `Design Impact`. Runtime-internal tooling and the external gateway remain outside this ticket.
 - **Authoritative product decision:** a standalone-capable package is self-contained for runtime/model selection. Studio overrides are optional host-owned overlays. Credentials, provider endpoints, installed runtime/model availability, and comparable machine-local prerequisites remain host-owned.
-- **Routing:** send the clarified cumulative package to `implementation_engineer` so the already-bounded CR-013 registrar commit can continue through its owning implementation handoff, full source review, and API/E2E without any runtime-internal scope.
+- **Routing:** return the complete SR-010 package through `architecture_reviewer`; implementation remains paused until the revised authority/lifecycle design passes.
 
 ## Inputs
 
@@ -16,7 +16,7 @@
 4. Proposal assessment in [proposal-critical-analysis.md](proposal-critical-analysis.md).
 5. Architecture history in [design-review-report.md](design-review-report.md) and [architecture-review-revision-record.md](architecture-review-revision-record.md).
 6. Implementation handoff/history in [implementation-handoff.md](implementation-handoff.md) and [implementation-revision-record.md](implementation-revision-record.md).
-7. Current focused failure-origin authority `CRR-016` / CR-013 in [code-review-report.md](code-review-report.md) and [code-review-revision-record.md](code-review-revision-record.md). It supersedes `CRR-015`.
+7. Current focused failure-origin authority `CRR-020` / CR-015 in [code-review-report.md](code-review-report.md) and [code-review-revision-record.md](code-review-revision-record.md).
 8. Executable evidence in [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md), [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md), and [api-e2e-revision-record.md](api-e2e-revision-record.md).
 9. Canonical design principles in the `solution-designer` skill.
 
@@ -35,7 +35,8 @@
 11. **Native project experience:** application folders retain `pnpm dev`, `pnpm dev:studio`, `pnpm build`, `pnpm validate`, and `pnpm start`, with standalone `dev`/`start` requiring a standalone-enabled, valid package.
 12. **Clean cut:** no version suffix in code symbols, manifest-vNext, compatibility alias, package-builder alias, baseline fallback, broad-server fallback, custom builder, mock product mode, second standalone profile model, or second top-level server project is introduced.
 13. **Portable package data only:** one recursive schema-aware policy accepts exact runtime-supported token-count/pricing fields and rejects credential/password/authorization/token-value/endpoint/workspace semantics at any depth without logging values.
-14. **Existing Agent Tools boundary, route parity, and correct projection:** both hosts register the existing `/mcp/agent-tools/:sessionId` route before static fallback. The run descriptor projects eligible server-owned adapters such as `publish_artifacts` and `send_message_to` plus selected available `ToolOrigin.MCP` tools. Only Studio registers general `/mcp/gateway`, which exposes host-configured MCP-origin tools to external clients; standalone neither exposes it nor inherits Studio MCP state. Runtime-internal tools are outside validation scope.
+14. **Agent Tools process/session authority:** both hosts register `/mcp/agent-tools/:sessionId` through one composition-owned process registry/catalog/executor/dispatcher family. Application-created sessions use that same family and carry the exact graph-local publication port; no adapter/global/request-time fallback selects another graph.
+15. **MCP surface boundaries remain:** the run descriptor projects eligible server-owned adapters such as `publish_artifacts` and `send_message_to` plus selected available `ToolOrigin.MCP` tools. Only Studio registers general `/mcp/gateway`; standalone neither exposes it nor inherits Studio MCP state. Runtime-internal tools remain outside validation scope.
 
 ## Scenario Validation Matrix
 
@@ -45,7 +46,7 @@ Every row has a supported action, system event, or governing package/host contra
 | --- | --- | --- | --- | --- |
 | SV-C01 | Developer builds once and consumes the output in Studio and standalone | DS-006, DS-007 | One assembly/validation/digest; both hosts consume unchanged frontend/backend/package bytes; runtime writes stay outside the package | Pass |
 | SV-C02 | Studio user imports a valid self-contained package and enters without saving an override | DS-001, DS-012 | Package defaults and provenance are visible; host requirements validate; iframe provider normalizes bootstrap; shared client mounts the business UI | Pass after SV-009 |
-| SV-C03 | Operator runs standalone with a valid maintained package and fresh data root | DS-002, DS-011, DS-012, DS-014 | `codex_app_server` / `gpt-5.6-luna` defaults resolve without seeded rows/setup UI; readiness is `RUNNABLE`; `/` mounts; the existing internal Agent Tools route is registered before static fallback and any real tool-dependent run | Pass after bounded CR-013 Local Fix |
+| SV-C03 | Operator runs standalone with a valid maintained package and fresh data root | DS-002, DS-011, DS-012, DS-014 | `codex_app_server` / `gpt-5.6-luna` defaults resolve without seeded rows/setup UI; readiness is `RUNNABLE`; `/` mounts; the internal route and graph publication authority are ready before any real tool-dependent run | Pass after SV-015 design correction; executable rerun required |
 | SV-C04 | Operator binds loopback or an explicit trusted-network interface and uses the browser-visible origin | DS-002, DS-008 | Root-relative platform paths resolve from `window.location.origin`; no server bind address or reflected host becomes browser endpoint authority | Pass |
 | SV-C05 | Operator supplies invalid package root, missing/ambiguous local ID, or non-standalone selection | DS-002, DS-011 | Current parser/selection authority fails before listen and before partial application initialization; no implicit first app | Pass |
 | SV-C06 | Package contains multiple applications and operator selects one standalone-enabled local ID | DS-002, DS-005 | Static/bootstrap/ingress/recovery receive one immutable canonical selected descriptor and expose only that application | Pass |
@@ -53,11 +54,11 @@ Every row has a supported action, system event, or governing package/host contra
 | SV-C08 | Standalone bootstrap is unavailable, malformed, or contradicts selected identity/readiness | DS-002, DS-012 | Standalone provider rejects; coordinator reaches startup failure; no Studio/mock fallback exists | Pass |
 | SV-C09 | Named workspace, tool, definition, runtime, database, or vault platform prerequisite fails | DS-005 | Named lifecycle phase fails truthfully; platform does not become healthy; ingress does not claim application runnable | Pass |
 | SV-C10 | Frontend invokes query, command, route, GraphQL, notification, custom WebSocket, or direct agent communication | DS-003, DS-004 | Shared client -> host mount -> exact shared gateway/communication owner -> result/event/socket; host imports no backend business modules | Pass |
-| SV-C11 | Backend requests the required package resource and starts a real team run | DS-003, DS-004, DS-012, DS-014 | `requireRunnable` supplies a non-null effective configuration; the existing descriptor/route exposes eligible server tools and selected available MCP-origin tools; handoff/events/artifacts complete through existing authorities | Pass after bounded CR-013 Local Fix; executable rerun required |
+| SV-C11 | Backend requests the required package resource and starts a real team run | DS-003, DS-004, DS-012, DS-014 | `requireRunnable` supplies a non-null effective configuration; descriptor/route expose eligible tools; messaging uses member context and publication uses the authenticated session’s exact graph port; handoff/events/journal/projection complete | Pass after SV-015 design correction; executable rerun required |
 | SV-C12 | Host restarts with the same selected application and data root | DS-004, DS-005 | Current schemas open directly; selected known-state intersection recovers bindings/availability/pending events; package remains immutable | Pass |
 | SV-C13 | Standalone data root contains dormant state for a previously selected different local application | DS-005 | Recovery activates only `known IDs ∩ {selected canonical ID}`; other records remain dormant and unmodified | Pass |
 | SV-C14 | Worker exits after readiness and frontend later invokes or reloads | DS-003, DS-005 | Existing engine/availability owners retain recovery and ensure-ready responsibility; hosts do not create a second restart policy | Pass structurally; executable verification retained |
-| SV-C15 | Operator terminates while timers, workers, Agent Tools sessions, notifications, sockets, streams, events, vault, or Prisma are active | DS-005, DS-010, DS-014 | Existing run/member/session cleanup remains authoritative, followed by the established event/vault/Prisma shutdown sequence; route registration introduces no new lifecycle owner | Pass; affected regression retained |
+| SV-C15 | Operator terminates while timers, workers, Agent Tools sessions, notifications, sockets, streams, events, vault, or Prisma are active | DS-005, DS-010, DS-014 | Block new issue -> stop runs/member handles -> revoke remaining scope sessions -> close graph publication port -> close process authority -> event/vault/Prisma; no descriptor survives restart | Pass structurally after SV-015; affected regression required |
 | SV-C16 | Browser requests `/`, relative asset, valid SPA navigation, traversal input, or unknown reserved platform path | DS-008 | Real-path confinement under selected `ui/`; reserved prefix excluded first; only eligible document navigation receives SPA fallback | Pass |
 | SV-C17 | Standalone starts with default networking and no account/authentication subsystem | DS-002, DS-008 | Loopback default, no broad Studio CORS, browser WebSocket origin authority equals request host authority; explicit non-loopback is trusted-network operation | Pass |
 | SV-C18 | Developer runs `pnpm dev` or `pnpm dev:studio` in starter, Brief, or Socratic | DS-006, DS-011, DS-012 | Checked-in mapping feeds the real pack/validator; maintained leaves package `codex_app_server` / `gpt-5.6-luna`; `dev` runs standalone watch/restart; `dev:studio` uses real Studio reload; no mock/custom builder | Pass in implementation; broader executable rerun remains downstream |
@@ -78,9 +79,13 @@ Every row has a supported action, system event, or governing package/host contra
 | SV-C33 | Studio user selects an allowed alternate agent/team before any save, then changes selection while a preview is in flight or the resource disappears before PUT | DS-012 | Identity-bound no-write preview returns the exact selected-resource definition baseline or structured invalid-selection issue; stale responses are discarded; Save is blocked pending/invalid; PUT re-resolves and rejects catalog/topology drift without writing/fallback | Pass after SV-011 |
 | SV-C34 | Studio edits a saved alternate team, clears a model/runtime field, and encounters homogeneous then mixed inherited member runtimes | DS-012 | Editor inherits only from the selected pre-overlay baseline, omits cleared fields from persistence, reloads after change, preserves per-member values, disables bulk model for mixed runtime, and requires an explicit common runtime before bulk model override | Pass after SV-011 |
 | SV-C35 | Developer validates package tuning containing approved token counts/pricing plus nested password, bearer authorization, access-token value, endpoint, or workspace fields | DS-011 | Recursive policy accepts exact typed token-count/pricing inputs; rejects each secret/host-local path as `PACKAGE_FORBIDDEN_HOST_FIELD` without exposing values; no app-specific/compatibility exception | Pass after SV-011 |
-| SV-C36 | Fresh standalone Brief creates a real Codex/Luna team run and invokes its selected server-owned Agent Tools | DS-003, DS-004, DS-012, DS-014 | The actual descriptor/`tools/list` exposes eligible `publish_artifacts` and `send_message_to`; the registered route dispatches them under the issued session; writer handoff, lifecycle events, and projected artifacts complete | Pass after bounded CR-013 Local Fix; rerun APIE2E-BRIEF-003/APIE2E-F005 with corrected expectations |
-| SV-C37 | Existing internal Agent Tools route receives no bearer, an unknown session, or a request for a tool outside the session projection | DS-014, DS-005 | No bearer reaches the established 401 authorization gate; unknown/unavailable session remains 404; the route cannot expose tools outside the issued descriptor; existing cleanup semantics remain unchanged | Pass after bounded CR-013 Local Fix; focused durable/API route proof required |
-| SV-C38 | Studio and standalone compose existing Agent Tools transport while only Studio owns the general external MCP gateway and host MCP configuration | DS-005, DS-014 | Both compositions call the same existing internal route registrar before static fallback; standalone omits `/mcp/gateway` and does not inherit Studio MCP state; no new runtime/ports/path builder/configured-source resolver/publication bridge or application MCP provisioner is introduced | Pass after bounded CR-013 Local Fix; focused composition proof required |
+| SV-C36 | Fresh standalone Brief creates a real Codex/Luna team run and invokes its selected server-owned Agent Tools | DS-003, DS-004, DS-012, DS-014 | Actual descriptor/list exposes `publish_artifacts`/`send_message_to`; writer handoff succeeds; publication uses the graph manager and creates graph event, journal, relay, and application projection | Pass structurally after SV-015; rerun APIE2E-STANDALONE-MCP-003/F007 |
+| SV-C37 | Internal Agent Tools route receives no bearer, an unknown/revoked session, or a request outside projection | DS-014, DS-005 | Missing bearer remains 401; unknown/wrong/revoked remains 404; no out-of-projection tool; security semantics remain independent of graph authority | Pass; focused regression retained |
+| SV-C38 | Studio and standalone compose Agent Tools transport while only Studio owns general external MCP gateway/MCP state | DS-005, DS-014 | Both use one explicit process authority for internal route/session family; standalone omits `/mcp/gateway` and Studio MCP inheritance; no provider-native/application-MCP expansion | Pass structurally after SV-015 |
+| SV-C39 | Default publish provider is exercised while process-global and application-graph run managers are deliberately distinct | DS-014, DS-004 | Authenticated application session dispatches only through its graph publication port; global service observes no run/event/journal/projection | Pass structurally after SV-015; durable default-provider/route proof required |
+| SV-C40 | Application publication port is called before bind, bound twice, or called after scope close | DS-014, DS-005 | Each invalid state fails explicitly before snapshot/journal/relay/projection mutation; lifecycle cannot pass P6A until exactly one bind exists | Pass structurally after SV-015; state-machine tests required |
+| SV-C41 | One application Agent Tools scope closes while another process/general scope exists | DS-014, DS-005 | New issue is blocked; only scope-owned sessions revoke; process registry/catalog remain coherent; old descriptors fail; restart creates a new scope | Pass structurally after SV-015; ownership/restart tests required |
+| SV-C42 | Maintained Brief/Socratic adapter inventory is reviewed | DS-014 | Only graph-sensitive `publish_artifacts` is refactored; proven recipient-name messaging remains session-context delivery; browser/media/task/configured-MCP/native tools do not gain speculative graph machinery | Pass after SV-015 reachability audit |
 
 ## Reachable Product Use-Case Completeness Audit
 
@@ -89,21 +94,21 @@ Every row has a supported action, system event, or governing package/host contra
 | UC-001 — Build once, consume in both hosts | SV-C01, SV-C18, SV-C19, SV-C23 | DS-006, DS-007 | Complete |
 | UC-002 — Studio entry from package defaults | SV-C02, SV-C07, SV-C09, SV-C27 | DS-001, DS-012 | Complete after SV-009 |
 | UC-003 — Studio presentation lifecycle | SV-C20, SV-C22 | DS-009, DS-012 | Complete |
-| UC-004 — Standalone start and browser entry | SV-C03, SV-C04, SV-C08, SV-C27, SV-C36, SV-C38 | DS-002, DS-011, DS-012, DS-014 | Complete after bounded CR-013 Local Fix |
+| UC-004 — Standalone start and browser entry | SV-C03, SV-C04, SV-C08, SV-C27, SV-C36, SV-C38 | DS-002, DS-011, DS-012, DS-014 | Complete after SV-015 implementation/proof |
 | UC-005 — Standalone selection rejection | SV-C05, SV-C06 | DS-002, DS-011 | Complete |
 | UC-006 — Host-specific bootstrap normalization | SV-C07, SV-C08, SV-C19 | DS-001, DS-002 | Complete |
 | UC-007 — Shared backend operation | SV-C10, SV-C28 | DS-003, DS-012 | Complete |
 | UC-008 — Live application communication | SV-C10, SV-C11, SV-C15 | DS-003, DS-004, DS-005 | Complete |
-| UC-009 — Real resource and agent/team execution | SV-C11, SV-C25, SV-C26, SV-C28, SV-C29, SV-C36–SV-C38 | DS-003, DS-004, DS-012–DS-014 | Complete after bounded CR-013 Local Fix |
+| UC-009 — Real resource and agent/team execution | SV-C11, SV-C25, SV-C26, SV-C28, SV-C29, SV-C36–SV-C42 | DS-003, DS-004, DS-012–DS-014 | Complete after SV-015 implementation/proof |
 | UC-010 — Storage preparation and migrations | SV-C02, SV-C03, SV-C12, SV-C24 | DS-003, DS-005 | Complete |
 | UC-011 — Restart and recovery | SV-C12, SV-C13 | DS-004, DS-005 | Complete |
 | UC-012 — Required readiness or worker failure | SV-C09, SV-C14, SV-C27 | DS-005, DS-012 | Complete after SV-009 |
 | UC-013 — Standalone root/assets/navigation/boundary | SV-C04, SV-C16, SV-C17 | DS-002, DS-008 | Complete |
-| UC-014 — Graceful process stop | SV-C15, SV-C37, SV-C38 | DS-005, DS-010, DS-014 | Complete; no new shutdown owner |
+| UC-014 — Graceful process stop | SV-C15, SV-C37–SV-C41 | DS-005, DS-010, DS-014 | Complete after scoped revoke/port/process close proof |
 | UC-015 — Native application-folder development | SV-C18, SV-C21 | DS-006, DS-011 | Complete after SV-009 |
 | UC-016 — Host-neutral application authoring | SV-C01, SV-C19 | DS-001, DS-002, DS-007 | Complete |
-| UC-017 — Local/trusted-network standalone access | SV-C04, SV-C17, SV-C37, SV-C38 | DS-002, DS-008, DS-014 | Complete after bounded CR-013 Local Fix |
-| UC-018 — Build, validate, start production | SV-C03, SV-C15, SV-C21, SV-C23, SV-C24, SV-C27, SV-C36, SV-C38 | DS-010–DS-012, DS-014 | Complete after bounded CR-013 Local Fix |
+| UC-017 — Local/trusted-network standalone access | SV-C04, SV-C17, SV-C37, SV-C38 | DS-002, DS-008, DS-014 | Complete; authority correction preserves network boundary |
+| UC-018 — Build, validate, start production | SV-C03, SV-C15, SV-C21, SV-C23, SV-C24, SV-C27, SV-C36, SV-C38–SV-C41 | DS-010–DS-012, DS-014 | Complete after SV-015 implementation/proof |
 | UC-019 — Reject invalid standalone package | SV-C21, SV-C25, SV-C35 | DS-011 | Complete after SV-011 |
 | UC-020 — Studio alternate-resource sparse override and reset | SV-C22, SV-C26, SV-C30, SV-C33, SV-C34 | DS-009, DS-012 | Complete after SV-011 |
 | UC-021 — Missing host requirement | SV-C09, SV-C27 | DS-005, DS-012 | Complete after SV-009 |
@@ -188,6 +193,8 @@ SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames`
 
 ### SV-013 — Restore the correct Agent Tools projection and narrow CR-013
 
+> Historical scope correction: the route/projection/native-tool conclusions remain valid. Its further premise that the default publication-provider authority could remain unchanged is superseded by API-REV-007/CRR-020 and SV-015.
+
 **Corrected evidence from CRR-016 and reviewed source:**
 
 1. Runtime-internal tools are outside this ticket. Their implementation cannot be used to infer the Agent Tools descriptor from package `toolNames`.
@@ -199,10 +206,10 @@ SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames`
 **Bounded correction:**
 
 - In `build-standalone-application-server-composition.ts`, import the existing `registerAgentToolsMcpRoutes` and `await registerAgentToolsMcpRoutes(app)` before registering static/SPA fallback.
-- Reuse the existing route, session service, catalog, dispatcher, adapters, descriptor issuance, auth semantics, base-URL behavior, and cleanup unchanged.
+- Reuse the existing route/protocol, descriptor issuance, auth semantics, base-URL behavior, and eligible-tool projection. SV-015 later refines session/catalog/dispatcher construction and publication execution authority only where API-REV-007 proved it necessary.
 - Do not infer Agent Tools exposure from package `toolNames`; runtime-internal source and tests remain outside the changed boundary.
 - Keep eligible server-owned gateway tools and configured MCP-origin tools governed by the existing descriptor and `tools/list`.
-- Do not add a second route, alias, compatibility fallback, external gateway, runtime aggregate, ports, path builder, configured-source resolver, publication bridge, readiness phase, or shutdown owner.
+- Do not add a second route, alias, compatibility fallback, external gateway, broad runtime aggregate, path builder, or configured-source resolver. SV-015 adds only the evidence-backed narrow publication port/readiness/close semantics.
 - Correct API/E2E expectations to inspect the actual issued descriptor and `tools/list`, then prove server-owned publication/message dispatch through the registered route without adding runtime-tool acceptance scope.
 
 ### SV-014 — Separate Studio MCP management, the general gateway, and application MCP ownership
@@ -218,6 +225,26 @@ SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames`
 
 This clarification changes no route, source file, readiness state, package schema, test ownership, or architecture decision.
 
+### SV-015 — Bind application sessions to the graph-local publication owner
+
+**Product-reachable evidence from API-REV-007 / CRR-020:**
+
+1. Both real Brief members authenticate to the now-registered route, list actual Agent Tools, and expose `publish_artifacts` plus `send_message_to`.
+2. Two recipient-name handoffs succeed and the writer consumes them, proving the route, registry, session member context, and messaging adapter are functional.
+3. All five publication calls reach `PublishArtifactsMcpAdapterProvider` but report the exact graph member inactive. The provider captured the cached global publication service, while the application graph owns a different manager/relay/service.
+4. The correct graph service already exists. The remaining cycle is real: application runtime factories issue Agent Tools sessions before `AgentRunManager` can be completed, but the publication service needs that manager.
+
+**Correction and principle validation:**
+
+- One composition-owned `AgentToolsMcpProcessAuthority` owns the exact registry/catalog/executor/dispatcher family. Route registration and application session creation receive narrow ports from the same owner. Non-application runs receive a separately explicit general-process session authority over that family so removing provider capture does not make them depend on an application graph.
+- One `ApplicationAgentToolsSessionAuthority` creates and tracks sessions for the graph, attaches its execution authorities, and provides the exact issue/revoke boundary to application Codex/Claude and run/member cleanup.
+- `AgentToolMcpSession` carries one non-wire `PublishedArtifactPublicationPort`. The publish provider delegates only through that authenticated port; it captures no service and performs no request-time graph/global lookup.
+- One `DeferredPublishedArtifactPublicationPort` is created before runtime factories, bound exactly once to the graph-local service after manager/relay construction, asserted at P6A readiness, and fail-closed before bind/rebind/after close.
+- Stop blocks issue, stops runs/member handles, revokes remaining scope sessions, closes the graph port, then closes process/event/vault/database owners. Restart creates a new scope.
+- The change is deliberately bounded to the maintained graph-sensitive publication adapter. Recipient-name messaging remains on its proven session member context; unconfigured adapters, configured MCP provisioning, external gateway, and provider-native tools remain unchanged.
+
+This satisfies spine span sufficiency from real Brief action through authenticated dispatch, graph publication journal, and application projection. It satisfies the authoritative-boundary rule because the publish provider depends on the authenticated session boundary, not both a session and a process-global service. It avoids compatibility code, catalog duplication, mutable singleton replacement, and speculative adapter refactors.
+
 ## Data-Flow Coverage Check
 
 | In-Scope Concern | Primary / Return Spine | Authoritative Boundary | Result |
@@ -232,36 +259,38 @@ This clarification changes no route, source file, readiness state, package schem
 | Standalone package completeness/portability | DS-011 | Pure platform package validator + recursive portable policy reused by devkit | Complete after SV-011 |
 | Selected-resource editing/effective launch/readiness | DS-012 | `ApplicationLaunchConfigurationService` view/preview/commands/guard | Complete after SV-011 |
 | Package-team prompt semantics | DS-013 | Graph-local definition service and context builder | Complete after SV-009 |
-| Internal Agent Tools configured-tool transport | DS-014 with DS-004/DS-005 return/stop | Existing session descriptor, route registrar, catalog, dispatcher, adapters, and cleanup; standalone adds only the missing registrar call | Complete after bounded CR-013 Local Fix |
+| Internal Agent Tools configured-tool transport | DS-014 with DS-004/DS-005 return/stop | Process authority -> graph session authority -> authenticated publication port/member context -> journal/projection/handoff | Complete after SV-015 design; implementation/proof pending |
 
 ## Canonical Design-Principles Audit
 
 | Principle / Derived Check | Result | Validation |
 | --- | --- | --- |
-| Approved behavior and production reality | Pass after SV-014 | BEH-004–BEH-006 incorporate the exact standalone 404/stalled-run evidence while SR-009 clarifies the run-scoped Agent Tools/general-gateway/application-MCP boundary. All architecture-approved launch/edit/prompt behavior remains unchanged. |
-| Spine span sufficiency | Pass after SV-013 | DS-014 covers existing authenticated server-tool dispatch, handoff, events, and artifacts. The only missing main-line node is standalone registration of the existing route. DS-011–DS-013 remain complete. |
-| Ownership clarity and boundary encapsulation | Pass after SV-014 | Existing session, route, catalog, dispatcher, adapter, and cleanup owners remain authoritative. Standalone composition only exposes the already-owned run route; Studio MCP management/general gateway and deferred application-owned provisioning have distinct meanings. |
+| Approved behavior and production reality | Pass after SV-015 | BEH-004–BEH-006 incorporate API-REV-007’s successful route/messaging and failed publication consequence. Product MCP/runtime boundaries remain those approved in SR-009. |
+| Spine span sufficiency | Pass after SV-015 | DS-014 spans backend launch -> session issue -> authenticated route -> publish/message -> graph journal/application projection and stop/revoke; it no longer stops at route mounting. |
+| Ownership clarity and boundary encapsulation | Pass after SV-015 | Process transport, graph session scope, and graph publication each own one concrete subject. The adapter uses only the authenticated session boundary and cannot bypass it through a global service. |
 | Off-spine support remains subordinate | Pass | Existing bearer auth/redaction, origin gate, descriptors, diagnostics, and cleanup remain unchanged and do not become an alternate orchestrator, user-auth system, or external gateway. |
 | Current-schema persisted-data transition | Pass after SV-011 | Valid rows are sparse overlays; invalid rows are preserved diagnostics; computed selected baselines/previews are not stored; reset deletes explicitly; no schema or migration is required. |
-| Product-reachability gate | Pass | All 23 use cases and 38 scenarios are supported actions, current failures, or governing contracts. DS-014 is exercised by the maintained Brief real run; marketplace, multi-node, and public-internet modes remain excluded. |
-| Clean-cut replacement | Pass after SV-013 | The unapproved runtime/ports/publication drafts were removed. The fix reuses one existing route with no alias, wrapper, compatibility branch, gateway fallback, or second tool system. |
+| Product-reachability gate | Pass | All 23 use cases and 42 scenarios are supported actions, observed failures, or governing contracts. The bounded adapter inventory excludes unconfigured/speculative paths. |
+| Clean-cut replacement | Pass after SV-015 | Global publish capture/default authority discovery are removed; there is one process family, one route, and one session port with no alias, wrapper, catalog merge, mutable singleton, or request-time fallback. |
 | Interface and semantic tightness | Pass after SV-011 | Manifest baseline, selected baseline, sparse override, and effective configuration are separate; preview is a closed no-write union; definition and host provenance cannot overlap; readiness remains classification/issues only. |
-| Existing capability reuse | Pass | Existing Agent Tools session/route/catalog/dispatcher/auth/adapters are composed under one owner; no second MCP/tool system is created. Existing launch/runtime/application owners remain authoritative. |
-| Composition-critical dependency control | Pass after SV-013 | No new composition-critical dependency is introduced. The standalone root calls the same existing registrar already used by Studio, before the existing static wildcard. |
-| File/folder placement and removal | Pass | One existing standalone composition file changes; the existing route and Agent Tools subsystem stay in place. No new project, runtime, ports, path owner, or cross-layer facade is added. |
+| Existing capability reuse | Pass after SV-015 | Existing registry/catalog/executor/dispatcher/route and graph publication service are reused; only authority construction/session attachment are added. No second MCP/tool system exists. |
+| Composition-critical dependency control | Pass after SV-015 | Exact process family identity, bind-before-ready, scoped issue/revoke, and stop order are enumerated. The graph receives a narrow scoped-session boundary; route receives route dependencies. |
+| File/folder placement and removal | Pass after SV-015 | Process/session authority stays in `agent-tools/mcp`; the narrow publication port stays with published artifacts; the graph cycle break stays in application runtime. No extra project or generic container is added. |
 | Failure semantics | Pass after SV-011 | `INVALID_PACKAGE` is package-only; `HOST_REQUIREMENT_MISSING` is valid package plus host-local override/capability blocker; `RUNNABLE` means every required slot/leaf can launch. Studio exposes explicit replacement/reset without fallback. |
 
 ## Residual Risks And Required Downstream Evidence
 
-1. Implementation coverage must prove standalone calls the existing registrar before static fallback: no bearer reaches the route's 401 gate rather than generic 404, and an unknown/unavailable session retains established 404 behavior.
-2. The same composition coverage must prove external `/mcp/gateway` remains absent in standalone.
-3. API/E2E must rerun `APIE2E-STANDALONE-MCP-001`, `APIE2E-BRIEF-003`, and `APIE2E-F005` with corrected expectations derived from the actual descriptor and `tools/list`.
-4. Fresh-root standalone Brief must prove gateway-owned `publish_artifacts` and `send_message_to`, followed by writer handoff, lifecycle events, projected artifacts, and cleanup. Route presence alone is insufficient.
-5. API/E2E must not infer gateway tools from package `toolNames`; runtime-internal tools are not part of its ticket proof.
-6. Existing selected-resource, portable policy, invalid override, package defaults, and prompt semantics passed focused coverage and must remain in the affected regression set.
-7. `APIE2E-REPO-005` remains an `Unclear` unattributed broad server-suite diagnostic. API/E2E/code review must reconcile it separately; DS-014 does not claim to fix it.
-8. Model/runtime credentials remain host requirements. A host without Codex/Luna must produce `HOST_REQUIREMENT_MISSING`, never substitute another runtime/model.
-9. Application-owned MCP declaration/provisioning/scoping, optimized distribution, offline dependency packaging, mandatory standalone override UI/CLI, public-internet hosting, user authentication, marketplace isolation, and repository-wide singleton removal remain out of scope.
+1. Architecture review must verify the process authority is a real owner rather than a container and that route/session callers do not also depend on its internals.
+2. Implementation coverage must use distinct global and graph managers/services and exercise the default publish provider through the authenticated route, proving only the graph journal/relay/projection changes.
+3. Focused tests must prove missing/unbound/rebound/closed publication authority fails before mutation and P6A cannot report ready without one bind.
+4. Scope lifecycle tests must prove issue is blocked, only owned sessions revoke, old descriptors fail after close, process authority closes after scopes, and restart creates a new scope.
+5. Route/security regressions must retain missing-bearer 401, unknown/wrong/revoked 404, actual descriptor/list projection, and external `/mcp/gateway` absence in standalone.
+6. API/E2E must rerun real standalone and Studio Brief: actual `publish_artifacts` and recipient-name `send_message_to`, researcher/writer handoff, graph publication journal, lifecycle events, application projection, and cleanup.
+7. API/E2E must not infer gateway tools from package `toolNames`; provider-native tools are not part of the proof.
+8. Existing selected-resource, portable policy, invalid override, package defaults, prompt semantics, route parity, and graph definition corrections remain in the affected regression set.
+9. `APIE2E-REPO-005` remains `Unclear` and separate.
+10. Model/runtime credentials remain host requirements. A host without Codex/Luna must produce `HOST_REQUIREMENT_MISSING`, never substitute another runtime/model.
+11. Application-owned MCP declaration/provisioning/scoping, optimized distribution, offline dependency packaging, mandatory standalone override UI/CLI, public-internet hosting, user authentication, marketplace isolation, and repository-wide singleton removal remain out of scope.
 
 ## Self-Validation Decision
 
@@ -269,6 +298,6 @@ The major architecture remains:
 
 > One immutable application package supplies its complete standalone launch baseline; two thin hosts may overlay host-owned configuration and normalize their ingress, then use one authoritative application-platform runtime and business stack.
 
-The corrected design keeps the established Agent Tools subsystem. The existing internal route carries eligible server-owned tools and selected available MCP-origin tools. Standalone only adds the missing call to the existing registrar, while the general external-client MCP gateway and Studio MCP state remain Studio-only. Application-owned MCP provisioning is deferred. Runtime-internal tooling remains outside the design and validation scope.
+The corrected design keeps the established Agent Tools protocol and route but makes its authority explicit. One process owner supplies the exact route/session family; each application scope attaches its graph publication port to authenticated sessions; one bind-once port breaks construction and closes fail-safe. The general external-client MCP gateway and Studio MCP state remain Studio-only. Application-owned MCP provisioning is deferred. Runtime-internal tooling remains outside the design and validation scope.
 
-All 23 reachable use cases map to DS-001–DS-014 and at least one of 38 validation cases. The design does not require a new readiness status, project, mandatory standalone setup UI, persisted Agent Tools session/baseline/preview, migration, manifest change, user-authentication subsystem, host-specific build, compatibility route, fallback, external gateway expansion, runtime aggregate, port layer, publication bridge, or duplicated server/tool system. `ARCH-REV-006` remains authoritative; the bounded CR-013 fix is ready for `implementation_engineer`. No implementation or API/E2E pass is presumed.
+All 23 reachable use cases map to DS-001–DS-014 and at least one of 42 validation cases. The design does not require a new product readiness status, project, mandatory standalone setup UI, persisted session/baseline/preview, migration, manifest change, user-authentication subsystem, host-specific build, compatibility route, request-time/global fallback, external gateway expansion, provider-native tool change, or duplicated catalog/server/tool system. SR-010 is ready for `architecture_reviewer`; no architecture, implementation, or API/E2E pass is presumed.
