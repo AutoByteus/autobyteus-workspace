@@ -24,8 +24,8 @@ The user then clarified the intended product behavior: Codex/Claude-style local 
 
 ## Environment / Bootstrap Context
 
-- Task Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root`
-- Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root`
+- Task Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root`
 - Branch: `codex/file-tool-authorized-root`
 - Base: `origin/personal`
 - `git fetch origin --prune`: succeeded on 2026-07-29.
@@ -35,8 +35,8 @@ The user then clarified the intended product behavior: Codex/Claude-style local 
 
 | Artifact | Purpose | Supported Core Artifacts | Status |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/path-authorization-evidence.md` | Reproduction, history, revised policy, terminal-boundary, and strict base-directory/schema evidence | Requirements, design, architecture review | Evidence/context; approval `N/A` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/filesystem-access-policy.md` | Trusted-local absolute/base-directory behavior, LLM-facing schema contract, and terminal boundary | Requirements, design, architecture review | Intended behavior; user approved, architecture approval required |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/path-authorization-evidence.md` | Reproduction, history, revised policy, terminal-boundary, and strict base-directory/schema evidence | Requirements, design, architecture review | Evidence/context; approval `N/A` |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/filesystem-access-policy.md` | Trusted-local absolute/base-directory behavior, LLM-facing schema contract, and terminal boundary | Requirements, design, architecture review | Intended behavior; user approved, architecture approval required |
 
 ## Source Log
 

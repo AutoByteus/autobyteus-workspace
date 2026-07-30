@@ -2,17 +2,17 @@
 
 ## Delivery State
 
-- Status: **Finalization and release in progress**
+- Status: **Released; remote publication workflows in progress**
 - Ticket: `file-tool-authorized-root`
 - Ticket branch: `codex/file-tool-authorized-root`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root` (retained for manual Electron checking)
 - Finalization target: `origin/personal` / `personal`
 - Latest tracked base checked by delivery: `origin/personal` at `596094be191f6aecba6ef37abcda342a20e9af64`
 - Reviewed implementation commit: `4cb3167a2627f4ebc0e8ed74b4b4c4bad0f97e6f`
 - Integration method: Merge; `git fetch origin --prune` found the target advanced by 9 commits. Delivery checkpointed the reviewed package and merged the latest tracked base in merge commit `651feadfe`.
 - Local checkpoint: Completed as `160df2191` before base integration.
-- Repository finalization: Ticket branch pushed and merged into `personal` as `aecbdb818`; target push is pending.
-- Release/publication/deployment: Release `v1.4.30` is pending the target push and will use the documented desktop release helper.
+- Repository finalization: Ticket branch pushed, merged into `personal` as `aecbdb818`, and target pushed at release commit `ca2ccb499`.
+- Release/publication/deployment: Release `v1.4.30` was created and pushed successfully; remote publication workflows are running.
 - Latest user-requested Electron build: **Pass** on macOS `darwin/arm64` using `pnpm build:electron:mac` from `autobyteus-web`.
 
 ## Delivered Behavior
@@ -43,23 +43,32 @@
 
 ## User-Requested Electron Build
 
-- Command: `pnpm build:electron:mac` from `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-web`.
+- Command: `pnpm build:electron:mac` from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web`.
 - Build result: **Pass**; Electron `42.4.1`, electron-builder `25.1.8`, macOS arm64 package.
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.29.dmg` (SHA-256 `64318cbce37c0fa8aae44321109aec741b02a393a7b971986f15780195ce92a5`).
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.29.zip` (SHA-256 `3ef8eb163062af28af371226bcada28427c70d98defe3209effb14ff8833f088`).
 - Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
-- Packaged terminal runtime check: **Pass**; target/selected `node-pty` helpers and spawn probe passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/16-delivery-packaged-terminal-runtime.log`.
+- Packaged terminal runtime check: **Pass**; target/selected `node-pty` helpers and spawn probe passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/evidence/16-delivery-packaged-terminal-runtime.log`.
 - Full GUI launch/quit was not run; the package is ready for the user's manual check. Local code signing was skipped (`identity=null`), so macOS may show an unsigned-app warning.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/15-delivery-electron-mac-build.log`.
-- Integrated-state build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/19-integrated-electron-mac-build.log`.
-- Integrated-state packaged runtime evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/20-integrated-packaged-terminal-runtime.log`.
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/evidence/15-delivery-electron-mac-build.log`.
+- Integrated-state build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/evidence/19-integrated-electron-mac-build.log`.
+- Integrated-state packaged runtime evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/evidence/20-integrated-packaged-terminal-runtime.log`.
+- Release evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/evidence/21-release-v1.4.30.log`.
+
+## Final Release
+
+- Release command: `pnpm release 1.4.30 -- --release-notes tickets/done/file-tool-authorized-root/release-notes.md`.
+- Release commit: `ca2ccb49993db0f3f028bd8472c48515eff81c4e`.
+- Tag: `v1.4.30` (remote tag verification passed).
+- Package versions: `autobyteus-web` `1.4.30`; `autobyteus-message-gateway` `1.4.30`.
+- Workflows: Desktop, Android, iOS, Messaging Gateway, and Server Docker release workflows triggered by the tag; they were still running/queued when captured.
 
 ## Docs Synchronization
 
 - Updated `autobyteus-ts/docs/tool_schema_and_configuration.md` with the durable trusted-local generic file-tool contract.
 - Updated `autobyteus-ts/docs/terminal_tools.md` with the preserved terminal `cwd` containment boundary.
 - Reviewed server agent-tool and Codex sandbox docs; no changes were needed because registration, approval/UI, and Codex sandbox settings were unchanged.
-- Full record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/docs-sync-report.md`.
+- Full record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/docs-sync-report.md`.
 
 ## Known Limitations / Residual Risk
 
@@ -84,11 +93,11 @@ Delivery refreshed `origin/personal`, protected the package, integrated the adva
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-spec.md`
-- Supplemental evidence/policy: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/path-authorization-evidence.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/filesystem-access-policy.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-spec.md`
+- Supplemental evidence/policy: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/path-authorization-evidence.md`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/filesystem-access-policy.md`
 - Solution/architecture/implementation records and review reports: ticket-local `solution-revision-record.md`, `design-review-report.md`, `architecture-review-revision-record.md`, `implementation-handoff.md`, `implementation-revision-record.md`, `code-review-report.md`, `code-review-revision-record.md`
 - API/E2E coverage, execution, revision, and test-review reports: ticket-local `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`
-- Added durable test: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`
+- Added durable test: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`
 - Delivery artifacts: `docs-sync-report.md`, `handoff-summary.md`, `delivery-revision-record.md`, and `release-deployment-report.md` in the same ticket directory.

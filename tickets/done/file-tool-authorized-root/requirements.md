@@ -36,8 +36,8 @@ This is intentionally a trusted-local-agent contract. It is not a host-filesyste
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/path-authorization-evidence.md` | Retained reproduction, regression, terminal-boundary, and base-directory/schema evidence | REQ-001–REQ-009 | AC-001–AC-011 | Evidence/context; approval `N/A` | Records the observed path, history, terminal boundary, and revised file-tool contract. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/filesystem-access-policy.md` | Intended trusted-local file-tool policy and LLM-facing schema contract | REQ-001–REQ-005, REQ-007–REQ-009 | AC-001–AC-011 | Intended behavior; user approved, architecture approval required | Defines the absolute/base-directory contract, schema wording, and remaining internal/terminal boundaries. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/path-authorization-evidence.md` | Retained reproduction, regression, terminal-boundary, and base-directory/schema evidence | REQ-001–REQ-009 | AC-001–AC-011 | Evidence/context; approval `N/A` | Records the observed path, history, terminal boundary, and revised file-tool contract. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/filesystem-access-policy.md` | Intended trusted-local file-tool policy and LLM-facing schema contract | REQ-001–REQ-005, REQ-007–REQ-009 | AC-001–AC-011 | Intended behavior; user approved, architecture approval required | Defines the absolute/base-directory contract, schema wording, and remaining internal/terminal boundaries. |
 
 ## Design Health Assessment (Mandatory)
 

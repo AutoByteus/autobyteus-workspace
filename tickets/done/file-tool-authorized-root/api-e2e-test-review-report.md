@@ -8,18 +8,18 @@
 - Prior Review Round Reviewed: Implementation source review Round 1 (`Pass`); no unresolved code-review findings.
 - Latest Authoritative Round: `2`
 - Scope constraint: This is a separate lightweight review of durable test-code changes only. The implementation-source scorecard and API/E2E execution confidence were not reopened.
-- Requirements / design context: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-spec.md`
-- Prior Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-report.md`
-- Current Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-revision-record.md`
-- API/E2E Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-coverage-investigation.md`
-- API/E2E Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-revision-record.md`
+- Requirements / design context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-spec.md`
+- Prior Code Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/code-review-report.md`
+- Current Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/code-review-revision-record.md`
+- API/E2E Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/api-e2e-coverage-investigation.md`
+- API/E2E Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/api-e2e-revision-record.md`
 
 ## Review Scope
 
 Reviewed the one durable test file added during API/E2E:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`
 
 The test covers the protected-path contract at the registered-tool boundary for all five file tools, symlink traversal, a non-existent protected descendant write, protected-content non-leakage, and reset of the process-global deny-list fixture state. No durable test was removed or modified. Temporary probes and generated package artifacts were excluded from test-code review.
 
@@ -75,7 +75,7 @@ No unresolved implementation-review findings existed. This proportional review d
 
 - Review Decision: **`Pass`**
 - Review Entry Point: `Successful API/E2E Proportional Test-Code Review`
-- Durable test file reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`
+- Durable test file reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`
 - Test result: `11/11 passed`
 - Next Recipient: **`delivery_engineer`**
 

@@ -10,7 +10,7 @@
 
 ### IR-001 — Trusted-local file-tool path contract implementation
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/architecture-review-revision-record.md`; final architecture gate `ARCH-REV-004`, Round 4.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/architecture-review-revision-record.md`; final architecture gate `ARCH-REV-004`, Round 4.
 - Triggering finding IDs: `N/A`; all architecture findings were resolved before implementation.
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

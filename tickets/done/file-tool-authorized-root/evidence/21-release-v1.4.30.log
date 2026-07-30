@@ -1,0 +1,48 @@
+Command: pnpm release 1.4.30 -- --release-notes tickets/done/file-tool-authorized-root/release-notes.md
+--- release helper output ---
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+> bash scripts/desktop-release.sh release 1.4.30 -- --release-notes tickets/done/file-tool-authorized-root/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.29 -> 1.4.30
+Updating autobyteus-message-gateway/package.json: 1.4.29 -> 1.4.30
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.30
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.30[0m
+[32mServer version: 0.1.1[0m
+[personal ca2ccb499] chore(release): bump workspace release version to 1.4.30
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 16 insertions(+), 30 deletions(-)
+remote: 
+remote: GitHub found 673 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (18 critical, 279 high, 320 moderate, 56 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   2f9162037..ca2ccb499  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.30 -> v1.4.30
+Release complete and pushed: branch 'personal', tag 'v1.4.30'.
+--- verification ---
+HEAD=ca2ccb49993db0f3f028bd8472c48515eff81c4e
+origin/personal=ca2ccb49993db0f3f028bd8472c48515eff81c4e
+tag_commit=ca2ccb49993db0f3f028bd8472c48515eff81c4e
+48e8ddf5618dd808d46ce8265eddf71d40680385	refs/tags/v1.4.30
+--- triggered workflows ---
+{"conclusion":"","createdAt":"2026-07-30T08:07:56Z","databaseId":30525471546,"event":"push","headBranch":"v1.4.30","headSha":"ca2ccb49993db0f3f028bd8472c48515eff81c4e","name":"Release Messaging Gateway","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30525471546","workflowName":"Release Messaging Gateway"}
+{"conclusion":"","createdAt":"2026-07-30T08:07:56Z","databaseId":30525471545,"event":"push","headBranch":"v1.4.30","headSha":"ca2ccb49993db0f3f028bd8472c48515eff81c4e","name":"Android APK Release","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30525471545","workflowName":"Android APK Release"}
+{"conclusion":"","createdAt":"2026-07-30T08:07:56Z","databaseId":30525471380,"event":"push","headBranch":"v1.4.30","headSha":"ca2ccb49993db0f3f028bd8472c48515eff81c4e","name":"iOS App Store Connect Release","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30525471380","workflowName":"iOS App Store Connect Release"}
+{"conclusion":"","createdAt":"2026-07-30T08:07:56Z","databaseId":30525471366,"event":"push","headBranch":"v1.4.30","headSha":"ca2ccb49993db0f3f028bd8472c48515eff81c4e","name":"Server Docker Release","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30525471366","workflowName":"Server Docker Release"}
+{"conclusion":"","createdAt":"2026-07-30T08:07:56Z","databaseId":30525471349,"event":"push","headBranch":"v1.4.30","headSha":"ca2ccb49993db0f3f028bd8472c48515eff81c4e","name":"Desktop Release","status":"in_progress","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30525471349","workflowName":"Desktop Release"}

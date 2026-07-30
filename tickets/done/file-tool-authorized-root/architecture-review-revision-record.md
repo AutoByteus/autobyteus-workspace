@@ -13,9 +13,9 @@
 
 ### ARCH-REV-001 — Shared resolver scope and package-state review
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-review-report.md`
 - Review round and trigger: Round 1; solution designer requested review of the explicitly confirmed trusted-local absolute-path contract before implementation.
-- Triggering role, report path, and finding IDs: `solution_designer`; upstream package at `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root`; new findings `ARCH-F-001`, `ARCH-F-002`.
+- Triggering role, report path, and finding IDs: `solution_designer`; upstream package at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root`; new findings `ARCH-F-001`, `ARCH-F-002`.
 - Relevant solution revision IDs: `SR-003`, `SR-004`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Fail` — `Design Impact`
@@ -32,9 +32,9 @@ None.
 
 ### ARCH-REV-002 — Terminal boundary resolved; package inventory recheck
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-review-report.md`
 - Review round and trigger: Round 2; solution designer rework handoff for `ARCH-F-001`/`ARCH-F-002` plus user-approved optional absolute per-call `base_dir`.
-- Triggering role, report path, and finding IDs: `solution_designer`; prior report `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`; prior findings `ARCH-F-001`, `ARCH-F-002`; new finding `ARCH-F-003`.
+- Triggering role, report path, and finding IDs: `solution_designer`; prior report `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-review-report.md`; prior findings `ARCH-F-001`, `ARCH-F-002`; new finding `ARCH-F-003`.
 - Relevant solution revision IDs: `SR-005`, `SR-006`
 - Prior authoritative decision: `Fail` — `Design Impact` (`ARCH-REV-001`)
 - Current authoritative decision: `Fail` — `Design Impact` (package coherence only)
@@ -55,9 +55,9 @@ None.
 
 ### ARCH-REV-003 — Strict relative-path contract review
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-review-report.md`
 - Review round and trigger: Round 3; solution designer requested review of the user-approved strict relative-path/base-directory contract and claimed `ARCH-F-003` inventory correction.
-- Triggering role, report path, and finding IDs: `solution_designer`; prior report `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`; `ARCH-F-003` recheck; strict-contract behaviors `BEH-007`, `BEH-008`.
+- Triggering role, report path, and finding IDs: `solution_designer`; prior report `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-review-report.md`; `ARCH-F-003` recheck; strict-contract behaviors `BEH-007`, `BEH-008`.
 - Relevant solution revision IDs: `SR-007`, `SR-008`
 - Prior authoritative decision: `Fail` — `Design Impact` (`ARCH-REV-002`)
 - Current authoritative decision: `Fail` — `Design Impact` (package coherence only)
@@ -78,9 +78,9 @@ None.
 
 ### ARCH-REV-004 — Final architecture gate after supplement inventory correction
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-review-report.md`
 - Review round and trigger: Round 4; solution designer requested the final architecture gate after `SR-009` corrected the cumulative supplement inventory.
-- Triggering role, report path, and finding IDs: `solution_designer`; prior report `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`; prior finding `ARCH-F-003` recheck.
+- Triggering role, report path, and finding IDs: `solution_designer`; prior report `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/design-review-report.md`; prior finding `ARCH-F-003` recheck.
 - Relevant solution revision IDs: `SR-009`
 - Prior authoritative decision: `Fail` — `Design Impact` (`ARCH-REV-003`)
 - Current authoritative decision: `Pass`

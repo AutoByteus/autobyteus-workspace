@@ -8,6 +8,7 @@
 | DR-002 | User requested README-guided Electron build and packaged runtime check | Pass — delivery preparation / user-verification hold | Pass — macOS arm64 package built and runtime probe passed; user verification still pending | `handoff-summary.md`; `release-deployment-report.md`; `delivery-revision-record.md`; `evidence/15-delivery-electron-mac-build.log`; `evidence/16-delivery-packaged-terminal-runtime.log` |
 | DR-003 | User authorized finalization/release; target refresh found 9 new base commits | Pass — package built, user-verification hold | Pass — latest base integrated, focused checks and integrated Electron build passed; finalization/release in progress | `handoff-summary.md`; `release-deployment-report.md`; `delivery-revision-record.md`; `evidence/17-integrated-file-tool-tests.log`; `evidence/18-integrated-markdown-tests.log`; `evidence/19-integrated-electron-mac-build.log`; `evidence/20-integrated-packaged-terminal-runtime.log` |
 | DR-004 | Ticket branch pushed and merged into the refreshed `personal` target | Pass — target merge pending | Pass — target merge completed as `aecbdb818`; target push and release remain pending | `release-deployment-report.md`; `handoff-summary.md`; `delivery-revision-record.md` |
+| DR-005 | Target push and documented `v1.4.30` release helper completed | Pass — target merged, release pending | Pass — `personal` and tag `v1.4.30` pushed and verified; five release workflows running/queued | `release-deployment-report.md`; `handoff-summary.md`; `delivery-revision-record.md`; `evidence/21-release-v1.4.30.log` |
 
 ## Revision Entries
 
@@ -17,9 +18,9 @@
 - Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md`, `api-e2e-test-review-report.md`, `code-review-revision-record.md`, and retained evidence logs under `evidence/`.
 - Prior authoritative result (`N/A` for `DR-001`): `N/A`.
 - Current authoritative result: `Pass` through delivery preparation; explicit user verification is required before repository finalization.
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/docs-sync-report.md` — updated durable file-tool and terminal-boundary documentation.
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/handoff-summary.md` — integrated state and verification hold.
-- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/release-deployment-report.md` — release not applicable; finalization held.
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/docs-sync-report.md` — updated durable file-tool and terminal-boundary documentation.
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/handoff-summary.md` — integrated state and verification hold.
+- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/release-deployment-report.md` — release not applicable; finalization held.
 - Integration and post-integration verification: `git fetch origin --prune` refreshed `origin/personal` at `34f3fe97a281a9b85e02409bd753ad132df13d20`; branch was zero commits behind and one commit ahead (`4cb3167a2`). No base commit was integrated, so no executable rerun was required; `git diff --check` passed after delivery edits.
 - User verification/finalization state: No explicit user completion/verification signal has been received. Ticket remains in `tickets/done/file-tool-authorized-root`; no commit/push/merge/tag/release/cleanup was performed by delivery.
 - Why this baseline or delivery revision was recorded: Records the first completed delivery-stage integrated-state check, documentation sync, and handoff preparation without implying that user-authorized finalization already occurred.
@@ -32,9 +33,9 @@
 - Triggering upstream report, verification, or evidence: README build instructions in `README.md` and `autobyteus-web/README.md`; build log `evidence/15-delivery-electron-mac-build.log`; packaged terminal probe `evidence/16-delivery-packaged-terminal-runtime.log`.
 - Prior authoritative result: `Pass` — integrated/docs-synchronized, awaiting user verification (`DR-001`).
 - Current authoritative result: `Pass` — `pnpm build:electron:mac` exited `0`, produced macOS arm64 DMG/ZIP/blockmaps, and the packaged `node-pty` target/selected helper plus spawn probe passed.
-- Docs sync report: Existing `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/docs-sync-report.md` remains current; this round added no behavior or documentation change.
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/handoff-summary.md` updated with installer/unpacked-app paths, hashes, build result, and manual-check instructions.
-- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/release-deployment-report.md` updated with build/runtime evidence and warnings.
+- Docs sync report: Existing `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/docs-sync-report.md` remains current; this round added no behavior or documentation change.
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/handoff-summary.md` updated with installer/unpacked-app paths, hashes, build result, and manual-check instructions.
+- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/release-deployment-report.md` updated with build/runtime evidence and warnings.
 - Integration and post-integration verification: No remote refresh or repository integration was required for this user-requested local build; source/base state remained unchanged. The corrected build command exited `0`; direct packaged runtime verification exited `0`; `git diff --check` remains clean.
 - User verification/finalization state: The user requested a build for manual checking but has not yet explicitly authorized ticket completion/finalization. No archive, commit/push, merge, release, or cleanup was performed.
 - Why this delivery revision was recorded: Records the new executable package and packaged-runtime evidence while preserving the required user-verification hold.
@@ -70,3 +71,18 @@
 - Why this delivery revision was recorded: Records the completed repository integration boundary before the separate release helper step.
 - Next recipient/action: Delivery engineer — push `personal`, run `pnpm release 1.4.30 -- --release-notes tickets/done/file-tool-authorized-root/release-notes.md`, verify the tag and workflows, then record final release status.
 - Remaining blockers, rollback concerns, or untested scope: Release workflow completion depends on remote CI and publication credentials/policies. Full GUI launch/quit and non-macOS targets remain untested locally; local macOS signing is skipped.
+
+### DR-005 — Release trigger and remote workflow verification
+
+- Delivery round and trigger: The finalized `personal` target was pushed, then the documented release helper was run for `v1.4.30`.
+- Triggering upstream report, verification, or evidence: Release helper output and tag/workflow verification in `evidence/21-release-v1.4.30.log`.
+- Prior authoritative result: `Pass` — target merge completed, target push pending (`DR-004`).
+- Current authoritative result: `Pass` — `personal` and annotated tag `v1.4.30` were pushed; remote tag verification passed; five release workflows were observed running or queued.
+- Docs sync report: No new behavior documentation was required; durable docs remain current.
+- Handoff summary: Updated with release commit, tag, package versions, and workflow status.
+- Release/publication/deployment report: Updated with finalization and release results.
+- Integration and post-integration verification: Local `personal` matches `origin/personal` at `ca2ccb499`; release helper exited `0`.
+- User verification/finalization state: User authorization was received and honored; repository finalization and release trigger are complete.
+- Why this delivery revision was recorded: Records the release boundary separately from the earlier repository merge and preserves the asynchronous CI publication state.
+- Next recipient/action: Remote release workflows — complete desktop, Android, iOS, messaging-gateway, and server-Docker publication. No manual-dispatch was run because the documented release push already triggered them.
+- Remaining blockers, rollback concerns, or untested scope: Remote workflow completion is asynchronous and was not awaited to completion. Full GUI launch/quit and non-macOS targets remain untested locally; local macOS signing is skipped.

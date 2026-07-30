@@ -11,7 +11,7 @@
 ### CRR-001 — Trusted-local file-tool implementation source review
 
 - Review entry point: `Implementation Review`
-- Triggering role and report: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-handoff.md`; implementation revision `IR-001`.
+- Triggering role and report: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/implementation-handoff.md`; implementation revision `IR-001`.
 - Review round: `1`
 - Prior authoritative result: `N/A`
 - Current authoritative result: `Pass`
@@ -32,7 +32,7 @@
 ### CRR-002 — Proportional review of protected-path durable coverage
 
 - Review entry point: `Successful API/E2E Proportional Test-Code Review`
-- Triggering role and report: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-execution-coverage-report.md`; API/E2E revision `API-REV-001`, Round 1.
+- Triggering role and report: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/file-tool-authorized-root/api-e2e-execution-coverage-report.md`; API/E2E revision `API-REV-001`, Round 1.
 - Review round: `2`
 - Prior authoritative result: `Pass` (`CRR-001` implementation-source review); no unresolved findings.
 - Current authoritative result: `Pass`.
@@ -43,7 +43,7 @@
 - Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
 - Why this result is recorded: API/E2E added one durable integration test and requested the separate proportional test-code review without reopening the implementation scorecard or execution confidence.
-- Durable test path reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`.
+- Durable test path reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts`.
 - Review delta and evidence: The test uses table-driven coverage for all five registered tools on protected existing paths and symlink traversal, verifies stable denial and no secret leakage, covers a non-existent protected descendant write, and resets global deny-list state plus disposable fixtures in `afterEach`. Reviewer reran the added file independently: `1` file / `11` tests passed.
 - Findings and score impact: No test-code findings. Implementation scorecard and API/E2E confidence were not reopened or changed.
 - Material-premise result: `Pass`; test review relies on the approved protected-path contract and production-configured deny-list authority, not a synthetic unsupported product path.
