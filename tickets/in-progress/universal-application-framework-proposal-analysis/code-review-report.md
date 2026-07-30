@@ -2,198 +2,198 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (fresh cross-cutting framework naming and responsibility audit)
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md` in the same ticket directory
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-010`; retained `SR-006`
+- Relevant Solution Revision IDs: `SR-011`; retained functional basis `SR-010` and `SR-006`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-009`; retained functional basis `ARCH-REV-008` and `ARCH-REV-006`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: cumulative through `IR-015`
+- Relevant Implementation Revision IDs: `IR-016`; cumulative functional implementation through `IR-015`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-028`
-- Current Review Round: `28`
-- Trigger: user-requested post-pass review of whether a new developer can infer the application framework's responsibilities and interactions from its code names; explicit request to classify the cross-cutting naming problem as `Design Impact` and route it to `solution_designer`
-- Prior Review Round Reviewed: `CRR-027` (`Pass`, proportional API/E2E test-code review); prior full source result `CRR-026` (`Pass`)
-- Latest Authoritative Round: `28`
-- Coverage Investigation Reviewed: retained `API-REV-010` context
-- Execution Coverage Report Reviewed: `API-REV-010`, `Pass / 98.3%`
-- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-010`; retained `API-REV-008` and `API-REV-009`
+- Current Code Review Revision ID: `CRR-029`
+- Current Review Round: `29`
+- Trigger: `IR-016` implementation handoff resolving `CRR-028` / `CR-018` under the reviewed `SR-011` / `ARCH-REV-009` behavior-neutral vocabulary design
+- Prior Review Round Reviewed: `CRR-028` (`Fail — Design Impact`); prior functional source Pass `CRR-026` and proportional test-code Pass `CRR-027`
+- Latest Authoritative Round: `29`
+- Relevant API/E2E Revision IDs: retained pre-rename baseline `API-REV-010` (`Pass / 98.3%`)
 - Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`
 - Relevant Delivery Revision IDs: `DR-001`
-- Failing Scenario IDs: `N/A` — this is a structural naming/design finding, not a runtime failure
+- Failing Scenario IDs: `N/A`
 - Exact Review Commands / Execution Mode:
-  - Source responsibility trace across Studio/standalone composition roots, application runtime construction, Agent Tools MCP ownership, graph-scoped session lifecycle, run shutdown, and deferred publication boundaries.
-  - Design-spec audit of the terminology, “Main Domain Subject Naming Check,” composition-critical dependency map, public output shapes, and file/change inventory.
-  - Existing `API-REV-010` execution evidence retained; no runtime command rerun was necessary because behavior remains passed and the new finding is code comprehensibility.
-- Failure Evidence Paths: source paths and design sections enumerated below; no runtime failure artifact applies
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
+  - `pnpm -C autobyteus-server-ts build` plus built `dist/index.js` export smoke — Pass; `buildStudioServer` and `startStandaloneApplicationHost` are callable and the retired Studio builder export is absent.
+  - Focused Vitest selection covering the renamed runtime/MCP/shutdown/service boundaries plus business launch, recovery, internal Agent Tools routes, application capabilities, imported Brief, and standalone server — `11 files / 34 tests Pass`.
+  - Exact retired-symbol/file/current-doc scan — Pass; no mapped old identifier, file, root export, alias, wrapper, or duplicate test remains outside ticket history.
+  - Rename-normalized source comparison from `4bd4b6bd5` through `b18b0dc9f` — all production changes reduce to the approved names, diagnostics, and formatting; no constructor, branch, route, ordering, persistence, or execution semantic remains as an unexplained delta.
+  - `git diff --check` — Pass.
+- Failure Evidence Paths: `N/A`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: no new runtime behavior or source delta. This fresh review evaluates the cross-cutting names introduced or made central by the universal application framework against their actual responsibilities and the canonical design principles requiring natural domain language, readable ownership, and naming-to-responsibility alignment.
+- Changed implementation and behavior reviewed: the complete `IR-016` behavior-neutral framework vocabulary correction, including source/test commit `b18b0dc9f`, documentation commit `8fccda58a`, current HEAD `82e8f67d083bfcae6f20eb4a0743e04e7013a51b`, all renamed central owners and consumers, root exports, mapped test files/assertions, and eight synchronized current docs.
 - Files / areas reviewed:
-  - `autobyteus-server-ts/src/compositions/build-studio-server-composition.ts`
-  - `autobyteus-server-ts/src/compositions/build-standalone-application-server-composition.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-graph.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/create-application-platform-runtime-graph.ts`
-  - `autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-process-authority.ts`
-  - `autobyteus-server-ts/src/agent-tools/mcp/application-agent-tools-session-authority.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-authority.ts`
-  - `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-authority.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/deferred-published-artifact-publication-port.ts`
-  - relevant callers, lifecycle paths, module documentation, design-spec DS-001–DS-005 and DS-014, exact composition-critical dependency graph, output-shape table, and naming-check sections.
-- Explicit exclusions: this review does not reopen the passed Studio/standalone behavior, package parity, Agent Tools dispatch, publication, shutdown, or test-code conclusions. It also does not prescribe a repository-wide rename or require compatibility aliases without a reviewed external-contract analysis.
+  - both server assembly roots and their callers: `build-studio-server.ts`, `build-standalone-application-server.ts`, `server-runtime.ts`, and `start-standalone-application-host.ts`;
+  - application runtime type, builder, lifecycle, orchestration/run service builders, bind-once publisher/handler, and shutdown coordinator;
+  - process Agent Tools MCP runtime, scoped session manager, execution-capability contracts, exact Codex/Claude/mixed-run consumers, publication adapter, and general-process run supervisor;
+  - Studio GraphQL service configuration, REST/WebSocket registrars, root export, changed tests, deleted/renamed files, and current server/web/devkit/developer docs.
+- Explicit exclusions: no product behavior expansion, wire/schema/package/data migration, provider-native tool redesign, configured-MCP redesign, external `/mcp/gateway` expansion, or historical `APIE2E-REPO-005` attribution is part of `IR-016`. API/E2E still owns the proportionate live dual-host rerun after source Pass.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. The functional requirements and acceptance criteria remain satisfied by `API-REV-010`. This finding concerns the framework's design communication and maintainability, not intended product behavior.
-- Design-spec behavior map verified against the implementation: Functionally yes, but the design's naming-health conclusion is contradicted. The design explicitly marked names such as `AgentToolsMcpProcessAuthority` and `ApplicationAgentToolsSessionAuthority` natural/self-descriptive with low drift risk, while source responsibility tracing and direct developer comprehension show that the names do not reveal the concrete roles without a lengthy architectural explanation.
-- Design review report and round confirmed: `ARCH-REV-008` remains the latest functional architecture approval, but its retained naming basis is now inadequate and must be revised through the normal solution/architecture loop.
-- Behavior-basis status: `Confirmed` for runtime behavior; `Contradicted` for design naming/readability adequacy.
-- Changed or newly discovered behavior, if any: None.
-- Remaining material ambiguity, if any: exact target names and public/export compatibility impact require solution design; code review should not prescribe them ad hoc.
+- Approved requirements basis understood: Yes. `BEH-009`, `REQ-009`, `AC-018`, and `UC-024` require familiar names that expose concrete role, scope, and lifecycle while preserving the already-passed dual-host framework behavior.
+- Design-spec behavior map verified against the implementation: Yes. Every entry in the exact current-to-target map is applied in dependency order; target files/types/properties/locals/exports/tests/docs are present, mapped retired artifacts are absent, and the normalized source comparison leaves no unexplained behavioral change.
+- Design review report and round confirmed: `ARCH-REV-009 Pass` over `SR-011`, with `MP-ARCH-009-001` rejecting unsupported compatibility machinery.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: None. The new runtime-isolation assertion makes the existing zero-run-on-runtime-build invariant durable; it does not add behavior.
+- Remaining material ambiguity, if any: None for source review.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001`, `BEH-005` | Runtime behavior Confirmed; design vocabulary inadequate | Studio and standalone composition roots still start, host, and stop correctly in `API-REV-010`. | The result type `StudioServerComposition`, the construction function, server instance, process resources, and application runtime bundle use overlapping abstract terms that do not let a new reader distinguish assembly from the live runtime product without tracing implementation. |
-| `BEH-004`, `BEH-006` | Runtime behavior Confirmed; design vocabulary inadequate | Agent Tools sessions, publication, handoff, dual-host operation, and packaging pass. | `AgentToolsMcpProcessAuthority`, `ApplicationAgentToolsSessionAuthority`, `GeneralProcessRunAuthority`, and `ApplicationRunShutdownAuthority` use `Authority` for materially different concrete roles: process-scoped MCP runtime assembly, session collection/lifecycle management, process run construction/cleanup, and ordered shutdown coordination. |
-| `BEH-007` | Runtime behavior Confirmed | Application lifecycle and readiness remain correct. | `ApplicationPlatformRuntimeGraph` is a flat typed runtime-service result and lifecycle handle, not a graph API; its name does not reveal whether callers receive a context, service bundle, dependency graph, or runtime container. |
+| `BEH-001`–`BEH-003` | Confirmed | Package selection, manifest-v4 parsing, atomic packaging, frontend bootstrap, and package bytes are untouched by production source. Studio/standalone callers only consume renamed server/runtime entrypoints. | None. |
+| `BEH-004` | Confirmed | `AgentToolsMcpRuntime -> ScopedAgentToolMcpSessionManager -> AgentToolMcpSessionExecutionCapabilities.publishedArtifactPublisher` retains the exact process registry/dispatcher and exact runtime publisher identity. Codex, Claude, mixed members, and publication adapter receive the same session manager/capability objects through renamed fields. | None. |
+| `BEH-005` | Confirmed | `startConfiguredServer -> buildStudioServer -> ApplicationPlatformRuntime` and `startStandaloneApplicationHost -> buildApplicationPlatformRuntime -> buildStandaloneApplicationServer` preserve route sets, one-runtime-per-host scope, listener ownership, readiness, recovery, and close hooks. | None. |
+| `BEH-006` | Confirmed | Devkit production source is unchanged. Maintained standalone and Studio command behavior remains the `API-REV-010` executable basis; current docs now name the same server/runtime boundaries. | None. |
+| `BEH-007` | Confirmed | `buildApplicationPlatformRuntime` constructs services/managers/factories only; the strengthened isolation test observes zero `AgentRunManager.createAgentRun` and zero `AgentTeamRunManager.createTeamRun` calls. Existing launch and recovery suites prove business demand and recorded nonterminal recovery remain the supported execution triggers. `ApplicationRunShutdownCoordinator` retains team-before-agent stop and lifecycle placement. | None. |
+| `BEH-008` | Confirmed | Both servers register the same internal Agent Tools route dependencies; standalone still omits the external gateway. REST/WebSocket, provider-native tools, configured MCP, authentication, publication, and recipient messaging have only identifier/import changes. Route and application-capability integration suites pass. | None. |
+| `BEH-009` | Confirmed | Central code now uses `Server`, `Runtime`, `Manager`, `Supervisor`, `Coordinator`, `Service`, `Publisher`/`Handler`, and `BindOnce*` according to concrete responsibility. `Composition` remains only the assembly folder/activity and `Graph` only architecture prose; central `Authority`/generic `Port` names and all mapped old files are removed. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Fail | The design contains a naming assessment, but it marks the central abstract names natural/self-descriptive and low-risk. That conclusion is contradicted by the actual responsibility trace and developer comprehension review. | Revise the design-health assessment and naming inventory. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Runtime behavior and boundaries remain aligned and passed. | Preserve behavior during naming work. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | The documented spines are strong, but central code nodes use vocabulary that obscures where assembly ends and live runtime/session/lifecycle ownership begins. | Map each spine node to a concrete role-noun vocabulary and update diagrams/glossary. |
-| Ownership boundary preservation and clarity | Pass | Source ownership is materially sound: process transport, graph sessions, application publication, workers, and shutdown remain explicit. | Preserve exact ownership while renaming. |
-| Off-spine concern clarity | Pass | Registries, dispatchers, services, and ports remain attached to concrete owners. | Preserve. |
-| Existing capability/subsystem reuse check | Pass | No new subsystem is requested; this is vocabulary/refactor design over existing owners. | Do not duplicate runtime implementations. |
-| Reusable owned structures check | Pass | Current shared structures remain coherent. | Preserve. |
-| Shared-structure/data-model tightness check | Pass | No data-model defect was found. | Preserve. |
-| Repeated coordination ownership check | Pass | Process MCP assembly, graph session lifecycle, and run shutdown each have one current owner. | Keep one owner per concern after renaming. |
-| Empty indirection check | Pass | The reviewed components own real state, sequencing, or lifecycle. | Do not replace them with cosmetic wrappers. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Concrete responsibilities are mostly well separated even though their names are opaque. | Preserve file responsibilities; rename/move only where the revised vocabulary requires it. |
-| Ownership-driven dependency check | Pass | Explicit dependency injection and graph-local authorities remain correct. | Preserve exact dependency identities. |
-| Authoritative Boundary Rule check | Pass | No new bypass was found; callers use the intended composition/runtime/session boundaries. | Preserve. |
-| File placement check | Pass | Files generally live under the correct capability areas. | Revisit filenames only as part of the approved naming map. |
-| Flat-vs-over-split layout judgment | Pass | No new structural split is required solely for naming. | Avoid artificial restructuring. |
-| Interface/API/query/command/service-method boundary clarity | Fail | Public/top-level types and factories use `Composition`, `Graph`, `Authority`, `Runtime`, and `Port` without a consistent role distinction visible from the names. | Define role nouns and update affected type/factory/method names coherently. |
-| Naming quality and naming-to-responsibility alignment check | Fail | The same abstract suffix describes a runtime assembler/facade, session manager, lifecycle owner, and shutdown coordinator; `Graph` describes a flat construction result; `Composition` describes both assembly and returned live handles. | Produce a reviewed current-to-target naming inventory and clean-cut rename plan. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No new code is proposed yet. | Preserve. |
-| Patch-on-patch complexity control | Pass | The finding calls for one design-led vocabulary pass, not ad hoc aliases or wrappers. | Avoid compatibility aliases unless external contract evidence requires them. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead code finding applies. | Remove old names cleanly when the design approves replacements. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Existing behavior tests remain valid. | Add compile/import and focused responsibility tests only where renames affect exports or construction. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No test-structure issue was found. | Preserve. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No new test delta. | Preserve. |
-| API/E2E readiness for the next workflow stage | Fail | Runtime is passed, but delivery should not finalize while an explicitly classified cross-cutting Design Impact is unresolved. | Revise solution, architecture-review it, implement, source-review, and rerun proportionate API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | `IR-016` implements the reviewed behavior-neutral refactor posture and boundary/readability root-cause classification without broadening scope. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | `proposal-critical-analysis.md` and `design-self-validation.md` retain the same functional spines and approve only the exact vocabulary correction. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Studio startup, standalone startup, business run creation/recovery, Agent Tools publication/handoff, and shutdown are now traceable through role-named nodes without changing their sequence. | None. |
+| Ownership boundary preservation and clarity | Pass | Server assembly, application runtime, process MCP runtime, scoped session collection, general run lifetime, and stop-only application coordination each retain one concrete owner. | None. |
+| Off-spine concern clarity | Pass | Registries, adapters, stores, resolvers, bind-once proxies, and route registrars remain attached to their existing owners and are not promoted into the main line. | None. |
+| Existing capability/subsystem reuse check | Pass | No duplicate subsystem or replacement runtime was introduced; all names map onto the existing capability owners. | None. |
+| Reusable owned structures check | Pass | Existing session capability and runtime output structures were renamed in place; no copied parallel DTO or helper family was added. | None. |
+| Shared-structure/data-model tightness check | Pass | The runtime/session shapes retain singular fields and exact object identity; no optional kitchen-sink base or overlapping representation was introduced. | None. |
+| Repeated coordination ownership check | Pass | MCP construction stays in `AgentToolsMcpRuntime`; run-manager lifetime stays in `GeneralProcessRunSupervisor`; application stop aggregation stays in `ApplicationRunShutdownCoordinator`. | None. |
+| Empty indirection check | Pass | `BindOnce*` owners still enforce bind-before-use/rebind/close invariants; server/runtime/manager/supervisor/coordinator types own real state or sequencing. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Renamed files remain within the same owned subsystems and their target nouns now expose responsibility without structural churn. | None. |
+| Ownership-driven dependency check | Pass | Rename-normalized comparison confirms identical injected instances and constructor ordering across definitions, run managers, session managers, publishers, routes, and lifecycle. | None. |
+| Authoritative Boundary Rule check | Pass | No caller newly depends on both an outer owner and its internal mechanism; route callers receive runtime fields, run backends receive the scoped session-manager contract, and publication remains session-bound. | None. |
+| File placement check | Pass | Top-level server assembly remains in `compositions/`; runtime lifecycle/services remain in `application-platform/runtime`; MCP session/runtime owners remain in `agent-tools/mcp`. | None. |
+| Flat-vs-over-split layout judgment | Pass | The map cleanly renames existing files rather than creating artificial layers or collapsing distinct owners. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `ApplicationPlatformRuntime`, `AgentToolMcpSessionManager`, execution capabilities, publisher/handler contracts, server outputs, and builder names identify one subject and role. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `CR-018` is resolved: code and docs use the exact reviewed vocabulary, including explicit `fastify`/`applicationRuntime`, process runtime versus scoped manager, supervisor versus coordinator, and bind-once callable roles. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No aliases, wrappers, duplicate exports, parallel old/new files, or duplicate tests exist. | None. |
+| Patch-on-patch complexity control | Pass | The refactor is a clean replacement; normalized production diff contains no behavior branch or compatibility path. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Exact source/test/doc and file scans find no mapped retired identifier/file outside historical ticket records. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Renamed tests retain authority/session/lifecycle/route assertions; runtime isolation now directly protects the approved no-run-on-build invariant. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing focused fixtures are retained; the new spies are local, restored in cleanup, and added to the pre-existing isolation scenario. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Four mapped test files replace their old names; no old/new duplicate or alias test remains. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Production build, root-export smoke, TypeScript, and `11/34` focused source-review suites pass. The package is ready for the designed proportionate live dual-host rerun. | None. |
 
 ## Source File Size And Structure Audit
 
-`N/A` for this review round. No new implementation-source delta was submitted. The finding is cross-cutting naming/design impact across existing framework owners; source-size thresholds do not apply until a reviewed rename implementation is handed back.
+Rename-aware deltas below use Git's rename detection rather than treating moved files as delete-plus-add. Every changed implementation source stays at or below `500` effective non-empty lines and below the `>220` changed-line trigger.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `src/compositions/build-studio-server.ts` | 225 | Pass | Pass (`49+ / 49-`) | One Studio server assembly and process-close sequence | Correct assembly root | None | None |
+| `src/compositions/build-standalone-application-server.ts` | 57 | Pass | Pass (`11+ / 10-`) | One selected-app Fastify route assembly | Correct assembly root | None | None |
+| `src/application-platform/runtime/build-application-platform-runtime.ts` | 153 | Pass | Pass (`52+ / 51-`) | One application runtime construction boundary; no business run creation | Correct runtime builder | None | None |
+| `src/application-platform/runtime/create-application-orchestration-services.ts` | 198 | Pass | Pass (`21+ / 21-`) | Constructs named orchestration/configuration/communication services only | Correct runtime construction area | None | None |
+| `src/application-platform/runtime/create-application-run-services.ts` | 153 | Pass | Pass (`15+ / 15-`) | Constructs graph-local run services/publisher/projection/shutdown coordinator | Correct runtime construction area | None | None |
+| `src/agent-tools/mcp/agent-tools-mcp-runtime.ts` | 114 | Pass | Pass (`32+ / 32-`) | Owns one process registry/catalog/executor/dispatcher/session-manager family | Correct MCP runtime area | None | None |
+| `src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts` | 103 | Pass | Pass (`6+ / 6-`) | Owns one explicit scope's session collection and lifecycle | Correct MCP session area | None | None |
+| `src/agent-execution/runtime/general-process-run-supervisor.ts` | 104 | Pass | Pass (`8+ / 8-`) | Owns general process run-manager construction/release | Correct run-runtime area | None | None |
+| `src/application-platform/runtime/application-run-shutdown-coordinator.ts` | 36 | Pass | Pass (`5+ / 5-`) | Stop-only peer sequencing and error aggregation | Correct runtime lifecycle area | None | None |
+| `src/application-platform/runtime/bind-once-application-engine-event-handler.ts` | 46 | Pass | Pass (`8+ / 8-`) | Narrow bind-once callback proxy | Correct runtime cycle-break area | None | None |
+| `src/application-platform/runtime/bind-once-published-artifact-publisher.ts` | 45 | Pass | Pass (`13+ / 13-`) | Narrow bind-once publisher with closed-state invariant | Correct runtime cycle-break area | None | None |
+| Renamed/updated consumer set (definitions, run managers, mixed members, REST/WS/GraphQL, publication, host/runtime callers) | 17–486 each | Pass | Pass (largest rename-aware consumer delta `29+ / 29-`) | Identifier/import/property updates only; existing owner responsibilities unchanged | Existing owned subsystems | None | None |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No naming implementation exists yet. |
-| No legacy old-behavior retention in changed scope | Pass | The target should be a clean-cut internal rename unless evidence identifies a public compatibility contract. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | The design must explicitly remove replaced names and filenames. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Naming has no persisted-data impact. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | Not applicable. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | No migration is required. |
+| No backward-compatibility mechanisms in changed scope | Pass | No alias, deprecated wrapper, dual export, compatibility import, or old-name branch was added. |
+| No legacy old-behavior retention in changed scope | Pass | The old role names/files/tests are cleanly removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Retired source/test filenames and exact identifiers are absent outside ticket history. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `Not Affected`; no schema, storage, manifest, package, or wire contract changed. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No runtime data-path logic changed. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | No migration applies. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None yet. The revised design must inventory every renamed symbol/file and specify clean removal of the old name rather than leaving duplicate aliases by default.
+None. The full mapped old vocabulary/file/test/export set was removed in `IR-016`.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: the problem is architectural comprehension. A rename alone will not be sufficient unless the design and developer documentation explain Studio versus standalone hosts, application worker processes, application-scoped runtime services, and process-scoped versus application-scoped Agent Tools sessions using the same vocabulary as the code.
-- Files or areas likely affected: `design-spec.md`, `investigation-notes.md`, solution revision record, architecture diagrams/glossary, relevant `autobyteus-server-ts/docs/modules/*.md`, application development documentation, and code symbol/file maps selected by the revised design.
+- Docs impact: `Yes — completed in implementation scope`
+- Why: developer comprehension is the purpose of `CR-018`; current documentation must use the same role and scope vocabulary as source.
+- Files or areas affected: eight committed server/web/devkit/developer docs now explain the two server assembly roots, one `ApplicationPlatformRuntime` per host process, zero runs during runtime construction, business-demand versus recorded recovery triggers, `AgentToolsMcpRuntime`, scoped session managers, publishers, shutdown order, and the distinction between internal `/mcp/agent-tools/:sessionId` and Studio-only `/mcp/gateway`.
 
 ## Material Premise Validation
 
-None. `CR-018` is grounded directly in the canonical engineering contract to name main-line nodes with natural domain language and make ownership/structural depth readable, plus concrete source-to-responsibility mismatches. It does not depend on a hypothetical production, failure, or lifecycle scenario.
+### Upstream Design-Review Material-Premise Decisions
+
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `MP-ARCH-009-001` | Confirmed | `autobyteus-server-ts` remains private; repository consumers use the current root API, and no supported consumer of the retired Studio builder/type was found. The old export is therefore removed without compatibility machinery. |
+
+No new or reclassified material production premise is used in this review.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `8.9`
-- Overall score (`/100`): `89`
-- Score calculation note: simple average across the mandatory categories. The decision is independently failing because Data-Flow clarity, API/interface clarity, and Naming quality are below `9.0`; the strong runtime/API/E2E evidence does not override those structural gaps.
+- Overall score (`/10`): `9.7`
+- Overall score (`/100`): `97`
+- Score calculation note: simple average rounded for summary. Every mandatory category is `>=9.0`; the source review decision follows the findings and checks rather than the average.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | Data-Flow Spine Inventory and Clarity | 8.4 | The design documents contain complete spines and runtime behavior passes. | Central code names do not let a new reader map those spines to concrete owners without tracing multiple files. | Align code vocabulary, diagrams, and glossary around concrete owner roles. |
-| `2` | Ownership Clarity and Boundary Encapsulation | 9.3 | Process, application, worker, session, publication, and shutdown ownership are now structurally explicit. | The names make those otherwise-good boundaries harder to recognize. | Preserve boundaries while making their scope visible in names. |
-| `3` | API / Interface / Query / Command Clarity | 8.5 | APIs are typed and dependency injection is explicit. | Top-level factories/results and lifecycle abstractions use overlapping `Composition`, `Graph`, `Authority`, and `Port` terminology. | Adopt a consistent role-noun taxonomy and exact subject/scope names. |
-| `4` | Separation of Concerns and File Placement | 9.2 | Responsibilities are materially separated and placed in appropriate subsystems. | Some filenames hide the concrete responsibility. | Rename/move only where the naming map improves discoverability. |
-| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.1 | Runtime structures and contracts remain coherent. | `ApplicationPlatformRuntimeGraph` reads more generically than its actual flat result shape. | Choose a name matching the approved role without loosening the type. |
-| `6` | Naming Quality and Local Readability | 6.5 | Individual local methods are generally readable. | Central type names are architecture-jargon-heavy and reuse the same suffix for different roles; a new developer cannot infer behavior from them. | Complete a design-led, behavior-neutral vocabulary refactor with glossary and mapping. |
-| `7` | API/E2E Readiness | 9.8 | `API-REV-010` passes at 98.3% with dual-host parity and durable coverage. | The new design-impact reroute intentionally pauses final delivery. | Rerun proportionately after approved renames. |
-| `8` | Runtime Correctness And Behavioral Fidelity | 9.8 | Studio/standalone launch, worker, Agent Tools, publication, shutdown, restart, and parity pass. | No current runtime defect. | Preserve behavior exactly. |
-| `9` | No Backward-Compatibility / No Legacy Retention | 9.8 | The current implementation contains no relevant compatibility mechanism. | Future rename work could be tempted to retain aliases. | Prefer clean-cut internal renames; justify any external compatibility requirement. |
-| `10` | Cleanup Completeness | 9.6 | Prior implementation and test cleanup passed. | The naming debt is now explicitly open. | Remove replaced names/files and update documentation consistently. |
+| `1` | Data-Flow Spine Inventory and Clarity | 9.7 | Main startup, run/recovery, publication/handoff, and shutdown nodes now carry recognizable role names that match the reviewed diagrams. | Live dual-host proof still predates the rename. | API/E2E should rerun the focused end-to-end spine. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.8 | Server, runtime, process MCP, scoped session, supervisor, coordinator, and publisher owners are distinct and retain exact injected identities. | No current source defect. | Preserve this boundary vocabulary in future changes. |
+| `3` | API / Interface / Query / Command Clarity | 9.7 | Top-level builders/returns and narrow session/publisher/handler contracts state subject and role directly. | Some broader legacy subsystem names outside the approved map remain intentionally out of scope. | Apply the same naming discipline only when those areas are independently changed. |
+| `4` | Separation of Concerns and File Placement | 9.6 | The refactor renames in place and keeps server assembly, runtime construction, MCP sessions, run lifetime, and lifecycle coordination separated. | Two existing high-line-count consumer files remain near 500 lines but receive only tiny rename deltas and do not cross the limit. | Monitor those files when future behavior changes touch them. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | Runtime/session structures retain one representation and exact capability fields; no container or parallel DTO was added. | The runtime necessarily exposes a broad read-only service set to route registrars, inherited from the passed design. | Keep additions constrained to host-facing runtime services. |
+| `6` | Naming Quality and Local Readability | 9.8 | The exact `SR-011` role vocabulary resolves the user-reported ambiguity without replacement jargon or vague aliases. | A reader still needs module docs for the full framework, as expected for this scope. | Keep docs and source vocabulary synchronized. |
+| `7` | API/E2E Readiness | 9.4 | Build, typecheck, root export, route, runtime, launch, recovery, and Brief integration checks are green. | `API-REV-010` predates `IR-016`; live dual-host behavior must be reconfirmed. | Run the proportionate Studio/standalone start-run-publication-handoff-stop and package-integrity matrix. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 9.7 | Rename-normalized comparison and `11/34` focused tests show unchanged construction, route identity, triggers, and close order. | Source checks cannot alone prove real provider/browser operation after the refactor. | Complete the planned executable rerun. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 10.0 | Clean private replacement with no alias, wrapper, duplicate export, old-name file, or data fallback. | None. | Preserve clean-cut policy. |
+| `10` | Cleanup Completeness | 9.9 | Retired identifiers/files/tests/exports are absent and eight current docs are synchronized. | Other owners' pre-existing shared-worktree artifacts remain intentionally dirty, not implementation residue. | Preserve ownership during downstream execution and delivery. |
 
 ## Findings
 
-### `CR-018` — Core application-framework vocabulary does not reveal concrete responsibility
-
-- Classification: `Design Impact`
-- Affected behavior/design spines: runtime behavior remains passed; architectural communication affects `BEH-001`, `BEH-004`–`BEH-007`, DS-001–DS-005, and DS-014.
-- Governing contract: canonical design principles require main-line nodes to use natural domain language, each owner to be concrete, subsystem/file layout to make ownership readable, and names to match the concrete concern they own.
-- Evidence:
-  - `StudioServerComposition` is the returned live handle containing a Fastify instance, application runtime bundle, and package registry, while composition is also the construction activity/root.
-  - `ApplicationPlatformRuntimeGraph` is a flat typed construction result exposing runtime services and lifecycle; `Graph` does not tell a new reader whether it is a dependency graph, service container, context, or live runtime handle.
-  - `AgentToolsMcpProcessAuthority` constructs/owns the process session registry, catalog, executor, dispatcher, route dependencies, general session scope, application-session factory, and close lifecycle. Neither `Process` nor `Authority` exposes that practical role without detailed explanation.
-  - `ApplicationAgentToolsSessionAuthority` creates, tracks, revokes, blocks, and closes an application's session collection, which is a materially different role from the process object despite the shared suffix.
-  - `GeneralProcessRunAuthority` constructs process run managers and owns their ordered shutdown/release; `ApplicationRunShutdownAuthority` is an idempotent ordered shutdown coordinator. The shared `Authority` label does not communicate those different responsibilities.
-  - `DeferredPublishedArtifactPublicationPort` is a bind-once, fail-closed publication proxy; the full architectural label is accurate only to readers already familiar with ports-and-adapters terminology.
-  - The design spec's “Main Domain Subject Naming Check” currently declares the central authority names natural/self-descriptive and low-risk, which the actual reader experience and responsibility trace contradict.
-- Consequence: new maintainers must reconstruct the architecture from implementations before they can safely follow composition, graph, lifecycle, and session boundaries. That raises onboarding cost and increases the risk of future dependency shortcuts precisely in the graph/process boundary area that required repeated corrections during this ticket.
-- Required design response:
-  1. Inventory the central application-framework types, factories, files, and returned handles introduced or made authoritative by this ticket.
-  2. Define a small consistent role vocabulary, using recognizable nouns such as server, runtime, context/services, registry, factory, coordinator, supervisor, manager, resolver, gateway, and store according to actual responsibility.
-  3. Reserve `Authority`, `Graph`, `Composition`, and `Port` for cases where the revised design can state the unique semantic distinction they add; otherwise choose the concrete role noun.
-  4. Produce a current-name -> target-name -> responsibility -> scope -> lifecycle-owner map. Candidate names discussed during review are examples only, not approved prescriptions.
-  5. Preserve Studio/standalone behavior, exact graph-local dependency identity, Agent Tools route/session isolation, worker boundaries, lifecycle order, and clean shutdown.
-  6. Assess exported/public API impact. Prefer clean-cut internal renames and removal of old names; add compatibility aliases only when an applicable external contract is evidenced and architecture-approved.
-  7. Update the glossary, data-flow diagrams, module documentation, file/change inventory, and tests/imports to use the same vocabulary.
-  8. Return the revised solution package through `architecture_reviewer` before implementation.
+No new implementation finding.
 
 ### Prior Finding / Failure Resolution
 
-All prior runtime/source findings `CR-001`–`CR-017` remain resolved for their owned behavior. `API-REV-010` remains valid Pass evidence. `CR-018` is a newly identified cross-cutting design/readability finding and does not reclassify those runtime defects.
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-018` | Open — Design Impact | Resolved in source; API/E2E confirmation pending | `CRR-028`, `SR-011`, `ARCH-REV-009`, `IR-016`, `CRR-029` | Exact reviewed names/files/fields/exports/tests/docs are present; old vocabulary is absent; normalized source diff is behavior-neutral; build/typecheck/root export and `11 files / 34 tests` pass. |
+| `CR-001`–`CR-017` | Resolved for owned functional behavior | Remain Resolved | cumulative through `CRR-026`, `API-REV-010`, `CRR-027` | `IR-016` changes no package, host, configuration, run, Agent Tools, publication, shutdown, or atomic metadata semantics. Focused affected tests remain green. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-010`, `ARCH-REV-009` | No supported production path or implementation delta connects it to the vocabulary refactor; it does not affect this result. |
 
 ## Classification
 
-`Design Impact`
+`N/A — Pass`
 
 ## Recommended Recipient
 
-`solution_designer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- A mechanical rename without a vocabulary decision could replace one opaque set of names with another and create unnecessary churn.
-- Retaining old names as aliases by default would undermine the readability goal and create duplicate vocabulary.
-- A repository-wide rename is not automatically justified; the solution should scope the work to the application-framework vocabulary that materially participates in the reviewed spines, while recording any intentionally deferred adjacent names.
-- Runtime behavior must remain unchanged and should be revalidated proportionately after implementation.
-- `APIE2E-REPO-005` remains separate historical `Unclear` repository-test debt and is not part of `CR-018`.
+- `API-REV-010` is strong but predates `IR-016`; API/E2E should proportionately rerun both-host startup, real run/publication/recipient handoff, stop/restart, route separation, and package-integrity behavior before delivery resumes.
+- The package-level `pnpm typecheck` command still has the pre-existing `rootDir: src` versus included tests contradiction; the production build configuration, full build, and affected tests are green, so this is not an `IR-016` finding.
+- The worktree contains intentionally preserved API/E2E- and delivery-owned artifacts; downstream roles must not fold unrelated dirtiness into the vocabulary change.
+- `APIE2E-REPO-005` remains separate historical `Unclear` repository-test debt and is not requirement evidence.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail — Design Impact`
-- Review Entry Point: `Implementation Review` (fresh framework naming/responsibility audit)
-- Material-Premise Gate: `Pass` — no speculative production premise is used
-- Score Summary: `8.9/10` (`89/100`); Naming `6.5`, Data-Flow clarity `8.4`, and API/interface clarity `8.5` fail the clean-pass threshold
-- Failure Origin: the reviewed design selected and approved a cross-cutting architectural vocabulary that is technically defensible but not self-explanatory for developers reading the code
-- Recommended Recipient: `solution_designer`
-- Notes: functional runtime and API/E2E results remain passed, but final delivery should pause. Revise the design and naming map, return through architecture review, then implement and rerun source review plus proportionate API/E2E.
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.7/10` (`97/100`); every category is `>=9.0`
+- Failure Origin: `N/A`
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: `IR-016` resolves `CR-018` through the exact architecture-reviewed vocabulary map, clean removal, synchronized docs, and durable zero-run-on-runtime-build proof while preserving functional behavior. Advance to the proportionate dual-host executable rerun; do not reopen historical `APIE2E-REPO-005` without independent supported-path evidence.
