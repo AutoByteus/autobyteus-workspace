@@ -18,6 +18,11 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-006-standalone-actual-run-descriptor-state.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-006-standalone-actual-tools-and-workaround.json`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-006-codex-definition-authority-regression.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-006-source-correlation.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-006-brief-standalone-descriptor-failure-trace.json`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-dev-standalone.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-standalone-real-team.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-005-brief-standalone-stall-api.json`
@@ -34,11 +39,14 @@
 
 Source commit `e8e06afddcbc56ad57584a3289b562cf3ddda351` implements the authoritative `SR-009` / `CRR-016` bounded `CR-013` correction on top of the approved `ARCH-REV-006` implementation. The standalone Fastify composition now awaits the existing `registerAgentToolsMcpRoutes(app)` after its current plugin/browser-ingress setup and before the selected application's static wildcard. Studio remains unchanged, and standalone still does not register the separate external `/mcp/gateway`.
 
+Source commit `2377496070631da4a8a9838e173ed2a6c6ec1714` implements the subsequent bounded `CR-014` correction from `CRR-018` / `API-REV-006`. `createApplicationRunAuthorities()` now uses the existing Codex factory/bootstrapper dependency seams to inject the exact graph-local `AgentDefinitionService` into application-owned Codex create and restore paths. General-process defaults remain available outside the application graph, and Claude is unchanged.
+
 This implementation reuses the existing Agent Tools route, session, catalog, dispatcher, adapters, authorization, base-URL, and cleanup behavior unchanged. It adds no runtime owner, MCP configuration inheritance, adapter, gateway proxy, compatibility route, fallback, persistence, readiness phase, or shutdown responsibility. Application-owned MCP declarations/provisioning and runtime-internal tooling are outside this ticket; their existing upstream behavior is untouched.
 
 The retained production implementation also preserves the prior dual-host foundation and SR-006 launch/edit/prompt authority, including the four distinct configuration meanings: immutable manifest `packageBaseline`, current pre-overlay `selectedResourceBaseline`, sparse raw `savedOverride`, and post-overlay `effectiveConfiguration`.
 
 - `buildStandaloneApplicationServerComposition()` now mounts the established run-scoped Agent Tools route before `registerStandaloneApplicationStaticRoutes()`; the external MCP gateway remains absent.
+- `createApplicationRunAuthorities()` now constructs its Codex backend factory with a `CodexThreadBootstrapper` that receives `input.agentDefinitionService`; package-local configured-tool exposure therefore resolves through the same graph authority as AutoByteus and identity allocation.
 - `ApplicationLaunchConfigurationService` remains the authoritative graph-local boundary for stored GET evaluation, unsaved selection preview, PUT re-resolution, readiness, host validation, and launch guarding. Its one `ApplicationLaunchResourceBaselineBuilder` owns definition traversal and precedence for all three evaluation paths.
 - `ApplicationLaunchSelectionPreview` is a closed, exact app/slot/resource identity response exposed by a narrow Studio POST route. Preview resolves only the current selected definition baseline or selection issues: it does not read/write the override store, apply an override, validate host capability, transition readiness, or fall back to the package selection.
 - Stored slot views expose both package and selected baselines. No row makes the two equal. A valid alternate row exposes the current selected baseline before overlay and its effective result after sparse overlay. Missing selections and stale team topology keep the raw row and diagnostics without fallback or read-time repair.
@@ -52,13 +60,13 @@ The retained production implementation also preserves the prior dual-host founda
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-010`
+- Current implementation revision ID: `IR-011`
 - Related solution revision IDs: `SR-009` (`SR-007` withdrawn; `SR-001`–`SR-006` and `SR-008` retained as history)
 - Related architecture-review revision IDs: `ARCH-REV-006` (`ARCH-REV-007` withdrawn; `ARCH-REV-001`–`ARCH-REV-005` retained as history)
-- Related code-review revision IDs: `CRR-016` trigger (`CRR-015` superseded); `CRR-001`–`CRR-014` history
-- Related API/E2E revision IDs: `API-REV-005` trigger; `API-REV-001`–`API-REV-004` history
+- Related code-review revision IDs: `CRR-018` trigger; `CRR-017` IR-010 source pass; `CRR-016` prior trigger (`CRR-015` superseded); `CRR-001`–`CRR-014` history
+- Related API/E2E revision IDs: `API-REV-006` trigger; `API-REV-001`–`API-REV-005` history
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
+- Triggering finding IDs: `CR-014`, `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -71,11 +79,11 @@ The retained production implementation also preserves the prior dual-host founda
 | `BEH-005` | Preserve explicit Studio/standalone compositions and separate process health from application readiness; mount the established run-scoped Agent Tools route in both hosts without exposing the external gateway in standalone. | `build-standalone-application-server-composition.ts` reuses `registerAgentToolsMcpRoutes(app)` before static fallback; Studio registration/lifecycle remain unchanged. | Implemented. Standalone now reaches the established auth/session route while `/mcp/gateway` remains absent. |
 | `BEH-006` | Native package commands reject non-portable launch data while accepting exact runtime-portable tuning. | `application-portable-launch-config-{policy,schemas}.ts`; standalone package validator; devkit validate/build path. | Implemented. Policy and real-package probes reject the CRR-013 URL/connection/key aliases at exact paths without values while preserving exact token-count/pricing positives. |
 | `BEH-007` | Current override rows remain directly usable; invalid rows stay visible and blocking until explicit replacement/reset. | Launch service/overlay, existing store, REST save/reset, Studio setup. | Preserved and strengthened. Selected baselines/previews are computed only, and PUT is the final resource/topology authority. |
-| `BEH-008` | Exact graph-local package-team definition authority reaches runtime prompts. | Existing SR-005 run authorities and `MemberTeamContextBuilder` path. | Preserved; SR-006 adds no global catalog lookup. |
+| `BEH-008` | Exact graph-local package-team definition authority reaches runtime prompts and runtime bootstrap. | Existing `MemberTeamContextBuilder` path plus IR-011 application-owned `CodexAgentRunBackendFactory` / `CodexThreadBootstrapper` construction. | Implemented. Codex create/restore resolves package-local agent definitions through the graph authority; no application-path global lookup remains. |
 
 ## Key Files Or Areas
 
-- Current bounded delta: `autobyteus-server-ts/src/compositions/build-standalone-application-server-composition.ts`.
+- Current bounded deltas: `autobyteus-server-ts/src/compositions/build-standalone-application-server-composition.ts` (IR-010) and `autobyteus-server-ts/src/application-platform/runtime/create-application-run-authorities.ts` (IR-011).
 - Contracts: `autobyteus-application-sdk-contracts/src/execution-resources.ts` and generated declaration output.
 - Launch authority: `autobyteus-server-ts/src/application-platform/launch-configuration/application-launch-configuration-service.ts`.
 - Baseline traversal: `application-launch-resource-baseline-builder.ts` (clean rename/replacement of the removed package-only name).
@@ -87,6 +95,8 @@ The retained production implementation also preserves the prior dual-host founda
 
 ## Important Assumptions
 
+- Application-owned Codex bootstrap must use the same graph-local `AgentDefinitionService` supplied to run authorities; general-process factory defaults remain unchanged outside this composition path.
+- CRR-018 established only the supported Codex application path; Claude is intentionally unchanged.
 - The existing Agent Tools MCP registrar and its established process-scoped collaborators remain the authority; IR-010 adds only the missing standalone mount.
 - Application-owned MCP declarations/provisioning and runtime-internal tooling are outside this ticket and remain untouched.
 - Current graph-local agent/team definition services are the sole definition authorities; preview and PUT intentionally observe their current state rather than persisting a snapshot.
@@ -96,6 +106,7 @@ The retained production implementation also preserves the prior dual-host founda
 
 ## Known Risks
 
+- The graph-authority regression proves exact construction identity, but API/E2E must rerun the real Brief Codex descriptor, authenticated `tools/list`, publication, writer handoff, and artifact projection journey.
 - The focused implementation checks prove route reachability and preserved auth/session behavior but not the full real standalone callback, handoff, or artifact projection journey; API/E2E owns that rerun.
 - No full live Studio stack was started during this implementation round. Exact browser request timing, real catalog refresh invalidation, save/reset interactions, and a true preview/PUT race require downstream API/E2E execution.
 - The rendered component checks exercised the actual team editor through Nuxt/Vitest, not the complete Studio page or authenticated provider journey. Full viewport, keyboard/accessibility, and live network-state inspection remain downstream.
@@ -108,8 +119,8 @@ The retained production implementation also preserves the prior dual-host founda
 - Reviewed root-cause classification: `Local Implementation Defect`
 - Reviewed refactor decision: `Not Required`
 - Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `N/A`; `CRR-016` and `SR-009` confirm the existing subsystem is correct and only the standalone mount was omitted
-- Evidence / notes: the standalone composition now mounts the same existing run-scoped registrar as Studio before its static wildcard. No Agent Tools owner, API, adapter, lifecycle, or external-gateway boundary changed.
+- If challenged, routed as `Design Impact`: `N/A`; `CRR-018` confirms the reviewed graph-local definition authority and existing Codex constructor seams are sufficient
+- Evidence / notes: IR-010 mounts the existing route. IR-011 injects the exact graph-local definition service through the existing Codex factory/bootstrapper constructors. Neither round adds a new owner, fallback, catalog merge, package branch, or external-gateway behavior.
 
 ## Legacy / Compatibility Removal Check
 
@@ -138,6 +149,7 @@ The retained production implementation also preserves the prior dual-host founda
 - IR-009 CR-009 local-fix source commit: `957b928b131d6953ffc5ace7000e1f954db90fdd`
 - SR-009 solution clarification commit: `571e1be0c`
 - IR-010 CR-013 standalone route-mount source commit: `e8e06afddcbc56ad57584a3289b562cf3ddda351`
+- IR-011 CR-014 Codex graph-authority source commit: `2377496070631da4a8a9838e173ed2a6c6ec1714`
 - Reviewed base `6caf809303294252c109420b238588f0c68aca6a` remains in history. Delivery owns final refresh/integration against the latest tracked base; implementation did not merge or rebase.
 - The devkit must be built before invoking a maintained application validation command in this worktree. After that normal prerequisite, Brief validation passed.
 - API/E2E-owned modified/untracked tests, reports, and evidence were preserved exactly; no durable API/E2E test was authored or committed in IR-008 or IR-009.
@@ -172,9 +184,17 @@ The retained production implementation also preserves the prior dual-host founda
 - `git diff --check`, two-line source delta, 44-effective-line source-size guard, and implementation-owned staging audit — Pass.
 - API/E2E-owned dirty tests, reports, and evidence were not modified or staged by implementation.
 
+### IR-011 focused checks
+
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
+- Preserved API/E2E-owned graph-authority regression, executed unchanged: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-platform/application-run-authorities.test.ts --reporter=verbose` — Pass, 1/1. It proves the `AgentRunManager` Codex factory's bootstrapper holds the exact graph `AgentDefinitionService`, the existing allocator authorities remain shared, package-local allocation succeeds, and no global definition lookup occurs.
+- Existing Codex bootstrapper unit suite plus backend-factory integration file — 23 passed / 12 environment-gated skipped; create/restore bootstrapper behavior and configured-tool materialization unit coverage remain green.
+- `git diff --check`, 11-line one-file source delta, 118-effective-line source-size guard, and implementation-owned staging audit — Pass.
+- Claude and API/E2E-owned dirty tests/reports/evidence were not modified or staged.
+
 ## Frontend Rendered-Result Check
 
-IR-010 changes only backend Fastify route composition, so a new frontend rendered-result check is `Not Applicable`. The retained IR-008 frontend self-validation remains:
+IR-011 changes only backend application-run construction, so a new frontend rendered-result check is `Not Applicable`. The retained IR-008 frontend self-validation remains:
 
 - Affected surfaces / journeys: Studio application execution-resource selection; alternate agent/team editing; inherited per-member runtime/model display; mixed-runtime bulk edit; pending/invalid preview save gate.
 - Approved references: `requirements.md` AC-015/AC-016; `design-spec.md` BEH-004, DS-012, UC-020; `ARCH-REV-006`.
@@ -186,6 +206,7 @@ IR-010 changes only backend Fastify route composition, so a new frontend rendere
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- Codex graph authority: rerun `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, and `APIE2E-CODEX-AUTH-001`; prove package-local configured exposure reaches a non-null app-server descriptor, authenticated `tools/list`, publication, writer handoff, and projected artifacts.
 - Standalone route mount: unauthenticated `/mcp/agent-tools/:sessionId` reaches the existing `401` gate; unknown/wrong/revoked sessions retain established non-enumerating `404`; external `/mcp/gateway` remains absent.
 - Real API/E2E rerun: retry `APIE2E-STANDALONE-MCP-001` and `APIE2E-F005` using the existing descriptor/session boundary. Application-owned MCP declarations/provisioning and runtime-internal tooling are not targets in this ticket.
 - Contract/API: assert stored slot view includes `selectedResourceBaseline`; preview is closed and exact identity-bound; invalid preview returns paths/issues without fallback; preview performs no store read/write.
@@ -199,4 +220,4 @@ IR-010 changes only backend Fastify route composition, so a new frontend rendere
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`api_e2e_engineer` still owns durable test reconciliation and all broader executable/API/E2E evidence. Source review must pass before that stage resumes. IR-010 checks are implementation-scoped only and do not establish API/E2E Pass.
+`api_e2e_engineer` still owns durable test reconciliation and all broader executable/API/E2E evidence. Source review must pass before that stage resumes. IR-011 checks are implementation-scoped only and do not establish API/E2E Pass.

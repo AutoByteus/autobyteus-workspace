@@ -16,6 +16,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-008 | Architecture reviewer; `design-review-report.md`; `ARCH-REV-006`, after `CRR-012` | `CR-009`, `CR-012` | `Design Impact` | `SR-006`, `ARCH-REV-006`, `CRR-012`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
 | IR-009 | Code reviewer; `code-review-report.md`; `CRR-013` | `CR-009` | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-013`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
 | IR-010 | Solution designer; `solution-revision-record.md`; `SR-009` after corrective `CRR-016` / `API-REV-005` | `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001` | `Local Fix` | `SR-009`, `ARCH-REV-006`, `CRR-016`, `API-REV-005`; `DR: N/A` | `Ready for source re-review` |
+| IR-011 | Code reviewer; `code-review-report.md`; `CRR-018` / `API-REV-006` | `CR-014`, `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001` | `Local Fix` | `SR-009`, `ARCH-REV-006`, `CRR-018`, `API-REV-006`; `DR: N/A` | `Ready for source re-review` |
 
 ## Revision Entries
 
@@ -218,3 +219,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: source commit `e8e06afddcbc56ad57584a3289b562cf3ddda351`; server build-config TypeScript no-emit passed; the unchanged standalone composition integration file passed 2/2 and proved unauthenticated standalone Agent Tools ingress now returns the established `401 unauthorized`; the unchanged Agent Tools route integration suite passed 11/11 and preserved unknown/wrong/revoked `404 session_unavailable`; an inline route-inventory probe confirmed the internal mount precedes static fallback and no external gateway is registered; diff, source-size, and staging guards passed.
 - Next recipient or routing: `code_reviewer` for implementation-source and structural re-review. After Pass, return through `api_e2e_engineer` for the corrected durable expectation and rerun of `APIE2E-STANDALONE-MCP-001` / `APIE2E-F005`.
 - Remaining limitations or risks: implementation checks do not replace a real standalone runtime callback and artifact/handoff completion rerun. Application-owned MCP declarations/provisioning and runtime-internal tooling are explicitly outside this ticket. The secondary `APIE2E-REPO-005` remains separately `Unclear` and must not broaden this fix without verified origin.
+
+
+### IR-011 — Inject graph-local agent definitions into application Codex bootstrap
+
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; focused failure-origin review `CRR-018`, triggered by API/E2E round `API-REV-006`.
+- Triggering finding IDs: `CR-014`, `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`
+- Classification: `Local Fix`
+- Prior authoritative result: `Ready for source re-review` (`IR-010`); source review passed in `CRR-017`, and `API-REV-006` confirmed `CR-013` closed before exposing an application-path Codex definition-authority bypass. `CRR-018` classified the bypass as implementation-owned Local Fix.
+- Current authoritative result: `Ready for source re-review`
+- Related solution revision IDs: `SR-009`
+- Related architecture-review revision IDs: `ARCH-REV-006`
+- Related code-review revision IDs: `CRR-018` (`CRR-017` prior source pass)
+- Related API/E2E revision IDs: `API-REV-006`
+- Related delivery revision IDs: `N/A`
+- Why this implementation revision is recorded: application run authorities injected the exact package-aware definition service into AutoByteus and identity allocation but let `AgentRunManager` select the cached default Codex factory. Its default bootstrapper queried the process-global definition catalog, so the real package-local researcher produced empty configured-tool exposure and no usable Agent Tools app-server descriptor.
+- Approved behavior or requirement IDs affected: `BEH-004`, `BEH-006`, `BEH-008`; `REQ-004`, `REQ-005`, `REQ-007`; `AC-005`, `AC-006`, `AC-010`, `AC-014`–`AC-016`; `DS-004`, `DS-014`.
+- Implementation delta: `createApplicationRunAuthorities()` now constructs the existing `CodexThreadBootstrapper` with `input.agentDefinitionService`, passes it through the existing `CodexAgentRunBackendFactory` constructor, and injects that factory into the application graph's `AgentRunManager`. All other bootstrapper/factory dependencies retain their existing defaults. Create and restore share the same exact bootstrapper. General-process defaults, native Codex behavior, Agent Tools transport, Studio/external gateway boundaries, cleanup, and Claude remain unchanged. No factory family, locator, fallback, catalog merge, or package-ID branch was added.
+- Changed files or areas: `autobyteus-server-ts/src/application-platform/runtime/create-application-run-authorities.ts`; canonical `implementation-handoff.md`; this revision record. API/E2E-owned dirty tests/reports/evidence were preserved and are not part of the implementation commits.
+- Local validation and result: source commit `2377496070631da4a8a9838e173ed2a6c6ec1714`; server build-config TypeScript no-emit passed; the unchanged API/E2E-owned graph-authority regression passed 1/1 and proved exact service identity/no global lookup; existing Codex bootstrapper and backend-factory files produced 23 passing tests with 12 environment-gated skips; diff, source-size, and staging guards passed.
+- Next recipient or routing: `code_reviewer` for implementation-source and structural re-review. After Pass, return through `api_e2e_engineer` for the direct authority regression update and the actual descriptor/authenticated tools/publication/handoff/artifact rerun.
+- Remaining limitations or risks: implementation checks did not start a real authenticated Codex App Server or execute the full Brief product journey. API/E2E must prove non-null descriptor/configured exposure and business completion. The model's direct SQLite workaround is not valid behavior evidence. Claude was not modified because no separate supported failure was established.
