@@ -21,6 +21,7 @@
 | `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-005` | `Pass` | `Fail — Design Impact` | `CR-013`, `APIE2E-F005` |
 | `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Clarification / user-confirmed tool projection | `Fail — Design Impact` | `Fail — Local Fix` | `CR-013`, `APIE2E-F005` |
 | `CRR-017` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-010` | `Fail — Local Fix` | `Pass` | `CR-013`, `APIE2E-F005` |
+| `CRR-018` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-006` | `Pass` | `Fail — Local Fix` | `CR-014`, `APIE2E-F006` |
 
 ## Revision Entries
 
@@ -483,3 +484,30 @@ None.
 - Material score or classification changes: result changes from `Fail — Local Fix` to `Pass`; current full source score is `9.6/10` (`96/100`) with every category `>=9.0`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must use the actual descriptor/`tools/list`, require eligible server tools such as `publish_artifacts` and `send_message_to` without incorrectly requiring native `write_file` through MCP, rerun `APIE2E-STANDALONE-MCP-001` and the real standalone Brief workflow first, then complete the retained matrix. `APIE2E-REPO-005` remains independently unattributed.
+
+### CRR-018 — real Codex bootstrap escapes the application definition graph
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `18`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-006`; `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`; new finding `CR-014`
+- Relevant solution revision IDs: `SR-009` and `SR-008`; `SR-007` withdrawn
+- Relevant architecture-review revision IDs: `ARCH-REV-006`; `ARCH-REV-007` withdrawn with no decision
+- Relevant implementation revision IDs: `IR-010` and cumulative `IR-001`–`IR-009`
+- Relevant API/E2E revision IDs: `API-REV-006`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` (`CRR-017`, `96/100`)
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: API-REV-006 confirms IR-010 fixed the route and then reaches the next production boundary: the exact maintained package-local Brief researcher runs on Codex/Luna, but its bootstrapper owns the process-global `AgentDefinitionService`, resolves the package ID to null, derives empty configured-tool exposure, and emits no Agent Tools server config. The application graph received the correct definition authority but injected it only into AutoByteus and allocation; omitted `codexBackendFactory` construction activates the manager's global default. The design already requires exact definition instances in runtime/run services and existing Codex constructors already accept injection, so the origin is a bounded implementation defect rather than Design Impact.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-012` | Resolved in source / applicable API/E2E rerun pending | Remain Resolved for their owned behavior | `IR-002`–`IR-009`, `CRR-002`–`CRR-014`, `API-REV-001`–`API-REV-006` | API-REV-006 passes build/validation and reaches the real binding/team/researcher/Codex path; F006 is a later definition-authority failure. |
+| `CR-013` | Resolved in source; API/E2E rerun pending | Resolved and API/E2E-confirmed | `IR-010`, `CRR-017`, `API-REV-006` | `APIE2E-STANDALONE-MCP-001` passes 2 files / 13 tests; standalone requests reach the established route/auth/session boundary instead of generic/static 404. |
+| `CR-014` | N/A | Open — Local Fix | `CRR-018`, `API-REV-006`, `APIE2E-F006` | Live run has null Codex app-server descriptor and empty tool exposure; direct authority regression fails because the bootstrapper owns the global service; source trace shows omitted `codexBackendFactory` in `createApplicationRunAuthorities()`. |
+
+- New or remaining finding IDs: `CR-014`.
+- Material score or classification changes: focused failure-origin review does not recompute the full score. CRR-017's API/E2E-readiness and runtime-fidelity conclusions are superseded for the supported Codex path; route-mount and all other unaffected conclusions remain valid. Current result is implementation-owned `Fail — Local Fix`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: reuse the existing Codex dependency seams and keep the fix graph-local; do not modify Claude, native runtime tools, Agent Tools projection/route/session, or the external gateway without separate supported evidence. API/E2E must reject the direct-SQLite workaround, prove actual descriptor/`tools/list`/dispatch/writer/projection after rework, and keep `APIE2E-REPO-005` separate.
